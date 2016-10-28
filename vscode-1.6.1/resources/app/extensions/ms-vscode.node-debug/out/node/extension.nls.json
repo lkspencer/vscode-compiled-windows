@@ -1,0 +1,12 @@
+{
+	"messages": [
+		"Launch",
+		"Attach",
+		"Attach to Process"
+	],
+	"keys": [
+		"node.launch.config.name",
+		"node.attach.config.name",
+		"node.processattach.config.name"
+	]
+}
