@@ -6,6 +6,8 @@
 var vscode_languageserver_1 = require('vscode-languageserver');
 var vscode_css_languageservice_1 = require('vscode-css-languageservice');
 var languageModelCache_1 = require('./languageModelCache');
+var vscode_uri_1 = require('vscode-uri');
+var embeddedContentUri_1 = require('./embeddedContentUri');
 var ColorSymbolRequest;
 (function (ColorSymbolRequest) {
     ColorSymbolRequest.type = { get method() { return 'css/colorSymbols'; } };
@@ -99,7 +101,9 @@ function validateTextDocument(textDocument) {
     var stylesheet = stylesheets.get(textDocument);
     var diagnostics = getLanguageService(textDocument).doValidation(textDocument, stylesheet);
     // Send the computed diagnostics to VSCode.
-    connection.sendDiagnostics({ uri: textDocument.uri, diagnostics: diagnostics });
+    var uri = vscode_uri_1.default.parse(textDocument.uri);
+    var diagnosticsTarget = embeddedContentUri_1.isEmbeddedContentUri(uri) ? embeddedContentUri_1.getHostDocumentUri(uri) : textDocument.uri;
+    connection.sendDiagnostics({ uri: diagnosticsTarget, diagnostics: diagnostics });
 }
 connection.onCompletion(function (textDocumentPosition) {
     var document = documents.get(textDocumentPosition.textDocument.uri);
@@ -138,8 +142,11 @@ connection.onCodeAction(function (codeActionParams) {
 });
 connection.onRequest(ColorSymbolRequest.type, function (uri) {
     var document = documents.get(uri);
-    var stylesheet = stylesheets.get(document);
-    return getLanguageService(document).findColorSymbols(document, stylesheet);
+    if (document) {
+        var stylesheet = stylesheets.get(document);
+        return getLanguageService(document).findColorSymbols(document, stylesheet);
+    }
+    return [];
 });
 connection.onRenameRequest(function (renameParameters) {
     var document = documents.get(renameParameters.textDocument.uri);
@@ -148,4 +155,4 @@ connection.onRenameRequest(function (renameParameters) {
 });
 // Listen on the connection
 connection.listen();
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/9e4e44c19e393803e2b05fe2323cf4ed7e36880e/extensions\css\server\out/cssServerMain.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/02611b40b24c9df2726ad8b33f5ef5f67ac30b44/extensions\css\server\out/cssServerMain.js.map

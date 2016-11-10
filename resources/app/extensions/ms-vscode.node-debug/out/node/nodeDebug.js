@@ -108,7 +108,7 @@ var ScopeContainer = (function () {
     }
     ScopeContainer.prototype.Expand = function (session, filter, start, count) {
         var _this = this;
-        return session._createProperties(this._object, 'all').then(function (variables) {
+        return session._createProperties(this._object, filter).then(function (variables) {
             if (_this._this) {
                 return session._createVariable('this', _this._this).then(function (variable) {
                     variables.push(variable);
@@ -133,11 +133,13 @@ var Script = (function () {
     return Script;
 }());
 var InternalSourceBreakpoint = (function () {
-    function InternalSourceBreakpoint(line, column, condition) {
+    function InternalSourceBreakpoint(line, column, condition, hitter) {
         if (column === void 0) { column = 0; }
         this.line = this.orgLine = line;
         this.column = this.orgColumn = column;
         this.condition = condition;
+        this.hitCount = 0;
+        this.hitter = hitter;
     }
     return InternalSourceBreakpoint;
 }());
@@ -159,6 +161,7 @@ var NodeDebugSession = (function (_super) {
         this._traceAll = false;
         // options
         this._tryToInjectExtension = true;
+        this._skipRejects = false; // do not stop on rejected promises
         this._maxVariablesPerScope = 100; // only load this many variables for a scope
         this._smartStep = false; // try to automatically step over uninteresting source
         this._mapToFilesOnDisk = true; // by default try to map node.js scripts to files on disk
@@ -169,6 +172,7 @@ var NodeDebugSession = (function (_super) {
         this._scripts = new Map(); // script cache
         this._files = new Map(); // file cache
         this._modifiedSources = new Set(); // track edited files
+        this._hitCounts = new Map(); // breakpoint ID -> ignore count
         // session configurations
         this._noDebug = false;
         this._attachMode = false;
@@ -184,6 +188,7 @@ var NodeDebugSession = (function (_super) {
         this._nodeInjectionAvailable = false;
         this._gotDebuggerEvent = false;
         this._smartStepCount = 0;
+        this._catchRejects = false;
         // this debugger uses zero-based lines and columns which is the default
         // so the following two calls are not really necessary.
         this.setDebuggerLinesStartAt1(false);
@@ -233,22 +238,28 @@ var NodeDebugSession = (function (_super) {
      * Analyse why node has stopped and sends StoppedEvent if necessary.
      */
     NodeDebugSession.prototype._handleNodeBreakEvent = function (eventBody) {
-        /*
-        // workaround: load sourcemap for this location to populate cache
-        if (this._sourceMaps) {
-            let path = body.script.name;
-            if (path && PathUtils.isAbsolutePath(path)) {
-                path = this._remoteToLocal(path);
-                this._sourceMaps.MapToSource(path, null, 0, 0);
-            }
-        }
-        */
         var _this = this;
         var isEntry = false;
         var reason;
         var exception_text;
+        // in order to identify reject calls and debugger statements extract source at current location
+        var source = null;
+        if (eventBody.sourceLineText && typeof eventBody.sourceColumn === 'number') {
+            source = eventBody.sourceLineText.substr(eventBody.sourceColumn);
+        }
         // is exception?
         if (eventBody.exception) {
+            // if this exception originates from a 'reject', skip it if 'All Exception' is not set.
+            if (this._skipRejects && source && source.indexOf('reject') === 0) {
+                if (!this._catchRejects) {
+                    this._node.command('continue');
+                    return;
+                }
+                if (eventBody.exception.text === 'undefined') {
+                    eventBody.exception.text = 'reject';
+                }
+            }
+            // remember exception
             this._exception = eventBody.exception;
             exception_text = eventBody.exception.text;
             reason = this._reasonText('exception');
@@ -265,14 +276,21 @@ var NodeDebugSession = (function (_super) {
                     this._rememberEntryLocation(eventBody.script.name, eventBody.sourceLine, eventBody.sourceColumn);
                 }
                 else {
+                    var ibp = this._hitCounts.get(id);
+                    if (ibp) {
+                        ibp.hitCount++;
+                        if (!ibp.hitter(ibp.hitCount)) {
+                            this._node.command('continue');
+                            return;
+                        }
+                    }
                     reason = this._reasonText('breakpoint');
                 }
             }
         }
         // is debugger statement?
         if (!reason) {
-            var sourceLine = eventBody.sourceLineText;
-            if (sourceLine && sourceLine.indexOf('debugger') >= 0) {
+            if (source && source.indexOf('debugger') == 0) {
                 reason = this._reasonText('debugger');
                 this._gotDebuggerEvent = true;
             }
@@ -496,6 +514,7 @@ var NodeDebugSession = (function (_super) {
                 this.outLine(localize(13, null));
             }
         }
+        runtimeArgs = args.runtimeArgs || ['--nolazy'];
         if (programPath) {
             if (NodeDebugSession.isJavaScript(programPath)) {
                 if (this._sourceMaps) {
@@ -1037,7 +1056,21 @@ var NodeDebugSession = (function (_super) {
         if (args.breakpoints) {
             for (var _i = 0, _a = args.breakpoints; _i < _a.length; _i++) {
                 var b = _a[_i];
-                sbs.push(new InternalSourceBreakpoint(this.convertClientLineToDebugger(b.line), typeof b.column === 'number' ? this.convertClientColumnToDebugger(b.column) : 0, b.condition));
+                var hitter = null;
+                if (b.hitCondition) {
+                    var result = NodeDebugSession.HITCOUNT_MATCHER.exec(b.hitCondition.trim());
+                    if (result.length >= 3) {
+                        var op = result[1] || '>=';
+                        var value = result[2];
+                        var expr = op === '%'
+                            ? "return (hitcnt % " + value + ") === 0;"
+                            : "return hitcnt " + op + " " + value + ";";
+                        hitter = Function('hitcnt', expr);
+                    }
+                    else {
+                    }
+                }
+                sbs.push(new InternalSourceBreakpoint(this.convertClientLineToDebugger(b.line), typeof b.column === 'number' ? this.convertClientColumnToDebugger(b.column) : 0, b.condition, hitter));
             }
         }
         else {
@@ -1245,6 +1278,9 @@ var NodeDebugSession = (function (_super) {
         }
         return this._node.setBreakpoint(args).then(function (resp) {
             _this.log('bp', "_setBreakpoint: " + JSON.stringify(args));
+            if (lb.hitter) {
+                _this._hitCounts.set(resp.body.breakpoint, lb);
+            }
             var actualLine = args.line;
             var actualColumn = args.column;
             var al = resp.body.actual_locations;
@@ -1392,10 +1428,12 @@ var NodeDebugSession = (function (_super) {
             type: 'all',
             enabled: false
         };
+        this._catchRejects = false;
         var filters = args.filters;
         if (filters) {
             if (filters.indexOf('all') >= 0) {
                 nodeArgs.enabled = true;
+                this._catchRejects = true;
             }
             else if (filters.indexOf('uncaught') >= 0) {
                 nodeArgs.type = 'uncaught';
@@ -1415,7 +1453,7 @@ var NodeDebugSession = (function (_super) {
         if (this._needContinue) {
             this._needContinue = false;
             info = 'do a \'Continue\'';
-            this._node.command('continue', null, function (nodeResponse) { });
+            this._node.command('continue');
         }
         if (this._needBreakpointEvent) {
             this._needBreakpointEvent = false;
@@ -1770,7 +1808,8 @@ var NodeDebugSession = (function (_super) {
         var reference = args.variablesReference;
         var variablesContainer = this._variableHandles.get(reference);
         if (variablesContainer) {
-            variablesContainer.Expand(this, args.filter, args.start, args.count).then(function (variables) {
+            var filter = (args.filter === 'indexed' || args.filter === 'named') ? args.filter : 'all';
+            variablesContainer.Expand(this, filter, args.start, args.count).then(function (variables) {
                 variables.sort(NodeDebugSession.compareVariableNames);
                 response.body = {
                     variables: variables
@@ -1814,12 +1853,7 @@ var NodeDebugSession = (function (_super) {
                     return this._node.command2('vscode_slice', args).then(function (resp) {
                         var items = resp.body.result;
                         return Promise.all(items.map(function (item) {
-                            if (isIndex(item.name)) {
-                                return _this._createVariable("[" + item.name + "]", item.value);
-                            }
-                            else {
-                                return _this._createVariable(item.name, item.value);
-                            }
+                            return _this._createVariable(item.name, item.value);
                         }));
                     });
                 }
@@ -1841,14 +1875,16 @@ var NodeDebugSession = (function (_super) {
                         selectedProperties.push(property);
                         break;
                     case 'named':
-                        if (typeof name_2 === 'string') {
+                        if (!isIndex(name_2)) {
                             selectedProperties.push(property);
                         }
                         break;
                     case 'indexed':
-                        var ix = +name_2;
-                        if (ix >= start && ix < start + count) {
-                            selectedProperties.push(property);
+                        if (isIndex(name_2)) {
+                            var ix = +name_2;
+                            if (ix >= start && ix < start + count) {
+                                selectedProperties.push(property);
+                            }
                         }
                         break;
                 }
@@ -1867,11 +1903,11 @@ var NodeDebugSession = (function (_super) {
     /**
      * Resolves the given properties and returns them as an array of Variables.
      * If the properties are indexed (opposed to named), a value 'start' is added to the index number.
-     * 'noBrackets' controls whether the index is enclosed in brackets.
      * If a value is undefined it probes for a getter.
      */
-    NodeDebugSession.prototype._createPropertyVariables = function (obj, properties, start, noBrackets) {
+    NodeDebugSession.prototype._createPropertyVariables = function (obj, properties, doPreview, start) {
         var _this = this;
+        if (doPreview === void 0) { doPreview = true; }
         if (start === void 0) { start = 0; }
         return this._resolveValues(properties).then(function () {
             return Promise.all(properties.map(function (property) {
@@ -1880,7 +1916,7 @@ var NodeDebugSession = (function (_super) {
                 var name;
                 if (isIndex(property.name)) {
                     var ix = +property.name;
-                    name = noBrackets ? "" + (start + ix) : "[" + (start + ix) + "]";
+                    name = "" + (start + ix);
                 }
                 else {
                     name = property.name;
@@ -1888,7 +1924,7 @@ var NodeDebugSession = (function (_super) {
                 // if value 'undefined' trigger a getter
                 if (_this._node.v8Version && val.type === 'undefined' && !val.value && obj) {
                     var args = {
-                        expression: "obj." + name,
+                        expression: "obj['" + name + "']",
                         additional_context: [
                             { name: 'obj', handle: obj.handle }
                         ],
@@ -1897,13 +1933,13 @@ var NodeDebugSession = (function (_super) {
                     };
                     _this.log('va', "_createPropertyVariables: trigger getter");
                     return _this._node.evaluate(args).then(function (response) {
-                        return _this._createVariable(name, response.body);
+                        return _this._createVariable(name, response.body, doPreview);
                     }).catch(function (err) {
                         return new vscode_debugadapter_1.Variable(name, 'undefined');
                     });
                 }
                 else {
-                    return _this._createVariable(name, val);
+                    return _this._createVariable(name, val, doPreview);
                 }
             }));
         });
@@ -1912,8 +1948,9 @@ var NodeDebugSession = (function (_super) {
      * Create a Variable with the given name and value.
      * For structured values the variable object will have a corresponding expander.
      */
-    NodeDebugSession.prototype._createVariable = function (name, val) {
+    NodeDebugSession.prototype._createVariable = function (name, val, doPreview) {
         var _this = this;
+        if (doPreview === void 0) { doPreview = true; }
         if (!val) {
             return Promise.resolve(null);
         }
@@ -1922,7 +1959,7 @@ var NodeDebugSession = (function (_super) {
             case 'null':
                 return Promise.resolve(new vscode_debugadapter_1.Variable(name, val.type));
             case 'string':
-                return this._createStringVariable(name, val);
+                return this._createStringVariable(name, val, doPreview ? undefined : NodeDebugSession.PREVIEW_MAX_STRING_LENGTH);
             case 'number':
                 return Promise.resolve(new vscode_debugadapter_1.Variable(name, val.value.toString()));
             case 'boolean':
@@ -1954,7 +1991,7 @@ var NodeDebugSession = (function (_super) {
                     case 'Uint32Array':
                     case 'Float32Array':
                     case 'Float64Array':
-                        return this._createArrayVariable(name, val);
+                        return this._createArrayVariable(name, val, doPreview);
                     case 'RegExp':
                         return Promise.resolve(new vscode_debugadapter_1.Variable(name, text, this._variableHandles.create(new PropertyContainer(val))));
                     case 'Generator':
@@ -1966,8 +2003,20 @@ var NodeDebugSession = (function (_super) {
                                     value_1 = constructor_name;
                                 }
                             }
-                            if (object_1.status) {
-                                value_1 += " { " + object_1.status + " }";
+                            if (val.type === 'promise' || val.type === 'generator') {
+                                if (object_1.status) {
+                                    value_1 += " { " + object_1.status + " }";
+                                }
+                            }
+                            else {
+                                if (object_1.properties) {
+                                    return _this._objectPreview(object_1, doPreview).then(function (preview) {
+                                        if (preview) {
+                                            value_1 = value_1 + " " + preview;
+                                        }
+                                        return new vscode_debugadapter_1.Variable(name, value_1, _this._variableHandles.create(new PropertyContainer(val)));
+                                    });
+                                }
                             }
                             return new vscode_debugadapter_1.Variable(name, value_1, _this._variableHandles.create(new PropertyContainer(val)));
                         });
@@ -1992,19 +2041,86 @@ var NodeDebugSession = (function (_super) {
                 return Promise.resolve(new vscode_debugadapter_1.Variable(name, val.value ? val.value.toString() : 'undefined'));
         }
     };
+    /**
+     * creates something like this: {a: 123, b: "hi", c: true …}
+     */
+    NodeDebugSession.prototype._objectPreview = function (object, doPreview) {
+        if (doPreview && object && object.properties && object.properties.length > 0) {
+            return this._createPropertyVariables(object, object.properties.slice(0, NodeDebugSession.PREVIEW_PROPERTIES), false).then(function (props) {
+                var preview = '{';
+                for (var i = 0; i < props.length; i++) {
+                    preview += props[i].name + ": " + props[i].value;
+                    if (i < props.length - 1) {
+                        preview += ', ';
+                    }
+                    else {
+                        if (object.properties.length > NodeDebugSession.PREVIEW_PROPERTIES) {
+                            preview += ' …';
+                        }
+                    }
+                }
+                preview += '}';
+                return preview;
+            });
+        }
+        return Promise.resolve(null);
+    };
+    /**
+     * creates something like this: [ 1, 2, 3 …]
+     */
+    NodeDebugSession.prototype._arrayPreview = function (array, length, doPreview) {
+        if (doPreview && array && array.properties && length > 0) {
+            var previewProps = new Array();
+            for (var i = 0; i < array.properties.length; i++) {
+                var p = array.properties[i];
+                if (isIndex(p.name)) {
+                    var ix = +p.name;
+                    if (ix >= 0 && ix < NodeDebugSession.PREVIEW_PROPERTIES) {
+                        previewProps.push(p);
+                        if (previewProps.length >= NodeDebugSession.PREVIEW_PROPERTIES) {
+                            break;
+                        }
+                    }
+                }
+            }
+            return this._createPropertyVariables(array, previewProps, false).then(function (props) {
+                var preview = '[';
+                for (var i = 0; i < props.length; i++) {
+                    preview += "" + props[i].value;
+                    if (i < props.length - 1) {
+                        preview += ', ';
+                    }
+                    else {
+                        if (length > NodeDebugSession.PREVIEW_PROPERTIES) {
+                            preview += ' …';
+                        }
+                    }
+                }
+                preview += ']';
+                return preview;
+            });
+        }
+        return Promise.resolve(null);
+    };
     //--- long array support
-    NodeDebugSession.prototype._createArrayVariable = function (name, array) {
+    NodeDebugSession.prototype._createArrayVariable = function (name, array, doPreview) {
         var _this = this;
         return this._getArraySize(array).then(function (pair) {
             var indexedSize;
             var namedSize;
             var arraySize = '';
             if (pair) {
-                indexedSize = pair[0];
-                namedSize = pair[1];
+                indexedSize = pair[0] || 0;
+                namedSize = pair[1] || 0;
                 arraySize = indexedSize.toString();
             }
-            return new vscode_debugadapter_1.Variable(name, array.className + "[" + arraySize + "]", _this._variableHandles.create(new PropertyContainer(array)), indexedSize, namedSize);
+            return _this._arrayPreview(array, indexedSize, doPreview).then(function (preview) {
+                var v = array.className + "[" + arraySize + "]";
+                if (preview) {
+                    v = v + " " + preview;
+                }
+                return new vscode_debugadapter_1.Variable(name, v, _this._variableHandles.create(new PropertyContainer(array)), indexedSize, namedSize);
+            });
         });
     };
     NodeDebugSession.prototype._getArraySize = function (array) {
@@ -2013,12 +2129,11 @@ var NodeDebugSession = (function (_super) {
         }
         if (this._node.v8Version) {
             var args = {
-                expression: "JSON.stringify([ array.length, Object.keys(array).length+1-array.length ])",
+                expression: array.className === 'ArrayBuffer' ? "JSON.stringify([ array.byteLength, 1 ])" : "JSON.stringify([ array.length, Object.keys(array).length+1-array.length ])",
                 disable_break: true,
                 additional_context: [
                     { name: 'array', handle: array.handle }
-                ],
-                maxStringLength: NodeDebugSession.MAX_JSON_LENGTH
+                ]
             };
             this.log('va', "_getArraySize: array.length");
             return this._node.evaluate(args).then(function (response) {
@@ -2036,8 +2151,7 @@ var NodeDebugSession = (function (_super) {
             disable_break: true,
             additional_context: [
                 { name: 'obj', handle: obj.handle }
-            ],
-            maxStringLength: NodeDebugSession.MAX_JSON_LENGTH
+            ]
         };
         this.log('va', "_createSetMapVariable: " + obj.type + ".size");
         return this._node.evaluate(args).then(function (response) {
@@ -2080,7 +2194,7 @@ var NodeDebugSession = (function (_super) {
                     selectedProperties.push(property);
                 }
             }
-            return _this._createPropertyVariables(null, selectedProperties, start, true);
+            return _this._createPropertyVariables(null, selectedProperties, true, start);
         });
     };
     NodeDebugSession.prototype._createMapElements = function (map, start, count) {
@@ -2125,17 +2239,23 @@ var NodeDebugSession = (function (_super) {
         });
     };
     //--- long string support
-    NodeDebugSession.prototype._createStringVariable = function (name, val) {
+    NodeDebugSession.prototype._createStringVariable = function (name, val, maxLength) {
         var _this = this;
         var str_val = val.value;
+        if (typeof maxLength === 'number') {
+            if (str_val.length > maxLength) {
+                str_val = str_val.substr(0, maxLength) + '…';
+            }
+            return Promise.resolve(this._createStringVariable2(name, str_val));
+        }
         if (this._node.v8Version && NodeDebugSession.LONG_STRING_MATCHER.exec(str_val)) {
             var args = {
                 expression: "str",
                 disable_break: true,
-                maxStringLength: NodeDebugSession.MAX_STRING_LENGTH,
                 additional_context: [
                     { name: 'str', handle: val.handle }
-                ]
+                ],
+                maxStringLength: NodeDebugSession.MAX_STRING_LENGTH
             };
             this.log('va', "_createStringVariable: get full string");
             return this._node.evaluate(args).then(function (response) {
@@ -2168,10 +2288,23 @@ var NodeDebugSession = (function (_super) {
         var value = args.value;
         var variablesContainer = this._variableHandles.get(reference);
         if (variablesContainer) {
-            variablesContainer.SetValue(this, name, value).then(function (newValue) {
+            variablesContainer.SetValue(this, name, value).then(function (newVar) {
+                var v = newVar;
                 response.body = {
-                    value: newValue
+                    value: v.value
                 };
+                if (v.type) {
+                    response.body.type = v.type;
+                }
+                if (v.variablesReference) {
+                    response.body.variablesReference = v.variablesReference;
+                }
+                if (typeof v.indexedVariables === 'number') {
+                    response.body.indexedVariables = v.indexedVariables;
+                }
+                if (typeof v.namedVariables === 'number') {
+                    response.body.namedVariables = v.namedVariables;
+                }
                 _this.sendResponse(response);
             }).catch(function (err) {
                 _this.sendErrorResponse(response, 2004, err.message);
@@ -2182,6 +2315,7 @@ var NodeDebugSession = (function (_super) {
         }
     };
     NodeDebugSession.prototype._setVariableValue = function (frame, scope, name, value) {
+        // first we are evaluating the new value
         var _this = this;
         var evalArgs = {
             expression: value,
@@ -2196,37 +2330,28 @@ var NodeDebugSession = (function (_super) {
                     number: scope
                 },
                 name: name,
-                newValue: {
-                    value: evalResponse.body.value,
-                    type: evalResponse.body.type
-                }
+                newValue: evalResponse.body
             };
             return _this._node.setVariableValue(args).then(function (response) {
-                return _this._createVariable('_setVariableValue', response.body.newValue).then(function (variable) {
-                    return variable.value;
-                });
+                return _this._createVariable('_setVariableValue', response.body.newValue);
             });
         });
     };
     NodeDebugSession.prototype._setPropertyValue = function (objHandle, propName, value) {
         var _this = this;
         if (this._node.v8Version) {
-            if (propName[0] !== '[') {
-                propName = '.' + propName;
-            }
+            // we are doing the evaluation of the new value and the assignment to an object property in a single evaluate.
             var args = {
                 global: true,
-                expression: "obj" + propName + " = " + value,
+                expression: "obj['" + propName + "'] = " + value,
                 disable_break: true,
-                maxStringLength: NodeDebugSession.MAX_STRING_LENGTH,
                 additional_context: [
                     { name: 'obj', handle: objHandle }
-                ]
+                ],
+                maxStringLength: NodeDebugSession.MAX_STRING_LENGTH
             };
             return this._node.evaluate(args).then(function (response) {
-                return _this._createVariable('_setpropertyvalue', response.body).then(function (variable) {
-                    return variable.value;
-                });
+                return _this._createVariable('_setpropertyvalue', response.body);
             });
         }
         return Promise.reject(new Error(Expander.SET_VALUE_ERROR));
@@ -2795,6 +2920,8 @@ var NodeDebugSession = (function (_super) {
     NodeDebugSession.NODE_TERMINATION_POLL_INTERVAL = 3000;
     NodeDebugSession.ATTACH_TIMEOUT = 10000;
     NodeDebugSession.RUNINTERMINAL_TIMEOUT = 5000;
+    NodeDebugSession.PREVIEW_PROPERTIES = 3; // maximum number of properties to show in object/array preview
+    NodeDebugSession.PREVIEW_MAX_STRING_LENGTH = 50; // truncate long strings for object/array preview
     NodeDebugSession.NODE = 'node';
     NodeDebugSession.DUMMY_THREAD_ID = 1;
     NodeDebugSession.DUMMY_THREAD_NAME = 'Node';
@@ -2803,6 +2930,7 @@ var NodeDebugSession = (function (_super) {
     NodeDebugSession.DEBUG_INJECTION = 'debugInjection.js';
     NodeDebugSession.NODE_SHEBANG_MATCHER = new RegExp('#! */usr/bin/env +node');
     NodeDebugSession.LONG_STRING_MATCHER = /\.\.\. \(length: [0-9]+\)$/;
+    NodeDebugSession.HITCOUNT_MATCHER = /(>|>=|=|<|<=|%)?\s*([0-9]+)/;
     //--- scopes request ------------------------------------------------------------------------------------------------------
     NodeDebugSession.SCOPE_NAMES = [
         localize(47, null),

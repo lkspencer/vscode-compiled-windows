@@ -3,7 +3,6 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 'use strict';
-var cp = require('child_process');
 var path = require('path');
 var fs = require('fs');
 var electron = require('./utils/electron');
@@ -45,20 +44,6 @@ var MessageAction;
     MessageAction[MessageAction["neverCheckLocalVersion"] = 2] = "neverCheckLocalVersion";
     MessageAction[MessageAction["close"] = 3] = "close";
 })(MessageAction || (MessageAction = {}));
-function openUrl(url) {
-    var cmd;
-    switch (process.platform) {
-        case 'darwin':
-            cmd = 'open';
-            break;
-        case 'win32':
-            cmd = 'start';
-            break;
-        default:
-            cmd = 'xdg-open';
-    }
-    return cp.exec(cmd + ' ' + url);
-}
 var TypeScriptServiceClient = (function () {
     function TypeScriptServiceClient(host, storagePath, globalState) {
         var _this = this;
@@ -82,7 +67,8 @@ var TypeScriptServiceClient = (function () {
         var configuration = vscode_1.workspace.getConfiguration();
         this.tsdk = configuration.get('typescript.tsdk', null);
         this._experimentalAutoBuild = false; // configuration.get<boolean>('typescript.tsserver.experimentalAutoBuild', false);
-        this._apiVersion = typescriptService_1.APIVersion.v1_x;
+        this._apiVersion = new typescriptService_1.API('1.0.0');
+        this._checkGlobalTSCVersion = true;
         this.trace = this.readTrace();
         vscode_1.workspace.onDidChangeConfiguration(function () {
             _this.trace = _this.readTrace();
@@ -117,6 +103,13 @@ var TypeScriptServiceClient = (function () {
     Object.defineProperty(TypeScriptServiceClient.prototype, "experimentalAutoBuild", {
         get: function () {
             return this._experimentalAutoBuild;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(TypeScriptServiceClient.prototype, "checkGlobalTSCVersion", {
+        get: function () {
+            return this._checkGlobalTSCVersion;
         },
         enumerable: true,
         configurable: true
@@ -217,11 +210,10 @@ var TypeScriptServiceClient = (function () {
     TypeScriptServiceClient.prototype.startService = function (resendModels) {
         var _this = this;
         if (resendModels === void 0) { resendModels = false; }
-        var modulePath = path.join(__dirname, '..', 'server', 'typescript', 'lib', 'tsserver.js');
-        var checkGlobalVersion = true;
+        var modulePath = path.join(__dirname, '..', 'node_modules', 'typescript', 'lib', 'tsserver.js');
         var showVersionStatusItem = false;
         if (this.tsdk) {
-            checkGlobalVersion = false;
+            this._checkGlobalTSCVersion = false;
             if (path.isAbsolute(this.tsdk)) {
                 modulePath = path.join(this.tsdk, 'tsserver.js');
             }
@@ -243,7 +235,7 @@ var TypeScriptServiceClient = (function () {
                         var localVersion = _this.getTypeScriptVersion(localModulePath_1);
                         var shippedVersion = _this.getTypeScriptVersion(modulePath);
                         if (localVersion && localVersion !== shippedVersion) {
-                            checkGlobalVersion = false;
+                            _this._checkGlobalTSCVersion = false;
                             versionCheckPromise = vscode_1.window.showInformationMessage(localize(1, null, localVersion, shippedVersion), {
                                 title: localize(2, null, localVersion),
                                 id: MessageAction.useLocal
@@ -300,59 +292,20 @@ var TypeScriptServiceClient = (function () {
                     version = vscode_1.workspace.getConfiguration().get('typescript.tsdk_version', undefined);
                 }
                 if (version) {
-                    _this._apiVersion = typescriptService_1.APIVersion.fromString(version);
+                    _this._apiVersion = new typescriptService_1.API(version);
                 }
                 var label = version || localize(10, null);
                 var tooltip = modulePath;
                 VersionStatus.enable(!!_this.tsdk || showVersionStatusItem);
                 VersionStatus.setInfo(label, tooltip);
+                // This is backwards compatibility code to move the setting from the local
+                // store into the workspace setting file.
                 var doGlobalVersionCheckKey = 'doGlobalVersionCheck';
                 var globalStateValue = _this.globalState.get(doGlobalVersionCheckKey, true);
                 var checkTscVersion = 'check.tscVersion';
                 if (!globalStateValue) {
                     tsConfig.update(checkTscVersion, false, true);
                     _this.globalState.update(doGlobalVersionCheckKey, true);
-                }
-                if (checkGlobalVersion && tsConfig.get(checkTscVersion)) {
-                    var tscVersion = undefined;
-                    try {
-                        var out = cp.execSync('tsc --version', { encoding: 'utf8' });
-                        if (out) {
-                            var matches = out.trim().match(/Version\s*(.*)$/);
-                            if (matches && matches.length === 2) {
-                                tscVersion = matches[1];
-                            }
-                        }
-                    }
-                    catch (error) {
-                    }
-                    if (tscVersion && tscVersion !== version) {
-                        vscode_1.window.showInformationMessage(localize(11, null, tscVersion, version), {
-                            title: localize(12, null),
-                            id: 1
-                        }, {
-                            title: localize(13, null),
-                            id: 2
-                        }, {
-                            title: localize(14, null),
-                            id: 3,
-                            isCloseAffordance: true
-                        }).then(function (selected) {
-                            if (!selected || selected.id === 3) {
-                                return;
-                            }
-                            switch (selected.id) {
-                                case 1:
-                                    openUrl('http://go.microsoft.com/fwlink/?LinkId=826239');
-                                    break;
-                                case 2:
-                                    tsConfig.update(checkTscVersion, false, true);
-                                    vscode_1.window.showInformationMessage(localize(15, null));
-                                    _this.globalState.update(doGlobalVersionCheckKey, false);
-                                    break;
-                            }
-                        });
-                    }
                 }
                 try {
                     var options = {
@@ -369,11 +322,23 @@ var TypeScriptServiceClient = (function () {
                             options.execArgv = [("--debug=" + port)];
                         }
                     }
-                    electron.fork(modulePath, [], options, function (err, childProcess) {
+                    var args = [];
+                    if (_this.apiVersion.has206Features()) {
+                        args.push('--useSingleInferredProject');
+                        /* https://github.com/Microsoft/vscode/issues/14889
+                        if (workspace.getConfiguration().get<boolean>('typescript.disableAutomaticTypeAcquisition', false)) {
+                            args.push('--disableAutomaticTypingAcquisition');
+                        }
+                        */
+                        if (!(process.env.CH_ATA_ENABLE)) {
+                            args.push('--disableAutomaticTypingAcquisition');
+                        }
+                    }
+                    electron.fork(modulePath, args, options, function (err, childProcess) {
                         if (err) {
                             _this.lastError = err;
                             _this.error('Starting TSServer failed with error.', err);
-                            vscode_1.window.showErrorMessage(localize(16, null, err.message || err));
+                            vscode_1.window.showErrorMessage(localize(11, null, err.message || err));
                             _this.logTelemetry('error', { message: err.message });
                             return;
                         }
@@ -405,15 +370,31 @@ var TypeScriptServiceClient = (function () {
         return Promise.resolve(modulePath);
     };
     TypeScriptServiceClient.prototype.serviceStarted = function (resendModels) {
+        var _this = this;
+        var configureOptions = {
+            hostInfo: 'vscode'
+        };
         if (this._experimentalAutoBuild && this.storagePath) {
             try {
                 fs.mkdirSync(this.storagePath);
             }
             catch (error) {
             }
-            this.execute('configure', {
-                autoBuild: true,
-                metaDataDirectory: this.storagePath
+        }
+        this.execute('configure', configureOptions);
+        if (this.apiVersion.has206Features()) {
+            var compilerOptions = {
+                module: 'CommonJS',
+                target: 'ES6',
+                allowSyntheticDefaultImports: true,
+                allowNonTsExtensions: true,
+                allowJs: true,
+            };
+            var args = {
+                options: compilerOptions
+            };
+            this.execute('compilerOptionsForInferredProjects', args).then(null, function (err) {
+                _this.error("'compilerOptionsForInferredProjects' request failed with error.", err);
             });
         }
         if (resendModels) {
@@ -457,11 +438,11 @@ var TypeScriptServiceClient = (function () {
             var startService = true;
             if (this.numberRestarts > 5) {
                 if (diff < 60 * 1000 /* 1 Minutes */) {
-                    vscode_1.window.showWarningMessage(localize(17, null));
+                    vscode_1.window.showWarningMessage(localize(12, null));
                 }
                 else if (diff < 2 * 1000 /* 2 seconds */) {
                     startService = false;
-                    vscode_1.window.showErrorMessage(localize(18, null));
+                    vscode_1.window.showErrorMessage(localize(13, null));
                     this.logTelemetry('serviceExited');
                 }
             }
@@ -637,4 +618,4 @@ var TypeScriptServiceClient = (function () {
 }());
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = TypeScriptServiceClient;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/9e4e44c19e393803e2b05fe2323cf4ed7e36880e/extensions\typescript\out/typescriptServiceClient.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/02611b40b24c9df2726ad8b33f5ef5f67ac30b44/extensions\typescript\out/typescriptServiceClient.js.map

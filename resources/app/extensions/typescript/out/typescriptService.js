@@ -3,34 +3,40 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 'use strict';
-(function (APIVersion) {
-    APIVersion[APIVersion["v1_x"] = 1] = "v1_x";
-    APIVersion[APIVersion["v2_0_0"] = 2] = "v2_0_0";
-})(exports.APIVersion || (exports.APIVersion = {}));
-var APIVersion = exports.APIVersion;
-;
-var APIVersion;
-(function (APIVersion) {
-    function fromString(value) {
-        if (!value) {
-            return APIVersion.v1_x;
-        }
-        var index = value.indexOf('.');
-        var major;
-        if (index > 0) {
-            major = parseInt(value.substr(0, index));
+var semver = require('semver');
+var API = (function () {
+    function API(_versionString) {
+        this._versionString = _versionString;
+        this._version = semver.valid(_versionString);
+        if (!this._version) {
+            this._version = '1.0.0';
         }
         else {
-            major = parseInt(value);
+            // Cut of any prerelease tag since we sometimes consume those
+            // on purpose.
+            var index = _versionString.indexOf('-');
+            if (index >= 0) {
+                this._version = this._version.substr(0, index);
+            }
         }
-        if (isNaN(major)) {
-            return APIVersion.v1_x;
-        }
-        if (major >= 2) {
-            return APIVersion.v2_0_0;
-        }
-        return APIVersion.v1_x;
     }
-    APIVersion.fromString = fromString;
-})(APIVersion = exports.APIVersion || (exports.APIVersion = {}));
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/9e4e44c19e393803e2b05fe2323cf4ed7e36880e/extensions\typescript\out/typescriptService.js.map
+    Object.defineProperty(API.prototype, "versionString", {
+        get: function () {
+            return this._versionString;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    API.prototype.has1xFeatures = function () {
+        return semver.gte(this._version, '1.0.0');
+    };
+    API.prototype.has203Features = function () {
+        return semver.gte(this._version, '2.0.3');
+    };
+    API.prototype.has206Features = function () {
+        return semver.gte(this._version, '2.0.6');
+    };
+    return API;
+}());
+exports.API = API;
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/02611b40b24c9df2726ad8b33f5ef5f67ac30b44/extensions\typescript\out/typescriptService.js.map

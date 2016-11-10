@@ -9,7 +9,7 @@
 	"node.address.description": "디버그 포트의 TCP/IP 주소입니다(Node.js >= 5.0인 경우에만). 기본값은 'localhost'입니다.",
 	"node.timeout.description": "이 시간(밀리초) 동안 Node.js에 연결하려고 다시 시도합니다. 기본값은 10000ms입니다.",
 	"node.smartStep.description": "생성된 코드 중 원래 소스로 다시 매핑할 수 없는 코드를 단계별로 자동 실행합니다.",
-	"node.launch.program.description": "프로그램의 절대 경로입니다.",
+	"node.launch.program.description": "프로그램의 절대 경로입니다. 생성된 값은 package.json 및 열린 파일을 보고 추측한 것입니다. 이 특성을 편집하세요.",
 	"node.launch.externalConsole.description": "외부 콘솔에서 디버그 대상을 시작합니다.",
 	"node.launch.externalConsole.error": "사용되지 않음: 대신 'console' 특성을 사용하세요.",
 	"node.launch.console.description": "디버그 대상을 시작할 위치(내부 콘솔, 통합 터미널 또는 외부 터미널)입니다.",

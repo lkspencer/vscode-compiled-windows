@@ -35,29 +35,63 @@ var TypeScriptDocumentSymbolProvider = (function () {
         if (!args.file) {
             return Promise.resolve([]);
         }
-        function convert(bucket, item, containerLabel) {
+        function convertNavBar(indent, foldingMap, bucket, item, containerLabel) {
+            var realIndent = indent + item.indent;
+            var key = realIndent + "|" + item.text;
+            if (realIndent !== 0 && !foldingMap[key]) {
+                var result = new vscode_1.SymbolInformation(item.text, outlineTypeTable[item.kind] || vscode_1.SymbolKind.Variable, containerLabel, new vscode_1.Location(resource.uri, textSpan2Range(item.spans[0])));
+                foldingMap[key] = result;
+                bucket.push(result);
+            }
+            if (item.childItems && item.childItems.length > 0) {
+                for (var _i = 0, _a = item.childItems; _i < _a.length; _i++) {
+                    var child = _a[_i];
+                    convertNavBar(realIndent + 1, foldingMap, bucket, child, item.text);
+                }
+            }
+        }
+        function convertNavTree(bucket, item, containerLabel) {
             var result = new vscode_1.SymbolInformation(item.text, outlineTypeTable[item.kind] || vscode_1.SymbolKind.Variable, containerLabel, new vscode_1.Location(resource.uri, textSpan2Range(item.spans[0])));
             if (item.childItems && item.childItems.length > 0) {
                 for (var _i = 0, _a = item.childItems; _i < _a.length; _i++) {
                     var child = _a[_i];
-                    convert(bucket, child, result.name);
+                    convertNavTree(bucket, child, result.name);
                 }
             }
             bucket.push(result);
         }
-        return this.client.execute('navbar', args, token).then(function (response) {
-            if (response.body) {
-                var result_1 = [];
-                response.body.forEach(function (item) { return convert(result_1, item); });
-                return result_1;
-            }
-        }, function (err) {
-            _this.client.error("'navbar' request failed with error.", err);
-            return [];
-        });
+        if (this.client.apiVersion.has206Features()) {
+            return this.client.execute('navtree', args, token).then(function (response) {
+                var result = [];
+                if (response.body) {
+                    // The root represents the file. Ignore this when showing in the UI
+                    var tree = response.body;
+                    if (tree.childItems) {
+                        tree.childItems.forEach(function (item) { return convertNavTree(result, item); });
+                    }
+                }
+                return result;
+            }, function (err) {
+                _this.client.error("'navtree' request failed with error.", err);
+                return [];
+            });
+        }
+        else {
+            return this.client.execute('navbar', args, token).then(function (response) {
+                var result = [];
+                if (response.body) {
+                    var foldingMap_1 = Object.create(null);
+                    response.body.forEach(function (item) { return convertNavBar(0, foldingMap_1, result, item); });
+                }
+                return result;
+            }, function (err) {
+                _this.client.error("'navbar' request failed with error.", err);
+                return [];
+            });
+        }
     };
     return TypeScriptDocumentSymbolProvider;
 }());
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = TypeScriptDocumentSymbolProvider;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/9e4e44c19e393803e2b05fe2323cf4ed7e36880e/extensions\typescript\out/features\documentSymbolProvider.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/02611b40b24c9df2726ad8b33f5ef5f67ac30b44/extensions\typescript\out/features\documentSymbolProvider.js.map

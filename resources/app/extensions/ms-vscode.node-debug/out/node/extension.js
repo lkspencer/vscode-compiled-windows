@@ -122,50 +122,24 @@ function listProcesses() {
 }
 var initialConfigurations = [
     {
-        name: localize(0, null),
         type: 'node',
         request: 'launch',
+        name: localize(0, null),
         program: '${workspaceRoot}/app.js',
-        stopOnEntry: false,
-        args: [],
-        cwd: '${workspaceRoot}',
-        preLaunchTask: null,
-        runtimeExecutable: null,
-        runtimeArgs: ['--nolazy'],
-        env: {
-            'NODE_ENV': 'development'
-        },
-        console: 'internalConsole',
-        sourceMaps: false,
-        outFiles: []
+        cwd: '${workspaceRoot}'
     },
     {
+        type: 'node',
+        request: 'attach',
         name: localize(1, null),
-        type: 'node',
-        request: 'attach',
-        port: 5858,
-        address: 'localhost',
-        restart: false,
-        sourceMaps: false,
-        outFiles: [],
-        localRoot: '${workspaceRoot}',
-        remoteRoot: null
-    },
-    {
-        name: localize(2, null),
-        type: 'node',
-        request: 'attach',
-        processId: '${command.PickProcess}',
-        port: 5858,
-        sourceMaps: false,
-        outFiles: []
+        port: 5858
     }
 ];
 function activate(context) {
     var pickNodeProcess = vscode.commands.registerCommand('extension.pickNodeProcess', function () {
         return listProcesses().then(function (items) {
             var options = {
-                placeHolder: 'Pick the node.js or gulp process to attach to',
+                placeHolder: localize(2, null),
                 matchOnDescription: true,
                 matchOnDetail: true
             };
@@ -175,9 +149,9 @@ function activate(context) {
         });
     });
     context.subscriptions.push(pickNodeProcess);
-    context.subscriptions.push(vscode.commands.registerCommand('extension.provideInitialConfigurations', function () {
+    context.subscriptions.push(vscode.commands.registerCommand('extension.node-debug.provideInitialConfigurations', function () {
         var packageJsonPath = path_1.join(vscode.workspace.rootPath, 'package.json');
-        var program = null;
+        var program = vscode.workspace.textDocuments.some(function (document) { return document.languageId === 'typescript'; }) ? 'app.ts' : null;
         try {
             var jsonContent = fs.readFileSync(packageJsonPath, 'utf8');
             var jsonObject = JSON.parse(jsonContent);
@@ -197,7 +171,25 @@ function activate(context) {
                 }
             });
         }
-        return JSON.stringify(initialConfigurations);
+        if (vscode.workspace.textDocuments.some(function (document) { return document.languageId === 'typescript' || document.languageId === 'coffeescript'; })) {
+            initialConfigurations.forEach(function (config) {
+                config['outFiles'] = [];
+                config['sourceMaps'] = true;
+            });
+        }
+        // Massage the configuration string, add an aditional tab and comment out processId.
+        // Add an aditional empty line between attributes which the user should not edit.
+        var configurationsMassaged = JSON.stringify(initialConfigurations, null, '\t').replace(',\n\t\t"processId', '\n\t\t//"processId')
+            .split('\n').map(function (line) { return '\t' + line; }).join('\n').trim();
+        return [
+            '{',
+            '\t// Use IntelliSense to learn about possible Node.js debug attributes.',
+            '\t// Hover to view descriptions of existing attributes.',
+            '\t// For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387',
+            '\t"version": "0.2.0",',
+            '\t"configurations": ' + configurationsMassaged,
+            '}'
+        ].join('\n');
     }));
 }
 exports.activate = activate;

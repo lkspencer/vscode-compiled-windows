@@ -17,6 +17,10 @@ var MyCompletionItem = (function (_super) {
         _super.call(this, entry.name);
         this.sortText = entry.sortText;
         this.kind = MyCompletionItem.convertKind(entry.kind);
+        if (entry.replacementSpan) {
+            var span = entry.replacementSpan;
+            this.textEdit = vscode_1.TextEdit.replace(new vscode_1.Range(span.start.line, span.start.offset, span.end.line, span.end.offset), entry.name);
+        }
     }
     MyCompletionItem.convertKind = function (kind) {
         switch (kind) {
@@ -150,4 +154,4 @@ var TypeScriptCompletionItemProvider = (function () {
 }());
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = TypeScriptCompletionItemProvider;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/9e4e44c19e393803e2b05fe2323cf4ed7e36880e/extensions\typescript\out/features\completionItemProvider.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/02611b40b24c9df2726ad8b33f5ef5f67ac30b44/extensions\typescript\out/features\completionItemProvider.js.map

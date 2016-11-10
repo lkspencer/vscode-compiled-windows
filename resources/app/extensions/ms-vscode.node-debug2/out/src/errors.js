@@ -2,12 +2,12 @@
  * Copyright (C) Microsoft Corporation. All rights reserved.
  *--------------------------------------------------------*/
 "use strict";
-var utils_1 = require('./utils');
+const utils_1 = require('./utils');
 function runtimeNotFound(_runtime) {
     return {
         id: 2001,
         format: utils_1.localize('VSND2001', "Cannot find runtime '{0}' on PATH.", '{_runtime}'),
-        variables: { _runtime: _runtime }
+        variables: { _runtime }
     };
 }
 exports.runtimeNotFound = runtimeNotFound;
@@ -15,7 +15,7 @@ function cannotLaunchInTerminal(_error) {
     return {
         id: 2011,
         format: utils_1.localize('VSND2011', "Cannot launch debug target in terminal ({0}).", '{_error}'),
-        variables: { _error: _error }
+        variables: { _error }
     };
 }
 exports.cannotLaunchInTerminal = cannotLaunchInTerminal;
@@ -23,7 +23,7 @@ function cannotLaunchDebugTarget(_error) {
     return {
         id: 2017,
         format: utils_1.localize('VSND2017', "Cannot launch debug target ({0}).", '{_error}'),
-        variables: { _error: _error },
+        variables: { _error },
         showUser: true,
         sendTelemetry: true
     };
@@ -44,13 +44,13 @@ function cannotLaunchBecauseSourceMaps(programPath) {
     };
 }
 exports.cannotLaunchBecauseSourceMaps = cannotLaunchBecauseSourceMaps;
-function cannotLaunchBecauseOutdir(programPath) {
+function cannotLaunchBecauseOutFiles(programPath) {
     return {
         id: 2003,
-        format: utils_1.localize('VSND2003', "Cannot launch program '{0}'; setting the '{1}' attribute might help.", '{path}', 'outDir'),
+        format: utils_1.localize('VSND2003', "Cannot launch program '{0}'; setting the '{1}' attribute might help.", '{path}', 'outDir or outFiles'),
         variables: { path: programPath }
     };
 }
-exports.cannotLaunchBecauseOutdir = cannotLaunchBecauseOutdir;
+exports.cannotLaunchBecauseOutFiles = cannotLaunchBecauseOutFiles;
 
 //# sourceMappingURL=errors.js.map

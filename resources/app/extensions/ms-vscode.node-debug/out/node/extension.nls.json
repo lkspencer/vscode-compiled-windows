@@ -1,12 +1,12 @@
 {
 	"messages": [
-		"Launch",
-		"Attach",
-		"Attach to Process"
+		"Launch Program",
+		"Attach to Process",
+		"Pick the node.js or gulp process to attach to"
 	],
 	"keys": [
 		"node.launch.config.name",
 		"node.attach.config.name",
-		"node.processattach.config.name"
+		"pickNodeProcess"
 	]
 }

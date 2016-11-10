@@ -9,7 +9,7 @@
 	"node.address.description": "Dirección TCP/IP del puerto de depuración (solo para Node.js 5.0 o una versión posterior). El valor predeterminado es 'localhost'.",
 	"node.timeout.description": "Vuelva a probar con este número de milisegundos para conectarse a Node.js. El valor predeterminado es 10 000 ms.",
 	"node.smartStep.description": "Explore automáticamente el código generado que no se puede volver a asignar al código fuente original.",
-	"node.launch.program.description": "Ruta de acceso absoluta al programa.",
+	"node.launch.program.description": "Ruta de acceso absoluta al programa. El valor generado se infiere de package.json y de los archivos abiertos. Edite este atributo.",
 	"node.launch.externalConsole.description": "El destino de depuración se inicia en una consola externa.",
 	"node.launch.externalConsole.error": "En desuso: utilice el atributo 'console' en su lugar.",
 	"node.launch.console.description": "Lugar donde debe iniciarse el destino de depuración: consola interna, terminal integrado o terminal externo.",

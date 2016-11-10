@@ -9,7 +9,7 @@
 	"node.address.description": "デバッグ ポートの TCP/IP アドレス (Node.js 5.0 以上の場合のみ)。既定値は 'localhost' です。",
 	"node.timeout.description": "このミリ秒の間、Node.js への接続を再試行します。既定値は 10000 ミリ秒です。",
 	"node.smartStep.description": "元のソースにマップし直すことができない、生成されたコードを自動的にステップ スルーします。",
-	"node.launch.program.description": "プログラムへの絶対パス。",
+	"node.launch.program.description": "プログラムへの絶対パス。生成される値は、package.json ファイルと開かれたファイルを参照して推測されます。この属性を編集してください。",
 	"node.launch.externalConsole.description": "外部コンソール内でデバッグ ターゲットを起動します。",
 	"node.launch.externalConsole.error": "非推奨: 'コンソール' 属性を代わりに使用します。",
 	"node.launch.console.description": "デバッグ対象の起動場所: 内部コンソール、統合ターミナル、または外部ターミナル。",

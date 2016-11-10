@@ -41,7 +41,9 @@ var filesAssociationContribution = new fileAssociationContribution_1.FileAssocia
 var workspaceRoot;
 connection.onInitialize(function (params) {
     workspaceRoot = uri_1.default.parse(params.rootPath);
-    filesAssociationContribution.setLanguageIds(params.initializationOptions.languageIds);
+    if (params.initializationOptions) {
+        filesAssociationContribution.setLanguageIds(params.initializationOptions.languageIds);
+    }
     return {
         capabilities: {
             // Tell the client that the server works in FULL text document sync mode
@@ -49,8 +51,7 @@ connection.onInitialize(function (params) {
             completionProvider: { resolveProvider: true, triggerCharacters: ['"', ':'] },
             hoverProvider: true,
             documentSymbolProvider: true,
-            documentRangeFormattingProvider: true,
-            documentFormattingProvider: true
+            documentRangeFormattingProvider: !params.initializationOptions || params.initializationOptions['format.enable']
         }
     };
 });
@@ -223,14 +224,10 @@ connection.onDocumentSymbol(function (documentSymbolParams) {
     var jsonDocument = getJSONDocument(document);
     return languageService.findDocumentSymbols(document, jsonDocument);
 });
-connection.onDocumentFormatting(function (formatParams) {
-    var document = documents.get(formatParams.textDocument.uri);
-    return languageService.format(document, null, formatParams.options);
-});
 connection.onDocumentRangeFormatting(function (formatParams) {
     var document = documents.get(formatParams.textDocument.uri);
     return languageService.format(document, formatParams.range, formatParams.options);
 });
 // Listen on the connection
 connection.listen();
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/9e4e44c19e393803e2b05fe2323cf4ed7e36880e/extensions\json\server\out/jsonServerMain.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/02611b40b24c9df2726ad8b33f5ef5f67ac30b44/extensions\json\server\out/jsonServerMain.js.map

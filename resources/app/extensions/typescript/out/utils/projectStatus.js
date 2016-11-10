@@ -119,7 +119,7 @@ function create(client, isOpen, memento) {
                 }
             });
         }).catch(function (err) {
-            console.log(err);
+            client.warn(err);
         });
     }
     toDispose.push(vscode.window.onDidChangeActiveTextEditor(onEditor));
@@ -162,4 +162,4 @@ function computeLargeRoots(configFileName, fileNames) {
     return result;
 }
 var defaultConfig = "{\n\t" + localize(9, null) + "\n\t\"compilerOptions\": {\n\t\t\"target\": \"es6\",\n\t\t\"module\": \"commonjs\",\n\t\t\"allowSyntheticDefaultImports\": true\n\t},\n\t\"exclude\": [\n\t\t\"node_modules\",\n\t\t\"bower_components\",\n\t\t\"jspm_packages\",\n\t\t\"tmp\",\n\t\t\"temp\"\n\t]\n}\n";
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/9e4e44c19e393803e2b05fe2323cf4ed7e36880e/extensions\typescript\out/utils\projectStatus.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/02611b40b24c9df2726ad8b33f5ef5f67ac30b44/extensions\typescript\out/utils\projectStatus.js.map

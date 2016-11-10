@@ -46,7 +46,7 @@
 		"Attribute '{0}' is not absolute ('{1}'); consider adding '{2}' as a prefix to make it absolute.",
 		"More Information",
 		"Request '{_request}' was cancelled because Node.js is unresponsive.",
-		"Node.js did not repond to request '{_request}' in a reasonable amount of time.",
+		"Node.js did not respond to request '{_request}' in a reasonable amount of time.",
 		"Global",
 		"Local",
 		"With",

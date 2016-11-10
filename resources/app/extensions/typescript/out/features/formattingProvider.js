@@ -13,6 +13,8 @@ var Configuration;
     Configuration.insertSpaceAfterFunctionKeywordForAnonymousFunctions = 'insertSpaceAfterFunctionKeywordForAnonymousFunctions';
     Configuration.insertSpaceAfterOpeningAndBeforeClosingNonemptyParenthesis = 'insertSpaceAfterOpeningAndBeforeClosingNonemptyParenthesis';
     Configuration.insertSpaceAfterOpeningAndBeforeClosingNonemptyBrackets = 'insertSpaceAfterOpeningAndBeforeClosingNonemptyBrackets';
+    Configuration.insertSpaceAfterOpeningAndBeforeClosingTemplateStringBraces = 'insertSpaceAfterOpeningAndBeforeClosingTemplateStringBraces';
+    Configuration.insertSpaceAfterOpeningAndBeforeClosingJsxExpressionBraces = 'insertSpaceAfterOpeningAndBeforeClosingJsxExpressionBraces';
     Configuration.placeOpenBraceOnNewLineForFunctions = 'placeOpenBraceOnNewLineForFunctions';
     Configuration.placeOpenBraceOnNewLineForControlBlocks = 'placeOpenBraceOnNewLineForControlBlocks';
     function equals(a, b) {
@@ -28,6 +30,7 @@ var Configuration;
     Configuration.equals = equals;
     function def() {
         var result = Object.create(null);
+        result.enable = true;
         result.insertSpaceAfterCommaDelimiter = true;
         result.insertSpaceAfterSemicolonInForStatements = true;
         result.insertSpaceBeforeAndAfterBinaryOperators = true;
@@ -35,6 +38,8 @@ var Configuration;
         result.insertSpaceAfterFunctionKeywordForAnonymousFunctions = false;
         result.insertSpaceAfterOpeningAndBeforeClosingNonemptyParenthesis = false;
         result.insertSpaceAfterOpeningAndBeforeClosingNonemptyBrackets = false;
+        result.insertSpaceAfterOpeningAndBeforeClosingTemplateStringBraces = false;
+        result.insertSpaceAfterOpeningAndBeforeClosingJsxExpressionBraces = false;
         result.placeOpenBraceOnNewLineForFunctions = false;
         result.placeOpenBraceOnNewLineForControlBlocks = false;
         return result;
@@ -53,6 +58,9 @@ var TypeScriptFormattingProvider = (function () {
             this.config = newConfig;
             this.formatOptions = Object.create(null);
         }
+    };
+    TypeScriptFormattingProvider.prototype.isEnabled = function () {
+        return this.config.enable;
     };
     TypeScriptFormattingProvider.prototype.ensureFormatOptions = function (document, options, token) {
         var _this = this;
@@ -148,6 +156,8 @@ var TypeScriptFormattingProvider = (function () {
             insertSpaceAfterFunctionKeywordForAnonymousFunctions: this.config.insertSpaceAfterFunctionKeywordForAnonymousFunctions,
             insertSpaceAfterOpeningAndBeforeClosingNonemptyParenthesis: this.config.insertSpaceAfterOpeningAndBeforeClosingNonemptyParenthesis,
             insertSpaceAfterOpeningAndBeforeClosingNonemptyBrackets: this.config.insertSpaceAfterOpeningAndBeforeClosingNonemptyBrackets,
+            insertSpaceAfterOpeningAndBeforeClosingTemplateStringBraces: this.config.insertSpaceAfterOpeningAndBeforeClosingTemplateStringBraces,
+            insertSpaceAfterOpeningAndBeforeClosingJsxExpressionBraces: this.config.insertSpaceAfterOpeningAndBeforeClosingJsxExpressionBraces,
             placeOpenBraceOnNewLineForFunctions: this.config.placeOpenBraceOnNewLineForFunctions,
             placeOpenBraceOnNewLineForControlBlocks: this.config.placeOpenBraceOnNewLineForControlBlocks
         };
@@ -156,4 +166,4 @@ var TypeScriptFormattingProvider = (function () {
 }());
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = TypeScriptFormattingProvider;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/9e4e44c19e393803e2b05fe2323cf4ed7e36880e/extensions\typescript\out/features\formattingProvider.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/02611b40b24c9df2726ad8b33f5ef5f67ac30b44/extensions\typescript\out/features\formattingProvider.js.map

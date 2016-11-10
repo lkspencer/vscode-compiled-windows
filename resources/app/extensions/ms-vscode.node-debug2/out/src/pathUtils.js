@@ -3,10 +3,11 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 "use strict";
-var Path = require('path');
-var FS = require('fs');
+const Path = require('path');
+const FS = require('fs');
+const CP = require('child_process');
 /**
-  * The input paths must use the path syntax of the underlying operating system.
+ * The input paths must use the path syntax of the underlying operating system.
  */
 function makePathAbsolute(absPath, relPath) {
     return Path.resolve(Path.dirname(absPath), relPath);
@@ -17,7 +18,7 @@ exports.makePathAbsolute = makePathAbsolute;
  * The input path must use the path syntax of the underlying operating system.
  */
 function removeFirstSegment(path) {
-    var segments = path.split(Path.sep);
+    const segments = path.split(Path.sep);
     segments.shift();
     if (segments.length > 0) {
         return segments.join(Path.sep);
@@ -30,12 +31,12 @@ exports.removeFirstSegment = removeFirstSegment;
  * The input paths must use the path syntax of the underlying operating system.
  */
 function makeRelative(target, path) {
-    var t = target.split(Path.sep);
-    var p = path.split(Path.sep);
-    var i = 0;
+    const t = target.split(Path.sep);
+    const p = path.split(Path.sep);
+    let i = 0;
     for (; i < Math.min(t.length, p.length) && t[i] === p[i]; i++) {
     }
-    var result = '';
+    let result = '';
     for (; i < p.length; i++) {
         result = Path.join(result, p[i]);
     }
@@ -46,9 +47,9 @@ exports.makeRelative = makeRelative;
  * Returns a path with a lower case drive letter.
  */
 function normalizeDriveLetter(path) {
-    var regex = /^([A-Z])(\:[\\\/].*)$/;
+    const regex = /^([A-Z])(\:[\\\/].*)$/;
     if (regex.test(path)) {
-        path = path.replace(regex, function (s, s1, s2) { return s1.toLowerCase() + s2; });
+        path = path.replace(regex, (s, s1, s2) => s1.toLowerCase() + s2);
     }
     return path;
 }
@@ -66,7 +67,7 @@ exports.pathCompare = pathCompare;
  * Since a drive letter of a Windows path cannot be looked up, realPath normalizes the drive letter to lower case.
  */
 function realPath(path) {
-    var dir = Path.dirname(path);
+    let dir = Path.dirname(path);
     if (path === dir) {
         // is this an upper case drive letter?
         if (/^[A-Z]\:\\$/.test(path)) {
@@ -74,22 +75,22 @@ function realPath(path) {
         }
         return path;
     }
-    var name = Path.basename(path).toLowerCase();
+    let name = Path.basename(path).toLowerCase();
     try {
-        var entries = FS.readdirSync(dir);
-        var found = entries.filter(function (e) { return e.toLowerCase() === name; }); // use a case insensitive search
+        let entries = FS.readdirSync(dir);
+        let found = entries.filter(e => e.toLowerCase() === name); // use a case insensitive search
         if (found.length === 1) {
             // on a case sensitive filesystem we cannot determine here, whether the file exists or not, hence we need the 'file exists' precondition
-            var prefix = realPath(dir); // recurse
+            let prefix = realPath(dir); // recurse
             if (prefix) {
                 return Path.join(prefix, found[0]);
             }
         }
         else if (found.length > 1) {
             // must be a case sensitive $filesystem
-            var ix = found.indexOf(name);
+            const ix = found.indexOf(name);
             if (ix >= 0) {
-                var prefix = realPath(dir); // recurse
+                let prefix = realPath(dir); // recurse
                 if (prefix) {
                     return Path.join(prefix, found[ix]);
                 }
@@ -111,7 +112,7 @@ function mkdirs(path) {
     }
 }
 exports.mkdirs = mkdirs;
-//---- the following functions work with Windows and Unix-style paths independent from the underlying OS.
+// ---- the following functions work with Windows and Unix-style paths independent from the underlying OS.
 /**
  * Returns true if the Windows or Unix-style path is absolute.
  */
@@ -175,13 +176,13 @@ exports.join = join;
 function makeRelative2(from, to) {
     from = normalize(from);
     to = normalize(to);
-    var froms = from.substr(1).split('/');
-    var tos = to.substr(1).split('/');
+    const froms = from.substr(1).split('/');
+    const tos = to.substr(1).split('/');
     while (froms.length > 0 && tos.length > 0 && froms[0] === tos[0]) {
         froms.shift();
         tos.shift();
     }
-    var l = froms.length - tos.length;
+    let l = froms.length - tos.length;
     if (l === 0) {
         l = tos.length - 1;
     }
@@ -192,5 +193,38 @@ function makeRelative2(from, to) {
     return tos.join('/');
 }
 exports.makeRelative2 = makeRelative2;
+/*
+ * Is the given runtime executable on the PATH.
+ */
+function isOnPath(program) {
+    if (process.platform === 'win32') {
+        const WHERE = 'C:\\Windows\\System32\\where.exe';
+        try {
+            if (FS.existsSync(WHERE)) {
+                CP.execSync(`${WHERE} ${program}`);
+            }
+            else {
+            }
+            return true;
+        }
+        catch (e) {
+        }
+    }
+    else {
+        const WHICH = '/usr/bin/which';
+        try {
+            if (FS.existsSync(WHICH)) {
+                CP.execSync(`${WHICH} '${program}'`);
+            }
+            else {
+            }
+            return true;
+        }
+        catch (e) {
+        }
+    }
+    return false;
+}
+exports.isOnPath = isOnPath;
 
 //# sourceMappingURL=pathUtils.js.map

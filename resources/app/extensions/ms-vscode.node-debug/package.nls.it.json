@@ -9,7 +9,7 @@
 	"node.address.description": "Indirizzo TCP/IP della porta di debug (solo per Node.js >= 5.0). Il valore predefinito è 'localhost'.",
 	"node.timeout.description": "Numero di millisecondi in cui vengono effettuati i tentativi di connessione a Node.js. Il valore predefinito è 10000 ms.",
 	"node.smartStep.description": "Esegue automaticamente un'istruzione alla volta del codice generato che non può essere mappato all'origine.",
-	"node.launch.program.description": "Percorso assoluto del programma.",
+	"node.launch.program.description": "Percorso assoluto del programma. Per ipotizzare il valore generato, esaminare package.json e i file aperti. Modificare questo attributo.",
 	"node.launch.externalConsole.description": "Avvia la destinazione di debug nella console esterna.",
 	"node.launch.externalConsole.error": "Deprecato: in sostituzione usare l'attributo 'console'.",
 	"node.launch.console.description": "Indica dove avviare la destinazione di debug: console interna, terminale integrato o terminale esterno.",

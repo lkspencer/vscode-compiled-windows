@@ -10,11 +10,6 @@
 	"已將使用者設定 'typescript.check.workspaceVersion' 更新為 false",
 	"路徑 {0} 未指向有效的 tsserver 安裝。將停用 TypeScript 語言功能。",
 	"自訂",
-	"偵測到全域安裝的 TSC 編譯器 ({0}) 和 VS Code 的語言服務 ({1}) 之間版本不符。這可能會導致編譯不一致的錯誤。",
-	"詳細資訊",
-	"不要再檢查",
-	"關閉",
-	"已將使用者設定 'typescript.check.tscVersion' 更新為 false",
 	"無法啟動 TypeScript 語言伺服器。錯誤訊息為: {0}",
 	"TypeScript 語言服務在過去 5 分鐘內意外中止 5 次。請考慮開啟問題報告。",
 	"TypeScript 語言服務在啟動後立即中止 5 次。服務將不會重新啟動。請開啟問題報告。"

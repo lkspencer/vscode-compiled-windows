@@ -9,7 +9,7 @@
 	"node.address.description": "偵錯連接埠的 TCP/IP 位址 (僅限 Node.js >= 5.0)。預設值為 'localhost'。",
 	"node.timeout.description": "重試連接到 Node.js 前要等待的毫秒數。預設值為 10000 毫秒。",
 	"node.smartStep.description": "自動逐步所執行產生無法對應回原始碼的程式碼。",
-	"node.launch.program.description": "程式的絕對路徑。",
+	"node.launch.program.description": "程式的絕對路徑。透過查看 package.json 及開啟的檔案猜測產生的值。編輯此屬性。",
 	"node.launch.externalConsole.description": "在外部主控台內啟動偵錯目標。",
 	"node.launch.externalConsole.error": "取代: 請改用 'console' 屬性。",
 	"node.launch.console.description": "啟動偵錯目標的位置: 內部主控台、整合式終端機或外部終端機。",

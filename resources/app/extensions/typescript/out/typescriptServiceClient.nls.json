@@ -11,11 +11,6 @@
 		"Updated user setting 'typescript.check.workspaceVersion' to false",
 		"The path {0} doesn't point to a valid tsserver install. TypeScript language features will be disabled.",
 		"custom",
-		"A version mismatch between the globally installed tsc compiler ({0}) and VS Code's language service ({1}) has been detected. This might result in inconsistent compile errors.",
-		"More Information",
-		"Don't Check Again",
-		"Close",
-		"Updated user setting 'typescript.check.tscVersion' to false",
 		"TypeScript language server couldn't be started. Error message is: {0}",
 		"The TypeScript language service died unexpectedly 5 times in the last 5 Minutes. Please consider to open a bug report.",
 		"The TypeScript language service died 5 times right after it got started. The service will not be restarted. Please open a bug report."
@@ -37,11 +32,6 @@
 		"updateGlobalWorkspaceCheck",
 		"noServerFound",
 		"versionNumber.custom",
-		"versionMismatch",
-		"moreInformation",
-		"doNotCheckAgain",
-		"close",
-		"updateTscCheck",
 		"serverCouldNotBeStarted",
 		"serverDied",
 		"serverDiedAfterStart"

@@ -225,6 +225,7 @@ var SourceMaps = (function () {
      * Returns a (cached) SourceMap specified via the given uri.
      */
     SourceMaps.prototype._getSourceMap = function (uri, pathToGenerated) {
+        var _this = this;
         if (!uri) {
             return Promise.resolve(null);
         }
@@ -232,8 +233,18 @@ var SourceMaps = (function () {
         var hash = CRYPTO.createHash('sha256').update(uri.uri()).digest('hex');
         var promise = this._sourceMapCache.get(hash);
         if (!promise) {
-            promise = this._loadSourceMap(uri, pathToGenerated, hash);
-            this._sourceMapCache.set(hash, promise);
+            try {
+                promise = this._loadSourceMap(uri, pathToGenerated, hash)
+                    .catch(function (err) {
+                    _this._log("_loadSourceMap: loading source map '" + uri.uri() + "' failed with exception: " + err);
+                    return null;
+                });
+                this._sourceMapCache.set(hash, promise);
+            }
+            catch (err) {
+                this._log("_loadSourceMap: loading source map '" + uri.uri() + "' failed with exception: " + err);
+                promise = Promise.resolve(null);
+            }
         }
         return promise;
     };
@@ -246,7 +257,7 @@ var SourceMaps = (function () {
             var map_path_1 = uri.filePath();
             return this._readFile(map_path_1).then(function (content) {
                 return _this._registerSourceMap(new SourceMap(map_path_1, pathToGenerated, content));
-            }, function (err) { return null; });
+            });
         }
         if (uri.isData()) {
             var data = uri.data();

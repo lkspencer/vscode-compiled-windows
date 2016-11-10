@@ -41,9 +41,12 @@ function activate(context) {
                 configurationSection: ['json.schemas', 'http.proxy', 'http.proxyStrictSSL'],
                 fileEvents: vscode_1.workspace.createFileSystemWatcher('**/*.json')
             },
-            initializationOptions: {
-                languageIds: languageIds
-            }
+            initializationOptions: (_a = {
+                    languageIds: languageIds
+                },
+                _a['format.enable'] = vscode_1.workspace.getConfiguration('json').get('format.enable'),
+                _a
+            )
         };
         // Create the language client and start the client.
         var client = new vscode_languageclient_1.LanguageClient('json', localize(0, null), serverOptions, clientOptions);
@@ -69,6 +72,7 @@ function activate(context) {
         vscode_1.languages.setLanguageConfiguration('json', {
             wordPattern: /("(?:[^\\\"]*(?:\\.)?)*"?)|[^\s{}\[\],:]+/
         });
+        var _a;
     });
 }
 exports.activate = activate;
@@ -115,4 +119,4 @@ function getPackageInfo(context) {
     }
     return null;
 }
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/9e4e44c19e393803e2b05fe2323cf4ed7e36880e/extensions\json\client\out/jsonMain.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/02611b40b24c9df2726ad8b33f5ef5f67ac30b44/extensions\json\client\out/jsonMain.js.map

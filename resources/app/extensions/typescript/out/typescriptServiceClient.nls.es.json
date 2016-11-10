@@ -10,12 +10,7 @@
 	"La configuración del usuario de \"typescript.check.workspaceVersion\" se actualizó a false.",
 	"La ruta de acceso {0} no apunta a una instalación válida de tsserver. Las características del lenguaje TypeScript se deshabilitan.",
 	"personalizada",
-	"Se ha detectado una incoherencia de versión entre el compilador TSC instalado globalmente ({0}) y el servicio de lenguaje de VS Code ({1}). Esto puede dar lugar a errores de compilación incoherente.",
-	"Más información",
-	"No volver a comprobar",
-	"Cerrar",
-	"La configuración del usuario de \"typescript.check.tscVersion\" se actualizó a false.",
-	"El servidor del lenguaje TypeScript no se pudo iniciar. El mensaje de error es: {0}",
+	"El servidor de lenguaje TypeScript no se pudo iniciar. El mensaje de error es: {0}",
 	"El servicio de lenguaje Typescript finalizó de forma inesperada cinco veces en los últimos cinco minutos. Considere la posibilidad de abrir un informe de errores.",
 	"El servicio de lenguaje TypeScript finalizó de forma inesperada cinco veces después de haberse iniciado y no se reiniciará. Abra un informe de errores."
 ]

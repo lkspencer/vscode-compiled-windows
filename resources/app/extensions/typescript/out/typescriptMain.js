@@ -13,7 +13,6 @@ var vscode_1 = require('vscode');
 var nls = require('vscode-nls');
 nls.config({ locale: vscode_1.env.language });
 var path = require('path');
-var Is = require('./utils/is');
 var typescriptServiceClient_1 = require('./typescriptServiceClient');
 var hoverProvider_1 = require('./features/hoverProvider');
 var definitionProvider_1 = require('./features/definitionProvider');
@@ -39,13 +38,15 @@ function activate(context) {
             id: 'typescript',
             diagnosticSource: 'ts',
             modeIds: [MODE_ID_TS, MODE_ID_TSX],
-            extensions: ['.ts', '.tsx']
+            extensions: ['.ts', '.tsx'],
+            configFile: 'tsconfig.json'
         },
         {
             id: 'javascript',
             diagnosticSource: 'js',
             modeIds: [MODE_ID_JS, MODE_ID_JSX],
-            extensions: ['.js', '.jsx']
+            extensions: ['.js', '.jsx'],
+            configFile: 'jsconfig.json'
         }
     ], context.storagePath, context.globalState);
     var client = clientHost.serviceClient;
@@ -102,6 +103,9 @@ var LanguageProvider = (function () {
         var renameProvider = new renameProvider_1.default(client);
         this.formattingProvider = new formattingProvider_1.default(client);
         this.formattingProvider.updateConfiguration(config);
+        if (this.formattingProvider.isEnabled()) {
+            this.formattingProviderRegistration = vscode_1.languages.registerDocumentRangeFormattingEditProvider(this.description.modeIds, this.formattingProvider);
+        }
         this.description.modeIds.forEach(function (modeId) {
             var selector = { scheme: 'file', language: modeId };
             vscode_1.languages.registerCompletionItemProvider(selector, _this.completionItemProvider, '.');
@@ -112,7 +116,6 @@ var LanguageProvider = (function () {
             vscode_1.languages.registerDocumentSymbolProvider(selector, documentSymbolProvider);
             vscode_1.languages.registerSignatureHelpProvider(selector, signatureHelpProvider, '(', ',');
             vscode_1.languages.registerRenameProvider(selector, renameProvider);
-            vscode_1.languages.registerDocumentRangeFormattingEditProvider(selector, _this.formattingProvider);
             vscode_1.languages.registerOnTypeFormattingEditProvider(selector, _this.formattingProvider, ';', '}', '\n');
             vscode_1.languages.registerWorkspaceSymbolProvider(new workspaceSymbolProvider_1.default(client, modeId));
             vscode_1.languages.setLanguageConfiguration(modeId, {
@@ -162,11 +165,22 @@ var LanguageProvider = (function () {
         }
         if (this.formattingProvider) {
             this.formattingProvider.updateConfiguration(config);
+            if (!this.formattingProvider.isEnabled() && this.formattingProviderRegistration) {
+                this.formattingProviderRegistration.dispose();
+                this.formattingProviderRegistration = undefined;
+            }
+            else if (this.formattingProvider.isEnabled() && !this.formattingProviderRegistration) {
+                this.formattingProviderRegistration = vscode_1.languages.registerDocumentRangeFormattingEditProvider(this.description.modeIds, this.formattingProvider);
+            }
         }
     };
     LanguageProvider.prototype.handles = function (file) {
         var extension = path.extname(file);
-        return (extension && this.extensions[extension]) || this.bufferSyncSupport.handles(file);
+        if ((extension && this.extensions[extension]) || this.bufferSyncSupport.handles(file)) {
+            return true;
+        }
+        var basename = path.basename(file);
+        return basename && basename === this.description.configFile;
     };
     Object.defineProperty(LanguageProvider.prototype, "id", {
         get: function () {
@@ -297,16 +311,18 @@ var TypeScriptServiceClientHost = (function () {
                 language.semanticDiagnosticsReceived(body.file, this.createMarkerDatas(body.diagnostics, language.diagnosticSource));
             }
         }
+        /*
         if (Is.defined(body.queueLength)) {
             BuildStatus.update({ queueLength: body.queueLength });
         }
+        */
     };
     /* internal */ TypeScriptServiceClientHost.prototype.configFileDiagnosticsReceived = function (event) {
         // See https://github.com/Microsoft/TypeScript/issues/10384
         /* https://github.com/Microsoft/TypeScript/issues/10473
         const body = event.body;
         if (body.diagnostics) {
-            const language = this.findLanguage(body.triggerFile);
+            const language = body.triggerFile ? this.findLanguage(body.triggerFile) : this.findLanguage(body.configFile);
             if (language) {
                 if (body.diagnostics.length === 0) {
                     language.configFileDiagnosticsReceived(body.configFile, []);
@@ -363,4 +379,4 @@ var TypeScriptServiceClientHost = (function () {
     };
     return TypeScriptServiceClientHost;
 }());
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/9e4e44c19e393803e2b05fe2323cf4ed7e36880e/extensions\typescript\out/typescriptMain.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/02611b40b24c9df2726ad8b33f5ef5f67ac30b44/extensions\typescript\out/typescriptMain.js.map
