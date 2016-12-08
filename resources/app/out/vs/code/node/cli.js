@@ -1,6 +1,3774 @@
 /*!--------------------------------------------------------
  * Copyright (C) Microsoft Corporation. All rights reserved.
  *--------------------------------------------------------*/
-(function(){var e=["exports","require","vs/base/common/platform","vs/base/common/types","vs/base/common/uri","vs/base/common/winjs.base","vs/base/common/arrays","vs/base/common/errors","vs/nls!vs/platform/environment/node/argv","vs/base/common/objects","vs/platform/environment/node/argv","vs/platform/package","path","vs/platform/product","os","minimist","assert","vs/base/common/winjs.base.raw","vs/nls!vs/code/node/cli","child_process","vs/code/node/cli","vs/nls"],t=function(t){for(var n=[],r=0,o=t.length;r<o;r++)n[r]=e[t[r]];return n};define(e[6],t([1,0]),function(e,t){"use strict";function n(e,t){return void 0===t&&(t=0),e[e.length-(1+t)]}function r(e,t){for(var n=0,r=e.length;n<r;n++)t(e[n],function(){e.splice(n,1),n--,r--})}function o(e,t,n){if(void 0===n&&(n=function(e,t){return e===t}),e.length!==t.length)return!1;for(var r=0,o=e.length;r<o;r++)if(!n(e[r],t[r]))return!1;return!0}function i(e,t,n){for(var r=0,o=e.length-1;r<=o;){var i=(r+o)/2|0,a=n(e[i],t);if(a<0)r=i+1;else{if(!(a>0))return i;o=i-1}}return-(r+1)}function a(e,t){var n=0,r=e.length;if(0===r)return 0;for(;n<r;){var o=Math.floor((n+r)/2);t(e[o])?r=o:n=o+1}return n}function s(e,t,n){if(0===n)return[];for(var r=e.slice(0,n).sort(t),o=function(o,i){var s=e[o];if(t(s,r[n-1])<0){r.pop();var u=a(r,function(e){return t(s,e)<0});r.splice(u,0,s)}},i=n,s=e.length;i<s;i++)o(i,s);return r}function u(e,t){var n=new Array;if(t)for(var r={},o=0;o<e.length;o++)for(var i=0;i<e[o].length;i++){var a=e[o][i],s=t(a);r.hasOwnProperty(s)||(r[s]=!0,n.push(a))}else for(var o=0,u=e.length;o<u;o++)n.push.apply(n,e[o]);return n}function c(e){return e?e.filter(function(e){return!!e}):e}function l(e,t){return e.indexOf(t)>=0}function f(e,t,n){var r=e[t],o=e[n];e[t]=o,e[n]=r}function p(e,t,n){e.splice(n,0,e.splice(t,1)[0])}function h(e){return!Array.isArray(e)||0===e.length}function d(e,t){if(!t)return e.filter(function(t,n){return e.indexOf(t)===n});var n=Object.create(null);return e.filter(function(e){var r=t(e);return!n[r]&&(n[r]=!0,!0)})}function _(e){var t=Object.create(null);return function(n){var r=e(n);return!t[r]&&(t[r]=!0,!0)}}function m(e,t){for(var n=0;n<e.length;n++){var r=e[n];if(t(r))return n}return-1}function v(e,t,n){void 0===n&&(n=null);var r=m(e,t);return r<0?n:e[r]}function g(e,t,n){void 0===n&&(n=function(e,t){return e===t});for(var r=0,o=0,i=Math.min(e.length,t.length);o<i&&n(e[o],t[o]);o++)r++;return r}function y(e){return e.reduce(function(e,t){return e.concat(t)},[])}function b(e,t){void 0===t&&(t=0);for(var n=[],r=t;r<e;r++)n.push(r);return n}function w(e,t,n){void 0===n&&(n=[]);for(var r=0;r<e;r++)n[r]=t();return n}function E(e,t,n){return void 0===n&&(n=function(e){return e}),e.reduce(function(e,r){var o=t(r);return e[o]=n(r,e[o]),e},Object.create(null))}function S(e,t){return e.push(t),function(){var n=e.indexOf(t);n>-1&&e.splice(n,1)}}t.tail=n,t.forEach=r,t.equals=o,t.binarySearch=i,t.findFirst=a,t.top=s,t.merge=u,t.coalesce=c,t.contains=l,t.swap=f,t.move=p,t.isFalsyOrEmpty=h,t.distinct=d,t.uniqueFilter=_,t.firstIndex=m,t.first=v,t.commonPrefixLength=g,t.flatten=y,t.range=b,t.fill=w,t.index=E,t.insert=S}),define(e[2],t([1,0]),function(e,t){"use strict";function n(){return"undefined"!=typeof v.Worker}var r=!1,o=!1,i=!1,a=!1,s=!1,u=!1,c=!1,l=void 0,f=void 0;if(t.LANGUAGE_DEFAULT="en","object"==typeof process){r="win32"===process.platform,o="darwin"===process.platform,i="linux"===process.platform,a=!r&&0===process.getuid();var p=process.env.VSCODE_NLS_CONFIG;if(p)try{var h=JSON.parse(p),d=h.availableLanguages["*"];l=h.locale,f=d?d:t.LANGUAGE_DEFAULT}catch(e){}s=!0}else if("object"==typeof navigator){var _=navigator.userAgent;r=_.indexOf("Windows")>=0,o=_.indexOf("Macintosh")>=0,i=_.indexOf("Linux")>=0,u=!0,l=navigator.language,f=l,c=!!self.QUnit}!function(e){e[e.Web=0]="Web",e[e.Mac=1]="Mac",e[e.Linux=2]="Linux",e[e.Windows=3]="Windows"}(t.Platform||(t.Platform={}));var m=t.Platform;t._platform=m.Web,s&&(o?t._platform=m.Mac:r?t._platform=m.Windows:i&&(t._platform=m.Linux)),t.isWindows=r,t.isMacintosh=o,t.isLinux=i,t.isRootUser=a,t.isNative=s,t.isWeb=u,t.isQunit=c,t.platform=t._platform,t.language=f,t.locale=l;var v="object"==typeof self?self:global;t.globals=v,t.hasWebWorkerSupport=n,t.setTimeout=v.setTimeout.bind(v),t.clearTimeout=v.clearTimeout.bind(v),t.setInterval=v.setInterval.bind(v),t.clearInterval=v.clearInterval.bind(v)}),define(e[3],t([1,0]),function(e,t){"use strict";function n(e){return Array.isArray?Array.isArray(e):!(!e||typeof e.length!==m.number||e.constructor!==Array)}function r(e){return typeof e===m.string||e instanceof String}function o(e){return n(e)&&e.every(function(e){return r(e)})}function i(e){return!(typeof e!==m.object||null===e||Array.isArray(e)||e instanceof RegExp||e instanceof Date)}function a(e){return(typeof e===m.number||e instanceof Number)&&!isNaN(e)}function s(e){return e===!0||e===!1}function u(e){return typeof e===m.undefined}function c(e){return u(e)||null===e}function l(e){if(!i(e))return!1;for(var t in e)if(v.call(e,t))return!1;return!0}function f(e){return typeof e===m.function}function p(){for(var e=[],t=0;t<arguments.length;t++)e[t-0]=arguments[t];return e&&e.length>0&&e.every(f)}function h(e,t){for(var n=Math.min(e.length,t.length),r=0;r<n;r++)d(e[r],t[r])}function d(e,t){if(r(t)){if(typeof e!==t)throw new Error("argument does not match constraint: typeof "+t)}else if(f(t)){if(e instanceof t)return;if(e&&e.constructor===t)return;if(1===t.length&&t.call(void 0,e)===!0)return;throw new Error("argument does not match one of these constraints: arg instanceof constraint, arg.constructor === constraint, nor constraint(arg) === true")}}function _(e){for(var t=[],n=1;n<arguments.length;n++)t[n-1]=arguments[n];var r=Object.create(e.prototype);return e.apply(r,t),r}var m={number:"number",string:"string",undefined:"undefined",object:"object",function:"function"};t.isArray=n,t.isString=r,t.isStringArray=o,t.isObject=i,t.isNumber=a,t.isBoolean=s,t.isUndefined=u,t.isUndefinedOrNull=c;var v=Object.prototype.hasOwnProperty;t.isEmptyObject=l,t.isFunction=f,t.areFunctions=p,t.validateConstraints=h,t.validateConstraint=d,t.create=_}),define(e[7],t([1,0,2,3]),function(e,t,n,r){"use strict";function o(e){t.errorHandler.setUnexpectedErrorHandler(e)}function i(e){u(e)||t.errorHandler.onUnexpectedError(e)}function a(e){return e.then(null,i)}function s(e){if(e instanceof Error){var t=e.name,n=e.message,r=e.stacktrace||e.stack;return{$isError:!0,name:t,message:n,stack:r}}return e}function u(e){return e instanceof Error&&e.name===v&&e.message===v}function c(){var e=new Error(v);return e.name=e.message,e}function l(){return new Error("Not Implemented")}function f(e){return e?new Error("Illegal argument: "+e):new Error("Illegal argument")}function p(e){return e?new Error("Illegal state: "+e):new Error("Illegal state")}function h(e){return e?new Error("readonly property '"+e+" cannot be changed'"):new Error("readonly property cannot be changed")}function d(e,t){void 0===t&&(t={});var n=new Error(e);return r.isNumber(t.severity)&&(n.severity=t.severity),t.actions&&(n.actions=t.actions),n}function _(e){return e?e.message?e.message:e.stack?e.stack.split("\n")[0]:String(e):"Error"}var m=function(){function e(){this.listeners=[],this.unexpectedErrorHandler=function(e){n.setTimeout(function(){if(e.stack)throw new Error(e.message+"\n\n"+e.stack);throw e},0)}}return e.prototype.addListener=function(e){var t=this;return this.listeners.push(e),function(){t._removeListener(e)}},e.prototype.emit=function(e){this.listeners.forEach(function(t){t(e)})},e.prototype._removeListener=function(e){this.listeners.splice(this.listeners.indexOf(e),1)},e.prototype.setUnexpectedErrorHandler=function(e){this.unexpectedErrorHandler=e},e.prototype.getUnexpectedErrorHandler=function(){return this.unexpectedErrorHandler},e.prototype.onUnexpectedError=function(e){this.unexpectedErrorHandler(e),this.emit(e)},e}();t.ErrorHandler=m,t.errorHandler=new m,t.setUnexpectedErrorHandler=o,t.onUnexpectedError=i,t.onUnexpectedPromiseError=a,t.transformErrorForSerialization=s;var v="Canceled";t.isPromiseCanceledError=u,t.canceled=c,t.notImplemented=l,t.illegalArgument=f,t.illegalState=p,t.readonly=h,t.create=d,t.getErrorMessage=_}),define(e[9],t([1,0,3]),function(e,t,n){"use strict";function r(e){if(!e||"object"!=typeof e)return e;if(e instanceof RegExp)return e;var t=Array.isArray(e)?[]:{};return Object.keys(e).forEach(function(n){e[n]&&"object"==typeof e[n]?t[n]=r(e[n]):t[n]=e[n]}),t}function o(e){if(!e||"object"!=typeof e)return e;var t=Array.isArray(e)?[]:{};return Object.getOwnPropertyNames(e).forEach(function(n){e[n]&&"object"==typeof e[n]?t[n]=o(e[n]):t[n]=e[n]}),t}function i(e,t){return a(e,t,[])}function a(e,t,r){if(n.isUndefinedOrNull(e))return e;var o=t(e);if("undefined"!=typeof o)return o;if(n.isArray(e)){for(var i=[],s=0;s<e.length;s++)i.push(a(e[s],t,r));return i}if(n.isObject(e)){if(r.indexOf(e)>=0)throw new Error("Cannot clone recursive data-structure");r.push(e);var u={};for(var c in e)v.call(e,c)&&(u[c]=a(e[c],t,r));return r.pop(),u}return e}function s(e,t,r){return void 0===r&&(r=!0),n.isObject(e)?(n.isObject(t)&&Object.keys(t).forEach(function(o){o in e?r&&(n.isObject(e[o])&&n.isObject(t[o])?s(e[o],t[o],r):e[o]=t[o]):e[o]=t[o]}),e):t}function u(e){for(var t=[],n=1;n<arguments.length;n++)t[n-1]=arguments[n];return t.forEach(function(t){return Object.keys(t).forEach(function(n){return e[n]=t[n]})}),e}function c(e,t,n){return void 0===n&&(n=function(e){return e}),e.reduce(function(e,r){return u(e,(o={},o[t(r)]=n(r),o));var o},Object.create(null))}function l(e,t){if(e===t)return!0;if(null===e||void 0===e||null===t||void 0===t)return!1;if(typeof e!=typeof t)return!1;if("object"!=typeof e)return!1;if(Array.isArray(e)!==Array.isArray(t))return!1;var n,r;if(Array.isArray(e)){if(e.length!==t.length)return!1;for(n=0;n<e.length;n++)if(!l(e[n],t[n]))return!1}else{var o=[];for(r in e)o.push(r);o.sort();var i=[];for(r in t)i.push(r);if(i.sort(),!l(o,i))return!1;for(n=0;n<o.length;n++)if(!l(e[o[n]],t[o[n]]))return!1}return!0}function f(e,t,n){"undefined"==typeof e[t]&&(e[t]=n)}function p(e){for(var t={},n=0;n<e.length;++n)t[e[n]]=!0;return t}function h(e,t){void 0===t&&(t=!1),t&&(e=e.map(function(e){return e.toLowerCase()}));var n=p(e);return t?function(e){return void 0!==n[e.toLowerCase()]&&n.hasOwnProperty(e.toLowerCase())}:function(e){return void 0!==n[e]&&n.hasOwnProperty(e)}}function d(e,t){for(var n in e)e.hasOwnProperty(n)&&(t[n]=e[n]);t=t||function(){};var r=e.prototype,o=t.prototype;t.prototype=Object.create(r);for(var n in o)o.hasOwnProperty(n)&&Object.defineProperty(t.prototype,n,Object.getOwnPropertyDescriptor(o,n));Object.defineProperty(t.prototype,"constructor",{value:t,writable:!0,configurable:!0,enumerable:!0})}function _(e){var t=[];return JSON.stringify(e,function(e,r){if(n.isObject(r)||Array.isArray(r)){if(t.indexOf(r)!==-1)return"[Circular]";t.push(r)}return r})}function m(e,t,n){void 0===n&&(n=null);var r=t(e);return"undefined"==typeof r?n:r}t.clone=r,t.deepClone=o;var v=Object.prototype.hasOwnProperty;t.cloneAndChange=i,t.mixin=s,t.assign=u,t.toObject=c,t.equals=l,t.ensureProperty=f,t.arrayToHash=p,t.createKeywordMatcher=h,t.derive=d,t.safeStringify=_,t.getOrDefault=m}),define(e[4],t([1,0,2]),function(e,t,n){"use strict";function r(e){return"%"+e.charCodeAt(0).toString(16).toUpperCase()}function o(e){return encodeURIComponent(e).replace(/[!'()*]/g,r)}function i(e){return e}var a=function(){function e(){this._scheme=e._empty,this._authority=e._empty,this._path=e._empty,this._query=e._empty,this._fragment=e._empty,this._formatted=null,this._fsPath=null}return e.isUri=function(t){return t instanceof e||!!t&&("string"==typeof t.authority&&"string"==typeof t.fragment&&"string"==typeof t.path&&"string"==typeof t.query&&"string"==typeof t.scheme)},Object.defineProperty(e.prototype,"scheme",{get:function(){return this._scheme},enumerable:!0,configurable:!0}),Object.defineProperty(e.prototype,"authority",{get:function(){return this._authority},enumerable:!0,configurable:!0}),Object.defineProperty(e.prototype,"path",{get:function(){return this._path},enumerable:!0,configurable:!0}),Object.defineProperty(e.prototype,"query",{get:function(){return this._query},enumerable:!0,configurable:!0}),Object.defineProperty(e.prototype,"fragment",{get:function(){return this._fragment},enumerable:!0,configurable:!0}),Object.defineProperty(e.prototype,"fsPath",{get:function(){if(!this._fsPath){var t;t=this._authority&&this._path&&"file"===this.scheme?"//"+this._authority+this._path:e._driveLetterPath.test(this._path)?this._path[1].toLowerCase()+this._path.substr(2):this._path,n.isWindows&&(t=t.replace(/\//g,"\\")),this._fsPath=t}return this._fsPath},enumerable:!0,configurable:!0}),e.prototype.with=function(t){if(!t)return this;var n=t.scheme,r=t.authority,o=t.path,i=t.query,a=t.fragment;if(void 0===n?n=this.scheme:null===n&&(n=""),void 0===r?r=this.authority:null===r&&(r=""),void 0===o?o=this.path:null===o&&(o=""),void 0===i?i=this.query:null===i&&(i=""),void 0===a?a=this.fragment:null===a&&(a=""),n===this.scheme&&r===this.authority&&o===this.path&&i===this.query&&a===this.fragment)return this;var s=new e;return s._scheme=n,s._authority=r,s._path=o,s._query=i,s._fragment=a,e._validate(s),s},e.parse=function(t){var n=new e,r=e._parseComponents(t);return n._scheme=r.scheme,n._authority=decodeURIComponent(r.authority),n._path=decodeURIComponent(r.path),n._query=decodeURIComponent(r.query),n._fragment=decodeURIComponent(r.fragment),e._validate(n),n},e.file=function(t){var n=new e;if(n._scheme="file",t=t.replace(/\\/g,e._slash),t[0]===e._slash&&t[0]===t[1]){var r=t.indexOf(e._slash,2);r===-1?n._authority=t.substring(2):(n._authority=t.substring(2,r),n._path=t.substring(r))}else n._path=t;return n._path[0]!==e._slash&&(n._path=e._slash+n._path),e._validate(n),n},e._parseComponents=function(t){var n={scheme:e._empty,authority:e._empty,path:e._empty,query:e._empty,fragment:e._empty},r=e._regexp.exec(t);return r&&(n.scheme=r[2]||n.scheme,n.authority=r[4]||n.authority,n.path=r[5]||n.path,n.query=r[7]||n.query,n.fragment=r[9]||n.fragment),n},e.from=function(t){return(new e).with(t)},e._validate=function(t){if(t.scheme&&!e._schemePattern.test(t.scheme))throw new Error("[UriError]: Scheme contains illegal characters.");if(t.path)if(t.authority){if(!e._singleSlashStart.test(t.path))throw new Error('[UriError]: If a URI contains an authority component, then the path component must either be empty or begin with a slash ("/") character')}else if(e._doubleSlashStart.test(t.path))throw new Error('[UriError]: If a URI does not contain an authority component, then the path cannot begin with two slash characters ("//")')},e.prototype.toString=function(t){return void 0===t&&(t=!1),t?e._asFormatted(this,!0):(this._formatted||(this._formatted=e._asFormatted(this,!1)),this._formatted)},e._asFormatted=function(t,n){var a=n?i:o,s=[],u=t.scheme,c=t.authority,l=t.path,f=t.query,p=t.fragment;if(u&&s.push(u,":"),(c||"file"===u)&&s.push("//"),c){c=c.toLowerCase();var h=c.indexOf(":");h===-1?s.push(a(c)):s.push(a(c.substr(0,h)),c.substr(h))}if(l){var d=e._upperCaseDrive.exec(l);d&&(l=d[1]?"/"+d[2].toLowerCase()+l.substr(3):d[2].toLowerCase()+l.substr(2));for(var _=0;;){var h=l.indexOf(e._slash,_);if(h===-1){s.push(a(l.substring(_)).replace(/[#?]/,r));break}s.push(a(l.substring(_,h)).replace(/[#?]/,r),e._slash),_=h+1}}return f&&s.push("?",a(f)),p&&s.push("#",a(p)),s.join(e._empty)},e.prototype.toJSON=function(){return{scheme:this.scheme,authority:this.authority,path:this.path,fsPath:this.fsPath,query:this.query,fragment:this.fragment,external:this.toString(),$mid:1}},e.revive=function(t){var n=new e;return n._scheme=t.scheme,n._authority=t.authority,n._path=t.path,n._query=t.query,n._fragment=t.fragment,n._fsPath=t.fsPath,n._formatted=t.external,e._validate(n),n},e._empty="",e._slash="/",e._regexp=/^(([^:\/?#]+?):)?(\/\/([^\/?#]*))?([^?#]*)(\?([^#]*))?(#(.*))?/,e._driveLetterPath=/^\/[a-zA-z]:/,e._upperCaseDrive=/^(\/)?([A-Z]:)/,e._schemePattern=/^\w[\w\d+.-]*$/,e._singleSlashStart=/^\//,e._doubleSlashStart=/^\/\//,e}();Object.defineProperty(t,"__esModule",{value:!0}),t.default=a}),function(){var e={};e["WinJS/Core/_WinJS"]={};var t=function(t,n,r){var o={},i=!1,a=n.map(function(t){return"exports"===t?(i=!0,o):e[t]}),s=r.apply({},a);e[t]=i?o:s};t("WinJS/Core/_Global",[],function(){"use strict";var e="undefined"!=typeof window?window:"undefined"!=typeof self?self:"undefined"!=typeof global?global:{};return e}),t("WinJS/Core/_BaseCoreUtils",["WinJS/Core/_Global"],function(e){"use strict";function t(e){return e.supportedForProcessing=!0,e}var n=!!e.Windows;return{hasWinRT:n,markSupportedForProcessing:t,_setImmediate:e.setImmediate?e.setImmediate.bind(e):function(t){e.setTimeout(t,0)}}}),t("WinJS/Core/_WriteProfilerMark",["WinJS/Core/_Global"],function(e){"use strict";return e.msWriteProfilerMark||function(){}}),t("WinJS/Core/_Base",["WinJS/Core/_WinJS","WinJS/Core/_Global","WinJS/Core/_BaseCoreUtils","WinJS/Core/_WriteProfilerMark"],function(e,t,n,r){"use strict";function o(e,t,n){var r,o,i,a=Object.keys(t),s=Array.isArray(e);for(o=0,i=a.length;o<i;o++){var u=a[o],c=95!==u.charCodeAt(0),l=t[u];!l||"object"!=typeof l||void 0===l.value&&"function"!=typeof l.get&&"function"!=typeof l.set?c?s?e.forEach(function(e){e[u]=l}):e[u]=l:(r=r||{},r[u]={value:l,enumerable:c,configurable:!0,writable:!0}):(void 0===l.enumerable&&(l.enumerable=c),n&&l.setName&&"function"==typeof l.setName&&l.setName(n+"."+u),r=r||{},r[u]=l)}r&&(s?e.forEach(function(e){Object.defineProperties(e,r)}):Object.defineProperties(e,r))}return function(){function n(n,r){var o=n||{};if(r){var i=r.split(".");o===t&&"WinJS"===i[0]&&(o=e,i.splice(0,1));for(var a=0,s=i.length;a<s;a++){var u=i[a];o[u]||Object.defineProperty(o,u,{value:{},writable:!1,enumerable:!0,configurable:!0}),o=o[u]}}return o}function i(e,t,r){var i=n(e,t);return r&&o(i,r,t||"<ANONYMOUS>"),i}function a(e,n){return i(t,e,n)}function s(e){var t,n,o=l.uninitialized;return{setName:function(e){t=e},get:function(){switch(o){case l.initialized:return n;case l.uninitialized:o=l.working;try{r("WinJS.Namespace._lazy:"+t+",StartTM"),n=e()}finally{r("WinJS.Namespace._lazy:"+t+",StopTM"),o=l.uninitialized}return e=null,o=l.initialized,n;case l.working:throw"Illegal: reentrancy on initialization";default:throw"Illegal"}},set:function(e){switch(o){case l.working:throw"Illegal: reentrancy on initialization";default:o=l.initialized,n=e}},enumerable:!0,configurable:!0}}function u(e,r,i){var a=[e],s=null;return r&&(s=n(t,r),a.push(s)),o(a,i,r||"<ANONYMOUS>"),s}var c=e;c.Namespace||(c.Namespace=Object.create(Object.prototype));var l={uninitialized:1,working:2,initialized:3};Object.defineProperties(c.Namespace,{defineWithParent:{value:i,writable:!0,enumerable:!0,configurable:!0},define:{value:a,writable:!0,enumerable:!0,configurable:!0},_lazy:{value:s,writable:!0,enumerable:!0,configurable:!0},_moduleDefine:{value:u,writable:!0,enumerable:!0,configurable:!0}})}(),function(){function t(e,t,r){return e=e||function(){},n.markSupportedForProcessing(e),t&&o(e.prototype,t),r&&o(e,r),e}function r(e,r,i,a){if(e){r=r||function(){};var s=e.prototype;return r.prototype=Object.create(s),n.markSupportedForProcessing(r),Object.defineProperty(r.prototype,"constructor",{value:r,writable:!0,configurable:!0,enumerable:!0}),i&&o(r.prototype,i),a&&o(r,a),r}return t(r,i,a)}function i(e){e=e||function(){};var t,n;for(t=1,n=arguments.length;t<n;t++)o(e.prototype,arguments[t]);return e}e.Namespace.define("WinJS.Class",{define:t,derive:r,mix:i})}(),{Namespace:e.Namespace,Class:e.Class}}),t("WinJS/Core/_ErrorFromName",["WinJS/Core/_Base"],function(e){"use strict";var t=e.Class.derive(Error,function(e,t){this.name=e,this.message=t||e},{},{supportedForProcessing:!1});return e.Namespace.define("WinJS",{ErrorFromName:t}),t}),t("WinJS/Core/_Events",["exports","WinJS/Core/_Base"],function(e,t){"use strict";function n(e){var t="_on"+e+"state";return{get:function(){var e=this[t];return e&&e.userHandler},set:function(n){var r=this[t];n?(r||(r={wrapper:function(e){return r.userHandler(e)},userHandler:n},Object.defineProperty(this,t,{value:r,enumerable:!1,writable:!0,configurable:!0}),this.addEventListener(e,r.wrapper,!1)),r.userHandler=n):r&&(this.removeEventListener(e,r.wrapper,!1),this[t]=null)},enumerable:!0}}function r(){for(var e={},t=0,r=arguments.length;t<r;t++){var o=arguments[t];e["on"+o]=n(o)}return e}var o=t.Class.define(function(e,t,n){this.detail=t,this.target=n,this.timeStamp=Date.now(),this.type=e},{bubbles:{value:!1,writable:!1},cancelable:{value:!1,writable:!1},currentTarget:{get:function(){return this.target}},defaultPrevented:{get:function(){return this._preventDefaultCalled}},trusted:{value:!1,writable:!1},eventPhase:{value:0,writable:!1},target:null,timeStamp:null,type:null,preventDefault:function(){this._preventDefaultCalled=!0},stopImmediatePropagation:function(){this._stopImmediatePropagationCalled=!0},stopPropagation:function(){}},{supportedForProcessing:!1}),i={_listeners:null,addEventListener:function(e,t,n){n=n||!1,this._listeners=this._listeners||{};for(var r=this._listeners[e]=this._listeners[e]||[],o=0,i=r.length;o<i;o++){var a=r[o];if(a.useCapture===n&&a.listener===t)return}r.push({listener:t,useCapture:n})},dispatchEvent:function(e,t){var n=this._listeners&&this._listeners[e];if(n){var r=new o(e,t,this);n=n.slice(0,n.length);for(var i=0,a=n.length;i<a&&!r._stopImmediatePropagationCalled;i++)n[i].listener(r);return r.defaultPrevented||!1}return!1},removeEventListener:function(e,t,n){n=n||!1;var r=this._listeners&&this._listeners[e];if(r)for(var o=0,i=r.length;o<i;o++){var a=r[o];if(a.listener===t&&a.useCapture===n){r.splice(o,1),0===r.length&&delete this._listeners[e];break}}}};t.Namespace._moduleDefine(e,"WinJS.Utilities",{_createEventProperty:n,createEventProperties:r,eventMixin:i})}),t("WinJS/Core/_Trace",["WinJS/Core/_Global"],function(e){"use strict";function t(e){return e}return{_traceAsyncOperationStarting:e.Debug&&e.Debug.msTraceAsyncOperationStarting&&e.Debug.msTraceAsyncOperationStarting.bind(e.Debug)||t,_traceAsyncOperationCompleted:e.Debug&&e.Debug.msTraceAsyncOperationCompleted&&e.Debug.msTraceAsyncOperationCompleted.bind(e.Debug)||t,_traceAsyncCallbackStarting:e.Debug&&e.Debug.msTraceAsyncCallbackStarting&&e.Debug.msTraceAsyncCallbackStarting.bind(e.Debug)||t,_traceAsyncCallbackCompleted:e.Debug&&e.Debug.msTraceAsyncCallbackCompleted&&e.Debug.msTraceAsyncCallbackCompleted.bind(e.Debug)||t}}),t("WinJS/Promise/_StateMachine",["WinJS/Core/_Global","WinJS/Core/_BaseCoreUtils","WinJS/Core/_Base","WinJS/Core/_ErrorFromName","WinJS/Core/_Events","WinJS/Core/_Trace"],function(e,t,n,r,o,i){"use strict";function a(){}function s(e,t){var n;n=t&&"object"==typeof t&&"function"==typeof t.then?I:J,e._value=t,e._setState(n)}function u(e,t,n,r,o,i){return{exception:e,error:t,promise:n,handler:i,id:r,parent:o}}function c(e,t,n,r){var o=n._isException,i=n._errorId;return u(o?t:null,o?null:t,e,i,n,r)}function l(e,t,n){var r=n._isException,o=n._errorId;return b(e,o,r),u(r?t:null,r?null:t,e,o,n)}function f(e,t){var n=++H;return b(e,n),u(null,t,e,n)}function p(e,t){var n=++H;return b(e,n,!0),u(t,null,e,n)}function h(e,t,n,r){var o=i._traceAsyncOperationStarting("WinJS.Promise.done");y(e,{c:t,e:n,p:r,asyncOpID:o})}function d(e,t,n,r){e._value=t,v(e,t,n,r),e._setState(z)}function _(t,n){var r=t._value,o=t._listeners;if(o){t._listeners=null;var a,s;for(a=0,s=Array.isArray(o)?o.length:1;a<s;a++){var u=1===s?o:o[a],c=u.c,l=u.promise;if(i._traceAsyncOperationCompleted(u.asyncOpID,e.Debug&&e.Debug.MS_ASYNC_OP_STATUS_SUCCESS),l){i._traceAsyncCallbackStarting(u.asyncOpID);try{l._setCompleteValue(c?c(r):r)}catch(e){l._setExceptionValue(e)}finally{i._traceAsyncCallbackCompleted()}l._state!==I&&l._listeners&&n.push(l)}else Y.prototype.done.call(t,c)}}}function m(t,n){var r=t._value,o=t._listeners;if(o){t._listeners=null;var a,s;for(a=0,s=Array.isArray(o)?o.length:1;a<s;a++){var u=1===s?o:o[a],l=u.e,f=u.promise,p=e.Debug&&(r&&r.name===j?e.Debug.MS_ASYNC_OP_STATUS_CANCELED:e.Debug.MS_ASYNC_OP_STATUS_ERROR);if(i._traceAsyncOperationCompleted(u.asyncOpID,p),f){var h=!1;try{l?(i._traceAsyncCallbackStarting(u.asyncOpID),h=!0,l.handlesOnError||v(f,r,c,t,l),f._setCompleteValue(l(r))):f._setChainedErrorValue(r,t)}catch(e){f._setExceptionValue(e)}finally{h&&i._traceAsyncCallbackCompleted()}f._state!==I&&f._listeners&&n.push(f)}else G.prototype.done.call(t,null,l)}}}function v(e,t,n,r,o){if(x._listeners[A]){if(t instanceof Error&&t.message===j)return;x.dispatchEvent(A,n(e,t,r,o))}}function g(e,t){var n=e._listeners;if(n){var r,o;for(r=0,o=Array.isArray(n)?n.length:1;r<o;r++){var i=1===o?n:n[r],a=i.p;if(a)try{a(t)}catch(e){}i.c||i.e||!i.promise||i.promise._progress(t)}}}function y(e,t){var n=e._listeners;n?(n=Array.isArray(n)?n:[n],n.push(t)):n=t,e._listeners=n}function b(e,t,n){e._isException=n||!1,e._errorId=t}function w(e,t,n,r){e._value=t,v(e,t,n,r),e._setState(M)}function E(e,t){var n;n=t&&"object"==typeof t&&"function"==typeof t.then?I:V,e._value=t,e._setState(n)}function S(e,t,n,r){var o=new R(e),a=i._traceAsyncOperationStarting("WinJS.Promise.then");return y(e,{promise:o,c:t,e:n,p:r,asyncOpID:a}),o}function C(n){var r;return new $(function(o){n?r=e.setTimeout(o,n):t._setImmediate(o)},function(){r&&e.clearTimeout(r)})}function P(e,t){var n=function(){t.cancel()},r=function(){e.cancel()};return e.then(n),t.then(r,r),t}e.Debug&&(e.Debug.setNonUserCodeExceptions=!0);var O=n.Class.mix(n.Class.define(null,{},{supportedForProcessing:!1}),o.eventMixin),x=new O;x._listeners={};var A="error",j="Canceled",k=!1,W={promise:1,thenPromise:2,errorPromise:4,exceptionPromise:8,completePromise:16};W.all=W.promise|W.thenPromise|W.errorPromise|W.exceptionPromise|W.completePromise;var D,N,I,T,U,L,J,V,z,M,H=1;D={name:"created",enter:function(e){e._setState(N)},cancel:a,done:a,then:a,_completed:a,_error:a,_notify:a,_progress:a,_setCompleteValue:a,_setErrorValue:a},N={name:"working",enter:a,cancel:function(e){e._setState(U)},done:h,then:S,_completed:s,_error:d,_notify:a,_progress:g,_setCompleteValue:E,_setErrorValue:w},I={name:"waiting",enter:function(e){var t=e._value;if(t instanceof R&&t._state!==M&&t._state!==V)y(t,{promise:e});else{var n=function(r){t._errorId?e._chainedError(r,t):(v(e,r,c,t,n),e._error(r))};n.handlesOnError=!0,t.then(e._completed.bind(e),n,e._progress.bind(e))}},cancel:function(e){e._setState(T)},done:h,then:S,_completed:s,_error:d,_notify:a,_progress:g,_setCompleteValue:E,_setErrorValue:w},T={name:"waiting_canceled",enter:function(e){e._setState(L);var t=e._value;t.cancel&&t.cancel()},cancel:a,done:h,then:S,_completed:s,_error:d,_notify:a,_progress:g,_setCompleteValue:E,_setErrorValue:w},U={name:"canceled",enter:function(e){e._setState(L),e._cancelAction()},cancel:a,done:h,then:S,_completed:s,_error:d,_notify:a,_progress:g,_setCompleteValue:E,_setErrorValue:w},L={name:"canceling",enter:function(e){var t=new Error(j);t.name=t.message,e._value=t,e._setState(z)},cancel:a,done:a,then:a,_completed:a,_error:a,_notify:a,_progress:a,_setCompleteValue:a,_setErrorValue:a},J={name:"complete_notify",enter:function(e){if(e.done=Y.prototype.done,e.then=Y.prototype.then,e._listeners)for(var t,n=[e];n.length;)t=n.shift(),t._state._notify(t,n);e._setState(V)},cancel:a,done:null,then:null,_completed:a,_error:a,_notify:_,_progress:a,_setCompleteValue:a,_setErrorValue:a},V={name:"success",enter:function(e){e.done=Y.prototype.done,e.then=Y.prototype.then,e._cleanupAction()},cancel:a,done:null,then:null,_completed:a,_error:a,_notify:_,_progress:a,_setCompleteValue:a,_setErrorValue:a},z={name:"error_notify",enter:function(e){if(e.done=G.prototype.done,e.then=G.prototype.then,e._listeners)for(var t,n=[e];n.length;)t=n.shift(),t._state._notify(t,n);e._setState(M)},cancel:a,done:null,then:null,_completed:a,_error:a,_notify:m,_progress:a,_setCompleteValue:a,_setErrorValue:a},M={name:"error",enter:function(e){e.done=G.prototype.done,e.then=G.prototype.then,e._cleanupAction()},cancel:a,done:null,then:null,_completed:a,_error:a,_notify:m,_progress:a,_setCompleteValue:a,_setErrorValue:a};var F,q=n.Class.define(null,{_listeners:null,_nextState:null,_state:null,_value:null,cancel:function(){this._state.cancel(this),this._run()},done:function(e,t,n){this._state.done(this,e,t,n)},then:function(e,t,n){return this._state.then(this,e,t,n)},_chainedError:function(e,t){var n=this._state._error(this,e,l,t);return this._run(),n},_completed:function(e){var t=this._state._completed(this,e);return this._run(),t},_error:function(e){var t=this._state._error(this,e,f);return this._run(),t},_progress:function(e){this._state._progress(this,e)},_setState:function(e){this._nextState=e},_setCompleteValue:function(e){this._state._setCompleteValue(this,e),this._run()},_setChainedErrorValue:function(e,t){var n=this._state._setErrorValue(this,e,l,t);return this._run(),n},_setExceptionValue:function(e){var t=this._state._setErrorValue(this,e,p);return this._run(),t},_run:function(){for(;this._nextState;)this._state=this._nextState,this._nextState=null,this._state.enter(this)}},{supportedForProcessing:!1}),R=n.Class.derive(q,function(e){k&&(k===!0||k&W.thenPromise)&&(this._stack=$._getStack()),this._creator=e,this._setState(D),this._run()},{_creator:null,_cancelAction:function(){this._creator&&this._creator.cancel()},_cleanupAction:function(){this._creator=null}},{supportedForProcessing:!1}),G=n.Class.define(function(e){k&&(k===!0||k&W.errorPromise)&&(this._stack=$._getStack()),this._value=e,v(this,e,f)},{cancel:function(){},done:function(e,t){var n=this._value;if(t)try{t.handlesOnError||v(null,n,c,this,t);var r=t(n);return void(r&&"object"==typeof r&&"function"==typeof r.done&&r.done())}catch(e){n=e}n instanceof Error&&n.message===j||$._doneHandler(n)},then:function(e,t){if(!t)return this;var n,r=this._value;try{t.handlesOnError||v(null,r,c,this,t),n=new Y(t(r))}catch(e){n=e===r?this:new B(e)}return n}},{supportedForProcessing:!1}),B=n.Class.derive(G,function(e){k&&(k===!0||k&W.exceptionPromise)&&(this._stack=$._getStack()),this._value=e,v(this,e,p)},{},{supportedForProcessing:!1}),Y=n.Class.define(function(e){if(k&&(k===!0||k&W.completePromise)&&(this._stack=$._getStack()),e&&"object"==typeof e&&"function"==typeof e.then){var t=new R(null);return t._setCompleteValue(e),t}this._value=e},{cancel:function(){},done:function(e){if(e)try{var t=e(this._value);t&&"object"==typeof t&&"function"==typeof t.done&&t.done()}catch(e){$._doneHandler(e)}},then:function(e){try{var t=e?e(this._value):this._value;return t===this._value?this:new Y(t)}catch(e){return new B(e)}}},{supportedForProcessing:!1}),$=n.Class.derive(q,function(e,t){k&&(k===!0||k&W.promise)&&(this._stack=$._getStack()),this._oncancel=t,this._setState(D),this._run();try{var n=this._completed.bind(this),r=this._error.bind(this),o=this._progress.bind(this);e(n,r,o)}catch(e){this._setExceptionValue(e)}},{_oncancel:null,_cancelAction:function(){try{if(!this._oncancel)throw new Error("Promise did not implement oncancel");this._oncancel()}catch(e){e.message,e.stack;x.dispatchEvent("error",e)}},_cleanupAction:function(){this._oncancel=null}},{addEventListener:function(e,t,n){x.addEventListener(e,t,n)},any:function(e){return new $(function(t,n){var r=Object.keys(e);0===r.length&&t();var o=0;r.forEach(function(i){$.as(e[i]).then(function(){t({key:i,value:e[i]})},function(a){return a instanceof Error&&a.name===j?void(++o===r.length&&t($.cancel)):void n({key:i,value:e[i]})})})},function(){var t=Object.keys(e);t.forEach(function(t){var n=$.as(e[t]);"function"==typeof n.cancel&&n.cancel()})})},as:function(e){return e&&"object"==typeof e&&"function"==typeof e.then?e:new Y(e)},cancel:{get:function(){return F=F||new G(new r(j))}},dispatchEvent:function(e,t){return x.dispatchEvent(e,t)},is:function(e){return e&&"object"==typeof e&&"function"==typeof e.then},join:function(e){return new $(function(t,n,r){var o=Object.keys(e),i=Array.isArray(e)?[]:{},a=Array.isArray(e)?[]:{},s=0,u=o.length,c=function(e){
-if(0===--u){var s=Object.keys(i).length;if(0===s)t(a);else{var c=0;o.forEach(function(e){var t=i[e];t instanceof Error&&t.name===j&&c++}),c===s?t($.cancel):n(i)}}else r({Key:e,Done:!0})};if(o.forEach(function(t){var n=e[t];void 0===n?s++:$.then(n,function(e){a[t]=e,c(t)},function(e){i[t]=e,c(t)})}),u-=s,0===u)return void t(a)},function(){Object.keys(e).forEach(function(t){var n=$.as(e[t]);"function"==typeof n.cancel&&n.cancel()})})},removeEventListener:function(e,t,n){x.removeEventListener(e,t,n)},supportedForProcessing:!1,then:function(e,t,n,r){return $.as(e).then(t,n,r)},thenEach:function(e,t,n,r){var o=Array.isArray(e)?[]:{};return Object.keys(e).forEach(function(i){o[i]=$.as(e[i]).then(t,n,r)}),$.join(o)},timeout:function(e,t){var n=C(e);return t?P(n,t):n},wrap:function(e){return new Y(e)},wrapError:function(e){return new G(e)},_veryExpensiveTagWithStack:{get:function(){return k},set:function(e){k=e}},_veryExpensiveTagWithStack_tag:W,_getStack:function(){if(e.Debug&&e.Debug.debuggerEnabled)try{throw new Error}catch(e){return e.stack}},_cancelBlocker:function(e,t){if(!$.is(e))return $.wrap(e);var n,r,o=new $(function(e,t){n=e,r=t},function(){n=null,r=null,t&&t()});return e.then(function(e){n&&n(e)},function(e){r&&r(e)}),o}});return Object.defineProperties($,o.createEventProperties(A)),$._doneHandler=function(e){t._setImmediate(function(){throw e})},{PromiseStateMachine:q,Promise:$,state_created:D}}),t("WinJS/Promise",["WinJS/Core/_Base","WinJS/Promise/_StateMachine"],function(e,t){"use strict";return e.Namespace.define("WinJS",{Promise:t.Promise}),t.Promise});var n=e["WinJS/Core/_WinJS"];"undefined"==typeof exports&&"function"==typeof define&&define.amd?define("vs/base/common/winjs.base.raw",n):module.exports=n,"undefined"!=typeof process&&"function"==typeof process.nextTick&&(e["WinJS/Core/_BaseCoreUtils"]._setImmediate=function(e){return process.nextTick(e)})}(),define(e[5],t([17,7]),function(e,t){"use strict";function n(e){var n=e.detail,o=n.id;return n.parent?void(n.handler&&r&&delete r[o]):(r[o]=n,void(1===Object.keys(r).length&&setTimeout(function(){var e=r;r={},Object.keys(e).forEach(function(n){var r=e[n];r.exception?t.onUnexpectedError(r.exception):r.error&&t.onUnexpectedError(r.error),console.log("WARNING: Promise with no error callback:"+r.id),console.log(r),r.exception&&console.log(r.exception.stack)})},0)))}var r={};return e.Promise.addEventListener("error",n),{Promise:e.Promise,TPromise:e.Promise,PPromise:e.Promise}}),define(e[8],t([21,18]),function(e,t){return e.create("vs/platform/environment/node/argv",t)}),define(e[10],t([1,0,14,15,16,6,8]),function(e,t,n,r,o,i,a){"use strict";function s(e){return e.goto&&e._.forEach(function(e){return o(/^(\w:)?[^:]+(:\d*){0,2}$/.test(e),a.localize(0,null))}),e}function u(e){var t=i.firstIndex(e,function(e){return!/^-/.test(e)});if(t>-1)return e.slice(0,t).concat(e.slice(t+1))}function c(e){var t=e.slice(1);return process.env.VSCODE_DEV&&(t=u(t)),s(f(t))}function l(e){var t=e.slice(2);return process.env.VSCODE_DEV&&(t=u(t)),s(f(t))}function f(e){return r(e,_)}function p(e,t){var n=Object.keys(e),r=Math.max.apply(null,n.map(function(e){return e.length}))+2+1;if(t-r<25)return n.reduce(function(t,n){return t.concat(["  "+n,"      "+e[n]])},[]).join("\n");var o=t-r-1,i="";return n.forEach(function(t){var n=h(e[t],o),a=" ".repeat(r-t.length-2);i.length>0&&(i+="\n"),i+="  "+t+a+n[0];for(var s=1;s<n.length;s++)i+="\n"+" ".repeat(r)+n[s]}),i}function h(e,t){for(var n=[];e.length;){var r=e.length<t?e.length:e.lastIndexOf(" ",t),o=e.slice(0,r).trim();e=e.slice(r),n.push(o)}return n}function d(e,r,o){var i=process.stdout.isTTY?process.stdout.columns:80,s=""+r+("win32"===n.platform()?".exe":"");return e+" "+o+"\n\n"+a.localize(19,null)+": "+s+" ["+a.localize(20,null)+"] ["+a.localize(21,null)+"...]\n\n"+a.localize(22,null)+":\n"+p(t.optionsHelp,i)}var _={string:["locale","user-data-dir","extensionHomePath","extensionDevelopmentPath","extensionTestsPath","install-extension","uninstall-extension","debugBrkPluginHost","debugPluginHost","open-url"],boolean:["help","version","wait","diff","goto","new-window","reuse-window","performance","verbose","logExtensionHostCommunication","disable-extensions","list-extensions","show-versions","nolazy"],alias:{help:"h",version:"v",wait:"w",diff:"d",goto:"g","new-window":"n","reuse-window":"r",performance:"p","disable-extensions":"disableExtensions"}};t.parseMainProcessArgv=c,t.parseCLIProcessArgv=l,t.parseArgs=f,t.optionsHelp={"-d, --diff":a.localize(1,null),"-g, --goto":a.localize(2,null),"--locale <locale>":a.localize(3,null),"-n, --new-window":a.localize(4,null),"-p, --performance":a.localize(5,null),"-r, --reuse-window":a.localize(6,null),"--user-data-dir <dir>":a.localize(7,null),"--verbose":a.localize(8,null),"-w, --wait":a.localize(9,null),"--extensionHomePath":a.localize(10,null),"--list-extensions":a.localize(11,null),"--show-versions":a.localize(12,null),"--install-extension <ext>":a.localize(13,null),"--uninstall-extension <ext>":a.localize(14,null),"--disable-extensions":a.localize(15,null),"--disable-gpu":a.localize(16,null),"-v, --version":a.localize(17,null),"-h, --help":a.localize(18,null)},t.formatOptions=p,t.buildHelpMessage=d}),define(e[11],t([1,0,12,4]),function(e,t,n,r){"use strict";var o=n.dirname(r.default.parse(e.toUrl("")).fsPath),i=n.join(o,"package.json");Object.defineProperty(t,"__esModule",{value:!0}),t.default=e.__$__nodeRequire(i)}),define(e[13],t([1,0,12,4]),function(e,t,n,r){"use strict";var o=n.dirname(r.default.parse(e.toUrl("")).fsPath),i=n.join(o,"product.json"),a=e.__$__nodeRequire(i);process.env.VSCODE_DEV&&(a.nameShort+=" Dev",a.nameLong+=" Dev",a.dataFolderName+="-dev"),Object.defineProperty(t,"__esModule",{value:!0}),t.default=a}),define(e[20],t([1,0,19,5,9,10,13,11]),function(e,t,n,r,o,i,a,s){"use strict";function u(e){return e["list-extensions"]||!!e["install-extension"]||!!e["uninstall-extension"]}function c(t){var c;try{c=i.parseCLIProcessArgv(t)}catch(e){return console.error(e.message),r.TPromise.as(null)}if(c.help)console.log(i.buildHelpMessage(a.default.nameLong,a.default.applicationName,s.default.version));else if(c.version)console.log(s.default.version+"\n"+a.default.commit);else{if(u(c)){var l=new r.TPromise(function(t){return e(["vs/code/node/cliProcessMain"],t)});return l.then(function(e){return e.main(c)})}var f=o.assign({},process.env,{VSCODE_CLI:"1",ELECTRON_NO_ATTACH_CONSOLE:"1"});delete f.ELECTRON_RUN_AS_NODE,c.verbose&&(f.ELECTRON_ENABLE_LOGGING="1");var p={detached:!0,env:f};c.verbose||(p.stdio="ignore");var h=n.spawn(process.execPath,t.slice(2),p);if(c.verbose&&(h.stdout.on("data",function(e){return console.log(e.toString("utf8").trim())}),h.stderr.on("data",function(e){return console.log(e.toString("utf8").trim())})),c.wait||c.verbose)return new r.TPromise(function(e){return h.once("exit",function(){return e(null)})})}return r.TPromise.as(null)}t.main=c,c(process.argv).then(function(){return process.exit(0)}).then(null,function(e){console.error(e.stack?e.stack:e),process.exit(1)})})}).call(this);
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/02611b40b24c9df2726ad8b33f5ef5f67ac30b44/core/vs\code\node\cli.js.map
+(function() {
+var __m = ["exports","require","vs/base/common/platform","vs/base/common/types","vs/base/common/uri","vs/base/common/winjs.base","vs/base/common/arrays","vs/base/common/errors","vs/nls!vs/platform/environment/node/argv","vs/base/common/objects","vs/platform/environment/node/argv","vs/platform/package","path","vs/platform/product","os","minimist","assert","vs/base/common/winjs.base.raw","vs/nls!vs/code/node/cli","child_process","vs/code/node/cli","vs/nls"];
+var __M = function(deps) {
+  var result = [];
+  for (var i = 0, len = deps.length; i < len; i++) {
+    result[i] = __m[deps[i]];
+  }
+  return result;
+};
+define(__m[6/*vs/base/common/arrays*/], __M([1/*require*/,0/*exports*/]), function (require, exports) {
+    /*---------------------------------------------------------------------------------------------
+     *  Copyright (c) Microsoft Corporation. All rights reserved.
+     *  Licensed under the MIT License. See License.txt in the project root for license information.
+     *--------------------------------------------------------------------------------------------*/
+    'use strict';
+    /**
+     * Returns the last element of an array.
+     * @param array The array.
+     * @param n Which element from the end (default ist zero).
+     */
+    function tail(array, n) {
+        if (n === void 0) { n = 0; }
+        return array[array.length - (1 + n)];
+    }
+    exports.tail = tail;
+    /**
+     * Iterates the provided array and allows to remove
+     * elements while iterating.
+     */
+    function forEach(array, callback) {
+        for (var i = 0, len = array.length; i < len; i++) {
+            callback(array[i], function () {
+                array.splice(i, 1);
+                i--;
+                len--;
+            });
+        }
+    }
+    exports.forEach = forEach;
+    function equals(one, other, itemEquals) {
+        if (itemEquals === void 0) { itemEquals = function (a, b) { return a === b; }; }
+        if (one.length !== other.length) {
+            return false;
+        }
+        for (var i = 0, len = one.length; i < len; i++) {
+            if (!itemEquals(one[i], other[i])) {
+                return false;
+            }
+        }
+        return true;
+    }
+    exports.equals = equals;
+    function binarySearch(array, key, comparator) {
+        var low = 0, high = array.length - 1;
+        while (low <= high) {
+            var mid = ((low + high) / 2) | 0;
+            var comp = comparator(array[mid], key);
+            if (comp < 0) {
+                low = mid + 1;
+            }
+            else if (comp > 0) {
+                high = mid - 1;
+            }
+            else {
+                return mid;
+            }
+        }
+        return -(low + 1);
+    }
+    exports.binarySearch = binarySearch;
+    /**
+     * Takes a sorted array and a function p. The array is sorted in such a way that all elements where p(x) is false
+     * are located before all elements where p(x) is true.
+     * @returns the least x for which p(x) is true or array.length if no element fullfills the given function.
+     */
+    function findFirst(array, p) {
+        var low = 0, high = array.length;
+        if (high === 0) {
+            return 0; // no children
+        }
+        while (low < high) {
+            var mid = Math.floor((low + high) / 2);
+            if (p(array[mid])) {
+                high = mid;
+            }
+            else {
+                low = mid + 1;
+            }
+        }
+        return low;
+    }
+    exports.findFirst = findFirst;
+    /**
+     * Returns the top N elements from the array.
+     *
+     * Faster than sorting the entire array when the array is a lot larger than N.
+     *
+     * @param array The unsorted array.
+     * @param compare A sort function for the elements.
+     * @param n The number of elements to return.
+     * @return The first n elemnts from array when sorted with compare.
+     */
+    function top(array, compare, n) {
+        if (n === 0) {
+            return [];
+        }
+        var result = array.slice(0, n).sort(compare);
+        var _loop_1 = function(i, m) {
+            var element = array[i];
+            if (compare(element, result[n - 1]) < 0) {
+                result.pop();
+                var j = findFirst(result, function (e) { return compare(element, e) < 0; });
+                result.splice(j, 0, element);
+            }
+        };
+        for (var i = n, m = array.length; i < m; i++) {
+            _loop_1(i, m);
+        }
+        return result;
+    }
+    exports.top = top;
+    function merge(arrays, hashFn) {
+        var result = new Array();
+        if (!hashFn) {
+            for (var i = 0, len = arrays.length; i < len; i++) {
+                result.push.apply(result, arrays[i]);
+            }
+        }
+        else {
+            var map = {};
+            for (var i = 0; i < arrays.length; i++) {
+                for (var j = 0; j < arrays[i].length; j++) {
+                    var element = arrays[i][j], hash = hashFn(element);
+                    if (!map.hasOwnProperty(hash)) {
+                        map[hash] = true;
+                        result.push(element);
+                    }
+                }
+            }
+        }
+        return result;
+    }
+    exports.merge = merge;
+    /**
+     * @returns a new array with all undefined or null values removed. The original array is not modified at all.
+     */
+    function coalesce(array) {
+        if (!array) {
+            return array;
+        }
+        return array.filter(function (e) { return !!e; });
+    }
+    exports.coalesce = coalesce;
+    /**
+     * @returns true if the given item is contained in the array.
+     */
+    function contains(array, item) {
+        return array.indexOf(item) >= 0;
+    }
+    exports.contains = contains;
+    /**
+     * Swaps the elements in the array for the provided positions.
+     */
+    function swap(array, pos1, pos2) {
+        var element1 = array[pos1];
+        var element2 = array[pos2];
+        array[pos1] = element2;
+        array[pos2] = element1;
+    }
+    exports.swap = swap;
+    /**
+     * Moves the element in the array for the provided positions.
+     */
+    function move(array, from, to) {
+        array.splice(to, 0, array.splice(from, 1)[0]);
+    }
+    exports.move = move;
+    /**
+     * @returns {{false}} if the provided object is an array
+     * 	and not empty.
+     */
+    function isFalsyOrEmpty(obj) {
+        return !Array.isArray(obj) || obj.length === 0;
+    }
+    exports.isFalsyOrEmpty = isFalsyOrEmpty;
+    /**
+     * Removes duplicates from the given array. The optional keyFn allows to specify
+     * how elements are checked for equalness by returning a unique string for each.
+     */
+    function distinct(array, keyFn) {
+        if (!keyFn) {
+            return array.filter(function (element, position) {
+                return array.indexOf(element) === position;
+            });
+        }
+        var seen = Object.create(null);
+        return array.filter(function (elem) {
+            var key = keyFn(elem);
+            if (seen[key]) {
+                return false;
+            }
+            seen[key] = true;
+            return true;
+        });
+    }
+    exports.distinct = distinct;
+    function uniqueFilter(keyFn) {
+        var seen = Object.create(null);
+        return function (element) {
+            var key = keyFn(element);
+            if (seen[key]) {
+                return false;
+            }
+            seen[key] = true;
+            return true;
+        };
+    }
+    exports.uniqueFilter = uniqueFilter;
+    function firstIndex(array, fn) {
+        for (var i = 0; i < array.length; i++) {
+            var element = array[i];
+            if (fn(element)) {
+                return i;
+            }
+        }
+        return -1;
+    }
+    exports.firstIndex = firstIndex;
+    function first(array, fn, notFoundValue) {
+        if (notFoundValue === void 0) { notFoundValue = null; }
+        var index = firstIndex(array, fn);
+        return index < 0 ? notFoundValue : array[index];
+    }
+    exports.first = first;
+    function commonPrefixLength(one, other, equals) {
+        if (equals === void 0) { equals = function (a, b) { return a === b; }; }
+        var result = 0;
+        for (var i = 0, len = Math.min(one.length, other.length); i < len && equals(one[i], other[i]); i++) {
+            result++;
+        }
+        return result;
+    }
+    exports.commonPrefixLength = commonPrefixLength;
+    function flatten(arr) {
+        return arr.reduce(function (r, v) { return r.concat(v); }, []);
+    }
+    exports.flatten = flatten;
+    function range(to, from) {
+        if (from === void 0) { from = 0; }
+        var result = [];
+        for (var i = from; i < to; i++) {
+            result.push(i);
+        }
+        return result;
+    }
+    exports.range = range;
+    function fill(num, valueFn, arr) {
+        if (arr === void 0) { arr = []; }
+        for (var i = 0; i < num; i++) {
+            arr[i] = valueFn();
+        }
+        return arr;
+    }
+    exports.fill = fill;
+    function index(array, indexer, merger) {
+        if (merger === void 0) { merger = function (t) { return t; }; }
+        return array.reduce(function (r, t) {
+            var key = indexer(t);
+            r[key] = merger(t, r[key]);
+            return r;
+        }, Object.create(null));
+    }
+    exports.index = index;
+    /**
+     * Inserts an element into an array. Returns a function which, when
+     * called, will remove that element from the array.
+     */
+    function insert(array, element) {
+        array.push(element);
+        return function () {
+            var index = array.indexOf(element);
+            if (index > -1) {
+                array.splice(index, 1);
+            }
+        };
+    }
+    exports.insert = insert;
+});
+
+define(__m[2/*vs/base/common/platform*/], __M([1/*require*/,0/*exports*/]), function (require, exports) {
+    /*---------------------------------------------------------------------------------------------
+     *  Copyright (c) Microsoft Corporation. All rights reserved.
+     *  Licensed under the MIT License. See License.txt in the project root for license information.
+     *--------------------------------------------------------------------------------------------*/
+    'use strict';
+    // --- THIS FILE IS TEMPORARY UNTIL ENV.TS IS CLEANED UP. IT CAN SAFELY BE USED IN ALL TARGET EXECUTION ENVIRONMENTS (node & dom) ---
+    var _isWindows = false;
+    var _isMacintosh = false;
+    var _isLinux = false;
+    var _isRootUser = false;
+    var _isNative = false;
+    var _isWeb = false;
+    var _isQunit = false;
+    var _locale = undefined;
+    var _language = undefined;
+    exports.LANGUAGE_DEFAULT = 'en';
+    // OS detection
+    if (typeof process === 'object') {
+        _isWindows = (process.platform === 'win32');
+        _isMacintosh = (process.platform === 'darwin');
+        _isLinux = (process.platform === 'linux');
+        _isRootUser = !_isWindows && (process.getuid() === 0);
+        var rawNlsConfig = process.env['VSCODE_NLS_CONFIG'];
+        if (rawNlsConfig) {
+            try {
+                var nlsConfig = JSON.parse(rawNlsConfig);
+                var resolved = nlsConfig.availableLanguages['*'];
+                _locale = nlsConfig.locale;
+                // VSCode's default language is 'en'
+                _language = resolved ? resolved : exports.LANGUAGE_DEFAULT;
+            }
+            catch (e) {
+            }
+        }
+        _isNative = true;
+    }
+    else if (typeof navigator === 'object') {
+        var userAgent = navigator.userAgent;
+        _isWindows = userAgent.indexOf('Windows') >= 0;
+        _isMacintosh = userAgent.indexOf('Macintosh') >= 0;
+        _isLinux = userAgent.indexOf('Linux') >= 0;
+        _isWeb = true;
+        _locale = navigator.language;
+        _language = _locale;
+        _isQunit = !!self.QUnit;
+    }
+    (function (Platform) {
+        Platform[Platform["Web"] = 0] = "Web";
+        Platform[Platform["Mac"] = 1] = "Mac";
+        Platform[Platform["Linux"] = 2] = "Linux";
+        Platform[Platform["Windows"] = 3] = "Windows";
+    })(exports.Platform || (exports.Platform = {}));
+    var Platform = exports.Platform;
+    exports._platform = Platform.Web;
+    if (_isNative) {
+        if (_isMacintosh) {
+            exports._platform = Platform.Mac;
+        }
+        else if (_isWindows) {
+            exports._platform = Platform.Windows;
+        }
+        else if (_isLinux) {
+            exports._platform = Platform.Linux;
+        }
+    }
+    exports.isWindows = _isWindows;
+    exports.isMacintosh = _isMacintosh;
+    exports.isLinux = _isLinux;
+    exports.isRootUser = _isRootUser;
+    exports.isNative = _isNative;
+    exports.isWeb = _isWeb;
+    exports.isQunit = _isQunit;
+    exports.platform = exports._platform;
+    /**
+     * The language used for the user interface. The format of
+     * the string is all lower case (e.g. zh-tw for Traditional
+     * Chinese)
+     */
+    exports.language = _language;
+    /**
+     * The OS locale or the locale specified by --locale. The format of
+     * the string is all lower case (e.g. zh-tw for Traditional
+     * Chinese). The UI is not necessarily shown in the provided locale.
+     */
+    exports.locale = _locale;
+    var _globals = (typeof self === 'object' ? self : global);
+    exports.globals = _globals;
+    function hasWebWorkerSupport() {
+        return typeof _globals.Worker !== 'undefined';
+    }
+    exports.hasWebWorkerSupport = hasWebWorkerSupport;
+    exports.setTimeout = _globals.setTimeout.bind(_globals);
+    exports.clearTimeout = _globals.clearTimeout.bind(_globals);
+    exports.setInterval = _globals.setInterval.bind(_globals);
+    exports.clearInterval = _globals.clearInterval.bind(_globals);
+});
+
+define(__m[3/*vs/base/common/types*/], __M([1/*require*/,0/*exports*/]), function (require, exports) {
+    /*---------------------------------------------------------------------------------------------
+     *  Copyright (c) Microsoft Corporation. All rights reserved.
+     *  Licensed under the MIT License. See License.txt in the project root for license information.
+     *--------------------------------------------------------------------------------------------*/
+    'use strict';
+    var _typeof = {
+        number: 'number',
+        string: 'string',
+        undefined: 'undefined',
+        object: 'object',
+        function: 'function'
+    };
+    /**
+     * @returns whether the provided parameter is a JavaScript Array or not.
+     */
+    function isArray(array) {
+        if (Array.isArray) {
+            return Array.isArray(array);
+        }
+        if (array && typeof (array.length) === _typeof.number && array.constructor === Array) {
+            return true;
+        }
+        return false;
+    }
+    exports.isArray = isArray;
+    /**
+     * @returns whether the provided parameter is a JavaScript String or not.
+     */
+    function isString(str) {
+        if (typeof (str) === _typeof.string || str instanceof String) {
+            return true;
+        }
+        return false;
+    }
+    exports.isString = isString;
+    /**
+     * @returns whether the provided parameter is a JavaScript Array and each element in the array is a string.
+     */
+    function isStringArray(value) {
+        return isArray(value) && value.every(function (elem) { return isString(elem); });
+    }
+    exports.isStringArray = isStringArray;
+    /**
+     *
+     * @returns whether the provided parameter is of type `object` but **not**
+     *	`null`, an `array`, a `regexp`, nor a `date`.
+     */
+    function isObject(obj) {
+        // The method can't do a type cast since there are type (like strings) which
+        // are subclasses of any put not positvely matched by the function. Hence type
+        // narrowing results in wrong results.
+        return typeof obj === _typeof.object
+            && obj !== null
+            && !Array.isArray(obj)
+            && !(obj instanceof RegExp)
+            && !(obj instanceof Date);
+    }
+    exports.isObject = isObject;
+    /**
+     * In **contrast** to just checking `typeof` this will return `false` for `NaN`.
+     * @returns whether the provided parameter is a JavaScript Number or not.
+     */
+    function isNumber(obj) {
+        if ((typeof (obj) === _typeof.number || obj instanceof Number) && !isNaN(obj)) {
+            return true;
+        }
+        return false;
+    }
+    exports.isNumber = isNumber;
+    /**
+     * @returns whether the provided parameter is a JavaScript Boolean or not.
+     */
+    function isBoolean(obj) {
+        return obj === true || obj === false;
+    }
+    exports.isBoolean = isBoolean;
+    /**
+     * @returns whether the provided parameter is undefined.
+     */
+    function isUndefined(obj) {
+        return typeof (obj) === _typeof.undefined;
+    }
+    exports.isUndefined = isUndefined;
+    /**
+     * @returns whether the provided parameter is undefined or null.
+     */
+    function isUndefinedOrNull(obj) {
+        return isUndefined(obj) || obj === null;
+    }
+    exports.isUndefinedOrNull = isUndefinedOrNull;
+    var hasOwnProperty = Object.prototype.hasOwnProperty;
+    /**
+     * @returns whether the provided parameter is an empty JavaScript Object or not.
+     */
+    function isEmptyObject(obj) {
+        if (!isObject(obj)) {
+            return false;
+        }
+        for (var key in obj) {
+            if (hasOwnProperty.call(obj, key)) {
+                return false;
+            }
+        }
+        return true;
+    }
+    exports.isEmptyObject = isEmptyObject;
+    /**
+     * @returns whether the provided parameter is a JavaScript Function or not.
+     */
+    function isFunction(obj) {
+        return typeof obj === _typeof.function;
+    }
+    exports.isFunction = isFunction;
+    /**
+     * @returns whether the provided parameters is are JavaScript Function or not.
+     */
+    function areFunctions() {
+        var objects = [];
+        for (var _i = 0; _i < arguments.length; _i++) {
+            objects[_i - 0] = arguments[_i];
+        }
+        return objects && objects.length > 0 && objects.every(isFunction);
+    }
+    exports.areFunctions = areFunctions;
+    function validateConstraints(args, constraints) {
+        var len = Math.min(args.length, constraints.length);
+        for (var i = 0; i < len; i++) {
+            validateConstraint(args[i], constraints[i]);
+        }
+    }
+    exports.validateConstraints = validateConstraints;
+    function validateConstraint(arg, constraint) {
+        if (isString(constraint)) {
+            if (typeof arg !== constraint) {
+                throw new Error("argument does not match constraint: typeof " + constraint);
+            }
+        }
+        else if (isFunction(constraint)) {
+            if (arg instanceof constraint) {
+                return;
+            }
+            if (arg && arg.constructor === constraint) {
+                return;
+            }
+            if (constraint.length === 1 && constraint.call(undefined, arg) === true) {
+                return;
+            }
+            throw new Error("argument does not match one of these constraints: arg instanceof constraint, arg.constructor === constraint, nor constraint(arg) === true");
+        }
+    }
+    exports.validateConstraint = validateConstraint;
+    /**
+     * Creates a new object of the provided class and will call the constructor with
+     * any additional argument supplied.
+     */
+    function create(ctor) {
+        var args = [];
+        for (var _i = 1; _i < arguments.length; _i++) {
+            args[_i - 1] = arguments[_i];
+        }
+        var obj = Object.create(ctor.prototype);
+        ctor.apply(obj, args);
+        return obj;
+    }
+    exports.create = create;
+});
+
+define(__m[7/*vs/base/common/errors*/], __M([1/*require*/,0/*exports*/,2/*vs/base/common/platform*/,3/*vs/base/common/types*/]), function (require, exports, platform, types) {
+    /*---------------------------------------------------------------------------------------------
+     *  Copyright (c) Microsoft Corporation. All rights reserved.
+     *  Licensed under the MIT License. See License.txt in the project root for license information.
+     *--------------------------------------------------------------------------------------------*/
+    'use strict';
+    // Avoid circular dependency on EventEmitter by implementing a subset of the interface.
+    var ErrorHandler = (function () {
+        function ErrorHandler() {
+            this.listeners = [];
+            this.unexpectedErrorHandler = function (e) {
+                platform.setTimeout(function () {
+                    if (e.stack) {
+                        throw new Error(e.message + '\n\n' + e.stack);
+                    }
+                    throw e;
+                }, 0);
+            };
+        }
+        ErrorHandler.prototype.addListener = function (listener) {
+            var _this = this;
+            this.listeners.push(listener);
+            return function () {
+                _this._removeListener(listener);
+            };
+        };
+        ErrorHandler.prototype.emit = function (e) {
+            this.listeners.forEach(function (listener) {
+                listener(e);
+            });
+        };
+        ErrorHandler.prototype._removeListener = function (listener) {
+            this.listeners.splice(this.listeners.indexOf(listener), 1);
+        };
+        ErrorHandler.prototype.setUnexpectedErrorHandler = function (newUnexpectedErrorHandler) {
+            this.unexpectedErrorHandler = newUnexpectedErrorHandler;
+        };
+        ErrorHandler.prototype.getUnexpectedErrorHandler = function () {
+            return this.unexpectedErrorHandler;
+        };
+        ErrorHandler.prototype.onUnexpectedError = function (e) {
+            this.unexpectedErrorHandler(e);
+            this.emit(e);
+        };
+        return ErrorHandler;
+    }());
+    exports.ErrorHandler = ErrorHandler;
+    exports.errorHandler = new ErrorHandler();
+    function setUnexpectedErrorHandler(newUnexpectedErrorHandler) {
+        exports.errorHandler.setUnexpectedErrorHandler(newUnexpectedErrorHandler);
+    }
+    exports.setUnexpectedErrorHandler = setUnexpectedErrorHandler;
+    function onUnexpectedError(e) {
+        // ignore errors from cancelled promises
+        if (!isPromiseCanceledError(e)) {
+            exports.errorHandler.onUnexpectedError(e);
+        }
+    }
+    exports.onUnexpectedError = onUnexpectedError;
+    function onUnexpectedPromiseError(promise) {
+        return promise.then(null, onUnexpectedError);
+    }
+    exports.onUnexpectedPromiseError = onUnexpectedPromiseError;
+    function transformErrorForSerialization(error) {
+        if (error instanceof Error) {
+            var name_1 = error.name, message = error.message;
+            var stack = error.stacktrace || error.stack;
+            return {
+                $isError: true,
+                name: name_1,
+                message: message,
+                stack: stack
+            };
+        }
+        // return as is
+        return error;
+    }
+    exports.transformErrorForSerialization = transformErrorForSerialization;
+    var canceledName = 'Canceled';
+    /**
+     * Checks if the given error is a promise in canceled state
+     */
+    function isPromiseCanceledError(error) {
+        return error instanceof Error && error.name === canceledName && error.message === canceledName;
+    }
+    exports.isPromiseCanceledError = isPromiseCanceledError;
+    /**
+     * Returns an error that signals cancellation.
+     */
+    function canceled() {
+        var error = new Error(canceledName);
+        error.name = error.message;
+        return error;
+    }
+    exports.canceled = canceled;
+    /**
+     * Returns an error that signals something is not implemented.
+     */
+    function notImplemented() {
+        return new Error('Not Implemented');
+    }
+    exports.notImplemented = notImplemented;
+    function illegalArgument(name) {
+        if (name) {
+            return new Error("Illegal argument: " + name);
+        }
+        else {
+            return new Error('Illegal argument');
+        }
+    }
+    exports.illegalArgument = illegalArgument;
+    function illegalState(name) {
+        if (name) {
+            return new Error("Illegal state: " + name);
+        }
+        else {
+            return new Error('Illegal state');
+        }
+    }
+    exports.illegalState = illegalState;
+    function readonly(name) {
+        return name
+            ? new Error("readonly property '" + name + " cannot be changed'")
+            : new Error('readonly property cannot be changed');
+    }
+    exports.readonly = readonly;
+    function create(message, options) {
+        if (options === void 0) { options = {}; }
+        var result = new Error(message);
+        if (types.isNumber(options.severity)) {
+            result.severity = options.severity;
+        }
+        if (options.actions) {
+            result.actions = options.actions;
+        }
+        return result;
+    }
+    exports.create = create;
+    function getErrorMessage(err) {
+        if (!err) {
+            return 'Error';
+        }
+        if (err.message) {
+            return err.message;
+        }
+        if (err.stack) {
+            return err.stack.split('\n')[0];
+        }
+        return String(err);
+    }
+    exports.getErrorMessage = getErrorMessage;
+});
+
+define(__m[9/*vs/base/common/objects*/], __M([1/*require*/,0/*exports*/,3/*vs/base/common/types*/]), function (require, exports, Types) {
+    /*---------------------------------------------------------------------------------------------
+     *  Copyright (c) Microsoft Corporation. All rights reserved.
+     *  Licensed under the MIT License. See License.txt in the project root for license information.
+     *--------------------------------------------------------------------------------------------*/
+    'use strict';
+    function clone(obj) {
+        if (!obj || typeof obj !== 'object') {
+            return obj;
+        }
+        if (obj instanceof RegExp) {
+            // See https://github.com/Microsoft/TypeScript/issues/10990
+            return obj;
+        }
+        var result = (Array.isArray(obj)) ? [] : {};
+        Object.keys(obj).forEach(function (key) {
+            if (obj[key] && typeof obj[key] === 'object') {
+                result[key] = clone(obj[key]);
+            }
+            else {
+                result[key] = obj[key];
+            }
+        });
+        return result;
+    }
+    exports.clone = clone;
+    function deepClone(obj) {
+        if (!obj || typeof obj !== 'object') {
+            return obj;
+        }
+        var result = (Array.isArray(obj)) ? [] : {};
+        Object.getOwnPropertyNames(obj).forEach(function (key) {
+            if (obj[key] && typeof obj[key] === 'object') {
+                result[key] = deepClone(obj[key]);
+            }
+            else {
+                result[key] = obj[key];
+            }
+        });
+        return result;
+    }
+    exports.deepClone = deepClone;
+    var hasOwnProperty = Object.prototype.hasOwnProperty;
+    function cloneAndChange(obj, changer) {
+        return _cloneAndChange(obj, changer, []);
+    }
+    exports.cloneAndChange = cloneAndChange;
+    function _cloneAndChange(obj, changer, encounteredObjects) {
+        if (Types.isUndefinedOrNull(obj)) {
+            return obj;
+        }
+        var changed = changer(obj);
+        if (typeof changed !== 'undefined') {
+            return changed;
+        }
+        if (Types.isArray(obj)) {
+            var r1 = [];
+            for (var i1 = 0; i1 < obj.length; i1++) {
+                r1.push(_cloneAndChange(obj[i1], changer, encounteredObjects));
+            }
+            return r1;
+        }
+        if (Types.isObject(obj)) {
+            if (encounteredObjects.indexOf(obj) >= 0) {
+                throw new Error('Cannot clone recursive data-structure');
+            }
+            encounteredObjects.push(obj);
+            var r2 = {};
+            for (var i2 in obj) {
+                if (hasOwnProperty.call(obj, i2)) {
+                    r2[i2] = _cloneAndChange(obj[i2], changer, encounteredObjects);
+                }
+            }
+            encounteredObjects.pop();
+            return r2;
+        }
+        return obj;
+    }
+    // DON'T USE THESE FUNCTION UNLESS YOU KNOW HOW CHROME
+    // WORKS... WE HAVE SEEN VERY WEIRD BEHAVIOUR WITH CHROME >= 37
+    ///**
+    // * Recursively call Object.freeze on object and any properties that are objects.
+    // */
+    //export function deepFreeze(obj:any):void {
+    //	Object.freeze(obj);
+    //	Object.keys(obj).forEach((key) => {
+    //		if(!(typeof obj[key] === 'object') || Object.isFrozen(obj[key])) {
+    //			return;
+    //		}
+    //
+    //		deepFreeze(obj[key]);
+    //	});
+    //	if(!Object.isFrozen(obj)) {
+    //		console.log('too warm');
+    //	}
+    //}
+    //
+    //export function deepSeal(obj:any):void {
+    //	Object.seal(obj);
+    //	Object.keys(obj).forEach((key) => {
+    //		if(!(typeof obj[key] === 'object') || Object.isSealed(obj[key])) {
+    //			return;
+    //		}
+    //
+    //		deepSeal(obj[key]);
+    //	});
+    //	if(!Object.isSealed(obj)) {
+    //		console.log('NOT sealed');
+    //	}
+    //}
+    /**
+     * Copies all properties of source into destination. The optional parameter "overwrite" allows to control
+     * if existing properties on the destination should be overwritten or not. Defaults to true (overwrite).
+     */
+    function mixin(destination, source, overwrite) {
+        if (overwrite === void 0) { overwrite = true; }
+        if (!Types.isObject(destination)) {
+            return source;
+        }
+        if (Types.isObject(source)) {
+            Object.keys(source).forEach(function (key) {
+                if (key in destination) {
+                    if (overwrite) {
+                        if (Types.isObject(destination[key]) && Types.isObject(source[key])) {
+                            mixin(destination[key], source[key], overwrite);
+                        }
+                        else {
+                            destination[key] = source[key];
+                        }
+                    }
+                }
+                else {
+                    destination[key] = source[key];
+                }
+            });
+        }
+        return destination;
+    }
+    exports.mixin = mixin;
+    function assign(destination) {
+        var sources = [];
+        for (var _i = 1; _i < arguments.length; _i++) {
+            sources[_i - 1] = arguments[_i];
+        }
+        sources.forEach(function (source) { return Object.keys(source).forEach(function (key) { return destination[key] = source[key]; }); });
+        return destination;
+    }
+    exports.assign = assign;
+    function toObject(arr, keyMap, valueMap) {
+        if (valueMap === void 0) { valueMap = function (x) { return x; }; }
+        return arr.reduce(function (o, d) { return assign(o, (_a = {}, _a[keyMap(d)] = valueMap(d), _a)); var _a; }, Object.create(null));
+    }
+    exports.toObject = toObject;
+    function equals(one, other) {
+        if (one === other) {
+            return true;
+        }
+        if (one === null || one === undefined || other === null || other === undefined) {
+            return false;
+        }
+        if (typeof one !== typeof other) {
+            return false;
+        }
+        if (typeof one !== 'object') {
+            return false;
+        }
+        if ((Array.isArray(one)) !== (Array.isArray(other))) {
+            return false;
+        }
+        var i, key;
+        if (Array.isArray(one)) {
+            if (one.length !== other.length) {
+                return false;
+            }
+            for (i = 0; i < one.length; i++) {
+                if (!equals(one[i], other[i])) {
+                    return false;
+                }
+            }
+        }
+        else {
+            var oneKeys = [];
+            for (key in one) {
+                oneKeys.push(key);
+            }
+            oneKeys.sort();
+            var otherKeys = [];
+            for (key in other) {
+                otherKeys.push(key);
+            }
+            otherKeys.sort();
+            if (!equals(oneKeys, otherKeys)) {
+                return false;
+            }
+            for (i = 0; i < oneKeys.length; i++) {
+                if (!equals(one[oneKeys[i]], other[oneKeys[i]])) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+    exports.equals = equals;
+    function ensureProperty(obj, property, defaultValue) {
+        if (typeof obj[property] === 'undefined') {
+            obj[property] = defaultValue;
+        }
+    }
+    exports.ensureProperty = ensureProperty;
+    function arrayToHash(array) {
+        var result = {};
+        for (var i = 0; i < array.length; ++i) {
+            result[array[i]] = true;
+        }
+        return result;
+    }
+    exports.arrayToHash = arrayToHash;
+    /**
+     * Given an array of strings, returns a function which, given a string
+     * returns true or false whether the string is in that array.
+     */
+    function createKeywordMatcher(arr, caseInsensitive) {
+        if (caseInsensitive === void 0) { caseInsensitive = false; }
+        if (caseInsensitive) {
+            arr = arr.map(function (x) { return x.toLowerCase(); });
+        }
+        var hash = arrayToHash(arr);
+        if (caseInsensitive) {
+            return function (word) {
+                return hash[word.toLowerCase()] !== undefined && hash.hasOwnProperty(word.toLowerCase());
+            };
+        }
+        else {
+            return function (word) {
+                return hash[word] !== undefined && hash.hasOwnProperty(word);
+            };
+        }
+    }
+    exports.createKeywordMatcher = createKeywordMatcher;
+    /**
+     * Started from TypeScript's __extends function to make a type a subclass of a specific class.
+     * Modified to work with properties already defined on the derivedClass, since we can't get TS
+     * to call this method before the constructor definition.
+     */
+    function derive(baseClass, derivedClass) {
+        for (var prop in baseClass) {
+            if (baseClass.hasOwnProperty(prop)) {
+                derivedClass[prop] = baseClass[prop];
+            }
+        }
+        derivedClass = derivedClass || function () { };
+        var basePrototype = baseClass.prototype;
+        var derivedPrototype = derivedClass.prototype;
+        derivedClass.prototype = Object.create(basePrototype);
+        for (var prop in derivedPrototype) {
+            if (derivedPrototype.hasOwnProperty(prop)) {
+                // handle getters and setters properly
+                Object.defineProperty(derivedClass.prototype, prop, Object.getOwnPropertyDescriptor(derivedPrototype, prop));
+            }
+        }
+        // Cast to any due to Bug 16188:PropertyDescriptor set and get function should be optional.
+        Object.defineProperty(derivedClass.prototype, 'constructor', { value: derivedClass, writable: true, configurable: true, enumerable: true });
+    }
+    exports.derive = derive;
+    /**
+     * Calls JSON.Stringify with a replacer to break apart any circular references.
+     * This prevents JSON.stringify from throwing the exception
+     *  "Uncaught TypeError: Converting circular structure to JSON"
+     */
+    function safeStringify(obj) {
+        var seen = [];
+        return JSON.stringify(obj, function (key, value) {
+            if (Types.isObject(value) || Array.isArray(value)) {
+                if (seen.indexOf(value) !== -1) {
+                    return '[Circular]';
+                }
+                else {
+                    seen.push(value);
+                }
+            }
+            return value;
+        });
+    }
+    exports.safeStringify = safeStringify;
+    function getOrDefault(obj, fn, defaultValue) {
+        if (defaultValue === void 0) { defaultValue = null; }
+        var result = fn(obj);
+        return typeof result === 'undefined' ? defaultValue : result;
+    }
+    exports.getOrDefault = getOrDefault;
+});
+
+define(__m[4/*vs/base/common/uri*/], __M([1/*require*/,0/*exports*/,2/*vs/base/common/platform*/]), function (require, exports, platform) {
+    /*---------------------------------------------------------------------------------------------
+     *  Copyright (c) Microsoft Corporation. All rights reserved.
+     *  Licensed under the MIT License. See License.txt in the project root for license information.
+     *--------------------------------------------------------------------------------------------*/
+    'use strict';
+    function _encode(ch) {
+        return '%' + ch.charCodeAt(0).toString(16).toUpperCase();
+    }
+    // see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/encodeURIComponent
+    function encodeURIComponent2(str) {
+        return encodeURIComponent(str).replace(/[!'()*]/g, _encode);
+    }
+    function encodeNoop(str) {
+        return str;
+    }
+    /**
+     * Uniform Resource Identifier (URI) http://tools.ietf.org/html/rfc3986.
+     * This class is a simple parser which creates the basic component paths
+     * (http://tools.ietf.org/html/rfc3986#section-3) with minimal validation
+     * and encoding.
+     *
+     *       foo://example.com:8042/over/there?name=ferret#nose
+     *       \_/   \______________/\_________/ \_________/ \__/
+     *        |           |            |            |        |
+     *     scheme     authority       path        query   fragment
+     *        |   _____________________|__
+     *       / \ /                        \
+     *       urn:example:animal:ferret:nose
+     *
+     *
+     */
+    var URI = (function () {
+        function URI() {
+            this._scheme = URI._empty;
+            this._authority = URI._empty;
+            this._path = URI._empty;
+            this._query = URI._empty;
+            this._fragment = URI._empty;
+            this._formatted = null;
+            this._fsPath = null;
+        }
+        URI.isUri = function (thing) {
+            if (thing instanceof URI) {
+                return true;
+            }
+            if (!thing) {
+                return false;
+            }
+            return typeof thing.authority === 'string'
+                && typeof thing.fragment === 'string'
+                && typeof thing.path === 'string'
+                && typeof thing.query === 'string'
+                && typeof thing.scheme === 'string';
+        };
+        Object.defineProperty(URI.prototype, "scheme", {
+            /**
+             * scheme is the 'http' part of 'http://www.msft.com/some/path?query#fragment'.
+             * The part before the first colon.
+             */
+            get: function () {
+                return this._scheme;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(URI.prototype, "authority", {
+            /**
+             * authority is the 'www.msft.com' part of 'http://www.msft.com/some/path?query#fragment'.
+             * The part between the first double slashes and the next slash.
+             */
+            get: function () {
+                return this._authority;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(URI.prototype, "path", {
+            /**
+             * path is the '/some/path' part of 'http://www.msft.com/some/path?query#fragment'.
+             */
+            get: function () {
+                return this._path;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(URI.prototype, "query", {
+            /**
+             * query is the 'query' part of 'http://www.msft.com/some/path?query#fragment'.
+             */
+            get: function () {
+                return this._query;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(URI.prototype, "fragment", {
+            /**
+             * fragment is the 'fragment' part of 'http://www.msft.com/some/path?query#fragment'.
+             */
+            get: function () {
+                return this._fragment;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(URI.prototype, "fsPath", {
+            // ---- filesystem path -----------------------
+            /**
+             * Returns a string representing the corresponding file system path of this URI.
+             * Will handle UNC paths and normalize windows drive letters to lower-case. Also
+             * uses the platform specific path separator. Will *not* validate the path for
+             * invalid characters and semantics. Will *not* look at the scheme of this URI.
+             */
+            get: function () {
+                if (!this._fsPath) {
+                    var value;
+                    if (this._authority && this._path && this.scheme === 'file') {
+                        // unc path: file://shares/c$/far/boo
+                        value = "//" + this._authority + this._path;
+                    }
+                    else if (URI._driveLetterPath.test(this._path)) {
+                        // windows drive letter: file:///c:/far/boo
+                        value = this._path[1].toLowerCase() + this._path.substr(2);
+                    }
+                    else {
+                        // other path
+                        value = this._path;
+                    }
+                    if (platform.isWindows) {
+                        value = value.replace(/\//g, '\\');
+                    }
+                    this._fsPath = value;
+                }
+                return this._fsPath;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        // ---- modify to new -------------------------
+        URI.prototype.with = function (change) {
+            if (!change) {
+                return this;
+            }
+            var scheme = change.scheme, authority = change.authority, path = change.path, query = change.query, fragment = change.fragment;
+            if (scheme === void 0) {
+                scheme = this.scheme;
+            }
+            else if (scheme === null) {
+                scheme = '';
+            }
+            if (authority === void 0) {
+                authority = this.authority;
+            }
+            else if (authority === null) {
+                authority = '';
+            }
+            if (path === void 0) {
+                path = this.path;
+            }
+            else if (path === null) {
+                path = '';
+            }
+            if (query === void 0) {
+                query = this.query;
+            }
+            else if (query === null) {
+                query = '';
+            }
+            if (fragment === void 0) {
+                fragment = this.fragment;
+            }
+            else if (fragment === null) {
+                fragment = '';
+            }
+            if (scheme === this.scheme
+                && authority === this.authority
+                && path === this.path
+                && query === this.query
+                && fragment === this.fragment) {
+                return this;
+            }
+            var ret = new URI();
+            ret._scheme = scheme;
+            ret._authority = authority;
+            ret._path = path;
+            ret._query = query;
+            ret._fragment = fragment;
+            URI._validate(ret);
+            return ret;
+        };
+        // ---- parse & validate ------------------------
+        URI.parse = function (value) {
+            var ret = new URI();
+            var data = URI._parseComponents(value);
+            ret._scheme = data.scheme;
+            ret._authority = decodeURIComponent(data.authority);
+            ret._path = decodeURIComponent(data.path);
+            ret._query = decodeURIComponent(data.query);
+            ret._fragment = decodeURIComponent(data.fragment);
+            URI._validate(ret);
+            return ret;
+        };
+        URI.file = function (path) {
+            var ret = new URI();
+            ret._scheme = 'file';
+            // normalize to fwd-slashes
+            path = path.replace(/\\/g, URI._slash);
+            // check for authority as used in UNC shares
+            // or use the path as given
+            if (path[0] === URI._slash && path[0] === path[1]) {
+                var idx = path.indexOf(URI._slash, 2);
+                if (idx === -1) {
+                    ret._authority = path.substring(2);
+                }
+                else {
+                    ret._authority = path.substring(2, idx);
+                    ret._path = path.substring(idx);
+                }
+            }
+            else {
+                ret._path = path;
+            }
+            // Ensure that path starts with a slash
+            // or that it is at least a slash
+            if (ret._path[0] !== URI._slash) {
+                ret._path = URI._slash + ret._path;
+            }
+            URI._validate(ret);
+            return ret;
+        };
+        URI._parseComponents = function (value) {
+            var ret = {
+                scheme: URI._empty,
+                authority: URI._empty,
+                path: URI._empty,
+                query: URI._empty,
+                fragment: URI._empty,
+            };
+            var match = URI._regexp.exec(value);
+            if (match) {
+                ret.scheme = match[2] || ret.scheme;
+                ret.authority = match[4] || ret.authority;
+                ret.path = match[5] || ret.path;
+                ret.query = match[7] || ret.query;
+                ret.fragment = match[9] || ret.fragment;
+            }
+            return ret;
+        };
+        URI.from = function (components) {
+            return new URI().with(components);
+        };
+        URI._validate = function (ret) {
+            // scheme, https://tools.ietf.org/html/rfc3986#section-3.1
+            // ALPHA *( ALPHA / DIGIT / "+" / "-" / "." )
+            if (ret.scheme && !URI._schemePattern.test(ret.scheme)) {
+                throw new Error('[UriError]: Scheme contains illegal characters.');
+            }
+            // path, http://tools.ietf.org/html/rfc3986#section-3.3
+            // If a URI contains an authority component, then the path component
+            // must either be empty or begin with a slash ("/") character.  If a URI
+            // does not contain an authority component, then the path cannot begin
+            // with two slash characters ("//").
+            if (ret.path) {
+                if (ret.authority) {
+                    if (!URI._singleSlashStart.test(ret.path)) {
+                        throw new Error('[UriError]: If a URI contains an authority component, then the path component must either be empty or begin with a slash ("/") character');
+                    }
+                }
+                else {
+                    if (URI._doubleSlashStart.test(ret.path)) {
+                        throw new Error('[UriError]: If a URI does not contain an authority component, then the path cannot begin with two slash characters ("//")');
+                    }
+                }
+            }
+        };
+        // ---- printing/externalize ---------------------------
+        /**
+         *
+         * @param skipEncoding Do not encode the result, default is `false`
+         */
+        URI.prototype.toString = function (skipEncoding) {
+            if (skipEncoding === void 0) { skipEncoding = false; }
+            if (!skipEncoding) {
+                if (!this._formatted) {
+                    this._formatted = URI._asFormatted(this, false);
+                }
+                return this._formatted;
+            }
+            else {
+                // we don't cache that
+                return URI._asFormatted(this, true);
+            }
+        };
+        URI._asFormatted = function (uri, skipEncoding) {
+            var encoder = !skipEncoding
+                ? encodeURIComponent2
+                : encodeNoop;
+            var parts = [];
+            var scheme = uri.scheme, authority = uri.authority, path = uri.path, query = uri.query, fragment = uri.fragment;
+            if (scheme) {
+                parts.push(scheme, ':');
+            }
+            if (authority || scheme === 'file') {
+                parts.push('//');
+            }
+            if (authority) {
+                authority = authority.toLowerCase();
+                var idx = authority.indexOf(':');
+                if (idx === -1) {
+                    parts.push(encoder(authority));
+                }
+                else {
+                    parts.push(encoder(authority.substr(0, idx)), authority.substr(idx));
+                }
+            }
+            if (path) {
+                // lower-case windows drive letters in /C:/fff or C:/fff
+                var m = URI._upperCaseDrive.exec(path);
+                if (m) {
+                    if (m[1]) {
+                        path = '/' + m[2].toLowerCase() + path.substr(3); // "/c:".length === 3
+                    }
+                    else {
+                        path = m[2].toLowerCase() + path.substr(2); // // "c:".length === 2
+                    }
+                }
+                // encode every segement but not slashes
+                // make sure that # and ? are always encoded
+                // when occurring in paths - otherwise the result
+                // cannot be parsed back again
+                var lastIdx = 0;
+                while (true) {
+                    var idx = path.indexOf(URI._slash, lastIdx);
+                    if (idx === -1) {
+                        parts.push(encoder(path.substring(lastIdx)).replace(/[#?]/, _encode));
+                        break;
+                    }
+                    parts.push(encoder(path.substring(lastIdx, idx)).replace(/[#?]/, _encode), URI._slash);
+                    lastIdx = idx + 1;
+                }
+                ;
+            }
+            if (query) {
+                parts.push('?', encoder(query));
+            }
+            if (fragment) {
+                parts.push('#', encoder(fragment));
+            }
+            return parts.join(URI._empty);
+        };
+        URI.prototype.toJSON = function () {
+            return {
+                scheme: this.scheme,
+                authority: this.authority,
+                path: this.path,
+                fsPath: this.fsPath,
+                query: this.query,
+                fragment: this.fragment,
+                external: this.toString(),
+                $mid: 1
+            };
+        };
+        URI.revive = function (data) {
+            var result = new URI();
+            result._scheme = data.scheme;
+            result._authority = data.authority;
+            result._path = data.path;
+            result._query = data.query;
+            result._fragment = data.fragment;
+            result._fsPath = data.fsPath;
+            result._formatted = data.external;
+            URI._validate(result);
+            return result;
+        };
+        URI._empty = '';
+        URI._slash = '/';
+        URI._regexp = /^(([^:/?#]+?):)?(\/\/([^/?#]*))?([^?#]*)(\?([^#]*))?(#(.*))?/;
+        URI._driveLetterPath = /^\/[a-zA-z]:/;
+        URI._upperCaseDrive = /^(\/)?([A-Z]:)/;
+        URI._schemePattern = /^\w[\w\d+.-]*$/;
+        URI._singleSlashStart = /^\//;
+        URI._doubleSlashStart = /^\/\//;
+        return URI;
+    }());
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.default = URI;
+});
+
+/**
+ * Extracted from https://github.com/winjs/winjs
+ * Version: 4.4.0(ec3258a9f3a36805a187848984e3bb938044178d)
+ * Copyright (c) Microsoft Corporation.
+ * All Rights Reserved.
+ * Licensed under the MIT License.
+ */
+(function() {
+
+var _modules = {};
+_modules["WinJS/Core/_WinJS"] = {};
+
+var _winjs = function(moduleId, deps, factory) {
+    var exports = {};
+    var exportsPassedIn = false;
+
+    var depsValues = deps.map(function(dep) {
+        if (dep === 'exports') {
+            exportsPassedIn = true;
+            return exports;
+        }
+        return _modules[dep];
+    });
+
+    var result = factory.apply({}, depsValues);
+
+    _modules[moduleId] = exportsPassedIn ? exports : result;
+};
+
+
+_winjs("WinJS/Core/_Global", [], function () {
+    "use strict";
+
+    // Appease jshint
+    /* global window, self, global */
+
+    var globalObject =
+        typeof window !== 'undefined' ? window :
+        typeof self !== 'undefined' ? self :
+        typeof global !== 'undefined' ? global :
+        {};
+    return globalObject;
+});
+
+_winjs("WinJS/Core/_BaseCoreUtils", ["WinJS/Core/_Global"], function baseCoreUtilsInit(_Global) {
+    "use strict";
+
+    var hasWinRT = !!_Global.Windows;
+
+    function markSupportedForProcessing(func) {
+        /// <signature helpKeyword="WinJS.Utilities.markSupportedForProcessing">
+        /// <summary locid="WinJS.Utilities.markSupportedForProcessing">
+        /// Marks a function as being compatible with declarative processing, such as WinJS.UI.processAll
+        /// or WinJS.Binding.processAll.
+        /// </summary>
+        /// <param name="func" type="Function" locid="WinJS.Utilities.markSupportedForProcessing_p:func">
+        /// The function to be marked as compatible with declarative processing.
+        /// </param>
+        /// <returns type="Function" locid="WinJS.Utilities.markSupportedForProcessing_returnValue">
+        /// The input function.
+        /// </returns>
+        /// </signature>
+        func.supportedForProcessing = true;
+        return func;
+    }
+
+    return {
+        hasWinRT: hasWinRT,
+        markSupportedForProcessing: markSupportedForProcessing,
+        _setImmediate: _Global.setImmediate ? _Global.setImmediate.bind(_Global) : function (handler) {
+            _Global.setTimeout(handler, 0);
+        }
+    };
+});
+_winjs("WinJS/Core/_WriteProfilerMark", ["WinJS/Core/_Global"], function profilerInit(_Global) {
+    "use strict";
+
+    return _Global.msWriteProfilerMark || function () { };
+});
+_winjs("WinJS/Core/_Base", ["WinJS/Core/_WinJS","WinJS/Core/_Global","WinJS/Core/_BaseCoreUtils","WinJS/Core/_WriteProfilerMark"], function baseInit(_WinJS, _Global, _BaseCoreUtils, _WriteProfilerMark) {
+    "use strict";
+
+    function initializeProperties(target, members, prefix) {
+        var keys = Object.keys(members);
+        var isArray = Array.isArray(target);
+        var properties;
+        var i, len;
+        for (i = 0, len = keys.length; i < len; i++) {
+            var key = keys[i];
+            var enumerable = key.charCodeAt(0) !== /*_*/95;
+            var member = members[key];
+            if (member && typeof member === 'object') {
+                if (member.value !== undefined || typeof member.get === 'function' || typeof member.set === 'function') {
+                    if (member.enumerable === undefined) {
+                        member.enumerable = enumerable;
+                    }
+                    if (prefix && member.setName && typeof member.setName === 'function') {
+                        member.setName(prefix + "." + key);
+                    }
+                    properties = properties || {};
+                    properties[key] = member;
+                    continue;
+                }
+            }
+            if (!enumerable) {
+                properties = properties || {};
+                properties[key] = { value: member, enumerable: enumerable, configurable: true, writable: true };
+                continue;
+            }
+            if (isArray) {
+                target.forEach(function (target) {
+                    target[key] = member;
+                });
+            } else {
+                target[key] = member;
+            }
+        }
+        if (properties) {
+            if (isArray) {
+                target.forEach(function (target) {
+                    Object.defineProperties(target, properties);
+                });
+            } else {
+                Object.defineProperties(target, properties);
+            }
+        }
+    }
+
+    (function () {
+
+        var _rootNamespace = _WinJS;
+        if (!_rootNamespace.Namespace) {
+            _rootNamespace.Namespace = Object.create(Object.prototype);
+        }
+
+        function createNamespace(parentNamespace, name) {
+            var currentNamespace = parentNamespace || {};
+            if (name) {
+                var namespaceFragments = name.split(".");
+                if (currentNamespace === _Global && namespaceFragments[0] === "WinJS") {
+                    currentNamespace = _WinJS;
+                    namespaceFragments.splice(0, 1);
+                }
+                for (var i = 0, len = namespaceFragments.length; i < len; i++) {
+                    var namespaceName = namespaceFragments[i];
+                    if (!currentNamespace[namespaceName]) {
+                        Object.defineProperty(currentNamespace, namespaceName,
+                            { value: {}, writable: false, enumerable: true, configurable: true }
+                        );
+                    }
+                    currentNamespace = currentNamespace[namespaceName];
+                }
+            }
+            return currentNamespace;
+        }
+
+        function defineWithParent(parentNamespace, name, members) {
+            /// <signature helpKeyword="WinJS.Namespace.defineWithParent">
+            /// <summary locid="WinJS.Namespace.defineWithParent">
+            /// Defines a new namespace with the specified name under the specified parent namespace.
+            /// </summary>
+            /// <param name="parentNamespace" type="Object" locid="WinJS.Namespace.defineWithParent_p:parentNamespace">
+            /// The parent namespace.
+            /// </param>
+            /// <param name="name" type="String" locid="WinJS.Namespace.defineWithParent_p:name">
+            /// The name of the new namespace.
+            /// </param>
+            /// <param name="members" type="Object" locid="WinJS.Namespace.defineWithParent_p:members">
+            /// The members of the new namespace.
+            /// </param>
+            /// <returns type="Object" locid="WinJS.Namespace.defineWithParent_returnValue">
+            /// The newly-defined namespace.
+            /// </returns>
+            /// </signature>
+            var currentNamespace = createNamespace(parentNamespace, name);
+
+            if (members) {
+                initializeProperties(currentNamespace, members, name || "<ANONYMOUS>");
+            }
+
+            return currentNamespace;
+        }
+
+        function define(name, members) {
+            /// <signature helpKeyword="WinJS.Namespace.define">
+            /// <summary locid="WinJS.Namespace.define">
+            /// Defines a new namespace with the specified name.
+            /// </summary>
+            /// <param name="name" type="String" locid="WinJS.Namespace.define_p:name">
+            /// The name of the namespace. This could be a dot-separated name for nested namespaces.
+            /// </param>
+            /// <param name="members" type="Object" locid="WinJS.Namespace.define_p:members">
+            /// The members of the new namespace.
+            /// </param>
+            /// <returns type="Object" locid="WinJS.Namespace.define_returnValue">
+            /// The newly-defined namespace.
+            /// </returns>
+            /// </signature>
+            return defineWithParent(_Global, name, members);
+        }
+
+        var LazyStates = {
+            uninitialized: 1,
+            working: 2,
+            initialized: 3,
+        };
+
+        function lazy(f) {
+            var name;
+            var state = LazyStates.uninitialized;
+            var result;
+            return {
+                setName: function (value) {
+                    name = value;
+                },
+                get: function () {
+                    switch (state) {
+                        case LazyStates.initialized:
+                            return result;
+
+                        case LazyStates.uninitialized:
+                            state = LazyStates.working;
+                            try {
+                                _WriteProfilerMark("WinJS.Namespace._lazy:" + name + ",StartTM");
+                                result = f();
+                            } finally {
+                                _WriteProfilerMark("WinJS.Namespace._lazy:" + name + ",StopTM");
+                                state = LazyStates.uninitialized;
+                            }
+                            f = null;
+                            state = LazyStates.initialized;
+                            return result;
+
+                        case LazyStates.working:
+                            throw "Illegal: reentrancy on initialization";
+
+                        default:
+                            throw "Illegal";
+                    }
+                },
+                set: function (value) {
+                    switch (state) {
+                        case LazyStates.working:
+                            throw "Illegal: reentrancy on initialization";
+
+                        default:
+                            state = LazyStates.initialized;
+                            result = value;
+                            break;
+                    }
+                },
+                enumerable: true,
+                configurable: true,
+            };
+        }
+
+        // helper for defining AMD module members
+        function moduleDefine(exports, name, members) {
+            var target = [exports];
+            var publicNS = null;
+            if (name) {
+                publicNS = createNamespace(_Global, name);
+                target.push(publicNS);
+            }
+            initializeProperties(target, members, name || "<ANONYMOUS>");
+            return publicNS;
+        }
+
+        // Establish members of the "WinJS.Namespace" namespace
+        Object.defineProperties(_rootNamespace.Namespace, {
+
+            defineWithParent: { value: defineWithParent, writable: true, enumerable: true, configurable: true },
+
+            define: { value: define, writable: true, enumerable: true, configurable: true },
+
+            _lazy: { value: lazy, writable: true, enumerable: true, configurable: true },
+
+            _moduleDefine: { value: moduleDefine, writable: true, enumerable: true, configurable: true }
+
+        });
+
+    })();
+
+    (function () {
+
+        function define(constructor, instanceMembers, staticMembers) {
+            /// <signature helpKeyword="WinJS.Class.define">
+            /// <summary locid="WinJS.Class.define">
+            /// Defines a class using the given constructor and the specified instance members.
+            /// </summary>
+            /// <param name="constructor" type="Function" locid="WinJS.Class.define_p:constructor">
+            /// A constructor function that is used to instantiate this class.
+            /// </param>
+            /// <param name="instanceMembers" type="Object" locid="WinJS.Class.define_p:instanceMembers">
+            /// The set of instance fields, properties, and methods made available on the class.
+            /// </param>
+            /// <param name="staticMembers" type="Object" locid="WinJS.Class.define_p:staticMembers">
+            /// The set of static fields, properties, and methods made available on the class.
+            /// </param>
+            /// <returns type="Function" locid="WinJS.Class.define_returnValue">
+            /// The newly-defined class.
+            /// </returns>
+            /// </signature>
+            constructor = constructor || function () { };
+            _BaseCoreUtils.markSupportedForProcessing(constructor);
+            if (instanceMembers) {
+                initializeProperties(constructor.prototype, instanceMembers);
+            }
+            if (staticMembers) {
+                initializeProperties(constructor, staticMembers);
+            }
+            return constructor;
+        }
+
+        function derive(baseClass, constructor, instanceMembers, staticMembers) {
+            /// <signature helpKeyword="WinJS.Class.derive">
+            /// <summary locid="WinJS.Class.derive">
+            /// Creates a sub-class based on the supplied baseClass parameter, using prototypal inheritance.
+            /// </summary>
+            /// <param name="baseClass" type="Function" locid="WinJS.Class.derive_p:baseClass">
+            /// The class to inherit from.
+            /// </param>
+            /// <param name="constructor" type="Function" locid="WinJS.Class.derive_p:constructor">
+            /// A constructor function that is used to instantiate this class.
+            /// </param>
+            /// <param name="instanceMembers" type="Object" locid="WinJS.Class.derive_p:instanceMembers">
+            /// The set of instance fields, properties, and methods to be made available on the class.
+            /// </param>
+            /// <param name="staticMembers" type="Object" locid="WinJS.Class.derive_p:staticMembers">
+            /// The set of static fields, properties, and methods to be made available on the class.
+            /// </param>
+            /// <returns type="Function" locid="WinJS.Class.derive_returnValue">
+            /// The newly-defined class.
+            /// </returns>
+            /// </signature>
+            if (baseClass) {
+                constructor = constructor || function () { };
+                var basePrototype = baseClass.prototype;
+                constructor.prototype = Object.create(basePrototype);
+                _BaseCoreUtils.markSupportedForProcessing(constructor);
+                Object.defineProperty(constructor.prototype, "constructor", { value: constructor, writable: true, configurable: true, enumerable: true });
+                if (instanceMembers) {
+                    initializeProperties(constructor.prototype, instanceMembers);
+                }
+                if (staticMembers) {
+                    initializeProperties(constructor, staticMembers);
+                }
+                return constructor;
+            } else {
+                return define(constructor, instanceMembers, staticMembers);
+            }
+        }
+
+        function mix(constructor) {
+            /// <signature helpKeyword="WinJS.Class.mix">
+            /// <summary locid="WinJS.Class.mix">
+            /// Defines a class using the given constructor and the union of the set of instance members
+            /// specified by all the mixin objects. The mixin parameter list is of variable length.
+            /// </summary>
+            /// <param name="constructor" locid="WinJS.Class.mix_p:constructor">
+            /// A constructor function that is used to instantiate this class.
+            /// </param>
+            /// <returns type="Function" locid="WinJS.Class.mix_returnValue">
+            /// The newly-defined class.
+            /// </returns>
+            /// </signature>
+            constructor = constructor || function () { };
+            var i, len;
+            for (i = 1, len = arguments.length; i < len; i++) {
+                initializeProperties(constructor.prototype, arguments[i]);
+            }
+            return constructor;
+        }
+
+        // Establish members of "WinJS.Class" namespace
+        _WinJS.Namespace.define("WinJS.Class", {
+            define: define,
+            derive: derive,
+            mix: mix
+        });
+
+    })();
+
+    return {
+        Namespace: _WinJS.Namespace,
+        Class: _WinJS.Class
+    };
+
+});
+_winjs("WinJS/Core/_ErrorFromName", ["WinJS/Core/_Base"], function errorsInit(_Base) {
+    "use strict";
+
+    var ErrorFromName = _Base.Class.derive(Error, function (name, message) {
+        /// <signature helpKeyword="WinJS.ErrorFromName">
+        /// <summary locid="WinJS.ErrorFromName">
+        /// Creates an Error object with the specified name and message properties.
+        /// </summary>
+        /// <param name="name" type="String" locid="WinJS.ErrorFromName_p:name">The name of this error. The name is meant to be consumed programmatically and should not be localized.</param>
+        /// <param name="message" type="String" optional="true" locid="WinJS.ErrorFromName_p:message">The message for this error. The message is meant to be consumed by humans and should be localized.</param>
+        /// <returns type="Error" locid="WinJS.ErrorFromName_returnValue">Error instance with .name and .message properties populated</returns>
+        /// </signature>
+        this.name = name;
+        this.message = message || name;
+    }, {
+        /* empty */
+    }, {
+        supportedForProcessing: false,
+    });
+
+    _Base.Namespace.define("WinJS", {
+        // ErrorFromName establishes a simple pattern for returning error codes.
+        //
+        ErrorFromName: ErrorFromName
+    });
+
+    return ErrorFromName;
+
+});
+
+
+_winjs("WinJS/Core/_Events", ["exports","WinJS/Core/_Base"], function eventsInit(exports, _Base) {
+    "use strict";
+
+
+    function createEventProperty(name) {
+        var eventPropStateName = "_on" + name + "state";
+
+        return {
+            get: function () {
+                var state = this[eventPropStateName];
+                return state && state.userHandler;
+            },
+            set: function (handler) {
+                var state = this[eventPropStateName];
+                if (handler) {
+                    if (!state) {
+                        state = { wrapper: function (evt) { return state.userHandler(evt); }, userHandler: handler };
+                        Object.defineProperty(this, eventPropStateName, { value: state, enumerable: false, writable:true, configurable: true });
+                        this.addEventListener(name, state.wrapper, false);
+                    }
+                    state.userHandler = handler;
+                } else if (state) {
+                    this.removeEventListener(name, state.wrapper, false);
+                    this[eventPropStateName] = null;
+                }
+            },
+            enumerable: true
+        };
+    }
+
+    function createEventProperties() {
+        /// <signature helpKeyword="WinJS.Utilities.createEventProperties">
+        /// <summary locid="WinJS.Utilities.createEventProperties">
+        /// Creates an object that has one property for each name passed to the function.
+        /// </summary>
+        /// <param name="events" locid="WinJS.Utilities.createEventProperties_p:events">
+        /// A variable list of property names.
+        /// </param>
+        /// <returns type="Object" locid="WinJS.Utilities.createEventProperties_returnValue">
+        /// The object with the specified properties. The names of the properties are prefixed with 'on'.
+        /// </returns>
+        /// </signature>
+        var props = {};
+        for (var i = 0, len = arguments.length; i < len; i++) {
+            var name = arguments[i];
+            props["on" + name] = createEventProperty(name);
+        }
+        return props;
+    }
+
+    var EventMixinEvent = _Base.Class.define(
+        function EventMixinEvent_ctor(type, detail, target) {
+            this.detail = detail;
+            this.target = target;
+            this.timeStamp = Date.now();
+            this.type = type;
+        },
+        {
+            bubbles: { value: false, writable: false },
+            cancelable: { value: false, writable: false },
+            currentTarget: {
+                get: function () { return this.target; }
+            },
+            defaultPrevented: {
+                get: function () { return this._preventDefaultCalled; }
+            },
+            trusted: { value: false, writable: false },
+            eventPhase: { value: 0, writable: false },
+            target: null,
+            timeStamp: null,
+            type: null,
+
+            preventDefault: function () {
+                this._preventDefaultCalled = true;
+            },
+            stopImmediatePropagation: function () {
+                this._stopImmediatePropagationCalled = true;
+            },
+            stopPropagation: function () {
+            }
+        }, {
+            supportedForProcessing: false,
+        }
+    );
+
+    var eventMixin = {
+        _listeners: null,
+
+        addEventListener: function (type, listener, useCapture) {
+            /// <signature helpKeyword="WinJS.Utilities.eventMixin.addEventListener">
+            /// <summary locid="WinJS.Utilities.eventMixin.addEventListener">
+            /// Adds an event listener to the control.
+            /// </summary>
+            /// <param name="type" locid="WinJS.Utilities.eventMixin.addEventListener_p:type">
+            /// The type (name) of the event.
+            /// </param>
+            /// <param name="listener" locid="WinJS.Utilities.eventMixin.addEventListener_p:listener">
+            /// The listener to invoke when the event is raised.
+            /// </param>
+            /// <param name="useCapture" locid="WinJS.Utilities.eventMixin.addEventListener_p:useCapture">
+            /// if true initiates capture, otherwise false.
+            /// </param>
+            /// </signature>
+            useCapture = useCapture || false;
+            this._listeners = this._listeners || {};
+            var eventListeners = (this._listeners[type] = this._listeners[type] || []);
+            for (var i = 0, len = eventListeners.length; i < len; i++) {
+                var l = eventListeners[i];
+                if (l.useCapture === useCapture && l.listener === listener) {
+                    return;
+                }
+            }
+            eventListeners.push({ listener: listener, useCapture: useCapture });
+        },
+        dispatchEvent: function (type, details) {
+            /// <signature helpKeyword="WinJS.Utilities.eventMixin.dispatchEvent">
+            /// <summary locid="WinJS.Utilities.eventMixin.dispatchEvent">
+            /// Raises an event of the specified type and with the specified additional properties.
+            /// </summary>
+            /// <param name="type" locid="WinJS.Utilities.eventMixin.dispatchEvent_p:type">
+            /// The type (name) of the event.
+            /// </param>
+            /// <param name="details" locid="WinJS.Utilities.eventMixin.dispatchEvent_p:details">
+            /// The set of additional properties to be attached to the event object when the event is raised.
+            /// </param>
+            /// <returns type="Boolean" locid="WinJS.Utilities.eventMixin.dispatchEvent_returnValue">
+            /// true if preventDefault was called on the event.
+            /// </returns>
+            /// </signature>
+            var listeners = this._listeners && this._listeners[type];
+            if (listeners) {
+                var eventValue = new EventMixinEvent(type, details, this);
+                // Need to copy the array to protect against people unregistering while we are dispatching
+                listeners = listeners.slice(0, listeners.length);
+                for (var i = 0, len = listeners.length; i < len && !eventValue._stopImmediatePropagationCalled; i++) {
+                    listeners[i].listener(eventValue);
+                }
+                return eventValue.defaultPrevented || false;
+            }
+            return false;
+        },
+        removeEventListener: function (type, listener, useCapture) {
+            /// <signature helpKeyword="WinJS.Utilities.eventMixin.removeEventListener">
+            /// <summary locid="WinJS.Utilities.eventMixin.removeEventListener">
+            /// Removes an event listener from the control.
+            /// </summary>
+            /// <param name="type" locid="WinJS.Utilities.eventMixin.removeEventListener_p:type">
+            /// The type (name) of the event.
+            /// </param>
+            /// <param name="listener" locid="WinJS.Utilities.eventMixin.removeEventListener_p:listener">
+            /// The listener to remove.
+            /// </param>
+            /// <param name="useCapture" locid="WinJS.Utilities.eventMixin.removeEventListener_p:useCapture">
+            /// Specifies whether to initiate capture.
+            /// </param>
+            /// </signature>
+            useCapture = useCapture || false;
+            var listeners = this._listeners && this._listeners[type];
+            if (listeners) {
+                for (var i = 0, len = listeners.length; i < len; i++) {
+                    var l = listeners[i];
+                    if (l.listener === listener && l.useCapture === useCapture) {
+                        listeners.splice(i, 1);
+                        if (listeners.length === 0) {
+                            delete this._listeners[type];
+                        }
+                        // Only want to remove one element for each call to removeEventListener
+                        break;
+                    }
+                }
+            }
+        }
+    };
+
+    _Base.Namespace._moduleDefine(exports, "WinJS.Utilities", {
+        _createEventProperty: createEventProperty,
+        createEventProperties: createEventProperties,
+        eventMixin: eventMixin
+    });
+
+});
+
+
+_winjs("WinJS/Core/_Trace", ["WinJS/Core/_Global"], function traceInit(_Global) {
+    "use strict";
+
+    function nop(v) {
+        return v;
+    }
+
+    return {
+        _traceAsyncOperationStarting: (_Global.Debug && _Global.Debug.msTraceAsyncOperationStarting && _Global.Debug.msTraceAsyncOperationStarting.bind(_Global.Debug)) || nop,
+        _traceAsyncOperationCompleted: (_Global.Debug && _Global.Debug.msTraceAsyncOperationCompleted && _Global.Debug.msTraceAsyncOperationCompleted.bind(_Global.Debug)) || nop,
+        _traceAsyncCallbackStarting: (_Global.Debug && _Global.Debug.msTraceAsyncCallbackStarting && _Global.Debug.msTraceAsyncCallbackStarting.bind(_Global.Debug)) || nop,
+        _traceAsyncCallbackCompleted: (_Global.Debug && _Global.Debug.msTraceAsyncCallbackCompleted && _Global.Debug.msTraceAsyncCallbackCompleted.bind(_Global.Debug)) || nop
+    };
+});
+_winjs("WinJS/Promise/_StateMachine", ["WinJS/Core/_Global","WinJS/Core/_BaseCoreUtils","WinJS/Core/_Base","WinJS/Core/_ErrorFromName","WinJS/Core/_Events","WinJS/Core/_Trace"], function promiseStateMachineInit(_Global, _BaseCoreUtils, _Base, _ErrorFromName, _Events, _Trace) {
+    "use strict";
+
+    _Global.Debug && (_Global.Debug.setNonUserCodeExceptions = true);
+
+    var ListenerType = _Base.Class.mix(_Base.Class.define(null, { /*empty*/ }, { supportedForProcessing: false }), _Events.eventMixin);
+    var promiseEventListeners = new ListenerType();
+    // make sure there is a listeners collection so that we can do a more trivial check below
+    promiseEventListeners._listeners = {};
+    var errorET = "error";
+    var canceledName = "Canceled";
+    var tagWithStack = false;
+    var tag = {
+        promise: 0x01,
+        thenPromise: 0x02,
+        errorPromise: 0x04,
+        exceptionPromise: 0x08,
+        completePromise: 0x10,
+    };
+    tag.all = tag.promise | tag.thenPromise | tag.errorPromise | tag.exceptionPromise | tag.completePromise;
+
+    //
+    // Global error counter, for each error which enters the system we increment this once and then
+    // the error number travels with the error as it traverses the tree of potential handlers.
+    //
+    // When someone has registered to be told about errors (WinJS.Promise.callonerror) promises
+    // which are in error will get tagged with a ._errorId field. This tagged field is the
+    // contract by which nested promises with errors will be identified as chaining for the
+    // purposes of the callonerror semantics. If a nested promise in error is encountered without
+    // a ._errorId it will be assumed to be foreign and treated as an interop boundary and
+    // a new error id will be minted.
+    //
+    var error_number = 1;
+
+    //
+    // The state machine has a interesting hiccup in it with regards to notification, in order
+    // to flatten out notification and avoid recursion for synchronous completion we have an
+    // explicit set of *_notify states which are responsible for notifying their entire tree
+    // of children. They can do this because they know that immediate children are always
+    // ThenPromise instances and we can therefore reach into their state to access the
+    // _listeners collection.
+    //
+    // So, what happens is that a Promise will be fulfilled through the _completed or _error
+    // messages at which point it will enter a *_notify state and be responsible for to move
+    // its children into an (as appropriate) success or error state and also notify that child's
+    // listeners of the state transition, until leaf notes are reached.
+    //
+
+    var state_created,              // -> working
+        state_working,              // -> error | error_notify | success | success_notify | canceled | waiting
+        state_waiting,              // -> error | error_notify | success | success_notify | waiting_canceled
+        state_waiting_canceled,     // -> error | error_notify | success | success_notify | canceling
+        state_canceled,             // -> error | error_notify | success | success_notify | canceling
+        state_canceling,            // -> error_notify
+        state_success_notify,       // -> success
+        state_success,              // -> .
+        state_error_notify,         // -> error
+        state_error;                // -> .
+
+    // Noop function, used in the various states to indicate that they don't support a given
+    // message. Named with the somewhat cute name '_' because it reads really well in the states.
+
+    function _() { }
+
+    // Initial state
+    //
+    state_created = {
+        name: "created",
+        enter: function (promise) {
+            promise._setState(state_working);
+        },
+        cancel: _,
+        done: _,
+        then: _,
+        _completed: _,
+        _error: _,
+        _notify: _,
+        _progress: _,
+        _setCompleteValue: _,
+        _setErrorValue: _
+    };
+
+    // Ready state, waiting for a message (completed/error/progress), able to be canceled
+    //
+    state_working = {
+        name: "working",
+        enter: _,
+        cancel: function (promise) {
+            promise._setState(state_canceled);
+        },
+        done: done,
+        then: then,
+        _completed: completed,
+        _error: error,
+        _notify: _,
+        _progress: progress,
+        _setCompleteValue: setCompleteValue,
+        _setErrorValue: setErrorValue
+    };
+
+    // Waiting state, if a promise is completed with a value which is itself a promise
+    // (has a then() method) it signs up to be informed when that child promise is
+    // fulfilled at which point it will be fulfilled with that value.
+    //
+    state_waiting = {
+        name: "waiting",
+        enter: function (promise) {
+            var waitedUpon = promise._value;
+            // We can special case our own intermediate promises which are not in a
+            //  terminal state by just pushing this promise as a listener without
+            //  having to create new indirection functions
+            if (waitedUpon instanceof ThenPromise &&
+                waitedUpon._state !== state_error &&
+                waitedUpon._state !== state_success) {
+                pushListener(waitedUpon, { promise: promise });
+            } else {
+                var error = function (value) {
+                    if (waitedUpon._errorId) {
+                        promise._chainedError(value, waitedUpon);
+                    } else {
+                        // Because this is an interop boundary we want to indicate that this
+                        //  error has been handled by the promise infrastructure before we
+                        //  begin a new handling chain.
+                        //
+                        callonerror(promise, value, detailsForHandledError, waitedUpon, error);
+                        promise._error(value);
+                    }
+                };
+                error.handlesOnError = true;
+                waitedUpon.then(
+                    promise._completed.bind(promise),
+                    error,
+                    promise._progress.bind(promise)
+                );
+            }
+        },
+        cancel: function (promise) {
+            promise._setState(state_waiting_canceled);
+        },
+        done: done,
+        then: then,
+        _completed: completed,
+        _error: error,
+        _notify: _,
+        _progress: progress,
+        _setCompleteValue: setCompleteValue,
+        _setErrorValue: setErrorValue
+    };
+
+    // Waiting canceled state, when a promise has been in a waiting state and receives a
+    // request to cancel its pending work it will forward that request to the child promise
+    // and then waits to be informed of the result. This promise moves itself into the
+    // canceling state but understands that the child promise may instead push it to a
+    // different state.
+    //
+    state_waiting_canceled = {
+        name: "waiting_canceled",
+        enter: function (promise) {
+            // Initiate a transition to canceling. Triggering a cancel on the promise
+            // that we are waiting upon may result in a different state transition
+            // before the state machine pump runs again.
+            promise._setState(state_canceling);
+            var waitedUpon = promise._value;
+            if (waitedUpon.cancel) {
+                waitedUpon.cancel();
+            }
+        },
+        cancel: _,
+        done: done,
+        then: then,
+        _completed: completed,
+        _error: error,
+        _notify: _,
+        _progress: progress,
+        _setCompleteValue: setCompleteValue,
+        _setErrorValue: setErrorValue
+    };
+
+    // Canceled state, moves to the canceling state and then tells the promise to do
+    // whatever it might need to do on cancelation.
+    //
+    state_canceled = {
+        name: "canceled",
+        enter: function (promise) {
+            // Initiate a transition to canceling. The _cancelAction may change the state
+            // before the state machine pump runs again.
+            promise._setState(state_canceling);
+            promise._cancelAction();
+        },
+        cancel: _,
+        done: done,
+        then: then,
+        _completed: completed,
+        _error: error,
+        _notify: _,
+        _progress: progress,
+        _setCompleteValue: setCompleteValue,
+        _setErrorValue: setErrorValue
+    };
+
+    // Canceling state, commits to the promise moving to an error state with an error
+    // object whose 'name' and 'message' properties contain the string "Canceled"
+    //
+    state_canceling = {
+        name: "canceling",
+        enter: function (promise) {
+            var error = new Error(canceledName);
+            error.name = error.message;
+            promise._value = error;
+            promise._setState(state_error_notify);
+        },
+        cancel: _,
+        done: _,
+        then: _,
+        _completed: _,
+        _error: _,
+        _notify: _,
+        _progress: _,
+        _setCompleteValue: _,
+        _setErrorValue: _
+    };
+
+    // Success notify state, moves a promise to the success state and notifies all children
+    //
+    state_success_notify = {
+        name: "complete_notify",
+        enter: function (promise) {
+            promise.done = CompletePromise.prototype.done;
+            promise.then = CompletePromise.prototype.then;
+            if (promise._listeners) {
+                var queue = [promise];
+                var p;
+                while (queue.length) {
+                    p = queue.shift();
+                    p._state._notify(p, queue);
+                }
+            }
+            promise._setState(state_success);
+        },
+        cancel: _,
+        done: null, /*error to get here */
+        then: null, /*error to get here */
+        _completed: _,
+        _error: _,
+        _notify: notifySuccess,
+        _progress: _,
+        _setCompleteValue: _,
+        _setErrorValue: _
+    };
+
+    // Success state, moves a promise to the success state and does NOT notify any children.
+    // Some upstream promise is owning the notification pass.
+    //
+    state_success = {
+        name: "success",
+        enter: function (promise) {
+            promise.done = CompletePromise.prototype.done;
+            promise.then = CompletePromise.prototype.then;
+            promise._cleanupAction();
+        },
+        cancel: _,
+        done: null, /*error to get here */
+        then: null, /*error to get here */
+        _completed: _,
+        _error: _,
+        _notify: notifySuccess,
+        _progress: _,
+        _setCompleteValue: _,
+        _setErrorValue: _
+    };
+
+    // Error notify state, moves a promise to the error state and notifies all children
+    //
+    state_error_notify = {
+        name: "error_notify",
+        enter: function (promise) {
+            promise.done = ErrorPromise.prototype.done;
+            promise.then = ErrorPromise.prototype.then;
+            if (promise._listeners) {
+                var queue = [promise];
+                var p;
+                while (queue.length) {
+                    p = queue.shift();
+                    p._state._notify(p, queue);
+                }
+            }
+            promise._setState(state_error);
+        },
+        cancel: _,
+        done: null, /*error to get here*/
+        then: null, /*error to get here*/
+        _completed: _,
+        _error: _,
+        _notify: notifyError,
+        _progress: _,
+        _setCompleteValue: _,
+        _setErrorValue: _
+    };
+
+    // Error state, moves a promise to the error state and does NOT notify any children.
+    // Some upstream promise is owning the notification pass.
+    //
+    state_error = {
+        name: "error",
+        enter: function (promise) {
+            promise.done = ErrorPromise.prototype.done;
+            promise.then = ErrorPromise.prototype.then;
+            promise._cleanupAction();
+        },
+        cancel: _,
+        done: null, /*error to get here*/
+        then: null, /*error to get here*/
+        _completed: _,
+        _error: _,
+        _notify: notifyError,
+        _progress: _,
+        _setCompleteValue: _,
+        _setErrorValue: _
+    };
+
+    //
+    // The statemachine implementation follows a very particular pattern, the states are specified
+    // as static stateless bags of functions which are then indirected through the state machine
+    // instance (a Promise). As such all of the functions on each state have the promise instance
+    // passed to them explicitly as a parameter and the Promise instance members do a little
+    // dance where they indirect through the state and insert themselves in the argument list.
+    //
+    // We could instead call directly through the promise states however then every caller
+    // would have to remember to do things like pumping the state machine to catch state transitions.
+    //
+
+    var PromiseStateMachine = _Base.Class.define(null, {
+        _listeners: null,
+        _nextState: null,
+        _state: null,
+        _value: null,
+
+        cancel: function () {
+            /// <signature helpKeyword="WinJS.PromiseStateMachine.cancel">
+            /// <summary locid="WinJS.PromiseStateMachine.cancel">
+            /// Attempts to cancel the fulfillment of a promised value. If the promise hasn't
+            /// already been fulfilled and cancellation is supported, the promise enters
+            /// the error state with a value of Error("Canceled").
+            /// </summary>
+            /// </signature>
+            this._state.cancel(this);
+            this._run();
+        },
+        done: function Promise_done(onComplete, onError, onProgress) {
+            /// <signature helpKeyword="WinJS.PromiseStateMachine.done">
+            /// <summary locid="WinJS.PromiseStateMachine.done">
+            /// Allows you to specify the work to be done on the fulfillment of the promised value,
+            /// the error handling to be performed if the promise fails to fulfill
+            /// a value, and the handling of progress notifications along the way.
+            ///
+            /// After the handlers have finished executing, this function throws any error that would have been returned
+            /// from then() as a promise in the error state.
+            /// </summary>
+            /// <param name='onComplete' type='Function' locid="WinJS.PromiseStateMachine.done_p:onComplete">
+            /// The function to be called if the promise is fulfilled successfully with a value.
+            /// The fulfilled value is passed as the single argument. If the value is null,
+            /// the fulfilled value is returned. The value returned
+            /// from the function becomes the fulfilled value of the promise returned by
+            /// then(). If an exception is thrown while executing the function, the promise returned
+            /// by then() moves into the error state.
+            /// </param>
+            /// <param name='onError' type='Function' optional='true' locid="WinJS.PromiseStateMachine.done_p:onError">
+            /// The function to be called if the promise is fulfilled with an error. The error
+            /// is passed as the single argument. If it is null, the error is forwarded.
+            /// The value returned from the function is the fulfilled value of the promise returned by then().
+            /// </param>
+            /// <param name='onProgress' type='Function' optional='true' locid="WinJS.PromiseStateMachine.done_p:onProgress">
+            /// the function to be called if the promise reports progress. Data about the progress
+            /// is passed as the single argument. Promises are not required to support
+            /// progress.
+            /// </param>
+            /// </signature>
+            this._state.done(this, onComplete, onError, onProgress);
+        },
+        then: function Promise_then(onComplete, onError, onProgress) {
+            /// <signature helpKeyword="WinJS.PromiseStateMachine.then">
+            /// <summary locid="WinJS.PromiseStateMachine.then">
+            /// Allows you to specify the work to be done on the fulfillment of the promised value,
+            /// the error handling to be performed if the promise fails to fulfill
+            /// a value, and the handling of progress notifications along the way.
+            /// </summary>
+            /// <param name='onComplete' type='Function' locid="WinJS.PromiseStateMachine.then_p:onComplete">
+            /// The function to be called if the promise is fulfilled successfully with a value.
+            /// The value is passed as the single argument. If the value is null, the value is returned.
+            /// The value returned from the function becomes the fulfilled value of the promise returned by
+            /// then(). If an exception is thrown while this function is being executed, the promise returned
+            /// by then() moves into the error state.
+            /// </param>
+            /// <param name='onError' type='Function' optional='true' locid="WinJS.PromiseStateMachine.then_p:onError">
+            /// The function to be called if the promise is fulfilled with an error. The error
+            /// is passed as the single argument. If it is null, the error is forwarded.
+            /// The value returned from the function becomes the fulfilled value of the promise returned by then().
+            /// </param>
+            /// <param name='onProgress' type='Function' optional='true' locid="WinJS.PromiseStateMachine.then_p:onProgress">
+            /// The function to be called if the promise reports progress. Data about the progress
+            /// is passed as the single argument. Promises are not required to support
+            /// progress.
+            /// </param>
+            /// <returns type="WinJS.Promise" locid="WinJS.PromiseStateMachine.then_returnValue">
+            /// The promise whose value is the result of executing the complete or
+            /// error function.
+            /// </returns>
+            /// </signature>
+            return this._state.then(this, onComplete, onError, onProgress);
+        },
+
+        _chainedError: function (value, context) {
+            var result = this._state._error(this, value, detailsForChainedError, context);
+            this._run();
+            return result;
+        },
+        _completed: function (value) {
+            var result = this._state._completed(this, value);
+            this._run();
+            return result;
+        },
+        _error: function (value) {
+            var result = this._state._error(this, value, detailsForError);
+            this._run();
+            return result;
+        },
+        _progress: function (value) {
+            this._state._progress(this, value);
+        },
+        _setState: function (state) {
+            this._nextState = state;
+        },
+        _setCompleteValue: function (value) {
+            this._state._setCompleteValue(this, value);
+            this._run();
+        },
+        _setChainedErrorValue: function (value, context) {
+            var result = this._state._setErrorValue(this, value, detailsForChainedError, context);
+            this._run();
+            return result;
+        },
+        _setExceptionValue: function (value) {
+            var result = this._state._setErrorValue(this, value, detailsForException);
+            this._run();
+            return result;
+        },
+        _run: function () {
+            while (this._nextState) {
+                this._state = this._nextState;
+                this._nextState = null;
+                this._state.enter(this);
+            }
+        }
+    }, {
+        supportedForProcessing: false
+    });
+
+    //
+    // Implementations of shared state machine code.
+    //
+
+    function completed(promise, value) {
+        var targetState;
+        if (value && typeof value === "object" && typeof value.then === "function") {
+            targetState = state_waiting;
+        } else {
+            targetState = state_success_notify;
+        }
+        promise._value = value;
+        promise._setState(targetState);
+    }
+    function createErrorDetails(exception, error, promise, id, parent, handler) {
+        return {
+            exception: exception,
+            error: error,
+            promise: promise,
+            handler: handler,
+            id: id,
+            parent: parent
+        };
+    }
+    function detailsForHandledError(promise, errorValue, context, handler) {
+        var exception = context._isException;
+        var errorId = context._errorId;
+        return createErrorDetails(
+            exception ? errorValue : null,
+            exception ? null : errorValue,
+            promise,
+            errorId,
+            context,
+            handler
+        );
+    }
+    function detailsForChainedError(promise, errorValue, context) {
+        var exception = context._isException;
+        var errorId = context._errorId;
+        setErrorInfo(promise, errorId, exception);
+        return createErrorDetails(
+            exception ? errorValue : null,
+            exception ? null : errorValue,
+            promise,
+            errorId,
+            context
+        );
+    }
+    function detailsForError(promise, errorValue) {
+        var errorId = ++error_number;
+        setErrorInfo(promise, errorId);
+        return createErrorDetails(
+            null,
+            errorValue,
+            promise,
+            errorId
+        );
+    }
+    function detailsForException(promise, exceptionValue) {
+        var errorId = ++error_number;
+        setErrorInfo(promise, errorId, true);
+        return createErrorDetails(
+            exceptionValue,
+            null,
+            promise,
+            errorId
+        );
+    }
+    function done(promise, onComplete, onError, onProgress) {
+        var asyncOpID = _Trace._traceAsyncOperationStarting("WinJS.Promise.done");
+        pushListener(promise, { c: onComplete, e: onError, p: onProgress, asyncOpID: asyncOpID });
+    }
+    function error(promise, value, onerrorDetails, context) {
+        promise._value = value;
+        callonerror(promise, value, onerrorDetails, context);
+        promise._setState(state_error_notify);
+    }
+    function notifySuccess(promise, queue) {
+        var value = promise._value;
+        var listeners = promise._listeners;
+        if (!listeners) {
+            return;
+        }
+        promise._listeners = null;
+        var i, len;
+        for (i = 0, len = Array.isArray(listeners) ? listeners.length : 1; i < len; i++) {
+            var listener = len === 1 ? listeners : listeners[i];
+            var onComplete = listener.c;
+            var target = listener.promise;
+
+            _Trace._traceAsyncOperationCompleted(listener.asyncOpID, _Global.Debug && _Global.Debug.MS_ASYNC_OP_STATUS_SUCCESS);
+
+            if (target) {
+                _Trace._traceAsyncCallbackStarting(listener.asyncOpID);
+                try {
+                    target._setCompleteValue(onComplete ? onComplete(value) : value);
+                } catch (ex) {
+                    target._setExceptionValue(ex);
+                } finally {
+                    _Trace._traceAsyncCallbackCompleted();
+                }
+                if (target._state !== state_waiting && target._listeners) {
+                    queue.push(target);
+                }
+            } else {
+                CompletePromise.prototype.done.call(promise, onComplete);
+            }
+        }
+    }
+    function notifyError(promise, queue) {
+        var value = promise._value;
+        var listeners = promise._listeners;
+        if (!listeners) {
+            return;
+        }
+        promise._listeners = null;
+        var i, len;
+        for (i = 0, len = Array.isArray(listeners) ? listeners.length : 1; i < len; i++) {
+            var listener = len === 1 ? listeners : listeners[i];
+            var onError = listener.e;
+            var target = listener.promise;
+
+            var errorID = _Global.Debug && (value && value.name === canceledName ? _Global.Debug.MS_ASYNC_OP_STATUS_CANCELED : _Global.Debug.MS_ASYNC_OP_STATUS_ERROR);
+            _Trace._traceAsyncOperationCompleted(listener.asyncOpID, errorID);
+
+            if (target) {
+                var asyncCallbackStarted = false;
+                try {
+                    if (onError) {
+                        _Trace._traceAsyncCallbackStarting(listener.asyncOpID);
+                        asyncCallbackStarted = true;
+                        if (!onError.handlesOnError) {
+                            callonerror(target, value, detailsForHandledError, promise, onError);
+                        }
+                        target._setCompleteValue(onError(value));
+                    } else {
+                        target._setChainedErrorValue(value, promise);
+                    }
+                } catch (ex) {
+                    target._setExceptionValue(ex);
+                } finally {
+                    if (asyncCallbackStarted) {
+                        _Trace._traceAsyncCallbackCompleted();
+                    }
+                }
+                if (target._state !== state_waiting && target._listeners) {
+                    queue.push(target);
+                }
+            } else {
+                ErrorPromise.prototype.done.call(promise, null, onError);
+            }
+        }
+    }
+    function callonerror(promise, value, onerrorDetailsGenerator, context, handler) {
+        if (promiseEventListeners._listeners[errorET]) {
+            if (value instanceof Error && value.message === canceledName) {
+                return;
+            }
+            promiseEventListeners.dispatchEvent(errorET, onerrorDetailsGenerator(promise, value, context, handler));
+        }
+    }
+    function progress(promise, value) {
+        var listeners = promise._listeners;
+        if (listeners) {
+            var i, len;
+            for (i = 0, len = Array.isArray(listeners) ? listeners.length : 1; i < len; i++) {
+                var listener = len === 1 ? listeners : listeners[i];
+                var onProgress = listener.p;
+                if (onProgress) {
+                    try { onProgress(value); } catch (ex) { }
+                }
+                if (!(listener.c || listener.e) && listener.promise) {
+                    listener.promise._progress(value);
+                }
+            }
+        }
+    }
+    function pushListener(promise, listener) {
+        var listeners = promise._listeners;
+        if (listeners) {
+            // We may have either a single listener (which will never be wrapped in an array)
+            // or 2+ listeners (which will be wrapped). Since we are now adding one more listener
+            // we may have to wrap the single listener before adding the second.
+            listeners = Array.isArray(listeners) ? listeners : [listeners];
+            listeners.push(listener);
+        } else {
+            listeners = listener;
+        }
+        promise._listeners = listeners;
+    }
+    // The difference beween setCompleteValue()/setErrorValue() and complete()/error() is that setXXXValue() moves
+    // a promise directly to the success/error state without starting another notification pass (because one
+    // is already ongoing).
+    function setErrorInfo(promise, errorId, isException) {
+        promise._isException = isException || false;
+        promise._errorId = errorId;
+    }
+    function setErrorValue(promise, value, onerrorDetails, context) {
+        promise._value = value;
+        callonerror(promise, value, onerrorDetails, context);
+        promise._setState(state_error);
+    }
+    function setCompleteValue(promise, value) {
+        var targetState;
+        if (value && typeof value === "object" && typeof value.then === "function") {
+            targetState = state_waiting;
+        } else {
+            targetState = state_success;
+        }
+        promise._value = value;
+        promise._setState(targetState);
+    }
+    function then(promise, onComplete, onError, onProgress) {
+        var result = new ThenPromise(promise);
+        var asyncOpID = _Trace._traceAsyncOperationStarting("WinJS.Promise.then");
+        pushListener(promise, { promise: result, c: onComplete, e: onError, p: onProgress, asyncOpID: asyncOpID });
+        return result;
+    }
+
+    //
+    // Internal implementation detail promise, ThenPromise is created when a promise needs
+    // to be returned from a then() method.
+    //
+    var ThenPromise = _Base.Class.derive(PromiseStateMachine,
+        function (creator) {
+
+            if (tagWithStack && (tagWithStack === true || (tagWithStack & tag.thenPromise))) {
+                this._stack = Promise._getStack();
+            }
+
+            this._creator = creator;
+            this._setState(state_created);
+            this._run();
+        }, {
+            _creator: null,
+
+            _cancelAction: function () { if (this._creator) { this._creator.cancel(); } },
+            _cleanupAction: function () { this._creator = null; }
+        }, {
+            supportedForProcessing: false
+        }
+    );
+
+    //
+    // Slim promise implementations for already completed promises, these are created
+    // under the hood on synchronous completion paths as well as by WinJS.Promise.wrap
+    // and WinJS.Promise.wrapError.
+    //
+
+    var ErrorPromise = _Base.Class.define(
+        function ErrorPromise_ctor(value) {
+
+            if (tagWithStack && (tagWithStack === true || (tagWithStack & tag.errorPromise))) {
+                this._stack = Promise._getStack();
+            }
+
+            this._value = value;
+            callonerror(this, value, detailsForError);
+        }, {
+            cancel: function () {
+                /// <signature helpKeyword="WinJS.PromiseStateMachine.cancel">
+                /// <summary locid="WinJS.PromiseStateMachine.cancel">
+                /// Attempts to cancel the fulfillment of a promised value. If the promise hasn't
+                /// already been fulfilled and cancellation is supported, the promise enters
+                /// the error state with a value of Error("Canceled").
+                /// </summary>
+                /// </signature>
+            },
+            done: function ErrorPromise_done(unused, onError) {
+                /// <signature helpKeyword="WinJS.PromiseStateMachine.done">
+                /// <summary locid="WinJS.PromiseStateMachine.done">
+                /// Allows you to specify the work to be done on the fulfillment of the promised value,
+                /// the error handling to be performed if the promise fails to fulfill
+                /// a value, and the handling of progress notifications along the way.
+                ///
+                /// After the handlers have finished executing, this function throws any error that would have been returned
+                /// from then() as a promise in the error state.
+                /// </summary>
+                /// <param name='onComplete' type='Function' locid="WinJS.PromiseStateMachine.done_p:onComplete">
+                /// The function to be called if the promise is fulfilled successfully with a value.
+                /// The fulfilled value is passed as the single argument. If the value is null,
+                /// the fulfilled value is returned. The value returned
+                /// from the function becomes the fulfilled value of the promise returned by
+                /// then(). If an exception is thrown while executing the function, the promise returned
+                /// by then() moves into the error state.
+                /// </param>
+                /// <param name='onError' type='Function' optional='true' locid="WinJS.PromiseStateMachine.done_p:onError">
+                /// The function to be called if the promise is fulfilled with an error. The error
+                /// is passed as the single argument. If it is null, the error is forwarded.
+                /// The value returned from the function is the fulfilled value of the promise returned by then().
+                /// </param>
+                /// <param name='onProgress' type='Function' optional='true' locid="WinJS.PromiseStateMachine.done_p:onProgress">
+                /// the function to be called if the promise reports progress. Data about the progress
+                /// is passed as the single argument. Promises are not required to support
+                /// progress.
+                /// </param>
+                /// </signature>
+                var value = this._value;
+                if (onError) {
+                    try {
+                        if (!onError.handlesOnError) {
+                            callonerror(null, value, detailsForHandledError, this, onError);
+                        }
+                        var result = onError(value);
+                        if (result && typeof result === "object" && typeof result.done === "function") {
+                            // If a promise is returned we need to wait on it.
+                            result.done();
+                        }
+                        return;
+                    } catch (ex) {
+                        value = ex;
+                    }
+                }
+                if (value instanceof Error && value.message === canceledName) {
+                    // suppress cancel
+                    return;
+                }
+                // force the exception to be thrown asyncronously to avoid any try/catch blocks
+                //
+                Promise._doneHandler(value);
+            },
+            then: function ErrorPromise_then(unused, onError) {
+                /// <signature helpKeyword="WinJS.PromiseStateMachine.then">
+                /// <summary locid="WinJS.PromiseStateMachine.then">
+                /// Allows you to specify the work to be done on the fulfillment of the promised value,
+                /// the error handling to be performed if the promise fails to fulfill
+                /// a value, and the handling of progress notifications along the way.
+                /// </summary>
+                /// <param name='onComplete' type='Function' locid="WinJS.PromiseStateMachine.then_p:onComplete">
+                /// The function to be called if the promise is fulfilled successfully with a value.
+                /// The value is passed as the single argument. If the value is null, the value is returned.
+                /// The value returned from the function becomes the fulfilled value of the promise returned by
+                /// then(). If an exception is thrown while this function is being executed, the promise returned
+                /// by then() moves into the error state.
+                /// </param>
+                /// <param name='onError' type='Function' optional='true' locid="WinJS.PromiseStateMachine.then_p:onError">
+                /// The function to be called if the promise is fulfilled with an error. The error
+                /// is passed as the single argument. If it is null, the error is forwarded.
+                /// The value returned from the function becomes the fulfilled value of the promise returned by then().
+                /// </param>
+                /// <param name='onProgress' type='Function' optional='true' locid="WinJS.PromiseStateMachine.then_p:onProgress">
+                /// The function to be called if the promise reports progress. Data about the progress
+                /// is passed as the single argument. Promises are not required to support
+                /// progress.
+                /// </param>
+                /// <returns type="WinJS.Promise" locid="WinJS.PromiseStateMachine.then_returnValue">
+                /// The promise whose value is the result of executing the complete or
+                /// error function.
+                /// </returns>
+                /// </signature>
+
+                // If the promise is already in a error state and no error handler is provided
+                // we optimize by simply returning the promise instead of creating a new one.
+                //
+                if (!onError) { return this; }
+                var result;
+                var value = this._value;
+                try {
+                    if (!onError.handlesOnError) {
+                        callonerror(null, value, detailsForHandledError, this, onError);
+                    }
+                    result = new CompletePromise(onError(value));
+                } catch (ex) {
+                    // If the value throw from the error handler is the same as the value
+                    // provided to the error handler then there is no need for a new promise.
+                    //
+                    if (ex === value) {
+                        result = this;
+                    } else {
+                        result = new ExceptionPromise(ex);
+                    }
+                }
+                return result;
+            }
+        }, {
+            supportedForProcessing: false
+        }
+    );
+
+    var ExceptionPromise = _Base.Class.derive(ErrorPromise,
+        function ExceptionPromise_ctor(value) {
+
+            if (tagWithStack && (tagWithStack === true || (tagWithStack & tag.exceptionPromise))) {
+                this._stack = Promise._getStack();
+            }
+
+            this._value = value;
+            callonerror(this, value, detailsForException);
+        }, {
+            /* empty */
+        }, {
+            supportedForProcessing: false
+        }
+    );
+
+    var CompletePromise = _Base.Class.define(
+        function CompletePromise_ctor(value) {
+
+            if (tagWithStack && (tagWithStack === true || (tagWithStack & tag.completePromise))) {
+                this._stack = Promise._getStack();
+            }
+
+            if (value && typeof value === "object" && typeof value.then === "function") {
+                var result = new ThenPromise(null);
+                result._setCompleteValue(value);
+                return result;
+            }
+            this._value = value;
+        }, {
+            cancel: function () {
+                /// <signature helpKeyword="WinJS.PromiseStateMachine.cancel">
+                /// <summary locid="WinJS.PromiseStateMachine.cancel">
+                /// Attempts to cancel the fulfillment of a promised value. If the promise hasn't
+                /// already been fulfilled and cancellation is supported, the promise enters
+                /// the error state with a value of Error("Canceled").
+                /// </summary>
+                /// </signature>
+            },
+            done: function CompletePromise_done(onComplete) {
+                /// <signature helpKeyword="WinJS.PromiseStateMachine.done">
+                /// <summary locid="WinJS.PromiseStateMachine.done">
+                /// Allows you to specify the work to be done on the fulfillment of the promised value,
+                /// the error handling to be performed if the promise fails to fulfill
+                /// a value, and the handling of progress notifications along the way.
+                ///
+                /// After the handlers have finished executing, this function throws any error that would have been returned
+                /// from then() as a promise in the error state.
+                /// </summary>
+                /// <param name='onComplete' type='Function' locid="WinJS.PromiseStateMachine.done_p:onComplete">
+                /// The function to be called if the promise is fulfilled successfully with a value.
+                /// The fulfilled value is passed as the single argument. If the value is null,
+                /// the fulfilled value is returned. The value returned
+                /// from the function becomes the fulfilled value of the promise returned by
+                /// then(). If an exception is thrown while executing the function, the promise returned
+                /// by then() moves into the error state.
+                /// </param>
+                /// <param name='onError' type='Function' optional='true' locid="WinJS.PromiseStateMachine.done_p:onError">
+                /// The function to be called if the promise is fulfilled with an error. The error
+                /// is passed as the single argument. If it is null, the error is forwarded.
+                /// The value returned from the function is the fulfilled value of the promise returned by then().
+                /// </param>
+                /// <param name='onProgress' type='Function' optional='true' locid="WinJS.PromiseStateMachine.done_p:onProgress">
+                /// the function to be called if the promise reports progress. Data about the progress
+                /// is passed as the single argument. Promises are not required to support
+                /// progress.
+                /// </param>
+                /// </signature>
+                if (!onComplete) { return; }
+                try {
+                    var result = onComplete(this._value);
+                    if (result && typeof result === "object" && typeof result.done === "function") {
+                        result.done();
+                    }
+                } catch (ex) {
+                    // force the exception to be thrown asynchronously to avoid any try/catch blocks
+                    Promise._doneHandler(ex);
+                }
+            },
+            then: function CompletePromise_then(onComplete) {
+                /// <signature helpKeyword="WinJS.PromiseStateMachine.then">
+                /// <summary locid="WinJS.PromiseStateMachine.then">
+                /// Allows you to specify the work to be done on the fulfillment of the promised value,
+                /// the error handling to be performed if the promise fails to fulfill
+                /// a value, and the handling of progress notifications along the way.
+                /// </summary>
+                /// <param name='onComplete' type='Function' locid="WinJS.PromiseStateMachine.then_p:onComplete">
+                /// The function to be called if the promise is fulfilled successfully with a value.
+                /// The value is passed as the single argument. If the value is null, the value is returned.
+                /// The value returned from the function becomes the fulfilled value of the promise returned by
+                /// then(). If an exception is thrown while this function is being executed, the promise returned
+                /// by then() moves into the error state.
+                /// </param>
+                /// <param name='onError' type='Function' optional='true' locid="WinJS.PromiseStateMachine.then_p:onError">
+                /// The function to be called if the promise is fulfilled with an error. The error
+                /// is passed as the single argument. If it is null, the error is forwarded.
+                /// The value returned from the function becomes the fulfilled value of the promise returned by then().
+                /// </param>
+                /// <param name='onProgress' type='Function' optional='true' locid="WinJS.PromiseStateMachine.then_p:onProgress">
+                /// The function to be called if the promise reports progress. Data about the progress
+                /// is passed as the single argument. Promises are not required to support
+                /// progress.
+                /// </param>
+                /// <returns type="WinJS.Promise" locid="WinJS.PromiseStateMachine.then_returnValue">
+                /// The promise whose value is the result of executing the complete or
+                /// error function.
+                /// </returns>
+                /// </signature>
+                try {
+                    // If the value returned from the completion handler is the same as the value
+                    // provided to the completion handler then there is no need for a new promise.
+                    //
+                    var newValue = onComplete ? onComplete(this._value) : this._value;
+                    return newValue === this._value ? this : new CompletePromise(newValue);
+                } catch (ex) {
+                    return new ExceptionPromise(ex);
+                }
+            }
+        }, {
+            supportedForProcessing: false
+        }
+    );
+
+    //
+    // Promise is the user-creatable WinJS.Promise object.
+    //
+
+    function timeout(timeoutMS) {
+        var id;
+        return new Promise(
+            function (c) {
+                if (timeoutMS) {
+                    id = _Global.setTimeout(c, timeoutMS);
+                } else {
+                    _BaseCoreUtils._setImmediate(c);
+                }
+            },
+            function () {
+                if (id) {
+                    _Global.clearTimeout(id);
+                }
+            }
+        );
+    }
+
+    function timeoutWithPromise(timeout, promise) {
+        var cancelPromise = function () { promise.cancel(); };
+        var cancelTimeout = function () { timeout.cancel(); };
+        timeout.then(cancelPromise);
+        promise.then(cancelTimeout, cancelTimeout);
+        return promise;
+    }
+
+    var staticCanceledPromise;
+
+    var Promise = _Base.Class.derive(PromiseStateMachine,
+        function Promise_ctor(init, oncancel) {
+            /// <signature helpKeyword="WinJS.Promise">
+            /// <summary locid="WinJS.Promise">
+            /// A promise provides a mechanism to schedule work to be done on a value that
+            /// has not yet been computed. It is a convenient abstraction for managing
+            /// interactions with asynchronous APIs.
+            /// </summary>
+            /// <param name="init" type="Function" locid="WinJS.Promise_p:init">
+            /// The function that is called during construction of the  promise. The function
+            /// is given three arguments (complete, error, progress). Inside this function
+            /// you should add event listeners for the notifications supported by this value.
+            /// </param>
+            /// <param name="oncancel" optional="true" locid="WinJS.Promise_p:oncancel">
+            /// The function to call if a consumer of this promise wants
+            /// to cancel its undone work. Promises are not required to
+            /// support cancellation.
+            /// </param>
+            /// </signature>
+
+            if (tagWithStack && (tagWithStack === true || (tagWithStack & tag.promise))) {
+                this._stack = Promise._getStack();
+            }
+
+            this._oncancel = oncancel;
+            this._setState(state_created);
+            this._run();
+
+            try {
+                var complete = this._completed.bind(this);
+                var error = this._error.bind(this);
+                var progress = this._progress.bind(this);
+                init(complete, error, progress);
+            } catch (ex) {
+                this._setExceptionValue(ex);
+            }
+        }, {
+            _oncancel: null,
+
+            _cancelAction: function () {
+                // BEGIN monaco change
+                try {
+                    if (this._oncancel) {
+                        this._oncancel();
+                    } else {
+                        throw new Error('Promise did not implement oncancel');
+                    }
+                } catch (ex) {
+                    // Access fields to get them created
+                    var msg = ex.message;
+                    var stack = ex.stack;
+                    promiseEventListeners.dispatchEvent('error', ex);
+                }
+                // END monaco change
+            },
+            _cleanupAction: function () { this._oncancel = null; }
+        }, {
+
+            addEventListener: function Promise_addEventListener(eventType, listener, capture) {
+                /// <signature helpKeyword="WinJS.Promise.addEventListener">
+                /// <summary locid="WinJS.Promise.addEventListener">
+                /// Adds an event listener to the control.
+                /// </summary>
+                /// <param name="eventType" locid="WinJS.Promise.addEventListener_p:eventType">
+                /// The type (name) of the event.
+                /// </param>
+                /// <param name="listener" locid="WinJS.Promise.addEventListener_p:listener">
+                /// The listener to invoke when the event is raised.
+                /// </param>
+                /// <param name="capture" locid="WinJS.Promise.addEventListener_p:capture">
+                /// Specifies whether or not to initiate capture.
+                /// </param>
+                /// </signature>
+                promiseEventListeners.addEventListener(eventType, listener, capture);
+            },
+            any: function Promise_any(values) {
+                /// <signature helpKeyword="WinJS.Promise.any">
+                /// <summary locid="WinJS.Promise.any">
+                /// Returns a promise that is fulfilled when one of the input promises
+                /// has been fulfilled.
+                /// </summary>
+                /// <param name="values" type="Array" locid="WinJS.Promise.any_p:values">
+                /// An array that contains promise objects or objects whose property
+                /// values include promise objects.
+                /// </param>
+                /// <returns type="WinJS.Promise" locid="WinJS.Promise.any_returnValue">
+                /// A promise that on fulfillment yields the value of the input (complete or error).
+                /// </returns>
+                /// </signature>
+                return new Promise(
+                    function (complete, error) {
+                        var keys = Object.keys(values);
+                        if (keys.length === 0) {
+                            complete();
+                        }
+                        var canceled = 0;
+                        keys.forEach(function (key) {
+                            Promise.as(values[key]).then(
+                                function () { complete({ key: key, value: values[key] }); },
+                                function (e) {
+                                    if (e instanceof Error && e.name === canceledName) {
+                                        if ((++canceled) === keys.length) {
+                                            complete(Promise.cancel);
+                                        }
+                                        return;
+                                    }
+                                    error({ key: key, value: values[key] });
+                                }
+                            );
+                        });
+                    },
+                    function () {
+                        var keys = Object.keys(values);
+                        keys.forEach(function (key) {
+                            var promise = Promise.as(values[key]);
+                            if (typeof promise.cancel === "function") {
+                                promise.cancel();
+                            }
+                        });
+                    }
+                );
+            },
+            as: function Promise_as(value) {
+                /// <signature helpKeyword="WinJS.Promise.as">
+                /// <summary locid="WinJS.Promise.as">
+                /// Returns a promise. If the object is already a promise it is returned;
+                /// otherwise the object is wrapped in a promise.
+                /// </summary>
+                /// <param name="value" locid="WinJS.Promise.as_p:value">
+                /// The value to be treated as a promise.
+                /// </param>
+                /// <returns type="WinJS.Promise" locid="WinJS.Promise.as_returnValue">
+                /// A promise.
+                /// </returns>
+                /// </signature>
+                if (value && typeof value === "object" && typeof value.then === "function") {
+                    return value;
+                }
+                return new CompletePromise(value);
+            },
+            /// <field type="WinJS.Promise" helpKeyword="WinJS.Promise.cancel" locid="WinJS.Promise.cancel">
+            /// Canceled promise value, can be returned from a promise completion handler
+            /// to indicate cancelation of the promise chain.
+            /// </field>
+            cancel: {
+                get: function () {
+                    return (staticCanceledPromise = staticCanceledPromise || new ErrorPromise(new _ErrorFromName(canceledName)));
+                }
+            },
+            dispatchEvent: function Promise_dispatchEvent(eventType, details) {
+                /// <signature helpKeyword="WinJS.Promise.dispatchEvent">
+                /// <summary locid="WinJS.Promise.dispatchEvent">
+                /// Raises an event of the specified type and properties.
+                /// </summary>
+                /// <param name="eventType" locid="WinJS.Promise.dispatchEvent_p:eventType">
+                /// The type (name) of the event.
+                /// </param>
+                /// <param name="details" locid="WinJS.Promise.dispatchEvent_p:details">
+                /// The set of additional properties to be attached to the event object.
+                /// </param>
+                /// <returns type="Boolean" locid="WinJS.Promise.dispatchEvent_returnValue">
+                /// Specifies whether preventDefault was called on the event.
+                /// </returns>
+                /// </signature>
+                return promiseEventListeners.dispatchEvent(eventType, details);
+            },
+            is: function Promise_is(value) {
+                /// <signature helpKeyword="WinJS.Promise.is">
+                /// <summary locid="WinJS.Promise.is">
+                /// Determines whether a value fulfills the promise contract.
+                /// </summary>
+                /// <param name="value" locid="WinJS.Promise.is_p:value">
+                /// A value that may be a promise.
+                /// </param>
+                /// <returns type="Boolean" locid="WinJS.Promise.is_returnValue">
+                /// true if the specified value is a promise, otherwise false.
+                /// </returns>
+                /// </signature>
+                return value && typeof value === "object" && typeof value.then === "function";
+            },
+            join: function Promise_join(values) {
+                /// <signature helpKeyword="WinJS.Promise.join">
+                /// <summary locid="WinJS.Promise.join">
+                /// Creates a promise that is fulfilled when all the values are fulfilled.
+                /// </summary>
+                /// <param name="values" type="Object" locid="WinJS.Promise.join_p:values">
+                /// An object whose fields contain values, some of which may be promises.
+                /// </param>
+                /// <returns type="WinJS.Promise" locid="WinJS.Promise.join_returnValue">
+                /// A promise whose value is an object with the same field names as those of the object in the values parameter, where
+                /// each field value is the fulfilled value of a promise.
+                /// </returns>
+                /// </signature>
+                return new Promise(
+                    function (complete, error, progress) {
+                        var keys = Object.keys(values);
+                        var errors = Array.isArray(values) ? [] : {};
+                        var results = Array.isArray(values) ? [] : {};
+                        var undefineds = 0;
+                        var pending = keys.length;
+                        var argDone = function (key) {
+                            if ((--pending) === 0) {
+                                var errorCount = Object.keys(errors).length;
+                                if (errorCount === 0) {
+                                    complete(results);
+                                } else {
+                                    var canceledCount = 0;
+                                    keys.forEach(function (key) {
+                                        var e = errors[key];
+                                        if (e instanceof Error && e.name === canceledName) {
+                                            canceledCount++;
+                                        }
+                                    });
+                                    if (canceledCount === errorCount) {
+                                        complete(Promise.cancel);
+                                    } else {
+                                        error(errors);
+                                    }
+                                }
+                            } else {
+                                progress({ Key: key, Done: true });
+                            }
+                        };
+                        keys.forEach(function (key) {
+                            var value = values[key];
+                            if (value === undefined) {
+                                undefineds++;
+                            } else {
+                                Promise.then(value,
+                                    function (value) { results[key] = value; argDone(key); },
+                                    function (value) { errors[key] = value; argDone(key); }
+                                );
+                            }
+                        });
+                        pending -= undefineds;
+                        if (pending === 0) {
+                            complete(results);
+                            return;
+                        }
+                    },
+                    function () {
+                        Object.keys(values).forEach(function (key) {
+                            var promise = Promise.as(values[key]);
+                            if (typeof promise.cancel === "function") {
+                                promise.cancel();
+                            }
+                        });
+                    }
+                );
+            },
+            removeEventListener: function Promise_removeEventListener(eventType, listener, capture) {
+                /// <signature helpKeyword="WinJS.Promise.removeEventListener">
+                /// <summary locid="WinJS.Promise.removeEventListener">
+                /// Removes an event listener from the control.
+                /// </summary>
+                /// <param name='eventType' locid="WinJS.Promise.removeEventListener_eventType">
+                /// The type (name) of the event.
+                /// </param>
+                /// <param name='listener' locid="WinJS.Promise.removeEventListener_listener">
+                /// The listener to remove.
+                /// </param>
+                /// <param name='capture' locid="WinJS.Promise.removeEventListener_capture">
+                /// Specifies whether or not to initiate capture.
+                /// </param>
+                /// </signature>
+                promiseEventListeners.removeEventListener(eventType, listener, capture);
+            },
+            supportedForProcessing: false,
+            then: function Promise_then(value, onComplete, onError, onProgress) {
+                /// <signature helpKeyword="WinJS.Promise.then">
+                /// <summary locid="WinJS.Promise.then">
+                /// A static version of the promise instance method then().
+                /// </summary>
+                /// <param name="value" locid="WinJS.Promise.then_p:value">
+                /// the value to be treated as a promise.
+                /// </param>
+                /// <param name="onComplete" type="Function" locid="WinJS.Promise.then_p:complete">
+                /// The function to be called if the promise is fulfilled with a value.
+                /// If it is null, the promise simply
+                /// returns the value. The value is passed as the single argument.
+                /// </param>
+                /// <param name="onError" type="Function" optional="true" locid="WinJS.Promise.then_p:error">
+                /// The function to be called if the promise is fulfilled with an error. The error
+                /// is passed as the single argument.
+                /// </param>
+                /// <param name="onProgress" type="Function" optional="true" locid="WinJS.Promise.then_p:progress">
+                /// The function to be called if the promise reports progress. Data about the progress
+                /// is passed as the single argument. Promises are not required to support
+                /// progress.
+                /// </param>
+                /// <returns type="WinJS.Promise" locid="WinJS.Promise.then_returnValue">
+                /// A promise whose value is the result of executing the provided complete function.
+                /// </returns>
+                /// </signature>
+                return Promise.as(value).then(onComplete, onError, onProgress);
+            },
+            thenEach: function Promise_thenEach(values, onComplete, onError, onProgress) {
+                /// <signature helpKeyword="WinJS.Promise.thenEach">
+                /// <summary locid="WinJS.Promise.thenEach">
+                /// Performs an operation on all the input promises and returns a promise
+                /// that has the shape of the input and contains the result of the operation
+                /// that has been performed on each input.
+                /// </summary>
+                /// <param name="values" locid="WinJS.Promise.thenEach_p:values">
+                /// A set of values (which could be either an array or an object) of which some or all are promises.
+                /// </param>
+                /// <param name="onComplete" type="Function" locid="WinJS.Promise.thenEach_p:complete">
+                /// The function to be called if the promise is fulfilled with a value.
+                /// If the value is null, the promise returns the value.
+                /// The value is passed as the single argument.
+                /// </param>
+                /// <param name="onError" type="Function" optional="true" locid="WinJS.Promise.thenEach_p:error">
+                /// The function to be called if the promise is fulfilled with an error. The error
+                /// is passed as the single argument.
+                /// </param>
+                /// <param name="onProgress" type="Function" optional="true" locid="WinJS.Promise.thenEach_p:progress">
+                /// The function to be called if the promise reports progress. Data about the progress
+                /// is passed as the single argument. Promises are not required to support
+                /// progress.
+                /// </param>
+                /// <returns type="WinJS.Promise" locid="WinJS.Promise.thenEach_returnValue">
+                /// A promise that is the result of calling Promise.join on the values parameter.
+                /// </returns>
+                /// </signature>
+                var result = Array.isArray(values) ? [] : {};
+                Object.keys(values).forEach(function (key) {
+                    result[key] = Promise.as(values[key]).then(onComplete, onError, onProgress);
+                });
+                return Promise.join(result);
+            },
+            timeout: function Promise_timeout(time, promise) {
+                /// <signature helpKeyword="WinJS.Promise.timeout">
+                /// <summary locid="WinJS.Promise.timeout">
+                /// Creates a promise that is fulfilled after a timeout.
+                /// </summary>
+                /// <param name="timeout" type="Number" optional="true" locid="WinJS.Promise.timeout_p:timeout">
+                /// The timeout period in milliseconds. If this value is zero or not specified
+                /// setImmediate is called, otherwise setTimeout is called.
+                /// </param>
+                /// <param name="promise" type="Promise" optional="true" locid="WinJS.Promise.timeout_p:promise">
+                /// A promise that will be canceled if it doesn't complete before the
+                /// timeout has expired.
+                /// </param>
+                /// <returns type="WinJS.Promise" locid="WinJS.Promise.timeout_returnValue">
+                /// A promise that is completed asynchronously after the specified timeout.
+                /// </returns>
+                /// </signature>
+                var to = timeout(time);
+                return promise ? timeoutWithPromise(to, promise) : to;
+            },
+            wrap: function Promise_wrap(value) {
+                /// <signature helpKeyword="WinJS.Promise.wrap">
+                /// <summary locid="WinJS.Promise.wrap">
+                /// Wraps a non-promise value in a promise. You can use this function if you need
+                /// to pass a value to a function that requires a promise.
+                /// </summary>
+                /// <param name="value" locid="WinJS.Promise.wrap_p:value">
+                /// Some non-promise value to be wrapped in a promise.
+                /// </param>
+                /// <returns type="WinJS.Promise" locid="WinJS.Promise.wrap_returnValue">
+                /// A promise that is successfully fulfilled with the specified value
+                /// </returns>
+                /// </signature>
+                return new CompletePromise(value);
+            },
+            wrapError: function Promise_wrapError(error) {
+                /// <signature helpKeyword="WinJS.Promise.wrapError">
+                /// <summary locid="WinJS.Promise.wrapError">
+                /// Wraps a non-promise error value in a promise. You can use this function if you need
+                /// to pass an error to a function that requires a promise.
+                /// </summary>
+                /// <param name="error" locid="WinJS.Promise.wrapError_p:error">
+                /// A non-promise error value to be wrapped in a promise.
+                /// </param>
+                /// <returns type="WinJS.Promise" locid="WinJS.Promise.wrapError_returnValue">
+                /// A promise that is in an error state with the specified value.
+                /// </returns>
+                /// </signature>
+                return new ErrorPromise(error);
+            },
+
+            _veryExpensiveTagWithStack: {
+                get: function () { return tagWithStack; },
+                set: function (value) { tagWithStack = value; }
+            },
+            _veryExpensiveTagWithStack_tag: tag,
+            _getStack: function () {
+                if (_Global.Debug && _Global.Debug.debuggerEnabled) {
+                    try { throw new Error(); } catch (e) { return e.stack; }
+                }
+            },
+
+            _cancelBlocker: function Promise__cancelBlocker(input, oncancel) {
+                //
+                // Returns a promise which on cancelation will still result in downstream cancelation while
+                //  protecting the promise 'input' from being  canceled which has the effect of allowing
+                //  'input' to be shared amoung various consumers.
+                //
+                if (!Promise.is(input)) {
+                    return Promise.wrap(input);
+                }
+                var complete;
+                var error;
+                var output = new Promise(
+                    function (c, e) {
+                        complete = c;
+                        error = e;
+                    },
+                    function () {
+                        complete = null;
+                        error = null;
+                        oncancel && oncancel();
+                    }
+                );
+                input.then(
+                    function (v) { complete && complete(v); },
+                    function (e) { error && error(e); }
+                );
+                return output;
+            },
+
+        }
+    );
+    Object.defineProperties(Promise, _Events.createEventProperties(errorET));
+
+    Promise._doneHandler = function (value) {
+        _BaseCoreUtils._setImmediate(function Promise_done_rethrow() {
+            throw value;
+        });
+    };
+
+    return {
+        PromiseStateMachine: PromiseStateMachine,
+        Promise: Promise,
+        state_created: state_created
+    };
+});
+
+_winjs("WinJS/Promise", ["WinJS/Core/_Base","WinJS/Promise/_StateMachine"], function promiseInit( _Base, _StateMachine) {
+    "use strict";
+
+    _Base.Namespace.define("WinJS", {
+        Promise: _StateMachine.Promise
+    });
+
+    return _StateMachine.Promise;
+});
+
+var exported = _modules["WinJS/Core/_WinJS"];
+
+if (typeof exports === 'undefined' && typeof define === 'function' && define.amd) {
+    define("vs/base/common/winjs.base.raw", exported);
+} else {
+    module.exports = exported;
+}
+
+if (typeof process !== 'undefined' && typeof process.nextTick === 'function') {
+    _modules["WinJS/Core/_BaseCoreUtils"]._setImmediate = function(handler) {
+        return process.nextTick(handler);
+    };
+}
+
+})();
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+define(__m[5/*vs/base/common/winjs.base*/], __M([17/*vs/base/common/winjs.base.raw*/,7/*vs/base/common/errors*/]), function (winjs, __Errors__) {
+	'use strict';
+
+	var outstandingPromiseErrors = {};
+	function promiseErrorHandler(e) {
+
+		//
+		// e.detail looks like: { exception, error, promise, handler, id, parent }
+		//
+		var details = e.detail;
+		var id = details.id;
+
+		// If the error has a parent promise then this is not the origination of the
+		//  error so we check if it has a handler, and if so we mark that the error
+		//  was handled by removing it from outstandingPromiseErrors
+		//
+		if (details.parent) {
+			if (details.handler && outstandingPromiseErrors) {
+				delete outstandingPromiseErrors[id];
+			}
+			return;
+		}
+
+		// Indicate that this error was originated and needs to be handled
+		outstandingPromiseErrors[id] = details;
+
+		// The first time the queue fills up this iteration, schedule a timeout to
+		// check if any errors are still unhandled.
+		if (Object.keys(outstandingPromiseErrors).length === 1) {
+			setTimeout(function () {
+				var errors = outstandingPromiseErrors;
+				outstandingPromiseErrors = {};
+				Object.keys(errors).forEach(function (errorId) {
+					var error = errors[errorId];
+					if(error.exception) {
+						__Errors__.onUnexpectedError(error.exception);
+					} else if(error.error) {
+						__Errors__.onUnexpectedError(error.error);
+					}
+					console.log("WARNING: Promise with no error callback:" + error.id);
+					console.log(error);
+					if(error.exception) {
+						console.log(error.exception.stack);
+					}
+				});
+			}, 0);
+		}
+	}
+
+	winjs.Promise.addEventListener("error", promiseErrorHandler);
+
+	return {
+		Promise: winjs.Promise,
+		TPromise: winjs.Promise,
+		PPromise: winjs.Promise
+	};
+});
+define(__m[8/*vs/nls!vs/platform/environment/node/argv*/], __M([21/*vs/nls*/,18/*vs/nls!vs/code/node/cli*/]), function(nls, data) { return nls.create("vs/platform/environment/node/argv", data); });
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+define(__m[10/*vs/platform/environment/node/argv*/], __M([1/*require*/,0/*exports*/,14/*os*/,15/*minimist*/,16/*assert*/,6/*vs/base/common/arrays*/,8/*vs/nls!vs/platform/environment/node/argv*/]), function (require, exports, os, minimist, assert, arrays_1, nls_1) {
+    "use strict";
+    var options = {
+        string: [
+            'locale',
+            'user-data-dir',
+            'extensionHomePath',
+            'extensionDevelopmentPath',
+            'extensionTestsPath',
+            'install-extension',
+            'uninstall-extension',
+            'debugBrkPluginHost',
+            'debugPluginHost',
+            'open-url'
+        ],
+        boolean: [
+            'help',
+            'version',
+            'wait',
+            'diff',
+            'goto',
+            'new-window',
+            'reuse-window',
+            'performance',
+            'verbose',
+            'logExtensionHostCommunication',
+            'disable-extensions',
+            'list-extensions',
+            'show-versions',
+            'nolazy'
+        ],
+        alias: {
+            help: 'h',
+            version: 'v',
+            wait: 'w',
+            diff: 'd',
+            goto: 'g',
+            'new-window': 'n',
+            'reuse-window': 'r',
+            performance: 'p',
+            'disable-extensions': 'disableExtensions'
+        }
+    };
+    function validate(args) {
+        if (args.goto) {
+            args._.forEach(function (arg) { return assert(/^(\w:)?[^:]+(:\d*){0,2}$/.test(arg), nls_1.localize(0, null)); });
+        }
+        return args;
+    }
+    function stripAppPath(argv) {
+        var index = arrays_1.firstIndex(argv, function (a) { return !/^-/.test(a); });
+        if (index > -1) {
+            return argv.slice(0, index).concat(argv.slice(index + 1));
+        }
+    }
+    /**
+     * Use this to parse raw code process.argv such as: `Electron . --verbose --wait`
+     */
+    function parseMainProcessArgv(processArgv) {
+        var args = processArgv.slice(1);
+        // If dev, remove the first non-option argument: it's the app location
+        if (process.env['VSCODE_DEV']) {
+            args = stripAppPath(args);
+        }
+        return validate(parseArgs(args));
+    }
+    exports.parseMainProcessArgv = parseMainProcessArgv;
+    /**
+     * Use this to parse raw code CLI process.argv such as: `Electron cli.js . --verbose --wait`
+     */
+    function parseCLIProcessArgv(processArgv) {
+        var args = processArgv.slice(2);
+        if (process.env['VSCODE_DEV']) {
+            args = stripAppPath(args);
+        }
+        return validate(parseArgs(args));
+    }
+    exports.parseCLIProcessArgv = parseCLIProcessArgv;
+    /**
+     * Use this to parse code arguments such as `--verbose --wait`
+     */
+    function parseArgs(args) {
+        return minimist(args, options);
+    }
+    exports.parseArgs = parseArgs;
+    exports.optionsHelp = {
+        '-d, --diff': nls_1.localize(1, null),
+        '-g, --goto': nls_1.localize(2, null),
+        '--locale <locale>': nls_1.localize(3, null),
+        '-n, --new-window': nls_1.localize(4, null),
+        '-p, --performance': nls_1.localize(5, null),
+        '-r, --reuse-window': nls_1.localize(6, null),
+        '--user-data-dir <dir>': nls_1.localize(7, null),
+        '--verbose': nls_1.localize(8, null),
+        '-w, --wait': nls_1.localize(9, null),
+        '--extensionHomePath': nls_1.localize(10, null),
+        '--list-extensions': nls_1.localize(11, null),
+        '--show-versions': nls_1.localize(12, null),
+        '--install-extension <ext>': nls_1.localize(13, null),
+        '--uninstall-extension <ext>': nls_1.localize(14, null),
+        '--disable-extensions': nls_1.localize(15, null),
+        '--disable-gpu': nls_1.localize(16, null),
+        '-v, --version': nls_1.localize(17, null),
+        '-h, --help': nls_1.localize(18, null)
+    };
+    function formatOptions(options, columns) {
+        var keys = Object.keys(options);
+        var argLength = Math.max.apply(null, keys.map(function (k) { return k.length; })) + 2 /*left padding*/ + 1;
+        if (columns - argLength < 25) {
+            // Use a condensed version on narrow terminals
+            return keys.reduce(function (r, key) { return r.concat([("  " + key), ("      " + options[key])]); }, []).join('\n');
+        }
+        var descriptionColumns = columns - argLength - 1;
+        var result = '';
+        keys.forEach(function (k) {
+            var wrappedDescription = wrapText(options[k], descriptionColumns);
+            var keyPadding = ' '.repeat(argLength - k.length - 2 /*left padding*/);
+            if (result.length > 0) {
+                result += '\n';
+            }
+            result += '  ' + k + keyPadding + wrappedDescription[0];
+            for (var i = 1; i < wrappedDescription.length; i++) {
+                result += '\n' + ' '.repeat(argLength) + wrappedDescription[i];
+            }
+        });
+        return result;
+    }
+    exports.formatOptions = formatOptions;
+    function wrapText(text, columns) {
+        var lines = [];
+        while (text.length) {
+            var index = text.length < columns ? text.length : text.lastIndexOf(' ', columns);
+            var line = text.slice(0, index).trim();
+            text = text.slice(index);
+            lines.push(line);
+        }
+        return lines;
+    }
+    function buildHelpMessage(fullName, name, version) {
+        var columns = process.stdout.isTTY ? process.stdout.columns : 80;
+        var executable = "" + name + (os.platform() === 'win32' ? '.exe' : '');
+        return fullName + " " + version + "\n\n" + nls_1.localize(19, null) + ": " + executable + " [" + nls_1.localize(20, null) + "] [" + nls_1.localize(21, null) + "...]\n\n" + nls_1.localize(22, null) + ":\n" + formatOptions(exports.optionsHelp, columns);
+    }
+    exports.buildHelpMessage = buildHelpMessage;
+});
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+define(__m[11/*vs/platform/package*/], __M([1/*require*/,0/*exports*/,12/*path*/,4/*vs/base/common/uri*/]), function (require, exports, path, uri_1) {
+    "use strict";
+    var rootPath = path.dirname(uri_1.default.parse(require.toUrl('')).fsPath);
+    var packageJsonPath = path.join(rootPath, 'package.json');
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.default = require.__$__nodeRequire(packageJsonPath);
+});
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+define(__m[13/*vs/platform/product*/], __M([1/*require*/,0/*exports*/,12/*path*/,4/*vs/base/common/uri*/]), function (require, exports, path, uri_1) {
+    "use strict";
+    var rootPath = path.dirname(uri_1.default.parse(require.toUrl('')).fsPath);
+    var productJsonPath = path.join(rootPath, 'product.json');
+    var product = require.__$__nodeRequire(productJsonPath);
+    if (process.env['VSCODE_DEV']) {
+        product.nameShort += ' Dev';
+        product.nameLong += ' Dev';
+        product.dataFolderName += '-dev';
+    }
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.default = product;
+});
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+define(__m[20/*vs/code/node/cli*/], __M([1/*require*/,0/*exports*/,19/*child_process*/,5/*vs/base/common/winjs.base*/,9/*vs/base/common/objects*/,10/*vs/platform/environment/node/argv*/,13/*vs/platform/product*/,11/*vs/platform/package*/]), function (require, exports, child_process_1, winjs_base_1, objects_1, argv_1, product_1, package_1) {
+    "use strict";
+    function shouldSpawnCliProcess(argv) {
+        return argv['list-extensions'] || !!argv['install-extension'] || !!argv['uninstall-extension'];
+    }
+    function main(argv) {
+        var args;
+        try {
+            args = argv_1.parseCLIProcessArgv(argv);
+        }
+        catch (err) {
+            console.error(err.message);
+            return winjs_base_1.TPromise.as(null);
+        }
+        if (args.help) {
+            console.log(argv_1.buildHelpMessage(product_1.default.nameLong, product_1.default.applicationName, package_1.default.version));
+        }
+        else if (args.version) {
+            console.log(package_1.default.version + "\n" + product_1.default.commit);
+        }
+        else if (shouldSpawnCliProcess(args)) {
+            var mainCli = new winjs_base_1.TPromise(function (c) { return require(['vs/code/node/cliProcessMain'], c); });
+            return mainCli.then(function (cli) { return cli.main(args); });
+        }
+        else {
+            var env = objects_1.assign({}, process.env, {
+                // this will signal Code that it was spawned from this module
+                'VSCODE_CLI': '1',
+                'ELECTRON_NO_ATTACH_CONSOLE': '1'
+            });
+            delete env['ELECTRON_RUN_AS_NODE'];
+            if (args.verbose) {
+                env['ELECTRON_ENABLE_LOGGING'] = '1';
+            }
+            var options = {
+                detached: true,
+                env: env,
+            };
+            if (!args.verbose) {
+                options['stdio'] = 'ignore';
+            }
+            var child_1 = child_process_1.spawn(process.execPath, argv.slice(2), options);
+            if (args.verbose) {
+                child_1.stdout.on('data', function (data) { return console.log(data.toString('utf8').trim()); });
+                child_1.stderr.on('data', function (data) { return console.log(data.toString('utf8').trim()); });
+            }
+            if (args.wait || args.verbose) {
+                return new winjs_base_1.TPromise(function (c) { return child_1.once('exit', function () { return c(null); }); });
+            }
+        }
+        return winjs_base_1.TPromise.as(null);
+    }
+    exports.main = main;
+    main(process.argv)
+        .then(function () { return process.exit(0); })
+        .then(null, function (err) {
+        console.error(err.stack ? err.stack : err);
+        process.exit(1);
+    });
+});
+
+}).call(this);
+//# sourceMappingURL=cli.js.map

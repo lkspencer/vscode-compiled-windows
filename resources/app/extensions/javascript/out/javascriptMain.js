@@ -18,4 +18,4 @@ function configureHttpRequest() {
     var httpSettings = vscode_1.workspace.getConfiguration('http');
     httpRequest.configure(httpSettings.get('proxy'), httpSettings.get('proxyStrictSSL'));
 }
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/02611b40b24c9df2726ad8b33f5ef5f67ac30b44/extensions\javascript\out/javascriptMain.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/7ba55c5860b152d999dda59393ca3ebeb1b5c85f/extensions\javascript\out/javascriptMain.js.map

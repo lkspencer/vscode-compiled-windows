@@ -14,12 +14,12 @@
 	"reportIssueUrl": "https://github.com/Microsoft/vscode/issues/new",
 	"urlProtocol": "vscode-oss",
 	"win32SetupExeBasename": "VSCodeSetup",
-	"commit": "02611b40b24c9df2726ad8b33f5ef5f67ac30b44",
-	"date": "2016-11-10T14:46:42.493Z",
+	"commit": "7ba55c5860b152d999dda59393ca3ebeb1b5c85f",
+	"date": "2016-12-08T11:47:15.474Z",
 	"checksums": {
-		"vs/workbench/workbench.main.js": "efeZ/Rbka+bn+xCAdEmdgw",
-		"vs/workbench/workbench.main.css": "0MiY4nFZRO/1xWqvZrvhxw",
+		"vs/workbench/workbench.main.js": "Gk3GiIXYVNK1RjQ0kHW/Wg",
+		"vs/workbench/workbench.main.css": "gqtJtS4K/sHNSo6wauX9ZQ",
 		"vs/workbench/electron-browser/bootstrap/index.html": "liyJ1r8fK4v0m9nveC4/ag",
-		"vs/workbench/electron-browser/bootstrap/index.js": "9Ml1kroRfHdmat74hA9GDg"
+		"vs/workbench/electron-browser/bootstrap/index.js": "EnqdNe0RGcKc/D7OOnlCTw"
 	}
 }

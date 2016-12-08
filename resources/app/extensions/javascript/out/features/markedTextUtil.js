@@ -7,4 +7,4 @@ function textToMarkedString(text) {
     return text.replace(/[\\`*_{}[\]()#+\-.!]/g, '\\$&'); // escape markdown syntax tokens: http://daringfireball.net/projects/markdown/syntax#backslash
 }
 exports.textToMarkedString = textToMarkedString;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/02611b40b24c9df2726ad8b33f5ef5f67ac30b44/extensions\javascript\out/features\markedTextUtil.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/7ba55c5860b152d999dda59393ca3ebeb1b5c85f/extensions\javascript\out/features\markedTextUtil.js.map

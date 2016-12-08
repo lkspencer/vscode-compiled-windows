@@ -173,7 +173,7 @@ connection.onDocumentLinks(function (documentLinkParam) {
     var document = documents.get(documentLinkParam.textDocument.uri);
     var documentContext = {
         resolveReference: function (ref) {
-            if (ref[0] === '/') {
+            if (workspacePath && ref[0] === '/') {
                 return vscode_uri_1.default.file(path.join(workspacePath, ref)).toString();
             }
             return url.resolve(document.uri, ref);
@@ -183,4 +183,4 @@ connection.onDocumentLinks(function (documentLinkParam) {
 });
 // Listen on the connection
 connection.listen();
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/02611b40b24c9df2726ad8b33f5ef5f67ac30b44/extensions\html\server\out/htmlServerMain.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/7ba55c5860b152d999dda59393ca3ebeb1b5c85f/extensions\html\server\out/htmlServerMain.js.map

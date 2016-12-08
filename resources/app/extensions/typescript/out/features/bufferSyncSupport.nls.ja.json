@@ -1,7 +1,7 @@
 [
-	"Version mismatch! global tsc ({0}) != VS Code's language service ({1}). Inconsistent compile errors might occur",
-	"More Information",
-	"Don't Check Again",
-	"Close",
-	"Updated user setting 'typescript.check.tscVersion' to false"
+	"グローバルな tsc ({0}) と VS Code の言語サービス ({1}) の間にバージョンの不一致があります。非整合のコンパイル エラーを引き起こす可能性があります",
+	"詳細情報",
+	"今後確認しない",
+	"閉じる",
+	"ユーザー設定 'typescript.check.tscVersion' を false に更新しました"
 ]

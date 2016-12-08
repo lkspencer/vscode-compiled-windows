@@ -325,14 +325,12 @@ var TypeScriptServiceClient = (function () {
                     var args = [];
                     if (_this.apiVersion.has206Features()) {
                         args.push('--useSingleInferredProject');
-                        /* https://github.com/Microsoft/vscode/issues/14889
-                        if (workspace.getConfiguration().get<boolean>('typescript.disableAutomaticTypeAcquisition', false)) {
+                        if (vscode_1.workspace.getConfiguration().get('typescript.disableAutomaticTypeAcquisition', false)) {
                             args.push('--disableAutomaticTypingAcquisition');
                         }
-                        */
-                        if (!(process.env.CH_ATA_ENABLE)) {
-                            args.push('--disableAutomaticTypingAcquisition');
-                        }
+                    }
+                    if (_this.apiVersion.has208Features()) {
+                        args.push('--enableTelemetry');
                     }
                     electron.fork(modulePath, args, options, function (err, childProcess) {
                         if (err) {
@@ -575,6 +573,33 @@ var TypeScriptServiceClient = (function () {
                 else if (event.event === 'configFileDiag') {
                     this.host.configFileDiagnosticsReceived(event);
                 }
+                else if (event.event === 'telemetry') {
+                    var telemetryData = event.body;
+                    var properties_1 = Object.create(null);
+                    switch (telemetryData.telemetryEventName) {
+                        case 'typingsInstalled':
+                            var typingsInstalledPayload = telemetryData.payload;
+                            properties_1['installedPackages'] = typingsInstalledPayload.installedPackages;
+                            if (is.defined(typingsInstalledPayload.installSuccess)) {
+                                properties_1['installSuccess'] = typingsInstalledPayload.installSuccess.toString();
+                            }
+                            if (is.string(typingsInstalledPayload.typingsInstallerVersion)) {
+                                properties_1['typingsInstallerVersion'] = typingsInstalledPayload.typingsInstallerVersion;
+                            }
+                            break;
+                        default:
+                            var payload_1 = telemetryData.payload;
+                            if (payload_1) {
+                                Object.keys(payload_1).forEach(function (key) {
+                                    if (payload_1.hasOwnProperty(key) && is.string(payload_1[key])) {
+                                        properties_1[key] = payload_1[key];
+                                    }
+                                });
+                            }
+                            break;
+                    }
+                    this.logTelemetry(telemetryData.telemetryEventName, properties_1);
+                }
             }
             else {
                 throw new Error('Unknown message type ' + message.type + ' recevied');
@@ -618,4 +643,4 @@ var TypeScriptServiceClient = (function () {
 }());
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = TypeScriptServiceClient;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/02611b40b24c9df2726ad8b33f5ef5f67ac30b44/extensions\typescript\out/typescriptServiceClient.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/7ba55c5860b152d999dda59393ca3ebeb1b5c85f/extensions\typescript\out/typescriptServiceClient.js.map
