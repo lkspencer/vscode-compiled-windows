@@ -24,7 +24,7 @@ var Delayer = (function () {
             }).then(function () {
                 _this.completionPromise = null;
                 _this.onSuccess = null;
-                var result = _this.task();
+                var result = _this.task && _this.task();
                 _this.task = null;
                 return result;
             });
@@ -32,7 +32,9 @@ var Delayer = (function () {
         if (delay >= 0 || this.timeout === null) {
             this.timeout = setTimeout(function () {
                 _this.timeout = null;
-                _this.onSuccess(null);
+                if (_this.onSuccess) {
+                    _this.onSuccess(undefined);
+                }
             }, delay >= 0 ? delay : this.defaultDelay);
         }
         return this.completionPromise;
@@ -43,7 +45,9 @@ var Delayer = (function () {
         }
         this.cancelTimeout();
         var result = this.completionPromise;
-        this.onSuccess(null);
+        if (this.onSuccess) {
+            this.onSuccess(undefined);
+        }
         return result;
     };
     Delayer.prototype.isTriggered = function () {
@@ -62,4 +66,4 @@ var Delayer = (function () {
     return Delayer;
 }());
 exports.Delayer = Delayer;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/7ba55c5860b152d999dda59393ca3ebeb1b5c85f/extensions\typescript\out/utils\async.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/38746938a4ab94f2f57d9e1309c51fd6fb37553d/extensions\typescript\out/utils\async.js.map

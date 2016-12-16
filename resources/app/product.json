@@ -1,25 +1,25 @@
 {
-	"nameShort": "Code",
-	"nameLong": "VS Code",
-	"applicationName": "code",
-	"dataFolderName": ".vscode-oss",
-	"win32MutexName": "vscodeoss",
-	"licenseUrl": "https://github.com/Microsoft/vscode/blob/master/LICENSE.txt",
-	"win32DirName": "Microsoft VS Code OSS",
-	"win32NameVersion": "Microsoft VS Code OSS",
-	"win32RegValueName": "CodeOSS",
-	"win32AppId": "{{E34003BB-9E10-4501-8C11-BE3FAA83F23F}",
-	"win32AppUserModelId": "Microsoft.CodeOSS",
-	"darwinBundleIdentifier": "com.visualstudio.code.oss",
-	"reportIssueUrl": "https://github.com/Microsoft/vscode/issues/new",
-	"urlProtocol": "vscode-oss",
-	"win32SetupExeBasename": "VSCodeSetup",
-	"commit": "7ba55c5860b152d999dda59393ca3ebeb1b5c85f",
-	"date": "2016-12-08T11:47:15.474Z",
-	"checksums": {
-		"vs/workbench/workbench.main.js": "Gk3GiIXYVNK1RjQ0kHW/Wg",
-		"vs/workbench/workbench.main.css": "gqtJtS4K/sHNSo6wauX9ZQ",
-		"vs/workbench/electron-browser/bootstrap/index.html": "liyJ1r8fK4v0m9nveC4/ag",
-		"vs/workbench/electron-browser/bootstrap/index.js": "EnqdNe0RGcKc/D7OOnlCTw"
-	}
+  "nameShort": "Code",
+  "nameLong": "VS Code",
+  "applicationName": "code",
+  "dataFolderName": ".vscode-oss",
+  "win32MutexName": "vscodeoss",
+  "licenseUrl": "https://github.com/Microsoft/vscode/blob/master/LICENSE.txt",
+  "win32DirName": "Microsoft VS Code OSS",
+  "win32NameVersion": "Microsoft VS Code OSS",
+  "win32RegValueName": "CodeOSS",
+  "win32AppId": "{{E34003BB-9E10-4501-8C11-BE3FAA83F23F}",
+  "win32AppUserModelId": "Microsoft.CodeOSS",
+  "darwinBundleIdentifier": "com.visualstudio.code.oss",
+  "reportIssueUrl": "https://github.com/Microsoft/vscode/issues/new",
+  "urlProtocol": "vscode-oss",
+  "win32SetupExeBasename": "VSCodeSetup",
+  "commit": "38746938a4ab94f2f57d9e1309c51fd6fb37553d",
+  "date": "2016-12-16T14:15:53.959Z",
+  "checksums": {
+    "vs/workbench/electron-browser/workbench.main.js": "wSPhpRAFs1O+5AMo/MOURg",
+    "vs/workbench/electron-browser/workbench.main.css": "Bjh0r/v9GpsOVWbUBNLvvg",
+    "vs/workbench/electron-browser/bootstrap/index.html": "liyJ1r8fK4v0m9nveC4/ag",
+    "vs/workbench/electron-browser/bootstrap/index.js": "GibTmX8vK23XaF0YmCCplA"
+  }
 }

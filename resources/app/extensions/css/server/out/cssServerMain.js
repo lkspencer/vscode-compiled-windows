@@ -6,11 +6,9 @@
 var vscode_languageserver_1 = require('vscode-languageserver');
 var vscode_css_languageservice_1 = require('vscode-css-languageservice');
 var languageModelCache_1 = require('./languageModelCache');
-var vscode_uri_1 = require('vscode-uri');
-var embeddedContentUri_1 = require('./embeddedContentUri');
 var ColorSymbolRequest;
 (function (ColorSymbolRequest) {
-    ColorSymbolRequest.type = { get method() { return 'css/colorSymbols'; } };
+    ColorSymbolRequest.type = { get method() { return 'css/colorSymbols'; }, _: null };
 })(ColorSymbolRequest || (ColorSymbolRequest = {}));
 // Create a connection for the server.
 var connection = vscode_languageserver_1.createConnection();
@@ -101,9 +99,7 @@ function validateTextDocument(textDocument) {
     var stylesheet = stylesheets.get(textDocument);
     var diagnostics = getLanguageService(textDocument).doValidation(textDocument, stylesheet);
     // Send the computed diagnostics to VSCode.
-    var uri = vscode_uri_1.default.parse(textDocument.uri);
-    var diagnosticsTarget = embeddedContentUri_1.isEmbeddedContentUri(uri) ? embeddedContentUri_1.getHostDocumentUri(uri) : textDocument.uri;
-    connection.sendDiagnostics({ uri: diagnosticsTarget, diagnostics: diagnostics });
+    connection.sendDiagnostics({ uri: textDocument.uri, diagnostics: diagnostics });
 }
 connection.onCompletion(function (textDocumentPosition) {
     var document = documents.get(textDocumentPosition.textDocument.uri);
@@ -155,4 +151,4 @@ connection.onRenameRequest(function (renameParameters) {
 });
 // Listen on the connection
 connection.listen();
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/7ba55c5860b152d999dda59393ca3ebeb1b5c85f/extensions\css\server\out/cssServerMain.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/38746938a4ab94f2f57d9e1309c51fd6fb37553d/extensions\css\server\out/cssServerMain.js.map

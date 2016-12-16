@@ -62,7 +62,7 @@ var ast;
             var end = Number.MAX_VALUE;
             for (var _i = 0, _a = dottedName.split('.'); _i < _a.length; _i++) {
                 var name = _a[_i];
-                var idx = void 0;
+                var idx = -1;
                 while ((idx = identifiers.indexOf(name, idx + 1)) >= 0) {
                     var myStart = spans[2 * idx];
                     var myEnd = spans[2 * idx + 1];
@@ -81,4 +81,4 @@ var ast;
     }
     ast.createNamedNodeLookUp = createNamedNodeLookUp;
 })(ast || (ast = {}));
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/7ba55c5860b152d999dda59393ca3ebeb1b5c85f/extensions\extension-editing\out/extension.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/38746938a4ab94f2f57d9e1309c51fd6fb37553d/extensions\extension-editing\out/extension.js.map

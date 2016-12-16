@@ -13,21 +13,22 @@ Prior to packaging, update the `product.json` file with the following code:
 
 ```javascript
 {
-	"nameShort": "Code",
-	"nameLong": "VS Code",
-	"applicationName": "code",
-	"dataFolderName": ".vscode-oss",
-	"win32MutexName": "vscodeoss",
-	"licenseUrl": "https://github.com/Microsoft/vscode/blob/master/LICENSE.txt",
-	"win32DirName": "Microsoft VS Code OSS",
-	"win32NameVersion": "Microsoft VS Code OSS",
-	"win32RegValueName": "CodeOSS",
-	"win32AppId": "{{E34003BB-9E10-4501-8C11-BE3FAA83F23F}",
-	"win32AppUserModelId": "Microsoft.CodeOSS",
-	"darwinBundleIdentifier": "com.visualstudio.code.oss",
-	"reportIssueUrl": "https://github.com/Microsoft/vscode/issues/new",
-	"urlProtocol": "vscode-oss",
-	"win32SetupExeBasename": "VSCodeSetup"
+  "nameShort": "Code",
+  "nameLong": "VS Code",
+  "applicationName": "code",
+  "dataFolderName": ".vscode-oss",
+  "win32MutexName": "vscodeoss",
+  "licenseName": "MIT",
+  "licenseUrl": "https://github.com/Microsoft/vscode/blob/master/LICENSE.txt",
+  "win32DirName": "Microsoft VS Code OSS",
+  "win32NameVersion": "Microsoft VS Code OSS",
+  "win32RegValueName": "CodeOSS",
+  "win32AppId": "{{E34003BB-9E10-4501-8C11-BE3FAA83F23F}",
+  "win32AppUserModelId": "Microsoft.CodeOSS",
+  "darwinBundleIdentifier": "com.visualstudio.code.oss",
+  "reportIssueUrl": "https://github.com/Microsoft/vscode/issues/new",
+  "urlProtocol": "vscode-oss",
+  "win32SetupExeBasename": "VSCodeSetup"
 }
 ```
 

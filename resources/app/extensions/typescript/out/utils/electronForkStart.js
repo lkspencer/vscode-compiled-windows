@@ -79,7 +79,7 @@ log('ELECTRON_RUN_AS_NODE: ' + process.env['ELECTRON_RUN_AS_NODE']);
     // handle fs.writeSync(1, ...)
     var originalWriteSync = fs.writeSync;
     fs.writeSync = function (fd, data, position, encoding) {
-        if (fd !== 1 || fd !== 2) {
+        if (fd !== 1 && fd !== 2) {
             return originalWriteSync.apply(fs, arguments);
         }
         // usage:
@@ -158,4 +158,4 @@ log('ELECTRON_RUN_AS_NODE: ' + process.env['ELECTRON_RUN_AS_NODE']);
         process.stdout.write('ready');
     });
 })();
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/7ba55c5860b152d999dda59393ca3ebeb1b5c85f/extensions\typescript\out/utils\electronForkStart.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/38746938a4ab94f2f57d9e1309c51fd6fb37553d/extensions\typescript\out/utils\electronForkStart.js.map

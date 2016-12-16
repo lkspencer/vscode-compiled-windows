@@ -44,4 +44,4 @@ function enable(value) {
     showHideStatus();
 }
 exports.enable = enable;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/7ba55c5860b152d999dda59393ca3ebeb1b5c85f/extensions\typescript\out/utils\versionStatus.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/38746938a4ab94f2f57d9e1309c51fd6fb37553d/extensions\typescript\out/utils\versionStatus.js.map

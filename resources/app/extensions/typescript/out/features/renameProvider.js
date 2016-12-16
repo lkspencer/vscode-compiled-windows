@@ -11,8 +11,12 @@ var TypeScriptRenameProvider = (function () {
     }
     TypeScriptRenameProvider.prototype.provideRenameEdits = function (document, position, newName, token) {
         var _this = this;
+        var filepath = this.client.asAbsolutePath(document.uri);
+        if (!filepath) {
+            return Promise.resolve(null);
+        }
         var args = {
-            file: this.client.asAbsolutePath(document.uri),
+            file: filepath,
             line: position.line + 1,
             offset: position.character + 1,
             findInStrings: false,
@@ -23,6 +27,9 @@ var TypeScriptRenameProvider = (function () {
         }
         return this.client.execute('rename', args, token).then(function (response) {
             var renameResponse = response.body;
+            if (!renameResponse) {
+                return Promise.resolve(null);
+            }
             var renameInfo = renameResponse.info;
             var result = new vscode_1.WorkspaceEdit();
             if (!renameInfo.canRename) {
@@ -47,4 +54,4 @@ var TypeScriptRenameProvider = (function () {
 }());
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = TypeScriptRenameProvider;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/7ba55c5860b152d999dda59393ca3ebeb1b5c85f/extensions\typescript\out/features\renameProvider.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/38746938a4ab94f2f57d9e1309c51fd6fb37553d/extensions\typescript\out/features\renameProvider.js.map

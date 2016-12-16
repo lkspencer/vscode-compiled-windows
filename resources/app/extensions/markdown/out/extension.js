@@ -5,7 +5,6 @@
 'use strict';
 var vscode = require('vscode');
 var path = require('path');
-var vscode_1 = require('vscode');
 var vscode_extension_telemetry_1 = require('vscode-extension-telemetry');
 var telemetryReporter;
 function activate(context) {
@@ -49,13 +48,13 @@ function getMarkdownUri(uri) {
 function showPreview(uri, sideBySide) {
     if (sideBySide === void 0) { sideBySide = false; }
     var resource = uri;
-    if (!(resource instanceof vscode_1.Uri)) {
+    if (!(resource instanceof vscode.Uri)) {
         if (vscode.window.activeTextEditor) {
             // we are relaxed and don't check for markdown files
             resource = vscode.window.activeTextEditor.document.uri;
         }
     }
-    if (!(resource instanceof vscode_1.Uri)) {
+    if (!(resource instanceof vscode.Uri)) {
         if (!vscode.window.activeTextEditor) {
             // this is most likely toggling the preview
             return vscode.commands.executeCommand('markdown.showSource');
@@ -64,25 +63,27 @@ function showPreview(uri, sideBySide) {
         return;
     }
     var thenable = vscode.commands.executeCommand('vscode.previewHtml', getMarkdownUri(resource), getViewColumn(sideBySide), "Preview '" + path.basename(resource.fsPath) + "'");
-    telemetryReporter.sendTelemetryEvent('openPreview', {
-        where: sideBySide ? 'sideBySide' : 'inPlace',
-        how: (uri instanceof vscode_1.Uri) ? 'action' : 'pallete'
-    });
+    if (telemetryReporter) {
+        telemetryReporter.sendTelemetryEvent('openPreview', {
+            where: sideBySide ? 'sideBySide' : 'inPlace',
+            how: (uri instanceof vscode.Uri) ? 'action' : 'pallete'
+        });
+    }
     return thenable;
 }
 function getViewColumn(sideBySide) {
     var active = vscode.window.activeTextEditor;
     if (!active) {
-        return vscode_1.ViewColumn.One;
+        return vscode.ViewColumn.One;
     }
     if (!sideBySide) {
         return active.viewColumn;
     }
     switch (active.viewColumn) {
-        case vscode_1.ViewColumn.One:
-            return vscode_1.ViewColumn.Two;
-        case vscode_1.ViewColumn.Two:
-            return vscode_1.ViewColumn.Three;
+        case vscode.ViewColumn.One:
+            return vscode.ViewColumn.Two;
+        case vscode.ViewColumn.Two:
+            return vscode.ViewColumn.Three;
     }
     return active.viewColumn;
 }
@@ -90,7 +91,7 @@ function showSource(mdUri) {
     if (!mdUri) {
         return vscode.commands.executeCommand('workbench.action.navigateBack');
     }
-    var docUri = vscode_1.Uri.parse(mdUri.query);
+    var docUri = vscode.Uri.parse(mdUri.query);
     for (var _i = 0, _a = vscode.window.visibleTextEditors; _i < _a.length; _i++) {
         var editor = _a[_i];
         if (editor.document.uri.toString() === docUri.toString()) {
@@ -114,7 +115,7 @@ function getPackageInfo(context) {
 }
 var MDDocumentContentProvider = (function () {
     function MDDocumentContentProvider(context) {
-        this._onDidChange = new vscode_1.EventEmitter();
+        this._onDidChange = new vscode.EventEmitter();
         this._context = context;
         this._waiting = false;
         this._renderer = this.createRenderer();
@@ -145,20 +146,20 @@ var MDDocumentContentProvider = (function () {
     MDDocumentContentProvider.prototype.fixHref = function (resource, href) {
         if (href) {
             // Use href if it is already an URL
-            if (vscode_1.Uri.parse(href).scheme) {
+            if (vscode.Uri.parse(href).scheme) {
                 return href;
             }
             // Use href as file URI if it is absolute
             if (this.isAbsolute(href)) {
-                return vscode_1.Uri.file(href).toString();
+                return vscode.Uri.file(href).toString();
             }
             // use a workspace relative path if there is a workspace
             var rootPath = vscode.workspace.rootPath;
             if (rootPath) {
-                return vscode_1.Uri.file(path.join(rootPath, href)).toString();
+                return vscode.Uri.file(path.join(rootPath, href)).toString();
             }
             // otherwise look relative to the markdown file
-            return vscode_1.Uri.file(path.join(path.dirname(resource.fsPath), href)).toString();
+            return vscode.Uri.file(path.join(path.dirname(resource.fsPath), href)).toString();
         }
         return href;
     };
@@ -168,15 +169,31 @@ var MDDocumentContentProvider = (function () {
         if (styles && Array.isArray(styles) && styles.length > 0) {
             return styles.map(function (style) {
                 return "<link rel=\"stylesheet\" href=\"" + _this.fixHref(uri, style) + "\" type=\"text/css\" media=\"screen\">";
-            });
+            }).join('\n');
         }
-        return [];
+        return '';
+    };
+    MDDocumentContentProvider.prototype.getSettingsOverrideStyles = function () {
+        var previewSettings = vscode.workspace.getConfiguration('markdown')['preview'];
+        if (!previewSettings) {
+            return '';
+        }
+        var fontFamily = previewSettings.fontFamily, fontSize = previewSettings.fontSize, lineHeight = previewSettings.lineHeight;
+        return [
+            '<style>',
+            'body {',
+            fontFamily ? "font-family: " + fontFamily + ";" : '',
+            +fontSize > 0 ? "font-size: " + fontSize + "px;" : '',
+            +lineHeight > 0 ? "line-height: " + lineHeight + ";" : '',
+            '}',
+            '</style>'].join('\n');
     };
     MDDocumentContentProvider.prototype.provideTextDocumentContent = function (uri) {
         var _this = this;
-        return vscode.workspace.openTextDocument(vscode_1.Uri.parse(uri.query)).then(function (document) {
-            var head = [].concat('<!DOCTYPE html>', '<html>', '<head>', '<meta http-equiv="Content-type" content="text/html;charset=UTF-8">', "<link rel=\"stylesheet\" type=\"text/css\" href=\"" + _this.getMediaPath('markdown.css') + "\" >", "<link rel=\"stylesheet\" type=\"text/css\" href=\"" + _this.getMediaPath('tomorrow.css') + "\" >", _this.computeCustomStyleSheetIncludes(uri), "<base href=\"" + document.uri.toString(true) + "\">", '</head>', '<body>').join('\n');
-            var body = _this._renderer.render(document.getText());
+        return vscode.workspace.openTextDocument(vscode.Uri.parse(uri.query)).then(function (document) {
+            var scrollBeyondLastLine = vscode.workspace.getConfiguration('editor')['scrollBeyondLastLine'];
+            var head = [].concat('<!DOCTYPE html>', '<html>', '<head>', '<meta http-equiv="Content-type" content="text/html;charset=UTF-8">', "<link rel=\"stylesheet\" type=\"text/css\" href=\"" + _this.getMediaPath('markdown.css') + "\" >", "<link rel=\"stylesheet\" type=\"text/css\" href=\"" + _this.getMediaPath('tomorrow.css') + "\" >", _this.getSettingsOverrideStyles(), _this.computeCustomStyleSheetIncludes(uri), "<base href=\"" + document.uri.toString(true) + "\">", '</head>', "<body class=\"" + (scrollBeyondLastLine ? 'scrollBeyondLastLine' : '') + "\">").join('\n');
+            var body = _this._renderer.render(_this.getDocumentContentForPreview(document));
             var tail = [
                 '</body>',
                 '</html>'
@@ -201,6 +218,14 @@ var MDDocumentContentProvider = (function () {
             }, 300);
         }
     };
+    MDDocumentContentProvider.prototype.getDocumentContentForPreview = function (document) {
+        var content = document.getText();
+        var previewFrontMatter = vscode.workspace.getConfiguration('markdown')['previewFrontMatter'];
+        if (previewFrontMatter === 'hide') {
+            return content.replace(/^-{3}[ \t]*(\r\n|\n)(.|\r\n|\n)*?(\r\n|\n)-{3}[ \t]*(\r\n|\n)/, '');
+        }
+        return content;
+    };
     return MDDocumentContentProvider;
 }());
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/7ba55c5860b152d999dda59393ca3ebeb1b5c85f/extensions\markdown\out/extension.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/38746938a4ab94f2f57d9e1309c51fd6fb37553d/extensions\markdown\out/extension.js.map
