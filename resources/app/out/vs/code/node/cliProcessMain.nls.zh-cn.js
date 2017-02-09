@@ -34,6 +34,8 @@ define("vs/code/node/cliProcessMain.nls.zh-cn", {
 		"已成功卸载扩展“{0}”!",
 	],
 	"vs/platform/configuration/common/configurationRegistry": [
+		"为一组语言标识符配置要被替代的设置。",
+		"替代设置",
 		"用于配置字符串。",
 		"设置摘要。此标签将在设置文件中用作分隔注释。",
 		"配置属性的描述。",

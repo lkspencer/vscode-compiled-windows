@@ -2,7 +2,7 @@
  * Copyright (C) Microsoft Corporation. All rights reserved.
  *--------------------------------------------------------*/
 (function() {
-var __m = ["exports","require","vs/base/common/winjs.base","vs/base/common/event","vs/base/common/types","vs/base/common/errors","vs/base/common/lifecycle","vs/base/parts/ipc/common/ipc","vs/base/common/callbackList","vs/base/node/event","vs/base/common/platform","vs/base/parts/ipc/node/ipc.net","vs/platform/instantiation/common/instantiation","vs/workbench/parts/git/common/git","vs/workbench/parts/git/common/gitIpc","net","fs","vs/workbench/parts/git/node/askpass","vs/base/common/winjs.base.raw"];
+var __m = ["exports","require","vs/base/common/event","vs/base/common/winjs.base","vs/base/common/lifecycle","vs/base/common/errors","vs/base/parts/ipc/common/ipc","vs/base/node/event","vs/base/common/platform","vs/base/common/types","vs/workbench/parts/git/common/gitIpc","vs/base/common/functional","vs/base/common/callbackList","vs/base/parts/ipc/node/ipc.net","vs/workbench/parts/git/common/git","vs/platform/instantiation/common/instantiation","os","crypto","path","net","vs/base/common/winjs.base.raw","vs/workbench/parts/git/node/askpass","fs"];
 var __M = function(deps) {
   var result = [];
   for (var i = 0, len = deps.length; i < len; i++) {
@@ -10,7 +10,172 @@ var __M = function(deps) {
   }
   return result;
 };
-define(__m[10/*vs/base/common/platform*/], __M([1/*require*/,0/*exports*/]), function (require, exports) {
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+define(__m[11/*vs/base/common/functional*/], __M([1/*require*/,0/*exports*/]), function (require, exports) {
+    'use strict';
+    function not(fn) {
+        return function () {
+            var args = [];
+            for (var _i = 0; _i < arguments.length; _i++) {
+                args[_i] = arguments[_i];
+            }
+            return !fn.apply(void 0, args);
+        };
+    }
+    exports.not = not;
+    function once(fn) {
+        var _this = this;
+        var didCall = false;
+        var result;
+        return function () {
+            if (didCall) {
+                return result;
+            }
+            didCall = true;
+            result = fn.apply(_this, arguments);
+            return result;
+        };
+    }
+    exports.once = once;
+});
+
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
+define(__m[4/*vs/base/common/lifecycle*/], __M([1/*require*/,0/*exports*/]), function (require, exports) {
+    /*---------------------------------------------------------------------------------------------
+     *  Copyright (c) Microsoft Corporation. All rights reserved.
+     *  Licensed under the MIT License. See License.txt in the project root for license information.
+     *--------------------------------------------------------------------------------------------*/
+    'use strict';
+    exports.empty = Object.freeze({
+        dispose: function () { }
+    });
+    function dispose(first) {
+        var rest = [];
+        for (var _i = 1; _i < arguments.length; _i++) {
+            rest[_i - 1] = arguments[_i];
+        }
+        if (Array.isArray(first)) {
+            first.forEach(function (d) { return d && d.dispose(); });
+            return [];
+        }
+        else if (rest.length === 0) {
+            if (first) {
+                first.dispose();
+                return first;
+            }
+        }
+        else {
+            dispose(first);
+            dispose(rest);
+            return [];
+        }
+    }
+    exports.dispose = dispose;
+    function combinedDisposable(disposables) {
+        return { dispose: function () { return dispose(disposables); } };
+    }
+    exports.combinedDisposable = combinedDisposable;
+    function toDisposable() {
+        var fns = [];
+        for (var _i = 0; _i < arguments.length; _i++) {
+            fns[_i] = arguments[_i];
+        }
+        return combinedDisposable(fns.map(function (fn) { return ({ dispose: fn }); }));
+    }
+    exports.toDisposable = toDisposable;
+    var Disposable = (function () {
+        function Disposable() {
+            this._toDispose = [];
+        }
+        Disposable.prototype.dispose = function () {
+            this._toDispose = dispose(this._toDispose);
+        };
+        Disposable.prototype._register = function (t) {
+            this._toDispose.push(t);
+            return t;
+        };
+        return Disposable;
+    }());
+    exports.Disposable = Disposable;
+    var Disposables = (function (_super) {
+        __extends(Disposables, _super);
+        function Disposables() {
+            return _super !== null && _super.apply(this, arguments) || this;
+        }
+        Disposables.prototype.add = function (arg) {
+            if (!Array.isArray(arg)) {
+                return this._register(arg);
+            }
+            else {
+                for (var _i = 0, arg_1 = arg; _i < arg_1.length; _i++) {
+                    var element = arg_1[_i];
+                    return this._register(element);
+                }
+            }
+        };
+        return Disposables;
+    }(Disposable));
+    exports.Disposables = Disposables;
+    var OneDisposable = (function () {
+        function OneDisposable() {
+        }
+        Object.defineProperty(OneDisposable.prototype, "value", {
+            set: function (value) {
+                if (this._value) {
+                    this._value.dispose();
+                }
+                this._value = value;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        OneDisposable.prototype.dispose = function () {
+            this.value = null;
+        };
+        return OneDisposable;
+    }());
+    exports.OneDisposable = OneDisposable;
+    var ReferenceCollection = (function () {
+        function ReferenceCollection() {
+            this.references = Object.create(null);
+        }
+        ReferenceCollection.prototype.acquire = function (key) {
+            var _this = this;
+            var reference = this.references[key];
+            if (!reference) {
+                reference = this.references[key] = { counter: 0, object: this.createReferencedObject(key) };
+            }
+            var object = reference.object;
+            var dispose = function () {
+                if (--reference.counter === 0) {
+                    _this.destroyReferencedObject(reference.object);
+                    delete _this.references[key];
+                }
+            };
+            reference.counter++;
+            return { object: object, dispose: dispose };
+        };
+        return ReferenceCollection;
+    }());
+    exports.ReferenceCollection = ReferenceCollection;
+    var ImmortalReference = (function () {
+        function ImmortalReference(object) {
+            this.object = object;
+        }
+        ImmortalReference.prototype.dispose = function () { };
+        return ImmortalReference;
+    }());
+    exports.ImmortalReference = ImmortalReference;
+});
+
+define(__m[8/*vs/base/common/platform*/], __M([1/*require*/,0/*exports*/]), function (require, exports) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -57,13 +222,13 @@ define(__m[10/*vs/base/common/platform*/], __M([1/*require*/,0/*exports*/]), fun
         _language = _locale;
         _isQunit = !!self.QUnit;
     }
+    var Platform;
     (function (Platform) {
         Platform[Platform["Web"] = 0] = "Web";
         Platform[Platform["Mac"] = 1] = "Mac";
         Platform[Platform["Linux"] = 2] = "Linux";
         Platform[Platform["Windows"] = 3] = "Windows";
-    })(exports.Platform || (exports.Platform = {}));
-    var Platform = exports.Platform;
+    })(Platform = exports.Platform || (exports.Platform = {}));
     exports._platform = Platform.Web;
     if (_isNative) {
         if (_isMacintosh) {
@@ -108,7 +273,7 @@ define(__m[10/*vs/base/common/platform*/], __M([1/*require*/,0/*exports*/]), fun
     exports.clearInterval = _globals.clearInterval.bind(_globals);
 });
 
-define(__m[4/*vs/base/common/types*/], __M([1/*require*/,0/*exports*/]), function (require, exports) {
+define(__m[9/*vs/base/common/types*/], __M([1/*require*/,0/*exports*/]), function (require, exports) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -228,7 +393,7 @@ define(__m[4/*vs/base/common/types*/], __M([1/*require*/,0/*exports*/]), functio
     function areFunctions() {
         var objects = [];
         for (var _i = 0; _i < arguments.length; _i++) {
-            objects[_i - 0] = arguments[_i];
+            objects[_i] = arguments[_i];
         }
         return objects && objects.length > 0 && objects.every(isFunction);
     }
@@ -276,7 +441,7 @@ define(__m[4/*vs/base/common/types*/], __M([1/*require*/,0/*exports*/]), functio
     exports.create = create;
 });
 
-define(__m[5/*vs/base/common/errors*/], __M([1/*require*/,0/*exports*/,10/*vs/base/common/platform*/,4/*vs/base/common/types*/]), function (require, exports, platform, types) {
+define(__m[5/*vs/base/common/errors*/], __M([1/*require*/,0/*exports*/,8/*vs/base/common/platform*/,9/*vs/base/common/types*/]), function (require, exports, platform, types) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -440,7 +605,7 @@ define(__m[5/*vs/base/common/errors*/], __M([1/*require*/,0/*exports*/,10/*vs/ba
     exports.getErrorMessage = getErrorMessage;
 });
 
-define(__m[8/*vs/base/common/callbackList*/], __M([1/*require*/,0/*exports*/,5/*vs/base/common/errors*/]), function (require, exports, errors_1) {
+define(__m[12/*vs/base/common/callbackList*/], __M([1/*require*/,0/*exports*/,5/*vs/base/common/errors*/]), function (require, exports, errors_1) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -488,7 +653,7 @@ define(__m[8/*vs/base/common/callbackList*/], __M([1/*require*/,0/*exports*/,5/*
         CallbackList.prototype.invoke = function () {
             var args = [];
             for (var _i = 0; _i < arguments.length; _i++) {
-                args[_i - 0] = arguments[_i];
+                args[_i] = arguments[_i];
             }
             if (!this._callbacks) {
                 return;
@@ -524,112 +689,7 @@ define(__m[8/*vs/base/common/callbackList*/], __M([1/*require*/,0/*exports*/,5/*
     exports.default = CallbackList;
 });
 
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
-define(__m[6/*vs/base/common/lifecycle*/], __M([1/*require*/,0/*exports*/,4/*vs/base/common/types*/]), function (require, exports, types_1) {
-    /*---------------------------------------------------------------------------------------------
-     *  Copyright (c) Microsoft Corporation. All rights reserved.
-     *  Licensed under the MIT License. See License.txt in the project root for license information.
-     *--------------------------------------------------------------------------------------------*/
-    'use strict';
-    exports.empty = Object.freeze({
-        dispose: function () { }
-    });
-    function dispose() {
-        var disposables = [];
-        for (var _i = 0; _i < arguments.length; _i++) {
-            disposables[_i - 0] = arguments[_i];
-        }
-        var first = disposables[0];
-        if (types_1.isArray(first)) {
-            disposables = first;
-        }
-        disposables.forEach(function (d) { return d && d.dispose(); });
-        return [];
-    }
-    exports.dispose = dispose;
-    function combinedDisposable(disposables) {
-        return { dispose: function () { return dispose(disposables); } };
-    }
-    exports.combinedDisposable = combinedDisposable;
-    function toDisposable() {
-        var fns = [];
-        for (var _i = 0; _i < arguments.length; _i++) {
-            fns[_i - 0] = arguments[_i];
-        }
-        return combinedDisposable(fns.map(function (fn) { return ({ dispose: fn }); }));
-    }
-    exports.toDisposable = toDisposable;
-    var Disposable = (function () {
-        function Disposable() {
-            this._toDispose = [];
-        }
-        Disposable.prototype.dispose = function () {
-            this._toDispose = dispose(this._toDispose);
-        };
-        Disposable.prototype._register = function (t) {
-            this._toDispose.push(t);
-            return t;
-        };
-        return Disposable;
-    }());
-    exports.Disposable = Disposable;
-    var Disposables = (function (_super) {
-        __extends(Disposables, _super);
-        function Disposables() {
-            _super.apply(this, arguments);
-        }
-        Disposables.prototype.add = function (arg) {
-            if (!Array.isArray(arg)) {
-                return this._register(arg);
-            }
-            else {
-                for (var _i = 0, arg_1 = arg; _i < arg_1.length; _i++) {
-                    var element = arg_1[_i];
-                    return this._register(element);
-                }
-            }
-        };
-        return Disposables;
-    }(Disposable));
-    exports.Disposables = Disposables;
-    var ReferenceCollection = (function () {
-        function ReferenceCollection() {
-            this.references = Object.create(null);
-        }
-        ReferenceCollection.prototype.acquire = function (key) {
-            var _this = this;
-            var reference = this.references[key];
-            if (!reference) {
-                reference = this.references[key] = { counter: 0, object: this.createReferencedObject(key) };
-            }
-            var object = reference.object;
-            var dispose = function () {
-                if (--reference.counter === 0) {
-                    _this.destroyReferencedObject(reference.object);
-                    delete _this.references[key];
-                }
-            };
-            reference.counter++;
-            return { object: object, dispose: dispose };
-        };
-        return ReferenceCollection;
-    }());
-    exports.ReferenceCollection = ReferenceCollection;
-    var ImmortalReference = (function () {
-        function ImmortalReference(object) {
-            this.object = object;
-        }
-        ImmortalReference.prototype.dispose = function () { };
-        return ImmortalReference;
-    }());
-    exports.ImmortalReference = ImmortalReference;
-});
-
-define(__m[3/*vs/base/common/event*/], __M([1/*require*/,0/*exports*/,6/*vs/base/common/lifecycle*/,8/*vs/base/common/callbackList*/]), function (require, exports, lifecycle_1, callbackList_1) {
+define(__m[2/*vs/base/common/event*/], __M([1/*require*/,0/*exports*/,4/*vs/base/common/lifecycle*/,12/*vs/base/common/callbackList*/,11/*vs/base/common/functional*/]), function (require, exports, lifecycle_1, callbackList_1, functional_1) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -726,10 +786,67 @@ define(__m[3/*vs/base/common/event*/], __M([1/*require*/,0/*exports*/,6/*vs/base
                 this._disposed = true;
             }
         };
-        Emitter._noop = function () { };
         return Emitter;
     }());
+    Emitter._noop = function () { };
     exports.Emitter = Emitter;
+    var EventMultiplexer = (function () {
+        function EventMultiplexer() {
+            var _this = this;
+            this.hasListeners = false;
+            this.events = [];
+            this.emitter = new Emitter({
+                onFirstListenerAdd: function () { return _this.onFirstListenerAdd(); },
+                onLastListenerRemove: function () { return _this.onLastListenerRemove(); }
+            });
+        }
+        Object.defineProperty(EventMultiplexer.prototype, "event", {
+            get: function () {
+                return this.emitter.event;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        EventMultiplexer.prototype.add = function (event) {
+            var _this = this;
+            var e = { event: event, listener: null };
+            this.events.push(e);
+            if (this.hasListeners) {
+                this.hook(e);
+            }
+            var dispose = function () {
+                if (_this.hasListeners) {
+                    _this.unhook(e);
+                }
+                var idx = _this.events.indexOf(e);
+                _this.events.splice(idx, 1);
+            };
+            return lifecycle_1.toDisposable(functional_1.once(dispose));
+        };
+        EventMultiplexer.prototype.onFirstListenerAdd = function () {
+            var _this = this;
+            this.hasListeners = true;
+            this.events.forEach(function (e) { return _this.hook(e); });
+        };
+        EventMultiplexer.prototype.onLastListenerRemove = function () {
+            var _this = this;
+            this.hasListeners = false;
+            this.events.forEach(function (e) { return _this.unhook(e); });
+        };
+        EventMultiplexer.prototype.hook = function (e) {
+            var _this = this;
+            e.listener = e.event(function (r) { return _this.emitter.fire(r); });
+        };
+        EventMultiplexer.prototype.unhook = function (e) {
+            e.listener.dispose();
+            e.listener = null;
+        };
+        EventMultiplexer.prototype.dispose = function () {
+            this.emitter.dispose();
+        };
+        return EventMultiplexer;
+    }());
+    exports.EventMultiplexer = EventMultiplexer;
     /**
      * Creates an Event which is backed-up by the event emitter. This allows
      * to use the existing eventing pattern and is likely using less memory.
@@ -764,6 +881,15 @@ define(__m[3/*vs/base/common/event*/], __M([1/*require*/,0/*exports*/,6/*vs/base
         };
     }
     exports.fromEventEmitter = fromEventEmitter;
+    function fromCallback(fn) {
+        var listener;
+        var emitter = new Emitter({
+            onFirstListenerAdd: function () { return listener = fn(function (e) { return emitter.fire(e); }); },
+            onLastListenerRemove: function () { return listener.dispose(); }
+        });
+        return emitter.event;
+    }
+    exports.fromCallback = fromCallback;
     function fromPromise(promise) {
         var emitter = new Emitter();
         var shouldEmit = false;
@@ -816,7 +942,7 @@ define(__m[3/*vs/base/common/event*/], __M([1/*require*/,0/*exports*/,6/*vs/base
     function any() {
         var events = [];
         for (var _i = 0; _i < arguments.length; _i++) {
-            events[_i - 0] = arguments[_i];
+            events[_i] = arguments[_i];
         }
         var listeners = [];
         var emitter = new Emitter({
@@ -3085,7 +3211,7 @@ if (typeof process !== 'undefined' && typeof process.nextTick === 'function') {
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-define(__m[2/*vs/base/common/winjs.base*/], __M([18/*vs/base/common/winjs.base.raw*/,5/*vs/base/common/errors*/]), function (winjs, __Errors__) {
+define(__m[3/*vs/base/common/winjs.base*/], __M([20/*vs/base/common/winjs.base.raw*/,5/*vs/base/common/errors*/]), function (winjs, __Errors__) {
 	'use strict';
 
 	var outstandingPromiseErrors = {};
@@ -3146,14 +3272,14 @@ define(__m[2/*vs/base/common/winjs.base*/], __M([18/*vs/base/common/winjs.base.r
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-define(__m[9/*vs/base/node/event*/], __M([1/*require*/,0/*exports*/,3/*vs/base/common/event*/]), function (require, exports, event_1) {
+define(__m[7/*vs/base/node/event*/], __M([1/*require*/,0/*exports*/,2/*vs/base/common/event*/]), function (require, exports, event_1) {
     'use strict';
     function fromEventEmitter(emitter, eventName, map) {
         if (map === void 0) { map = function (id) { return id; }; }
         var fn = function () {
             var args = [];
             for (var _i = 0; _i < arguments.length; _i++) {
-                args[_i - 0] = arguments[_i];
+                args[_i] = arguments[_i];
             }
             return result.fire(map.apply(void 0, args));
         };
@@ -3170,7 +3296,7 @@ define(__m[9/*vs/base/node/event*/], __M([1/*require*/,0/*exports*/,3/*vs/base/c
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-define(__m[7/*vs/base/parts/ipc/common/ipc*/], __M([1/*require*/,0/*exports*/,2/*vs/base/common/winjs.base*/,6/*vs/base/common/lifecycle*/,3/*vs/base/common/event*/]), function (require, exports, winjs_base_1, lifecycle_1, event_1) {
+define(__m[6/*vs/base/parts/ipc/common/ipc*/], __M([1/*require*/,0/*exports*/,3/*vs/base/common/winjs.base*/,4/*vs/base/common/lifecycle*/,2/*vs/base/common/event*/]), function (require, exports, winjs_base_1, lifecycle_1, event_1) {
     'use strict';
     var MessageType;
     (function (MessageType) {
@@ -3530,68 +3656,135 @@ define(__m[7/*vs/base/parts/ipc/common/ipc*/], __M([1/*require*/,0/*exports*/,2/
 
 
 
-define(__m[11/*vs/base/parts/ipc/node/ipc.net*/], __M([1/*require*/,0/*exports*/,15/*net*/,2/*vs/base/common/winjs.base*/,3/*vs/base/common/event*/,9/*vs/base/node/event*/,7/*vs/base/parts/ipc/common/ipc*/]), function (require, exports, net_1, winjs_base_1, event_1, event_2, ipc_1) {
+define(__m[13/*vs/base/parts/ipc/node/ipc.net*/], __M([1/*require*/,0/*exports*/,19/*net*/,3/*vs/base/common/winjs.base*/,2/*vs/base/common/event*/,7/*vs/base/node/event*/,6/*vs/base/parts/ipc/common/ipc*/,18/*path*/,16/*os*/,17/*crypto*/]), function (require, exports, net_1, winjs_base_1, event_1, event_2, ipc_1, path_1, os_1, crypto_1) {
     'use strict';
-    function bufferIndexOf(buffer, value, start) {
-        if (start === void 0) { start = 0; }
-        while (start < buffer.length && buffer[start] !== value) {
-            start++;
+    function generateRandomPipeName() {
+        var randomSuffix = crypto_1.randomBytes(21).toString('hex');
+        if (process.platform === 'win32') {
+            return "\\\\.\\pipe\\vscode-" + randomSuffix + "-sock";
         }
-        return start;
+        else {
+            // Mac/Unix: use socket file
+            return path_1.join(os_1.tmpdir(), "vscode-" + randomSuffix + ".sock");
+        }
     }
+    exports.generateRandomPipeName = generateRandomPipeName;
     var Protocol = (function () {
-        function Protocol(socket) {
-            this.socket = socket;
-            var buffer = null;
-            var emitter = new event_1.Emitter();
-            var onRawData = event_2.fromEventEmitter(socket, 'data', function (data) { return data; });
-            onRawData(function (data) {
-                var lastIndex = 0;
-                var index = 0;
-                while ((index = bufferIndexOf(data, 0, lastIndex)) < data.length) {
-                    var dataToParse = data.slice(lastIndex, index);
-                    if (buffer) {
-                        emitter.fire(JSON.parse(Buffer.concat([buffer, dataToParse]).toString('utf8')));
-                        buffer = null;
-                    }
-                    else {
-                        emitter.fire(JSON.parse(dataToParse.toString('utf8')));
-                    }
-                    lastIndex = index + 1;
+        function Protocol(_socket) {
+            var _this = this;
+            this._socket = _socket;
+            this._onMessage = new event_1.Emitter();
+            this.onMessage = this._onMessage.event;
+            this._writeBuffer = new (function () {
+                function class_1() {
+                    this._data = [];
+                    this._totalLength = 0;
                 }
-                if (index - lastIndex > 0) {
-                    var dataToBuffer = data.slice(lastIndex, index);
-                    if (buffer) {
-                        buffer = Buffer.concat([buffer, dataToBuffer]);
+                class_1.prototype.add = function (head, body) {
+                    var wasEmpty = this._totalLength === 0;
+                    this._data.push(head, body);
+                    this._totalLength += head.length + body.length;
+                    return wasEmpty;
+                };
+                class_1.prototype.take = function () {
+                    var ret = Buffer.concat(this._data, this._totalLength);
+                    this._data.length = 0;
+                    this._totalLength = 0;
+                    return ret;
+                };
+                return class_1;
+            }());
+            var chunks = [];
+            var totalLength = 0;
+            var state = {
+                readHead: true,
+                bodyIsJson: false,
+                bodyLen: -1,
+            };
+            _socket.on('data', function (data) {
+                chunks.push(data);
+                totalLength += data.length;
+                while (totalLength > 0) {
+                    if (state.readHead) {
+                        // expecting header -> read 17bytes for header
+                        // information: `bodyIsJson` and `bodyLen`
+                        if (totalLength >= Protocol._headerLen) {
+                            var all = Buffer.concat(chunks);
+                            state.bodyIsJson = all.readInt8(0) === 1;
+                            state.bodyLen = all.readInt32BE(1);
+                            state.readHead = false;
+                            var rest = all.slice(Protocol._headerLen);
+                            totalLength = rest.length;
+                            chunks = [rest];
+                        }
+                        else {
+                            break;
+                        }
                     }
-                    else {
-                        buffer = dataToBuffer;
+                    if (!state.readHead) {
+                        // expecting body -> read bodyLen-bytes for
+                        // the actual message or wait for more data
+                        if (totalLength >= state.bodyLen) {
+                            var all = Buffer.concat(chunks);
+                            var message = all.toString('utf8', 0, state.bodyLen);
+                            if (state.bodyIsJson) {
+                                message = JSON.parse(message);
+                            }
+                            _this._onMessage.fire(message);
+                            var rest = all.slice(state.bodyLen);
+                            totalLength = rest.length;
+                            chunks = [rest];
+                            state.bodyIsJson = false;
+                            state.bodyLen = -1;
+                            state.readHead = true;
+                        }
+                        else {
+                            break;
+                        }
                     }
                 }
             });
-            this._onMessage = emitter.event;
         }
-        Object.defineProperty(Protocol.prototype, "onMessage", {
-            get: function () { return this._onMessage; },
-            enumerable: true,
-            configurable: true
-        });
         Protocol.prototype.send = function (message) {
-            try {
-                this.socket.write(JSON.stringify(message));
-                this.socket.write(Protocol.Boundary);
+            // [bodyIsJson|bodyLen|message]
+            // |^header^^^^^^^^^^^|^data^^]
+            var header = Buffer.alloc(Protocol._headerLen);
+            // ensure string
+            if (typeof message !== 'string') {
+                message = JSON.stringify(message);
+                header.writeInt8(1, 0);
             }
-            catch (e) {
+            var data = Buffer.from(message);
+            header.writeInt32BE(data.length, 1);
+            this._writeSoon(header, data);
+        };
+        Protocol.prototype._writeSoon = function (header, data) {
+            var _this = this;
+            if (this._writeBuffer.add(header, data)) {
+                setImmediate(function () {
+                    // return early if socket has been destroyed in the meantime
+                    if (_this._socket.destroyed) {
+                        return;
+                    }
+                    // we ignore the returned value from `write` because we would have to cached the data
+                    // anyways and nodejs is already doing that for us:
+                    // > https://nodejs.org/api/stream.html#stream_writable_write_chunk_encoding_callback
+                    // > However, the false return value is only advisory and the writable stream will unconditionally
+                    // > accept and buffer chunk even if it has not not been allowed to drain.
+                    _this._socket.write(_this._writeBuffer.take());
+                });
             }
         };
-        Protocol.Boundary = new Buffer([0]);
         return Protocol;
     }());
+    Protocol._headerLen = 17;
+    exports.Protocol = Protocol;
     var Server = (function (_super) {
         __extends(Server, _super);
         function Server(server) {
-            _super.call(this, Server.toClientConnectionEvent(server));
-            this.server = server;
+            var _this = _super.call(this, Server.toClientConnectionEvent(server)) || this;
+            _this.server = server;
+            return _this;
         }
         Server.toClientConnectionEvent = function (server) {
             var onConnection = event_2.fromEventEmitter(server, 'connection');
@@ -3611,11 +3804,11 @@ define(__m[11/*vs/base/parts/ipc/node/ipc.net*/], __M([1/*require*/,0/*exports*/
     var Client = (function (_super) {
         __extends(Client, _super);
         function Client(socket, id) {
-            var _this = this;
-            _super.call(this, new Protocol(socket), id);
-            this.socket = socket;
-            this._onClose = new event_1.Emitter();
+            var _this = _super.call(this, new Protocol(socket), id) || this;
+            _this.socket = socket;
+            _this._onClose = new event_1.Emitter();
             socket.once('close', function () { return _this._onClose.fire(); });
+            return _this;
         }
         Object.defineProperty(Client.prototype, "onClose", {
             get: function () { return this._onClose.event; },
@@ -3653,7 +3846,7 @@ define(__m[11/*vs/base/parts/ipc/node/ipc.net*/], __M([1/*require*/,0/*exports*/
     exports.connect = connect;
 });
 
-define(__m[12/*vs/platform/instantiation/common/instantiation*/], __M([1/*require*/,0/*exports*/]), function (require, exports) {
+define(__m[15/*vs/platform/instantiation/common/instantiation*/], __M([1/*require*/,0/*exports*/]), function (require, exports) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -3662,6 +3855,7 @@ define(__m[12/*vs/platform/instantiation/common/instantiation*/], __M([1/*requir
     // ------ internal util
     var _util;
     (function (_util) {
+        _util.serviceIds = new Map();
         _util.DI_TARGET = '$di$target';
         _util.DI_DEPENDENCIES = '$di$dependencies';
         function getServiceDependencies(ctor) {
@@ -3683,6 +3877,9 @@ define(__m[12/*vs/platform/instantiation/common/instantiation*/], __M([1/*requir
      * A *only* valid way to create a {{ServiceIdentifier}}.
      */
     function createDecorator(serviceId) {
+        if (_util.serviceIds.has(serviceId)) {
+            return _util.serviceIds.get(serviceId);
+        }
         var id = function (target, key, index) {
             if (arguments.length !== 3) {
                 throw new Error('@IServiceName-decorator can only be used to decorate a parameter');
@@ -3690,6 +3887,7 @@ define(__m[12/*vs/platform/instantiation/common/instantiation*/], __M([1/*requir
             storeServiceDependency(id, target, index, false);
         };
         id.toString = function () { return serviceId; };
+        _util.serviceIds.set(serviceId, id);
         return id;
     }
     exports.createDecorator = createDecorator;
@@ -3707,25 +3905,26 @@ define(__m[12/*vs/platform/instantiation/common/instantiation*/], __M([1/*requir
     exports.optional = optional;
 });
 
-define(__m[13/*vs/workbench/parts/git/common/git*/], __M([1/*require*/,0/*exports*/,12/*vs/platform/instantiation/common/instantiation*/]), function (require, exports, instantiation_1) {
+define(__m[14/*vs/workbench/parts/git/common/git*/], __M([1/*require*/,0/*exports*/,15/*vs/platform/instantiation/common/instantiation*/]), function (require, exports, instantiation_1) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
      *--------------------------------------------------------------------------------------------*/
     'use strict';
+    var RefType;
     (function (RefType) {
         RefType[RefType["Head"] = 0] = "Head";
         RefType[RefType["RemoteHead"] = 1] = "RemoteHead";
         RefType[RefType["Tag"] = 2] = "Tag";
-    })(exports.RefType || (exports.RefType = {}));
-    var RefType = exports.RefType;
+    })(RefType = exports.RefType || (exports.RefType = {}));
     // Model enums
+    var StatusType;
     (function (StatusType) {
         StatusType[StatusType["INDEX"] = 0] = "INDEX";
         StatusType[StatusType["WORKING_TREE"] = 1] = "WORKING_TREE";
         StatusType[StatusType["MERGE"] = 2] = "MERGE";
-    })(exports.StatusType || (exports.StatusType = {}));
-    var StatusType = exports.StatusType;
+    })(StatusType = exports.StatusType || (exports.StatusType = {}));
+    var Status;
     (function (Status) {
         Status[Status["INDEX_MODIFIED"] = 0] = "INDEX_MODIFIED";
         Status[Status["INDEX_ADDED"] = 1] = "INDEX_ADDED";
@@ -3743,8 +3942,7 @@ define(__m[13/*vs/workbench/parts/git/common/git*/], __M([1/*require*/,0/*export
         Status[Status["BOTH_ADDED"] = 13] = "BOTH_ADDED";
         Status[Status["BOTH_DELETED"] = 14] = "BOTH_DELETED";
         Status[Status["BOTH_MODIFIED"] = 15] = "BOTH_MODIFIED";
-    })(exports.Status || (exports.Status = {}));
-    var Status = exports.Status;
+    })(Status = exports.Status || (exports.Status = {}));
     // Model events
     exports.ModelEvents = {
         MODEL_UPDATED: 'ModelUpdated',
@@ -3754,6 +3952,7 @@ define(__m[13/*vs/workbench/parts/git/common/git*/], __M([1/*require*/,0/*export
         REMOTES_UPDATED: 'RemotesUpdated'
     };
     // Service enums
+    var ServiceState;
     (function (ServiceState) {
         ServiceState[ServiceState["NotInitialized"] = 0] = "NotInitialized";
         ServiceState[ServiceState["NotARepo"] = 1] = "NotARepo";
@@ -3763,14 +3962,13 @@ define(__m[13/*vs/workbench/parts/git/common/git*/], __M([1/*require*/,0/*export
         ServiceState[ServiceState["NoGit"] = 5] = "NoGit";
         ServiceState[ServiceState["Disabled"] = 6] = "Disabled";
         ServiceState[ServiceState["NotAWorkspace"] = 7] = "NotAWorkspace";
-    })(exports.ServiceState || (exports.ServiceState = {}));
-    var ServiceState = exports.ServiceState;
+    })(ServiceState = exports.ServiceState || (exports.ServiceState = {}));
+    var RawServiceState;
     (function (RawServiceState) {
         RawServiceState[RawServiceState["OK"] = 0] = "OK";
         RawServiceState[RawServiceState["GitNotFound"] = 1] = "GitNotFound";
         RawServiceState[RawServiceState["Disabled"] = 2] = "Disabled";
-    })(exports.RawServiceState || (exports.RawServiceState = {}));
-    var RawServiceState = exports.RawServiceState;
+    })(RawServiceState = exports.RawServiceState || (exports.RawServiceState = {}));
     exports.GitErrorCodes = {
         BadConfigFile: 'BadConfigFile',
         AuthenticationFailed: 'AuthenticationFailed',
@@ -3790,13 +3988,13 @@ define(__m[13/*vs/workbench/parts/git/common/git*/], __M([1/*require*/,0/*export
         CantAccessRemote: 'CantAccessRemote',
         RepositoryNotFound: 'RepositoryNotFound'
     };
+    var AutoFetcherState;
     (function (AutoFetcherState) {
         AutoFetcherState[AutoFetcherState["Disabled"] = 0] = "Disabled";
         AutoFetcherState[AutoFetcherState["Inactive"] = 1] = "Inactive";
         AutoFetcherState[AutoFetcherState["Active"] = 2] = "Active";
         AutoFetcherState[AutoFetcherState["Fetching"] = 3] = "Fetching";
-    })(exports.AutoFetcherState || (exports.AutoFetcherState = {}));
-    var AutoFetcherState = exports.AutoFetcherState;
+    })(AutoFetcherState = exports.AutoFetcherState || (exports.AutoFetcherState = {}));
     // Service events
     exports.ServiceEvents = {
         STATE_CHANGED: 'stateChanged',
@@ -3834,7 +4032,7 @@ define(__m[13/*vs/workbench/parts/git/common/git*/], __M([1/*require*/,0/*export
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-define(__m[14/*vs/workbench/parts/git/common/gitIpc*/], __M([1/*require*/,0/*exports*/,2/*vs/base/common/winjs.base*/,7/*vs/base/parts/ipc/common/ipc*/,13/*vs/workbench/parts/git/common/git*/]), function (require, exports, winjs_base_1, ipc_1, git_1) {
+define(__m[10/*vs/workbench/parts/git/common/gitIpc*/], __M([1/*require*/,0/*exports*/,3/*vs/base/common/winjs.base*/,6/*vs/base/parts/ipc/common/ipc*/,14/*vs/workbench/parts/git/common/git*/]), function (require, exports, winjs_base_1, ipc_1, git_1) {
     'use strict';
     var RawFileStatusSerializer = {
         to: function (a) { return [a.x, a.y, a.path, a.mimetype, a.rename]; },
@@ -4027,7 +4225,7 @@ define(__m[14/*vs/workbench/parts/git/common/gitIpc*/], __M([1/*require*/,0/*exp
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-define(__m[17/*vs/workbench/parts/git/node/askpass*/], __M([1/*require*/,0/*exports*/,11/*vs/base/parts/ipc/node/ipc.net*/,14/*vs/workbench/parts/git/common/gitIpc*/,16/*fs*/]), function (require, exports, ipc_net_1, gitIpc_1, fs) {
+define(__m[21/*vs/workbench/parts/git/node/askpass*/], __M([1/*require*/,0/*exports*/,13/*vs/base/parts/ipc/node/ipc.net*/,10/*vs/workbench/parts/git/common/gitIpc*/,22/*fs*/]), function (require, exports, ipc_net_1, gitIpc_1, fs) {
     'use strict';
     function fatal(err) {
         console.error(err);

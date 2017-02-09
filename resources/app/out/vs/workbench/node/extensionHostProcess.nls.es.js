@@ -2,21 +2,28 @@
  * Copyright (C) Microsoft Corporation. All rights reserved.
  *--------------------------------------------------------*/
 define("vs/workbench/node/extensionHostProcess.nls.es", {
-	"vs/base/common/processes": [
-		"Error: La información del ejecutable debe definir un comando de tipo cadena.",
-		"Advertencia: isShellCommand debe ser de tipo booleano. Se ignora el valor {0}.",
-		"Advertencia: Los argumentos deben ser de tipo \"string[]\". Se ignora el valor {0}.",
-		"Advertencia: options.cwd debe ser de tipo cadena. Se ignora el valor {0}.",
+	"vs/base/common/json": [
+		"Símbolo no válido",
+		"Formato de número no válido",
+		"Se esperaba el nombre de la propiedad",
+		"Se esperaba un valor",
+		"Se esperaban dos puntos",
+		"Se esperaba una coma",
+		"Se esperaba una llave de cierre",
+		"Se esperaba un corchete de cierre",
+		"Se esperaba un fin de archivo",
 	],
 	"vs/base/common/severity": [
 		"Error",
 		"Advertencia",
 		"Información",
 	],
-	"vs/base/node/processes": [
-		"No se puede ejecutar un comando shell en una unidad UNC.",
+	"vs/editor/common/config/defaultConfig": [
+		"Contenido del editor",
 	],
 	"vs/platform/configuration/common/configurationRegistry": [
+		"Establecer los valores de configuración que se reemplazarán para un conjunto de identificadores de lenguaje.",
+		"Reemplazar configuración",
 		"Aporta opciones de configuración.",
 		"Resumen de la configuración. Esta etiqueta se usará en el archivo de configuración como comentario divisor.",
 		"Descripción de las propiedades de configuración.",

@@ -8,8 +8,8 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-/* ---------- Builder ---------- */
-.hidden {
+
+.builder-hidden {
 	display: none !important;
 	visibility: hidden !important;
 }
@@ -121,6 +121,7 @@
 	flex: 1;
 	max-width: 170px;
 	min-width: 60px;
+	margin-right: 10px;
 }
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
@@ -421,18 +422,6 @@
 	background: #ddd;
 }
 
-.vs .monaco-findInput > .controls > .custom-checkbox.case-sensitive {
-	background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16'%3E%3Cstyle type='text/css'%3E.st0{opacity:0;fill:%23F6F6F6;} .st1{fill:%23F6F6F6;} .st2{fill:%23424242;}%3C/style%3E%3Cg id='outline'%3E%3Crect class='st0' width='16' height='16'/%3E%3Cpath class='st1' d='M14.176 5.592c-.555-.6-1.336-.904-2.322-.904-.258 0-.521.024-.784.072-.246.044-.479.101-.7.169-.228.07-.432.147-.613.229-.22.099-.389.196-.512.284l-.419.299v2.701c-.086.108-.162.223-.229.344l-2.45-6.354h-2.394l-3.753 9.804v.598h3.025l.838-2.35h2.167l.891 2.35h3.237l-.001-.003c.305.092.633.15.993.15.344 0 .671-.049.978-.146h2.853v-4.903c-.001-.975-.271-1.763-.805-2.34z'/%3E%3C/g%3E%3Cg id='icon_x5F_bg'%3E%3Cpath class='st2' d='M7.611 11.834l-.891-2.35h-3.562l-.838 2.35h-1.095l3.217-8.402h1.02l3.24 8.402h-1.091zm-2.531-6.814l-.044-.135-.038-.156-.029-.152-.024-.126h-.023l-.021.126-.032.152-.038.156-.044.135-1.307 3.574h2.918l-1.318-3.574z'/%3E%3Cpath class='st2' d='M13.02 11.834v-.938h-.023c-.199.352-.456.62-.771.806s-.673.278-1.075.278c-.313 0-.588-.045-.826-.135s-.438-.212-.598-.366-.281-.338-.363-.551-.124-.442-.124-.688c0-.262.039-.502.117-.721s.198-.412.36-.58.367-.308.615-.419.544-.19.888-.237l1.811-.252c0-.273-.029-.507-.088-.7s-.143-.351-.252-.472-.241-.21-.396-.267-.325-.085-.513-.085c-.363 0-.714.064-1.052.193s-.638.31-.904.54v-.984c.082-.059.196-.121.343-.188s.312-.128.495-.185.378-.104.583-.141.407-.056.606-.056c.699 0 1.229.194 1.588.583s.539.942.539 1.661v3.902h-.96zm-1.454-2.83c-.273.035-.498.085-.674.149s-.313.144-.41.237-.165.205-.202.334-.055.276-.055.44c0 .141.025.271.076.393s.124.227.22.316.215.16.357.211.308.076.495.076c.242 0 .465-.045.668-.135s.378-.214.524-.372.261-.344.343-.557.123-.442.123-.688v-.609l-1.465.205z'/%3E%3C/g%3E%3C/svg%3E") center center no-repeat;
-}
-
-.vs .monaco-findInput > .controls > .custom-checkbox.whole-word {
-	background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16'%3E%3Cstyle type='text/css'%3E.st0{opacity:0;fill:%23F6F6F6;} .st1{fill:%23F6F6F6;} .st2{fill:%23424242;}%3C/style%3E%3Cg id='outline'%3E%3Crect class='st0' width='16' height='16'/%3E%3Cpath class='st1' d='M16 4.022v-3.022h-16.014v3.022h3.046l-3.043 7.945h-.004v.01l.015 1.023h-.014v1.991h16.014v-3.023h-1v-7.946h1zm-5.914 5.301c0 .233-.023.441-.066.595-.047.164-.099.247-.127.284l-.078.069-.151.026-.115-.017-.139-.137c-.031-.078-.112-.332-.112-.566 0-.254.091-.561.126-.656l.069-.141.109-.082.178-.027c.077 0 .117.014.177.056l.087.179.051.237-.009.18zm-3.695-5.301v2.893l-1.116-2.893h1.116zm-3.026 7.02h1.573l.351.926h-2.254l.33-.926zm8.635-4.354c-.206-.2-.431-.38-.695-.512-.396-.198-.853-.298-1.355-.298-.215 0-.423.02-.621.058v-1.914h2.671v2.666z'/%3E%3C/g%3E%3Cg id='icon_x5F_bg'%3E%3Crect x='13' y='4' class='st2' width='1' height='8'/%3E%3Cpath class='st2' d='M11.225 8.387c-.078-.299-.199-.562-.36-.786s-.365-.401-.609-.53-.534-.193-.866-.193c-.198 0-.38.024-.547.073-.165.049-.316.117-.453.205-.136.088-.257.194-.365.318l-.179.258v-3.154h-.893v7.422h.893v-.575l.126.175c.087.102.189.19.304.269.117.078.249.14.398.186.149.046.314.068.498.068.353 0 .666-.071.937-.212.272-.143.499-.338.682-.586.183-.25.321-.543.414-.879.093-.338.14-.703.14-1.097-.001-.342-.04-.663-.12-.962zm-1.479-.607c.151.071.282.176.39.314.109.14.194.313.255.517.051.174.082.371.089.587l-.007.125c0 .327-.033.62-.1.869-.067.246-.161.453-.278.614-.117.162-.26.285-.421.366-.322.162-.76.166-1.069.015-.153-.075-.286-.175-.393-.296-.085-.096-.156-.216-.218-.367 0 0-.179-.447-.179-.947 0-.5.179-1.002.179-1.002.062-.177.136-.318.224-.43.114-.143.256-.259.424-.345.168-.086.365-.129.587-.129.19 0 .364.037.517.109z'/%3E%3Crect x='.987' y='2' class='st2' width='14.013' height='1.023'/%3E%3Crect x='.987' y='12.968' class='st2' width='14.013' height='1.023'/%3E%3Cpath class='st2' d='M1.991 12.031l.728-2.031h2.219l.778 2.031h1.082l-2.485-7.158h-.941l-2.441 7.086-.025.072h1.085zm1.827-5.609h.022l.914 2.753h-1.841l.905-2.753z'/%3E%3C/g%3E%3C/svg%3E") center center no-repeat;
-}
-
-.vs .monaco-findInput > .controls > .custom-checkbox.regex {
-	background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16'%3E%3Cpolygon fill='%23F6F6F6' points='13.64,7.396 12.169,2.898 10.706,3.761 11.087,2 6.557,2 6.936,3.762 5.473,2.898 4,7.396 5.682,7.554 4.513,8.561 5.013,9 2,9 2,14 7,14 7,10.747 7.978,11.606 8.82,9.725 9.661,11.602 13.144,8.562 11.968,7.554'/%3E%3Cg fill='%23424242'%3E%3Cpath d='M12.301 6.518l-2.772.262 2.086 1.788-1.594 1.392-1.201-2.682-1.201 2.682-1.583-1.392 2.075-1.788-2.771-.262.696-2.126 2.358 1.392-.599-2.784h2.053l-.602 2.783 2.359-1.392.696 2.127z'/%3E%3Crect x='3' y='10' width='3' height='3'/%3E%3C/g%3E%3C/svg%3E") center center no-repeat;
-}
-
 .vs .monaco-findInput.disabled {
 	background-color: #E1E1E1;
 }
@@ -446,18 +435,70 @@
 	background: #555;
 }
 
-.hc-black .monaco-findInput > .controls > .custom-checkbox.case-sensitive,
-.vs-dark .monaco-findInput > .controls > .custom-checkbox.case-sensitive {
+/* Highlighting */
+.monaco-findInput.highlight-0 .controls {
+	animation: monaco-findInput-highlight-0 100ms linear 0s;
+}
+.monaco-findInput.highlight-1 .controls {
+	animation: monaco-findInput-highlight-1 100ms linear 0s;
+}
+.hc-black .monaco-findInput.highlight-0 .controls,
+.vs-dark  .monaco-findInput.highlight-0 .controls {
+	animation: monaco-findInput-highlight-dark-0 100ms linear 0s;
+}
+.hc-black .monaco-findInput.highlight-1 .controls,
+.vs-dark  .monaco-findInput.highlight-1 .controls {
+	animation: monaco-findInput-highlight-dark-1 100ms linear 0s;
+}
+
+@keyframes monaco-findInput-highlight-0 {
+	0% { background: rgba(253, 255, 0, 0.8); }
+	100% { background: transparent; }
+}
+@keyframes monaco-findInput-highlight-1 {
+	0% { background: rgba(253, 255, 0, 0.8); }
+	/* Made intentionally different such that the CSS minifier does not collapse the two animations into a single one*/
+	99% { background: transparent; }
+}
+
+@keyframes monaco-findInput-highlight-dark-0 {
+	0% { background: rgba(255, 255, 255, 0.44); }
+	100% { background: transparent; }
+}
+@keyframes monaco-findInput-highlight-dark-1 {
+	0% { background: rgba(255, 255, 255, 0.44); }
+	/* Made intentionally different such that the CSS minifier does not collapse the two animations into a single one*/
+	99% { background: transparent; }
+}
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+.vs .custom-checkbox.monaco-case-sensitive {
+	background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16'%3E%3Cstyle type='text/css'%3E.st0{opacity:0;fill:%23F6F6F6;} .st1{fill:%23F6F6F6;} .st2{fill:%23424242;}%3C/style%3E%3Cg id='outline'%3E%3Crect class='st0' width='16' height='16'/%3E%3Cpath class='st1' d='M14.176 5.592c-.555-.6-1.336-.904-2.322-.904-.258 0-.521.024-.784.072-.246.044-.479.101-.7.169-.228.07-.432.147-.613.229-.22.099-.389.196-.512.284l-.419.299v2.701c-.086.108-.162.223-.229.344l-2.45-6.354h-2.394l-3.753 9.804v.598h3.025l.838-2.35h2.167l.891 2.35h3.237l-.001-.003c.305.092.633.15.993.15.344 0 .671-.049.978-.146h2.853v-4.903c-.001-.975-.271-1.763-.805-2.34z'/%3E%3C/g%3E%3Cg id='icon_x5F_bg'%3E%3Cpath class='st2' d='M7.611 11.834l-.891-2.35h-3.562l-.838 2.35h-1.095l3.217-8.402h1.02l3.24 8.402h-1.091zm-2.531-6.814l-.044-.135-.038-.156-.029-.152-.024-.126h-.023l-.021.126-.032.152-.038.156-.044.135-1.307 3.574h2.918l-1.318-3.574z'/%3E%3Cpath class='st2' d='M13.02 11.834v-.938h-.023c-.199.352-.456.62-.771.806s-.673.278-1.075.278c-.313 0-.588-.045-.826-.135s-.438-.212-.598-.366-.281-.338-.363-.551-.124-.442-.124-.688c0-.262.039-.502.117-.721s.198-.412.36-.58.367-.308.615-.419.544-.19.888-.237l1.811-.252c0-.273-.029-.507-.088-.7s-.143-.351-.252-.472-.241-.21-.396-.267-.325-.085-.513-.085c-.363 0-.714.064-1.052.193s-.638.31-.904.54v-.984c.082-.059.196-.121.343-.188s.312-.128.495-.185.378-.104.583-.141.407-.056.606-.056c.699 0 1.229.194 1.588.583s.539.942.539 1.661v3.902h-.96zm-1.454-2.83c-.273.035-.498.085-.674.149s-.313.144-.41.237-.165.205-.202.334-.055.276-.055.44c0 .141.025.271.076.393s.124.227.22.316.215.16.357.211.308.076.495.076c.242 0 .465-.045.668-.135s.378-.214.524-.372.261-.344.343-.557.123-.442.123-.688v-.609l-1.465.205z'/%3E%3C/g%3E%3C/svg%3E") center center no-repeat;
+}
+.hc-black .custom-checkbox.monaco-case-sensitive,
+.hc-black .custom-checkbox.monaco-case-sensitive:hover,
+.vs-dark .custom-checkbox.monaco-case-sensitive {
 	background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16'%3E%3Cstyle type='text/css'%3E.st0{opacity:0;fill:%23262626;} .st1{fill:%23262626;} .st2{fill:%23C5C5C5;}%3C/style%3E%3Cg id='outline'%3E%3Crect class='st0' width='16' height='16'/%3E%3Cpath class='st1' d='M14.176 5.592c-.555-.6-1.336-.904-2.322-.904-.258 0-.521.024-.784.072-.246.044-.479.101-.7.169-.228.07-.432.147-.613.229-.22.099-.389.196-.512.284l-.419.299v2.701c-.086.108-.162.223-.229.344l-2.45-6.354h-2.394l-3.753 9.804v.598h3.025l.838-2.35h2.167l.891 2.35h3.237l-.001-.003c.305.092.633.15.993.15.344 0 .671-.049.978-.146h2.853v-4.903c-.001-.975-.271-1.763-.805-2.34z'/%3E%3C/g%3E%3Cg id='icon_x5F_bg'%3E%3Cpath class='st2' d='M7.611 11.834l-.891-2.35h-3.562l-.838 2.35h-1.095l3.217-8.402h1.02l3.24 8.402h-1.091zm-2.531-6.814l-.044-.135-.038-.156-.029-.152-.024-.126h-.023l-.021.126-.032.152-.038.156-.044.135-1.307 3.574h2.918l-1.318-3.574z'/%3E%3Cpath class='st2' d='M13.02 11.834v-.938h-.023c-.199.352-.456.62-.771.806s-.673.278-1.075.278c-.313 0-.588-.045-.826-.135s-.438-.212-.598-.366-.281-.338-.363-.551-.124-.442-.124-.688c0-.262.039-.502.117-.721s.198-.412.36-.58.367-.308.615-.419.544-.19.888-.237l1.811-.252c0-.273-.029-.507-.088-.7s-.143-.351-.252-.472-.241-.21-.396-.267-.325-.085-.513-.085c-.363 0-.714.064-1.052.193s-.638.31-.904.54v-.984c.082-.059.196-.121.343-.188s.312-.128.495-.185.378-.104.583-.141.407-.056.606-.056c.699 0 1.229.194 1.588.583s.539.942.539 1.661v3.902h-.96zm-1.454-2.83c-.273.035-.498.085-.674.149s-.313.144-.41.237-.165.205-.202.334-.055.276-.055.44c0 .141.025.271.076.393s.124.227.22.316.215.16.357.211.308.076.495.076c.242 0 .465-.045.668-.135s.378-.214.524-.372.261-.344.343-.557.123-.442.123-.688v-.609l-1.465.205z'/%3E%3C/g%3E%3C/svg%3E") center center no-repeat;
 }
 
-.hc-black .monaco-findInput > .controls > .custom-checkbox.whole-word,
-.vs-dark .monaco-findInput > .controls > .custom-checkbox.whole-word {
+.vs .custom-checkbox.monaco-whole-word {
+	background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16'%3E%3Cstyle type='text/css'%3E.st0{opacity:0;fill:%23F6F6F6;} .st1{fill:%23F6F6F6;} .st2{fill:%23424242;}%3C/style%3E%3Cg id='outline'%3E%3Crect class='st0' width='16' height='16'/%3E%3Cpath class='st1' d='M16 4.022v-3.022h-16.014v3.022h3.046l-3.043 7.945h-.004v.01l.015 1.023h-.014v1.991h16.014v-3.023h-1v-7.946h1zm-5.914 5.301c0 .233-.023.441-.066.595-.047.164-.099.247-.127.284l-.078.069-.151.026-.115-.017-.139-.137c-.031-.078-.112-.332-.112-.566 0-.254.091-.561.126-.656l.069-.141.109-.082.178-.027c.077 0 .117.014.177.056l.087.179.051.237-.009.18zm-3.695-5.301v2.893l-1.116-2.893h1.116zm-3.026 7.02h1.573l.351.926h-2.254l.33-.926zm8.635-4.354c-.206-.2-.431-.38-.695-.512-.396-.198-.853-.298-1.355-.298-.215 0-.423.02-.621.058v-1.914h2.671v2.666z'/%3E%3C/g%3E%3Cg id='icon_x5F_bg'%3E%3Crect x='13' y='4' class='st2' width='1' height='8'/%3E%3Cpath class='st2' d='M11.225 8.387c-.078-.299-.199-.562-.36-.786s-.365-.401-.609-.53-.534-.193-.866-.193c-.198 0-.38.024-.547.073-.165.049-.316.117-.453.205-.136.088-.257.194-.365.318l-.179.258v-3.154h-.893v7.422h.893v-.575l.126.175c.087.102.189.19.304.269.117.078.249.14.398.186.149.046.314.068.498.068.353 0 .666-.071.937-.212.272-.143.499-.338.682-.586.183-.25.321-.543.414-.879.093-.338.14-.703.14-1.097-.001-.342-.04-.663-.12-.962zm-1.479-.607c.151.071.282.176.39.314.109.14.194.313.255.517.051.174.082.371.089.587l-.007.125c0 .327-.033.62-.1.869-.067.246-.161.453-.278.614-.117.162-.26.285-.421.366-.322.162-.76.166-1.069.015-.153-.075-.286-.175-.393-.296-.085-.096-.156-.216-.218-.367 0 0-.179-.447-.179-.947 0-.5.179-1.002.179-1.002.062-.177.136-.318.224-.43.114-.143.256-.259.424-.345.168-.086.365-.129.587-.129.19 0 .364.037.517.109z'/%3E%3Crect x='.987' y='2' class='st2' width='14.013' height='1.023'/%3E%3Crect x='.987' y='12.968' class='st2' width='14.013' height='1.023'/%3E%3Cpath class='st2' d='M1.991 12.031l.728-2.031h2.219l.778 2.031h1.082l-2.485-7.158h-.941l-2.441 7.086-.025.072h1.085zm1.827-5.609h.022l.914 2.753h-1.841l.905-2.753z'/%3E%3C/g%3E%3C/svg%3E") center center no-repeat;
+}
+.hc-black .custom-checkbox.monaco-whole-word,
+.hc-black .custom-checkbox.monaco-whole-word:hover,
+.vs-dark .custom-checkbox.monaco-whole-word {
 	background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16'%3E%3Cstyle type='text/css'%3E.st0{opacity:0;fill:%23262626;} .st1{fill:%23262626;} .st2{fill:%23C5C5C5;}%3C/style%3E%3Cg id='outline'%3E%3Crect class='st0' width='16' height='16'/%3E%3Cpath class='st1' d='M16 4.022v-3.022h-16.014v3.022h3.046l-3.043 7.945h-.004v.01l.015 1.023h-.014v1.991h16.014v-3.023h-1v-7.946h1zm-5.914 5.301c0 .233-.023.441-.066.595-.047.164-.099.247-.127.284l-.078.069-.151.026-.115-.017-.139-.137c-.031-.078-.112-.332-.112-.566 0-.254.091-.561.126-.656l.069-.141.109-.082.178-.027c.077 0 .117.014.177.056l.087.179.051.237-.009.18zm-3.695-5.301v2.893l-1.116-2.893h1.116zm-3.026 7.02h1.573l.351.926h-2.254l.33-.926zm8.635-4.354c-.206-.2-.431-.38-.695-.512-.396-.198-.853-.298-1.355-.298-.215 0-.423.02-.621.058v-1.914h2.671v2.666z'/%3E%3C/g%3E%3Cg id='icon_x5F_bg'%3E%3Crect x='13' y='4' class='st2' width='1' height='8'/%3E%3Cpath class='st2' d='M11.225 8.387c-.078-.299-.199-.562-.36-.786s-.365-.401-.609-.53-.534-.193-.866-.193c-.198 0-.38.024-.547.073-.165.049-.316.117-.453.205-.136.088-.257.194-.365.318l-.179.258v-3.154h-.893v7.422h.893v-.575l.126.175c.087.102.189.19.304.269.117.078.249.14.398.186.149.046.314.068.498.068.353 0 .666-.071.937-.212.272-.143.499-.338.682-.586.183-.25.321-.543.414-.879.093-.338.14-.703.14-1.097-.001-.342-.04-.663-.12-.962zm-1.479-.607c.151.071.282.176.39.314.109.14.194.313.255.517.051.174.082.371.089.587l-.007.125c0 .327-.033.62-.1.869-.067.246-.161.453-.278.614-.117.162-.26.285-.421.366-.322.162-.76.166-1.069.015-.153-.075-.286-.175-.393-.296-.085-.096-.156-.216-.218-.367 0 0-.179-.447-.179-.947 0-.5.179-1.002.179-1.002.062-.177.136-.318.224-.43.114-.143.256-.259.424-.345.168-.086.365-.129.587-.129.19 0 .364.037.517.109z'/%3E%3Crect x='.987' y='2' class='st2' width='14.013' height='1.023'/%3E%3Crect x='.987' y='12.968' class='st2' width='14.013' height='1.023'/%3E%3Cpath class='st2' d='M1.991 12.031l.728-2.031h2.219l.778 2.031h1.082l-2.485-7.158h-.941l-2.441 7.086-.025.072h1.085zm1.827-5.609h.022l.914 2.753h-1.841l.905-2.753z'/%3E%3C/g%3E%3C/svg%3E") center center no-repeat;
 }
 
-.hc-black .monaco-findInput > .controls > .custom-checkbox.regex,
-.vs-dark .monaco-findInput > .controls > .custom-checkbox.regex {
+.vs .custom-checkbox.monaco-regex {
+	background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16'%3E%3Cpolygon fill='%23F6F6F6' points='13.64,7.396 12.169,2.898 10.706,3.761 11.087,2 6.557,2 6.936,3.762 5.473,2.898 4,7.396 5.682,7.554 4.513,8.561 5.013,9 2,9 2,14 7,14 7,10.747 7.978,11.606 8.82,9.725 9.661,11.602 13.144,8.562 11.968,7.554'/%3E%3Cg fill='%23424242'%3E%3Cpath d='M12.301 6.518l-2.772.262 2.086 1.788-1.594 1.392-1.201-2.682-1.201 2.682-1.583-1.392 2.075-1.788-2.771-.262.696-2.126 2.358 1.392-.599-2.784h2.053l-.602 2.783 2.359-1.392.696 2.127z'/%3E%3Crect x='3' y='10' width='3' height='3'/%3E%3C/g%3E%3C/svg%3E") center center no-repeat;
+}
+.hc-black .custom-checkbox.monaco-regex,
+.hc-black .custom-checkbox.monaco-regex:hover,
+.vs-dark .custom-checkbox.monaco-regex {
 	background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16'%3E%3Cpolygon fill='%232d2d30' points='13.64,7.396 12.169,2.898 10.706,3.761 11.087,2 6.557,2 6.936,3.762 5.473,2.898 4,7.396 5.682,7.554 4.513,8.561 5.013,9 2,9 2,14 7,14 7,10.747 7.978,11.606 8.82,9.725 9.661,11.602 13.144,8.562 11.968,7.554'/%3E%3Cg fill='%23C5C5C5'%3E%3Cpath d='M12.301 6.518l-2.772.262 2.086 1.788-1.594 1.392-1.201-2.682-1.201 2.682-1.583-1.392 2.075-1.788-2.771-.262.696-2.126 2.358 1.392-.599-2.784h2.053l-.602 2.783 2.359-1.392.696 2.127z'/%3E%3Crect x='3' y='10' width='3' height='3'/%3E%3C/g%3E%3C/svg%3E") center center no-repeat;
 }
 
@@ -470,6 +511,8 @@
 
 .monaco-icon-label {
 	display: inline-block; /* required for icons support :before rule */
+	overflow: hidden;
+	text-overflow: ellipsis;
 }
 
 .monaco-icon-label::before {
@@ -785,12 +828,12 @@
 .hc-black .monaco-list-row.focused { outline: 1px dotted #f38518; outline-offset: -1px; background: transparent }
 
 /* Selection */
-.monaco-list-row.selected { background-color: #4FA7FF; color: white; }
+.vs .monaco-list-row.selected { background-color: #4FA7FF; color: white; }
 .vs-dark .monaco-list-row.selected { background-color: #0E639C; color: white; }
-.hc-black .monaco-list-row.selected { border: 1px solid #f38518; }
+.hc-black .monaco-list-row.selected { outline: 1px solid #f38518; color: white; }
 
 /* Selection and focus */
-.monaco-list-row.selected.focused { background-color: #3399FF; color: white; }
+.vs .monaco-list-row.selected.focused { background-color: #3399FF; color: white; }
 .vs-dark .monaco-list-row.selected.focused { background-color: #094771; color: white; }
 /*! *****************************************************************************
 (c) 2012-2015 GitHub
@@ -1172,23 +1215,23 @@ Applies to all other files
 	cursor: default !important;
 }
 
-.vertical-cursor-container * {
+.vertical-cursor-container {
 	cursor: ew-resize;
 }
 
-.horizontal-cursor-container * {
+.horizontal-cursor-container {
 	cursor: ns-resize;
 }
 
 /** Custom Mac Cursor */
 
 .monaco-sash.mac.vertical,
-.vertical-cursor-container-mac * {
+.vertical-cursor-container-mac {
 	cursor: col-resize;
 }
 
 .monaco-sash.mac.horizontal,
-.horizontal-cursor-container-mac * {
+.horizontal-cursor-container-mac {
 	cursor: row-resize;
 }
 /*---------------------------------------------------------------------------------------------
@@ -1512,6 +1555,13 @@ Applies to all other files
 .quick-open-widget .quick-open-tree .quick-open-entry {
 	overflow: hidden;
 	text-overflow: ellipsis;
+	display: flex;
+	flex-direction: column;
+}
+
+.quick-open-widget .quick-open-tree .quick-open-entry > .row {
+	display: flex;
+	align-items: center;
 }
 
 .quick-open-widget .quick-open-tree .quick-open-entry .quick-open-entry-icon {
@@ -1521,6 +1571,7 @@ Applies to all other files
 	margin-right: 4px;
 	display: inline-block;
 	vertical-align: middle;
+	flex-shrink: 0;
 }
 
 .quick-open-widget .quick-open-tree .quick-open-entry .quick-open-help-entry-label {
@@ -1542,6 +1593,9 @@ Applies to all other files
 	opacity: 0.7;
 	margin-left: 0.5em;
 	font-size: 0.9em;
+	overflow: hidden;
+	flex: 1;
+	text-overflow: ellipsis;
 }
 
 .quick-open-widget .quick-open-tree .results-group {
@@ -1573,19 +1627,9 @@ Applies to all other files
 	box-shadow: 0 5px 8px #A8A8A8;
 }
 
-.quick-open-widget.no-shadow {
-	box-shadow: none;
-	border: 1px solid #E6E6E6;
-}
-
 .vs-dark .quick-open-widget {
 	background-color: #252526;
 	box-shadow: 0 5px 8px #000;
-}
-
-.vs-dark .quick-open-widget.no-shadow {
-	box-shadow: none;
-	border: 1px solid #000;
 }
 
 .vs-dark .quick-open-widget input {
@@ -1804,7 +1848,7 @@ Applies to all other files
 
 /* Expansion */
 
-.monaco-tree .monaco-tree-rows > .monaco-tree-row.has-children > .content:before {
+.monaco-tree .monaco-tree-rows.show-twisties > .monaco-tree-row.has-children > .content:before {
 	content: ' ';
 	position: absolute;
 	display: block;
@@ -1815,7 +1859,7 @@ Applies to all other files
 	left: -16px;
 }
 
-.monaco-tree .monaco-tree-rows > .monaco-tree-row.expanded > .content:before {
+.monaco-tree .monaco-tree-rows.show-twisties > .monaco-tree-row.expanded > .content:before {
 	background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='%23646465' d='M11 10H5.344L11 4.414V10z'/%3E%3C/svg%3E");
 }
 
@@ -1849,11 +1893,11 @@ Applies to all other files
 .vs-dark .monaco-tree-wrapper.drop-target,
 .vs-dark .monaco-tree .monaco-tree-row.drop-target														{ background-color: #383B3D !important; color: inherit !important; }
 
-.vs-dark .monaco-tree .monaco-tree-rows > .monaco-tree-row.has-children > .content:before {
+.vs-dark .monaco-tree .monaco-tree-rows.show-twisties > .monaco-tree-row.has-children > .content:before {
 	background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='%23E8E8E8' d='M6 4v8l4-4-4-4zm1 2.414L8.586 8 7 9.586V6.414z'/%3E%3C/svg%3E");
 }
 
-.vs-dark .monaco-tree .monaco-tree-rows > .monaco-tree-row.expanded > .content:before {
+.vs-dark .monaco-tree .monaco-tree-rows.show-twisties > .monaco-tree-row.expanded > .content:before {
 	background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='%23E8E8E8' d='M11 10H5.344L11 4.414V10z'/%3E%3C/svg%3E");
 }
 
@@ -1871,11 +1915,11 @@ Applies to all other files
 .hc-black .monaco-tree .monaco-tree-wrapper.drop-target,
 .hc-black .monaco-tree .monaco-tree-rows > .monaco-tree-row.drop-target												{ background: none !important; border: 1px dashed #f38518; }
 
-.hc-black .monaco-tree .monaco-tree-rows > .monaco-tree-row.has-children > .content:before	{
+.hc-black .monaco-tree .monaco-tree-rows.show-twisties > .monaco-tree-row.has-children > .content:before	{
 	background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16'%3E%3Cpath fill='%23fff' d='M6 4v8l4-4-4-4zm1 2.414l1.586 1.586-1.586 1.586v-3.172z'/%3E%3C/svg%3E");
 }
 
-.hc-black .monaco-tree .monaco-tree-rows > .monaco-tree-row.expanded > .content:before {
+.hc-black .monaco-tree .monaco-tree-rows.show-twisties > .monaco-tree-row.expanded > .content:before {
 	background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16'%3E%3Cpath fill='%23fff' d='M11 10.07h-5.656l5.656-5.656v5.656z'/%3E%3C/svg%3E");
 }
 
@@ -1896,16 +1940,8 @@ Applies to all other files
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-.monaco-editor .contentWidgets {
-	position: absolute;
-	top: 0;
-}
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
 
-.monaco-editor .current-line {
+.monaco-editor .view-overlays .current-line {
 	display: block;
 	position: absolute;
 	left: 0;
@@ -1913,15 +1949,15 @@ Applies to all other files
 	box-sizing: border-box;
 }
 
-.monaco-editor.vs .current-line {
+.monaco-editor.vs .view-overlays .current-line {
 	border: 2px solid #eee;
 }
 
-.monaco-editor.vs-dark .current-line {
+.monaco-editor.vs-dark .view-overlays .current-line {
 	border: 2px solid #282828;
 }
 
-.monaco-editor.hc-black .current-line {
+.monaco-editor.hc-black .view-overlays .current-line {
 	border: 2px solid #f38518;
 }
 
@@ -1930,7 +1966,7 @@ Applies to all other files
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-.monaco-editor .current-line {
+.monaco-editor .margin-view-overlays .current-line-margin {
 	display: block;
 	position: absolute;
 	left: 0;
@@ -1938,15 +1974,15 @@ Applies to all other files
 	box-sizing: border-box;
 }
 
-.monaco-editor.vs .current-line {
+.monaco-editor.vs .margin-view-overlays .current-line-margin {
 	border: 2px solid #eee;
 }
 
-.monaco-editor.vs-dark .current-line {
+.monaco-editor.vs-dark .margin-view-overlays .current-line-margin {
 	border: 2px solid #282828;
 }
 
-.monaco-editor.hc-black .current-line {
+.monaco-editor.hc-black .margin-view-overlays .current-line-margin {
 	border: 2px solid #f38518;
 }
 
@@ -2068,8 +2104,6 @@ Applies to all other files
 
 .monaco-editor .lines-content,
 .monaco-editor .view-line,
-.monaco-editor .view-line > span,
-.monaco-editor .view-line > span > span,
 .monaco-editor .view-lines {
 	-webkit-user-select: text;
 	-ms-user-select: text;
@@ -2081,8 +2115,6 @@ Applies to all other files
 
 .monaco-editor.ie .lines-content,
 .monaco-editor.ie .view-line,
-.monaco-editor.ie .view-line > span,
-.monaco-editor.ie .view-line > span > span,
 .monaco-editor.ie .view-lines {
 	-ms-user-select: none;
 	user-select: none;
@@ -2103,17 +2135,12 @@ Applies to all other files
 	width: 100%;
 }
 
-.monaco-editor .lines-content {
-	position: absolute;
-	top: 0;
-}
-
-/* bootstrap fix */
-.monaco-editor .view-line > span > span {
+/* TODO@tokenization bootstrap fix */
+/*.monaco-editor .view-line > span > span {
 	float: none;
 	min-height: inherit;
 	margin-left: inherit;
-}
+}*/
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -2215,7 +2242,7 @@ Applies to all other files
 .monaco-editor.vs-dark			.view-overlays			.selected-text { background: #3A3D41; }
 .monaco-editor.vs-dark			.view-overlays.focused	.selected-text { background: #264F78; }
 .monaco-editor.hc-black			.view-overlays			.selected-text { background: none; }
-.monaco-editor.hc-black			.view-overlays.focused	.selected-text { background: white; }
+.monaco-editor.hc-black			.view-overlays.focused	.selected-text { background: #f3f518; }
 .monaco-editor.ie.hc-black		.view-overlays.focused	.selected-text { background: none; border: 2px solid #f38518; }
 .monaco-editor.edge.hc-black	.view-overlays.focused	.selected-text { background: none; border: 2px solid #f38518; }
 
@@ -2259,8 +2286,12 @@ Applies to all other files
 	border-color: #fff;
 	color: #000; /* opposite of #fff */
 }
+.monaco-editor.hc-black .cursors-layer.has-selection .cursor {
+	border-left: 1px solid #000;
+	border-right: 1px solid #000;
+}
 
-@keyframes cursor-blink {
+@keyframes monaco-cursor-blink {
 	50% {
 		opacity: 0;
 	}
@@ -2269,7 +2300,7 @@ Applies to all other files
 	}
 }
 
-@keyframes cursor-smooth {
+@keyframes monaco-cursor-smooth {
 	0%,
 	20% {
 		opacity: 1;
@@ -2280,7 +2311,7 @@ Applies to all other files
 	}
 }
 
-@keyframes cursor-phase {
+@keyframes monaco-cursor-phase {
 	0%,
 	20% {
 		opacity: 1;
@@ -2291,7 +2322,7 @@ Applies to all other files
 	}
 }
 
-@keyframes cursor-expand {
+@keyframes monaco-cursor-expand {
 	0%,
 	20% {
 		transform: scaleY(1);
@@ -2303,19 +2334,19 @@ Applies to all other files
 }
 
 .cursor-blink {
-	animation: cursor-blink 1s step-start 0s infinite;
+	animation: monaco-cursor-blink 1s step-start 0s infinite;
 }
 
 .cursor-smooth {
-	animation: cursor-smooth 0.5s ease-in-out 0s infinite alternate;
+	animation: monaco-cursor-smooth 0.5s ease-in-out 0s infinite alternate;
 }
 
 .cursor-phase {
-	animation: cursor-phase 0.5s ease-in-out 0s infinite alternate;
+	animation: monaco-cursor-phase 0.5s ease-in-out 0s infinite alternate;
 }
 
 .cursor-expand > .cursor {
-	animation: cursor-expand 0.5s ease-in-out 0s infinite alternate;
+	animation: monaco-cursor-expand 0.5s ease-in-out 0s infinite alternate;
 }
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
@@ -2553,55 +2584,20 @@ Applies to all other files
 .monaco-editor.vs-dark	.greensquiggly { background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' height='3' width='6'%3E%3Cg fill='%23080'%3E%3Cpolygon points='5.5,0 2.5,3 1.1,3 4.1,0'/%3E%3Cpolygon points='4,0 6,2 6,0.6 5.4,0'/%3E%3Cpolygon points='0,2 1,3 2.4,3 0,0.6'/%3E%3C/g%3E%3C/svg%3E") repeat-x bottom left; }
 .monaco-editor.hc-black .greensquiggly { border-bottom: 4px double #71B771; opacity: 0.8; }
 
-/* -------------------- Bracket Match -------------------- */
-
-.monaco-editor .bracket-match {
-	box-sizing: border-box;
-	background-color: rgba(0, 100, 0, 0.1);
-}
-.monaco-editor.vs		.bracket-match { border: 1px solid #B9B9B9; }
-.monaco-editor.vs-dark	.bracket-match { border: 1px solid #888; }
-.monaco-editor.hc-black .bracket-match { border: 1px solid #fff; }
-
-
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-.monaco-editor .token.vs-whitespace {
+.monaco-editor .vs-whitespace {
 	display:inline-block;
 }
-.monaco-editor.hc-black .token {
+.monaco-editor.hc-black .view-line {
 	mix-blend-mode: difference;
 }
-
-.monaco-editor.vs .token					{ color: #000000; }
-.monaco-editor.vs .token.vs-whitespace		{ color: rgba(51, 51, 51, 0.2) !important; }
-.monaco-editor.vs .token.info-token			{ color: #316bcd; }
-.monaco-editor.vs .token.warn-token			{ color: #cd9731; }
-.monaco-editor.vs .token.error-token		{ color: #cd3131; }
-.monaco-editor.vs .token.debug-token		{ color: purple; }
-
-.monaco-editor.vs-dark .token				{ color: #D4D4D4; }
-.monaco-editor.vs-dark .token.vs-whitespace	{ color: rgba(227, 228, 226, 0.16) !important; }
-.monaco-editor.vs-dark .token.info-token	{ color: #6796e6; }
-.monaco-editor.vs-dark .token.warn-token	{ color: #cd9731; }
-.monaco-editor.vs-dark .token.error-token	{ color: #f44747; }
-.monaco-editor.vs-dark .token.debug-token	{ color: #b267e6; }
-
-.monaco-editor.hc-black .token				{ color: #FFFFFF; }
-.monaco-editor.hc-black .token.vs-whitespace{ color: rgba(227, 228, 226, 0.16) !important; }
-.monaco-editor.hc-black .token.info-token	{ color: #6796e6; }
-.monaco-editor.hc-black .token.warn-token	{ color: #008000; }
-.monaco-editor.hc-black .token.error-token	{ color: #FF0000; }
-.monaco-editor.hc-black .token.debug-token	{ color: #b267e6; }
-
-
-/* ----- mimic text bundle support for themes ----- */
-.monaco-editor .markup.bold { font-weight: bold; }
-.monaco-editor .markup.italic { font-style: italic; }
-.monaco-editor .markup.underline { text-decoration: underline; }
+.monaco-editor.vs .vs-whitespace		{ color: rgba(51, 51, 51, 0.2); }
+.monaco-editor.vs-dark .vs-whitespace	{ color: rgba(227, 228, 226, 0.16); }
+.monaco-editor.hc-black .vs-whitespace	{ color: rgba(227, 228, 226, 0.16); }
 
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
@@ -2628,6 +2624,19 @@ Applies to all other files
 	box-shadow: none;
 	outline: 2px solid #6FC3DF;
 }
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+.monaco-editor .bracket-match {
+	box-sizing: border-box;
+	background-color: rgba(0, 100, 0, 0.1);
+}
+.monaco-editor.vs		.bracket-match { border: 1px solid #B9B9B9; }
+.monaco-editor.vs-dark	.bracket-match { border: 1px solid #888; }
+.monaco-editor.hc-black .bracket-match { border: 1px solid #fff; }
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -2783,6 +2792,26 @@ Applies to all other files
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
+.monaco-editor .findOptionsWidget {
+	background-color: #EFEFF2;
+	box-shadow: 0 2px 8px #A8A8A8;
+}
+
+.monaco-editor.vs-dark .findOptionsWidget {
+	background-color: #2D2D30;
+	box-shadow: 0 2px 8px #000;
+}
+
+.monaco-editor.hc-black .findOptionsWidget {
+	border: 2px solid #6FC3DF;
+	background: #0C141F;
+	box-shadow: none;
+}
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
 /* Checkbox */
 
 .monaco-checkbox .label {
@@ -2885,10 +2914,12 @@ Applies to all other files
 }
 
 .monaco-editor .find-widget.no-results .matchesCount {
-	background-color: rgba(255,0,0,0.5);
+	color: #A1260D;
 }
-.monaco-editor.vs-dark .find-widget.no-results .matchesCount {
-	background-color: rgba(255,0,0,0.3);
+
+.monaco-editor.vs-dark .find-widget.no-results .matchesCount,
+.monaco-editor.hc-black .find-widget.no-results .matchesCount {
+	color: #F48771
 }
 
 .monaco-editor .find-widget .matchesCount {
@@ -2995,7 +3026,7 @@ Applies to all other files
 }
 
 .monaco-editor .find-widget .close-fw {
-	background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='3 3 16 16' enable-background='new 3 3 16 16'%3E%3Cpolygon fill='%23656565' points='12.597,11.042 15.4,13.845 13.844,15.4 11.042,12.598 8.239,15.4 6.683,13.845 9.485,11.042 6.683,8.239 8.238,6.683 11.042,9.486 13.845,6.683 15.4,8.239'/%3E%3C/svg%3E");
+	background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='3 3 16 16' enable-background='new 3 3 16 16'%3E%3Cpolygon fill='%23424242' points='12.597,11.042 15.4,13.845 13.844,15.4 11.042,12.598 8.239,15.4 6.683,13.845 9.485,11.042 6.683,8.239 8.238,6.683 11.042,9.486 13.845,6.683 15.4,8.239'/%3E%3C/svg%3E");
 }
 
 .monaco-editor .find-widget .expand {
@@ -3421,6 +3452,7 @@ Applies to all other files
 .monaco-editor.vs-dark .hoverHighlight { background: rgba(38, 79, 120, 0.25); }
 
 .monaco-editor.hc-black .monaco-editor-hover { background-color: #0C141F; }
+.monaco-editor.hc-black .monaco-editor-hover a { color: #1C5DAF; }
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -3458,6 +3490,51 @@ Applies to all other files
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
+
+.tm-inspect-widget {
+	background-color: #F3F3F3;
+	border: 1px solid #CCC;
+	z-index: 50;
+	-webkit-user-select: text;
+	-ms-user-select: text;
+	-khtml-user-select: text;
+	-moz-user-select: text;
+	-o-user-select: text;
+	user-select: text;
+	padding: 10px;
+}
+
+.monaco-editor.vs-dark .tm-inspect-widget { background-color: #2D2D30; border-color: #555; }
+
+.monaco-editor.hc-black .tm-inspect-widget { background-color: #0C141F; }
+
+.tm-token {
+	font-family: monospace;
+}
+
+.tm-token-length {
+	font-weight: normal;
+	font-size: 60%;
+	float: right;
+}
+
+.tm-metadata-table {
+	width: 100%;
+}
+
+.tm-metadata-value {
+	font-family: monospace;
+	text-align: right;
+}
+
+.tm-theme-selector {
+	font-family: monospace;
+}
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
 .monaco-editor .detected-link {
 	text-decoration: underline;
 }
@@ -3472,8 +3549,12 @@ Applies to all other files
 	border-color: #1C5DAF;
 }
 
-.monaco-editor.vs-dark  .detected-link-active {
+.monaco-editor.vs-dark .detected-link-active {
 	color: #4E94CE !important;
+}
+
+.monaco-editor.hc-black .detected-link-active {
+	color: cyan !important;
 }
 
 /*---------------------------------------------------------------------------------------------
@@ -3633,27 +3714,33 @@ Applies to all other files
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-
 .monaco-editor .lightbulb-glyph {
 	display: flex;
 	align-items: center;
 	justify-content: center;
+	height: 16px;
+	width: 16px;
+}
+
+.monaco-editor .lightbulb-glyph.hidden {
+	display: none;
+	visibility: hidden;
 }
 
 .monaco-editor .lightbulb-glyph:hover {
 	cursor: pointer;
 }
 
-.monaco-editor.vs .lightbulb-glyph {
+.monaco-editor.vs .lightbulb-glyph,
+.monaco-editor.vs .lightbulb-glyph[data-severity="high"] {
 	background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' enable-background='new 0 0 16 16' height='16' width='16'%3E%3Cpath fill='%23F6F6F6' d='M13.5 4.2C13.1 2.1 10.8 0 9.3 0H6.7c-.4 0-.6.2-.6.2C4 .8 2.5 2.7 2.5 4.9c0 .5-.1 2.3 1.7 3.8.5.5 1.2 2 1.3 2.4v3.3L7.1 16h2l1.5-1.6V11c.1-.4.8-1.9 1.3-2.3 1.1-.9 1.5-1.9 1.6-2.7V4.2z'/%3E%3Cg%3E%3Cg fill='%23848484'%3E%3Cpath d='M6.5 12h3v1h-3zM7.5 15h1.1l.9-1h-3z'/%3E%3C/g%3E%3Cpath fill='%23fc0' d='M12.6 5c0-2.3-1.8-4.1-4.1-4.1-.1 0-1.4.1-1.4.1-2.1.3-3.7 2-3.7 4 0 .1-.2 1.6 1.4 3 .7.7 1.5 2.4 1.6 2.9l.1.1h3l.1-.2c.1-.5.9-2.2 1.6-2.9 1.6-1.3 1.4-2.8 1.4-2.9zm-3 1l-.5 3h-.6V6c1.1 0 .9-1 .9-1H6.5v.1c0 .2.1.9 1 .9v3H7l-.2-.7L6.5 6c-.7 0-.9-.4-1-.7v-.4c0-.8.9-.9.9-.9h3.1s1 .1 1 1c0 0 .1 1-.9 1z'/%3E%3C/g%3E%3Cpath fill='%23F0EFF1' d='M10.5 5c0-.9-1-1-1-1H6.4s-.9.1-.9.9v.4c0 .3.3.7.9.7l.4 2.3.2.7h.5V6c-1 0-1-.7-1-.9V5h3s.1 1-.9 1v3h.6l.5-3c.9 0 .8-1 .8-1z'/%3E%3C/svg%3E") center center no-repeat;
-	height: 16px;
-	width: 16px;
 }
 
-.monaco-editor.vs-dark .lightbulb-glyph, .monaco-editor.hc-black .lightbulb-glyph {
+.monaco-editor.vs-dark .lightbulb-glyph,
+.monaco-editor.hc-black .lightbulb-glyph,
+.monaco-editor.vs-dark .lightbulb-glyph[data-severity="high"],
+.monaco-editor.hc-black .lightbulb-glyph[data-severity="high"] {
 	background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' enable-background='new 0 0 16 16' height='16' width='16'%3E%3Cpath fill='%231E1E1E' d='M13.5 4.2C13.1 2.1 10.8 0 9.3 0H6.7c-.4 0-.6.2-.6.2C4 .8 2.5 2.7 2.5 4.9c0 .5-.1 2.3 1.7 3.8.5.5 1.2 2 1.3 2.4v3.3L7.1 16h2l1.5-1.6V11c.1-.4.8-1.9 1.3-2.3 1.1-.9 1.5-1.9 1.6-2.7V4.2z'/%3E%3Cg%3E%3Cg fill='%23C5C5C5'%3E%3Cpath d='M6.5 12h3v1h-3zM7.5 15h1.1l.9-1h-3z'/%3E%3C/g%3E%3Cpath fill='%23DDB204' d='M12.6 5c0-2.3-1.8-4.1-4.1-4.1-.1 0-1.4.1-1.4.1-2.1.3-3.7 2-3.7 4 0 .1-.2 1.6 1.4 3 .7.7 1.5 2.4 1.6 2.9l.1.1h3l.1-.2c.1-.5.9-2.2 1.6-2.9 1.6-1.3 1.4-2.8 1.4-2.9zm-3 1l-.5 3h-.6V6c1.1 0 .9-1 .9-1H6.5v.1c0 .2.1.9 1 .9v3H7l-.2-.7L6.5 6c-.7 0-.9-.4-1-.7v-.4c0-.8.9-.9.9-.9h3.1s1 .1 1 1c0 0 .1 1-.9 1z'/%3E%3C/g%3E%3Cpath fill='%23252526' d='M10.5 5c0-.9-1-1-1-1H6.4s-.9.1-.9.9v.4c0 .3.3.7.9.7l.4 2.3.2.7h.5V6c-1 0-1-.7-1-.9V5h3s.1 1-.9 1v3h.6l.5-3c.9 0 .8-1 .8-1z'/%3E%3C/svg%3E") center center no-repeat;
-	height: 16px;
-	width: 16px;
 }
 
 /*---------------------------------------------------------------------------------------------
@@ -4026,12 +4113,13 @@ Applies to all other files
 .monaco-editor .suggest-widget .monaco-list .monaco-list-row .icon.value,
 .monaco-editor .suggest-widget .monaco-list .monaco-list-row .icon.enum { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cstyle%3E.icon-canvas-transparent{opacity:0;fill:%23f6f6f6}.icon-vs-out{fill:%23f6f6f6}.icon-vs-fg{fill:%23f0eff1}.icon-vs-action-blue{fill:%2300539c}%3C/style%3E%3Cpath class='icon-canvas-transparent' d='M16 16H0V0h16v16z' id='canvas'/%3E%3Cpath class='icon-vs-out' d='M0 15V6h6V2.586L7.585 1h6.829L16 2.586v5.829L14.414 10H10v5H0zm3-6z' id='outline'/%3E%3Cpath class='icon-vs-fg' d='M8 3v3h5v1h-3v1h4V3H8zm5 2H9V4h4v1zM2 8v5h6V8H2zm5 3H3v-1h4v1z' id='iconFg'/%3E%3Cpath class='icon-vs-action-blue' d='M10 6h3v1h-3V6zM9 4v1h4V4H9zm5-2H8L7 3v3h1V3h6v5h-4v1h4l1-1V3l-1-1zm-7 8H3v1h4v-1zm2-3v7H1V7h8zM8 8H2v5h6V8z' id='iconBg'/%3E%3C/svg%3E"); }
 .monaco-editor .suggest-widget .monaco-list .monaco-list-row .icon.keyword { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cstyle%3E.icon-canvas-transparent{opacity:0;fill:%23f6f6f6}.icon-vs-out{fill:%23f6f6f6}.icon-vs-bg{fill:%23424242}.icon-vs-fg{fill:%23f0eff1}%3C/style%3E%3Cpath class='icon-canvas-transparent' d='M16 16H0V0h16v16z' id='canvas'/%3E%3Cpath class='icon-vs-out' d='M16 5V2H9V1H0v14h13v-3h3V9h-1V6H9V5h7zm-8 7V9h1v3H8z' id='outline'/%3E%3Cpath class='icon-vs-fg' d='M2 3h5v1H2V3z' id='iconFg'/%3E%3Cpath class='icon-vs-bg' d='M15 4h-5V3h5v1zm-1 3h-2v1h2V7zm-4 0H1v1h9V7zm2 6H1v1h11v-1zm-5-3H1v1h6v-1zm8 0h-5v1h5v-1zM8 2v3H1V2h7zM7 3H2v1h5V3z' id='iconBg'/%3E%3C/svg%3E"); }
-.monaco-editor .suggest-widget .monaco-list .monaco-list-row .icon.text { background-image: url(../../editor/contrib/suggest/browser/String_16x.svg); }
+.monaco-editor .suggest-widget .monaco-list .monaco-list-row .icon.text { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cstyle%3E.icon-canvas-transparent{opacity:0;fill:%23f6f6f6}.icon-vs-out{fill:%23f6f6f6}.icon-vs-bg{fill:%23424242}.icon-vs-fg{fill:%23f0eff1}%3C/style%3E%3Cpath class='icon-canvas-transparent' d='M16 16H0V0h16v16z' id='canvas'/%3E%3Cpath class='icon-vs-out' d='M16 15H0V1h16v14z' id='outline'/%3E%3Cpath class='icon-vs-fg' d='M9.229 7.354c.035.146.052.31.052.494 0 .234-.02.441-.06.621-.039.18-.095.328-.168.445a.687.687 0 0 1-.914.281.76.76 0 0 1-.237-.207.988.988 0 0 1-.154-.306 1.262 1.262 0 0 1-.057-.381v-.506c0-.17.02-.326.061-.465s.096-.258.168-.359a.756.756 0 0 1 .257-.232c.1-.055.21-.082.331-.082a.646.646 0 0 1 .571.32c.067.105.116.23.15.377zm-5.126.869a.557.557 0 0 0-.196.132c-.047.053-.08.112-.097.18s-.028.147-.028.233a.513.513 0 0 0 .157.39.528.528 0 0 0 .186.113.682.682 0 0 0 .242.041.76.76 0 0 0 .593-.271.897.897 0 0 0 .165-.295c.038-.113.059-.234.059-.365v-.346l-.761.11a1.29 1.29 0 0 0-.32.078zM14 3v10H2V3h12zM5.962 7.469c0-.238-.027-.451-.083-.637a1.286 1.286 0 0 0-.249-.471 1.08 1.08 0 0 0-.424-.295 1.644 1.644 0 0 0-.608-.101c-.119 0-.241.012-.368.033a3.213 3.213 0 0 0-.673.195 1.313 1.313 0 0 0-.212.114v.768c.158-.132.341-.235.544-.313.204-.078.413-.117.627-.117.213 0 .377.063.494.186.116.125.174.324.174.6l-1.03.154c-.205.026-.38.077-.526.151a1.083 1.083 0 0 0-.563.66A1.562 1.562 0 0 0 3 8.857c0 .17.025.323.074.463a.945.945 0 0 0 .568.596c.139.057.297.084.478.084.229 0 .431-.053.604-.16a1.3 1.3 0 0 0 .439-.463h.014v.529h.785V7.469zM10 7.861a3.54 3.54 0 0 0-.074-.734 2.047 2.047 0 0 0-.228-.611 1.203 1.203 0 0 0-.394-.416 1.03 1.03 0 0 0-.574-.153c-.123 0-.234.018-.336.051a1 1 0 0 0-.278.147 1.153 1.153 0 0 0-.225.222 2.022 2.022 0 0 0-.181.289h-.013V5H7v4.887h.697v-.485h.013c.044.082.095.158.151.229.057.07.119.133.191.186a.835.835 0 0 0 .238.121.943.943 0 0 0 .293.042c.23 0 .434-.053.609-.16a1.34 1.34 0 0 0 .443-.443c.12-.188.211-.412.272-.672A3.62 3.62 0 0 0 10 7.861zm3-1.658a.7.7 0 0 0-.106-.066 1.183 1.183 0 0 0-.142-.063 1.233 1.233 0 0 0-.363-.065c-.209 0-.399.051-.569.15a1.355 1.355 0 0 0-.433.424c-.118.182-.21.402-.273.66a3.63 3.63 0 0 0-.008 1.615c.06.23.143.43.252.602.109.168.241.303.396.396a.972.972 0 0 0 .524.144c.158 0 .296-.021.413-.068.117-.045.219-.108.309-.184v-.77a1.094 1.094 0 0 1-.288.225.819.819 0 0 1-.158.068.48.48 0 0 1-.153.027.62.62 0 0 1-.274-.074c-.241-.136-.423-.479-.423-1.146 0-.715.206-1.12.469-1.301.077-.032.153-.064.238-.064.113 0 .22.027.317.082.096.057.188.131.272.223v-.815z' id='iconFg'/%3E%3Cpath class='icon-vs-bg' d='M1 2v12h14V2H1zm13 11H2V3h12v10zM5.63 6.361a1.08 1.08 0 0 0-.424-.295 1.644 1.644 0 0 0-.608-.101c-.119 0-.241.012-.368.033a3.213 3.213 0 0 0-.673.195 1.313 1.313 0 0 0-.212.114v.768c.158-.132.341-.235.544-.313.204-.078.413-.117.627-.117.213 0 .377.063.494.186.116.125.174.324.174.6l-1.03.154c-.205.026-.38.077-.526.151a1.083 1.083 0 0 0-.563.66A1.562 1.562 0 0 0 3 8.857c0 .17.025.323.074.463a.945.945 0 0 0 .568.596c.139.057.297.084.478.084.229 0 .431-.053.604-.16a1.3 1.3 0 0 0 .439-.463h.014v.529h.785V7.469c0-.238-.027-.451-.083-.637a1.286 1.286 0 0 0-.249-.471zm-.446 2.02c0 .131-.02.252-.059.365a.897.897 0 0 1-.165.295.758.758 0 0 1-.593.272.682.682 0 0 1-.242-.041.507.507 0 0 1-.302-.286.583.583 0 0 1-.041-.218c0-.086.01-.164.027-.232s.051-.127.098-.18a.546.546 0 0 1 .196-.133c.083-.033.189-.061.32-.078l.761-.109v.345zm4.514-1.865a1.203 1.203 0 0 0-.394-.416 1.03 1.03 0 0 0-.574-.153c-.123 0-.234.018-.336.051a1 1 0 0 0-.278.147 1.153 1.153 0 0 0-.225.222 2.022 2.022 0 0 0-.181.289h-.013V5H7v4.887h.697v-.485h.013c.044.082.095.158.151.229.057.07.119.133.191.186a.835.835 0 0 0 .238.121.943.943 0 0 0 .293.042c.23 0 .434-.053.609-.16a1.34 1.34 0 0 0 .443-.443c.12-.188.211-.412.272-.672A3.62 3.62 0 0 0 10 7.861a3.54 3.54 0 0 0-.074-.734 2.047 2.047 0 0 0-.228-.611zm-.476 1.953c-.039.18-.095.328-.168.445a.755.755 0 0 1-.264.266.687.687 0 0 1-.651.015.76.76 0 0 1-.237-.207.988.988 0 0 1-.154-.306 1.262 1.262 0 0 1-.057-.381v-.506c0-.17.02-.326.061-.465s.096-.258.168-.359a.756.756 0 0 1 .257-.232c.1-.055.21-.082.331-.082a.646.646 0 0 1 .571.32c.066.105.116.23.15.377.035.146.052.31.052.494 0 .234-.019.441-.059.621zm3.672-2.332a.7.7 0 0 1 .106.066v.814a1.178 1.178 0 0 0-.273-.223.645.645 0 0 0-.317-.081c-.085 0-.161.032-.238.064-.263.181-.469.586-.469 1.301 0 .668.182 1.011.423 1.146.084.04.171.074.274.074.049 0 .101-.01.153-.027a.856.856 0 0 0 .158-.068 1.16 1.16 0 0 0 .288-.225v.77c-.09.076-.192.139-.309.184a1.098 1.098 0 0 1-.412.068.974.974 0 0 1-.523-.143 1.257 1.257 0 0 1-.396-.396 2.098 2.098 0 0 1-.252-.602 3.118 3.118 0 0 1-.088-.754c0-.316.032-.604.096-.861.063-.258.155-.479.273-.66.119-.182.265-.322.433-.424a1.102 1.102 0 0 1 1.073-.023z' id='iconBg'/%3E%3C/svg%3E"); }
 .monaco-editor .suggest-widget .monaco-list .monaco-list-row .icon.color { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cstyle%3E.icon-canvas-transparent{opacity:0;fill:%23f6f6f6}.icon-vs-out{fill:%23f6f6f6}.icon-vs-bg{fill:%23424242}.icon-vs-red{fill:%23e51400}.icon-vs-yellow{fill:%23ffcc00}.icon-vs-green{fill:%23339933}.icon-vs-blue{fill:%231ba1e2}.icon-vs-action-purple{fill:%23652d90}.icon-white{fill:%23ffffff}%3C/style%3E%3Cpath class='icon-canvas-transparent' d='M16 16H0V0h16v16z' id='canvas'/%3E%3Cpath class='icon-vs-out' d='M16 8c0 4.411-3.589 8-8 8a2.803 2.803 0 0 1-2.8-2.8c0-.833.272-1.629.766-2.241a.596.596 0 0 0 .101-.359.667.667 0 0 0-.667-.666.58.58 0 0 0-.358.102A3.584 3.584 0 0 1 2.8 10.8 2.803 2.803 0 0 1 0 8c0-4.411 3.589-8 8-8s8 3.589 8 8z' id='outline'/%3E%3Cpath class='icon-white' d='M5.4 7.933a2.67 2.67 0 0 1 2.667 2.666c0 .606-.193 1.179-.544 1.614a1.599 1.599 0 0 0-.323.987.8.8 0 0 0 .8.8c3.309 0 6-2.691 6-6s-2.691-6-6-6-6 2.691-6 6c0 .441.359.8.8.8.378 0 .729-.114.986-.322A2.568 2.568 0 0 1 5.4 7.933z' id='iconFg'/%3E%3Cg id='iconBg'%3E%3Cpath class='icon-vs-bg' d='M8 15c-.992 0-1.8-.808-1.8-1.8 0-.606.193-1.179.544-1.613.208-.259.323-.609.323-.987 0-.919-.748-1.666-1.667-1.666-.377 0-.728.115-.986.323A2.58 2.58 0 0 1 2.8 9.8C1.808 9.8 1 8.992 1 8c0-3.86 3.14-7 7-7 3.859 0 7 3.14 7 7 0 3.859-3.141 7-7 7zM5.4 7.933a2.67 2.67 0 0 1 2.667 2.666c0 .606-.193 1.179-.544 1.614a1.599 1.599 0 0 0-.323.987.8.8 0 0 0 .8.8c3.309 0 6-2.691 6-6s-2.691-6-6-6-6 2.691-6 6c0 .441.359.8.8.8.378 0 .729-.114.986-.322A2.568 2.568 0 0 1 5.4 7.933z'/%3E%3Cpath class='icon-vs-action-purple' d='M4.5 5.375a.875.875 0 1 0 0 1.75.875.875 0 0 0 0-1.75z'/%3E%3Cpath class='icon-vs-blue' d='M7.125 3.625a.875.875 0 1 0 0 1.75.875.875 0 0 0 0-1.75z'/%3E%3Cpath class='icon-vs-green' d='M10.625 4.5a.875.875 0 1 0 0 1.75.875.875 0 0 0 0-1.75z'/%3E%3Cpath class='icon-vs-yellow' d='M11.5 8a.875.875 0 1 0 0 1.75.875.875 0 0 0 0-1.75z'/%3E%3Cpath class='icon-vs-red' d='M9.75 10.625a.875.875 0 1 0 0 1.75.875.875 0 0 0 0-1.75z'/%3E%3C/g%3E%3C/svg%3E"); }
 .monaco-editor .suggest-widget .monaco-list .monaco-list-row .icon.file { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cstyle%3E.icon-canvas-transparent{opacity:0;fill:%23f6f6f6}.icon-vs-out{fill:%23f6f6f6}.icon-vs-bg{fill:%23424242}.icon-vs-fg{fill:%23f0eff1}%3C/style%3E%3Cpath class='icon-canvas-transparent' d='M16 16H0V0h16v16z' id='canvas'/%3E%3Cpath class='icon-vs-out' d='M15 16H2V0h8.621L15 4.379V16z' id='outline'/%3E%3Cpath class='icon-vs-fg' d='M13 14H4V2h5v4h4v8zm-3-9V2.207L12.793 5H10z' id='iconFg'/%3E%3Cpath class='icon-vs-bg' d='M3 1v14h11V4.793L10.207 1H3zm10 13H4V2h5v4h4v8zm-3-9V2.207L12.793 5H10z' id='iconBg'/%3E%3C/svg%3E"); }
 .monaco-editor .suggest-widget .monaco-list .monaco-list-row .icon.reference { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cstyle%3E.icon-canvas-transparent{opacity:0;fill:%23f6f6f6}.icon-vs-out{fill:%23f6f6f6}.icon-vs-fg{fill:%23f0eff1}.icon-vs-action-orange{fill:%23c27d1a}%3C/style%3E%3Cpath class='icon-canvas-transparent' d='M16 16H0V0h16v16z' id='canvas'/%3E%3Cpath class='icon-vs-out' d='M14.414 1L16 2.586v5.828L14.414 10H10v3.416L8.414 15H1.586L0 13.416v-5.83L1.586 6H6V2.586L7.586 1h6.828z' id='outline'/%3E%3Cpath class='icon-vs-fg' d='M2 13h6V8H2v5zm1-4h4v1H3V9zm0 2h4v1H3v-1zm11-5V3H8v3h.414L9 6.586V6h4v1H9.414l.586.586V8h4V6zm-1-1H9V4h4v1z' id='iconFg'/%3E%3Cpath class='icon-vs-action-orange' d='M3 11h4.001v1H3v-1zm0-1h4.001V9H3v1zm6-2v5l-1 1H2l-1-1V8l1-1h6l1 1zM8 8H2v5h6V8zm1-2l1 1h3V6H9zm0-1h4V4H9v1zm5-3H8L7 3v3h1V3h6v5h-4v1h4l1-1V3l-1-1z' id='iconBg'/%3E%3C/svg%3E"); }
 .monaco-editor .suggest-widget .monaco-list .monaco-list-row .icon.snippet { background-image: url("data:image/svg+xml,%3C?xml version='1.0' encoding='UTF-8' standalone='no'?%3E %3Csvg xmlns:dc='http://purl.org/dc/elements/1.1/' xmlns:cc='http://creativecommons.org/ns%23' xmlns:rdf='http://www.w3.org/1999/02/22-rdf-syntax-ns%23' xmlns:svg='http://www.w3.org/2000/svg' xmlns='http://www.w3.org/2000/svg' version='1.1' id='svg4694' viewBox='0 0 16 16'%3E %3Cmetadata id='metadata4705'%3E %3Crdf:RDF%3E %3Ccc:Work rdf:about=''%3E %3Cdc:format%3Eimage/svg+xml%3C/dc:format%3E %3Cdc:type rdf:resource='http://purl.org/dc/dcmitype/StillImage' /%3E %3Cdc:title%3E%3C/dc:title%3E %3C/cc:Work%3E %3C/rdf:RDF%3E %3C/metadata%3E %3Cdefs id='defs4703' /%3E %3Cstyle id='style4696'%3E.icon-canvas-transparent{opacity:0;fill:%23f6f6f6}.icon-vs-out{fill:%23f6f6f6}.icon-vs-action-orange{fill:%23c27d1a}%3C/style%3E %3Cg id='g4707' transform='matrix(1.3333333,0,0,1.3333333,-245.99999,-5.333333)'%3E %3Cpath d='m 185,4 11,0 0,12 -11,0 z' id='path4534' style='fill:%23f6f6f6' /%3E %3Cpath d='m 194,13 0,-7 -7,0 0,7 -1,0 0,-8 9,0 0,8 -1,0 z m -7,2 -1,0 0,-1 1,0 0,1 z m 2,-1 -1,0 0,1 1,0 0,-1 z m 2,0 -1,0 0,1 1,0 0,-1 z m 2,1 -1,0 0,-1 1,0 0,1 z m 2,-1 -1,0 0,1 1,0 0,-1 z' id='path4536' style='fill:%23424242' /%3E %3Cpath d='m 187,13 0,-7 7,0 0,7 -7,0 z' id='path4538' style='fill:%23f0eff1' /%3E %3C/g%3E %3Cpath id='canvas' d='M16 16H0V0h16v16z' class='icon-canvas-transparent' /%3E %3C/svg%3E "); }
 .monaco-editor .suggest-widget .monaco-list .monaco-list-row .icon.customcolor { background-image: none; }
+.monaco-editor .suggest-widget .monaco-list .monaco-list-row .icon.folder { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16'%3E%3Cstyle type='text/css'%3E.icon-canvas-transparent{opacity:0;fill:%23F6F6F6;} .icon-vs-out{opacity:0;fill:%23F6F6F6;} .icon-vs-fg{fill:%23F0EFF1;} .icon-folder{fill:%23656565;}%3C/style%3E%3Cpath class='icon-canvas-transparent' d='M16 16h-16v-16h16v16z' id='canvas'/%3E%3Cpath class='icon-vs-out' d='M16 2.5v10c0 .827-.673 1.5-1.5 1.5h-11.996c-.827 0-1.5-.673-1.5-1.5v-8c0-.827.673-1.5 1.5-1.5h2.886l1-2h8.11c.827 0 1.5.673 1.5 1.5z' id='outline'/%3E%3Cpath class='icon-folder' d='M14.5 2h-7.492l-1 2h-3.504c-.277 0-.5.224-.5.5v8c0 .276.223.5.5.5h11.996c.275 0 .5-.224.5-.5v-10c0-.276-.225-.5-.5-.5zm-.496 2h-6.496l.5-1h5.996v1z' id='iconBg'/%3E%3Cpath class='icon-vs-fg' d='M14 3v1h-6.5l.5-1h6z' id='iconFg'/%3E%3C/svg%3E"); }
 
 .monaco-editor .suggest-widget .monaco-list .monaco-list-row .icon.customcolor .colorspan {
 	margin: 0 0 0 0.3em;
@@ -4119,26 +4207,6 @@ Applies to all other files
 	color: #4E94CE;
 }
 
-.monaco-editor.vs-dark .suggest-widget .monaco-list .monaco-list-row .icon { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cstyle%3E.icon-canvas-transparent{opacity:0;fill:%232d2d30}.icon-vs-out{fill:%232d2d30}.icon-vs-bg{fill:%23c5c5c5}%3C/style%3E%3Cpath class='icon-canvas-transparent' d='M16 16H0V0h16v16z' id='canvas'/%3E%3Cpath class='icon-vs-out' d='M16 10c0 2.205-1.794 4-4 4-1.858 0-3.411-1.279-3.858-3h-.978l2.318 4H0v-1.703l2-3.408V0h11v6.142c1.721.447 3 2 3 3.858z' id='outline'/%3E%3Cpath class='icon-vs-bg' d='M12 1v4.75A4.255 4.255 0 0 0 7.75 10h-.732L4.275 5.269 3 7.442V1h9zM7.747 14L4.269 8 .748 14h6.999zM15 10a3 3 0 1 1-6 0 3 3 0 0 1 6 0z' id='iconBg'/%3E%3C/svg%3E"); }
-.monaco-editor.vs-dark .suggest-widget .monaco-list .monaco-list-row .icon.method,
-.monaco-editor.vs-dark .suggest-widget .monaco-list .monaco-list-row .icon.function,
-.monaco-editor.vs-dark .suggest-widget .monaco-list .monaco-list-row .icon.constructor { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cstyle%3E.icon-canvas-transparent{opacity:0;fill:%232d2d30}.icon-vs-out{fill:%232d2d30}.icon-vs-fg{fill:%232b282e}.icon-vs-action-purple{fill:%23b180d7}%3C/style%3E%3Cpath class='icon-canvas-transparent' d='M16 16H0V0h16v16z' id='canvas'/%3E%3Cpath class='icon-vs-out' d='M15 3.349v8.403L8.975 16H8.07L1 11.582V3.327L7.595 0h1.118L15 3.349z' id='outline'/%3E%3Cpath class='icon-vs-fg' d='M12.715 4.398L8.487 7.02 3.565 4.272l4.578-2.309 4.572 2.435zM3 5.102l5 2.792v5.705l-5-3.125V5.102zm6 8.434V7.878l4-2.48v5.317l-4 2.821z' id='iconFg'/%3E%3Cpath class='icon-vs-action-purple' d='M8.156.837L2 3.942v7.085L8.517 15.1 14 11.233V3.95L8.156.837zm4.559 3.561L8.487 7.02 3.565 4.272l4.578-2.309 4.572 2.435zM3 5.102l5 2.792v5.705l-5-3.125V5.102zm6 8.434V7.878l4-2.48v5.317l-4 2.821z' id='iconBg'/%3E%3C/svg%3E"); }
-.monaco-editor.vs-dark .suggest-widget .monaco-list .monaco-list-row .icon.field,
-.monaco-editor.vs-dark .suggest-widget .monaco-list .monaco-list-row .icon.variable { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cstyle%3E.icon-canvas-transparent{opacity:0;fill:%232d2d30}.icon-vs-out{fill:%232d2d30}.icon-vs-fg{fill:%232b282e}.icon-vs-action-blue{fill:%2375beff}%3C/style%3E%3Cpath class='icon-canvas-transparent' d='M16 16H0V0h16v16z' id='canvas'/%3E%3Cpath class='icon-vs-out' d='M0 10.736V4.5L9 0l7 3.5v6.236l-9 4.5-7-3.5z' id='outline'/%3E%3Cpath class='icon-vs-action-blue' d='M9 1L1 5v5l6 3 8-4V4L9 1zM7 6.882L3.236 5 9 2.118 12.764 4 7 6.882z' id='iconBg'/%3E%3Cpath class='icon-vs-fg' d='M9 2.118L12.764 4 7 6.882 3.236 5 9 2.118z' id='iconFg'/%3E%3C/svg%3E"); }
-.monaco-editor.vs-dark .suggest-widget .monaco-list .monaco-list-row .icon.class { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cstyle%3E.icon-canvas-transparent{opacity:0;fill:%232d2d30}.icon-vs-out{fill:%232d2d30}.icon-vs-action-orange{fill:%23e8ab53}%3C/style%3E%3Cpath class='icon-canvas-transparent' d='M16 16H0V0h16v16z' id='canvas'/%3E%3Cpath class='icon-vs-out' d='M16 6.586l-3-3L11.586 5H9.414l1-1-4-4h-.828L0 5.586v.828l4 4L6.414 8H7v5h1.586l3 3h.828L16 12.414v-.828L13.914 9.5 16 7.414v-.828z' id='outline'/%3E%3Cpath class='icon-vs-action-orange' d='M13 10l2 2-3 3-2-2 1-1H8V7H6L4 9 1 6l5-5 3 3-2 2h5l1-1 2 2-3 3-2-2 1-1H9v4l2.999.002L13 10z' id='iconBg'/%3E%3C/svg%3E"); }
-.monaco-editor.vs-dark .suggest-widget .monaco-list .monaco-list-row .icon.interface { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cstyle%3E.icon-canvas-transparent{opacity:0;fill:%232d2d30}.icon-vs-out{fill:%232d2d30}.icon-vs-fg{fill:%232b282e}.icon-vs-action-blue{fill:%2375beff}%3C/style%3E%3Cpath class='icon-canvas-transparent' d='M16 16H0V0h16v16z' id='canvas'/%3E%3Cpath class='icon-vs-out' d='M11.5 12c-1.915 0-3.602-1.241-4.228-3h-1.41a3.11 3.11 0 0 1-2.737 1.625C1.402 10.625 0 9.223 0 7.5s1.402-3.125 3.125-3.125c1.165 0 2.201.639 2.737 1.625h1.41c.626-1.759 2.313-3 4.228-3C13.981 3 16 5.019 16 7.5S13.981 12 11.5 12z' id='outline'/%3E%3Cpath class='icon-vs-fg' d='M11.5 9A1.501 1.501 0 1 1 13 7.5c0 .826-.673 1.5-1.5 1.5z' id='iconFg'/%3E%3Cpath class='icon-vs-action-blue' d='M11.5 4a3.49 3.49 0 0 0-3.45 3H5.185A2.122 2.122 0 0 0 1 7.5a2.123 2.123 0 1 0 4.185.5H8.05a3.49 3.49 0 0 0 3.45 3 3.5 3.5 0 1 0 0-7zm0 5c-.827 0-1.5-.673-1.5-1.5S10.673 6 11.5 6s1.5.673 1.5 1.5S12.327 9 11.5 9z' id='iconBg'/%3E%3C/svg%3E"); }
-.monaco-editor.vs-dark .suggest-widget .monaco-list .monaco-list-row .icon.module { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cstyle%3E.icon-canvas-transparent{opacity:0;fill:%232d2d30}.icon-vs-out{fill:%232d2d30}.icon-vs-bg{fill:%23c5c5c5}%3C/style%3E%3Cpath class='icon-canvas-transparent' d='M16 16H0V0h16v16z' id='canvas'/%3E%3Cpath class='icon-vs-out' d='M9.26 11.984l.978-.021a.962.962 0 0 0 .09-.006c.011-.063.026-.179.026-.361V9.688c0-.679.185-1.257.53-1.707-.346-.452-.53-1.03-.53-1.705V4.35c0-.167-.021-.259-.034-.302L9.26 4.02V.973l1.011.011c2.167.024 3.409 1.156 3.409 3.105v1.962c0 .351.071.461.072.462l.936.06.053.927v1.936l-.936.061c-.076.016-.125.146-.125.424v2.017c0 .914-.332 3.043-3.408 3.078l-1.012.011v-3.043zm-3.521 3.032c-3.089-.035-3.422-2.164-3.422-3.078V9.921c0-.327-.066-.432-.067-.433l-.937-.06-.063-.929V6.563l.942-.06c.058 0 .125-.114.125-.452V4.09c0-1.949 1.248-3.081 3.422-3.105L6.75.973V4.02l-.975.023a.572.572 0 0 0-.093.01c.006.021-.019.115-.019.297v1.928c0 .675-.186 1.253-.534 1.705.348.45.534 1.028.534 1.707v1.907c0 .175.014.291.027.363.023.002 1.06.025 1.06.025v3.043l-1.011-.012z' id='outline'/%3E%3Cpath class='icon-vs-bg' d='M5.75 14.016c-1.623-.019-2.434-.711-2.434-2.078V9.921c0-.902-.355-1.376-1.066-1.422v-.998c.711-.045 1.066-.529 1.066-1.449V4.09c0-1.385.811-2.087 2.434-2.105v1.06c-.725.017-1.087.453-1.087 1.305v1.928c0 .92-.454 1.488-1.36 1.702V8c.907.201 1.36.763 1.36 1.688v1.907c0 .488.081.835.243 1.042.162.208.443.316.844.325v1.054zm7.99-5.517c-.706.045-1.06.52-1.06 1.422v2.017c0 1.367-.807 2.06-2.42 2.078v-1.053c.396-.009.678-.118.844-.328.167-.21.25-.556.25-1.039V9.688c0-.925.449-1.488 1.347-1.688v-.021c-.898-.214-1.347-.782-1.347-1.702V4.35c0-.852-.364-1.288-1.094-1.306v-1.06c1.613.018 2.42.72 2.42 2.105v1.962c0 .92.354 1.404 1.06 1.449v.999z' id='iconBg'/%3E%3C/svg%3E"); }
-.monaco-editor.vs-dark .suggest-widget .monaco-list .monaco-list-row .icon.property { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cstyle%3E.icon-canvas-transparent{opacity:0;fill:%232d2d30}.icon-vs-out{fill:%232d2d30}.icon-vs-bg{fill:%23c5c5c5}%3C/style%3E%3Cpath class='icon-canvas-transparent' d='M16 16H0V0h16v16z' id='canvas'/%3E%3Cpath class='icon-vs-out' d='M16 5.5a5.5 5.5 0 0 1-5.5 5.5c-.275 0-.543-.027-.807-.066l-.079-.012a5.429 5.429 0 0 1-.81-.192l-4.537 4.537c-.472.473-1.1.733-1.767.733s-1.295-.26-1.768-.732a2.502 2.502 0 0 1 0-3.535l4.537-4.537a5.452 5.452 0 0 1-.191-.812c-.005-.025-.008-.051-.012-.077A5.503 5.503 0 0 1 5 5.5a5.5 5.5 0 1 1 11 0z' id='outline'/%3E%3Cpath class='icon-vs-bg' d='M15 5.5a4.5 4.5 0 0 1-4.5 4.5c-.693 0-1.342-.17-1.929-.45l-5.01 5.01c-.293.294-.677.44-1.061.44s-.768-.146-1.061-.439a1.5 1.5 0 0 1 0-2.121l5.01-5.01A4.483 4.483 0 0 1 6 5.5 4.5 4.5 0 0 1 10.5 1c.693 0 1.342.17 1.929.45L9.636 4.243l2.121 2.121 2.793-2.793c.28.587.45 1.236.45 1.929z' id='iconBg'/%3E%3C/svg%3E"); }
-.monaco-editor.vs-dark .suggest-widget .monaco-list .monaco-list-row .icon.unit { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cstyle%3E.icon-canvas-transparent{opacity:0;fill:%232d2d30}.icon-vs-out{fill:%232d2d30}.icon-vs-bg{fill:%23c5c5c5}.icon-vs-fg{fill:%232b282e}%3C/style%3E%3Cpath class='icon-canvas-transparent' d='M16 16H0V0h16v16z' id='canvas'/%3E%3Cpath class='icon-vs-out' d='M16 11.013H1V4h15v7.013z' id='outline'/%3E%3Cpath class='icon-vs-fg' d='M8 9H7V6h3v3H9V7H8v2zM4 7h1v2h1V6H3v3h1V7zm8 0h1v2h1V6h-3v3h1V7z' id='iconFg'/%3E%3Cpath class='icon-vs-bg' d='M2 5v5h13V5H2zm4 4H5V7H4v2H3V6h3v3zm4 0H9V7H8v2H7V6h3v3zm4 0h-1V7h-1v2h-1V6h3v3z' id='iconBg'/%3E%3C/svg%3E"); }
-.monaco-editor.vs-dark .suggest-widget .monaco-list .monaco-list-row .icon.value,
-.monaco-editor.vs-dark .suggest-widget .monaco-list .monaco-list-row .icon.enum { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cstyle%3E.icon-canvas-transparent{opacity:0;fill:%232d2d30}.icon-vs-out{fill:%232d2d30}.icon-vs-fg{fill:%232b282e}.icon-vs-action-blue{fill:%2375beff}%3C/style%3E%3Cpath class='icon-canvas-transparent' d='M16 16H0V0h16v16z' id='canvas'/%3E%3Cpath class='icon-vs-out' d='M0 15V6h6V2.586L7.585 1h6.829L16 2.586v5.829L14.414 10H10v5H0zm3-6z' id='outline'/%3E%3Cpath class='icon-vs-fg' d='M8 3v3h5v1h-3v1h4V3H8zm5 2H9V4h4v1zM2 8v5h6V8H2zm5 3H3v-1h4v1z' id='iconFg'/%3E%3Cpath class='icon-vs-action-blue' d='M10 6h3v1h-3V6zM9 4v1h4V4H9zm5-2H8L7 3v3h1V3h6v5h-4v1h4l1-1V3l-1-1zm-7 8H3v1h4v-1zm2-3v7H1V7h8zM8 8H2v5h6V8z' id='iconBg'/%3E%3C/svg%3E"); }
-.monaco-editor.vs-dark .suggest-widget .monaco-list .monaco-list-row .icon.keyword { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cstyle%3E.icon-canvas-transparent{opacity:0;fill:%232d2d30}.icon-vs-out{fill:%232d2d30}.icon-vs-bg{fill:%23c5c5c5}.icon-vs-fg{fill:%232b282e}%3C/style%3E%3Cpath class='icon-canvas-transparent' d='M16 16H0V0h16v16z' id='canvas'/%3E%3Cpath class='icon-vs-out' d='M16 5V2H9V1H0v14h13v-3h3V9h-1V6H9V5h7zm-8 7V9h1v3H8z' id='outline'/%3E%3Cpath class='icon-vs-fg' d='M2 3h5v1H2V3z' id='iconFg'/%3E%3Cpath class='icon-vs-bg' d='M15 4h-5V3h5v1zm-1 3h-2v1h2V7zm-4 0H1v1h9V7zm2 6H1v1h11v-1zm-5-3H1v1h6v-1zm8 0h-5v1h5v-1zM8 2v3H1V2h7zM7 3H2v1h5V3z' id='iconBg'/%3E%3C/svg%3E"); }
-.monaco-editor.vs-dark .suggest-widget .monaco-list .monaco-list-row .icon.text { background-image: url(../../editor/contrib/suggest/browser/String_inverse_16x.svg); }
-.monaco-editor.vs-dark .suggest-widget .monaco-list .monaco-list-row .icon.color { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cstyle%3E.icon-canvas-transparent{opacity:0;fill:%232d2d30}.icon-vs-out{fill:%232d2d30}.icon-vs-bg{fill:%23c5c5c5}.icon-vs-red{fill:%23f48771}.icon-vs-yellow{fill:%23ffcc00}.icon-vs-green{fill:%23339933}.icon-vs-blue{fill:%231ba1e2}.icon-vs-action-purple{fill:%23b180d7}.icon-white{fill:%23000000}%3C/style%3E%3Cpath class='icon-canvas-transparent' d='M16 16H0V0h16v16z' id='canvas'/%3E%3Cpath class='icon-vs-out' d='M16 8c0 4.411-3.589 8-8 8a2.803 2.803 0 0 1-2.8-2.8c0-.833.272-1.629.766-2.241a.596.596 0 0 0 .101-.359.667.667 0 0 0-.667-.666.58.58 0 0 0-.358.102A3.584 3.584 0 0 1 2.8 10.8 2.803 2.803 0 0 1 0 8c0-4.411 3.589-8 8-8s8 3.589 8 8z' id='outline'/%3E%3Cpath class='icon-white' d='M5.4 7.933a2.67 2.67 0 0 1 2.667 2.666c0 .606-.193 1.179-.544 1.614a1.599 1.599 0 0 0-.323.987.8.8 0 0 0 .8.8c3.309 0 6-2.691 6-6s-2.691-6-6-6-6 2.691-6 6c0 .441.359.8.8.8.378 0 .729-.114.986-.322A2.568 2.568 0 0 1 5.4 7.933z' id='iconFg'/%3E%3Cg id='iconBg'%3E%3Cpath class='icon-vs-bg' d='M8 15c-.992 0-1.8-.808-1.8-1.8 0-.606.193-1.179.544-1.613.208-.259.323-.609.323-.987 0-.919-.748-1.666-1.667-1.666-.377 0-.728.115-.986.323A2.58 2.58 0 0 1 2.8 9.8C1.808 9.8 1 8.992 1 8c0-3.86 3.14-7 7-7 3.859 0 7 3.14 7 7 0 3.859-3.141 7-7 7zM5.4 7.933a2.67 2.67 0 0 1 2.667 2.666c0 .606-.193 1.179-.544 1.614a1.599 1.599 0 0 0-.323.987.8.8 0 0 0 .8.8c3.309 0 6-2.691 6-6s-2.691-6-6-6-6 2.691-6 6c0 .441.359.8.8.8.378 0 .729-.114.986-.322A2.568 2.568 0 0 1 5.4 7.933z'/%3E%3Cpath class='icon-vs-action-purple' d='M4.5 5.375a.875.875 0 1 0 0 1.75.875.875 0 0 0 0-1.75z'/%3E%3Cpath class='icon-vs-blue' d='M7.125 3.625a.875.875 0 1 0 0 1.75.875.875 0 0 0 0-1.75z'/%3E%3Cpath class='icon-vs-green' d='M10.625 4.5a.875.875 0 1 0 0 1.75.875.875 0 0 0 0-1.75z'/%3E%3Cpath class='icon-vs-yellow' d='M11.5 8a.875.875 0 1 0 0 1.75.875.875 0 0 0 0-1.75z'/%3E%3Cpath class='icon-vs-red' d='M9.75 10.625a.875.875 0 1 0 0 1.75.875.875 0 0 0 0-1.75z'/%3E%3C/g%3E%3C/svg%3E"); }
-.monaco-editor.vs-dark .suggest-widget .monaco-list .monaco-list-row .icon.file { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cstyle%3E.icon-canvas-transparent{opacity:0;fill:%232d2d30}.icon-vs-out{fill:%232d2d30}.icon-vs-bg{fill:%23c5c5c5}.icon-vs-fg{fill:%232b282e}%3C/style%3E%3Cpath class='icon-canvas-transparent' d='M16 16H0V0h16v16z' id='canvas'/%3E%3Cpath class='icon-vs-out' d='M15 16H2V0h8.621L15 4.379V16z' id='outline'/%3E%3Cpath class='icon-vs-fg' d='M13 14H4V2h5v4h4v8zm-3-9V2.207L12.793 5H10z' id='iconFg'/%3E%3Cpath class='icon-vs-bg' d='M3 1v14h11V4.793L10.207 1H3zm10 13H4V2h5v4h4v8zm-3-9V2.207L12.793 5H10z' id='iconBg'/%3E%3C/svg%3E"); }
-.monaco-editor.vs-dark .suggest-widget .monaco-list .monaco-list-row .icon.reference { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cstyle%3E.icon-canvas-transparent{opacity:0;fill:%232d2d30}.icon-vs-out{fill:%232d2d30}.icon-vs-fg{fill:%232b282e}.icon-vs-action-orange{fill:%23e8ab53}%3C/style%3E%3Cpath class='icon-canvas-transparent' d='M16 16H0V0h16v16z' id='canvas'/%3E%3Cpath class='icon-vs-out' d='M14.414 1L16 2.586v5.828L14.414 10H10v3.416L8.414 15H1.586L0 13.416v-5.83L1.586 6H6V2.586L7.586 1h6.828z' id='outline'/%3E%3Cpath class='icon-vs-fg' d='M2 13h6V8H2v5zm1-4h4v1H3V9zm0 2h4v1H3v-1zm11-5V3H8v3h.414L9 6.586V6h4v1H9.414l.586.586V8h4V6zm-1-1H9V4h4v1z' id='iconFg'/%3E%3Cpath class='icon-vs-action-orange' d='M3 11h4.001v1H3v-1zm0-1h4.001V9H3v1zm6-2v5l-1 1H2l-1-1V8l1-1h6l1 1zM8 8H2v5h6V8zm1-2l1 1h3V6H9zm0-1h4V4H9v1zm5-3H8L7 3v3h1V3h6v5h-4v1h4l1-1V3l-1-1z' id='iconBg'/%3E%3C/svg%3E"); }
-.monaco-editor.vs-dark .suggest-widget .monaco-list .monaco-list-row .icon.snippet { background-image: url("data:image/svg+xml,%3C?xml version='1.0' encoding='UTF-8' standalone='no'?%3E %3Csvg xmlns:dc='http://purl.org/dc/elements/1.1/' xmlns:cc='http://creativecommons.org/ns%23' xmlns:rdf='http://www.w3.org/1999/02/22-rdf-syntax-ns%23' xmlns:svg='http://www.w3.org/2000/svg' xmlns='http://www.w3.org/2000/svg' version='1.1' id='svg4694' viewBox='0 0 16 16'%3E %3Cmetadata id='metadata4705'%3E %3Crdf:RDF%3E %3Ccc:Work rdf:about=''%3E %3Cdc:format%3Eimage/svg+xml%3C/dc:format%3E %3Cdc:type rdf:resource='http://purl.org/dc/dcmitype/StillImage' /%3E %3Cdc:title%3E%3C/dc:title%3E %3C/cc:Work%3E %3C/rdf:RDF%3E %3C/metadata%3E %3Cdefs id='defs4703' /%3E %3Cstyle id='style4696'%3E.icon-canvas-transparent{opacity:0;fill:%23f6f6f6}.icon-vs-out{fill:%23f6f6f6}.icon-vs-action-orange{fill:%23c27d1a}%3C/style%3E %3Cg id='g4724' transform='matrix(1.3333333,0,0,1.3333333,-245.99999,-31.999999)'%3E %3Cpath d='m 185,24 11,0 0,12 -11,0 z' id='path4528' style='fill:%232d2d30' /%3E %3Cpath d='m 194,33 0,-7 -7,0 0,7 -1,0 0,-8 9,0 0,8 z m -8,1 1,0 0,1 -1,0 z m 2,0 1,0 0,1 -1,0 z m 2,0 1,0 0,1 -1,0 z m 2,0 1,0 0,1 -1,0 z m 2,0 1,0 0,1 -1,0 z' id='path4530' style='fill:%23c5c5c5' /%3E %3Cpath d='m 187,26 7,0 0,7 -7,0 z' id='path4532' style='fill:%232b282e' /%3E %3C/g%3E %3C/svg%3E "); }
-.monaco-editor.vs-dark .suggest-widget .monaco-list .monaco-list-row .icon.customcolor { background-image: none; }
 
 /* High Contrast Theming */
 .monaco-editor.hc-black .suggest-widget {
@@ -4160,26 +4228,64 @@ Applies to all other files
 	color: #4E94CE;
 }
 
+.monaco-editor.vs-dark .suggest-widget .monaco-list .monaco-list-row .icon,
 .monaco-editor.hc-black .suggest-widget .monaco-list .monaco-list-row .icon { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cstyle%3E.icon-canvas-transparent{opacity:0;fill:%232d2d30}.icon-vs-out{fill:%232d2d30}.icon-vs-bg{fill:%23c5c5c5}%3C/style%3E%3Cpath class='icon-canvas-transparent' d='M16 16H0V0h16v16z' id='canvas'/%3E%3Cpath class='icon-vs-out' d='M16 10c0 2.205-1.794 4-4 4-1.858 0-3.411-1.279-3.858-3h-.978l2.318 4H0v-1.703l2-3.408V0h11v6.142c1.721.447 3 2 3 3.858z' id='outline'/%3E%3Cpath class='icon-vs-bg' d='M12 1v4.75A4.255 4.255 0 0 0 7.75 10h-.732L4.275 5.269 3 7.442V1h9zM7.747 14L4.269 8 .748 14h6.999zM15 10a3 3 0 1 1-6 0 3 3 0 0 1 6 0z' id='iconBg'/%3E%3C/svg%3E"); }
+
+.monaco-editor.vs-dark .suggest-widget .monaco-list .monaco-list-row .icon.method,
 .monaco-editor.hc-black .suggest-widget .monaco-list .monaco-list-row .icon.method,
+.monaco-editor.vs-dark .suggest-widget .monaco-list .monaco-list-row .icon.function,
 .monaco-editor.hc-black .suggest-widget .monaco-list .monaco-list-row .icon.function,
+.monaco-editor.vs-dark .suggest-widget .monaco-list .monaco-list-row .icon.constructor,
 .monaco-editor.hc-black .suggest-widget .monaco-list .monaco-list-row .icon.constructor { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cstyle%3E.icon-canvas-transparent{opacity:0;fill:%232d2d30}.icon-vs-out{fill:%232d2d30}.icon-vs-fg{fill:%232b282e}.icon-vs-action-purple{fill:%23b180d7}%3C/style%3E%3Cpath class='icon-canvas-transparent' d='M16 16H0V0h16v16z' id='canvas'/%3E%3Cpath class='icon-vs-out' d='M15 3.349v8.403L8.975 16H8.07L1 11.582V3.327L7.595 0h1.118L15 3.349z' id='outline'/%3E%3Cpath class='icon-vs-fg' d='M12.715 4.398L8.487 7.02 3.565 4.272l4.578-2.309 4.572 2.435zM3 5.102l5 2.792v5.705l-5-3.125V5.102zm6 8.434V7.878l4-2.48v5.317l-4 2.821z' id='iconFg'/%3E%3Cpath class='icon-vs-action-purple' d='M8.156.837L2 3.942v7.085L8.517 15.1 14 11.233V3.95L8.156.837zm4.559 3.561L8.487 7.02 3.565 4.272l4.578-2.309 4.572 2.435zM3 5.102l5 2.792v5.705l-5-3.125V5.102zm6 8.434V7.878l4-2.48v5.317l-4 2.821z' id='iconBg'/%3E%3C/svg%3E"); }
+
+.monaco-editor.vs-dark .suggest-widget .monaco-list .monaco-list-row .icon.field,
 .monaco-editor.hc-black .suggest-widget .monaco-list .monaco-list-row .icon.field,
+.monaco-editor.vs-dark .suggest-widget .monaco-list .monaco-list-row .icon.variable,
 .monaco-editor.hc-black .suggest-widget .monaco-list .monaco-list-row .icon.variable { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cstyle%3E.icon-canvas-transparent{opacity:0;fill:%232d2d30}.icon-vs-out{fill:%232d2d30}.icon-vs-fg{fill:%232b282e}.icon-vs-action-blue{fill:%2375beff}%3C/style%3E%3Cpath class='icon-canvas-transparent' d='M16 16H0V0h16v16z' id='canvas'/%3E%3Cpath class='icon-vs-out' d='M0 10.736V4.5L9 0l7 3.5v6.236l-9 4.5-7-3.5z' id='outline'/%3E%3Cpath class='icon-vs-action-blue' d='M9 1L1 5v5l6 3 8-4V4L9 1zM7 6.882L3.236 5 9 2.118 12.764 4 7 6.882z' id='iconBg'/%3E%3Cpath class='icon-vs-fg' d='M9 2.118L12.764 4 7 6.882 3.236 5 9 2.118z' id='iconFg'/%3E%3C/svg%3E"); }
+
+.monaco-editor.vs-dark .suggest-widget .monaco-list .monaco-list-row .icon.class,
 .monaco-editor.hc-black .suggest-widget .monaco-list .monaco-list-row .icon.class { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cstyle%3E.icon-canvas-transparent{opacity:0;fill:%232d2d30}.icon-vs-out{fill:%232d2d30}.icon-vs-action-orange{fill:%23e8ab53}%3C/style%3E%3Cpath class='icon-canvas-transparent' d='M16 16H0V0h16v16z' id='canvas'/%3E%3Cpath class='icon-vs-out' d='M16 6.586l-3-3L11.586 5H9.414l1-1-4-4h-.828L0 5.586v.828l4 4L6.414 8H7v5h1.586l3 3h.828L16 12.414v-.828L13.914 9.5 16 7.414v-.828z' id='outline'/%3E%3Cpath class='icon-vs-action-orange' d='M13 10l2 2-3 3-2-2 1-1H8V7H6L4 9 1 6l5-5 3 3-2 2h5l1-1 2 2-3 3-2-2 1-1H9v4l2.999.002L13 10z' id='iconBg'/%3E%3C/svg%3E"); }
+
+.monaco-editor.vs-dark .suggest-widget .monaco-list .monaco-list-row .icon.interface,
 .monaco-editor.hc-black .suggest-widget .monaco-list .monaco-list-row .icon.interface { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cstyle%3E.icon-canvas-transparent{opacity:0;fill:%232d2d30}.icon-vs-out{fill:%232d2d30}.icon-vs-fg{fill:%232b282e}.icon-vs-action-blue{fill:%2375beff}%3C/style%3E%3Cpath class='icon-canvas-transparent' d='M16 16H0V0h16v16z' id='canvas'/%3E%3Cpath class='icon-vs-out' d='M11.5 12c-1.915 0-3.602-1.241-4.228-3h-1.41a3.11 3.11 0 0 1-2.737 1.625C1.402 10.625 0 9.223 0 7.5s1.402-3.125 3.125-3.125c1.165 0 2.201.639 2.737 1.625h1.41c.626-1.759 2.313-3 4.228-3C13.981 3 16 5.019 16 7.5S13.981 12 11.5 12z' id='outline'/%3E%3Cpath class='icon-vs-fg' d='M11.5 9A1.501 1.501 0 1 1 13 7.5c0 .826-.673 1.5-1.5 1.5z' id='iconFg'/%3E%3Cpath class='icon-vs-action-blue' d='M11.5 4a3.49 3.49 0 0 0-3.45 3H5.185A2.122 2.122 0 0 0 1 7.5a2.123 2.123 0 1 0 4.185.5H8.05a3.49 3.49 0 0 0 3.45 3 3.5 3.5 0 1 0 0-7zm0 5c-.827 0-1.5-.673-1.5-1.5S10.673 6 11.5 6s1.5.673 1.5 1.5S12.327 9 11.5 9z' id='iconBg'/%3E%3C/svg%3E"); }
+
+.monaco-editor.vs-dark .suggest-widget .monaco-list .monaco-list-row .icon.module,
 .monaco-editor.hc-black .suggest-widget .monaco-list .monaco-list-row .icon.module { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cstyle%3E.icon-canvas-transparent{opacity:0;fill:%232d2d30}.icon-vs-out{fill:%232d2d30}.icon-vs-bg{fill:%23c5c5c5}%3C/style%3E%3Cpath class='icon-canvas-transparent' d='M16 16H0V0h16v16z' id='canvas'/%3E%3Cpath class='icon-vs-out' d='M9.26 11.984l.978-.021a.962.962 0 0 0 .09-.006c.011-.063.026-.179.026-.361V9.688c0-.679.185-1.257.53-1.707-.346-.452-.53-1.03-.53-1.705V4.35c0-.167-.021-.259-.034-.302L9.26 4.02V.973l1.011.011c2.167.024 3.409 1.156 3.409 3.105v1.962c0 .351.071.461.072.462l.936.06.053.927v1.936l-.936.061c-.076.016-.125.146-.125.424v2.017c0 .914-.332 3.043-3.408 3.078l-1.012.011v-3.043zm-3.521 3.032c-3.089-.035-3.422-2.164-3.422-3.078V9.921c0-.327-.066-.432-.067-.433l-.937-.06-.063-.929V6.563l.942-.06c.058 0 .125-.114.125-.452V4.09c0-1.949 1.248-3.081 3.422-3.105L6.75.973V4.02l-.975.023a.572.572 0 0 0-.093.01c.006.021-.019.115-.019.297v1.928c0 .675-.186 1.253-.534 1.705.348.45.534 1.028.534 1.707v1.907c0 .175.014.291.027.363.023.002 1.06.025 1.06.025v3.043l-1.011-.012z' id='outline'/%3E%3Cpath class='icon-vs-bg' d='M5.75 14.016c-1.623-.019-2.434-.711-2.434-2.078V9.921c0-.902-.355-1.376-1.066-1.422v-.998c.711-.045 1.066-.529 1.066-1.449V4.09c0-1.385.811-2.087 2.434-2.105v1.06c-.725.017-1.087.453-1.087 1.305v1.928c0 .92-.454 1.488-1.36 1.702V8c.907.201 1.36.763 1.36 1.688v1.907c0 .488.081.835.243 1.042.162.208.443.316.844.325v1.054zm7.99-5.517c-.706.045-1.06.52-1.06 1.422v2.017c0 1.367-.807 2.06-2.42 2.078v-1.053c.396-.009.678-.118.844-.328.167-.21.25-.556.25-1.039V9.688c0-.925.449-1.488 1.347-1.688v-.021c-.898-.214-1.347-.782-1.347-1.702V4.35c0-.852-.364-1.288-1.094-1.306v-1.06c1.613.018 2.42.72 2.42 2.105v1.962c0 .92.354 1.404 1.06 1.449v.999z' id='iconBg'/%3E%3C/svg%3E"); }
+
+.monaco-editor.vs-dark .suggest-widget .monaco-list .monaco-list-row .icon.property,
 .monaco-editor.hc-black .suggest-widget .monaco-list .monaco-list-row .icon.property { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cstyle%3E.icon-canvas-transparent{opacity:0;fill:%232d2d30}.icon-vs-out{fill:%232d2d30}.icon-vs-bg{fill:%23c5c5c5}%3C/style%3E%3Cpath class='icon-canvas-transparent' d='M16 16H0V0h16v16z' id='canvas'/%3E%3Cpath class='icon-vs-out' d='M16 5.5a5.5 5.5 0 0 1-5.5 5.5c-.275 0-.543-.027-.807-.066l-.079-.012a5.429 5.429 0 0 1-.81-.192l-4.537 4.537c-.472.473-1.1.733-1.767.733s-1.295-.26-1.768-.732a2.502 2.502 0 0 1 0-3.535l4.537-4.537a5.452 5.452 0 0 1-.191-.812c-.005-.025-.008-.051-.012-.077A5.503 5.503 0 0 1 5 5.5a5.5 5.5 0 1 1 11 0z' id='outline'/%3E%3Cpath class='icon-vs-bg' d='M15 5.5a4.5 4.5 0 0 1-4.5 4.5c-.693 0-1.342-.17-1.929-.45l-5.01 5.01c-.293.294-.677.44-1.061.44s-.768-.146-1.061-.439a1.5 1.5 0 0 1 0-2.121l5.01-5.01A4.483 4.483 0 0 1 6 5.5 4.5 4.5 0 0 1 10.5 1c.693 0 1.342.17 1.929.45L9.636 4.243l2.121 2.121 2.793-2.793c.28.587.45 1.236.45 1.929z' id='iconBg'/%3E%3C/svg%3E"); }
+
+.monaco-editor.vs-dark .suggest-widget .monaco-list .monaco-list-row .icon.unit,
 .monaco-editor.hc-black .suggest-widget .monaco-list .monaco-list-row .icon.unit { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cstyle%3E.icon-canvas-transparent{opacity:0;fill:%232d2d30}.icon-vs-out{fill:%232d2d30}.icon-vs-bg{fill:%23c5c5c5}.icon-vs-fg{fill:%232b282e}%3C/style%3E%3Cpath class='icon-canvas-transparent' d='M16 16H0V0h16v16z' id='canvas'/%3E%3Cpath class='icon-vs-out' d='M16 11.013H1V4h15v7.013z' id='outline'/%3E%3Cpath class='icon-vs-fg' d='M8 9H7V6h3v3H9V7H8v2zM4 7h1v2h1V6H3v3h1V7zm8 0h1v2h1V6h-3v3h1V7z' id='iconFg'/%3E%3Cpath class='icon-vs-bg' d='M2 5v5h13V5H2zm4 4H5V7H4v2H3V6h3v3zm4 0H9V7H8v2H7V6h3v3zm4 0h-1V7h-1v2h-1V6h3v3z' id='iconBg'/%3E%3C/svg%3E"); }
+
+.monaco-editor.vs-dark .suggest-widget .monaco-list .monaco-list-row .icon.value,
 .monaco-editor.hc-black .suggest-widget .monaco-list .monaco-list-row .icon.value,
+.monaco-editor.vs-dark .suggest-widget .monaco-list .monaco-list-row .icon.enum,
 .monaco-editor.hc-black .suggest-widget .monaco-list .monaco-list-row .icon.enum { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cstyle%3E.icon-canvas-transparent{opacity:0;fill:%232d2d30}.icon-vs-out{fill:%232d2d30}.icon-vs-fg{fill:%232b282e}.icon-vs-action-blue{fill:%2375beff}%3C/style%3E%3Cpath class='icon-canvas-transparent' d='M16 16H0V0h16v16z' id='canvas'/%3E%3Cpath class='icon-vs-out' d='M0 15V6h6V2.586L7.585 1h6.829L16 2.586v5.829L14.414 10H10v5H0zm3-6z' id='outline'/%3E%3Cpath class='icon-vs-fg' d='M8 3v3h5v1h-3v1h4V3H8zm5 2H9V4h4v1zM2 8v5h6V8H2zm5 3H3v-1h4v1z' id='iconFg'/%3E%3Cpath class='icon-vs-action-blue' d='M10 6h3v1h-3V6zM9 4v1h4V4H9zm5-2H8L7 3v3h1V3h6v5h-4v1h4l1-1V3l-1-1zm-7 8H3v1h4v-1zm2-3v7H1V7h8zM8 8H2v5h6V8z' id='iconBg'/%3E%3C/svg%3E"); }
+
+.monaco-editor.vs-dark .suggest-widget .monaco-list .monaco-list-row .icon.keyword,
 .monaco-editor.hc-black .suggest-widget .monaco-list .monaco-list-row .icon.keyword { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cstyle%3E.icon-canvas-transparent{opacity:0;fill:%232d2d30}.icon-vs-out{fill:%232d2d30}.icon-vs-bg{fill:%23c5c5c5}.icon-vs-fg{fill:%232b282e}%3C/style%3E%3Cpath class='icon-canvas-transparent' d='M16 16H0V0h16v16z' id='canvas'/%3E%3Cpath class='icon-vs-out' d='M16 5V2H9V1H0v14h13v-3h3V9h-1V6H9V5h7zm-8 7V9h1v3H8z' id='outline'/%3E%3Cpath class='icon-vs-fg' d='M2 3h5v1H2V3z' id='iconFg'/%3E%3Cpath class='icon-vs-bg' d='M15 4h-5V3h5v1zm-1 3h-2v1h2V7zm-4 0H1v1h9V7zm2 6H1v1h11v-1zm-5-3H1v1h6v-1zm8 0h-5v1h5v-1zM8 2v3H1V2h7zM7 3H2v1h5V3z' id='iconBg'/%3E%3C/svg%3E"); }
-.monaco-editor.hc-black .suggest-widget .monaco-list .monaco-list-row .icon.text { background-image: url(../../editor/contrib/suggest/browser/String_inverse_16x.svg); }
+
+.monaco-editor.vs-dark .suggest-widget .monaco-list .monaco-list-row .icon.text,
+.monaco-editor.hc-black .suggest-widget .monaco-list .monaco-list-row .icon.text { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cstyle%3E.icon-canvas-transparent{opacity:0;fill:%232d2d30}.icon-vs-out{fill:%232d2d30}.icon-vs-bg{fill:%23c5c5c5}.icon-vs-fg{fill:%232b282e}%3C/style%3E%3Cpath class='icon-canvas-transparent' d='M16 16H0V0h16v16z' id='canvas'/%3E%3Cpath class='icon-vs-out' d='M16 15H0V1h16v14z' id='outline'/%3E%3Cpath class='icon-vs-fg' d='M9.229 7.354c.035.146.052.31.052.494 0 .234-.02.441-.06.621-.039.18-.095.328-.168.445a.687.687 0 0 1-.914.281.76.76 0 0 1-.237-.207.988.988 0 0 1-.154-.306 1.262 1.262 0 0 1-.057-.381v-.506c0-.17.02-.326.061-.465s.096-.258.168-.359a.756.756 0 0 1 .257-.232c.1-.055.21-.082.331-.082a.646.646 0 0 1 .571.32c.067.105.116.23.15.377zm-5.126.869a.557.557 0 0 0-.196.132c-.047.053-.08.112-.097.18s-.028.147-.028.233a.513.513 0 0 0 .157.39.528.528 0 0 0 .186.113.682.682 0 0 0 .242.041.76.76 0 0 0 .593-.271.897.897 0 0 0 .165-.295c.038-.113.059-.234.059-.365v-.346l-.761.11a1.29 1.29 0 0 0-.32.078zM14 3v10H2V3h12zM5.962 7.469c0-.238-.027-.451-.083-.637a1.286 1.286 0 0 0-.249-.471 1.08 1.08 0 0 0-.424-.295 1.644 1.644 0 0 0-.608-.101c-.119 0-.241.012-.368.033a3.213 3.213 0 0 0-.673.195 1.313 1.313 0 0 0-.212.114v.768c.158-.132.341-.235.544-.313.204-.078.413-.117.627-.117.213 0 .377.063.494.186.116.125.174.324.174.6l-1.03.154c-.205.026-.38.077-.526.151a1.083 1.083 0 0 0-.563.66A1.562 1.562 0 0 0 3 8.857c0 .17.025.323.074.463a.945.945 0 0 0 .568.596c.139.057.297.084.478.084.229 0 .431-.053.604-.16a1.3 1.3 0 0 0 .439-.463h.014v.529h.785V7.469zM10 7.861a3.54 3.54 0 0 0-.074-.734 2.047 2.047 0 0 0-.228-.611 1.203 1.203 0 0 0-.394-.416 1.03 1.03 0 0 0-.574-.153c-.123 0-.234.018-.336.051a1 1 0 0 0-.278.147 1.153 1.153 0 0 0-.225.222 2.022 2.022 0 0 0-.181.289h-.013V5H7v4.887h.697v-.485h.013c.044.082.095.158.151.229.057.07.119.133.191.186a.835.835 0 0 0 .238.121.943.943 0 0 0 .293.042c.23 0 .434-.053.609-.16a1.34 1.34 0 0 0 .443-.443c.12-.188.211-.412.272-.672A3.62 3.62 0 0 0 10 7.861zm3-1.658a.7.7 0 0 0-.106-.066 1.183 1.183 0 0 0-.142-.063 1.233 1.233 0 0 0-.363-.065c-.209 0-.399.051-.569.15a1.355 1.355 0 0 0-.433.424c-.118.182-.21.402-.273.66a3.63 3.63 0 0 0-.008 1.615c.06.23.143.43.252.602.109.168.241.303.396.396a.972.972 0 0 0 .524.144c.158 0 .296-.021.413-.068.117-.045.219-.108.309-.184v-.77a1.094 1.094 0 0 1-.288.225.819.819 0 0 1-.158.068.48.48 0 0 1-.153.027.62.62 0 0 1-.274-.074c-.241-.136-.423-.479-.423-1.146 0-.715.206-1.12.469-1.301.077-.032.153-.064.238-.064.113 0 .22.027.317.082.096.057.188.131.272.223v-.815z' id='iconFg'/%3E%3Cpath class='icon-vs-bg' d='M1 2v12h14V2H1zm13 11H2V3h12v10zM5.63 6.361a1.08 1.08 0 0 0-.424-.295 1.644 1.644 0 0 0-.608-.101c-.119 0-.241.012-.368.033a3.213 3.213 0 0 0-.673.195 1.313 1.313 0 0 0-.212.114v.768c.158-.132.341-.235.544-.313.204-.078.413-.117.627-.117.213 0 .377.063.494.186.116.125.174.324.174.6l-1.03.154c-.205.026-.38.077-.526.151a1.083 1.083 0 0 0-.563.66A1.562 1.562 0 0 0 3 8.857c0 .17.025.323.074.463a.945.945 0 0 0 .568.596c.139.057.297.084.478.084.229 0 .431-.053.604-.16a1.3 1.3 0 0 0 .439-.463h.014v.529h.785V7.469c0-.238-.027-.451-.083-.637a1.286 1.286 0 0 0-.249-.471zm-.446 2.02c0 .131-.02.252-.059.365a.897.897 0 0 1-.165.295.758.758 0 0 1-.593.272.682.682 0 0 1-.242-.041.507.507 0 0 1-.302-.286.583.583 0 0 1-.041-.218c0-.086.01-.164.027-.232s.051-.127.098-.18a.546.546 0 0 1 .196-.133c.083-.033.189-.061.32-.078l.761-.109v.345zm4.514-1.865a1.203 1.203 0 0 0-.394-.416 1.03 1.03 0 0 0-.574-.153c-.123 0-.234.018-.336.051a1 1 0 0 0-.278.147 1.153 1.153 0 0 0-.225.222 2.022 2.022 0 0 0-.181.289h-.013V5H7v4.887h.697v-.485h.013c.044.082.095.158.151.229.057.07.119.133.191.186a.835.835 0 0 0 .238.121.943.943 0 0 0 .293.042c.23 0 .434-.053.609-.16a1.34 1.34 0 0 0 .443-.443c.12-.188.211-.412.272-.672A3.62 3.62 0 0 0 10 7.861a3.54 3.54 0 0 0-.074-.734 2.047 2.047 0 0 0-.228-.611zm-.476 1.953c-.039.18-.095.328-.168.445a.755.755 0 0 1-.264.266.687.687 0 0 1-.651.015.76.76 0 0 1-.237-.207.988.988 0 0 1-.154-.306 1.262 1.262 0 0 1-.057-.381v-.506c0-.17.02-.326.061-.465s.096-.258.168-.359a.756.756 0 0 1 .257-.232c.1-.055.21-.082.331-.082a.646.646 0 0 1 .571.32c.066.105.116.23.15.377.035.146.052.31.052.494 0 .234-.019.441-.059.621zm3.672-2.332a.7.7 0 0 1 .106.066v.814a1.178 1.178 0 0 0-.273-.223.645.645 0 0 0-.317-.081c-.085 0-.161.032-.238.064-.263.181-.469.586-.469 1.301 0 .668.182 1.011.423 1.146.084.04.171.074.274.074.049 0 .101-.01.153-.027a.856.856 0 0 0 .158-.068 1.16 1.16 0 0 0 .288-.225v.77c-.09.076-.192.139-.309.184a1.098 1.098 0 0 1-.412.068.974.974 0 0 1-.523-.143 1.257 1.257 0 0 1-.396-.396 2.098 2.098 0 0 1-.252-.602 3.118 3.118 0 0 1-.088-.754c0-.316.032-.604.096-.861.063-.258.155-.479.273-.66.119-.182.265-.322.433-.424a1.102 1.102 0 0 1 1.073-.023z' id='iconBg'/%3E%3C/svg%3E"); }
+
+.monaco-editor.vs-dark .suggest-widget .monaco-list .monaco-list-row .icon.color,
 .monaco-editor.hc-black .suggest-widget .monaco-list .monaco-list-row .icon.color { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cstyle%3E.icon-canvas-transparent{opacity:0;fill:%232d2d30}.icon-vs-out{fill:%232d2d30}.icon-vs-bg{fill:%23c5c5c5}.icon-vs-red{fill:%23f48771}.icon-vs-yellow{fill:%23ffcc00}.icon-vs-green{fill:%23339933}.icon-vs-blue{fill:%231ba1e2}.icon-vs-action-purple{fill:%23b180d7}.icon-white{fill:%23000000}%3C/style%3E%3Cpath class='icon-canvas-transparent' d='M16 16H0V0h16v16z' id='canvas'/%3E%3Cpath class='icon-vs-out' d='M16 8c0 4.411-3.589 8-8 8a2.803 2.803 0 0 1-2.8-2.8c0-.833.272-1.629.766-2.241a.596.596 0 0 0 .101-.359.667.667 0 0 0-.667-.666.58.58 0 0 0-.358.102A3.584 3.584 0 0 1 2.8 10.8 2.803 2.803 0 0 1 0 8c0-4.411 3.589-8 8-8s8 3.589 8 8z' id='outline'/%3E%3Cpath class='icon-white' d='M5.4 7.933a2.67 2.67 0 0 1 2.667 2.666c0 .606-.193 1.179-.544 1.614a1.599 1.599 0 0 0-.323.987.8.8 0 0 0 .8.8c3.309 0 6-2.691 6-6s-2.691-6-6-6-6 2.691-6 6c0 .441.359.8.8.8.378 0 .729-.114.986-.322A2.568 2.568 0 0 1 5.4 7.933z' id='iconFg'/%3E%3Cg id='iconBg'%3E%3Cpath class='icon-vs-bg' d='M8 15c-.992 0-1.8-.808-1.8-1.8 0-.606.193-1.179.544-1.613.208-.259.323-.609.323-.987 0-.919-.748-1.666-1.667-1.666-.377 0-.728.115-.986.323A2.58 2.58 0 0 1 2.8 9.8C1.808 9.8 1 8.992 1 8c0-3.86 3.14-7 7-7 3.859 0 7 3.14 7 7 0 3.859-3.141 7-7 7zM5.4 7.933a2.67 2.67 0 0 1 2.667 2.666c0 .606-.193 1.179-.544 1.614a1.599 1.599 0 0 0-.323.987.8.8 0 0 0 .8.8c3.309 0 6-2.691 6-6s-2.691-6-6-6-6 2.691-6 6c0 .441.359.8.8.8.378 0 .729-.114.986-.322A2.568 2.568 0 0 1 5.4 7.933z'/%3E%3Cpath class='icon-vs-action-purple' d='M4.5 5.375a.875.875 0 1 0 0 1.75.875.875 0 0 0 0-1.75z'/%3E%3Cpath class='icon-vs-blue' d='M7.125 3.625a.875.875 0 1 0 0 1.75.875.875 0 0 0 0-1.75z'/%3E%3Cpath class='icon-vs-green' d='M10.625 4.5a.875.875 0 1 0 0 1.75.875.875 0 0 0 0-1.75z'/%3E%3Cpath class='icon-vs-yellow' d='M11.5 8a.875.875 0 1 0 0 1.75.875.875 0 0 0 0-1.75z'/%3E%3Cpath class='icon-vs-red' d='M9.75 10.625a.875.875 0 1 0 0 1.75.875.875 0 0 0 0-1.75z'/%3E%3C/g%3E%3C/svg%3E"); }
+
+.monaco-editor.vs-dark .suggest-widget .monaco-list .monaco-list-row .icon.file,
 .monaco-editor.hc-black .suggest-widget .monaco-list .monaco-list-row .icon.file { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cstyle%3E.icon-canvas-transparent{opacity:0;fill:%232d2d30}.icon-vs-out{fill:%232d2d30}.icon-vs-bg{fill:%23c5c5c5}.icon-vs-fg{fill:%232b282e}%3C/style%3E%3Cpath class='icon-canvas-transparent' d='M16 16H0V0h16v16z' id='canvas'/%3E%3Cpath class='icon-vs-out' d='M15 16H2V0h8.621L15 4.379V16z' id='outline'/%3E%3Cpath class='icon-vs-fg' d='M13 14H4V2h5v4h4v8zm-3-9V2.207L12.793 5H10z' id='iconFg'/%3E%3Cpath class='icon-vs-bg' d='M3 1v14h11V4.793L10.207 1H3zm10 13H4V2h5v4h4v8zm-3-9V2.207L12.793 5H10z' id='iconBg'/%3E%3C/svg%3E"); }
+
+.monaco-editor.vs-dark .suggest-widget .monaco-list .monaco-list-row .icon.reference,
 .monaco-editor.hc-black .suggest-widget .monaco-list .monaco-list-row .icon.reference { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cstyle%3E.icon-canvas-transparent{opacity:0;fill:%232d2d30}.icon-vs-out{fill:%232d2d30}.icon-vs-fg{fill:%232b282e}.icon-vs-action-orange{fill:%23e8ab53}%3C/style%3E%3Cpath class='icon-canvas-transparent' d='M16 16H0V0h16v16z' id='canvas'/%3E%3Cpath class='icon-vs-out' d='M14.414 1L16 2.586v5.828L14.414 10H10v3.416L8.414 15H1.586L0 13.416v-5.83L1.586 6H6V2.586L7.586 1h6.828z' id='outline'/%3E%3Cpath class='icon-vs-fg' d='M2 13h6V8H2v5zm1-4h4v1H3V9zm0 2h4v1H3v-1zm11-5V3H8v3h.414L9 6.586V6h4v1H9.414l.586.586V8h4V6zm-1-1H9V4h4v1z' id='iconFg'/%3E%3Cpath class='icon-vs-action-orange' d='M3 11h4.001v1H3v-1zm0-1h4.001V9H3v1zm6-2v5l-1 1H2l-1-1V8l1-1h6l1 1zM8 8H2v5h6V8zm1-2l1 1h3V6H9zm0-1h4V4H9v1zm5-3H8L7 3v3h1V3h6v5h-4v1h4l1-1V3l-1-1z' id='iconBg'/%3E%3C/svg%3E"); }
+
+.monaco-editor.vs-dark .suggest-widget .monaco-list .monaco-list-row .icon.snippet,
 .monaco-editor.hc-black .suggest-widget .monaco-list .monaco-list-row .icon.snippet { background-image: url("data:image/svg+xml,%3C?xml version='1.0' encoding='UTF-8' standalone='no'?%3E %3Csvg xmlns:dc='http://purl.org/dc/elements/1.1/' xmlns:cc='http://creativecommons.org/ns%23' xmlns:rdf='http://www.w3.org/1999/02/22-rdf-syntax-ns%23' xmlns:svg='http://www.w3.org/2000/svg' xmlns='http://www.w3.org/2000/svg' version='1.1' id='svg4694' viewBox='0 0 16 16'%3E %3Cmetadata id='metadata4705'%3E %3Crdf:RDF%3E %3Ccc:Work rdf:about=''%3E %3Cdc:format%3Eimage/svg+xml%3C/dc:format%3E %3Cdc:type rdf:resource='http://purl.org/dc/dcmitype/StillImage' /%3E %3Cdc:title%3E%3C/dc:title%3E %3C/cc:Work%3E %3C/rdf:RDF%3E %3C/metadata%3E %3Cdefs id='defs4703' /%3E %3Cstyle id='style4696'%3E.icon-canvas-transparent{opacity:0;fill:%23f6f6f6}.icon-vs-out{fill:%23f6f6f6}.icon-vs-action-orange{fill:%23c27d1a}%3C/style%3E %3Cg id='g4724' transform='matrix(1.3333333,0,0,1.3333333,-245.99999,-31.999999)'%3E %3Cpath d='m 185,24 11,0 0,12 -11,0 z' id='path4528' style='fill:%232d2d30' /%3E %3Cpath d='m 194,33 0,-7 -7,0 0,7 -1,0 0,-8 9,0 0,8 z m -8,1 1,0 0,1 -1,0 z m 2,0 1,0 0,1 -1,0 z m 2,0 1,0 0,1 -1,0 z m 2,0 1,0 0,1 -1,0 z m 2,0 1,0 0,1 -1,0 z' id='path4530' style='fill:%23c5c5c5' /%3E %3Cpath d='m 187,26 7,0 0,7 -7,0 z' id='path4532' style='fill:%232b282e' /%3E %3C/g%3E %3C/svg%3E "); }
+
+.monaco-editor.vs-dark .suggest-widget .monaco-list .monaco-list-row .icon.customcolor,
 .monaco-editor.hc-black .suggest-widget .monaco-list .monaco-list-row .icon.customcolor { background-image: none; }
+
+.monaco-editor.vs-dark .suggest-widget .monaco-list .monaco-list-row .icon.folder,
+.monaco-editor.hc-black .suggest-widget .monaco-list .monaco-list-row .icon.folder { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16'%3E%3Cstyle type='text/css'%3E.icon-canvas-transparent{opacity:0;fill:%23F6F6F6;} .icon-vs-out{opacity:0;fill:%23F6F6F6;} .icon-vs-fg{opacity:0;fill:%23F0EFF1;} .icon-folder{fill:%23C5C5C5;}%3C/style%3E%3Cpath class='icon-canvas-transparent' d='M16 16h-16v-16h16v16z' id='canvas'/%3E%3Cpath class='icon-vs-out' d='M16 2.5v10c0 .827-.673 1.5-1.5 1.5h-11.996c-.827 0-1.5-.673-1.5-1.5v-8c0-.827.673-1.5 1.5-1.5h2.886l1-2h8.11c.827 0 1.5.673 1.5 1.5z' id='outline'/%3E%3Cpath class='icon-folder' d='M14.5 2h-7.492l-1 2h-3.504c-.277 0-.5.224-.5.5v8c0 .276.223.5.5.5h11.996c.275 0 .5-.224.5-.5v-10c0-.276-.225-.5-.5-.5zm-.496 2h-6.496l.5-1h5.996v1z' id='iconBg'/%3E%3Cpath class='icon-vs-fg' d='M14 3v1h-6.5l.5-1h6z' id='iconFg'/%3E%3C/svg%3E"); }
 
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
@@ -4244,7 +4350,7 @@ Applies to all other files
 }
 
 .monaco-editor .peekview-widget .head .peekview-actions .action-label.icon.close-peekview-action {
-	background: url("data:image/svg+xml,%3Csvg version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' x='0px' y='0px' width='16px' height='16px' viewBox='3 3 16 16' enable-background='new 3 3 16 16' xml:space='preserve'%3E %3Cpolygon fill='%23656565' points='12.597,11.042 15.4,13.845 13.844,15.4 11.042,12.598 8.239,15.4 6.683,13.845 9.485,11.042 6.683,8.239 8.238,6.683 11.042,9.486 13.845,6.683 15.4,8.239 '/%3E %3C/svg%3E ") center center no-repeat;
+	background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='3 3 16 16' enable-background='new 3 3 16 16'%3E%3Cpolygon fill='%23424242' points='12.597,11.042 15.4,13.845 13.844,15.4 11.042,12.598 8.239,15.4 6.683,13.845 9.485,11.042 6.683,8.239 8.238,6.683 11.042,9.486 13.845,6.683 15.4,8.239'/%3E%3C/svg%3E") center center no-repeat;
 }
 
 .monaco-editor .peekview-widget > .body {
@@ -4260,7 +4366,7 @@ Applies to all other files
 
 .monaco-editor.hc-black .peekview-widget .head .peekview-actions .action-label.icon.close-peekview-action,
 .monaco-editor.vs-dark .peekview-widget .head .peekview-actions .action-label.icon.close-peekview-action {
-	background: url("data:image/svg+xml,%3Csvg version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' x='0px' y='0px' width='16px' height='16px' viewBox='3 3 16 16' enable-background='new 3 3 16 16' xml:space='preserve'%3E %3Cpolygon fill='%23C5C5C5' points='12.597,11.042 15.4,13.845 13.844,15.4 11.042,12.598 8.239,15.4 6.683,13.845 9.485,11.042 6.683,8.239 8.238,6.683 11.042,9.486 13.845,6.683 15.4,8.239 '/%3E %3C/svg%3E ") center center no-repeat;
+	background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='3 3 16 16' enable-background='new 3 3 16 16'%3E%3Cpolygon fill='%23e8e8e8' points='12.597,11.042 15.4,13.845 13.844,15.4 11.042,12.598 8.239,15.4 6.683,13.845 9.485,11.042 6.683,8.239 8.238,6.683 11.042,9.486 13.845,6.683 15.4,8.239'/%3E%3C/svg%3E") center center no-repeat;
 }
 
 .monaco-editor.vs-dark .peekview-widget .head .peekview-title .filename {
@@ -4576,8 +4682,13 @@ Applies to all other files
 	opacity: 1;
 }
 
-.hc-black .monaco-workbench > .activitybar > .content .monaco-action-bar .action-item .action-label.active:before {
+.hc-black .monaco-workbench > .activitybar > .content .monaco-action-bar .action-item .action-label.active:before,
+.hc-black .monaco-workbench > .activitybar > .content .monaco-action-bar .action-item .action-label.active:hover:before {
 	outline: 1px solid #f38518;
+}
+
+.hc-black .monaco-workbench > .activitybar > .content .monaco-action-bar .action-item .action-label:hover:before {
+	outline: 1px dashed #f38518;
 }
 
 .hc-black .monaco-workbench > .activitybar > .content .monaco-action-bar.global .action-item .action-label.active:before {
@@ -4616,11 +4727,13 @@ Applies to all other files
 }
 
 /* High Contrast Theming */
-.hc-black .monaco-workbench > .part.activitybar.left {
+
+.hc-black .monaco-workbench > .part.activitybar.left .content {
+	box-sizing: border-box; /* helps showing the border when sidebar collapsed */
 	border-right: 1px solid #6FC3DF;
 }
 
-.hc-black .monaco-workbench > .part.activitybar.right {
+.hc-black .monaco-workbench > .part.activitybar.right .content {
 	border-left: 1px solid #6FC3DF;
 }
 
@@ -4872,7 +4985,11 @@ Applies to all other files
 
 .monaco-workbench .editor-statusbar-item > .editor-status-tabfocusmode {
 	padding: 0 5px 0 5px;
-	background-color: brown !important;
+	background-color: #388a34;
+}
+
+.monaco-workbench > .part.statusbar .editor-statusbar-item > .editor-status-tabfocusmode:hover:not([disabled]):not(.disabled) {
+	background-color: #369432;
 }
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
@@ -4940,12 +5057,16 @@ Applies to all other files
 
 /* Title Container */
 
-.vs .monaco-workbench > .part.editor > .content > .one-editor-silo > .container > .title.tabs {
+.vs .monaco-workbench > .part.editor > .content > .one-editor-silo > .container > .title.tabs.shows-tabs {
 	background: #F3F3F3;
 }
 
-.vs-dark .monaco-workbench > .part.editor > .content > .one-editor-silo > .container > .title.tabs {
+.vs-dark .monaco-workbench > .part.editor > .content > .one-editor-silo > .container > .title.tabs.shows-tabs {
 	background: #252526;
+}
+
+.hc-black .monaco-workbench > .part.editor > .content > .one-editor-silo > .container > .title.tabs.shows-tabs {
+	border-bottom: 1px solid #6FC3DF;
 }
 
 .monaco-workbench > .part.editor > .content > .one-editor-silo > .container > .title.tabs > .monaco-scrollable-element {
@@ -4986,6 +5107,12 @@ Applies to all other files
 	padding-left: 10px;
 }
 
+.monaco-workbench > .part.editor > .content > .one-editor-silo > .container > .title .tabs-container > .tab.close-button-left {
+	flex-direction: row-reverse;
+	padding-left: 0;
+	padding-right: 10px;
+}
+
 .vs .monaco-workbench > .part.editor > .content > .one-editor-silo > .container > .title .tabs-container > .tab:not(.active) {
 	background-color: #ECECEC;
 }
@@ -5015,13 +5142,23 @@ Applies to all other files
 	border-left-color: transparent;
 }
 
-.hc-black .monaco-workbench > .part.editor > .content > .one-editor-silo > .container > .title .tabs-container > .tab  {
+.hc-black .monaco-workbench > .part.editor > .content > .one-editor-silo > .container > .title .tabs-container > .tab:not(:first-child) {
 	border-left-color: #6FC3DF;
 }
 
-.hc-black .monaco-workbench > .part.editor > .content > .one-editor-silo > .container > .title .tabs-container > .tab.active  {
-	outline: 2px solid #f38518;
-	outline-offset: -1px;
+.hc-black .monaco-workbench > .part.editor > .content > .one-editor-silo > .container > .title .tabs-container > .tab:last-child {
+	border-right-color: #6FC3DF;
+}
+
+.hc-black .monaco-workbench > .part.editor > .content > .one-editor-silo > .container > .title .tabs-container > .tab.active,
+.hc-black .monaco-workbench > .part.editor > .content > .one-editor-silo > .container > .title .tabs-container > .tab.active:hover  {
+	outline: 1px solid #f38518;
+	outline-offset: -5px;
+}
+
+.hc-black .monaco-workbench > .part.editor > .content > .one-editor-silo > .container > .title .tabs-container > .tab:hover  {
+	outline: 1px dashed #f38518;
+	outline-offset: -5px;
 }
 
 .vs .monaco-workbench > .part.editor > .content > .one-editor-silo > .container > .title .tabs-container.dropfeedback,
@@ -5038,7 +5175,7 @@ Applies to all other files
 .hc-black .monaco-workbench > .part.editor > .content > .one-editor-silo > .container > .title .tabs-container > .tab.dropfeedback {
 	background: none !important;
 	outline: 2px dashed #f38518;
-	outline-offset: -2px;
+	outline-offset: -5px;
 }
 
 /* Tab Label */
@@ -5077,7 +5214,7 @@ Applies to all other files
 	width: 28px;
 }
 
-.monaco-workbench > .part.editor > .content > .one-editor-silo > .container > .title .tabs-container > .tab.no-close-button > .tab-close {
+.monaco-workbench > .part.editor > .content > .one-editor-silo > .container > .title .tabs-container > .tab.close-button-off > .tab-close {
 	display: none; /* hide the close action bar when we are configured to hide it */
 }
 
@@ -5125,24 +5262,31 @@ Applies to all other files
 	background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='3 3 16 16' enable-background='new 3 3 16 16'%3E%3Cpolygon fill='%23e8e8e8' points='12.597,11.042 15.4,13.845 13.844,15.4 11.042,12.598 8.239,15.4 6.683,13.845 9.485,11.042 6.683,8.239 8.238,6.683 11.042,9.486 13.845,6.683 15.4,8.239'/%3E%3C/svg%3E") center center no-repeat;
 }
 
+.hc-black .monaco-workbench > .part.editor > .content > .one-editor-silo > .container > .title .tabs-container > .tab.active > .tab-close .action-label,
+.hc-black .monaco-workbench > .part.editor > .content > .one-editor-silo > .container > .title .tabs-container > .tab.active:hover > .tab-close .action-label,
+.hc-black .monaco-workbench > .part.editor > .content > .one-editor-silo > .container > .title .tabs-container > .tab.dirty > .tab-close .action-label,
+.hc-black .monaco-workbench > .part.editor > .content > .one-editor-silo > .container > .title .tabs-container > .tab:hover > .tab-close .action-label {
+	opacity: 1 !important;
+}
+
 /* No Tab Close Button */
 
-.monaco-workbench > .part.editor > .content > .one-editor-silo > .container > .title .tabs-container > .tab.no-close-button {
+.monaco-workbench > .part.editor > .content > .one-editor-silo > .container > .title .tabs-container > .tab.close-button-off {
 	padding-right: 28px; /* make room for dirty indication when we are running without close button */
 }
 
-.monaco-workbench > .part.editor > .content > .one-editor-silo > .container > .title .tabs-container > .tab.no-close-button.dirty {
+.monaco-workbench > .part.editor > .content > .one-editor-silo > .container > .title .tabs-container > .tab.close-button-off.dirty {
 	background-repeat: no-repeat;
 	background-position-y: center;
 	background-position-x: calc(100% - 6px); /* to the right of the tab label */
 }
 
-.vs .monaco-workbench > .part.editor > .content > .one-editor-silo > .container > .title .tabs-container > .tab.no-close-button.dirty {
+.vs .monaco-workbench > .part.editor > .content > .one-editor-silo > .container > .title .tabs-container > .tab.close-button-off.dirty {
 	background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' enable-background='new 0 0 16 16' height='16' width='16'%3E%3Ccircle fill='%23424242' cx='8' cy='8' r='4'/%3E%3C/svg%3E");
 }
 
-.vs-dark .monaco-workbench > .part.editor > .content > .one-editor-silo > .container > .title .tabs-container > .tab.no-close-button.dirty,
-.hc-black .monaco-workbench > .part.editor > .content > .one-editor-silo > .container > .title .tabs-container > .tab.no-close-button.dirty {
+.vs-dark .monaco-workbench > .part.editor > .content > .one-editor-silo > .container > .title .tabs-container > .tab.close-button-off.dirty,
+.hc-black .monaco-workbench > .part.editor > .content > .one-editor-silo > .container > .title .tabs-container > .tab.close-button-off.dirty {
 	background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' enable-background='new 0 0 16 16' height='16' width='16'%3E%3Ccircle fill='%23C5C5C5' cx='8' cy='8' r='4'/%3E%3C/svg%3E");
 }
 
@@ -5337,37 +5481,102 @@ Applies to all other files
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-.monaco-workbench.nopanel > .panel {
+.monaco-workbench.nopanel > .part.panel {
 	display: none !important;
 	visibility: hidden !important;
-}
-
-.monaco-workbench > .part.panel .title {
-	padding-right: 0px;
-	border-top: 1px solid rgba(128, 128, 128, 0.35);
-	height: 36px;
-}
-
-.monaco-workbench > .part.panel > .title > .title-label > span {
-	vertical-align: top;
 }
 
 .monaco-workbench > .part.panel {
 	z-index: initial;
 }
 
+.monaco-workbench > .part.panel .title {
+	border-top: 1px solid rgba(128, 128, 128, 0.35);
+	padding-right: 0px;
+	height: 35px;
+}
+
+.hc-black .monaco-workbench > .part.panel .title {
+	border-top-color: #6FC3DF;
+}
+
+/** Panel Switcher */
+
+.monaco-workbench > .part.panel > .title > .panel-switcher-container > .monaco-action-bar {
+	padding-left: 12px;
+	line-height: 35px;
+}
+
+.monaco-workbench > .part.panel > .title > .panel-switcher-container > .monaco-action-bar .action-item .action-label {
+	text-transform: uppercase;
+	margin-right: 33px;
+	font-size: 11px;
+	padding-bottom: 4px; /* puts the bottom border down */
+}
+
+.vs .monaco-workbench > .part.panel > .title > .panel-switcher-container > .monaco-action-bar .action-item .action-label {
+	color: #424242;
+	opacity: 0.75;
+}
+
+.vs-dark .monaco-workbench > .part.panel > .title > .panel-switcher-container > .monaco-action-bar .action-item .action-label {
+	color: #e7e7e7;
+	opacity: 0.5;
+}
+
+.hc-black .monaco-workbench > .part.panel > .title > .panel-switcher-container > .monaco-action-bar .action-item .action-label {
+	color: #fff;
+}
+
+.monaco-workbench > .part.panel > .title > .panel-switcher-container > .monaco-action-bar .action-item:hover .action-label,
+.monaco-workbench > .part.panel > .title > .panel-switcher-container > .monaco-action-bar .action-item .action-label.checked {
+	opacity: 1;
+}
+
+.monaco-workbench > .part.panel > .title > .panel-switcher-container > .monaco-action-bar .action-item .action-label.checked {
+	border-bottom: 1px solid;
+}
+
+.vs .monaco-workbench > .part.panel > .title > .panel-switcher-container > .monaco-action-bar .action-item .action-label.checked {
+	border-bottom-color: #ccceda;
+}
+
+.vs-dark .monaco-workbench > .part.panel > .title > .panel-switcher-container > .monaco-action-bar .action-item .action-label.checked {
+	border-bottom-color: #404047;
+}
+
+.hc-black .monaco-workbench > .part.panel > .title > .panel-switcher-container > .monaco-action-bar .action-item .action-label.checked,
+.hc-black .monaco-workbench > .part.panel > .title > .panel-switcher-container > .monaco-action-bar .action-item .action-label:hover {
+	outline: 1px solid #f38518;
+	border-bottom: none;
+	padding-bottom: 0;
+	outline-offset: 3px;
+}
+
+.hc-black .monaco-workbench > .part.panel > .title > .panel-switcher-container > .monaco-action-bar .action-item .action-label:hover:not(.checked) {
+	outline-style: dashed;
+}
+
+.vs .monaco-workbench > .part.panel > .title > .panel-switcher-container > .monaco-action-bar .action-item .action-label:focus,
+.vs-dark .monaco-workbench > .part.panel > .title > .panel-switcher-container > .monaco-action-bar .action-item .action-label:focus {
+	border-bottom: 1px solid #007ACC;
+	outline: none !important;
+}
+
+.hc-black .monaco-workbench > .part.panel > .title > .panel-switcher-container > .monaco-action-bar .action-item .action-label:focus {
+	border-bottom: 1px solid #f38518;
+	outline: none !important;
+}
+
+/** Actions */
+
 .monaco-workbench .hide-panel-action {
-	background: url("data:image/svg+xml,%3C?xml version='1.0' encoding='utf-8'?%3E %3C!-- Generator: Adobe Illustrator 19.2.0, SVG Export Plug-In . SVG Version: 6.00 Build 0) --%3E %3Csvg version='1.1' id='Layer_1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' x='0px' y='0px' viewBox='0 0 16 16' style='enable-background:new 0 0 16 16;' xml:space='preserve'%3E %3Cstyle type='text/css'%3E .st0{fill:%23424242;} %3C/style%3E %3Cpath id='iconBg' class='st0' d='M8,12.2L1.3,7.4l1.5-2L8,9.1l5.3-3.8l1.5,2C14.7,7.4,8,12.2,8,12.2z'/%3E %3C/svg%3E ") center center no-repeat;
+	background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='3 3 16 16' enable-background='new 3 3 16 16'%3E%3Cpolygon fill='%23424242' points='12.597,11.042 15.4,13.845 13.844,15.4 11.042,12.598 8.239,15.4 6.683,13.845 9.485,11.042 6.683,8.239 8.238,6.683 11.042,9.486 13.845,6.683 15.4,8.239'/%3E%3C/svg%3E") center center no-repeat;
 }
 
 .vs-dark .monaco-workbench .hide-panel-action,
 .hc-black .monaco-workbench .hide-panel-action {
-	background: url("data:image/svg+xml,%3C?xml version='1.0' encoding='utf-8'?%3E %3C!-- Generator: Adobe Illustrator 19.2.0, SVG Export Plug-In . SVG Version: 6.00 Build 0) --%3E %3Csvg version='1.1' id='Layer_1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' x='0px' y='0px' viewBox='0 0 16 16' style='enable-background:new 0 0 16 16;' xml:space='preserve'%3E %3Cstyle type='text/css'%3E .st0{fill:%23C5C5C5;} %3C/style%3E %3Cpath id='iconBg' class='st0' d='M8,12.2L1.3,7.4l1.5-2L8,9.1l5.3-3.8l1.5,2C14.7,7.4,8,12.2,8,12.2z'/%3E %3C/svg%3E ") center center no-repeat;
-}
-
-/* High Contrast Theming */
-.hc-black .monaco-workbench > .part.panel > .title {
-	border-top-color: #6FC3DF;
+	background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='3 3 16 16' enable-background='new 3 3 16 16'%3E%3Cpolygon fill='%23e8e8e8' points='12.597,11.042 15.4,13.845 13.844,15.4 11.042,12.598 8.239,15.4 6.683,13.845 9.485,11.042 6.683,8.239 8.238,6.683 11.042,9.486 13.845,6.683 15.4,8.239'/%3E%3C/svg%3E") center center no-repeat;
 }
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
@@ -5989,11 +6198,6 @@ a:active {
 	background-color: #000;
 }
 
-.hc-black .monaco-workbench .monaco-action-bar .action-item.disabled .action-label.disabled,
-.hc-black .monaco-workbench .monaco-action-bar .action-item.disabled .action-label.disabled:hover {
-	opacity: 1;
-}
-
 .hc-black .monaco-workbench .monaco-action-bar .action-item.disabled .action-label.disabled {
 	opacity: .4;
 }
@@ -6285,11 +6489,8 @@ a:active {
 	background-color: #F3F3F3;
 	box-shadow: 0 5px 8px #A8A8A8;
 	position: absolute;
-	top: 0;
 	z-index: 200;
 	height: 32px;
-	left: 50%;
-	margin-left: -96px;
 	display: flex;
 	padding-left: 7px;
 }
@@ -6323,10 +6524,15 @@ a:active {
 	background-repeat: no-repeat;
 }
 
-.vs-dark .monaco-workbench .debug-actions-widget,
-.hc-black .monaco-workbench .debug-actions-widget {
+.vs-dark .monaco-workbench .debug-actions-widget {
 	background-color: #333;
 	box-shadow: 0 5px 8px #000;
+}
+
+.hc-black .monaco-workbench .debug-actions-widget {
+	background-color: #000;
+	box-shadow: unset;
+	border: 1px solid #6FC3DF;
 }
 
 /* Debug actionbar actions */
@@ -6562,6 +6768,10 @@ a:active {
 	background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16'%3E%3Cg fill='%23424242'%3E%3Cpath d='M12.714 9.603c-.07.207-.15.407-.246.601l1.017 2.139c-.335.424-.718.807-1.142 1.143l-2.14-1.018c-.193.097-.394.176-.601.247l-.795 2.235c-.265.03-.534.05-.807.05-.272 0-.541-.02-.806-.05l-.795-2.235c-.207-.071-.408-.15-.602-.247l-2.14 1.017c-.424-.336-.807-.719-1.143-1.143l1.017-2.139c-.094-.193-.175-.393-.245-.6l-2.236-.796c-.03-.265-.05-.534-.05-.807s.02-.542.05-.807l2.236-.795c.07-.207.15-.407.246-.601l-1.016-2.139c.336-.423.719-.807 1.143-1.142l2.14 1.017c.193-.096.394-.176.602-.247l.793-2.236c.265-.03.534-.05.806-.05.273 0 .542.02.808.05l.795 2.236c.207.07.407.15.601.246l2.14-1.017c.424.335.807.719 1.142 1.142l-1.017 2.139c.096.194.176.394.246.601l2.236.795c.029.266.049.535.049.808s-.02.542-.05.807l-2.236.796zm-4.714-4.603c-1.657 0-3 1.343-3 3s1.343 3 3 3 3-1.343 3-3-1.343-3-3-3z'/%3E%3Ccircle cx='8' cy='8' r='1.5'/%3E%3C/g%3E%3C/svg%3E") center center no-repeat;
 }
 
+.monaco-workbench .debug-action.start {
+	background: url("data:image/svg+xml,%3C!DOCTYPE svg PUBLIC '-//W3C//DTD SVG 1.1//EN' 'http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd' [ %3C!ENTITY ns_flows 'http://ns.adobe.com/Flows/1.0/'%3E ]%3E%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='-3 0 16 16' enable-background='new -3 0 16 16'%3E%3Cpath fill='%23388A34' d='M1 2v12l8-6-8-6z'/%3E%3C/svg%3E") center center no-repeat;
+}
+
 .monaco-workbench .debug-action.toggle-repl {
 	background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'%3E%3Cstyle type='text/css'%3E.icon-canvas-transparent{opacity:0;fill:%23F6F6F6;} .icon-vs-out{fill:%23F6F6F6;} .icon-vs-bg{fill:%23424242;} .icon-vs-fg{fill:%23F0EFF1;}%3C/style%3E%3Cpath class='icon-canvas-transparent' d='M32 32h-32v-32h32v32z' id='canvas'/%3E%3Cpath class='icon-vs-out' d='M32 28h-32v-24h32v24z' id='outline'/%3E%3Cpath class='icon-vs-bg' d='M2 6v20h28v-20h-28zm26 18h-24v-16h24v16zm-13-8l-5.25 5.5-1.75-1.833 3.5-3.667-3.5-3.667 1.75-1.833 5.25 5.5z' id='iconBg'/%3E%3Cg id='iconFg'%3E%3Cpath class='icon-vs-fg' d='M4 8v16h24v-16h-24zm5.75 13.5l-1.75-1.833 3.5-3.667-3.5-3.667 1.75-1.833 5.25 5.5-5.25 5.5z'/%3E%3C/g%3E%3C/svg%3E") center center no-repeat;
 }
@@ -6576,6 +6786,11 @@ a:active {
 	right: 5px;
 	border-radius: 10px;
 	border: 1px solid white;
+}
+
+.vs-dark .monaco-workbench .debug-action.start,
+.hc-black .monaco-workbench .debug-action.start {
+	background: url("data:image/svg+xml,%3C!DOCTYPE svg PUBLIC '-//W3C//DTD SVG 1.1//EN' 'http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd' [ %3C!ENTITY ns_flows 'http://ns.adobe.com/Flows/1.0/'%3E ]%3E%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='-3 0 16 16' enable-background='new -3 0 16 16'%3E%3Cpath fill='%2389D185' d='M1 2v12l8-6-8-6z'/%3E%3C/svg%3E") center center no-repeat;
 }
 
 .vs-dark .monaco-workbench .debug-action.configure,
@@ -6595,7 +6810,17 @@ a:active {
 	margin-right: 0.3em;
 	height: 20px;
 	flex-shrink: 1;
-	height: 35px;
+	border: 1px solid #dddddd;
+	margin-top: 7px;
+}
+
+.monaco-workbench.mac > .part > .title > .title-actions .start-debug-action-item {
+	border-radius: 4px;
+}
+
+.vs-dark .monaco-workbench > .part > .title > .title-actions .start-debug-action-item,
+.hc-black .monaco-workbench > .part > .title > .title-actions .start-debug-action-item {
+	border-color: #3c3c3c;
 }
 
 .monaco-workbench > .part > .title > .title-actions .start-debug-action-item .icon {
@@ -6603,18 +6828,17 @@ a:active {
 	width: 20px;
 	background: url("data:image/svg+xml,%3C!DOCTYPE svg PUBLIC '-//W3C//DTD SVG 1.1//EN' 'http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd' [ %3C!ENTITY ns_flows 'http://ns.adobe.com/Flows/1.0/'%3E ]%3E%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='-3 0 16 16' enable-background='new -3 0 16 16'%3E%3Cpath fill='%23388A34' d='M1 2v12l8-6-8-6z'/%3E%3C/svg%3E") center center no-repeat;
 	flex-shrink: 0;
-	border: 1px solid #dddddd;
-	border-right: none;
+	transition: transform 50ms ease;
+	-webkit-transition: -webkit-transform 50ms ease;
 }
 
 .vs-dark .monaco-workbench > .part > .title > .title-actions .start-debug-action-item .icon,
 .hc-black .monaco-workbench > .part > .title > .title-actions .start-debug-action-item .icon {
 	background: url("data:image/svg+xml,%3C!DOCTYPE svg PUBLIC '-//W3C//DTD SVG 1.1//EN' 'http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd' [ %3C!ENTITY ns_flows 'http://ns.adobe.com/Flows/1.0/'%3E ]%3E%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='-3 0 16 16' enable-background='new -3 0 16 16'%3E%3Cpath fill='%2389D185' d='M1 2v12l8-6-8-6z'/%3E%3C/svg%3E") center center no-repeat;
-	border-color: #3c3c3c;
 }
 
 .monaco-workbench > .part > .title > .title-actions .start-debug-action-item .configuration {
-	border: 1px solid #dddddd;
+	border-left: 1px solid #dddddd;
 }
 
 .vs-dark .monaco-workbench > .part > .title > .title-actions .start-debug-action-item .configuration,
@@ -6623,10 +6847,18 @@ a:active {
 }
 
 .monaco-workbench .monaco-action-bar .start-debug-action-item .configuration .select-box {
-	background-color: inherit;
+	background-color: #f3f3f3;
 	border: none;
 	margin-top: 0px;
 	cursor: pointer;
+}
+
+.vs-dark .monaco-workbench .monaco-action-bar .start-debug-action-item .configuration .select-box {
+	background-color: #252526;
+}
+
+.hc-black .monaco-workbench .monaco-action-bar .start-debug-action-item .configuration .select-box {
+	background-color: #000;
 }
 
 .monaco-workbench .monaco-action-bar .start-debug-action-item .configuration.disabled .select-box {
@@ -6635,17 +6867,9 @@ a:active {
 	cursor: initial;
 }
 
-/* Hover feedback for start debug action item */
-.monaco-workbench > .part > .title > .title-actions .start-debug-action-item .icon:hover,
-.monaco-workbench > .part > .title > .title-actions .start-debug-action-item .configuration:hover:not(.disabled) {
-	background-color: #ECECEC;
-}
-
-.vs-dark .monaco-workbench > .part > .title > .title-actions .start-debug-action-item .icon:hover,
-.vs-dark .monaco-workbench > .part > .title > .title-actions .start-debug-action-item .configuration:hover:not(.disabled),
-.hc-black .monaco-workbench > .part > .title > .title-actions .start-debug-action-item .icon:hover,
-.hc-black .monaco-workbench > .part > .title > .title-actions .start-debug-action-item .configuration:hover:not(.disabled) {
-	background-color: #2D2D2D
+.monaco-workbench > .part > .title > .title-actions .start-debug-action-item .icon.active {
+	-webkit-transform: scale(1.272019649, 1.272019649);
+	transform: scale(1.272019649, 1.272019649);
 }
 
 /* Debug viewlet trees */
@@ -7448,7 +7672,6 @@ a:active {
 .extension-editor > .header > .details > .actions > .monaco-action-bar > .actions-container > .action-item > .action-label {
 	font-weight: 600;
 	padding: 1px 6px;
-	line-height: 15px;
 }
 
 .extension-editor > .body {
@@ -7666,15 +7889,15 @@ a:active {
 }
 
 .extension-ratings > .full {
-	background-image: url(../parts/extensions/browser/media/FullStarLight.svg);
+	background-image: url("data:image/svg+xml,%3C?xml version='1.0' encoding='utf-8'?%3E %3C!-- Generator: Adobe Illustrator 19.1.0, SVG Export Plug-In . SVG Version: 6.00 Build 0) --%3E %3Csvg version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' x='0px' y='0px' viewBox='0 0 10.3 10' style='enable-background:new 0 0 10.3 10;' xml:space='preserve'%3E %3Cstyle type='text/css'%3E .st0{display:none;} .st1{display:inline;opacity:0.2;fill:%23ED1C24;} .st2{display:inline;opacity:0.43;fill:%2339B54A;} .st3{fill:%23353535;} .st4{fill:%23FFFFFF;} .st5{display:inline;opacity:0.8;fill:%23353535;} .st6{display:inline;} .st7{display:inline;opacity:0.8;fill:%23321F5A;} .st8{opacity:0.15;fill:%23353535;} .st9{display:inline;opacity:0.34;} .st10{fill:%23070909;} .st11{fill:%23333333;} .st12{fill:%237551A0;} .st13{fill:%23D2D2D2;} .st14{fill:%23E6E7E8;} .st15{fill:%233076BC;} .st16{display:none;fill:%233076BC;} .st17{display:inline;fill:%23321F5A;} .st18{fill:%23FF8E00;} .st19{display:none;fill:none;stroke:%23BCBEC0;stroke-miterlimit:10;} .st20{opacity:0.52;} .st21{fill:none;stroke:%23BE1E2D;stroke-miterlimit:10;} .st22{fill:%23BE1E2D;} .st23{display:none;opacity:0.2;} .st24{display:inline;opacity:0.2;} .st25{fill:%23656565;} .st26{fill:%23D1D3D4;} .st27{fill:%23EEEEEE;} .st28{display:none;fill-rule:evenodd;clip-rule:evenodd;fill:%23F4F4F4;} .st29{fill:%23505150;} .st30{display:none;fill:%23BFD8E8;} .st31{fill:%23224096;} .st32{fill:%2317244E;} .st33{display:inline;fill:%23353535;} .st34{display:none;fill:%23F1F2F2;} .st35{fill:%23009444;} .st36{fill:none;stroke:%23505150;stroke-miterlimit:10;} .st37{fill:%23B9D532;} .st38{fill:none;stroke:%23D9D9D8;stroke-width:0.72;stroke-linejoin:round;stroke-miterlimit:10;} .st39{fill:none;stroke:%23D2D2D2;stroke-miterlimit:10;} .st40{display:inline;fill:%23333333;} .st41{display:inline;fill:%237551A0;} .st42{display:inline;fill:%23D2D2D2;} .st43{fill-rule:evenodd;clip-rule:evenodd;fill:%23EEEEEE;} .st44{fill:%23321F5A;} .st45{fill:none;stroke:%23BCBEC0;stroke-miterlimit:10;} .st46{opacity:0.53;fill:%23FFFFFF;} .st47{fill:none;stroke:%23ED1C24;stroke-miterlimit:10;} .st48{fill:%23ED1C24;} .st49{display:inline;opacity:0.1;fill:%23E71E27;} .st50{display:inline;opacity:0.3;} .st51{fill:%23E71E27;} .st52{display:inline;opacity:0.2;fill:%23E71E27;} .st53{display:inline;fill:none;stroke:%23ED1C24;stroke-miterlimit:10;} .st54{fill:none;stroke:%232E3192;stroke-miterlimit:10;} .st55{fill:%232E3192;} .st56{fill:none;stroke:%23FFF200;stroke-miterlimit:10;} .st57{fill:%23FFF200;} %3C/style%3E %3Cg id='grids'%3E %3C/g%3E %3Cg id='Layer_2' class='st0'%3E %3C/g%3E %3Cg id='home'%3E %3C/g%3E %3Cg id='VSOdetails'%3E %3Cg id='overview2'%3E %3C/g%3E %3C/g%3E %3Cg id='reviews'%3E %3C/g%3E %3Cg id='QA_2'%3E %3C/g%3E %3Cg id='CARDS-RL'%3E %3Cg%3E %3Cg%3E %3Cpath class='st18' d='M8,9.8c-0.1,0-0.2,0-0.2-0.1L5.2,7.8L2.6,9.7c-0.1,0.1-0.3,0.1-0.5,0C1.9,9.6,1.9,9.4,1.9,9.2l1-3.1 L0.3,4.3C0.2,4.2,0.1,4,0.2,3.8c0.1-0.2,0.2-0.3,0.4-0.3h3.2l1-3.1C4.8,0.3,5,0.2,5.2,0.2c0.2,0,0.3,0.1,0.4,0.3l1,3.1h3.2 c0.2,0,0.3,0.1,0.4,0.3c0.1,0.2,0,0.3-0.1,0.5L7.4,6.2l1,3.1c0.1,0.2,0,0.3-0.1,0.5C8.2,9.7,8.1,9.8,8,9.8z'/%3E %3C/g%3E %3C/g%3E %3C/g%3E %3Cg id='sticky'%3E %3C/g%3E %3Cg id='REDLINES' class='st0'%3E %3C/g%3E %3C/svg%3E ");
 }
 
 .extension-ratings > .half {
-	background-image: url(../parts/extensions/browser/media/HalfStarLight.svg);
+	background-image: url("data:image/svg+xml,%3C?xml version='1.0' encoding='utf-8'?%3E %3C!-- Generator: Adobe Illustrator 19.1.0, SVG Export Plug-In . SVG Version: 6.00 Build 0) --%3E %3Csvg version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' x='0px' y='0px' viewBox='0 0 10.3 10' style='enable-background:new 0 0 10.3 10;' xml:space='preserve'%3E %3Cstyle type='text/css'%3E .st0{display:none;} .st1{display:inline;opacity:0.2;fill:%23ED1C24;} .st2{display:inline;opacity:0.43;fill:%2339B54A;} .st3{fill:%23353535;} .st4{fill:%23FFFFFF;} .st5{display:inline;opacity:0.8;fill:%23353535;} .st6{display:inline;} .st7{display:inline;opacity:0.8;fill:%23321F5A;} .st8{opacity:0.15;fill:%23353535;} .st9{display:inline;opacity:0.34;} .st10{fill:%23070909;} .st11{fill:%23333333;} .st12{fill:%237551A0;} .st13{fill:%23D2D2D2;} .st14{fill:%23E6E7E8;} .st15{fill:%233076BC;} .st16{display:none;fill:%233076BC;} .st17{display:inline;fill:%23321F5A;} .st18{fill:%23FF8E00;} .st19{display:none;fill:none;stroke:%23BCBEC0;stroke-miterlimit:10;} .st20{opacity:0.52;} .st21{fill:none;stroke:%23BE1E2D;stroke-miterlimit:10;} .st22{fill:%23BE1E2D;} .st23{display:none;opacity:0.2;} .st24{display:inline;opacity:0.2;} .st25{fill:%23656565;} .st26{fill:%23D1D3D4;} .st27{fill:%23EEEEEE;} .st28{display:none;fill-rule:evenodd;clip-rule:evenodd;fill:%23F4F4F4;} .st29{fill:%23505150;} .st30{display:none;fill:%23BFD8E8;} .st31{fill:%23224096;} .st32{fill:%2317244E;} .st33{display:inline;fill:%23353535;} .st34{display:none;fill:%23F1F2F2;} .st35{fill:%23009444;} .st36{fill:none;stroke:%23505150;stroke-miterlimit:10;} .st37{fill:%23B9D532;} .st38{fill:none;stroke:%23D9D9D8;stroke-width:0.72;stroke-linejoin:round;stroke-miterlimit:10;} .st39{fill:none;stroke:%23D2D2D2;stroke-miterlimit:10;} .st40{display:inline;fill:%23333333;} .st41{display:inline;fill:%237551A0;} .st42{display:inline;fill:%23D2D2D2;} .st43{fill-rule:evenodd;clip-rule:evenodd;fill:%23EEEEEE;} .st44{fill:%23321F5A;} .st45{fill:none;stroke:%23BCBEC0;stroke-miterlimit:10;} .st46{opacity:0.53;fill:%23FFFFFF;} .st47{fill:none;stroke:%23ED1C24;stroke-miterlimit:10;} .st48{fill:%23ED1C24;} .st49{display:inline;opacity:0.1;fill:%23E71E27;} .st50{display:inline;opacity:0.3;} .st51{fill:%23E71E27;} .st52{display:inline;opacity:0.2;fill:%23E71E27;} .st53{display:inline;fill:none;stroke:%23ED1C24;stroke-miterlimit:10;} .st54{fill:none;stroke:%232E3192;stroke-miterlimit:10;} .st55{fill:%232E3192;} .st56{fill:none;stroke:%23FFF200;stroke-miterlimit:10;} .st57{fill:%23FFF200;} %3C/style%3E %3Cg id='grids'%3E %3C/g%3E %3Cg id='Layer_2' class='st0'%3E %3C/g%3E %3Cg id='home'%3E %3C/g%3E %3Cg id='VSOdetails'%3E %3Cg id='overview2'%3E %3C/g%3E %3C/g%3E %3Cg id='reviews'%3E %3C/g%3E %3Cg id='QA_2'%3E %3C/g%3E %3Cg id='CARDS-RL'%3E %3Cg%3E %3Cpath class='st13' d='M10.1,3.8c-0.1-0.2-0.2-0.3-0.4-0.3H6.5l-1-3.1C5.5,0.3,5.3,0.2,5.2,0.2v7.6l2.6,1.9C7.8,9.7,7.9,9.7,8,9.7 s0.2,0,0.2-0.1c0.1-0.1,0.2-0.3,0.1-0.5l-1-3.1L10,4.2C10.1,4.1,10.2,4,10.1,3.8z'/%3E %3Cpath class='st18' d='M5.2,0.2L5.2,0.2C5,0.2,4.8,0.3,4.8,0.5l-1,3.1H0.6c-0.2,0-0.3,0.1-0.4,0.3C0.1,4,0.2,4.1,0.3,4.2l2.6,1.9 l-1,3.1c-0.1,0.2,0,0.3,0.1,0.5c0.1,0.1,0.3,0.1,0.5,0l2.6-1.9l0,0V0.2z'/%3E %3C/g%3E %3C/g%3E %3Cg id='sticky'%3E %3C/g%3E %3Cg id='REDLINES' class='st0'%3E %3C/g%3E %3C/svg%3E ");
 }
 
 .extension-ratings > .empty {
-	background-image: url(../parts/extensions/browser/media/EmptyStar.svg);
+	background-image: url("data:image/svg+xml,%3C?xml version='1.0' encoding='utf-8'?%3E %3C!-- Generator: Adobe Illustrator 19.1.0, SVG Export Plug-In . SVG Version: 6.00 Build 0) --%3E %3Csvg version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' x='0px' y='0px' viewBox='0 0 10.3 10' style='enable-background:new 0 0 10.3 10;' xml:space='preserve'%3E %3Cstyle type='text/css'%3E .st0{display:none;} .st1{display:inline;opacity:0.2;fill:%23ED1C24;} .st2{display:inline;opacity:0.43;fill:%2339B54A;} .st3{fill:%23353535;} .st4{fill:%23FFFFFF;} .st5{display:inline;opacity:0.8;fill:%23353535;} .st6{display:inline;} .st7{display:inline;opacity:0.8;fill:%23321F5A;} .st8{opacity:0.15;fill:%23353535;} .st9{display:inline;opacity:0.34;} .st10{fill:%23070909;} .st11{fill:%23333333;} .st12{fill:%237551A0;} .st13{fill:%23D2D2D2;} .st14{fill:%23E6E7E8;} .st15{fill:%233076BC;} .st16{display:none;fill:%233076BC;} .st17{display:inline;fill:%23321F5A;} .st18{fill:%23D63F26;} .st19{display:none;fill:none;stroke:%23BCBEC0;stroke-miterlimit:10;} .st20{opacity:0.52;} .st21{fill:none;stroke:%23BE1E2D;stroke-miterlimit:10;} .st22{fill:%23BE1E2D;} .st23{display:none;opacity:0.2;} .st24{display:inline;opacity:0.2;} .st25{fill:%23656565;} .st26{fill:%23D1D3D4;} .st27{fill:%23EEEEEE;} .st28{display:none;fill-rule:evenodd;clip-rule:evenodd;fill:%23F4F4F4;} .st29{fill:%23505150;} .st30{display:none;fill:%23BFD8E8;} .st31{fill:%23224096;} .st32{fill:%2317244E;} .st33{display:inline;fill:%23353535;} .st34{display:none;fill:%23F1F2F2;} .st35{fill:%23009444;} .st36{fill:none;stroke:%23505150;stroke-miterlimit:10;} .st37{fill:%23B9D532;} .st38{fill:none;stroke:%23D9D9D8;stroke-width:0.72;stroke-linejoin:round;stroke-miterlimit:10;} .st39{fill:none;stroke:%23D2D2D2;stroke-miterlimit:10;} .st40{display:inline;fill:%23333333;} .st41{display:inline;fill:%237551A0;} .st42{display:inline;fill:%23D2D2D2;} .st43{fill-rule:evenodd;clip-rule:evenodd;fill:%23EEEEEE;} .st44{fill:%23321F5A;} .st45{fill:none;stroke:%23BCBEC0;stroke-miterlimit:10;} .st46{opacity:0.53;fill:%23FFFFFF;} .st47{fill:none;stroke:%23ED1C24;stroke-miterlimit:10;} .st48{fill:%23ED1C24;} .st49{display:inline;opacity:0.1;fill:%23E71E27;} .st50{display:inline;opacity:0.3;} .st51{fill:%23E71E27;} .st52{display:inline;opacity:0.2;fill:%23E71E27;} .st53{display:inline;fill:none;stroke:%23ED1C24;stroke-miterlimit:10;} .st54{fill:none;stroke:%232E3192;stroke-miterlimit:10;} .st55{fill:%232E3192;} .st56{fill:none;stroke:%23FFF200;stroke-miterlimit:10;} .st57{fill:%23FFF200;} %3C/style%3E %3Cg id='grids'%3E %3C/g%3E %3Cg id='Layer_2' class='st0'%3E %3C/g%3E %3Cg id='home'%3E %3C/g%3E %3Cg id='VSOdetails'%3E %3Cg id='overview2'%3E %3C/g%3E %3C/g%3E %3Cg id='reviews'%3E %3C/g%3E %3Cg id='QA_2'%3E %3C/g%3E %3Cg id='CARDS-RL'%3E %3Cg%3E %3Cg%3E %3Cpath class='st13' d='M8,9.7c-0.1,0-0.2,0-0.2-0.1L5.1,7.8L2.5,9.6c-0.1,0.1-0.3,0.1-0.5,0C1.9,9.5,1.9,9.4,1.9,9.2l1-3.1 L0.3,4.2C0.2,4.1,0.1,4,0.2,3.8c0.1-0.2,0.2-0.3,0.4-0.3h3.2l1-3.1C4.8,0.3,5,0.2,5.1,0.2c0.2,0,0.3,0.1,0.4,0.3l1,3.1h3.2 c0.2,0,0.3,0.1,0.4,0.3c0.1,0.2,0,0.3-0.1,0.5L7.4,6.1l1,3.1c0.1,0.2,0,0.3-0.1,0.5C8.2,9.7,8.1,9.7,8,9.7z'/%3E %3C/g%3E %3C/g%3E %3C/g%3E %3Cg id='sticky'%3E %3C/g%3E %3Cg id='REDLINES' class='st0'%3E %3C/g%3E %3C/svg%3E ");
 }
 
 .extension-ratings > .count {
@@ -7707,159 +7930,8 @@ a:active {
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-.quick-open-widget .extension {
-	padding: 0 14px 0 0;
-	height: 48px;
-}
-
-.quick-open-widget .extension.loading,
-.extensions-viewlet > .extensions .extension.loading,
-.extension-editor > .body > .content.loading {
-	background: url(data:image/svg+xml;charset=utf-8;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZlcnNpb249IjEuMSIgd2lkdGg9IjU3NSIgaGVpZ2h0PSI2cHgiPg0KICA8c3R5bGU+DQogICAgY2lyY2xlIHsNCiAgICAgIGFuaW1hdGlvbjogYmFsbCAyLjVzIGN1YmljLWJlemllcigwLjAwMCwgMS4wMDAsIDEuMDAwLCAwLjAwMCkgaW5maW5pdGU7DQogICAgICBmaWxsOiAjYmJiOw0KICAgIH0NCg0KICAgICNiYWxscyB7DQogICAgICBhbmltYXRpb246IGJhbGxzIDIuNXMgbGluZWFyIGluZmluaXRlOw0KICAgIH0NCg0KICAgICNjaXJjbGUyIHsgYW5pbWF0aW9uLWRlbGF5OiAwLjFzOyB9DQogICAgI2NpcmNsZTMgeyBhbmltYXRpb24tZGVsYXk6IDAuMnM7IH0NCiAgICAjY2lyY2xlNCB7IGFuaW1hdGlvbi1kZWxheTogMC4zczsgfQ0KICAgICNjaXJjbGU1IHsgYW5pbWF0aW9uLWRlbGF5OiAwLjRzOyB9DQoNCiAgICBAa2V5ZnJhbWVzIGJhbGwgew0KICAgICAgZnJvbSB7IHRyYW5zZm9ybTogbm9uZTsgfQ0KICAgICAgMjAlIHsgdHJhbnNmb3JtOiBub25lOyB9DQogICAgICA4MCUgeyB0cmFuc2Zvcm06IHRyYW5zbGF0ZVgoODY0cHgpOyB9DQogICAgICB0byB7IHRyYW5zZm9ybTogdHJhbnNsYXRlWCg4NjRweCk7IH0NCiAgICB9DQoNCiAgICBAa2V5ZnJhbWVzIGJhbGxzIHsNCiAgICAgIGZyb20geyB0cmFuc2Zvcm06IHRyYW5zbGF0ZVgoLTQwcHgpOyB9DQogICAgICB0byB7IHRyYW5zZm9ybTogdHJhbnNsYXRlWCgzMHB4KTsgfQ0KICAgIH0NCiAgPC9zdHlsZT4NCiAgPGcgaWQ9ImJhbGxzIj4NCiAgICA8Y2lyY2xlIGNsYXNzPSJjaXJjbGUiIGlkPSJjaXJjbGUxIiBjeD0iLTExNSIgY3k9IjMiIHI9IjMiLz4NCiAgICA8Y2lyY2xlIGNsYXNzPSJjaXJjbGUiIGlkPSJjaXJjbGUyIiBjeD0iLTEzMCIgY3k9IjMiIHI9IjMiIC8+DQogICAgPGNpcmNsZSBjbGFzcz0iY2lyY2xlIiBpZD0iY2lyY2xlMyIgY3g9Ii0xNDUiIGN5PSIzIiByPSIzIiAvPg0KICAgIDxjaXJjbGUgY2xhc3M9ImNpcmNsZSIgaWQ9ImNpcmNsZTQiIGN4PSItMTYwIiBjeT0iMyIgcj0iMyIgLz4NCiAgICA8Y2lyY2xlIGNsYXNzPSJjaXJjbGUiIGlkPSJjaXJjbGU1IiBjeD0iLTE3NSIgY3k9IjMiIHI9IjMiIC8+DQogIDwvZz4NCjwvc3ZnPg==) center center no-repeat;
-}
-
-.quick-open-widget .extension.loading > * {
-	opacity: 0.4;
-}
-
-.quick-open-widget .extension .row {
-	display: block;
-	overflow: hidden;
-	white-space: nowrap;
-	text-overflow: ellipsis;
-	height: 24px;
-}
-
-.quick-open-widget .extension .row .actions {
-	float: right;
-}
-
-.quick-open-widget .extension .description {
-	display: block;
-	overflow: hidden;
-	white-space: nowrap;
-	text-overflow: ellipsis;
-	opacity: 0.6;
-}
-
-.quick-open-widget .extension .install {
-	margin-left: 6px;
-	padding: 1px 3px;
-	border-radius: 3px;
-	background-color: rgba(132, 132, 132, 0.3);
-	font-size: smaller;
-	opacity: 0.7;
-}
-
-.quick-open-widget .extension .install > .octicon {
-	font-size: small;
-	margin-right: 3px;
-}
-
-.quick-open-widget .extension .icon.octicon-x:before {
-	margin-right: 2px;
-	margin-top: 2px;
-	display: inline-block;
-}
-
-.quick-open-widget .extension .published {
-	float: right;
-	opacity: 0.6;
-	font-size: smaller;
-}
-
-.quick-open-widget .extension .published > .version {
-	opacity: 0.6;
-	margin-right: 0.5em;
-}
-
-@keyframes move-background {
-	to { background-position: 8px 0; }
-}
-
-.quick-open-widget .extension .actions .action-item:not(.disabled) {
-	display: none;
-}
-
-.quick-open-widget .monaco-tree-row:hover .extension .actions .action-item,
-.quick-open-widget .monaco-tree-row.focused .extension .actions .action-item {
-	display: inherit;
-}
-
-.quick-open-widget .extension .actions .action-item:not(:first-child) {
-	margin-left: 2px;
-}
-
-.quick-open-widget .extension .actions .action-item {
-	line-height: 12px;
-}
-
-.quick-open-widget .extension .actions .action-label {
-	width: 12px;
-	height: 12px;
-	font-size: smaller;
-	border: 1px solid rgba(132, 132, 132, 0.5);
-	/*border-radius: 2px;*/
-	padding: 1px;
-	vertical-align: text-bottom;
-	text-transform: uppercase;
-	color: rgb(0, 157, 255);
-	border-color: rgb(0, 157, 255);
-}
-
-.quick-open-widget .monaco-tree.focused .monaco-tree-row.focused .extension .actions .action-label:focus {
-	outline: 1px solid #DF740C;
-	outline-offset: -1px;
-}
-
-.quick-open-widget .monaco-tree.focused .monaco-tree-row.focused .extension .actions .action-label:active {
-	outline: none;
-}
-
-.quick-open-widget .extension .actions .action-label:not(.icon) {
-	padding: 1px 3px;
-	display: inline-block;
-	width: auto;
-	font-size: x-small;
-}
-
-.quick-open-widget .extension .actions .action-item.disabled .action-label {
-	animation: move-background 0.5s linear infinite;
-	background-color: rgba(132, 132, 132, 0.5);
-	background-size: 8px;
-	background-image: linear-gradient(-45deg, rgba(255, 255, 255, 0.5) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.5) 50%, rgba(255, 255, 255, 0.5) 75%, transparent 75%, transparent);
-	color: rgb(0, 0, 0);
-	border-color: rgb(0, 0, 0);
-}
-
-.quick-open-widget .extension .actions .action-item .action-label:hover {
-	text-decoration: none;
-}
-
-.quick-open-widget .extension .actions .action-item:not(.disabled) .action-label:hover {
-	color: inherit;
-	background: rgba(132, 132, 132, 0.2);
-	border-color: #CCC;
-}
-
-.quick-open-widget .extension .actions .action-item:not(.disabled) .action-label:active {
-	background: rgba(132, 132, 132, 0.5);
-}
-
-.quick-open-widget .extension .actions .action-item:active {
-	transform: none;
-}
-
-.monaco-workbench > .activitybar .monaco-action-bar .action-label.extensions {
-	background: url("data:image/svg+xml,%3C?xml version='1.0' encoding='utf-8'?%3E %3C!-- Generator: Adobe Illustrator 19.1.0, SVG Export Plug-In . SVG Version: 6.00 Build 0) --%3E %3Csvg version='1.1' id='Layer_1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' x='0px' y='0px' viewBox='0 0 60 60' style='enable-background:new 0 0 60 60;' xml:space='preserve'%3E %3Cstyle type='text/css'%3E .st0{fill:%23FFFFFF;} %3C/style%3E %3Cg id='iconBg'%3E %3Cpath class='st0' d='M12.9,47.1H30V60H0V0h25.7v12.9H12.9V47.1z M17.1,42.9h25.7V17.1H17.1V42.9z M30,0v12.9h8.6V8.6h12.9v12.9 h-4.3V30H60V0H30z M47.1,47.1H34.3V60H60V34.3H47.1V47.1z'/%3E %3C/g%3E %3C/svg%3E ") center center no-repeat;
-}
-
-/* Global action */
-
-.monaco-workbench > .activitybar .monaco-action-bar .action-label.extensions {
-	background-size: 22px;
-	background-repeat: no-repeat;
-	background-position: 50% !important;
+.monaco-workbench > .activitybar > .content .monaco-action-bar .action-label.extensions {
+	background: url("data:image/svg+xml,%3C?xml version='1.0' encoding='utf-8'?%3E %3C!-- Generator: Adobe Illustrator 19.1.0, SVG Export Plug-In . SVG Version: 6.00 Build 0) --%3E %3Csvg version='1.1' id='Layer_1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' x='0px' y='0px' viewBox='0 0 60 60' style='enable-background:new 0 0 60 60;' xml:space='preserve'%3E %3Cstyle type='text/css'%3E .st0{fill:%23FFFFFF;} %3C/style%3E %3Cg id='iconBg'%3E %3Cpath class='st0' d='M12.9,47.1H30V60H0V0h25.7v12.9H12.9V47.1z M17.1,42.9h25.7V17.1H17.1V42.9z M30,0v12.9h8.6V8.6h12.9v12.9 h-4.3V30H60V0H30z M47.1,47.1H34.3V60H60V34.3H47.1V47.1z'/%3E %3C/g%3E %3C/svg%3E ") center center/22px no-repeat;
 }
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
@@ -7888,6 +7960,12 @@ a:active {
 
 .extensions-viewlet > .extensions {
 	height: calc(100% - 38px);
+}
+
+.extensions-viewlet > .extensions.hidden,
+.extensions-viewlet > .message.hidden {
+	display: none;
+	visibility: hidden;
 }
 
 .extensions-viewlet > .message {
@@ -8215,7 +8293,7 @@ a:active {
 
 
 .monaco-shell.vs .feedback-form .cancel {
-	background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='3 3 16 16' enable-background='new 3 3 16 16'%3E%3Cpolygon fill='%23656565' points='12.597,11.042 15.4,13.845 13.844,15.4 11.042,12.598 8.239,15.4 6.683,13.845 9.485,11.042 6.683,8.239 8.238,6.683 11.042,9.486 13.845,6.683 15.4,8.239'/%3E%3C/svg%3E") center center no-repeat;
+	background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='3 3 16 16' enable-background='new 3 3 16 16'%3E%3Cpolygon fill='%23424242' points='12.597,11.042 15.4,13.845 13.844,15.4 11.042,12.598 8.239,15.4 6.683,13.845 9.485,11.042 6.683,8.239 8.238,6.683 11.042,9.486 13.845,6.683 15.4,8.239'/%3E%3C/svg%3E") center center no-repeat;
 }
 
 .monaco-shell.vs .feedback-form .cancel:hover {
@@ -8226,7 +8304,7 @@ a:active {
 	color: white;
 	border: none;
 	cursor: pointer;
-	background-image: url(../parts/feedback/browser/media/twitter.svg);
+	background-image: url(../parts/feedback/electron-browser/media/twitter.svg);
 	background-color: #007ACC;
 	background-position: left;
 	background-repeat: no-repeat;
@@ -8446,6 +8524,56 @@ a:active {
 	visibility: hidden;
 }
 
+.explorer-viewlet .header .monaco-count-badge.hidden {
+	display: none;
+	visibility: hidden;
+}
+
+.explorer-folders-view .monaco-tree-row .sub-content {
+	display: flex;
+}
+
+.explorer-folders-view .monaco-tree-row .sub-content::before {
+	background-size: 16px;
+	background-position: 50% 50%;
+	background-repeat: no-repeat;
+	padding-right: 6px;
+	width: 16px;
+	height: 22px;
+	display: inline-block;
+	vertical-align: top;
+	content: ' ';
+}
+
+.explorer-folders-view.align-icons-and-twisties .monaco-tree-row:not(.has-children) .sub-content::before {
+	display: none;
+}
+
+.explorer-folders-view .monaco-tree-row.has-children.expanded .sub-content::before {
+	background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='%23646465' d='M11 10H5.344L11 4.414V10z'/%3E%3C/svg%3E");
+}
+
+.explorer-folders-view .monaco-tree-row.has-children .sub-content::before {
+	display: inline-block;
+	background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='%23646465' d='M6 4v8l4-4-4-4zm1 2.414L8.586 8 7 9.586V6.414z'/%3E%3C/svg%3E");
+}
+
+.vs-dark .explorer-folders-view .monaco-tree-row.has-children.expanded .sub-content::before {
+	background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='%23E8E8E8' d='M11 10H5.344L11 4.414V10z'/%3E%3C/svg%3E");
+}
+
+.vs-dark .explorer-folders-view .monaco-tree-row.has-children .sub-content::before {
+	background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='%23E8E8E8' d='M6 4v8l4-4-4-4zm1 2.414L8.586 8 7 9.586V6.414z'/%3E%3C/svg%3E");
+}
+
+.hc-black .explorer-folders-view .monaco-tree-row.has-children.expanded .sub-content::before {
+	background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16'%3E%3Cpath fill='%23fff' d='M11 10.07h-5.656l5.656-5.656v5.656z'/%3E%3C/svg%3E");
+}
+
+.hc-black .explorer-folders-view .monaco-tree-row.has-children .sub-content::before {
+	background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16'%3E%3Cpath fill='%23fff' d='M6 4v8l4-4-4-4zm1 2.414l1.586 1.586-1.586 1.586v-3.172z'/%3E%3C/svg%3E");
+}
+
 .explorer-viewlet .explorer-open-editors .monaco-tree .monaco-tree-row:hover > .content .monaco-action-bar,
 .explorer-viewlet .explorer-open-editors .monaco-tree.focused .monaco-tree-row.focused > .content .monaco-action-bar,
 .explorer-viewlet .explorer-open-editors .monaco-tree .monaco-tree-row > .content.dirty > .monaco-action-bar {
@@ -8521,11 +8649,6 @@ a:active {
 .explorer-viewlet:lang(zh-Hant) .explorer-open-editors .monaco-tree .monaco-tree-row .editor-group,
 .explorer-viewlet:lang(ja) .explorer-open-editors .monaco-tree .monaco-tree-row .editor-group,
 .explorer-viewlet:lang(ko) .explorer-open-editors .monaco-tree .monaco-tree-row .editor-group { font-weight: normal; }
-
-/* Disable tree twistie */
-.explorer-viewlet .explorer-open-editors > .monaco-tree .monaco-tree-rows > .monaco-tree-row > .content:before {
-	display: none;
-}
 
 /* High Contrast Theming */
 .hc-black .monaco-workbench .explorer-viewlet .explorer-item,
@@ -9211,17 +9334,6 @@ a:active {
 	line-height: 1.5em;
 }
 
-.git-viewlet > .noworkspace-view .code {
-	display: inline;
-}
-
-.git-viewlet > .noworkspace-view a
-{
-	color: inherit;
-	font-weight: bold;
-	text-decoration: underline;
-}
-
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -9265,13 +9377,15 @@ a:active {
 	height: 100%;
 }
 
+.markers-panel .markers-panel-container .tree-container.hidden,
+.markers-panel .markers-panel-container .message-box-container.hidden {
+	display: none;
+	visibility: hidden;
+}
+
 .markers-panel .markers-panel-container .tree-container .markers-panel-tree-entry {
 	display: flex;
 	line-height: 22px;
-}
-
-.markers-panel .markers-panel-container .tree-container .markers-panel-tree-entry > * {
-	display: inline-block;
 }
 
 .markers-panel .markers-panel-container .tree-container .markers-panel-tree-entry .marker-stats {
@@ -9356,62 +9470,159 @@ a:active {
 .hc-black .monaco-workbench .output-action.clear-output {
 	background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16'%3E%3Cpath fill='%231E1E1E' d='M4.222 0h-2.222v.479c-.526.648-.557 1.57-.043 2.269l.043.059v3.203l-.4.296-.053.053c-.353.352-.547.822-.547 1.321s.194.967.549 1.32c.134.134.288.236.451.322v6.678h14v-16h-11.778z'/%3E%3Cpath fill='%23E8E8E8' d='M10.798 7l-1.83-2h6.032v2h-4.202zm-2.292-6h-3.207l1.337 1.52 1.87-1.52zm-5.506 8.531v1.469h12v-2h-10.813l-.024.021c-.3.299-.716.479-1.163.51zm0 5.469h12v-2h-12v2zm3.323-8h.631l-.347-.266-.284.266zm8.677-4v-2h-3.289l-1.743 2h5.032z'/%3E%3Cpath fill='%23F48771' d='M7.246 4.6l2.856-3.277-.405-.002-3.176 2.581-2.607-2.962c-.336-.221-.786-.2-1.082.096-.308.306-.319.779-.069 1.12l2.83 2.444-3.339 2.466c-.339.338-.339.887 0 1.225.339.337.888.337 1.226 0l3.063-2.867 3.33 2.555h.466l-3.093-3.379z'/%3E%3C/svg%3E") center center no-repeat;
 }
+
+.monaco-workbench .output-action.toggle-output-scroll-lock {
+	background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cdefs%3E%3Cstyle%3E.icon-canvas-transparent,.icon-vs-out{fill:%23f6f6f6}.icon-canvas-transparent{opacity:0}.icon-vs-bg{fill:%23424242}%3C/style%3E%3C/defs%3E%3Ctitle%3EScrollLock%3C/title%3E%3Cpath class='icon-canvas-transparent' d='M16 16H0V0h16z' id='canvas'/%3E%3Cpath class='icon-vs-out' d='M15 9a3 3 0 0 0-6 0h-.836l-.018-.018L8.129 9H8v.129l-1 1V5.871l1.146 1.147L10.268 4.9 5.5.129.732 4.9l2.122 2.118L4 5.871v4.258L2.854 8.982.732 11.1 5.5 15.871l2.5-2.5V16h8V9z' id='outline' style='display: none;'/%3E%3Cpath class='icon-vs-bg' d='M5.5 1.543L8.854 4.9l-.708.7L6 3.457v9.086l2-2v1.414l-2.5 2.5L2.146 11.1l.707-.707L5 12.543V3.457L2.854 5.6l-.708-.7zM15 10v5H9v-5h1V9a2 2 0 0 1 4 0v1zm-4 0h2V9a1 1 0 0 0-2 0zm3 1h-4v3h4z' id='iconBg'/%3E%3C/svg%3E") center center no-repeat;
+}
+
+.vs-dark .monaco-workbench .output-action.toggle-output-scroll-lock,
+.hc-black .monaco-workbench .output-action.toggle-output-scroll-lock {
+	background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cdefs%3E%3Cstyle%3E.icon-canvas-transparent,.icon-vs-out{fill:%232d2d30}.icon-canvas-transparent{opacity:0}.icon-vs-bg{fill:%23c5c5c5}%3C/style%3E%3C/defs%3E%3Ctitle%3EScrollLock%3C/title%3E%3Cpath class='icon-canvas-transparent' d='M16 16H0V0h16z' id='canvas'/%3E%3Cpath class='icon-vs-out' d='M15 9a3 3 0 0 0-6 0h-.836l-.018-.018L8.129 9H8v.129l-1 1V5.871l1.146 1.147L10.268 4.9 5.5.129.732 4.9l2.122 2.118L4 5.871v4.258L2.854 8.982.732 11.1 5.5 15.871l2.5-2.5V16h8V9z' id='outline' style='display: none;'/%3E%3Cpath class='icon-vs-bg' d='M5.5 1.543L8.854 4.9l-.708.7L6 3.457v9.086l2-2v1.414l-2.5 2.5L2.146 11.1l.707-.707L5 12.543V3.457L2.854 5.6l-.708-.7zM15 10v5H9v-5h1V9a2 2 0 0 1 4 0v1zm-4 0h2V9a1 1 0 0 0-2 0zm3 1h-4v3h4z' id='iconBg'/%3E%3C/svg%3E") center center no-repeat;
+}
+
+.monaco-workbench .output-action.toggle-output-scroll-lock.checked::after {
+	position: absolute;
+	content: "";
+	left: 4px;
+	top: 7px;
+	z-index: 1;
+	width: 20px;
+	height: 20px;
+	border: #007ACC 1px solid;
+}
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-.settings-header-widget {
-	border-bottom: 1px solid #efefef;
-}
-
-.vs-dark .settings-header-widget {
-	border-bottom: 1px solid #2d2d2d;
-}
-
-.settings-header-widget > .settings-header-container {
-	margin-top: 8px;
-	padding-left: 27px;
-	padding-right: 32px;
-}
-
-.settings-header-widget > .settings-search-container {
+.preferences-editor > .preferences-header {
+	border-bottom: 1px solid #efeff2;
+	display: flex;
+	flex-wrap: wrap;
 	padding-left: 27px;
 	padding-right: 32px;
 	padding-bottom: 11px;
 	padding-top: 11px;
 }
 
-.vs .settings-header-widget > .settings-search-container {
-	background: #efeff2;
-}
-.vs-dark .settings-header-widget > .settings-search-container {
-	background: #2d2d30;
-}
-
-.settings-header-widget > .settings-header-container > .settings-title-container {
-	display: flex
+.preferences-editor > .preferences-header.vertical-layout {
+	flex-direction: column;
+	align-items: flex-end;
+	padding-bottom: 5px;
 }
 
-.settings-header-widget > .settings-header-container > .settings-title-container > .settings-info-container {
-	white-space: pre-wrap;
-	margin-bottom: 8px;
-	font-size: 12px;
+.vs-dark .preferences-editor > .preferences-header {
+	border-bottom: 1px solid #2d2d2d;
 }
 
-.vs .settings-header-widget > .settings-header-container > .settings-title-container > .settings-info-container {
-	color: #6f6f6f;
-}
-.vs-dark .settings-header-widget > .settings-header-container > .settings-title-container > .settings-info-container {
-	color: #bbbbbb;
-}
-.hc-black .settings-header-widget > .settings-header-container > .settings-title-container > .settings-info-container {
-	color: white;
+.settings-tabs-widget {
+	display: flex;
+	flex-wrap: wrap;
+	line-height: 28px;
 }
 
-.settings-header-widget > .settings-header-container > .settings-title-container > .settings-info-container .title-label {
+.settings-tabs-widget > .monaco-action-bar > .actions-container {
+	flex-wrap: wrap;
+}
+
+.settings-tabs-widget > .monaco-action-bar .action-item .action-label {
 	text-transform: uppercase;
-	font-weight: bold;
+	font-size: 11px;
+	margin-left: 33px;
+	margin-right: 0px;
+	padding-top: 6px;
+	cursor: pointer;
+	padding-bottom: 4px; /* puts the bottom border down */
+}
+
+.settings-tabs-widget > .monaco-action-bar .action-item .action-label.disabled {
+	cursor: default;
+}
+
+.vs .settings-tabs-widget > .monaco-action-bar .action-item .action-label:not(.disabled) {
+	color: #424242;
+	opacity: 0.75;
+}
+
+.vs-dark .settings-tabs-widget > .monaco-action-bar .action-item .action-label:not(.disabled) {
+	color: #e7e7e7;
+	opacity: 0.5;
+}
+
+.hc-black .settings-tabs-widget > .monaco-action-bar .action-item .action-label:not(.disabled) {
+	color: #fff;
+}
+
+.settings-tabs-widget > .monaco-action-bar .action-item:hover .action-label:not(.disabled),
+.settings-tabs-widget > .monaco-action-bar .action-item .action-label.checked:not(.disabled) {
+	opacity: 1;
+}
+
+.settings-tabs-widget > .monaco-action-bar .action-item .action-label.checked {
+	border-bottom: 1px solid;
+}
+
+.vs .settings-tabs-widget > .monaco-action-bar .action-item .action-label.checked {
+	border-bottom-color: #ccceda;
+}
+
+.vs-dark .settings-tabs-widget > .monaco-action-bar .action-item .action-label.checked {
+	border-bottom-color: #404047;
+}
+
+.vs .settings-tabs-widget > .monaco-action-bar .action-item .action-label:focus,
+.vs-dark .settings-tabs-widget > .monaco-action-bar .action-item .action-label:focus {
+	border-bottom: 1px solid #007ACC;
+	outline: none !important;
+}
+
+.hc-black .settings-tabs-widget > .monaco-action-bar .action-item .action-label:focus {
+	border-bottom: 1px solid #f38518;
+	outline: none !important;
+}
+
+.preferences-header > .settings-header-widget {
+	flex: 1;
+	display: flex;
+	position: relative;
+	align-self: stretch;
+}
+
+.settings-header-widget > .settings-header-container {
+	padding-top: 8px;
+	padding-left: 27px;
+	padding-right: 32px;
+}
+
+.settings-header-widget > .settings-count-widget {
+	margin: 6px 0px;
+	padding: 0px 8px;
+	position: absolute;
+	right: 10px;
+	border-radius: 2px;
+	background-color: #EFEFF2;
+}
+
+.settings-header-widget > .settings-count-widget.hide {
+	display: none;
+}
+
+.hc-black .settings-header-widget > .settings-count-widget,
+.vs-dark .settings-header-widget > .settings-count-widget {
+	background-color: #2D2D30;
+}
+
+.settings-header-widget > .settings-count-widget.no-results {
+	color: #A1260D;
+}
+
+.hc-black .settings-header-widget > .settings-count-widget.no-results,
+.vs-dark .settings-header-widget > .settings-count-widget.no-results {
+	color: #F48771
+}
+
+.settings-header-widget > .settings-search-container {
+	flex: 1;
 }
 
 .settings-header-widget > .settings-search-container > .settings-search-input {
@@ -9438,6 +9649,14 @@ a:active {
 	background-image: url("data:image/svg+xml,%3Csvg id='Layer_1' data-name='Layer 1' xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3E%3Cdefs%3E%3Cstyle%3E.cls-1{fill:%232d2d30;fill-opacity:0;}.cls-2{fill:none;}.cls-3{fill:%23c5c5c5;}%3C/style%3E%3C/defs%3E%3Ctitle%3ESearch_16x%3C/title%3E%3Cpath id='canvas' class='cls-1' d='M16,16H0V0H16Z'/%3E%3Cpath id='outline' class='cls-2' d='M11.11,0a5.9,5.9,0,0,1-1,11.71,5.69,5.69,0,0,1-1.91-.33L3.57,16H2.68L0,13.36V12.2L4.51,7.72A5.68,5.68,0,0,1,4.2,5.81,5.91,5.91,0,0,1,9.09,0h2'/%3E%3Cpath id='iconBg' class='cls-3' d='M1.32,13.07l1.61,1.61L7.75,9.86a3.82,3.82,0,0,0,2.42.8,4.83,4.83,0,1,0-4.8-4.83,3.48,3.48,0,0,0,.78,2.42ZM6.44,5.83a3.7,3.7,0,0,1,3.72-3.76,3.75,3.75,0,1,1,0,7.51A3.7,3.7,0,0,1,6.44,5.83'/%3E%3Cpath id='iconFg' class='cls-2' d='M6.44,5.83a3.7,3.7,0,0,1,3.72-3.76,3.75,3.75,0,1,1,0,7.51A3.7,3.7,0,0,1,6.44,5.83'/%3E%3C/svg%3E");
 }
 
+.vs-dark .preferences-editor .side-by-side-preferences-editor > .editable-preferences-editor-container {
+	box-shadow: -6px 0 5px -5px black;
+}
+
+.preferences-editor .side-by-side-preferences-editor > .editable-preferences-editor-container {
+	box-shadow: -6px 0 5px -5px #DDD;
+}
+
 .monaco-editor .settings-group-title-widget {
 	z-index: 1;
 }
@@ -9447,6 +9666,7 @@ a:active {
 	cursor: pointer;
 	font-weight: bold;
 	-webkit-user-select: none;
+	user-select: none;
 }
 
 .vs .monaco-editor .settings-group-title-widget .title-container {
@@ -9457,11 +9677,6 @@ a:active {
 }
 .hc-black .monaco-editor .settings-group-title-widget .title-container {
 	color: white;
-}
-
-.monaco-editor .settings-group-title-widget .title-container > * {
-	vertical-align: middle;
-	display: inline-block;
 }
 
 .monaco-editor.vs-dark .settings-group-title-widget .title-container.focused,
@@ -9490,6 +9705,11 @@ a:active {
 	height: 16px;
 }
 
+.monaco-editor .settings-group-title-widget .title-container > div {
+	vertical-align: middle;
+	display: inline-block;
+}
+
 .monaco-editor.vs-dark .settings-group-title-widget .title-container .expand-collapse-icon,
 .monaco-editor.hc-black .settings-group-title-widget .title-container .expand-collapse-icon {
 	background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='%23E8E8E8' d='M11 10H5.344L11 4.414V10z'/%3E%3C/svg%3E") 50% 50% no-repeat;
@@ -9504,19 +9724,21 @@ a:active {
 	background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='%23E8E8E8' d='M6 4v8l4-4-4-4zm1 2.414L8.586 8 7 9.586V6.414z'/%3E%3C/svg%3E") 50% 50% no-repeat;
 }
 
-.monaco-editor .view-line:hover .copySetting:after {
-	cursor: pointer;
-	content:" ";
+.monaco-editor .edit-preferences-widget {
 	background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16'%3E%3Cstyle type='text/css'%3E.icon-canvas-transparent{opacity:0;fill:%23F6F6F6;} .icon-vs-out{fill:%23F6F6F6;} .icon-vs-bg{fill:%23424242;}%3C/style%3E%3Cpath class='icon-canvas-transparent' d='M16 16h-16v-16h16v16z' id='canvas'/%3E%3Cpath class='icon-vs-out' d='M16 4.28l-11.673 11.72h-4.327v-4.406l11.477-11.594h.308l4.215 4.237v.043z' id='outline' style='display: none;'/%3E%3Cpath class='icon-vs-bg' d='M14.598 4.25l-1.688 1.75-3-3 1.688-1.75 3 3zm-5.688-.25l-7 7 3 3 7-7-3-3zm-7.91 8.09v2.91h2.91l-2.91-2.91z' id='iconBg'/%3E%3C/svg%3E") center center no-repeat;
-	margin-left: 1em;
-	display:inline-block;
-	position: absolute;
-	height:100%;
+	transform: rotate(-90deg);
 	width:16px;
+	height: 16px;
+	cursor: pointer;
 }
 
-.monaco-editor.hc-black .view-line:hover .copySetting:after,
-.monaco-editor.vs-dark .view-line:hover .copySetting:after {
+.monaco-editor .edit-preferences-widget.hidden {
+	display: none;
+	visibility: hidden;
+}
+
+.monaco-editor.hc-black .edit-preferences-widget,
+.monaco-editor.vs-dark .edit-preferences-widget {
 	background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16'%3E%3Cstyle type='text/css'%3E.icon-canvas-transparent{opacity:0;fill:%232d2d30;} .icon-vs-out{fill:%232d2d30;} .icon-vs-bg{fill:%23c5c5c5;}%3C/style%3E%3Cpath class='icon-canvas-transparent' d='M16 16h-16v-16h16v16z' id='canvas'/%3E%3Cpath class='icon-vs-out' d='M16 4.28l-11.673 11.72h-4.327v-4.406l11.477-11.594h.308l4.215 4.237v.043z' id='outline' style='display: none;'/%3E%3Cpath class='icon-vs-bg' d='M14.598 4.25l-1.688 1.75-3-3 1.688-1.75 3 3zm-5.688-.25l-7 7 3 3 7-7-3-3zm-7.91 8.09v2.91h2.91l-2.91-2.91z' id='iconBg'/%3E%3C/svg%3E") center center no-repeat;
 }
 
@@ -9536,36 +9758,6 @@ a:active {
 .vs-dark .title-actions .action-item .icon.collapseAll,
 .vs-dark .editor-actions .action-item .icon.collapseAll {
 	background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='-1 0 16 16' enable-background='new -1 0 16 16'%3E%3Cpath fill='%23C5C5C5' d='M14 1v9h-1v-8h-8v-1h9zm-11 2v1h8v8h1v-9h-9zm7 2v9h-9v-9h9zm-2 2h-5v5h5v-5z'/%3E%3Crect x='4' y='9' fill='%2375BEFF' width='3' height='1'/%3E%3C/svg%3E") center center no-repeat;
-}
-
-.monaco-editor .settings-count-widget {
-	padding: 4px 10px 4px 10px;
-	display: none;
-	position: absolute;
-	top: 4px;
-	right: 28px;
-	border-radius: 2px;
-	z-index: 1;
-}
-
-.monaco-editor .settings-count-widget.show {
-	display: inherit;
-}
-
-.monaco-editor .settings-count-widget.show:not(.no-results) {
-	background-color: #EFEFF2;
-}
-
-.monaco-editor.vs-dark .settings-count-widget.show:not(.no-results) {
-	background-color: #2D2D30;
-}
-
-.monaco-editor .settings-count-widget.show.no-results {
-	background-color: rgba(255,0,0,0.5);
-}
-
-.monaco-editor .settings-count-widget.show.no-results {
-	background-color: rgba(255,0,0,0.3);
 }
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
@@ -9725,6 +9917,101 @@ a:active {
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
+.monaco-workbench > .activitybar > .content .monaco-action-bar .action-label.scm {
+	background-image: url("data:image/svg+xml,%3C?xml version='1.0' encoding='UTF-8'?%3E %3Csvg width='13px' height='16px' viewBox='0 0 13 16' version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink'%3E %3C!-- Generator: Sketch 40.3 (33839) - http://www.bohemiancoding.com/sketch --%3E %3Ctitle%3Ediff%3C/title%3E %3Cdesc%3ECreated with Sketch.%3C/desc%3E %3Cdefs%3E%3C/defs%3E %3Cg id='Octicons' stroke='none' stroke-width='1' fill='none' fill-rule='evenodd'%3E %3Cg id='diff' fill='%23fff'%3E %3Cpath d='M6,7 L8,7 L8,8 L6,8 L6,10 L5,10 L5,8 L3,8 L3,7 L5,7 L5,5 L6,5 L6,7 L6,7 Z M3,13 L8,13 L8,12 L3,12 L3,13 L3,13 Z M7.5,2 L11,5.5 L11,15 C11,15.55 10.55,16 10,16 L1,16 C0.45,16 0,15.55 0,15 L0,3 C0,2.45 0.45,2 1,2 L7.5,2 L7.5,2 Z M10,6 L7,3 L1,3 L1,15 L10,15 L10,6 L10,6 Z M8.5,0 L3,0 L3,1 L8,1 L12,5 L12,13 L13,13 L13,4.5 L8.5,0 L8.5,0 Z' id='Shape'%3E%3C/path%3E %3C/g%3E %3C/g%3E %3C/svg%3E");
+	background-size: 20px;
+	background-position: center;
+}
+
+.scm-viewlet > .scm-commit-box {
+	padding: 5px 9px 5px 16px;
+}
+
+.scm-viewlet > .scm-commit-box > .monaco-inputbox > .wrapper > .mirror {
+	max-height: 134px;
+}
+
+.scm-viewlet > .scm-commit-box.scroll > .monaco-inputbox > .wrapper > textarea.input {
+	overflow-y: scroll;
+}
+
+.scm-viewlet .monaco-list-row {
+	padding: 0 12px 0 20px;
+	line-height: 22px;
+}
+
+.scm-viewlet .monaco-list-row > .resource-group {
+	display: flex;
+	height: 100%;
+}
+
+.scm-viewlet .monaco-list-row > .resource-group > .name {
+	flex: 1;
+	font-size: 11px;
+	font-weight: bold;
+	text-transform: uppercase;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.scm-viewlet .monaco-list-row > .resource-group:not(:hover) > .actions {
+	display: none;
+}
+
+.scm-viewlet .monaco-list-row > .resource {
+	display: flex;
+	height: 100%;
+}
+
+.scm-viewlet .monaco-list-row > .resource > .name {
+	flex: 1;
+	overflow: hidden;
+}
+
+.scm-viewlet .monaco-list-row > .resource > .name > .monaco-icon-label {
+	width: 100%;
+	height: 100%;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.scm-viewlet .monaco-list-row > .resource > .name.strike-through > .monaco-icon-label > .label-name {
+	text-decoration: line-through;
+}
+
+.scm-viewlet .monaco-list-row > .resource > .decoration-icon {
+	width: 16px;
+	height: 100%;
+	background-repeat: no-repeat;
+	background-position: 50% 50%;
+}
+
+.scm-viewlet .monaco-list-row > .resource > .actions .action-label,
+.scm-viewlet .monaco-list-row > .resource-group > .actions .action-label {
+	width: 16px;
+	height: 100%;
+	background-position: 50% 50%;
+	background-repeat: no-repeat;
+}
+
+.scm-viewlet .monaco-list-row:not(.selected) > .resource:not(:hover) > .actions {
+	display: none;
+}
+
+/* HACK */
+.action-label.scm-commit {
+	background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16'%3E%3Cpolygon points='5.382,13 2.382,7 6.618,7 7,7.764 9.382,3 13.618,3 8.618,13' fill='%23F6F6F6'/%3E%3Cpath d='M12 4l-4 8h-2l-2-4h2l1 2 3-6h2z' fill='%23424242'/%3E%3C/svg%3E");
+}
+
+.vs-dark .action-label.scm-commit {
+	background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='-2 -2 16 16' enable-background='new -2 -2 16 16'%3E%3Cpolygon fill='%23C5C5C5' points='9,0 4.5,9 3,6 0,6 3,12 6,12 12,0'/%3E%3C/svg%3E");
+}
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
 /* Activity Bar */
 .monaco-workbench > .activitybar .monaco-action-bar .action-label.search {
 	background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32'%3E%3Cpath d='M19.23 4.095c-4.842 0-8.769 3.928-8.769 8.771 0 1.781.539 3.43 1.449 4.815 0 0-5.482 5.455-7.102 7.102-1.621 1.646 1.001 4.071 2.602 2.409 1.602-1.659 7.006-7.005 7.006-7.005 1.384.911 3.035 1.45 4.814 1.45 4.845 0 8.772-3.93 8.772-8.771.001-4.844-3.927-8.771-8.772-8.771zm0 15.035c-3.459 0-6.265-2.804-6.265-6.264 0-3.46 2.805-6.265 6.265-6.265 3.462 0 6.266 2.804 6.266 6.265 0 3.46-2.804 6.264-6.266 6.264z' fill='%23fff'/%3E%3C/svg%3E");
@@ -9761,6 +10048,7 @@ a:active {
 	margin-left: 17px;
 }
 
+.search-viewlet .search-widget .input-box,
 .search-viewlet .search-widget .input-box .monaco-inputbox {
 	height: 25px;
 }
@@ -9773,18 +10061,14 @@ a:active {
 .search-viewlet .search-widget .replace-container {
 	margin-top: 6px;
 	position: relative;
+	display: inline-flex;
 }
 
 .search-viewlet .search-widget .replace-container.disabled {
 	display: none;
 }
 
-.search-viewlet .search-widget .replace-container > * {
-	display: inline-block;
-}
-
 .search-viewlet .search-widget .replace-container .monaco-action-bar {
-	position: absolute;
 	margin-left: 3px;
 }
 
@@ -9881,6 +10165,10 @@ a:active {
 	padding-left: 22px;
 	padding-right: 22px;
 	padding-top: 2px;
+}
+
+.search-viewlet .message p:first-child {
+	margin-top: 0;
 }
 
 .search-viewlet .filematch {
@@ -10268,6 +10556,14 @@ a:active {
 	height: 100%;
 }
 
+.monaco-workbench .panel.integrated-terminal .xterm-viewport {
+	/* Align the viewport to the bottom of the panel, just like the terminal */
+	position: absolute;
+	right: -20px;
+	bottom: 0;
+	left: 0;
+}
+
 /* Terminal actions */
 
 /* Light theme */
@@ -10309,6 +10605,7 @@ a:active {
 .hc-black .monaco-workbench .panel.integrated-terminal .xterm.focus,
 .hc-black .monaco-workbench .panel.integrated-terminal .xterm:focus {
 	outline: 2px solid #f38518;
+	outline-offset: -2px;
 }
 
 .monaco-workbench .panel.integrated-terminal .xterm .xterm-helpers {
@@ -10335,19 +10632,19 @@ a:active {
 	opacity: 0 !important;
 }
 
-.monaco-workbench .panel.integrated-terminal .xterm.focus .reverse-video,
-.monaco-workbench .panel.integrated-terminal .xterm:focus .reverse-video { color: #CCC; }
-.vs-dark .monaco-workbench .panel.integrated-terminal .xterm.focus .reverse-video,
-.vs-dark .monaco-workbench .panel.integrated-terminal .xterm:focus .reverse-video { color: #1e1e1e; }
-.hc-black .monaco-workbench .panel.integrated-terminal .xterm.focus .reverse-video,
-.hc-black .monaco-workbench .panel.integrated-terminal .xterm:focus .reverse-video { color: #000; }
+.monaco-workbench .panel.integrated-terminal .xterm:not(.xterm-cursor-style-underline):not(.xterm-cursor-style-bar).focus .reverse-video,
+.monaco-workbench .panel.integrated-terminal .xterm:not(.xterm-cursor-style-underline):not(.xterm-cursor-style-bar):focus .reverse-video { color: #CCC; }
+.vs-dark .monaco-workbench .panel.integrated-terminal .xterm:not(.xterm-cursor-style-underline):not(.xterm-cursor-style-bar).focus .reverse-video,
+.vs-dark .monaco-workbench .panel.integrated-terminal .xterm:not(.xterm-cursor-style-underline):not(.xterm-cursor-style-bar):focus .reverse-video { color: #1e1e1e; }
+.hc-black .monaco-workbench .panel.integrated-terminal .xterm:not(.xterm-cursor-style-underline):not(.xterm-cursor-style-bar).focus .reverse-video,
+.hc-black .monaco-workbench .panel.integrated-terminal .xterm:not(.xterm-cursor-style-underline):not(.xterm-cursor-style-bar):focus .reverse-video { color: #000; }
 
-.monaco-workbench .panel.integrated-terminal .xterm.focus .terminal-cursor,
-.monaco-workbench .panel.integrated-terminal .xterm:focus .terminal-cursor { background-color: #333; }
-.vs-dark .monaco-workbench .panel.integrated-terminal .xterm.focus .terminal-cursor,
-.vs-dark .monaco-workbench .panel.integrated-terminal .xterm:focus .terminal-cursor { background-color: #CCC; }
-.hc-black .monaco-workbench .panel.integrated-terminal .xterm.focus .terminal-cursor,
-.hc-black .monaco-workbench .panel.integrated-terminal .xterm:focus .terminal-cursor { background-color: #FFF; }
+.monaco-workbench .panel.integrated-terminal .xterm:not(.xterm-cursor-style-underline):not(.xterm-cursor-style-bar).focus .terminal-cursor,
+.monaco-workbench .panel.integrated-terminal .xterm:not(.xterm-cursor-style-underline):not(.xterm-cursor-style-bar):focus .terminal-cursor { background-color: #333; }
+.vs-dark .monaco-workbench .panel.integrated-terminal .xterm:not(.xterm-cursor-style-underline):not(.xterm-cursor-style-bar).focus .terminal-cursor,
+.vs-dark .monaco-workbench .panel.integrated-terminal .xterm:not(.xterm-cursor-style-underline):not(.xterm-cursor-style-bar):focus .terminal-cursor { background-color: #CCC; }
+.hc-black .monaco-workbench .panel.integrated-terminal .xterm:not(.xterm-cursor-style-underline):not(.xterm-cursor-style-bar).focus .terminal-cursor,
+.hc-black .monaco-workbench .panel.integrated-terminal .xterm:not(.xterm-cursor-style-underline):not(.xterm-cursor-style-bar):focus .terminal-cursor { background-color: #FFF; }
 
 .monaco-workbench .panel.integrated-terminal .xterm:not(.focus):not(:focus) .terminal-cursor {
 	background-color: transparent;
@@ -10365,14 +10662,14 @@ a:active {
 	outline-offset: -1px;
 }
 
-.monaco-workbench .panel.integrated-terminal .xterm.focus .terminal-cursor.blinking,
-.monaco-workbench .panel.integrated-terminal .xterm:focus .terminal-cursor.blinking { animation: blink-cursor 1.2s infinite step-end; }
-.vs-dark .monaco-workbench .panel.integrated-terminal .xterm.focus .terminal-cursor.blinking,
-.vs-dark .monaco-workbench .panel.integrated-terminal .xterm:focus .terminal-cursor.blinking { animation: blink-cursor-dark 1.2s infinite step-end; }
-.hc-black .monaco-workbench .panel.integrated-terminal .xterm.focus .terminal-cursor.blinking,
-.hc-black .monaco-workbench .panel.integrated-terminal .xterm:focus .terminal-cursor.blinking { animation: blink-cursor-hc-black 1.2s infinite step-end; }
+.monaco-workbench .panel.integrated-terminal .xterm.xterm-cursor-blink:not(.xterm-cursor-style-underline):not(.xterm-cursor-style-bar).focus .terminal-cursor,
+.monaco-workbench .panel.integrated-terminal .xterm.xterm-cursor-blink:not(.xterm-cursor-style-underline):not(.xterm-cursor-style-bar):focus .terminal-cursor { animation: cursor-blink 1.2s infinite step-end; }
+.vs-dark .monaco-workbench .panel.integrated-terminal .xterm.xterm-cursor-blink:not(.xterm-cursor-style-underline):not(.xterm-cursor-style-bar).focus .terminal-cursor,
+.vs-dark .monaco-workbench .panel.integrated-terminal .xterm.xterm-cursor-blink:not(.xterm-cursor-style-underline):not(.xterm-cursor-style-bar):focus .terminal-cursor { animation: cursor-blink-dark 1.2s infinite step-end; }
+.hc-black .monaco-workbench .panel.integrated-terminal .xterm.xterm-cursor-blink:not(.xterm-cursor-style-underline):not(.xterm-cursor-style-bar).focus .terminal-cursor,
+.hc-black .monaco-workbench .panel.integrated-terminal .xterm.xterm-cursor-blink:not(.xterm-cursor-style-underline):not(.xterm-cursor-style-bar):focus .terminal-cursor { animation: cursor-blink-hc-black 1.2s infinite step-end; }
 
-@keyframes blink-cursor {
+@keyframes cursor-blink {
 	0% {
 		background-color: #333;
 		color: #CCC;
@@ -10383,7 +10680,7 @@ a:active {
 	}
 }
 
-@keyframes blink-cursor-dark {
+@keyframes cursor-blink-dark {
 	0% {
 		background-color: #CCC;
 		color: #1e1e1e;
@@ -10394,7 +10691,7 @@ a:active {
 	}
 }
 
-@keyframes blink-cursor-hc-black {
+@keyframes cursor-blink-hc-black {
 	0% {
 		background-color: #fff;
 		color: #000;
@@ -10405,8 +10702,68 @@ a:active {
 	}
 }
 
+.monaco-workbench .panel.integrated-terminal .xterm.xterm-cursor-style-bar .terminal-cursor,
+.monaco-workbench .panel.integrated-terminal .xterm.xterm-cursor-style-underline .terminal-cursor {
+	position: relative;
+}
+.monaco-workbench .panel.integrated-terminal .xterm.xterm-cursor-style-bar .terminal-cursor::before,
+.monaco-workbench .panel.integrated-terminal .xterm.xterm-cursor-style-underline .terminal-cursor::before {
+	content: "";
+	display: block;
+	position: absolute;
+	background-color: #333;
+}
+.vs-dark .monaco-workbench .panel.integrated-terminal .xterm.xterm-cursor-style-bar .terminal-cursor::before,
+.vs-dark .monaco-workbench .panel.integrated-terminal .xterm.xterm-cursor-style-underline .terminal-cursor::before {
+	background-color: #CCC;
+}
+.hc-black .monaco-workbench .panel.integrated-terminal .xterm.xterm-cursor-style-bar .terminal-cursor::before,
+.hc-black .monaco-workbench .panel.integrated-terminal .xterm.xterm-cursor-style-underline .terminal-cursor::before {
+	background-color: #fff;
+}
+.monaco-workbench .panel.integrated-terminal .xterm.xterm-cursor-style-bar .terminal-cursor::before {
+	top: 0;
+	bottom: 0;
+	left: 0;
+	width: 1px;
+}
+.monaco-workbench .panel.integrated-terminal .xterm.xterm-cursor-style-underline .terminal-cursor::before {
+	bottom: 0;
+	left: 0;
+	right: 0;
+	height: 1px;
+}
+.monaco-workbench .panel.integrated-terminal .xterm.xterm-cursor-style-bar.focus.xterm-cursor-blink .terminal-cursor::before,
+.monaco-workbench .panel.integrated-terminal .xterm.xterm-cursor-style-underline.focus.xterm-cursor-blink .terminal-cursor::before {
+	animation: xterm-cursor-non-bar-blink 1.2s infinite step-end;
+}
+.vs-dark .monaco-workbench .panel.integrated-terminal .xterm.xterm-cursor-style-bar.focus.xterm-cursor-blink .terminal-cursor::before,
+.vs-dark .monaco-workbench .panel.integrated-terminal .xterm.xterm-cursor-style-underline.focus.xterm-cursor-blink .terminal-cursor::before {
+	animation: xterm-cursor-non-bar-blink-dark 1.2s infinite step-end;
+}
+.hc-black .monaco-workbench .panel.integrated-terminal .xterm.xterm-cursor-style-bar.focus.xterm-cursor-blink .terminal-cursor::before,
+.hc-black .monaco-workbench .panel.integrated-terminal .xterm.xterm-cursor-style-underline.focus.xterm-cursor-blink .terminal-cursor::before {
+	animation: xterm-cursor-non-bar-blink-hc-black 1.2s infinite step-end;
+}
+@keyframes xterm-cursor-non-bar-blink {
+	0% { background-color: #333; }
+	50% { background-color: transparent; }
+}
+@keyframes xterm-cursor-non-bar-blink-dark {
+	0% { background-color: #ccc; }
+	50% { background-color: transparent; }
+}
+@keyframes xterm-cursor-non-bar-blink-hc-black {
+	0% { background-color: #fff; }
+	50% { background-color: transparent; }
+}
+
 .monaco-workbench .panel.integrated-terminal .xterm .xterm-viewport {
 	overflow-y: scroll;
+}
+
+.terminal .xterm-wide-char {
+	display: inline-block;
 }
 
 .monaco-workbench .panel.integrated-terminal .xterm .xterm-rows {
@@ -10464,17 +10821,17 @@ a:active {
 
 /* Base selection colors */
 
-.monaco-workbench .panel.integrated-terminal .xterm *::selection {
+.monaco-workbench .panel.integrated-terminal .xterm ::selection {
 	color: #FFF;
 	background-color: rgba(51, 51, 51, 0.996);
 }
 
-.vs-dark .monaco-workbench .panel.integrated-terminal .xterm *::selection {
+.vs-dark .monaco-workbench .panel.integrated-terminal .xterm ::selection {
 	color: #1e1e1e;
 	background-color: rgba(204, 204, 204, 0.996);
 }
 
-.hc-black .monaco-workbench .panel.integrated-terminal .xterm *::selection {
+.hc-black .monaco-workbench .panel.integrated-terminal .xterm ::selection {
 	color: #000;
 	background-color: rgba(255, 255, 255, 0.996);
 }
@@ -12406,6 +12763,181 @@ a:active {
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
+.monaco-workbench > .part.editor > .content .walkThroughContent {
+	box-sizing: border-box;
+	padding: 10px 20px;
+	line-height: 22px;
+	user-select: initial;
+	-webkit-user-select: initial;
+}
+
+.monaco-workbench > .part.editor > .content .walkThroughContent img {
+	max-width: 100%;
+	max-height: 100%;
+}
+
+.monaco-workbench > .part.editor > .content .walkThroughContent a {
+	color: #4080D0;
+	text-decoration: none;
+}
+
+.monaco-workbench > .part.editor > .content .walkThroughContent a:focus,
+.monaco-workbench > .part.editor > .content .walkThroughContent input:focus,
+.monaco-workbench > .part.editor > .content .walkThroughContent select:focus,
+.monaco-workbench > .part.editor > .content .walkThroughContent textarea:focus {
+	outline: 1px solid -webkit-focus-ring-color;
+	outline-offset: -1px;
+}
+
+.monaco-workbench > .part.editor > .content .walkThroughContent hr {
+	border: 0;
+	height: 2px;
+	border-bottom: 2px solid;
+}
+
+.monaco-workbench > .part.editor > .content .walkThroughContent h1, h2, h3 {
+	font-weight: lighter;
+	margin-top: 20px;
+	margin-bottom: 10px;
+}
+
+.monaco-workbench > .part.editor > .content .walkThroughContent h1 {
+	padding-bottom: 0.3em;
+	line-height: 1.2;
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+	font-size: 40px;
+	margin-bottom: 15px;
+}
+
+.monaco-workbench > .part.editor > .content .walkThroughContent h2 {
+	font-size: 30px;
+	margin-top: 30px;
+}
+
+.monaco-workbench > .part.editor > .content .walkThroughContent h3 {
+	font-size: 22px;
+}
+
+.monaco-workbench > .part.editor > .content .walkThroughContent h4 {
+	font-size: 12px;
+	text-transform: uppercase;
+	margin-top: 30px;
+	margin-bottom: 10px;
+}
+
+.monaco-workbench > .part.editor > .content .walkThroughContent a:hover {
+	color: #4080D0;
+	text-decoration: underline;
+}
+
+.monaco-workbench > .part.editor > .content .walkThroughContent table {
+	border-collapse: collapse;
+}
+
+.monaco-workbench > .part.editor > .content .walkThroughContent table > thead > tr > th {
+	text-align: left;
+	border-bottom: 1px solid;
+}
+
+.monaco-workbench > .part.editor > .content .walkThroughContent table > thead > tr > th,
+.monaco-workbench > .part.editor > .content .walkThroughContent table > thead > tr > td,
+.monaco-workbench > .part.editor > .content .walkThroughContent table > tbody > tr > th,
+.monaco-workbench > .part.editor > .content .walkThroughContent table > tbody > tr > td {
+	padding: 5px 10px;
+}
+
+.monaco-workbench > .part.editor > .content .walkThroughContent table > tbody > tr + tr > td {
+	border-top: 1px solid;
+}
+
+.monaco-workbench > .part.editor > .content .walkThroughContent blockquote {
+	margin: 0 7px 0 5px;
+	padding: 0 16px 0 10px;
+	border-left: 5px solid;
+}
+
+.monaco-workbench > .part.editor > .content .walkThroughContent code,
+.monaco-workbench > .part.editor > .content .walkThroughContent .shortcut {
+	font-family: Menlo, Monaco, Consolas, "Droid Sans Mono", "Courier New", monospace, "Droid Sans Fallback";
+	font-size: 14px;
+	line-height: 19px;
+}
+
+/*.monaco-workbench.mac > .part.editor > .content .walkThroughContent code,
+.monaco-workbench.mac > .part.editor > .content .walkThroughContent .shortcut {
+	font-size: 12px;
+	line-height: 18px;
+}*/
+
+.vs .monaco-workbench > .part.editor > .content .walkThroughContent code,
+.vs .monaco-workbench > .part.editor > .content .walkThroughContent .shortcut {
+	color: #A31515;
+}
+
+.vs-dark .monaco-workbench > .part.editor > .content .walkThroughContent code,
+.vs-dark .monaco-workbench > .part.editor > .content .walkThroughContent .shortcut {
+	color: #D7BA7D;
+}
+
+.monaco-workbench > .part.editor > .content .walkThroughContent blockquote {
+	margin: 0 7px 0 5px;
+	padding: 0 16px 0 10px;
+	border-left: 5px solid;
+}
+.vs .monaco-workbench > .part.editor > .content .walkThroughContent blockquote,
+.vs-dark .monaco-workbench > .part.editor > .content .walkThroughContent blockquote {
+	background: rgba(127, 127, 127, 0.1);
+	border-color: rgba(0, 122, 204, 0.5);
+}
+.hc-black .monaco-workbench > .part.editor > .content .walkThroughContent blockquote {
+	background: transparent;
+	border-color: #fff;
+}
+
+.monaco-workbench > .part.editor > .content .walkThroughContent .monaco-tokenized-source {
+	white-space: pre;
+}
+
+.file-icons-enabled .show-file-icons .vs_code_editor_walkthrough\.md-name-file-icon.md-ext-file-icon.markdown-lang-file-icon.file-icon::before {
+	content: ' ';
+	background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cstyle%3E.icon-canvas-transparent{opacity:0;fill:%23f6f6f6}.icon-vs-out{fill:%23f6f6f6}.icon-vs-bg{fill:%23424242}.icon-vs-fg{fill:%23f0eff1}%3C/style%3E%3Cpath class='icon-canvas-transparent' d='M16 16H0V0h16v16z' id='canvas'/%3E%3Cpath class='icon-vs-out' d='M15 16H2V0h8.621L15 4.379V16z' id='outline'/%3E%3Cpath class='icon-vs-fg' d='M13 14H4V2h5v4h4v8zm-3-9V2.207L12.793 5H10z' id='iconFg'/%3E%3Cpath class='icon-vs-bg' d='M3 1v14h11V4.793L10.207 1H3zm10 13H4V2h5v4h4v8zm-3-9V2.207L12.793 5H10z' id='iconBg'/%3E%3C/svg%3E");
+}
+
+.monaco-workbench > .part.editor > .content .walkThroughContent .mac-only,
+.monaco-workbench > .part.editor > .content .walkThroughContent .windows-only,
+.monaco-workbench > .part.editor > .content .walkThroughContent .linux-only {
+	display: none;
+}
+.monaco-workbench.mac > .part.editor > .content .walkThroughContent .mac-only {
+	display: initial;
+}
+.monaco-workbench.windows > .part.editor > .content .walkThroughContent .windows-only {
+	display: initial;
+}
+.monaco-workbench.linux > .part.editor > .content .walkThroughContent .linux-only {
+	display: initial;
+}
+
+.vs .monaco-workbench > .part.editor > .content .walkThroughContent .monaco-editor-background,
+.vs .monaco-workbench > .part.editor > .content .walkThroughContent .glyph-margin {
+	background-color: #eee;
+}
+
+.vs-dark .monaco-workbench > .part.editor > .content .walkThroughContent .monaco-editor-background,
+.vs-dark .monaco-workbench > .part.editor > .content .walkThroughContent .glyph-margin {
+	background-color: #111;
+}
+
+.hc-black .monaco-workbench > .part.editor > .content .walkThroughContent .monaco-editor {
+	border: 1px white solid
+}
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
 .monaco-workbench .part.editor.empty {
 	background-position-y: calc(50% - 100px);
 }
@@ -12502,6 +13034,453 @@ a:active {
 	opacity: 1;
 }
 
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+.monaco-workbench > .welcomeOverlay {
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	height: 100%;
+	width: 100%;
+	z-index: 9999;
+	background: rgba(0,0,0,0.52);
+	font-size: 10px;
+	transition: font-size .25s;
+}
+
+.vs .monaco-workbench > .welcomeOverlay {
+	background: rgba(255,255,255,.52);
+}
+
+#workbench\.parts\.editor {
+	transition: filter .25s, opacity .2s;
+}
+
+#workbench\.parts\.editor.blur-background {
+	filter: blur(3px);
+	opacity: .28;
+}
+
+.hc-black #workbench\.parts\.editor.blur-background {
+	opacity: .2;
+}
+
+.monaco-workbench > .welcomeOverlay > .key {
+	font-size: 1.6em;
+}
+
+.monaco-workbench > .welcomeOverlay > .key {
+	color: #000;
+}
+
+.vs-dark .monaco-workbench > .welcomeOverlay > .key,
+.hc-black .monaco-workbench > .welcomeOverlay > .key {
+	color: #FFF;
+}
+
+.monaco-workbench > .welcomeOverlay > .key > .label {
+	padding: 0 1ex;
+}
+
+.monaco-workbench > .welcomeOverlay > .key > .shortcut {
+	letter-spacing: 0.15em;
+	font-size: 0.8125em;
+	color: #d7ba7d;
+	font-family: "Lucida Grande", sans-serif;
+}
+
+.monaco-workbench > .welcomeOverlay > .key.explorer {
+	position: absolute;
+	top: 13px;
+	left: 60px;
+}
+
+.monaco-workbench > .welcomeOverlay > .key.search {
+	position: absolute;
+	top: 63px;
+	left: 60px;
+}
+
+.monaco-workbench > .welcomeOverlay > .key.git {
+	position: absolute;
+	top: 113px;
+	left: 60px;
+}
+
+.monaco-workbench > .welcomeOverlay > .key.debug {
+	position: absolute;
+	top: 163px;
+	left: 60px;
+}
+
+.monaco-workbench > .welcomeOverlay > .key.extensions {
+	position: absolute;
+	top: 213px;
+	left: 60px;
+}
+
+.monaco-workbench > .welcomeOverlay > .key.watermark {
+	position: absolute;
+	top: calc(50% + 30px);
+	left: calc(50% + 30px);
+}
+
+.monaco-workbench > .welcomeOverlay > .key.watermark > .label {
+	vertical-align: super;
+}
+
+@media (max-height: 500px) {
+	.monaco-workbench > .welcomeOverlay > .key.watermark {
+		display: none;
+	}
+}
+
+.monaco-workbench > .welcomeOverlay > .key.problems {
+	position: absolute;
+	bottom: 25px;
+	left: 45px;
+}
+
+.monaco-workbench > .welcomeOverlay > .key.problems > .label,
+.monaco-workbench > .welcomeOverlay > .key.problems > .shortcut {
+	vertical-align: super;
+}
+
+.monaco-workbench > .welcomeOverlay > .key.openfile {
+	position: absolute;
+	bottom: 25px;
+	right: 45px;
+}
+
+.monaco-workbench > .welcomeOverlay > .key.openfile > .label {
+	vertical-align: super;
+}
+
+.monaco-workbench > .welcomeOverlay > .key.commandPalette {
+	position: absolute;
+	top: 210px;
+	left: calc(50% - 52px);
+	transition: top .25s, left .25s;
+}
+
+.monaco-workbench > .welcomeOverlay > .key.commandPalette > .label {
+	vertical-align: sub;
+}
+
+.monaco-workbench > .welcomeOverlay > .key.commandPalette > .shortcut {
+	padding-left: 0.5em;
+	vertical-align: sub;
+}
+
+.monaco-workbench > .welcomeOverlay > .commandPalettePlaceholder {
+	position: absolute;
+	top: 2px;
+	left: calc(50% - 193px);
+	width: 386px;
+	height: 197px;
+	background-image: url(../parts/welcomeOverlay/browser/media/commandpalette.svg);
+	background-repeat: no-repeat;
+	background-size: 100%;
+}
+
+.vs-dark .monaco-workbench > .welcomeOverlay > .commandPalettePlaceholder,
+.hc-black .monaco-workbench > .welcomeOverlay > .commandPalettePlaceholder {
+	background-image: url(../parts/welcomeOverlay/browser/media/commandpalette-dark.svg);
+}
+@media screen and (max-width: 880px) {
+	.monaco-workbench > .welcomeOverlay {
+		font-size: 8px;
+	}
+	.monaco-workbench > .welcomeOverlay > .commandPalettePlaceholder {
+		display: none;
+	}
+	.monaco-workbench > .welcomeOverlay > .key.commandPalette {
+		top: 10px;
+		left: 50%;
+	}
+}
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+.monaco-workbench > .part.editor > .content .welcomePageContainer {
+	align-items: center;
+	display: flex;
+	justify-content: center;
+	min-width: 100%;
+	min-height: 100%;
+}
+
+.monaco-workbench > .part.editor > .content .welcomePage {
+	width: 90%;
+	max-width: 1200px;
+	font-size: 10px;
+}
+.vs .monaco-workbench > .part.editor > .content .welcomePage {
+	color: #6C6C6C;
+}
+
+.monaco-workbench > .part.editor > .content .welcomePage .row {
+	display: flex;
+	flex-flow: row;
+}
+
+.monaco-workbench > .part.editor > .content .welcomePage .row * {
+	min-width: 0;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	overflow: hidden;
+}
+
+.monaco-workbench > .part.editor > .content .welcomePage p {
+	font-size: 1.3em;
+}
+
+.monaco-workbench > .part.editor > .content .welcomePage .keyboard {
+	font-family: "Lucida Grande", sans-serif;/* Keyboard shortcuts */
+}
+
+.monaco-workbench > .part.editor > .content .welcomePage a {
+	color: #2e70c0;
+	text-decoration: none;
+}
+
+.vs-dark .monaco-workbench > .part.editor > .content .welcomePage a {
+	color: #4080D0;
+}
+
+.monaco-workbench > .part.editor > .content .welcomePage a:focus {
+	outline: 1px solid -webkit-focus-ring-color;
+	outline-offset: -1px;
+}
+
+.monaco-workbench > .part.editor > .content .welcomePage a:hover {
+	color: #6ea0dc;
+}
+
+.hc-black .monaco-workbench > .part.editor > .content .welcomePage a {
+	color: #0b9eff;
+}
+
+.hc-black .monaco-workbench > .part.editor > .content .welcomePage a:hover {
+	color: #f38518;
+}
+
+.monaco-workbench > .part.editor > .content .welcomePage h1 {
+	padding: 0;
+	margin: 0;
+	border: none;
+	/*font-family: -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI Light", "HelveticaNeue-Light", "Ubuntu", "Droid Sans", sans-serif;*/
+	font-weight: normal;
+	color: rgba(0,0,0,.8);
+	font-size: 3.6em;
+}
+
+.vs-dark .monaco-workbench > .part.editor > .content .welcomePage h1 {
+	color: rgba(255,255,255,.76);
+}
+
+.hc-black .monaco-workbench > .part.editor > .content .welcomePage h1 {
+	color: white;
+}
+
+.monaco-workbench > .part.editor > .content .welcomePage .title {
+	margin-top: 1em;
+	margin-bottom: 1em;
+	flex: 1 100%;
+}
+.monaco-workbench > .part.editor > .content .welcomePage .subtitle {
+	margin-top: .8em;
+	font-size: 2.6em;
+	color: rgba(0,0,0,.53);
+	display: block;
+}
+.vs-dark .monaco-workbench > .part.editor > .content .welcomePage .subtitle {
+	color: rgba(255,255,255,.46);
+}
+
+.hc-black .monaco-workbench > .part.editor > .content .welcomePage .subtitle {
+	color: white;
+	font-weight: 200;
+}
+
+.monaco-workbench > .part.editor > .content .welcomePage .splash,
+.monaco-workbench > .part.editor > .content .welcomePage .commands {
+	flex: 1 1 0;
+}
+
+.monaco-workbench > .part.editor > .content .welcomePage h2 {
+	font-weight: 200;
+	margin-top: 17px;
+	margin-bottom: 5px;
+	font-size: 1.9em;
+	line-height: initial;
+}
+
+.monaco-workbench > .part.editor > .content .welcomePage .splash .section {
+	margin-bottom: 5em;
+}
+
+.monaco-workbench > .part.editor > .content .welcomePage .splash ul {
+	margin: 0;
+	font-size: 1.3em;
+	list-style: none;
+	padding: 0;
+}
+
+.monaco-workbench > .part.editor > .content .welcomePage.emptyRecent .splash .recent .list {
+	display: none;
+}
+.monaco-workbench > .part.editor > .content .welcomePage .splash .recent .none {
+	display: none;
+}
+.monaco-workbench > .part.editor > .content .welcomePage.emptyRecent .splash .recent .none {
+	display: initial;
+}
+
+.monaco-workbench > .part.editor > .content .welcomePage .splash .recent li {
+	min-width: 0;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+.monaco-workbench > .part.editor > .content .welcomePage .splash .recent .path {
+	padding-left: 1em;
+	color: rgba(255,255,255,.46);
+}
+
+.monaco-workbench > .part.editor > .content .welcomePage .splash .recent .none,
+.monaco-workbench > .part.editor > .content .welcomePage .splash .recent .path {
+	color: rgba(0,0,0,.53);
+}
+
+.vs-dark .monaco-workbench > .part.editor > .content .welcomePage .splash .recent .none,
+.vs-dark .monaco-workbench > .part.editor > .content .welcomePage .splash .recent .path {
+	color: rgba(255,255,255,.46);
+}
+
+.hc-black .monaco-workbench > .part.editor > .content .welcomePage .splash .recent .none,
+.hc-black .monaco-workbench > .part.editor > .content .welcomePage .splash .recent .path {
+	color: white;
+}
+
+.monaco-workbench > .part.editor > .content .welcomePage .splash .title,
+.monaco-workbench > .part.editor > .content .welcomePage .splash .showOnStartup {
+	white-space: nowrap;
+}
+
+.monaco-workbench > .part.editor > .content .welcomePage .splash .showOnStartup input[type=checkbox] {
+	vertical-align: bottom;
+}
+
+.monaco-workbench > .part.editor > .content .welcomePage .commands ul {
+	list-style: none;
+	padding: 0;
+}
+.monaco-workbench > .part.editor > .content .welcomePage .commands li {
+	margin: 7px 0px;
+}
+.monaco-workbench > .part.editor > .content .welcomePage .commands li button {
+	margin: 0;
+	padding: 12px 10px;
+	width: 100%;
+	height: 5em;
+	font-size: 1.3em;
+	text-align: left;
+	outline: none;
+	cursor: pointer;
+	white-space: nowrap;
+}
+
+.monaco-workbench > .part.editor > .content .welcomePage .commands li button > span {
+	display: inline-block;
+	width:100%;
+}
+
+.monaco-workbench > .part.editor > .content .welcomePage .commands li button h3 {
+	font-size: 1em;
+	margin: 0;
+	margin-bottom: .25em;
+}
+
+.vs .monaco-workbench > .part.editor > .content .welcomePage .commands li button h3 {
+	color: #2c2c2c;
+}
+
+.monaco-workbench > .part.editor > .content .welcomePage .commands li button {
+	color: #6c6c6c;
+	background:rgba(0,0,0,.04);
+	border: none;
+}
+.monaco-workbench > .part.editor > .content .welcomePage .commands li button:hover {
+	background:rgba(0,0,0,.10);
+}
+
+.vs-dark .monaco-workbench > .part.editor > .content .welcomePage .commands li button > h3 {
+	color: #ccc;
+}
+
+.hc-black .monaco-workbench > .part.editor > .content .welcomePage .commands li button > h3 {
+	font-weight: bold;
+}
+
+.vs-dark .monaco-workbench > .part.editor > .content .welcomePage .commands li button {
+	color: #828282;
+	background: #191919;
+}
+
+.vs-dark .monaco-workbench > .part.editor > .content .welcomePage .commands li button:hover {
+	background: #2a2d2e;
+}
+
+.vs .monaco-workbench > .part.editor > .content .welcomePage .commands li button:focus {
+	outline: 1px solid rgba(0, 0, 0, .6);
+}
+
+.vs-dark .monaco-workbench > .part.editor > .content .welcomePage .commands li button:focus {
+	outline: 1px solid rgba(255, 255, 255, .5);
+}
+
+.hc-black .monaco-workbench > .part.editor > .content .welcomePage .commands li button {
+	color: white;
+	background: black;
+	border-color: #f38518;
+	border-width: 1px;
+	border-style: solid;
+}
+
+.hc-black .monaco-workbench > .part.editor > .content .welcomePage .commands li button:hover {
+	outline: 1px dashed #f38518;
+	outline-offset: -5px;
+}
+
+.monaco-workbench > .part.editor > .content .welcomePageContainer.max-height-685px .title {
+	display: none;
+}
+
+.file-icons-enabled .show-file-icons .vs_code_welcome_page\.html-name-file-icon.html-ext-file-icon.html-lang-file-icon.file-icon::before {
+	content: ' ';
+	background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cstyle%3E.icon-canvas-transparent{opacity:0;fill:%23f6f6f6}.icon-vs-out{fill:%23f6f6f6}.icon-vs-bg{fill:%23424242}.icon-vs-fg{fill:%23f0eff1}%3C/style%3E%3Cpath class='icon-canvas-transparent' d='M16 16H0V0h16v16z' id='canvas'/%3E%3Cpath class='icon-vs-out' d='M15 16H2V0h8.621L15 4.379V16z' id='outline'/%3E%3Cpath class='icon-vs-fg' d='M13 14H4V2h5v4h4v8zm-3-9V2.207L12.793 5H10z' id='iconFg'/%3E%3Cpath class='icon-vs-bg' d='M3 1v14h11V4.793L10.207 1H3zm10 13H4V2h5v4h4v8zm-3-9V2.207L12.793 5H10z' id='iconBg'/%3E%3C/svg%3E");
+}
+
+.monaco-workbench > .part.editor > .content .welcomePage .mac-only,
+.monaco-workbench > .part.editor > .content .welcomePage .windows-only,
+.monaco-workbench > .part.editor > .content .welcomePage .linux-only {
+	display: none;
+}
+.monaco-workbench.mac > .part.editor > .content .welcomePage .mac-only {
+	display: initial;
+}
+.monaco-workbench.windows > .part.editor > .content .welcomePage .windows-only {
+	display: initial;
+}
+.monaco-workbench.linux > .part.editor > .content .welcomePage .linux-only {
+	display: initial;
+}
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -12669,4 +13648,21 @@ a:active {
 
 .hc-black .global-message-list li.message-list-entry .actions-container .message-action .action-button {
 	border: 1px solid #6FC3DF;
+}
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+.monaco-workbench > .part.statusbar > .statusbar-item.progress {
+	background-image: url("data:image/svg+xml,%3C?xml version='1.0' standalone='no' ?%3E %3Csvg xmlns='http://www.w3.org/2000/svg' version='1.1' width='10px' height='10px'%3E %3Cstyle%3E circle { animation: ball 0.6s linear infinite; } circle:nth-child(2) { animation-delay: 0.075s; } circle:nth-child(3) { animation-delay: 0.15s; } circle:nth-child(4) { animation-delay: 0.225s; } circle:nth-child(5) { animation-delay: 0.3s; } circle:nth-child(6) { animation-delay: 0.375s; } circle:nth-child(7) { animation-delay: 0.45s; } circle:nth-child(8) { animation-delay: 0.525s; } @keyframes ball { from { opacity: 1; } to { opacity: 0.3; } } %3C/style%3E %3Cg style='fill:white;'%3E %3Ccircle cx='5' cy='1' r='1' style='opacity:0.3;' /%3E %3Ccircle cx='7.8284' cy='2.1716' r='1' style='opacity:0.3;' /%3E %3Ccircle cx='9' cy='5' r='1' style='opacity:0.3;' /%3E %3Ccircle cx='7.8284' cy='7.8284' r='1' style='opacity:0.3;' /%3E %3Ccircle cx='5' cy='9' r='1' style='opacity:0.3;' /%3E %3Ccircle cx='2.1716' cy='7.8284' r='1' style='opacity:0.3;' /%3E %3Ccircle cx='1' cy='5' r='1' style='opacity:0.3;' /%3E %3Ccircle cx='2.1716' cy='2.1716' r='1' style='opacity:0.3;' /%3E %3C/g%3E %3C/svg%3E ");
+	background-repeat: no-repeat;
+	background-position: left;
+	padding-left: 14px;
+}
+
+.monaco-workbench .progress-badge > .badge-content {
+	background-image: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNCIgaGVpZ2h0PSIxNCIgdmlld0JveD0iMiAyIDE0IDE0IiBlbmFibGUtYmFja2dyb3VuZD0ibmV3IDIgMiAxNCAxNCI+PHBhdGggZmlsbD0iI2ZmZiIgZD0iTTkgMTZjLTMuODYgMC03LTMuMTQtNy03czMuMTQtNyA3LTdjMy44NTkgMCA3IDMuMTQxIDcgN3MtMy4xNDEgNy03IDd6bTAtMTIuNmMtMy4wODggMC01LjYgMi41MTMtNS42IDUuNnMyLjUxMiA1LjYgNS42IDUuNiA1LjYtMi41MTIgNS42LTUuNi0yLjUxMi01LjYtNS42LTUuNnptMy44NiA3LjFsLTMuMTYtMS44OTZ2LTMuODA0aC0xLjR2NC41OTZsMy44NCAyLjMwNS43Mi0xLjIwMXoiLz48L3N2Zz4=);
+	background-position: center center;
+	background-repeat: no-repeat;
 }

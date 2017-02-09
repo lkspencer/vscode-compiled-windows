@@ -3,15 +3,15 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 'use strict';
-var path = require('path');
-var os = require('os');
-var net = require('net');
-var cp = require('child_process');
+const path = require("path");
+const os = require("os");
+const net = require("net");
+const cp = require("child_process");
 function makeRandomHexString(length) {
-    var chars = ['0', '1', '2', '3', '4', '5', '6', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'];
-    var result = '';
-    for (var i = 0; i < length; i++) {
-        var idx = Math.floor(chars.length * Math.random());
+    let chars = ['0', '1', '2', '3', '4', '5', '6', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'];
+    let result = '';
+    for (let i = 0; i < length; i++) {
+        let idx = Math.floor(chars.length * Math.random());
         result += chars[idx];
     }
     return result;
@@ -38,14 +38,14 @@ function generatePatchedEnv(env, stdInPipeName, stdOutPipeName, stdErrPipeName) 
 }
 function fork(modulePath, args, options, callback) {
     var callbackCalled = false;
-    var resolve = function (result) {
+    var resolve = (result) => {
         if (callbackCalled) {
             return;
         }
         callbackCalled = true;
         callback(null, result);
     };
-    var reject = function (err) {
+    var reject = (err) => {
         if (callbackCalled) {
             return;
         }
@@ -55,19 +55,19 @@ function fork(modulePath, args, options, callback) {
     // Generate three unique pipe names
     var stdInPipeName = generatePipeName();
     var stdOutPipeName = generatePipeName();
-    var stdErrPipeName = generatePipeName();
+    let stdErrPipeName = generatePipeName();
     var newEnv = generatePatchedEnv(options.env || process.env, stdInPipeName, stdOutPipeName, stdErrPipeName);
     var childProcess;
     // Begin listening to stderr pipe
-    var stdErrServer = net.createServer(function (stdErrStream) {
+    let stdErrServer = net.createServer((stdErrStream) => {
         // From now on the childProcess.stderr is available for reading
         childProcess.stderr = stdErrStream;
     });
     stdErrServer.listen(stdErrPipeName);
     // Begin listening to stdout pipe
-    var stdOutServer = net.createServer(function (stdOutStream) {
+    let stdOutServer = net.createServer((stdOutStream) => {
         // The child process will write exactly one chunk with content `ready` when it has installed a listener to the stdin pipe
-        stdOutStream.once('data', function (chunk) {
+        stdOutStream.once('data', (chunk) => {
             // The child process is sending me the `ready` chunk, time to connect to the stdin pipe
             childProcess.stdin = net.connect(stdInPipeName);
             // From now on the childProcess.stdout is available for reading
@@ -77,7 +77,7 @@ function fork(modulePath, args, options, callback) {
     });
     stdOutServer.listen(stdOutPipeName);
     var serverClosed = false;
-    var closeServer = function () {
+    var closeServer = () => {
         if (serverClosed) {
             return;
         }
@@ -86,21 +86,21 @@ function fork(modulePath, args, options, callback) {
         stdErrServer.close();
     };
     // Create the process
-    var bootstrapperPath = path.join(__dirname, 'electronForkStart');
+    let bootstrapperPath = path.join(__dirname, 'electronForkStart');
     childProcess = cp.fork(bootstrapperPath, [modulePath].concat(args), {
         silent: true,
         cwd: options.cwd,
         env: newEnv,
         execArgv: options.execArgv
     });
-    childProcess.once('error', function (err) {
+    childProcess.once('error', (err) => {
         closeServer();
         reject(err);
     });
-    childProcess.once('exit', function (err) {
+    childProcess.once('exit', (err) => {
         closeServer();
         reject(err);
     });
 }
 exports.fork = fork;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/38746938a4ab94f2f57d9e1309c51fd6fb37553d/extensions\typescript\out/utils\electron.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/f9d0c687ff2ea7aabd85fb9a43129117c0ecf519/extensions\typescript\out/utils\electron.js.map

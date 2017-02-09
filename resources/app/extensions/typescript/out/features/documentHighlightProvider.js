@@ -3,18 +3,17 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 'use strict';
-var vscode_1 = require('vscode');
-var TypeScriptDocumentHighlightProvider = (function () {
-    function TypeScriptDocumentHighlightProvider(client) {
+const vscode_1 = require("vscode");
+class TypeScriptDocumentHighlightProvider {
+    constructor(client) {
         this.client = client;
     }
-    TypeScriptDocumentHighlightProvider.prototype.provideDocumentHighlights = function (resource, position, token) {
-        var _this = this;
-        var filepath = this.client.asAbsolutePath(resource.uri);
+    provideDocumentHighlights(resource, position, token) {
+        const filepath = this.client.normalizePath(resource.uri);
         if (!filepath) {
             return Promise.resolve([]);
         }
-        var args = {
+        let args = {
             file: filepath,
             line: position.line + 1,
             offset: position.character + 1
@@ -22,32 +21,31 @@ var TypeScriptDocumentHighlightProvider = (function () {
         if (!args.file) {
             return Promise.resolve([]);
         }
-        return this.client.execute('occurrences', args, token).then(function (response) {
-            var data = response.body;
+        return this.client.execute('occurrences', args, token).then((response) => {
+            let data = response.body;
             if (data && data.length) {
                 // Workaround for https://github.com/Microsoft/TypeScript/issues/12780
                 // Don't highlight string occurrences
-                var firstOccurrence = data[0];
-                if (_this.client.apiVersion.has213Features() && firstOccurrence.start.offset > 1) {
+                const firstOccurrence = data[0];
+                if (this.client.apiVersion.has213Features() && firstOccurrence.start.offset > 1) {
                     // Check to see if contents around first occurrence are string delimiters
-                    var contents = resource.getText(new vscode_1.Range(firstOccurrence.start.line - 1, firstOccurrence.start.offset - 1 - 1, firstOccurrence.end.line - 1, firstOccurrence.end.offset - 1 + 1));
-                    var stringDelimiters = ['"', '\'', '`'];
+                    const contents = resource.getText(new vscode_1.Range(firstOccurrence.start.line - 1, firstOccurrence.start.offset - 1 - 1, firstOccurrence.end.line - 1, firstOccurrence.end.offset - 1 + 1));
+                    const stringDelimiters = ['"', '\'', '`'];
                     if (contents && contents.length > 2 && stringDelimiters.indexOf(contents[0]) >= 0 && contents[0] === contents[contents.length - 1]) {
                         return [];
                     }
                 }
-                return data.map(function (item) {
+                return data.map((item) => {
                     return new vscode_1.DocumentHighlight(new vscode_1.Range(item.start.line - 1, item.start.offset - 1, item.end.line - 1, item.end.offset - 1), item.isWriteAccess ? vscode_1.DocumentHighlightKind.Write : vscode_1.DocumentHighlightKind.Read);
                 });
             }
             return [];
-        }, function (err) {
-            _this.client.error("'occurrences' request failed with error.", err);
+        }, (err) => {
+            this.client.error(`'occurrences' request failed with error.`, err);
             return [];
         });
-    };
-    return TypeScriptDocumentHighlightProvider;
-}());
+    }
+}
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = TypeScriptDocumentHighlightProvider;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/38746938a4ab94f2f57d9e1309c51fd6fb37553d/extensions\typescript\out/features\documentHighlightProvider.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/f9d0c687ff2ea7aabd85fb9a43129117c0ecf519/extensions\typescript\out/features\documentHighlightProvider.js.map

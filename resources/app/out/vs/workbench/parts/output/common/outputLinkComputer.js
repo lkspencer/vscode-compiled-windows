@@ -2,7 +2,7 @@
  * Copyright (C) Microsoft Corporation. All rights reserved.
  *--------------------------------------------------------*/
 (function() {
-var __m = ["vs/base/common/arrays","require","exports","vs/base/common/paths","vs/base/common/platform","vs/workbench/parts/output/common/outputLinkComputer","vs/base/common/winjs.base","vs/base/common/uri","vs/base/common/strings","vs/editor/common/core/range"];
+var __m = ["vs/base/common/arrays","require","exports","vs/base/common/paths","vs/base/common/strings","vs/base/common/platform","vs/workbench/parts/output/common/outputLinkComputer","vs/base/common/winjs.base","vs/base/common/uri","vs/editor/common/core/range"];
 var __M = function(deps) {
   var result = [];
   for (var i = 0, len = deps.length; i < len; i++) {
@@ -26,20 +26,6 @@ define(__m[0/*vs/base/common/arrays*/], __M([1/*require*/,2/*exports*/]), functi
         return array[array.length - (1 + n)];
     }
     exports.tail = tail;
-    /**
-     * Iterates the provided array and allows to remove
-     * elements while iterating.
-     */
-    function forEach(array, callback) {
-        for (var i = 0, len = array.length; i < len; i++) {
-            callback(array[i], function () {
-                array.splice(i, 1);
-                i--;
-                len--;
-            });
-        }
-    }
-    exports.forEach = forEach;
     function equals(one, other, itemEquals) {
         if (itemEquals === void 0) { itemEquals = function (a, b) { return a === b; }; }
         if (one.length !== other.length) {
@@ -108,7 +94,7 @@ define(__m[0/*vs/base/common/arrays*/], __M([1/*require*/,2/*exports*/]), functi
             return [];
         }
         var result = array.slice(0, n).sort(compare);
-        var _loop_1 = function(i, m) {
+        var _loop_1 = function (i, m) {
             var element = array[i];
             if (compare(element, result[n - 1]) < 0) {
                 result.pop();
@@ -122,28 +108,6 @@ define(__m[0/*vs/base/common/arrays*/], __M([1/*require*/,2/*exports*/]), functi
         return result;
     }
     exports.top = top;
-    function merge(arrays, hashFn) {
-        var result = new Array();
-        if (!hashFn) {
-            for (var i = 0, len = arrays.length; i < len; i++) {
-                result.push.apply(result, arrays[i]);
-            }
-        }
-        else {
-            var map = {};
-            for (var i = 0; i < arrays.length; i++) {
-                for (var j = 0; j < arrays[i].length; j++) {
-                    var element = arrays[i][j], hash = hashFn(element);
-                    if (!map.hasOwnProperty(hash)) {
-                        map[hash] = true;
-                        result.push(element);
-                    }
-                }
-            }
-        }
-        return result;
-    }
-    exports.merge = merge;
     /**
      * @returns a new array with all undefined or null values removed. The original array is not modified at all.
      */
@@ -154,23 +118,6 @@ define(__m[0/*vs/base/common/arrays*/], __M([1/*require*/,2/*exports*/]), functi
         return array.filter(function (e) { return !!e; });
     }
     exports.coalesce = coalesce;
-    /**
-     * @returns true if the given item is contained in the array.
-     */
-    function contains(array, item) {
-        return array.indexOf(item) >= 0;
-    }
-    exports.contains = contains;
-    /**
-     * Swaps the elements in the array for the provided positions.
-     */
-    function swap(array, pos1, pos2) {
-        var element1 = array[pos1];
-        var element2 = array[pos2];
-        array[pos1] = element2;
-        array[pos2] = element1;
-    }
-    exports.swap = swap;
     /**
      * Moves the element in the array for the provided positions.
      */
@@ -290,7 +237,7 @@ define(__m[0/*vs/base/common/arrays*/], __M([1/*require*/,2/*exports*/]), functi
     exports.insert = insert;
 });
 
-define(__m[3/*vs/base/common/paths*/], __M([1/*require*/,2/*exports*/,4/*vs/base/common/platform*/,0/*vs/base/common/arrays*/]), function (require, exports, platform_1, arrays_1) {
+define(__m[3/*vs/base/common/paths*/], __M([1/*require*/,2/*exports*/,5/*vs/base/common/platform*/,0/*vs/base/common/arrays*/,4/*vs/base/common/strings*/]), function (require, exports, platform_1, arrays_1, strings_1) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -305,8 +252,9 @@ define(__m[3/*vs/base/common/paths*/], __M([1/*require*/,2/*exports*/,4/*vs/base
      */
     exports.nativeSep = platform_1.isWindows ? '\\' : '/';
     function relative(from, to) {
-        var originalNormalizedFrom = normalize(from);
-        var originalNormalizedTo = normalize(to);
+        // ignore trailing slashes
+        var originalNormalizedFrom = strings_1.rtrim(normalize(from), exports.sep);
+        var originalNormalizedTo = strings_1.rtrim(normalize(to), exports.sep);
         // we're assuming here that any non=linux OS is case insensitive
         // so we must compare each part in its lowercase form
         var normalizedFrom = platform_1.isLinux ? originalNormalizedFrom : originalNormalizedFrom.toLowerCase();
@@ -636,7 +584,7 @@ define(__m[3/*vs/base/common/paths*/], __M([1/*require*/,2/*exports*/,4/*vs/base
     exports.isAbsolute = isAbsolute;
 });
 
-define(__m[5/*vs/workbench/parts/output/common/outputLinkComputer*/], __M([1/*require*/,2/*exports*/,6/*vs/base/common/winjs.base*/,7/*vs/base/common/uri*/,3/*vs/base/common/paths*/,8/*vs/base/common/strings*/,0/*vs/base/common/arrays*/,9/*vs/editor/common/core/range*/]), function (require, exports, winjs_base_1, uri_1, paths, strings, arrays, range_1) {
+define(__m[6/*vs/workbench/parts/output/common/outputLinkComputer*/], __M([1/*require*/,2/*exports*/,7/*vs/base/common/winjs.base*/,8/*vs/base/common/uri*/,3/*vs/base/common/paths*/,4/*vs/base/common/strings*/,0/*vs/base/common/arrays*/,9/*vs/editor/common/core/range*/]), function (require, exports, winjs_base_1, uri_1, paths, strings, arrays, range_1) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.

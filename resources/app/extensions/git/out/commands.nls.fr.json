@@ -1,0 +1,15 @@
+[
+	"Étiquette à {0}",
+	"Branche distante à {0}",
+	"Nettoyez l'arborescence de travail de votre dépôt avant l'extraction.",
+	"Ouvrir le journal Git",
+	"Voulez-vous vraiment supprimer les modifications apportées à {0} ?",
+	"Oui",
+	"Non, les conserver",
+	"Voulez-vous vraiment supprimer toutes les modifications ?",
+	"Oui",
+	"Non, les conserver",
+	"Nom de la branche",
+	"Fournissez un nom de branche",
+	"Choisissez un dépôt distant où publier la branche '{0}' :"
+]

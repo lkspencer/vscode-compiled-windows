@@ -3,10 +3,10 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 'use strict';
-var vscode_languageserver_1 = require('vscode-languageserver');
-var Strings = require('../utils/strings');
-var request_light_1 = require('request-light');
-var nls = require('vscode-nls');
+var vscode_languageserver_1 = require("vscode-languageserver");
+var Strings = require("../utils/strings");
+var request_light_1 = require("request-light");
+var nls = require("vscode-nls");
 var localize = nls.loadMessageBundle(__filename);
 var FEED_INDEX_URL = 'https://api.nuget.org/v3/index.json';
 var LIMIT = 30;
@@ -28,7 +28,7 @@ var ProjectJSONContribution = (function () {
                 this.cacheSize--;
                 return false;
             }
-            var insertTextValue = item.insertText.value;
+            var insertTextValue = item.insertText;
             item.detail = entry.version;
             item.documentation = entry.description;
             item.insertText = insertTextValue.replace(/\$1/, '${1:' + entry.version + '}');
@@ -80,15 +80,15 @@ var ProjectJSONContribution = (function () {
     };
     ProjectJSONContribution.prototype.collectDefaultCompletions = function (resource, result) {
         if (this.isProjectJSONFile(resource)) {
-            var insertText = vscode_languageserver_1.SnippetString.create(JSON.stringify({
+            var insertText = JSON.stringify({
                 'version': '${1:1.0.0-*}',
                 'dependencies': {},
                 'frameworks': {
                     'net461': {},
                     'netcoreapp1.0': {}
                 }
-            }, null, '\t'));
-            result.add({ kind: 7 /* Class */, label: localize(1, null), insertText: insertText, documentation: '' });
+            }, null, '\t');
+            result.add({ kind: vscode_languageserver_1.CompletionItemKind.Class, label: localize(1, null), insertText: insertText, insertTextFormat: vscode_languageserver_1.InsertTextFormat.Snippet, documentation: '' });
         }
         return null;
     };
@@ -132,7 +132,7 @@ var ProjectJSONContribution = (function () {
                                     insertText += ',';
                                 }
                             }
-                            var item = { kind: 10 /* Property */, label: name, insertText: vscode_languageserver_1.SnippetString.create(insertText), filterText: JSON.stringify(name) };
+                            var item = { kind: vscode_languageserver_1.CompletionItemKind.Property, label: name, insertText: insertText, insertTextFormat: vscode_languageserver_1.InsertTextFormat.Snippet, filterText: JSON.stringify(name) };
                             if (!_this.completeWithCache(name, item)) {
                                 item.data = RESOLVE_ID + name;
                             }
@@ -165,7 +165,7 @@ var ProjectJSONContribution = (function () {
                             var name = JSON.stringify(curr);
                             var label = name;
                             var documentation = '';
-                            result.add({ kind: 7 /* Class */, label: label, insertText: name, documentation: documentation });
+                            result.add({ kind: vscode_languageserver_1.CompletionItemKind.Class, label: label, insertText: name, documentation: documentation });
                         }
                         if (results.length === LIMIT) {
                             result.setAsIncomplete();
@@ -259,4 +259,4 @@ function matches(segments, pattern) {
     }
     return k === pattern.length;
 }
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/38746938a4ab94f2f57d9e1309c51fd6fb37553d/extensions\json\server\out/jsoncontributions\projectJSONContribution.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/f9d0c687ff2ea7aabd85fb9a43129117c0ecf519/extensions\json\server\out/jsoncontributions\projectJSONContribution.js.map

@@ -3,12 +3,12 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 'use strict';
-var vscode_html_languageservice_1 = require('vscode-html-languageservice');
-var languageModelCache_1 = require('../languageModelCache');
-var embeddedSupport_1 = require('./embeddedSupport');
-var cssMode_1 = require('./cssMode');
-var javascriptMode_1 = require('./javascriptMode');
-var htmlMode_1 = require('./htmlMode');
+var vscode_html_languageservice_1 = require("vscode-html-languageservice");
+var languageModelCache_1 = require("../languageModelCache");
+var embeddedSupport_1 = require("./embeddedSupport");
+var cssMode_1 = require("./cssMode");
+var javascriptMode_1 = require("./javascriptMode");
+var htmlMode_1 = require("./htmlMode");
 function getLanguageModes(supportedLanguages) {
     var htmlLanguageService = vscode_html_languageservice_1.getLanguageService();
     var documentRegions = languageModelCache_1.getLanguageModelCache(10, 60, function (document) { return embeddedSupport_1.getDocumentRegions(htmlLanguageService, document); });
@@ -82,4 +82,4 @@ function getLanguageModes(supportedLanguages) {
     };
 }
 exports.getLanguageModes = getLanguageModes;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/38746938a4ab94f2f57d9e1309c51fd6fb37553d/extensions\html\server\out/modes\languageModes.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/f9d0c687ff2ea7aabd85fb9a43129117c0ecf519/extensions\html\server\out/modes\languageModes.js.map

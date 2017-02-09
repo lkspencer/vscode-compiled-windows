@@ -3,27 +3,27 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 'use strict';
-var vscode_languageserver_1 = require('vscode-languageserver');
-var request_light_1 = require('request-light');
-var path = require('path');
-var fs = require('fs');
-var uri_1 = require('./utils/uri');
-var URL = require('url');
-var Strings = require('./utils/strings');
-var vscode_json_languageservice_1 = require('vscode-json-languageservice');
-var projectJSONContribution_1 = require('./jsoncontributions/projectJSONContribution');
-var globPatternContribution_1 = require('./jsoncontributions/globPatternContribution');
-var fileAssociationContribution_1 = require('./jsoncontributions/fileAssociationContribution');
-var languageModelCache_1 = require('./languageModelCache');
-var nls = require('vscode-nls');
+var vscode_languageserver_1 = require("vscode-languageserver");
+var request_light_1 = require("request-light");
+var path = require("path");
+var fs = require("fs");
+var uri_1 = require("./utils/uri");
+var URL = require("url");
+var Strings = require("./utils/strings");
+var vscode_json_languageservice_1 = require("vscode-json-languageservice");
+var projectJSONContribution_1 = require("./jsoncontributions/projectJSONContribution");
+var globPatternContribution_1 = require("./jsoncontributions/globPatternContribution");
+var fileAssociationContribution_1 = require("./jsoncontributions/fileAssociationContribution");
+var languageModelCache_1 = require("./languageModelCache");
+var nls = require("vscode-nls");
 nls.config(process.env['VSCODE_NLS_CONFIG']);
 var SchemaAssociationNotification;
 (function (SchemaAssociationNotification) {
-    SchemaAssociationNotification.type = { get method() { return 'json/schemaAssociations'; }, _: null };
+    SchemaAssociationNotification.type = new vscode_languageserver_1.NotificationType('json/schemaAssociations');
 })(SchemaAssociationNotification || (SchemaAssociationNotification = {}));
 var VSCodeContentRequest;
 (function (VSCodeContentRequest) {
-    VSCodeContentRequest.type = { get method() { return 'vscode/content'; }, _: null };
+    VSCodeContentRequest.type = new vscode_languageserver_1.RequestType('vscode/content');
 })(VSCodeContentRequest || (VSCodeContentRequest = {}));
 // Create a connection for the server
 var connection = vscode_languageserver_1.createConnection();
@@ -44,11 +44,12 @@ connection.onInitialize(function (params) {
     if (params.initializationOptions) {
         filesAssociationContribution.setLanguageIds(params.initializationOptions.languageIds);
     }
+    var snippetSupport = params.capabilities && params.capabilities.textDocument && params.capabilities.textDocument.completion && params.capabilities.textDocument.completion.completionItem && params.capabilities.textDocument.completion.completionItem.snippetSupport;
     return {
         capabilities: {
             // Tell the client that the server works in FULL text document sync mode
             textDocumentSync: documents.syncKind,
-            completionProvider: { resolveProvider: true, triggerCharacters: ['"', ':'] },
+            completionProvider: snippetSupport ? { resolveProvider: true, triggerCharacters: ['"', ':'] } : null,
             hoverProvider: true,
             documentSymbolProvider: true,
             documentRangeFormattingProvider: !params.initializationOptions || params.initializationOptions['format.enable']
@@ -230,4 +231,4 @@ connection.onDocumentRangeFormatting(function (formatParams) {
 });
 // Listen on the connection
 connection.listen();
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/38746938a4ab94f2f57d9e1309c51fd6fb37553d/extensions\json\server\out/jsonServerMain.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/f9d0c687ff2ea7aabd85fb9a43129117c0ecf519/extensions\json\server\out/jsonServerMain.js.map

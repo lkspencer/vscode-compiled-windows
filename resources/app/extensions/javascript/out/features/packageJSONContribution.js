@@ -3,9 +3,9 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 'use strict';
-var vscode_1 = require('vscode');
-var markedTextUtil_1 = require('./markedTextUtil');
-var nls = require('vscode-nls');
+var vscode_1 = require("vscode");
+var markedTextUtil_1 = require("./markedTextUtil");
+var nls = require("vscode-nls");
 var localize = nls.loadMessageBundle(__filename);
 var LIMIT = 40;
 var PackageJSONContribution = (function () {
@@ -55,7 +55,7 @@ var PackageJSONContribution = (function () {
                                         var name = keys[0];
                                         var insertText = new vscode_1.SnippetString().appendText(JSON.stringify(name));
                                         if (addValue) {
-                                            insertText.appendText(': ').appendPlaceholder('*');
+                                            insertText.appendText(': "').appendPlaceholder('').appendText('"');
                                             if (!isLast) {
                                                 insertText.appendText(',');
                                             }
@@ -89,7 +89,7 @@ var PackageJSONContribution = (function () {
                 this.mostDependedOn.forEach(function (name) {
                     var insertText = new vscode_1.SnippetString().appendText(JSON.stringify(name));
                     if (addValue) {
-                        insertText.appendText(': ').appendPlaceholder('*');
+                        insertText.appendText(': "').appendPlaceholder('').appendText('"');
                         if (!isLast) {
                             insertText.appendText(',');
                         }
@@ -208,4 +208,4 @@ var PackageJSONContribution = (function () {
     return PackageJSONContribution;
 }());
 exports.PackageJSONContribution = PackageJSONContribution;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/38746938a4ab94f2f57d9e1309c51fd6fb37553d/extensions\javascript\out/features\packageJSONContribution.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/f9d0c687ff2ea7aabd85fb9a43129117c0ecf519/extensions\javascript\out/features\packageJSONContribution.js.map

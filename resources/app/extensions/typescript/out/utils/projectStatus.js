@@ -3,37 +3,36 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 'use strict';
-var vscode = require('vscode');
-var vscode_nls_1 = require('vscode-nls');
-var path_1 = require('path');
-var localize = vscode_nls_1.loadMessageBundle(__filename);
-var selector = ['javascript', 'javascriptreact'];
-var fileLimit = 500;
-var ExcludeHintItem = (function () {
-    function ExcludeHintItem(client) {
+const vscode = require("vscode");
+const vscode_nls_1 = require("vscode-nls");
+const path_1 = require("path");
+const localize = vscode_nls_1.loadMessageBundle(__filename);
+const selector = ['javascript', 'javascriptreact'];
+const fileLimit = 500;
+class ExcludeHintItem {
+    constructor(client) {
         this._client = client;
         this._item = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, Number.MIN_VALUE);
         this._item.command = 'js.projectStatus.command';
     }
-    ExcludeHintItem.prototype.getCurrentHint = function () {
+    getCurrentHint() {
         return this._currentHint;
-    };
-    ExcludeHintItem.prototype.hide = function () {
+    }
+    hide() {
         this._item.hide();
-    };
-    ExcludeHintItem.prototype.show = function (configFileName, largeRoots, onExecute) {
-        var _this = this;
+    }
+    show(configFileName, largeRoots, onExecute) {
         this._currentHint = {
             message: largeRoots.length > 0
                 ? localize(0, null, largeRoots)
                 : localize(1, null),
             options: [{
                     title: localize(2, null),
-                    execute: function () {
-                        _this._client.logTelemetry('js.hintProjectExcludes.accepted');
+                    execute: () => {
+                        this._client.logTelemetry('js.hintProjectExcludes.accepted');
                         onExecute();
-                        _this._item.hide();
-                        var configFileUri;
+                        this._item.hide();
+                        let configFileUri;
                         if (vscode.workspace.rootPath && path_1.dirname(configFileName).indexOf(vscode.workspace.rootPath) === 0) {
                             configFileUri = vscode.Uri.file(configFileName);
                         }
@@ -51,15 +50,13 @@ var ExcludeHintItem = (function () {
         this._item.color = '#A5DF3B';
         this._item.show();
         this._client.logTelemetry('js.hintProjectExcludes');
-    };
-    return ExcludeHintItem;
-}());
+    }
+}
 function createLargeProjectMonitorForProject(item, client, isOpen, memento) {
-    var toDispose = [];
-    var projectHinted = Object.create(null);
-    var projectHintIgnoreList = memento.get('projectHintIgnoreList', []);
-    for (var _i = 0, projectHintIgnoreList_1 = projectHintIgnoreList; _i < projectHintIgnoreList_1.length; _i++) {
-        var path = projectHintIgnoreList_1[_i];
+    const toDispose = [];
+    const projectHinted = Object.create(null);
+    const projectHintIgnoreList = memento.get('projectHintIgnoreList', []);
+    for (let path of projectHintIgnoreList) {
         if (path === null) {
             path = 'undefined';
         }
@@ -68,29 +65,29 @@ function createLargeProjectMonitorForProject(item, client, isOpen, memento) {
     function onEditor(editor) {
         if (!editor
             || !vscode.languages.match(selector, editor.document)
-            || !client.asAbsolutePath(editor.document.uri)) {
+            || !client.normalizePath(editor.document.uri)) {
             item.hide();
             return;
         }
-        var file = client.asAbsolutePath(editor.document.uri);
+        const file = client.normalizePath(editor.document.uri);
         if (!file) {
             return;
         }
-        isOpen(file).then(function (value) {
+        isOpen(file).then(value => {
             if (!value) {
                 return;
             }
-            return client.execute('projectInfo', { file: file, needFileNameList: true }).then(function (res) {
+            return client.execute('projectInfo', { file, needFileNameList: true }).then(res => {
                 if (!res.body) {
                     return;
                 }
-                var _a = res.body, configFileName = _a.configFileName, fileNames = _a.fileNames;
+                let { configFileName, fileNames } = res.body;
                 if (projectHinted[configFileName] === true || !fileNames) {
                     return;
                 }
                 if (fileNames.length > fileLimit || res.body.languageServiceDisabled) {
-                    var largeRoots = computeLargeRoots(configFileName, fileNames).map(function (f) { return ("'/" + f + "/'"); }).join(', ');
-                    item.show(configFileName, largeRoots, function () {
+                    let largeRoots = computeLargeRoots(configFileName, fileNames).map(f => `'/${f}/'`).join(', ');
+                    item.show(configFileName, largeRoots, () => {
                         projectHinted[configFileName] = true;
                     });
                 }
@@ -98,11 +95,11 @@ function createLargeProjectMonitorForProject(item, client, isOpen, memento) {
                     item.hide();
                 }
             });
-        }).catch(function (err) {
+        }).catch(err => {
             client.warn(err);
         });
     }
-    toDispose.push(vscode.workspace.onDidChangeTextDocument(function (e) {
+    toDispose.push(vscode.workspace.onDidChangeTextDocument(e => {
         delete projectHinted[e.document.fileName];
     }));
     toDispose.push(vscode.window.onDidChangeActiveTextEditor(onEditor));
@@ -110,62 +107,58 @@ function createLargeProjectMonitorForProject(item, client, isOpen, memento) {
     return toDispose;
 }
 function createLargeProjectMonitorFromTypeScript(item, client) {
-    return client.onProjectLanguageServiceStateChanged(function (body) {
+    return client.onProjectLanguageServiceStateChanged(body => {
         if (body.languageServiceEnabled) {
             item.hide();
         }
         else {
-            item.show(body.projectName, '', function () { });
+            item.show(body.projectName, '', () => { });
         }
     });
 }
 function create(client, isOpen, memento) {
-    var toDispose = [];
-    var item = new ExcludeHintItem(client);
-    toDispose.push(vscode.commands.registerCommand('js.projectStatus.command', function () {
-        var _a = item.getCurrentHint(), message = _a.message, options = _a.options;
-        return (_b = vscode.window).showInformationMessage.apply(_b, [message].concat(options)).then(function (selection) {
+    const toDispose = [];
+    let item = new ExcludeHintItem(client);
+    toDispose.push(vscode.commands.registerCommand('js.projectStatus.command', () => {
+        let { message, options } = item.getCurrentHint();
+        return vscode.window.showInformationMessage(message, ...options).then(selection => {
             if (selection) {
                 return selection.execute();
             }
         });
-        var _b;
     }));
     if (client.apiVersion.has213Features()) {
         toDispose.push(createLargeProjectMonitorFromTypeScript(item, client));
     }
     else {
-        toDispose.push.apply(toDispose, createLargeProjectMonitorForProject(item, client, isOpen, memento));
+        toDispose.push(...createLargeProjectMonitorForProject(item, client, isOpen, memento));
     }
-    return (_a = vscode.Disposable).from.apply(_a, toDispose);
-    var _a;
+    return vscode.Disposable.from(...toDispose);
 }
 exports.create = create;
 function computeLargeRoots(configFileName, fileNames) {
-    var roots = Object.create(null);
-    var dir = path_1.dirname(configFileName);
+    let roots = Object.create(null);
+    let dir = path_1.dirname(configFileName);
     // console.log(dir, fileNames);
-    for (var _i = 0, fileNames_1 = fileNames; _i < fileNames_1.length; _i++) {
-        var fileName = fileNames_1[_i];
+    for (let fileName of fileNames) {
         if (fileName.indexOf(dir) === 0) {
-            var first = fileName.substring(dir.length + 1);
+            let first = fileName.substring(dir.length + 1);
             first = first.substring(0, first.indexOf('/'));
             if (first) {
                 roots[first] = (roots[first] || 0) + 1;
             }
         }
     }
-    var data = [];
-    for (var key in roots) {
+    let data = [];
+    for (let key in roots) {
         data.push({ root: key, count: roots[key] });
     }
     data
-        .sort(function (a, b) { return b.count - a.count; })
-        .filter(function (s) { return s.root === 'src' || s.root === 'test' || s.root === 'tests'; });
-    var result = [];
-    var sum = 0;
-    for (var _a = 0, data_1 = data; _a < data_1.length; _a++) {
-        var e = data_1[_a];
+        .sort((a, b) => b.count - a.count)
+        .filter(s => s.root === 'src' || s.root === 'test' || s.root === 'tests');
+    let result = [];
+    let sum = 0;
+    for (let e of data) {
         sum += e.count;
         result.push(e.root);
         if (fileNames.length - sum < fileLimit) {
@@ -174,4 +167,4 @@ function computeLargeRoots(configFileName, fileNames) {
     }
     return result;
 }
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/38746938a4ab94f2f57d9e1309c51fd6fb37553d/extensions\typescript\out/utils\projectStatus.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/f9d0c687ff2ea7aabd85fb9a43129117c0ecf519/extensions\typescript\out/utils\projectStatus.js.map

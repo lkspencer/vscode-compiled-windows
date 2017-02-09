@@ -22,6 +22,8 @@ define("vs/code/node/sharedProcessMain.nls.de", {
 		"{0} wurde im ZIP nicht gefunden.",
 	],
 	"vs/platform/configuration/common/configurationRegistry": [
+		"Zu überschreibende Einstellungen für einen Sprachbezeichnersatz konfigurieren",
+		"Einstellungen überschreiben",
 		"Trägt Konfigurationseigenschaften bei.",
 		"Eine Zusammenfassung der Einstellungen. Diese Bezeichnung wird in der Einstellungsdatei als trennender Kommentar verwendet.",
 		"Die Beschreibung der Konfigurationseigenschaften.",

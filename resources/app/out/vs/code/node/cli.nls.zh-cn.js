@@ -3,9 +3,9 @@
  *--------------------------------------------------------*/
 define("vs/code/node/cli.nls.zh-cn", {
 	"vs/platform/environment/node/argv": [
-		"\"--goto\" 模式中的参数格式应为 \"FILE(:LINE(:COLUMN))\"。",
+		"\"--goto\" 模式中的参数格式应为 \"FILE(:LINE(:CHARACTER))\"。",
 		"打开差异编辑器。需要传递两个文件路径作为参数。",
-		"在行和列处的路径打开文件(向路径添加 :line[:column])。",
+		"在路径中的行和字符处打开文件(向路径添加 :line[:character])。",
 		"要使用的区域设置(例如 en-US 或 zh-TW)。",
 		"强制创建一个新的 Code 实例。",
 		"通过启用 \"Developer: Startup Performance\" 命令开始。",

@@ -148,8 +148,9 @@ exports.Delayer = Delayer;
 var ThrottledDelayer = (function (_super) {
     __extends(ThrottledDelayer, _super);
     function ThrottledDelayer(defaultDelay) {
-        _super.call(this, defaultDelay);
-        this.throttler = new Throttler();
+        var _this = _super.call(this, defaultDelay) || this;
+        _this.throttler = new Throttler();
+        return _this;
     }
     ThrottledDelayer.prototype.trigger = function (promiseFactory, delay) {
         var _this = this;
@@ -158,4 +159,4 @@ var ThrottledDelayer = (function (_super) {
     return ThrottledDelayer;
 }(Delayer));
 exports.ThrottledDelayer = ThrottledDelayer;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/38746938a4ab94f2f57d9e1309c51fd6fb37553d/extensions\php\out/features\utils\async.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/f9d0c687ff2ea7aabd85fb9a43129117c0ecf519/extensions\php\out/features\utils\async.js.map

@@ -22,6 +22,8 @@ define("vs/code/node/sharedProcessMain.nls.ko", {
 		"zip 파일 내에 {0}이(가) 없습니다.",
 	],
 	"vs/platform/configuration/common/configurationRegistry": [
+		"언어 식별자 집합에 대해 재정의할 설정을 구성합니다.",
+		"설정 재정의",
 		"구성 설정을 적용합니다.",
 		"설정을 요약합니다. 이 레이블은 설정 파일에서 구분 주석으로 사용됩니다.",
 		"구성 속성에 대한 설명입니다.",

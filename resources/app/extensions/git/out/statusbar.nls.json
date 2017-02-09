@@ -1,0 +1,12 @@
+{
+	"messages": [
+		"Synchronize changes",
+		"Publish changes",
+		"Synchronizing changes..."
+	],
+	"keys": [
+		"sync changes",
+		"publish changes",
+		"syncing changes"
+	]
+}

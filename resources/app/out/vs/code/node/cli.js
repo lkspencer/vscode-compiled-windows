@@ -2,7 +2,7 @@
  * Copyright (C) Microsoft Corporation. All rights reserved.
  *--------------------------------------------------------*/
 (function() {
-var __m = ["exports","require","vs/base/common/platform","vs/base/common/types","vs/base/common/uri","vs/base/common/winjs.base","vs/base/common/arrays","vs/base/common/errors","vs/nls!vs/platform/environment/node/argv","vs/base/common/objects","vs/platform/environment/node/argv","vs/platform/package","path","vs/platform/product","os","minimist","assert","vs/base/common/winjs.base.raw","vs/nls!vs/code/node/cli","child_process","vs/code/node/cli","vs/nls"];
+var __m = ["exports","require","vs/base/common/platform","vs/base/common/types","vs/base/common/uri","vs/base/common/winjs.base","vs/base/common/arrays","vs/base/common/errors","vs/nls!vs/platform/environment/node/argv","vs/base/common/objects","vs/platform/environment/node/argv","vs/platform/node/package","path","vs/platform/node/product","os","minimist","assert","vs/base/common/winjs.base.raw","vs/nls!vs/code/node/cli","child_process","vs/code/node/cli","vs/nls"];
 var __M = function(deps) {
   var result = [];
   for (var i = 0, len = deps.length; i < len; i++) {
@@ -26,20 +26,6 @@ define(__m[6/*vs/base/common/arrays*/], __M([1/*require*/,0/*exports*/]), functi
         return array[array.length - (1 + n)];
     }
     exports.tail = tail;
-    /**
-     * Iterates the provided array and allows to remove
-     * elements while iterating.
-     */
-    function forEach(array, callback) {
-        for (var i = 0, len = array.length; i < len; i++) {
-            callback(array[i], function () {
-                array.splice(i, 1);
-                i--;
-                len--;
-            });
-        }
-    }
-    exports.forEach = forEach;
     function equals(one, other, itemEquals) {
         if (itemEquals === void 0) { itemEquals = function (a, b) { return a === b; }; }
         if (one.length !== other.length) {
@@ -108,7 +94,7 @@ define(__m[6/*vs/base/common/arrays*/], __M([1/*require*/,0/*exports*/]), functi
             return [];
         }
         var result = array.slice(0, n).sort(compare);
-        var _loop_1 = function(i, m) {
+        var _loop_1 = function (i, m) {
             var element = array[i];
             if (compare(element, result[n - 1]) < 0) {
                 result.pop();
@@ -122,28 +108,6 @@ define(__m[6/*vs/base/common/arrays*/], __M([1/*require*/,0/*exports*/]), functi
         return result;
     }
     exports.top = top;
-    function merge(arrays, hashFn) {
-        var result = new Array();
-        if (!hashFn) {
-            for (var i = 0, len = arrays.length; i < len; i++) {
-                result.push.apply(result, arrays[i]);
-            }
-        }
-        else {
-            var map = {};
-            for (var i = 0; i < arrays.length; i++) {
-                for (var j = 0; j < arrays[i].length; j++) {
-                    var element = arrays[i][j], hash = hashFn(element);
-                    if (!map.hasOwnProperty(hash)) {
-                        map[hash] = true;
-                        result.push(element);
-                    }
-                }
-            }
-        }
-        return result;
-    }
-    exports.merge = merge;
     /**
      * @returns a new array with all undefined or null values removed. The original array is not modified at all.
      */
@@ -154,23 +118,6 @@ define(__m[6/*vs/base/common/arrays*/], __M([1/*require*/,0/*exports*/]), functi
         return array.filter(function (e) { return !!e; });
     }
     exports.coalesce = coalesce;
-    /**
-     * @returns true if the given item is contained in the array.
-     */
-    function contains(array, item) {
-        return array.indexOf(item) >= 0;
-    }
-    exports.contains = contains;
-    /**
-     * Swaps the elements in the array for the provided positions.
-     */
-    function swap(array, pos1, pos2) {
-        var element1 = array[pos1];
-        var element2 = array[pos2];
-        array[pos1] = element2;
-        array[pos2] = element1;
-    }
-    exports.swap = swap;
     /**
      * Moves the element in the array for the provided positions.
      */
@@ -337,13 +284,13 @@ define(__m[2/*vs/base/common/platform*/], __M([1/*require*/,0/*exports*/]), func
         _language = _locale;
         _isQunit = !!self.QUnit;
     }
+    var Platform;
     (function (Platform) {
         Platform[Platform["Web"] = 0] = "Web";
         Platform[Platform["Mac"] = 1] = "Mac";
         Platform[Platform["Linux"] = 2] = "Linux";
         Platform[Platform["Windows"] = 3] = "Windows";
-    })(exports.Platform || (exports.Platform = {}));
-    var Platform = exports.Platform;
+    })(Platform = exports.Platform || (exports.Platform = {}));
     exports._platform = Platform.Web;
     if (_isNative) {
         if (_isMacintosh) {
@@ -508,7 +455,7 @@ define(__m[3/*vs/base/common/types*/], __M([1/*require*/,0/*exports*/]), functio
     function areFunctions() {
         var objects = [];
         for (var _i = 0; _i < arguments.length; _i++) {
-            objects[_i - 0] = arguments[_i];
+            objects[_i] = arguments[_i];
         }
         return objects && objects.length > 0 && objects.every(isFunction);
     }
@@ -870,7 +817,10 @@ define(__m[9/*vs/base/common/objects*/], __M([1/*require*/,0/*exports*/,3/*vs/ba
     exports.assign = assign;
     function toObject(arr, keyMap, valueMap) {
         if (valueMap === void 0) { valueMap = function (x) { return x; }; }
-        return arr.reduce(function (o, d) { return assign(o, (_a = {}, _a[keyMap(d)] = valueMap(d), _a)); var _a; }, Object.create(null));
+        return arr.reduce(function (o, d) {
+            return assign(o, (_a = {}, _a[keyMap(d)] = valueMap(d), _a));
+            var _a;
+        }, Object.create(null));
     }
     exports.toObject = toObject;
     function equals(one, other) {
@@ -1365,39 +1315,50 @@ define(__m[4/*vs/base/common/uri*/], __M([1/*require*/,0/*exports*/,2/*vs/base/c
             return parts.join(URI._empty);
         };
         URI.prototype.toJSON = function () {
-            return {
-                scheme: this.scheme,
-                authority: this.authority,
-                path: this.path,
+            var res = {
                 fsPath: this.fsPath,
-                query: this.query,
-                fragment: this.fragment,
                 external: this.toString(),
                 $mid: 1
             };
+            if (this.path) {
+                res.path = this.path;
+            }
+            if (this.scheme) {
+                res.scheme = this.scheme;
+            }
+            if (this.authority) {
+                res.authority = this.authority;
+            }
+            if (this.query) {
+                res.query = this.query;
+            }
+            if (this.fragment) {
+                res.fragment = this.fragment;
+            }
+            return res;
         };
         URI.revive = function (data) {
             var result = new URI();
-            result._scheme = data.scheme;
-            result._authority = data.authority;
-            result._path = data.path;
-            result._query = data.query;
-            result._fragment = data.fragment;
+            result._scheme = data.scheme || URI._empty;
+            result._authority = data.authority || URI._empty;
+            result._path = data.path || URI._empty;
+            result._query = data.query || URI._empty;
+            result._fragment = data.fragment || URI._empty;
             result._fsPath = data.fsPath;
             result._formatted = data.external;
             URI._validate(result);
             return result;
         };
-        URI._empty = '';
-        URI._slash = '/';
-        URI._regexp = /^(([^:/?#]+?):)?(\/\/([^/?#]*))?([^?#]*)(\?([^#]*))?(#(.*))?/;
-        URI._driveLetterPath = /^\/[a-zA-z]:/;
-        URI._upperCaseDrive = /^(\/)?([A-Z]:)/;
-        URI._schemePattern = /^\w[\w\d+.-]*$/;
-        URI._singleSlashStart = /^\//;
-        URI._doubleSlashStart = /^\/\//;
         return URI;
     }());
+    URI._empty = '';
+    URI._slash = '/';
+    URI._regexp = /^(([^:/?#]+?):)?(\/\/([^/?#]*))?([^?#]*)(\?([^#]*))?(#(.*))?/;
+    URI._driveLetterPath = /^\/[a-zA-z]:/;
+    URI._upperCaseDrive = /^(\/)?([A-Z]:)/;
+    URI._schemePattern = /^\w[\w\d+.-]*$/;
+    URI._singleSlashStart = /^\//;
+    URI._doubleSlashStart = /^\/\//;
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = URI;
 });
@@ -3562,6 +3523,7 @@ define(__m[10/*vs/platform/environment/node/argv*/], __M([1/*require*/,0/*export
             'diff',
             'goto',
             'new-window',
+            'new-window-if-not-first',
             'reuse-window',
             'performance',
             'verbose',
@@ -3648,10 +3610,10 @@ define(__m[10/*vs/platform/environment/node/argv*/], __M([1/*require*/,0/*export
     };
     function formatOptions(options, columns) {
         var keys = Object.keys(options);
-        var argLength = Math.max.apply(null, keys.map(function (k) { return k.length; })) + 2 /*left padding*/ + 1;
+        var argLength = Math.max.apply(null, keys.map(function (k) { return k.length; })) + 2 /*left padding*/ + 1 /*right padding*/;
         if (columns - argLength < 25) {
             // Use a condensed version on narrow terminals
-            return keys.reduce(function (r, key) { return r.concat([("  " + key), ("      " + options[key])]); }, []).join('\n');
+            return keys.reduce(function (r, key) { return r.concat(["  " + key, "      " + options[key]]); }, []).join('\n');
         }
         var descriptionColumns = columns - argLength - 1;
         var result = '';
@@ -3691,7 +3653,7 @@ define(__m[10/*vs/platform/environment/node/argv*/], __M([1/*require*/,0/*export
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-define(__m[11/*vs/platform/package*/], __M([1/*require*/,0/*exports*/,12/*path*/,4/*vs/base/common/uri*/]), function (require, exports, path, uri_1) {
+define(__m[11/*vs/platform/node/package*/], __M([1/*require*/,0/*exports*/,12/*path*/,4/*vs/base/common/uri*/]), function (require, exports, path, uri_1) {
     "use strict";
     var rootPath = path.dirname(uri_1.default.parse(require.toUrl('')).fsPath);
     var packageJsonPath = path.join(rootPath, 'package.json');
@@ -3703,7 +3665,7 @@ define(__m[11/*vs/platform/package*/], __M([1/*require*/,0/*exports*/,12/*path*/
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-define(__m[13/*vs/platform/product*/], __M([1/*require*/,0/*exports*/,12/*path*/,4/*vs/base/common/uri*/]), function (require, exports, path, uri_1) {
+define(__m[13/*vs/platform/node/product*/], __M([1/*require*/,0/*exports*/,12/*path*/,4/*vs/base/common/uri*/]), function (require, exports, path, uri_1) {
     "use strict";
     var rootPath = path.dirname(uri_1.default.parse(require.toUrl('')).fsPath);
     var productJsonPath = path.join(rootPath, 'product.json');
@@ -3721,7 +3683,7 @@ define(__m[13/*vs/platform/product*/], __M([1/*require*/,0/*exports*/,12/*path*/
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-define(__m[20/*vs/code/node/cli*/], __M([1/*require*/,0/*exports*/,19/*child_process*/,5/*vs/base/common/winjs.base*/,9/*vs/base/common/objects*/,10/*vs/platform/environment/node/argv*/,13/*vs/platform/product*/,11/*vs/platform/package*/]), function (require, exports, child_process_1, winjs_base_1, objects_1, argv_1, product_1, package_1) {
+define(__m[20/*vs/code/node/cli*/], __M([1/*require*/,0/*exports*/,19/*child_process*/,5/*vs/base/common/winjs.base*/,9/*vs/base/common/objects*/,10/*vs/platform/environment/node/argv*/,13/*vs/platform/node/product*/,11/*vs/platform/node/package*/]), function (require, exports, child_process_1, winjs_base_1, objects_1, argv_1, product_1, package_1) {
     "use strict";
     function shouldSpawnCliProcess(argv) {
         return argv['list-extensions'] || !!argv['install-extension'] || !!argv['uninstall-extension'];
@@ -3774,11 +3736,14 @@ define(__m[20/*vs/code/node/cli*/], __M([1/*require*/,0/*exports*/,19/*child_pro
         return winjs_base_1.TPromise.as(null);
     }
     exports.main = main;
+    function eventuallyExit(code) {
+        setTimeout(function () { return process.exit(code); }, 0);
+    }
     main(process.argv)
-        .then(function () { return process.exit(0); })
+        .then(function () { return eventuallyExit(0); })
         .then(null, function (err) {
         console.error(err.stack ? err.stack : err);
-        process.exit(1);
+        eventuallyExit(1);
     });
 });
 

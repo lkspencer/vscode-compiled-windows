@@ -3,22 +3,22 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 'use strict';
-var vscode_languageserver_1 = require('vscode-languageserver');
-var Strings = require('../utils/strings');
-var nls = require('vscode-nls');
+var vscode_languageserver_1 = require("vscode-languageserver");
+var Strings = require("../utils/strings");
+var nls = require("vscode-nls");
 var localize = nls.loadMessageBundle(__filename);
 var globProperties = [
-    { kind: 12 /* Value */, label: localize(0, null), insertText: vscode_languageserver_1.SnippetString.create('"**/*.${1:extension}": true'), documentation: localize(1, null) },
-    { kind: 12 /* Value */, label: localize(2, null), insertText: '"**/*.{ext1,ext2,ext3}": true', documentation: localize(3, null) },
-    { kind: 12 /* Value */, label: localize(4, null), insertText: vscode_languageserver_1.SnippetString.create('"**/*.${1:source-extension}": { "when": "$(basename).${2:target-extension}" }'), documentation: localize(5, null) },
-    { kind: 12 /* Value */, label: localize(6, null), insertText: vscode_languageserver_1.SnippetString.create('"${1:name}": true'), documentation: localize(7, null) },
-    { kind: 12 /* Value */, label: localize(8, null), insertText: '"{folder1,folder2,folder3}": true', documentation: localize(9, null) },
-    { kind: 12 /* Value */, label: localize(10, null), insertText: vscode_languageserver_1.SnippetString.create('"**/${1:name}": true'), documentation: localize(11, null) },
+    { kind: vscode_languageserver_1.CompletionItemKind.Value, label: localize(0, null), insertText: '"**/*.${1:extension}": true', insertTextFormat: vscode_languageserver_1.InsertTextFormat.Snippet, documentation: localize(1, null) },
+    { kind: vscode_languageserver_1.CompletionItemKind.Value, label: localize(2, null), insertText: '"**/*.{ext1,ext2,ext3}": true', documentation: localize(3, null) },
+    { kind: vscode_languageserver_1.CompletionItemKind.Value, label: localize(4, null), insertText: '"**/*.${1:source-extension}": { "when": "$(basename).${2:target-extension}" }', insertTextFormat: vscode_languageserver_1.InsertTextFormat.Snippet, documentation: localize(5, null) },
+    { kind: vscode_languageserver_1.CompletionItemKind.Value, label: localize(6, null), insertText: '"${1:name}": true', insertTextFormat: vscode_languageserver_1.InsertTextFormat.Snippet, documentation: localize(7, null) },
+    { kind: vscode_languageserver_1.CompletionItemKind.Value, label: localize(8, null), insertText: '"{folder1,folder2,folder3}": true', documentation: localize(9, null) },
+    { kind: vscode_languageserver_1.CompletionItemKind.Value, label: localize(10, null), insertText: '"**/${1:name}": true', insertTextFormat: vscode_languageserver_1.InsertTextFormat.Snippet, documentation: localize(11, null) },
 ];
 var globValues = [
-    { kind: 12 /* Value */, label: localize(12, null), filterText: 'true', insertText: 'true', documentation: localize(13, null) },
-    { kind: 12 /* Value */, label: localize(14, null), filterText: 'false', insertText: 'false', documentation: localize(15, null) },
-    { kind: 12 /* Value */, label: localize(16, null), insertText: vscode_languageserver_1.SnippetString.create('{ "when": "$(basename).${1:extension}" }'), documentation: localize(17, null) }
+    { kind: vscode_languageserver_1.CompletionItemKind.Value, label: localize(12, null), filterText: 'true', insertText: 'true', documentation: localize(13, null) },
+    { kind: vscode_languageserver_1.CompletionItemKind.Value, label: localize(14, null), filterText: 'false', insertText: 'false', documentation: localize(15, null) },
+    { kind: vscode_languageserver_1.CompletionItemKind.Value, label: localize(16, null), insertText: '{ "when": "$(basename).${1:extension}" }', insertTextFormat: vscode_languageserver_1.InsertTextFormat.Snippet, documentation: localize(17, null) }
 ];
 var GlobPatternContribution = (function () {
     function GlobPatternContribution() {
@@ -51,4 +51,4 @@ var GlobPatternContribution = (function () {
     return GlobPatternContribution;
 }());
 exports.GlobPatternContribution = GlobPatternContribution;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/38746938a4ab94f2f57d9e1309c51fd6fb37553d/extensions\json\server\out/jsoncontributions\globPatternContribution.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/f9d0c687ff2ea7aabd85fb9a43129117c0ecf519/extensions\json\server\out/jsoncontributions\globPatternContribution.js.map

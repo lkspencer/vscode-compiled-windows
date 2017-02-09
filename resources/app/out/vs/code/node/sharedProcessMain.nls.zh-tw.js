@@ -22,6 +22,8 @@ define("vs/code/node/sharedProcessMain.nls.zh-tw", {
 		"在 ZIP 中找不到 {0}。",
 	],
 	"vs/platform/configuration/common/configurationRegistry": [
+		"設定要為一組語言識別碼覆寫的設定。",
+		"覆寫設定",
 		"提供組態設定。",
 		"設定的摘要。此標籤將會在設定檔中作為分隔註解使用。",
 		"組態屬性的描述。",

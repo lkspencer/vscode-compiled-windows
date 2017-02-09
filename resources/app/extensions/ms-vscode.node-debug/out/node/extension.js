@@ -125,7 +125,7 @@ var initialConfigurations = [
         type: 'node',
         request: 'launch',
         name: localize(0, null),
-        program: '${workspaceRoot}/app.js',
+        program: '${file}',
         cwd: '${workspaceRoot}'
     },
     {
@@ -135,6 +135,27 @@ var initialConfigurations = [
         port: 5858
     }
 ];
+function guessProgramFromPackage(folderPath) {
+    var program;
+    try {
+        var packageJsonPath = path_1.join(folderPath, 'package.json');
+        var jsonContent = fs.readFileSync(packageJsonPath, 'utf8');
+        var jsonObject = JSON.parse(jsonContent);
+        if (jsonObject.main) {
+            program = jsonObject.main;
+        }
+        else if (jsonObject.scripts && typeof jsonObject.scripts.start === 'string') {
+            // assume a start script of the form 'node server.js'
+            program = jsonObject.scripts.start.split(' ').pop();
+        }
+        if (program) {
+            program = path_1.isAbsolute(program) ? program : path_1.join('${workspaceRoot}', program);
+        }
+    }
+    catch (error) {
+    }
+    return program;
+}
 function activate(context) {
     var pickNodeProcess = vscode.commands.registerCommand('extension.pickNodeProcess', function () {
         return listProcesses().then(function (items) {
@@ -150,22 +171,11 @@ function activate(context) {
     });
     context.subscriptions.push(pickNodeProcess);
     context.subscriptions.push(vscode.commands.registerCommand('extension.node-debug.provideInitialConfigurations', function () {
-        var packageJsonPath = path_1.join(vscode.workspace.rootPath, 'package.json');
-        var program = vscode.workspace.textDocuments.some(function (document) { return document.languageId === 'typescript'; }) ? 'app.ts' : undefined;
-        try {
-            var jsonContent = fs.readFileSync(packageJsonPath, 'utf8');
-            var jsonObject = JSON.parse(jsonContent);
-            if (jsonObject.main) {
-                program = jsonObject.main;
-            }
-            else if (jsonObject.scripts && typeof jsonObject.scripts.start === 'string') {
-                program = jsonObject.scripts.start.split(' ').pop();
-            }
-        }
-        catch (error) {
+        var program = vscode.workspace.textDocuments.some(function (document) { return document.languageId === 'typescript'; }) ? '${workspaceRoot}/app.ts' : undefined;
+        if (vscode.workspace.rootPath) {
+            program = guessProgramFromPackage(vscode.workspace.rootPath);
         }
         if (program) {
-            program = path_1.isAbsolute(program) ? program : path_1.join('${workspaceRoot}', program);
             initialConfigurations.forEach(function (config) {
                 if (config['program']) {
                     config['program'] = program;
@@ -175,7 +185,6 @@ function activate(context) {
         if (vscode.workspace.textDocuments.some(function (document) { return document.languageId === 'typescript' || document.languageId === 'coffeescript'; })) {
             initialConfigurations.forEach(function (config) {
                 config['outFiles'] = [];
-                config['sourceMaps'] = true;
             });
         }
         // Massage the configuration string, add an aditional tab and comment out processId.
@@ -191,6 +200,30 @@ function activate(context) {
             '\t"configurations": ' + configurationsMassaged,
             '}'
         ].join('\n');
+    }));
+    context.subscriptions.push(vscode.commands.registerCommand('extension.node-debug.startSession', function (config) {
+        if (!config.request) {
+            config.type = 'node';
+            config.name = 'Launch';
+            config.request = 'launch';
+            if (vscode.workspace.rootPath) {
+                // folder case: try to find entry point in package.json
+                config.program = guessProgramFromPackage(vscode.workspace.rootPath);
+                config.cwd = vscode.workspace.rootPath;
+            }
+            if (!config.program) {
+                // 'no folder' case (or no program found)
+                var editor = vscode.window.activeTextEditor;
+                if (editor && editor.document.languageId === 'javascript') {
+                    config.program = editor.document.fileName;
+                }
+            }
+            if (!config.cwd && config.program) {
+                // fall back if 'cwd' not known: derive it from 'program'
+                config.cwd = path_1.dirname(config.program);
+            }
+        }
+        vscode.commands.executeCommand('vscode.startDebug', config);
     }));
 }
 exports.activate = activate;

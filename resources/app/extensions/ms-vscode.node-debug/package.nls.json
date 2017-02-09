@@ -15,6 +15,7 @@
 	"node.port.description": "Debug port to attach to. Default is 5858.",
 	"node.address.description": "TCP/IP address of debug port (for Node.js >= 5.0 only). Default is 'localhost'.",
 	"node.timeout.description": "Retry for this number of milliseconds to connect to Node.js. Default is 10000 ms.",
+	"node.restart.description": "Restart session after Node.js has terminated.",
 
 	"node.launch.program.description": "Absolute path to the program. Generated value is guessed by looking at package.json and opened files. Edit this attribute.",
 	"node.launch.externalConsole.deprecationMessage": "Attribute 'externalConsole' is deprecated, use 'console' instead.",
@@ -28,7 +29,6 @@
 	"node.launch.config.name": "Launch",
 
 	"node.attach.processId.description": "Id of process to attach to.",
-	"node.attach.restart.description": "Restart session after Node.js has terminated.",
 	"node.attach.localRoot.description": "The local source root that corresponds to the 'remoteRoot'.",
 	"node.attach.remoteRoot.description": "The source root of the remote host.",
 
@@ -36,16 +36,31 @@
 
 	"node.processattach.config.name": "Attach to Process",
 
-	"node.snippet.launch.label": "Node.js: Launch Configuration",
-	"node.snippet.launch.description": "A new configuration for launching a node program",
-	"node.snippet.attach.label": "Node.js: Attach Configuration",
-	"node.snippet.attach.description": "A new configuration for attaching to a running node program",
+	"node.snippet.launch.label": "Node.js: Launch Program",
+	"node.snippet.launch.description": "Launch a node program in debug mode",
+	"node.snippet.npm.label": "Node.js: Launch via NPM",
+	"node.snippet.npm.description": "Launch a node program through an npm 'debug' script",
+	"node.snippet.attach.label": "Node.js: Attach to Port",
+	"node.snippet.attach.description": "Attach to the debug port of a running node program",
+	"node.snippet.attachProcess.label": "Node.js: Attach to Process",
+	"node.snippet.attachProcess.description": "Open process picker to select node or gulp process to attach to",
+	"node.snippet.nodemon.label": "Node.js: Nodemon Setup",
+	"node.snippet.nodemon.description": "Use nodemon to relaunch a debug session on source changes",
+	"node.snippet.mocha.label": "Node.js: Mocha Tests",
+	"node.snippet.mocha.description": "Debug mocha tests",
+	"node.snippet.yo.label": "Node.js: Yeoman generator",
+	"node.snippet.yo.description": "Debug yeoman generator (install by running 'npm link' in project folder)",
+	"node.snippet.gulp.label": "Node.js: Gulp task",
+	"node.snippet.gulp.description": "Debug gulp task (make sure to have a local gulp installed in your project)",
 
 	"extensionHost.label": "VS Code Extension Development",
 
 	"extensionHost.launch.runtimeExecutable.description": "Absolute path to VS Code.",
 	"extensionHost.launch.stopOnEntry.description": "Automatically stop the extension host after launch.",
 	"extensionHost.launch.sourceMaps.description": "Use JavaScript source maps.",
+
+	"extensionHost.snippet.launch.label": "VS Code Extension Development",
+	"extensionHost.snippet.launch.description": "Launch a VS Code extension in debug mode",
 
 	"extensionHost.launch.config.name": "Launch Extension"
 }

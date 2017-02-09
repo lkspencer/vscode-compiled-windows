@@ -2,21 +2,28 @@
  * Copyright (C) Microsoft Corporation. All rights reserved.
  *--------------------------------------------------------*/
 define("vs/workbench/node/extensionHostProcess.nls.zh-cn", {
-	"vs/base/common/processes": [
-		"错误: 可执行信息必须定义字符串类型的命令。",
-		"警告: isShellCommand 的类型必须为布尔型。正在忽略值 {0}。",
-		"警告: args 的类型必须为 string[]。正在忽略值 {0}。",
-		"警告: options.cwd 的类型必须为字符串。正在忽略值 {0}。",
+	"vs/base/common/json": [
+		"符号无效",
+		"数字格式无效",
+		"需要属性名",
+		"需要值",
+		"需要冒号",
+		"需要逗号",
+		"需要右大括号",
+		"需要右括号",
+		"预期的文件结尾",
 	],
 	"vs/base/common/severity": [
 		"错误",
 		"警告",
 		"信息",
 	],
-	"vs/base/node/processes": [
-		"无法对 UNC 驱动器执行 shell 命令。",
+	"vs/editor/common/config/defaultConfig": [
+		"编辑器内容",
 	],
 	"vs/platform/configuration/common/configurationRegistry": [
+		"为一组语言标识符配置要被替代的设置。",
+		"替代设置",
 		"用于配置字符串。",
 		"设置摘要。此标签将在设置文件中用作分隔注释。",
 		"配置属性的描述。",

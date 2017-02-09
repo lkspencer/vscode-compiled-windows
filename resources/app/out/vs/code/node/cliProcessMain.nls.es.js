@@ -34,6 +34,8 @@ define("vs/code/node/cliProcessMain.nls.es", {
 		"La extensión \'{0}\' se desinstaló correctamente.",
 	],
 	"vs/platform/configuration/common/configurationRegistry": [
+		"Establecer los valores de configuración que se reemplazarán para un conjunto de identificadores de lenguaje.",
+		"Reemplazar configuración",
 		"Aporta opciones de configuración.",
 		"Resumen de la configuración. Esta etiqueta se usará en el archivo de configuración como comentario divisor.",
 		"Descripción de las propiedades de configuración.",

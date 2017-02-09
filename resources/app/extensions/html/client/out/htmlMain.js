@@ -3,17 +3,17 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 'use strict';
-var path = require('path');
-var vscode_1 = require('vscode');
-var vscode_languageclient_1 = require('vscode-languageclient');
-var htmlEmptyTagsShared_1 = require('./htmlEmptyTagsShared');
-var colorDecorators_1 = require('./colorDecorators');
-var vscode_extension_telemetry_1 = require('vscode-extension-telemetry');
-var nls = require('vscode-nls');
+var path = require("path");
+var vscode_1 = require("vscode");
+var vscode_languageclient_1 = require("vscode-languageclient");
+var htmlEmptyTagsShared_1 = require("./htmlEmptyTagsShared");
+var colorDecorators_1 = require("./colorDecorators");
+var vscode_extension_telemetry_1 = require("vscode-extension-telemetry");
+var nls = require("vscode-nls");
 var localize = nls.loadMessageBundle(__filename);
 var ColorSymbolRequest;
 (function (ColorSymbolRequest) {
-    ColorSymbolRequest.type = { get method() { return 'css/colorSymbols'; }, _: null };
+    ColorSymbolRequest.type = new vscode_languageclient_1.RequestType('css/colorSymbols');
 })(ColorSymbolRequest || (ColorSymbolRequest = {}));
 function activate(context) {
     var packageInfo = getPackageInfo(context);
@@ -40,8 +40,7 @@ function activate(context) {
                 embeddedLanguages: embeddedLanguages
             },
             _a['format.enable'] = vscode_1.workspace.getConfiguration('html').get('format.enable'),
-            _a
-        )
+            _a)
     };
     // Create the language client and start the client.
     var client = new vscode_languageclient_1.LanguageClient('html', localize(0, null), serverOptions, clientOptions, true);
@@ -115,4 +114,4 @@ function getPackageInfo(context) {
     }
     return null;
 }
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/38746938a4ab94f2f57d9e1309c51fd6fb37553d/extensions\html\client\out/htmlMain.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/f9d0c687ff2ea7aabd85fb9a43129117c0ecf519/extensions\html\client\out/htmlMain.js.map

@@ -1,4 +1,9 @@
 [
-	"無法驗證 PHP 檔案。找不到 PHP 程式。請使用 'php.validate.executablePath' 設定，對 'php' 的位置進行設定",
+	"Do you allow {0} to be executed to lint PHP files?",
+	"Yes",
+	"No",
+	"Learn More",
+	"因為 {0} 不是有效的 PHP 可執行檔，所以無法進行驗證。請按一下 [路徑] 狀態列項目以設定可執行檔。",
+	"因為未設定 PHP 可執行檔，所以無法進行驗證。請按一下 [路徑] 狀態列項目以設定可執行檔。",
 	"無法使用路徑 {0} 執行 PHP。原因不明。"
 ]

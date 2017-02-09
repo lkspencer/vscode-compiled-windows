@@ -368,8 +368,8 @@ var NodeDebugSession = (function (_super) {
      */
     NodeDebugSession.prototype._skip = function (event) {
         if (this._skipFiles) {
-            var path = event.script.name;
-            if (path /*&& PathUtils.isAbsolutePath(path)*/) {
+            var path = this._scriptNameToPath(event.script.name);
+            if (path) {
                 // if launch.json defines localRoot and remoteRoot try to convert remote path back to a local path
                 var localPath = this._remoteToLocal(path);
                 return PathUtils.multiGlobMatches(this._skipFiles, localPath);
@@ -381,8 +381,8 @@ var NodeDebugSession = (function (_super) {
      * Returns true if a source location of the given event should be skipped.
      */
     NodeDebugSession.prototype._skipGenerated = function (event) {
-        var path = event.script.name;
-        if (path /*&& PathUtils.isAbsolutePath(path)*/) {
+        var path = this._scriptNameToPath(event.script.name);
+        if (path) {
             // if launch.json defines localRoot and remoteRoot try to convert remote path back to a local path
             var localPath = this._remoteToLocal(path);
             if (this._skipFiles) {
@@ -400,6 +400,16 @@ var NodeDebugSession = (function (_super) {
         }
         // skip everything
         return Promise.resolve(true);
+    };
+    /**
+     * Special treatment for internal modules: we prepend '<internal>/'
+     */
+    NodeDebugSession.prototype._scriptNameToPath = function (scriptName) {
+        if (scriptName && !PathUtils.isAbsolutePath(scriptName)) {
+            // scriptname is relative -> internal node module
+            return NodeDebugSession.NODE_INTERNALS + "/" + scriptName;
+        }
+        return scriptName;
     };
     /**
      * clear everything that is no longer valid after a new stopped event.
@@ -544,7 +554,9 @@ var NodeDebugSession = (function (_super) {
                 this.outLine(localize(13, null));
             }
         }
-        runtimeArgs = args.runtimeArgs || ['--nolazy'];
+        if (!args.runtimeArgs && !this._noDebug) {
+            runtimeArgs = ['--nolazy'];
+        }
         if (programPath) {
             if (NodeDebugSession.isJavaScript(programPath)) {
                 if (this._sourceMaps) {
@@ -747,7 +759,13 @@ var NodeDebugSession = (function (_super) {
         if (typeof args.stopOnEntry === 'boolean') {
             this._stopOnEntry = args.stopOnEntry;
         }
+        if (typeof args.restart === 'boolean') {
+            this._restartMode = args.restart;
+        }
         if (!this._sourceMaps) {
+            if (args.sourceMaps === undefined) {
+                args.sourceMaps = true;
+            }
             if (typeof args.sourceMaps === 'boolean' && args.sourceMaps) {
                 var generatedCodeDirectory = args.outDir;
                 if (generatedCodeDirectory) {
@@ -776,9 +794,6 @@ var NodeDebugSession = (function (_super) {
         }
         else {
             this._attachMode = true;
-        }
-        if (typeof args.restart === 'boolean') {
-            this._restartMode = args.restart;
         }
         if (args.localRoot) {
             var localRoot = args.localRoot;
@@ -1624,6 +1639,7 @@ var NodeDebugSession = (function (_super) {
             var script_val = _this._getValueFromCache(frame.script);
             if (script_val) {
                 var name_2 = script_val.name;
+                var path = void 0;
                 if (name_2) {
                     if (_this._mapToFilesOnDisk) {
                         // try to map the script to a file in the workspace
@@ -1653,6 +1669,7 @@ var NodeDebugSession = (function (_super) {
                             return _this._createStackFrameFromPath(frame, name_2, localPath_1, remotePath_1, origin, line, column);
                         }
                         // if we end up here, 'name' is not a path and is an internal module
+                        path = _this._scriptNameToPath(name_2);
                         origin = localize(32, null);
                     }
                     else {
@@ -1664,7 +1681,7 @@ var NodeDebugSession = (function (_super) {
                 }
                 // source not found locally -> prepare to stream source content from node backend.
                 var sourceHandle = _this._getScriptIdHandle(script_val.id);
-                src = new vscode_debugadapter_1.Source(name_2, undefined, sourceHandle, origin);
+                src = _this._createSource(false, name_2, path, sourceHandle, origin);
             }
             return _this._createStackFrameFromSource(frame, src, line, column);
         }).catch(function (err) {
@@ -1672,6 +1689,27 @@ var NodeDebugSession = (function (_super) {
             var name = localize(33, null, func_name, err.message);
             return new vscode_debugadapter_1.StackFrame(_this._frameHandles.create(frame), name);
         });
+    };
+    NodeDebugSession.prototype._createSource = function (hasSource, name, path, sourceHandle, origin, data) {
+        if (sourceHandle === void 0) { sourceHandle = 0; }
+        var deemphasize = false;
+        if (path && this._skipFiles && PathUtils.multiGlobMatches(this._skipFiles, path)) {
+            var skipFiles = localize(34, null);
+            deemphasize = true;
+            origin = origin ? origin + " (" + skipFiles + ")" : skipFiles;
+        }
+        else if (!hasSource && this._smartStep && this._sourceMaps) {
+            var smartStep = localize(35, null);
+            deemphasize = true;
+            origin = origin ? origin + " (" + smartStep + ")" : smartStep;
+        }
+        // make sure to only use the basename of a path
+        name = Path.basename(name);
+        var src = new vscode_debugadapter_1.Source(name, path, sourceHandle, origin, data);
+        if (deemphasize) {
+            src.presentationHint = 'deemphasize';
+        }
+        return src;
     };
     /**
      * Creates a StackFrame when source maps are involved.
@@ -1684,17 +1722,18 @@ var NodeDebugSession = (function (_super) {
                 return _this._sameFile(mapresult.path, _this._compareContents, 0, mapresult.content).then(function (same) {
                     if (same) {
                         // use this mapping
-                        var src = new vscode_debugadapter_1.Source(Path.basename(mapresult.path), _this.convertDebuggerPathToClient(mapresult.path));
+                        var src = _this._createSource(true, mapresult.path, _this.convertDebuggerPathToClient(mapresult.path));
                         return _this._createStackFrameFromSource(frame, src, mapresult.line, mapresult.column);
                     }
                     // file doesn't exist at path: if source map has inlined source use it
                     if (mapresult.content) {
                         _this.log('sm', "_createStackFrameFromSourceMap: source '" + mapresult.path + "' doesn't exist -> use inlined source");
                         var sourceHandle = _this._getInlinedContentHandle(mapresult.content);
-                        origin = localize(34, null);
-                        var src = new vscode_debugadapter_1.Source(Path.basename(mapresult.path), undefined, sourceHandle, origin, { inlinePath: mapresult.path });
+                        origin = localize(36, null);
+                        var src = _this._createSource(true, mapresult.path, undefined, sourceHandle, origin, { inlinePath: mapresult.path });
                         return _this._createStackFrameFromSource(frame, src, mapresult.line, mapresult.column);
                     }
+                    // no source found
                     _this.log('sm', "_createStackFrameFromSourceMap: gen: '" + localPath + "' " + line + ":" + column + " -> can't find source -> use generated file");
                     return _this._createStackFrameFromPath(frame, name, localPath, remotePath, origin, line, column);
                 });
@@ -1723,12 +1762,12 @@ var NodeDebugSession = (function (_super) {
             var src;
             if (same) {
                 // we use the file on disk
-                src = new vscode_debugadapter_1.Source(name, _this.convertDebuggerPathToClient(localPath));
+                src = _this._createSource(false, name, _this.convertDebuggerPathToClient(localPath));
             }
             else {
                 // we use the script's content streamed from node
                 var sourceHandle = _this._getScriptIdHandle(script_id);
-                src = new vscode_debugadapter_1.Source(name, undefined, sourceHandle, origin, { remotePath: remotePath }); // assume it is a remote path
+                src = _this._createSource(false, name, undefined, sourceHandle, origin, { remotePath: remotePath }); // assume it is a remote path
             }
             return _this._createStackFrameFromSource(frame, src, line, column);
         });
@@ -1760,7 +1799,7 @@ var NodeDebugSession = (function (_super) {
             }
         }
         if (!func_name || func_name.length === 0) {
-            func_name = localize(35, null);
+            func_name = localize(37, null);
         }
         return func_name;
     };
@@ -1855,14 +1894,14 @@ var NodeDebugSession = (function (_super) {
                 if (type >= 0 && type < NodeDebugSession.SCOPE_NAMES.length) {
                     if (type === 1 && typeof scopesResponse.body.vscode_locals === 'number') {
                         expensive = true;
-                        scopeName = localize(36, null, scopesArgs.maxLocals, scopesResponse.body.vscode_locals);
+                        scopeName = localize(38, null, scopesArgs.maxLocals, scopesResponse.body.vscode_locals);
                     }
                     else {
                         scopeName = NodeDebugSession.SCOPE_NAMES[type];
                     }
                 }
                 else {
-                    scopeName = localize(37, null, type);
+                    scopeName = localize(39, null, type);
                 }
                 return _this._resolveValues([scope.object]).then(function (resolved) {
                     return new vscode_debugadapter_1.Scope(scopeName, _this._variableHandles.create(new ScopeContainer(scope, resolved[0], extra)), expensive);
@@ -1873,7 +1912,7 @@ var NodeDebugSession = (function (_super) {
         }).then(function (scopes) {
             // exception scope
             if (frameIx === 0 && _this._exception) {
-                scopes.unshift(new vscode_debugadapter_1.Scope(localize(38, null), _this._variableHandles.create(new PropertyContainer(_this._exception))));
+                scopes.unshift(new vscode_debugadapter_1.Scope(localize(40, null), _this._variableHandles.create(new PropertyContainer(_this._exception))));
             }
             response.body = {
                 scopes: scopes
@@ -2559,7 +2598,7 @@ var NodeDebugSession = (function (_super) {
                     }
                     else {
                         response.success = false;
-                        response.message = localize(39, null);
+                        response.message = localize(41, null);
                     }
                     _this.sendResponse(response);
                 });
@@ -2567,11 +2606,11 @@ var NodeDebugSession = (function (_super) {
             else {
                 response.success = false;
                 if (resp.message.indexOf('ReferenceError: ') === 0 || resp.message === 'No frames') {
-                    response.message = localize(40, null);
+                    response.message = localize(42, null);
                 }
                 else if (resp.message.indexOf('SyntaxError: ') === 0) {
                     var m = resp.message.substring('SyntaxError: '.length).toLowerCase();
-                    response.message = localize(41, null, m);
+                    response.message = localize(43, null, m);
                 }
                 else {
                     response.message = resp.message;
@@ -2602,7 +2641,7 @@ var NodeDebugSession = (function (_super) {
                     };
                     _this.sendResponse(response);
                 }).catch(function (err) {
-                    _this.sendErrorResponse(response, 2026, localize(42, null));
+                    _this.sendErrorResponse(response, 2026, localize(44, null));
                 });
                 return;
             }
@@ -2748,13 +2787,13 @@ var NodeDebugSession = (function (_super) {
      * 'Path does not exist' error
      */
     NodeDebugSession.prototype.sendNotExistErrorResponse = function (response, attribute, path) {
-        this.sendErrorResponse(response, 2007, localize(43, null, attribute, '{path}'), { path: path });
+        this.sendErrorResponse(response, 2007, localize(45, null, attribute, '{path}'), { path: path });
     };
     /**
      * 'Path not absolute' error with 'More Information' link.
      */
     NodeDebugSession.prototype.sendRelativePathErrorResponse = function (response, attribute, path) {
-        var format = localize(44, null, attribute, '{path}', '${workspaceRoot}/');
+        var format = localize(46, null, attribute, '{path}', '${workspaceRoot}/');
         this.sendErrorResponseWithInfoLink(response, 2008, format, { path: path }, 20003);
     };
     /**
@@ -2767,7 +2806,7 @@ var NodeDebugSession = (function (_super) {
             variables: variables,
             showUser: true,
             url: 'http://go.microsoft.com/fwlink/?linkID=534832#_' + infoId.toString(),
-            urlLabel: localize(45, null)
+            urlLabel: localize(47, null)
         });
     };
     /**
@@ -2819,10 +2858,10 @@ var NodeDebugSession = (function (_super) {
         else {
             var errmsg = nodeResponse.message;
             if (errmsg.indexOf('unresponsive') >= 0) {
-                this.sendErrorResponse(response, 2015, localize(46, null), { _request: nodeResponse.command });
+                this.sendErrorResponse(response, 2015, localize(48, null), { _request: nodeResponse.command });
             }
             else if (errmsg.indexOf('timeout') >= 0) {
-                this.sendErrorResponse(response, 2016, localize(47, null), { _request: nodeResponse.command });
+                this.sendErrorResponse(response, 2016, localize(49, null), { _request: nodeResponse.command });
             }
             else {
                 this.sendErrorResponse(response, 2013, 'Node.js request \'{_request}\' failed (reason: {_error}).', { _request: nodeResponse.command, _error: errmsg }, vscode_debugadapter_1.ErrorDestination.Telemetry);
@@ -3046,18 +3085,19 @@ NodeDebugSession.DUMMY_THREAD_NAME = 'Node';
 NodeDebugSession.FIRST_LINE_OFFSET = 62;
 NodeDebugSession.PROTO = '__proto__';
 NodeDebugSession.DEBUG_INJECTION = 'debugInjection.js';
+NodeDebugSession.NODE_INTERNALS = '<node_internals>';
 NodeDebugSession.NODE_SHEBANG_MATCHER = new RegExp('#! */usr/bin/env +node');
 NodeDebugSession.LONG_STRING_MATCHER = /\.\.\. \(length: [0-9]+\)$/;
 NodeDebugSession.HITCOUNT_MATCHER = /(>|>=|=|==|<|<=|%)?\s*([0-9]+)/;
 //--- scopes request ------------------------------------------------------------------------------------------------------
 NodeDebugSession.SCOPE_NAMES = [
-    localize(48, null),
-    localize(49, null),
     localize(50, null),
     localize(51, null),
     localize(52, null),
     localize(53, null),
-    localize(54, null)
+    localize(54, null),
+    localize(55, null),
+    localize(56, null)
 ];
 exports.NodeDebugSession = NodeDebugSession;
 var INDEX_PATTERN = /^[0-9]+$/;

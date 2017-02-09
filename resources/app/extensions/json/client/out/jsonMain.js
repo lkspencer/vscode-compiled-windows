@@ -3,19 +3,19 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 'use strict';
-var path = require('path');
-var vscode_1 = require('vscode');
-var vscode_languageclient_1 = require('vscode-languageclient');
-var vscode_extension_telemetry_1 = require('vscode-extension-telemetry');
-var nls = require('vscode-nls');
+var path = require("path");
+var vscode_1 = require("vscode");
+var vscode_languageclient_1 = require("vscode-languageclient");
+var vscode_extension_telemetry_1 = require("vscode-extension-telemetry");
+var nls = require("vscode-nls");
 var localize = nls.loadMessageBundle(__filename);
 var VSCodeContentRequest;
 (function (VSCodeContentRequest) {
-    VSCodeContentRequest.type = { get method() { return 'vscode/content'; }, _: null };
+    VSCodeContentRequest.type = new vscode_languageclient_1.RequestType('vscode/content');
 })(VSCodeContentRequest || (VSCodeContentRequest = {}));
 var SchemaAssociationNotification;
 (function (SchemaAssociationNotification) {
-    SchemaAssociationNotification.type = { get method() { return 'json/schemaAssociations'; }, _: null };
+    SchemaAssociationNotification.type = new vscode_languageclient_1.NotificationType('json/schemaAssociations');
 })(SchemaAssociationNotification || (SchemaAssociationNotification = {}));
 function activate(context) {
     var packageInfo = getPackageInfo(context);
@@ -45,8 +45,7 @@ function activate(context) {
                     languageIds: languageIds
                 },
                 _a['format.enable'] = vscode_1.workspace.getConfiguration('json').get('format.enable'),
-                _a
-            )
+                _a)
         };
         // Create the language client and start the client.
         var client = new vscode_languageclient_1.LanguageClient('json', localize(0, null), serverOptions, clientOptions);
@@ -121,4 +120,4 @@ function getPackageInfo(context) {
     }
     return null;
 }
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/38746938a4ab94f2f57d9e1309c51fd6fb37553d/extensions\json\client\out/jsonMain.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/f9d0c687ff2ea7aabd85fb9a43129117c0ecf519/extensions\json\client\out/jsonMain.js.map

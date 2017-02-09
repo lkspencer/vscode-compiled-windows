@@ -3,15 +3,15 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 'use strict';
-var path = require('path');
-var vscode_1 = require('vscode');
-var vscode_languageclient_1 = require('vscode-languageclient');
-var colorDecorators_1 = require('./colorDecorators');
-var nls = require('vscode-nls');
+var path = require("path");
+var vscode_1 = require("vscode");
+var vscode_languageclient_1 = require("vscode-languageclient");
+var colorDecorators_1 = require("./colorDecorators");
+var nls = require("vscode-nls");
 var localize = nls.loadMessageBundle(__filename);
 var ColorSymbolRequest;
 (function (ColorSymbolRequest) {
-    ColorSymbolRequest.type = { get method() { return 'css/colorSymbols'; }, _: null };
+    ColorSymbolRequest.type = new vscode_languageclient_1.RequestType('css/colorSymbols');
 })(ColorSymbolRequest || (ColorSymbolRequest = {}));
 // this method is called when vs code is activated
 function activate(context) {
@@ -39,11 +39,13 @@ function activate(context) {
     // Push the disposable to the context's subscriptions so that the
     // client can be deactivated on extension deactivation
     context.subscriptions.push(disposable);
-    var colorRequestor = function (uri) {
-        return client.sendRequest(ColorSymbolRequest.type, uri).then(function (ranges) { return ranges.map(client.protocol2CodeConverter.asRange); });
-    };
-    disposable = colorDecorators_1.activateColorDecorations(colorRequestor, { css: true, scss: true, less: true });
-    context.subscriptions.push(disposable);
+    client.onReady().then(function (_) {
+        var colorRequestor = function (uri) {
+            return client.sendRequest(ColorSymbolRequest.type, uri).then(function (ranges) { return ranges.map(client.protocol2CodeConverter.asRange); });
+        };
+        disposable = colorDecorators_1.activateColorDecorations(colorRequestor, { css: true, scss: true, less: true });
+        context.subscriptions.push(disposable);
+    });
     vscode_1.languages.setLanguageConfiguration('css', {
         wordPattern: /(#?-?\d*\.\d\w*%?)|(::?[\w-]*(?=[^,{;]*[,{]))|(([@#.!])?[\w-?]+%?|[@#!.])/g
     });
@@ -74,4 +76,4 @@ function activate(context) {
     }
 }
 exports.activate = activate;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/38746938a4ab94f2f57d9e1309c51fd6fb37553d/extensions\css\client\out/cssMain.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/f9d0c687ff2ea7aabd85fb9a43129117c0ecf519/extensions\css\client\out/cssMain.js.map

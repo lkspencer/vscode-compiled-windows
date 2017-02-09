@@ -7,33 +7,37 @@
  * https://github.com/Microsoft/TypeScript-Sublime-Plugin/blob/master/TypeScript%20Indent.tmPreferences
  * ------------------------------------------------------------------------------------------ */
 'use strict';
-var vscode_1 = require('vscode');
+const vscode_1 = require("vscode");
 // This must be the first statement otherwise modules might got loaded with
 // the wrong locale.
-var nls = require('vscode-nls');
+const nls = require("vscode-nls");
 nls.config({ locale: vscode_1.env.language });
-var path = require('path');
-var typescriptServiceClient_1 = require('./typescriptServiceClient');
-var hoverProvider_1 = require('./features/hoverProvider');
-var definitionProvider_1 = require('./features/definitionProvider');
-var documentHighlightProvider_1 = require('./features/documentHighlightProvider');
-var referenceProvider_1 = require('./features/referenceProvider');
-var documentSymbolProvider_1 = require('./features/documentSymbolProvider');
-var signatureHelpProvider_1 = require('./features/signatureHelpProvider');
-var renameProvider_1 = require('./features/renameProvider');
-var formattingProvider_1 = require('./features/formattingProvider');
-var bufferSyncSupport_1 = require('./features/bufferSyncSupport');
-var completionItemProvider_1 = require('./features/completionItemProvider');
-var workspaceSymbolProvider_1 = require('./features/workspaceSymbolProvider');
-var VersionStatus = require('./utils/versionStatus');
-var ProjectStatus = require('./utils/projectStatus');
-var BuildStatus = require('./utils/buildStatus');
+const path = require("path");
+const typescriptServiceClient_1 = require("./typescriptServiceClient");
+const hoverProvider_1 = require("./features/hoverProvider");
+const definitionProvider_1 = require("./features/definitionProvider");
+const ImplementationProvider_1 = require("./features/ImplementationProvider");
+const documentHighlightProvider_1 = require("./features/documentHighlightProvider");
+const referenceProvider_1 = require("./features/referenceProvider");
+const documentSymbolProvider_1 = require("./features/documentSymbolProvider");
+const signatureHelpProvider_1 = require("./features/signatureHelpProvider");
+const renameProvider_1 = require("./features/renameProvider");
+const formattingProvider_1 = require("./features/formattingProvider");
+const bufferSyncSupport_1 = require("./features/bufferSyncSupport");
+const completionItemProvider_1 = require("./features/completionItemProvider");
+const workspaceSymbolProvider_1 = require("./features/workspaceSymbolProvider");
+const codeActionProvider_1 = require("./features/codeActionProvider");
+const referencesCodeLensProvider_1 = require("./features/referencesCodeLensProvider");
+const BuildStatus = require("./utils/buildStatus");
+const ProjectStatus = require("./utils/projectStatus");
+const typingsStatus_1 = require("./utils/typingsStatus");
+const VersionStatus = require("./utils/versionStatus");
 function activate(context) {
-    var MODE_ID_TS = 'typescript';
-    var MODE_ID_TSX = 'typescriptreact';
-    var MODE_ID_JS = 'javascript';
-    var MODE_ID_JSX = 'javascriptreact';
-    var clientHost = new TypeScriptServiceClientHost([
+    let MODE_ID_TS = 'typescript';
+    let MODE_ID_TSX = 'typescriptreact';
+    let MODE_ID_JS = 'javascript';
+    let MODE_ID_JSX = 'javascriptreact';
+    let clientHost = new TypeScriptServiceClientHost([
         {
             id: 'typescript',
             diagnosticSource: 'ts',
@@ -48,76 +52,93 @@ function activate(context) {
             extensions: ['.js', '.jsx'],
             configFile: 'jsconfig.json'
         }
-    ], context.storagePath, context.globalState);
-    var client = clientHost.serviceClient;
-    context.subscriptions.push(vscode_1.commands.registerCommand('typescript.reloadProjects', function () {
+    ], context.storagePath, context.globalState, context.workspaceState);
+    let client = clientHost.serviceClient;
+    context.subscriptions.push(vscode_1.commands.registerCommand('typescript.reloadProjects', () => {
         clientHost.reloadProjects();
     }));
-    context.subscriptions.push(vscode_1.commands.registerCommand('javascript.reloadProjects', function () {
+    context.subscriptions.push(vscode_1.commands.registerCommand('javascript.reloadProjects', () => {
         clientHost.reloadProjects();
+    }));
+    context.subscriptions.push(vscode_1.commands.registerCommand('_typescript.onVersionStatusClicked', () => {
+        client.onVersionStatusClicked();
     }));
     vscode_1.window.onDidChangeActiveTextEditor(VersionStatus.showHideStatus, null, context.subscriptions);
-    client.onReady().then(function () {
-        context.subscriptions.push(ProjectStatus.create(client, function (path) { return new Promise(function (resolve) { return setTimeout(function () { return resolve(clientHost.handles(path)); }, 750); }); }, context.workspaceState));
-    }, function () {
+    client.onReady().then(() => {
+        context.subscriptions.push(ProjectStatus.create(client, path => new Promise(resolve => setTimeout(() => resolve(clientHost.handles(path)), 750)), context.workspaceState));
+    }, () => {
         // Nothing to do here. The client did show a message;
     });
     BuildStatus.update({ queueLength: 0 });
 }
 exports.activate = activate;
-var validateSetting = 'validate.enable';
-var LanguageProvider = (function () {
-    function LanguageProvider(client, description) {
-        var _this = this;
+const validateSetting = 'validate.enable';
+class LanguageProvider {
+    constructor(client, description) {
+        this.client = client;
         this.description = description;
         this.extensions = Object.create(null);
-        description.extensions.forEach(function (extension) { return _this.extensions[extension] = true; });
+        description.extensions.forEach(extension => this.extensions[extension] = true);
         this._validate = true;
         this.bufferSyncSupport = new bufferSyncSupport_1.default(client, description.modeIds, {
-            delete: function (file) {
-                _this.currentDiagnostics.delete(vscode_1.Uri.file(file));
+            delete: (file) => {
+                this.currentDiagnostics.delete(client.asUrl(file));
             }
         }, this.extensions);
         this.syntaxDiagnostics = Object.create(null);
         this.currentDiagnostics = vscode_1.languages.createDiagnosticCollection(description.id);
+        this.typingsStatus = new typingsStatus_1.default(client);
+        new typingsStatus_1.AtaProgressReporter(client);
         vscode_1.workspace.onDidChangeConfiguration(this.configurationChanged, this);
         this.configurationChanged();
-        client.onReady().then(function () {
-            _this.registerProviders(client);
-            _this.bufferSyncSupport.listen();
-        }, function () {
+        client.onReady().then(() => {
+            this.registerProviders(client);
+            this.bufferSyncSupport.listen();
+        }, () => {
             // Nothing to do here. The client did show a message;
         });
     }
-    LanguageProvider.prototype.registerProviders = function (client) {
-        var _this = this;
-        var config = vscode_1.workspace.getConfiguration(this.id);
-        this.completionItemProvider = new completionItemProvider_1.default(client);
+    registerProviders(client) {
+        let config = vscode_1.workspace.getConfiguration(this.id);
+        this.completionItemProvider = new completionItemProvider_1.default(client, this.typingsStatus);
         this.completionItemProvider.updateConfiguration(config);
-        var hoverProvider = new hoverProvider_1.default(client);
-        var definitionProvider = new definitionProvider_1.default(client);
-        var documentHighlightProvider = new documentHighlightProvider_1.default(client);
-        var referenceProvider = new referenceProvider_1.default(client);
-        var documentSymbolProvider = new documentSymbolProvider_1.default(client);
-        var signatureHelpProvider = new signatureHelpProvider_1.default(client);
-        var renameProvider = new renameProvider_1.default(client);
+        let hoverProvider = new hoverProvider_1.default(client);
+        let definitionProvider = new definitionProvider_1.default(client);
+        let implementationProvider = new ImplementationProvider_1.default(client);
+        let documentHighlightProvider = new documentHighlightProvider_1.default(client);
+        let referenceProvider = new referenceProvider_1.default(client);
+        let documentSymbolProvider = new documentSymbolProvider_1.default(client);
+        let signatureHelpProvider = new signatureHelpProvider_1.default(client);
+        let renameProvider = new renameProvider_1.default(client);
         this.formattingProvider = new formattingProvider_1.default(client);
         this.formattingProvider.updateConfiguration(config);
         if (this.formattingProvider.isEnabled()) {
             this.formattingProviderRegistration = vscode_1.languages.registerDocumentRangeFormattingEditProvider(this.description.modeIds, this.formattingProvider);
         }
-        this.description.modeIds.forEach(function (modeId) {
-            var selector = { scheme: 'file', language: modeId };
-            vscode_1.languages.registerCompletionItemProvider(selector, _this.completionItemProvider, '.');
+        this.referenceCodeLensProvider = new referencesCodeLensProvider_1.default(client);
+        this.referenceCodeLensProvider.updateConfiguration(config);
+        if (client.apiVersion.has206Features()) {
+            vscode_1.languages.registerCodeLensProvider(this.description.modeIds, this.referenceCodeLensProvider);
+        }
+        this.description.modeIds.forEach(modeId => {
+            let selector = modeId;
+            vscode_1.languages.registerCompletionItemProvider(selector, this.completionItemProvider, '.');
             vscode_1.languages.registerHoverProvider(selector, hoverProvider);
             vscode_1.languages.registerDefinitionProvider(selector, definitionProvider);
+            if (client.apiVersion.has220Features()) {
+                // TODO: TS 2.1.5 returns incorrect results for implementation locations.
+                vscode_1.languages.registerImplementationProvider(selector, implementationProvider);
+            }
             vscode_1.languages.registerDocumentHighlightProvider(selector, documentHighlightProvider);
             vscode_1.languages.registerReferenceProvider(selector, referenceProvider);
             vscode_1.languages.registerDocumentSymbolProvider(selector, documentSymbolProvider);
             vscode_1.languages.registerSignatureHelpProvider(selector, signatureHelpProvider, '(', ',');
             vscode_1.languages.registerRenameProvider(selector, renameProvider);
-            vscode_1.languages.registerOnTypeFormattingEditProvider(selector, _this.formattingProvider, ';', '}', '\n');
+            vscode_1.languages.registerOnTypeFormattingEditProvider(selector, this.formattingProvider, ';', '}', '\n');
             vscode_1.languages.registerWorkspaceSymbolProvider(new workspaceSymbolProvider_1.default(client, modeId));
+            if (client.apiVersion.has213Features()) {
+                vscode_1.languages.registerCodeActionsProvider(selector, new codeActionProvider_1.default(client, modeId));
+            }
             vscode_1.languages.setLanguageConfiguration(modeId, {
                 indentationRules: {
                     // ^(.*\*/)?\s*\}.*$
@@ -155,13 +176,31 @@ var LanguageProvider = (function () {
                     }
                 ]
             });
+            const EMPTY_ELEMENTS = ['area', 'base', 'br', 'col', 'embed', 'hr', 'img', 'input', 'keygen', 'link', 'menuitem', 'meta', 'param', 'source', 'track', 'wbr'];
+            vscode_1.languages.setLanguageConfiguration('jsx-tags', {
+                wordPattern: /(-?\d*\.\d\w*)|([^\`\~\!\@\$\^\&\*\(\)\=\+\[\{\]\}\\\|\;\:\'\"\,\.\<\>\/\s]+)/g,
+                onEnterRules: [
+                    {
+                        beforeText: new RegExp(`<(?!(?:${EMPTY_ELEMENTS.join('|')}))([_:\\w][_:\\w-.\\d]*)([^/>]*(?!/)>)[^<]*$`, 'i'),
+                        afterText: /^<\/([_:\w][_:\w-.\d]*)\s*>$/i,
+                        action: { indentAction: vscode_1.IndentAction.IndentOutdent }
+                    },
+                    {
+                        beforeText: new RegExp(`<(?!(?:${EMPTY_ELEMENTS.join('|')}))(\\w[\\w\\d]*)([^/>]*(?!/)>)[^<]*$`, 'i'),
+                        action: { indentAction: vscode_1.IndentAction.Indent }
+                    }
+                ],
+            });
         });
-    };
-    LanguageProvider.prototype.configurationChanged = function () {
-        var config = vscode_1.workspace.getConfiguration(this.id);
+    }
+    configurationChanged() {
+        let config = vscode_1.workspace.getConfiguration(this.id);
         this.updateValidate(config.get(validateSetting, true));
         if (this.completionItemProvider) {
             this.completionItemProvider.updateConfiguration(config);
+        }
+        if (this.referenceCodeLensProvider) {
+            this.referenceCodeLensProvider.updateConfiguration(config);
         }
         if (this.formattingProvider) {
             this.formattingProvider.updateConfiguration(config);
@@ -173,30 +212,22 @@ var LanguageProvider = (function () {
                 this.formattingProviderRegistration = vscode_1.languages.registerDocumentRangeFormattingEditProvider(this.description.modeIds, this.formattingProvider);
             }
         }
-    };
-    LanguageProvider.prototype.handles = function (file) {
-        var extension = path.extname(file);
+    }
+    handles(file) {
+        let extension = path.extname(file);
         if ((extension && this.extensions[extension]) || this.bufferSyncSupport.handles(file)) {
             return true;
         }
-        var basename = path.basename(file);
+        let basename = path.basename(file);
         return !!basename && basename === this.description.configFile;
-    };
-    Object.defineProperty(LanguageProvider.prototype, "id", {
-        get: function () {
-            return this.description.id;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(LanguageProvider.prototype, "diagnosticSource", {
-        get: function () {
-            return this.description.diagnosticSource;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    LanguageProvider.prototype.updateValidate = function (value) {
+    }
+    get id() {
+        return this.description.id;
+    }
+    get diagnosticSource() {
+        return this.description.diagnosticSource;
+    }
+    updateValidate(value) {
         if (this._validate === value) {
             return;
         }
@@ -209,104 +240,96 @@ var LanguageProvider = (function () {
             this.syntaxDiagnostics = Object.create(null);
             this.currentDiagnostics.clear();
         }
-    };
-    LanguageProvider.prototype.reInitialize = function () {
+    }
+    reInitialize() {
         this.currentDiagnostics.clear();
         this.syntaxDiagnostics = Object.create(null);
         this.bufferSyncSupport.reOpenDocuments();
         this.bufferSyncSupport.requestAllDiagnostics();
-    };
-    LanguageProvider.prototype.triggerAllDiagnostics = function () {
+    }
+    triggerAllDiagnostics() {
         this.bufferSyncSupport.requestAllDiagnostics();
-    };
-    LanguageProvider.prototype.syntaxDiagnosticsReceived = function (file, diagnostics) {
+    }
+    syntaxDiagnosticsReceived(file, diagnostics) {
         this.syntaxDiagnostics[file] = diagnostics;
-    };
-    LanguageProvider.prototype.semanticDiagnosticsReceived = function (file, diagnostics) {
-        var syntaxMarkers = this.syntaxDiagnostics[file];
+    }
+    semanticDiagnosticsReceived(file, diagnostics) {
+        let syntaxMarkers = this.syntaxDiagnostics[file];
         if (syntaxMarkers) {
             delete this.syntaxDiagnostics[file];
             diagnostics = syntaxMarkers.concat(diagnostics);
         }
-        this.currentDiagnostics.set(vscode_1.Uri.file(file), diagnostics);
-    };
-    LanguageProvider.prototype.configFileDiagnosticsReceived = function (file, diagnostics) {
-        this.currentDiagnostics.set(vscode_1.Uri.file(file), diagnostics);
-    };
-    return LanguageProvider;
-}());
-var TypeScriptServiceClientHost = (function () {
-    function TypeScriptServiceClientHost(descriptions, storagePath, globalState) {
-        var _this = this;
-        var handleProjectCreateOrDelete = function () {
-            _this.client.execute('reloadProjects', null, false);
-            _this.triggerAllDiagnostics();
+        this.currentDiagnostics.set(this.client.asUrl(file), diagnostics);
+    }
+    configFileDiagnosticsReceived(file, diagnostics) {
+        this.currentDiagnostics.set(this.client.asUrl(file), diagnostics);
+    }
+}
+class TypeScriptServiceClientHost {
+    constructor(descriptions, storagePath, globalState, workspaceState) {
+        let handleProjectCreateOrDelete = () => {
+            this.client.execute('reloadProjects', null, false);
+            this.triggerAllDiagnostics();
         };
-        var handleProjectChange = function () {
-            setTimeout(function () {
-                _this.triggerAllDiagnostics();
+        let handleProjectChange = () => {
+            setTimeout(() => {
+                this.triggerAllDiagnostics();
             }, 1500);
         };
-        var watcher = vscode_1.workspace.createFileSystemWatcher('**/[tj]sconfig.json');
+        let watcher = vscode_1.workspace.createFileSystemWatcher('**/[tj]sconfig.json');
         watcher.onDidCreate(handleProjectCreateOrDelete);
         watcher.onDidDelete(handleProjectCreateOrDelete);
         watcher.onDidChange(handleProjectChange);
-        this.client = new typescriptServiceClient_1.default(this, storagePath, globalState);
+        this.client = new typescriptServiceClient_1.default(this, storagePath, globalState, workspaceState);
         this.languages = [];
         this.languagePerId = Object.create(null);
-        descriptions.forEach(function (description) {
-            var manager = new LanguageProvider(_this.client, description);
-            _this.languages.push(manager);
-            _this.languagePerId[description.id] = manager;
+        descriptions.forEach(description => {
+            let manager = new LanguageProvider(this.client, description);
+            this.languages.push(manager);
+            this.languagePerId[description.id] = manager;
         });
     }
-    Object.defineProperty(TypeScriptServiceClientHost.prototype, "serviceClient", {
-        get: function () {
-            return this.client;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    TypeScriptServiceClientHost.prototype.reloadProjects = function () {
+    get serviceClient() {
+        return this.client;
+    }
+    reloadProjects() {
         this.client.execute('reloadProjects', null, false);
         this.triggerAllDiagnostics();
-    };
-    TypeScriptServiceClientHost.prototype.handles = function (file) {
+    }
+    handles(file) {
         return !!this.findLanguage(file);
-    };
-    TypeScriptServiceClientHost.prototype.findLanguage = function (file) {
-        for (var i = 0; i < this.languages.length; i++) {
-            var language = this.languages[i];
+    }
+    findLanguage(file) {
+        for (let i = 0; i < this.languages.length; i++) {
+            let language = this.languages[i];
             if (language.handles(file)) {
                 return language;
             }
         }
         return null;
-    };
-    TypeScriptServiceClientHost.prototype.triggerAllDiagnostics = function () {
-        var _this = this;
-        Object.keys(this.languagePerId).forEach(function (key) { return _this.languagePerId[key].triggerAllDiagnostics(); });
-    };
-    /* internal */ TypeScriptServiceClientHost.prototype.populateService = function () {
-        var _this = this;
+    }
+    triggerAllDiagnostics() {
+        Object.keys(this.languagePerId).forEach(key => this.languagePerId[key].triggerAllDiagnostics());
+    }
+    /* internal */ populateService() {
         // See https://github.com/Microsoft/TypeScript/issues/5530
-        vscode_1.workspace.saveAll(false).then(function (value) {
-            Object.keys(_this.languagePerId).forEach(function (key) { return _this.languagePerId[key].reInitialize(); });
+        vscode_1.workspace.saveAll(false).then((value) => {
+            Object.keys(this.languagePerId).forEach(key => this.languagePerId[key].reInitialize());
         });
-    };
-    /* internal */ TypeScriptServiceClientHost.prototype.syntaxDiagnosticsReceived = function (event) {
-        var body = event.body;
+    }
+    /* internal */ syntaxDiagnosticsReceived(event) {
+        let body = event.body;
         if (body && body.diagnostics) {
-            var language = this.findLanguage(body.file);
+            let language = this.findLanguage(body.file);
             if (language) {
                 language.syntaxDiagnosticsReceived(body.file, this.createMarkerDatas(body.diagnostics, language.diagnosticSource));
             }
         }
-    };
-    /* internal */ TypeScriptServiceClientHost.prototype.semanticDiagnosticsReceived = function (event) {
-        var body = event.body;
+    }
+    /* internal */ semanticDiagnosticsReceived(event) {
+        let body = event.body;
         if (body && body.diagnostics) {
-            var language = this.findLanguage(body.file);
+            let language = this.findLanguage(body.file);
             if (language) {
                 language.semanticDiagnosticsReceived(body.file, this.createMarkerDatas(body.diagnostics, language.diagnosticSource));
             }
@@ -316,8 +339,8 @@ var TypeScriptServiceClientHost = (function () {
             BuildStatus.update({ queueLength: body.queueLength });
         }
         */
-    };
-    /* internal */ TypeScriptServiceClientHost.prototype.configFileDiagnosticsReceived = function (event) {
+    }
+    /* internal */ configFileDiagnosticsReceived(event) {
         // See https://github.com/Microsoft/TypeScript/issues/10384
         /* https://github.com/Microsoft/TypeScript/issues/10473
         const body = event.body;
@@ -364,19 +387,18 @@ var TypeScriptServiceClientHost = (function () {
             }
         }
         */
-    };
-    TypeScriptServiceClientHost.prototype.createMarkerDatas = function (diagnostics, source) {
-        var result = [];
-        for (var _i = 0, diagnostics_1 = diagnostics; _i < diagnostics_1.length; _i++) {
-            var diagnostic = diagnostics_1[_i];
-            var start = diagnostic.start, end = diagnostic.end, text = diagnostic.text;
-            var range = new vscode_1.Range(start.line - 1, start.offset - 1, end.line - 1, end.offset - 1);
-            var converted = new vscode_1.Diagnostic(range, text);
+    }
+    createMarkerDatas(diagnostics, source) {
+        let result = [];
+        for (let diagnostic of diagnostics) {
+            let { start, end, text } = diagnostic;
+            let range = new vscode_1.Range(start.line - 1, start.offset - 1, end.line - 1, end.offset - 1);
+            let converted = new vscode_1.Diagnostic(range, text);
             converted.source = source;
+            converted.code = '' + diagnostic.code;
             result.push(converted);
         }
         return result;
-    };
-    return TypeScriptServiceClientHost;
-}());
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/38746938a4ab94f2f57d9e1309c51fd6fb37553d/extensions\typescript\out/typescriptMain.js.map
+    }
+}
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/f9d0c687ff2ea7aabd85fb9a43129117c0ecf519/extensions\typescript\out/typescriptMain.js.map

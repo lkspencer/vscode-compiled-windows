@@ -2,21 +2,28 @@
  * Copyright (C) Microsoft Corporation. All rights reserved.
  *--------------------------------------------------------*/
 define("vs/workbench/node/extensionHostProcess.nls.it", {
-	"vs/base/common/processes": [
-		"Errore: nelle informazioni sull\'eseguibile deve essere definito un comando di tipo string.",
-		"Avviso: isShellCommand deve essere di tipo boolean. Il valore {0} verrà ignorato.",
-		"Avviso: gli argomenti devono essere di tipo string[]. Il valore {0} verrà ignorato.",
-		"Avviso: options.cwd deve essere di tipo string. Il valore {0} verrà ignorato.",
+	"vs/base/common/json": [
+		"Simbolo non valido",
+		"Formato di numero non valido",
+		"È previsto un nome di proprietà",
+		"È previsto un valore",
+		"Sono previsti i due punti",
+		"È prevista la virgola",
+		"È prevista la parentesi graffa di chiusura",
+		"È prevista la parentesi quadra di chiusura",
+		"È prevista la fine del file",
 	],
 	"vs/base/common/severity": [
 		"Errore",
 		"Avviso",
 		"Informazioni",
 	],
-	"vs/base/node/processes": [
-		"Non è possibile eseguire un comando della shell su un\'unità UNC.",
+	"vs/editor/common/config/defaultConfig": [
+		"Contenuto editor",
 	],
 	"vs/platform/configuration/common/configurationRegistry": [
+		"Consente di configurare le impostazioni da ignorare per un set di identificatori lingua.",
+		"Esegui override delle impostazioni",
 		"Impostazioni di configurazione di contributes.",
 		"Riepilogo delle impostazioni. Questa etichetta verrà usata nel file di impostazioni come commento di separazione.",
 		"Descrizione delle proprietà di configurazione.",

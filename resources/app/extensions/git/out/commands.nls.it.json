@@ -1,0 +1,15 @@
+[
+	"Tag in {0}",
+	"Ramo remoto in {0}",
+	"Pulire l'albero di lavoro del repository prima dell'estrazione.",
+	"Apri log GIT",
+	"Pulire le modifiche in {0}?",
+	"Sì",
+	"No, mantienile",
+	"Pulire tutte le modifiche?",
+	"Sì",
+	"No, mantienile",
+	"Nome ramo",
+	"Specificare un nome di ramo",
+	"Selezionare un repository remoto in cui pubblicare il ramo '{0}':"
+]

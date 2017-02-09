@@ -2,21 +2,28 @@
  * Copyright (C) Microsoft Corporation. All rights reserved.
  *--------------------------------------------------------*/
 define("vs/workbench/node/extensionHostProcess.nls.zh-tw", {
-	"vs/base/common/processes": [
-		"錯誤: 可執行檔資訊必須定義字串類型的命令。",
-		"警告: isShellCommand 必須屬於布林值類型。即將忽略值 {0}。",
-		"警告: args 必須屬於 string[] 類型。即將忽略值 {0}。",
-		"警告: options.cwd 必須屬於字串類型。即將忽略值 {0}。",
+	"vs/base/common/json": [
+		"符號無效",
+		"數字格式無效",
+		"必須有屬性名稱",
+		"必須有值",
+		"必須為冒號",
+		"必須為逗號",
+		"必須為右大括號",
+		"必須為右中括號",
+		"必須為檔案結尾",
 	],
 	"vs/base/common/severity": [
 		"錯誤",
 		"警告",
 		"資訊",
 	],
-	"vs/base/node/processes": [
-		"無法在 UNC 磁碟機上執行殼層命令。",
+	"vs/editor/common/config/defaultConfig": [
+		"編輯器內容",
 	],
 	"vs/platform/configuration/common/configurationRegistry": [
+		"設定要為一組語言識別碼覆寫的設定。",
+		"覆寫設定",
 		"提供組態設定。",
 		"設定的摘要。此標籤將會在設定檔中作為分隔註解使用。",
 		"組態屬性的描述。",

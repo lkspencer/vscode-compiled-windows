@@ -2,21 +2,28 @@
  * Copyright (C) Microsoft Corporation. All rights reserved.
  *--------------------------------------------------------*/
 define("vs/workbench/node/extensionHostProcess.nls.de", {
-	"vs/base/common/processes": [
-		"Fehler: Die Informationen zur ausführbaren Datei müssen einen Befehl vom Typ \"string\" definieren.",
-		"Warnung: \"isShellCommand\" muss vom Typ \"boolean\" sein. Der Wert {0} wird ignoriert.",
-		"Warnung: \"args\" muss vom Typ \"string[]\" sein. Der Wert {0} wird ignoriert.",
-		"Warnung: \"options.cwd\" muss vom Typ \"string\" sein. Der Wert {0} wird ignoriert.",
+	"vs/base/common/json": [
+		"Ungültiges Symbol",
+		"Ungültiges Zahlenformat.",
+		"Ein Eigenschaftenname wurde erwartet.",
+		"Ein Wert wurde erwartet.",
+		"Ein Doppelpunkt wurde erwartet.",
+		"Ein Komma wurde erwartet.",
+		"Eine schließende geschweifte Klammer wurde erwartet.",
+		"Eine schließende Klammer wurde erwartet.",
+		"Das Dateiende wurde erwartet.",
 	],
 	"vs/base/common/severity": [
 		"Fehler",
 		"Warnung",
 		"Info",
 	],
-	"vs/base/node/processes": [
-		"Ein Shell-Befehl kann nicht auf einem UNC-Laufwerk ausgeführt werden.",
+	"vs/editor/common/config/defaultConfig": [
+		"Editor-Inhalt",
 	],
 	"vs/platform/configuration/common/configurationRegistry": [
+		"Zu überschreibende Einstellungen für einen Sprachbezeichnersatz konfigurieren",
+		"Einstellungen überschreiben",
 		"Trägt Konfigurationseigenschaften bei.",
 		"Eine Zusammenfassung der Einstellungen. Diese Bezeichnung wird in der Einstellungsdatei als trennender Kommentar verwendet.",
 		"Die Beschreibung der Konfigurationseigenschaften.",

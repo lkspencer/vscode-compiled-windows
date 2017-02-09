@@ -3,18 +3,17 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 'use strict';
-var vscode = require('vscode');
-var versionBarEntry = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, Number.MIN_VALUE);
-var _enable = false;
+const vscode = require("vscode");
+const versionBarEntry = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, Number.MIN_VALUE);
 function showHideStatus() {
-    if (!versionBarEntry || !_enable) {
+    if (!versionBarEntry) {
         return;
     }
     if (!vscode.window.activeTextEditor) {
         versionBarEntry.hide();
         return;
     }
-    var doc = vscode.window.activeTextEditor.document;
+    let doc = vscode.window.activeTextEditor.document;
     if (vscode.languages.match('javascript', doc) || vscode.languages.match('javascriptreact', doc)
         || vscode.languages.match('typescript', doc) || vscode.languages.match('typescriptreact', doc)) {
         versionBarEntry.show();
@@ -32,16 +31,8 @@ exports.disposeStatus = disposeStatus;
 function setInfo(message, tooltip) {
     versionBarEntry.text = message;
     versionBarEntry.tooltip = tooltip;
-    var color = 'white';
-    versionBarEntry.color = color;
-    if (_enable) {
-        versionBarEntry.show();
-    }
+    versionBarEntry.color = 'white';
+    versionBarEntry.command = '_typescript.onVersionStatusClicked';
 }
-exports.setInfo = setInfo;
-function enable(value) {
-    _enable = value;
-    showHideStatus();
-}
-exports.enable = enable;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/38746938a4ab94f2f57d9e1309c51fd6fb37553d/extensions\typescript\out/utils\versionStatus.js.map
+exports.setInfo = setInfo;
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/f9d0c687ff2ea7aabd85fb9a43129117c0ecf519/extensions\typescript\out/utils\versionStatus.js.map

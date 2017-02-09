@@ -1,39 +1,40 @@
 {
 	"messages": [
 		"TypeScript",
-		"The workspace folder contains TypeScript version {0}. Do you want to use this version instead of the bundled version {1}?",
-		"Use Workspace ({0})",
-		"Use Bundled ({0})",
-		"Never Check for Workspace Version",
-		"Close",
-		"Updated workspace setting 'typescript.tsdk' to {0}",
-		"Updated workspace setting 'typescript.check.workspaceVersion' to false",
-		"Updated user setting 'typescript.check.workspaceVersion' to false",
-		"The path {0} doesn't point to a valid tsserver install. TypeScript language features will be disabled.",
+		"The path {0} doesn't point to a valid tsserver install. Falling back to bundled TypeScript version.",
 		"custom",
 		"TypeScript language server couldn't be started. Error message is: {0}",
-		"The TypeScript language service died unexpectedly 5 times in the last 5 Minutes. Please consider to open a bug report.",
-		"The TypeScript language service died 5 times right after it got started. The service will not be restarted. Please open a bug report."
+		"Use VSCode's Version",
+		"Currently active",
+		"Use Workspace Version",
+		"Currently active",
+		"Learn More",
+		"Reload",
+		"Reload window to apply changes",
+		"Later",
+		"Select the TypeScript version used for JavaScript and TypeScript language features",
+		"The TypeScript language service died unexpectedly 5 times in the last 5 Minutes.",
+		"Report Issue",
+		"The TypeScript language service died 5 times right after it got started. The service will not be restarted.",
+		"Report Issue"
 	],
 	"keys": [
 		"channelName",
-		"localTSFound",
-		"use",
-		{
-			"key": "useBundled",
-			"comment": [
-				"Bundled has the meaning of packaged with VS Code itself."
-			]
-		},
-		"neverCheckLocalVesion",
-		"close",
-		"updatedtsdk",
-		"updateLocalWorkspaceCheck",
-		"updateGlobalWorkspaceCheck",
 		"noServerFound",
 		"versionNumber.custom",
 		"serverCouldNotBeStarted",
+		"useVSCodeVersionOption",
+		"activeVersion",
+		"useWorkspaceVersionOption",
+		"activeVersion",
+		"learnMore",
+		"reloadTitle",
+		"reloadBlurb",
+		"later",
+		"selectTsVersion",
 		"serverDied",
-		"serverDiedAfterStart"
+		"serverDiedReportIssue",
+		"serverDiedAfterStart",
+		"serverDiedReportIssue"
 	]
 }

@@ -3,11 +3,11 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 'use strict';
-var cp = require('child_process');
-var string_decoder_1 = require('string_decoder');
-var vscode = require('vscode');
-var async_1 = require('./utils/async');
-var nls = require('vscode-nls');
+var cp = require("child_process");
+var string_decoder_1 = require("string_decoder");
+var vscode = require("vscode");
+var async_1 = require("./utils/async");
+var nls = require("vscode-nls");
 var localize = nls.loadMessageBundle(__filename);
 var LineDecoder = (function () {
     function LineDecoder(encoding) {
@@ -57,7 +57,6 @@ var RunTrigger;
     RunTrigger[RunTrigger["onSave"] = 0] = "onSave";
     RunTrigger[RunTrigger["onType"] = 1] = "onType";
 })(RunTrigger || (RunTrigger = {}));
-var RunTrigger;
 (function (RunTrigger) {
     RunTrigger.strings = {
         onSave: 'onSave',
@@ -72,12 +71,14 @@ var RunTrigger;
         }
     };
 })(RunTrigger || (RunTrigger = {}));
+var CheckedExecutablePath = 'php.validate.checkedExecutablePath';
 var PHPValidationProvider = (function () {
-    function PHPValidationProvider() {
+    function PHPValidationProvider(workspaceStore) {
+        this.workspaceStore = workspaceStore;
         this.executable = null;
         this.validationEnabled = true;
         this.trigger = RunTrigger.onSave;
-        this.executableNotFound = false;
+        this.pauseValidation = false;
     }
     PHPValidationProvider.prototype.activate = function (subscriptions) {
         var _this = this;
@@ -101,12 +102,24 @@ var PHPValidationProvider = (function () {
         var oldExecutable = this.executable;
         if (section) {
             this.validationEnabled = section.get('validate.enable', true);
-            this.executable = section.get('validate.executablePath', null);
+            var inspect = section.inspect('validate.executablePath');
+            if (inspect.workspaceValue) {
+                this.executable = inspect.workspaceValue;
+                this.executableIsUserDefined = false;
+            }
+            else if (inspect.globalValue) {
+                this.executable = inspect.globalValue;
+                this.executableIsUserDefined = true;
+            }
+            else {
+                this.executable = undefined;
+                this.executableIsUserDefined = undefined;
+            }
             this.trigger = RunTrigger.from(section.get('validate.run', RunTrigger.strings.onSave));
         }
         this.delayers = Object.create(null);
-        if (this.executableNotFound) {
-            this.executableNotFound = oldExecutable === this.executable;
+        if (this.pauseValidation) {
+            this.pauseValidation = oldExecutable === this.executable;
         }
         if (this.documentListener) {
             this.documentListener.dispose();
@@ -127,16 +140,47 @@ var PHPValidationProvider = (function () {
     };
     PHPValidationProvider.prototype.triggerValidate = function (textDocument) {
         var _this = this;
-        if (textDocument.languageId !== 'php' || this.executableNotFound || !this.validationEnabled) {
+        if (textDocument.languageId !== 'php' || this.pauseValidation || !this.validationEnabled) {
             return;
         }
-        var key = textDocument.uri.toString();
-        var delayer = this.delayers[key];
-        if (!delayer) {
-            delayer = new async_1.ThrottledDelayer(this.trigger === RunTrigger.onType ? 250 : 0);
-            this.delayers[key] = delayer;
+        var trigger = function () {
+            var key = textDocument.uri.toString();
+            var delayer = _this.delayers[key];
+            if (!delayer) {
+                delayer = new async_1.ThrottledDelayer(_this.trigger === RunTrigger.onType ? 250 : 0);
+                _this.delayers[key] = delayer;
+            }
+            delayer.trigger(function () { return _this.doValidate(textDocument); });
+        };
+        if (this.executableIsUserDefined !== void 0 && !this.executableIsUserDefined) {
+            var checkedExecutablePath = this.workspaceStore.get(CheckedExecutablePath, undefined);
+            if (!checkedExecutablePath || checkedExecutablePath !== this.executable) {
+                vscode.window.showInformationMessage(localize(0, null, this.executable), {
+                    title: localize(1, null),
+                    id: 'yes'
+                }, {
+                    title: localize(2, null),
+                    isCloseAffordance: true,
+                    id: 'no'
+                }, {
+                    title: localize(3, null),
+                    id: 'more'
+                }).then(function (selected) {
+                    if (!selected || selected.id === 'no') {
+                        _this.pauseValidation = true;
+                    }
+                    else if (selected.id === 'yes') {
+                        _this.workspaceStore.update(CheckedExecutablePath, _this.executable);
+                        trigger();
+                    }
+                    else if (selected.id === 'more') {
+                        vscode.commands.executeCommand('vscode.open', vscode.Uri.parse('https://go.microsoft.com/fwlink/?linkid=839878'));
+                    }
+                });
+                return;
+            }
         }
-        delayer.trigger(function () { return _this.doValidate(textDocument); });
+        trigger();
     };
     PHPValidationProvider.prototype.doValidate = function (textDocument) {
         var _this = this;
@@ -165,12 +209,12 @@ var PHPValidationProvider = (function () {
             try {
                 var childProcess = cp.spawn(executable, args, options);
                 childProcess.on('error', function (error) {
-                    if (_this.executableNotFound) {
+                    if (_this.pauseValidation) {
                         resolve();
                         return;
                     }
                     _this.showError(error, executable);
-                    _this.executableNotFound = true;
+                    _this.pauseValidation = true;
                     resolve();
                 });
                 if (childProcess.pid) {
@@ -202,18 +246,23 @@ var PHPValidationProvider = (function () {
     PHPValidationProvider.prototype.showError = function (error, executable) {
         var message = null;
         if (error.code === 'ENOENT') {
-            message = localize(0, null);
+            if (this.executable) {
+                message = localize(4, null, executable);
+            }
+            else {
+                message = localize(5, null);
+            }
         }
         else {
-            message = error.message ? error.message : localize(1, null, executable);
+            message = error.message ? error.message : localize(6, null, executable);
         }
         vscode.window.showInformationMessage(message);
     };
-    PHPValidationProvider.MatchExpression = /(?:(?:Parse|Fatal) error): (.*)(?: in )(.*?)(?: on line )(\d+)/;
-    PHPValidationProvider.BufferArgs = ['-l', '-n', '-d', 'display_errors=On', '-d', 'log_errors=Off'];
-    PHPValidationProvider.FileArgs = ['-l', '-n', '-d', 'display_errors=On', '-d', 'log_errors=Off', '-f'];
     return PHPValidationProvider;
 }());
+PHPValidationProvider.MatchExpression = /(?:(?:Parse|Fatal) error): (.*)(?: in )(.*?)(?: on line )(\d+)/;
+PHPValidationProvider.BufferArgs = ['-l', '-n', '-d', 'display_errors=On', '-d', 'log_errors=Off'];
+PHPValidationProvider.FileArgs = ['-l', '-n', '-d', 'display_errors=On', '-d', 'log_errors=Off', '-f'];
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = PHPValidationProvider;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/38746938a4ab94f2f57d9e1309c51fd6fb37553d/extensions\php\out/features\validationProvider.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/f9d0c687ff2ea7aabd85fb9a43129117c0ecf519/extensions\php\out/features\validationProvider.js.map

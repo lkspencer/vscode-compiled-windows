@@ -1,7 +1,7 @@
 {
   "name": "node-debug2",
   "displayName": "Node Debug 2 - Experimental",
-  "version": "1.8.6",
+  "version": "1.9.13",
   "publisher": "ms-vscode",
   "description": "%extension.description%",
   "icon": "images/node-debug-icon.svg",
@@ -14,26 +14,26 @@
   "license": "MIT",
   "private": true,
   "dependencies": {
-    "vscode-chrome-debug-core": "3.8.1",
-    "vscode-debugadapter": "^1.14.0",
-    "vscode-debugprotocol": "^1.14.0",
+    "vscode-chrome-debug-core": "3.12.4",
+    "vscode-debugadapter": "^1.16.0-pre.1",
+    "vscode-debugprotocol": "^1.16.0-pre.1",
     "vscode-nls": "^1.0.4"
   },
   "devDependencies": {
     "@types/mocha": "^2.2.32",
-    "@types/node": "^6.0.39",
+    "@types/node": "^6.0.52",
     "@types/source-map": "^0.1.27",
     "chrome-remote-debug-protocol": "^1.1.20160822",
     "del": "^2.2.2",
     "gulp": "^3.9.1",
     "gulp-sourcemaps": "^2.2.0",
     "gulp-tslint": "^6.1.2",
-    "gulp-typescript": "^2.12.1",
+    "gulp-typescript": "^3.1.3",
     "gulp-util": "^3.0.5",
     "mocha": "^3.1.1",
     "run-sequence": "^1.2.2",
     "tslint": "^3.15.1",
-    "typescript": "~2.0.2",
+    "typescript": "^2.1.4",
     "vsce": "^1.14.0",
     "vscode": "^1.0.0",
     "vscode-debugadapter-testsupport": "^1.15.0-pre.0",
@@ -41,8 +41,7 @@
   },
   "main": "./out/src/extension",
   "activationEvents": [
-    "onCommand:extension.pickNodeProcess",
-    "onCommand:extension.node-debug2.provideInitialConfigurations"
+    "onCommand:extension.node-debug2.toggleSkippingFile"
   ],
   "scripts": {
     "postinstall": "node ./node_modules/vscode/bin/install",
@@ -51,7 +50,7 @@
     "vscode:prepublish": "gulp verify-no-linked-modules"
   },
   "engines": {
-    "vscode": "^1.8.0",
+    "vscode": "^1.9.0",
     "node": "^6.3.0"
   },
   "repository": {
@@ -73,7 +72,6 @@
       "program": "./out/src/nodeDebug.js",
       "runtime": "node",
       "aiKey": "AIF-d9b70cd4-b9f9-4d70-929b-a071c400b217",
-      "initialConfigurations": "extension.node-debug2.provideInitialConfigurations",
       "configurationSnippets": [{
         "label": "%node.snippet.launch.label%",
         "description": "%node.snippet.launch.description%",
@@ -88,7 +86,7 @@
         "label": "%node.snippet.attach.label%",
         "description": "%node.snippet.attach.description%",
         "body": {
-          "type": "node",
+          "type": "node2",
           "request": "attach",
           "name": "${2:Attach to Port}",
           "port": 9229
@@ -216,6 +214,11 @@
               "type": "array",
               "description": "%node.skipFiles.description%",
               "default": []
+            },
+            "envFile": {
+              "type": "string",
+              "description": "%node.launch.envFile.description%",
+              "default": "${workspaceRoot}/.env"
             }
           }
         },
@@ -312,6 +315,16 @@
           }
         }
       }
+    }],
+    "menus": {
+      "debug/callstack/context": [{
+        "command": "extension.node-debug2.toggleSkippingFile",
+        "group": "navigation"
+      }]
+    },
+    "commands": [{
+      "command": "extension.node-debug2.toggleSkippingFile",
+      "title": "Toggle skipping this file"
     }]
   },
   "__metadata": {

@@ -19,5 +19,14 @@ define("vs/workbench/services/search/node/searchApp.nls", {
 		"An unknown error occurred. Please consult the log for more details.",
 		"{0} ({1} errors in total)",
 		"An unknown error occurred. Please consult the log for more details."
+	],
+	"vs/base/common/processes": [
+		"Error: executable info must define a command of type string.",
+		"Warning: isShellCommand must be of type boolean. Ignoring value {0}.",
+		"Warning: args must be of type string[]. Ignoring value {0}.",
+		"Warning: options.cwd must be of type string. Ignoring value {0}."
+	],
+	"vs/base/node/processes": [
+		"Can't execute a shell command on an UNC drive."
 	]
 });

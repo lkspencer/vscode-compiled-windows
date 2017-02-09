@@ -1,0 +1,10 @@
+{
+	"messages": [
+		"Acquiring typings...",
+		"Acquiring typings definitions for IntelliSense."
+	],
+	"keys": [
+		"acquiringTypingsLabel",
+		"acquiringTypingsDetail"
+	]
+}

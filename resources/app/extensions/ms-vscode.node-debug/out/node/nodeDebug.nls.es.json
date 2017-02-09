@@ -33,6 +33,8 @@
 	"contenido de solo lectura de Node.js remoto",
 	"módulo principal de solo lectura",
 	"{0} <error: {1}>",
+	"omitido debido a \"skipFiles\"",
+	"omitido debido a \"smartStep\"",
 	"contenido insertado de solo lectura del mapa de origen",
 	"(función anónima)",
 	"Local ({0} de {1})",

@@ -33,6 +33,8 @@
 	"Schreibgeschützter Inhalt aus Remote-Node.js.",
 	"Schreibgeschütztes Kernmodul",
 	"{0} <Fehler: {1}>",
+	"Aufgrund von \"skipFiles\" übersprungen",
+	"Aufgrund von \"smartStep\" übersprungen",
 	"Schreibgeschützter Inlineinhalt aus der Quellzuordnung.",
 	"(anonyme Funktion)",
 	"Lokal ({0} von {1})",

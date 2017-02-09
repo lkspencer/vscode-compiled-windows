@@ -34,6 +34,8 @@ define("vs/code/node/cliProcessMain.nls.de", {
 		"Die Erweiterung \"{0}\" wurde erfolgreich deinstalliert.",
 	],
 	"vs/platform/configuration/common/configurationRegistry": [
+		"Zu überschreibende Einstellungen für einen Sprachbezeichnersatz konfigurieren",
+		"Einstellungen überschreiben",
 		"Trägt Konfigurationseigenschaften bei.",
 		"Eine Zusammenfassung der Einstellungen. Diese Bezeichnung wird in der Einstellungsdatei als trennender Kommentar verwendet.",
 		"Die Beschreibung der Konfigurationseigenschaften.",

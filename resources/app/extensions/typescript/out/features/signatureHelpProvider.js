@@ -3,19 +3,18 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 'use strict';
-var vscode_1 = require('vscode');
-var Previewer = require('./previewer');
-var TypeScriptSignatureHelpProvider = (function () {
-    function TypeScriptSignatureHelpProvider(client) {
+const vscode_1 = require("vscode");
+const Previewer = require("./previewer");
+class TypeScriptSignatureHelpProvider {
+    constructor(client) {
         this.client = client;
     }
-    TypeScriptSignatureHelpProvider.prototype.provideSignatureHelp = function (document, position, token) {
-        var _this = this;
-        var filepath = this.client.asAbsolutePath(document.uri);
+    provideSignatureHelp(document, position, token) {
+        const filepath = this.client.normalizePath(document.uri);
         if (!filepath) {
             return Promise.resolve(null);
         }
-        var args = {
+        let args = {
             file: filepath,
             line: position.line + 1,
             offset: position.character + 1
@@ -23,17 +22,17 @@ var TypeScriptSignatureHelpProvider = (function () {
         if (!args.file) {
             return Promise.resolve(null);
         }
-        return this.client.execute('signatureHelp', args, token).then(function (response) {
-            var info = response.body;
+        return this.client.execute('signatureHelp', args, token).then((response) => {
+            let info = response.body;
             if (!info) {
                 return null;
             }
-            var result = new vscode_1.SignatureHelp();
+            let result = new vscode_1.SignatureHelp();
             result.activeSignature = info.selectedItemIndex;
             result.activeParameter = info.argumentIndex;
             if (info.items[info.selectedItemIndex].isVariadic) {
             }
-            info.items.forEach(function (item, i) {
+            info.items.forEach((item, i) => {
                 if (!info) {
                     return;
                 }
@@ -41,10 +40,10 @@ var TypeScriptSignatureHelpProvider = (function () {
                 if (i === info.selectedItemIndex && item.isVariadic) {
                     result.activeParameter = Math.min(info.argumentIndex, item.parameters.length - 1);
                 }
-                var signature = new vscode_1.SignatureInformation('');
+                let signature = new vscode_1.SignatureInformation('');
                 signature.label += Previewer.plain(item.prefixDisplayParts);
-                item.parameters.forEach(function (p, i, a) {
-                    var parameter = new vscode_1.ParameterInformation(Previewer.plain(p.displayParts), Previewer.plain(p.documentation));
+                item.parameters.forEach((p, i, a) => {
+                    let parameter = new vscode_1.ParameterInformation(Previewer.plain(p.displayParts), Previewer.plain(p.documentation));
                     signature.label += parameter.label;
                     signature.parameters.push(parameter);
                     if (i < a.length - 1) {
@@ -56,13 +55,12 @@ var TypeScriptSignatureHelpProvider = (function () {
                 result.signatures.push(signature);
             });
             return result;
-        }, function (err) {
-            _this.client.error("'signatureHelp' request failed with error.", err);
+        }, (err) => {
+            this.client.error(`'signatureHelp' request failed with error.`, err);
             return null;
         });
-    };
-    return TypeScriptSignatureHelpProvider;
-}());
+    }
+}
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = TypeScriptSignatureHelpProvider;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/38746938a4ab94f2f57d9e1309c51fd6fb37553d/extensions\typescript\out/features\signatureHelpProvider.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/f9d0c687ff2ea7aabd85fb9a43129117c0ecf519/extensions\typescript\out/features\signatureHelpProvider.js.map

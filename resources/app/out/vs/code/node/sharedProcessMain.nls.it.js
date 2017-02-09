@@ -22,6 +22,8 @@ define("vs/code/node/sharedProcessMain.nls.it", {
 		"{0} non è stato trovato all\'interno del file ZIP.",
 	],
 	"vs/platform/configuration/common/configurationRegistry": [
+		"Consente di configurare le impostazioni da ignorare per un set di identificatori lingua.",
+		"Esegui override delle impostazioni",
 		"Impostazioni di configurazione di contributes.",
 		"Riepilogo delle impostazioni. Questa etichetta verrà usata nel file di impostazioni come commento di separazione.",
 		"Descrizione delle proprietà di configurazione.",

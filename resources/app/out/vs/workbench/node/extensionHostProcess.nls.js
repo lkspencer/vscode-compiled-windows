@@ -5,21 +5,28 @@
  * Copyright (c) Microsoft Corporation. All rights reserved.
  *--------------------------------------------------------*/
 define("vs/workbench/node/extensionHostProcess.nls", {
-	"vs/base/common/processes": [
-		"Error: executable info must define a command of type string.",
-		"Warning: isShellCommand must be of type boolean. Ignoring value {0}.",
-		"Warning: args must be of type string[]. Ignoring value {0}.",
-		"Warning: options.cwd must be of type string. Ignoring value {0}."
+	"vs/base/common/json": [
+		"Invalid symbol",
+		"Invalid number format",
+		"Property name expected",
+		"Value expected",
+		"Colon expected",
+		"Comma expected",
+		"Closing brace expected",
+		"Closing bracket expected",
+		"End of file expected"
 	],
 	"vs/base/common/severity": [
 		"Error",
 		"Warning",
 		"Info"
 	],
-	"vs/base/node/processes": [
-		"Can't execute a shell command on an UNC drive."
+	"vs/editor/common/config/defaultConfig": [
+		"Editor content"
 	],
 	"vs/platform/configuration/common/configurationRegistry": [
+		"Configure settings to be overridden for a set of language identifiers.",
+		"Override Settings",
 		"Contributes configuration settings.",
 		"A summary of the settings. This label will be used in the settings file as separating comment.",
 		"Description of the configuration properties.",

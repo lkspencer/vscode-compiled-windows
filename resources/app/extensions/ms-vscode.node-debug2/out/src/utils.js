@@ -2,9 +2,9 @@
  * Copyright (C) Microsoft Corporation. All rights reserved.
  *--------------------------------------------------------*/
 "use strict";
-const path = require('path');
-const fs = require('fs');
-const cp = require('child_process');
+const path = require("path");
+const fs = require("fs");
+const cp = require("child_process");
 const NODE_SHEBANG_MATCHER = new RegExp('#! */usr/bin/env +node');
 function isJavaScript(aPath) {
     const name = path.basename(aPath).toLowerCase();
@@ -96,5 +96,14 @@ function trimLastNewline(msg) {
     return msg.replace(/(\n|\r\n)$/, '');
 }
 exports.trimLastNewline = trimLastNewline;
+function extendObject(toObject, fromObject) {
+    for (let key in fromObject) {
+        if (fromObject.hasOwnProperty(key)) {
+            toObject[key] = fromObject[key];
+        }
+    }
+    return toObject;
+}
+exports.extendObject = extendObject;
 
 //# sourceMappingURL=utils.js.map

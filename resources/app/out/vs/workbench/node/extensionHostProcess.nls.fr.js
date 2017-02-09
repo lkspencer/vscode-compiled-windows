@@ -2,21 +2,28 @@
  * Copyright (C) Microsoft Corporation. All rights reserved.
  *--------------------------------------------------------*/
 define("vs/workbench/node/extensionHostProcess.nls.fr", {
-	"vs/base/common/processes": [
-		"Erreur : les informations de l\'exécutable doivent définir une commande de type chaîne.",
-		"Avertissement : isShellCommand doit être de type booléen. Valeur {0} ignorée.",
-		"Avertissement : les arguments doivent être de type string[]. Valeur {0} ignorée.",
-		"Avertissement : options.cwd doit être de type chaîne. Valeur {0} ignorée.",
+	"vs/base/common/json": [
+		"Symbole non valide",
+		"Format de nombre non valide",
+		"Nom de propriété attendu",
+		"Valeur attendue",
+		"Signe des deux points attendu",
+		"Virgule attendue",
+		"Accolade fermante attendue",
+		"Crochet fermant attendu",
+		"Fin de fichier attendue",
 	],
 	"vs/base/common/severity": [
 		"Erreur",
 		"Avertissement",
 		"Informations",
 	],
-	"vs/base/node/processes": [
-		"Impossible d\'exécuter une commande d\'interpréteur de commandes sur un lecteur UNC.",
+	"vs/editor/common/config/defaultConfig": [
+		"Contenu d\'éditeur",
 	],
 	"vs/platform/configuration/common/configurationRegistry": [
+		"Configurez les paramètres à remplacer pour un ensemble d\'identificateurs de langage.",
+		"Remplacer les paramètres",
 		"Ajoute des paramètres de configuration.",
 		"Résumé des paramètres. Cette étiquette va être utilisée dans le fichier de paramètres en tant que commentaire de séparation.",
 		"Description des propriétés de configuration.",

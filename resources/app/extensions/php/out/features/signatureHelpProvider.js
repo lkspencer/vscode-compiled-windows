@@ -3,8 +3,8 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 'use strict';
-var vscode_1 = require('vscode');
-var phpGlobals = require('./phpGlobals');
+var vscode_1 = require("vscode");
+var phpGlobals = require("./phpGlobals");
 var _NL = '\n'.charCodeAt(0);
 var _TAB = '\t'.charCodeAt(0);
 var _WSB = ' '.charCodeAt(0);
@@ -56,6 +56,10 @@ var PHPSignatureHelpProvider = (function () {
     function PHPSignatureHelpProvider() {
     }
     PHPSignatureHelpProvider.prototype.provideSignatureHelp = function (document, position, token) {
+        var enable = vscode_1.workspace.getConfiguration('php').get('suggest.basic', true);
+        if (!enable) {
+            return null;
+        }
         var iterator = new BackwardIterator(document, position.character - 1, position.line);
         var paramCount = this.readArguments(iterator);
         if (paramCount < 0) {
@@ -157,4 +161,4 @@ var PHPSignatureHelpProvider = (function () {
 }());
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = PHPSignatureHelpProvider;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/38746938a4ab94f2f57d9e1309c51fd6fb37553d/extensions\php\out/features\signatureHelpProvider.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/f9d0c687ff2ea7aabd85fb9a43129117c0ecf519/extensions\php\out/features\signatureHelpProvider.js.map

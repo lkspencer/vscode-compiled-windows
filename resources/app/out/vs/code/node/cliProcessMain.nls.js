@@ -37,6 +37,8 @@ define("vs/code/node/cliProcessMain.nls", {
 		"Extension '{0}' was successfully uninstalled!"
 	],
 	"vs/platform/configuration/common/configurationRegistry": [
+		"Configure settings to be overridden for a set of language identifiers.",
+		"Override Settings",
 		"Contributes configuration settings.",
 		"A summary of the settings. This label will be used in the settings file as separating comment.",
 		"Description of the configuration properties.",

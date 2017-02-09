@@ -34,6 +34,8 @@ define("vs/code/node/cliProcessMain.nls.ja", {
 		"拡張機能 \'{0}\' が正常にアンインストールされました!",
 	],
 	"vs/platform/configuration/common/configurationRegistry": [
+		"上書きされる言語識別子セットの設定を構成します。",
+		"上書き設定",
 		"構成の設定を提供します。",
 		"設定の概要です。このラベルは、設定ファイルでコメントの区切り文字として使用します。",
 		"構成のプロパティの説明です。",

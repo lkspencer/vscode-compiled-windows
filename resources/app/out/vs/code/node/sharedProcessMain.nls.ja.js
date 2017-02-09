@@ -22,6 +22,8 @@ define("vs/code/node/sharedProcessMain.nls.ja", {
 		"zip ファイルの中に {0} が見つかりません。",
 	],
 	"vs/platform/configuration/common/configurationRegistry": [
+		"上書きされる言語識別子セットの設定を構成します。",
+		"上書き設定",
 		"構成の設定を提供します。",
 		"設定の概要です。このラベルは、設定ファイルでコメントの区切り文字として使用します。",
 		"構成のプロパティの説明です。",

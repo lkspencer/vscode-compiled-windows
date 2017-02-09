@@ -1,0 +1,32 @@
+{
+	"messages": [
+		"Tag at {0}",
+		"Remote branch at {0}",
+		"Please clean your repository working tree before checkout.",
+		"Open Git Log",
+		"Are you sure you want to clean changes in {0}?",
+		"Yes",
+		"No, keep them",
+		"Are you sure you want to clean all changes?",
+		"Yes",
+		"No, keep them",
+		"Branch name",
+		"Please provide a branch name",
+		"Pick a remote to publish the branch '{0}' to:"
+	],
+	"keys": [
+		"tag at",
+		"remote branch at",
+		"clean repo",
+		"open git log",
+		"confirm clean",
+		"yes",
+		"no, keep them",
+		"confirm clean all",
+		"yes",
+		"no, keep them",
+		"branch name",
+		"provide branch name",
+		"pick remote"
+	]
+}

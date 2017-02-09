@@ -1,0 +1,12 @@
+{
+	"messages": [
+		"reference",
+		"references",
+		"Could not determine references"
+	],
+	"keys": [
+		"oneReferenceLabel",
+		"manyReferenceLabel",
+		"referenceErrorLabel"
+	]
+}

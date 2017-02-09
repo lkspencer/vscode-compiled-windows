@@ -1,4 +1,9 @@
 [
-	"Impossible de valider le fichier php. Le programme php est introuvable. Utilisez le paramètre 'php.validate.executablePath' pour configurer l'emplacement de 'php'",
+	"Do you allow {0} to be executed to lint PHP files?",
+	"Yes",
+	"No",
+	"Learn More",
+	"Impossible d'effectuer la validation, car {0} n'est pas un exécutable PHP valide. Cliquez sur l'élément Chemin de la barre d'état pour configurer l'exécutable.",
+	"Impossible d'effectuer la validation, car aucun exécutable PHP n'est défini. Cliquez sur l'élément Chemin de la barre d'état pour configurer l'exécutable.",
 	"Échec de l'exécution de php avec le chemin : {0}. Raison inconnue."
 ]

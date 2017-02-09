@@ -2,21 +2,28 @@
  * Copyright (C) Microsoft Corporation. All rights reserved.
  *--------------------------------------------------------*/
 define("vs/workbench/node/extensionHostProcess.nls.ko", {
-	"vs/base/common/processes": [
-		"오류: 실행 파일 정보에서는 문자열 형식의 명령을 정의해야 합니다.",
-		"경고: isShellCommand는 boolean 형식이어야 합니다. {0} 값을 무시합니다.",
-		"경고: args는 string[] 형식이어야 합니다. {0} 값을 무시합니다.",
-		"경고: options.cwd는 string 형식이어야 합니다. {0} 값을 무시합니다.",
+	"vs/base/common/json": [
+		"잘못된 기호",
+		"잘못된 숫자 형식",
+		"속성 이름 필요",
+		"값 필요",
+		"콜론이 필요합니다.",
+		"쉼표가 필요합니다.",
+		"닫는 괄호 필요",
+		"닫는 대괄호 필요",
+		"파일 끝 필요",
 	],
 	"vs/base/common/severity": [
 		"오류",
 		"경고",
 		"정보",
 	],
-	"vs/base/node/processes": [
-		"UNC 드라이브에서 셸 명령을 실행할 수 없습니다.",
+	"vs/editor/common/config/defaultConfig": [
+		"편집기 콘텐츠",
 	],
 	"vs/platform/configuration/common/configurationRegistry": [
+		"언어 식별자 집합에 대해 재정의할 설정을 구성합니다.",
+		"설정 재정의",
 		"구성 설정을 적용합니다.",
 		"설정을 요약합니다. 이 레이블은 설정 파일에서 구분 주석으로 사용됩니다.",
 		"구성 속성에 대한 설명입니다.",

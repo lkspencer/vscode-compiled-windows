@@ -1,10 +1,20 @@
 {
 	"messages": [
-		"Cannot validate the php file. The php program was not found. Use the 'php.validate.executablePath' setting to configure the location of 'php'",
+		"Do you allow {0} to be executed to lint PHP files?",
+		"Yes",
+		"No",
+		"Learn More",
+		"Cannot validate since {0} is not a valid php executable. Use the setting 'php.validate.executablePath' to configure the PHP executable.",
+		"Cannot validate since no PHP executable is set. Use the setting 'php.validate.executablePath' to configure the PHP executable.",
 		"Failed to run php using path: {0}. Reason is unknown."
 	],
 	"keys": [
-		"noPHP",
+		"php.useExecutablePath",
+		"php.yes",
+		"php.no",
+		"php.more",
+		"wrongExecutable",
+		"noExecutable",
 		"unknownReason"
 	]
 }

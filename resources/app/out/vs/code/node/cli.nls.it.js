@@ -3,9 +3,9 @@
  *--------------------------------------------------------*/
 define("vs/code/node/cli.nls.it", {
 	"vs/platform/environment/node/argv": [
-		"Gli argomenti nella modalità `--goto` devono essere espressi nel formato `FILE(:LINE(:COLUMN))`.",
+		"Gli argomenti nella modalità `--goto` devono essere espressi nel formato `FILE(:LINE(:CHARACTER))`.",
 		"Apre un editor diff. Richiede il passaggio di due percorsi di file come argomenti.",
-		"Apre il file nel percorso e alla riga e colonna indicate (aggiunge :line[:column] al percorso).",
+		"Apre il file nel percorso alla riga e carattere indicati (aggiunge :line[:character] al percorso).",
 		"Impostazioni locali da usare, ad esempio en-US o it-IT.",
 		"Forza una nuova istanza di Code.",
 		"Eseguire l\'avvio con il comando \'Developer: Startup Performance\' abilitato.",

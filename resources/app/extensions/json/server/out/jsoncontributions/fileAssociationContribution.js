@@ -3,13 +3,13 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 'use strict';
-var vscode_languageserver_1 = require('vscode-languageserver');
-var Strings = require('../utils/strings');
-var nls = require('vscode-nls');
+var vscode_languageserver_1 = require("vscode-languageserver");
+var Strings = require("../utils/strings");
+var nls = require("vscode-nls");
 var localize = nls.loadMessageBundle(__filename);
 var globProperties = [
-    { kind: 12 /* Value */, label: localize(0, null), insertText: vscode_languageserver_1.SnippetString.create('"*.${1:extension}": "${2:language}"'), documentation: localize(1, null) },
-    { kind: 12 /* Value */, label: localize(2, null), insertText: vscode_languageserver_1.SnippetString.create('"/${1:path to file}/*.${2:extension}": "${3:language}"'), documentation: localize(3, null) }
+    { kind: vscode_languageserver_1.CompletionItemKind.Value, label: localize(0, null), insertText: '"*.${1:extension}": "${2:language}"', insertTextFormat: vscode_languageserver_1.InsertTextFormat.Snippet, documentation: localize(1, null) },
+    { kind: vscode_languageserver_1.CompletionItemKind.Value, label: localize(2, null), insertText: '"/${1:path to file}/*.${2:extension}": "${3:language}"', insertTextFormat: vscode_languageserver_1.InsertTextFormat.Snippet, documentation: localize(3, null) }
 ];
 var FileAssociationContribution = (function () {
     function FileAssociationContribution() {
@@ -35,9 +35,10 @@ var FileAssociationContribution = (function () {
         if (this.isSettingsFile(resource) && location.length === 1 && location[0] === 'files.associations') {
             this.languageIds.forEach(function (l) {
                 result.add({
-                    kind: 12 /* Value */,
+                    kind: vscode_languageserver_1.CompletionItemKind.Value,
                     label: l,
-                    insertText: vscode_languageserver_1.SnippetString.create(JSON.stringify('${1:' + l + '}')),
+                    insertText: JSON.stringify('${1:' + l + '}'),
+                    insertTextFormat: vscode_languageserver_1.InsertTextFormat.Snippet,
                     filterText: JSON.stringify(l)
                 });
             });
@@ -50,4 +51,4 @@ var FileAssociationContribution = (function () {
     return FileAssociationContribution;
 }());
 exports.FileAssociationContribution = FileAssociationContribution;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/38746938a4ab94f2f57d9e1309c51fd6fb37553d/extensions\json\server\out/jsoncontributions\fileAssociationContribution.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/f9d0c687ff2ea7aabd85fb9a43129117c0ecf519/extensions\json\server\out/jsoncontributions\fileAssociationContribution.js.map

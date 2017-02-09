@@ -34,6 +34,8 @@ define("vs/code/node/cliProcessMain.nls.it", {
 		"L\'estensione \'{0}\' è stata disinstallata.",
 	],
 	"vs/platform/configuration/common/configurationRegistry": [
+		"Consente di configurare le impostazioni da ignorare per un set di identificatori lingua.",
+		"Esegui override delle impostazioni",
 		"Impostazioni di configurazione di contributes.",
 		"Riepilogo delle impostazioni. Questa etichetta verrà usata nel file di impostazioni come commento di separazione.",
 		"Descrizione delle proprietà di configurazione.",

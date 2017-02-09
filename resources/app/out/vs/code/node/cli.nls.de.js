@@ -3,9 +3,9 @@
  *--------------------------------------------------------*/
 define("vs/code/node/cli.nls.de", {
 	"vs/platform/environment/node/argv": [
-		"Argumente im Modus \"--goto\" müssen im Format \"DATEI(:ZEILE(:SPALTE))\" vorliegen.",
+		"Argumente im Modus \"--goto\" müssen im Format \"DATEI(:ZEILE(:ZEICHEN))\" vorliegen.",
 		"Öffnet einen Diff-Editor. Es müssen zwei Dateipfade als Argumente übergeben werden.",
-		"Öffnet die Datei im Pfad in der Zeile und Spalte (fügen Sie dem Pfad \":line[:column]\" hinzu).",
+		"Öffnet die Datei im Pfad in der Zeile und beim Zeichen (fügen Sie dem Pfad \":line[:character]\" hinzu).",
 		"Das zu verwendende Gebietsschema (z. B. en-US oder zh-TW).",
 		"Erzwingt eine neue Instanz des Codes.",
 		"Startet mit aktiviertem Befehl \"Developer: Startup Performance\".",

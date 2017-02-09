@@ -22,6 +22,8 @@ define("vs/code/node/sharedProcessMain.nls.fr", {
 		"{0} introuvable dans le zip.",
 	],
 	"vs/platform/configuration/common/configurationRegistry": [
+		"Configurez les paramètres à remplacer pour un ensemble d\'identificateurs de langage.",
+		"Remplacer les paramètres",
 		"Ajoute des paramètres de configuration.",
 		"Résumé des paramètres. Cette étiquette va être utilisée dans le fichier de paramètres en tant que commentaire de séparation.",
 		"Description des propriétés de configuration.",

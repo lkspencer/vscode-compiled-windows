@@ -2,7 +2,7 @@
  * Copyright (C) Microsoft Corporation. All rights reserved.
  *--------------------------------------------------------*/
 (function() {
-var __m = ["require","exports","vs/base/common/errors","vs/base/common/winjs.base","vs/base/common/platform","vs/base/common/lifecycle","vs/base/common/event","vs/editor/common/core/position","vs/editor/common/core/range","vs/base/common/strings","vs/base/common/types","vs/base/common/map","vs/base/common/cancellation","vs/base/common/uri","vs/base/common/diff/diff","vs/base/common/callbackList","vs/base/common/filters","vs/editor/common/model/mirrorModel2","vs/base/common/async","vs/editor/common/viewModel/prefixSumComputer","vs/editor/common/core/characterClassifier","vs/base/common/keyCodes","vs/base/common/diff/diffChange","vs/editor/common/core/selection","vs/editor/common/diff/diffComputer","vs/editor/common/model/wordHelper","vs/editor/common/modes/linkComputer","vs/editor/common/modes/supports/inplaceReplaceSupport","vs/editor/common/standalone/standaloneBase","vs/base/common/worker/simpleWorker","vs/base/common/winjs.base.raw","vs/editor/common/services/editorSimpleWorker"];
+var __m = ["exports","require","vs/base/common/winjs.base","vs/base/common/platform","vs/base/common/errors","vs/base/common/event","vs/editor/common/core/range","vs/editor/common/core/position","vs/editor/common/core/uint","vs/base/common/lifecycle","vs/base/common/uri","vs/base/common/diff/diff","vs/base/common/cancellation","vs/base/common/map","vs/base/common/functional","vs/base/common/strings","vs/base/common/types","vs/base/common/async","vs/base/common/keyCodes","vs/base/common/callbackList","vs/editor/common/core/selection","vs/editor/common/core/token","vs/base/common/diff/diffChange","vs/editor/common/core/characterClassifier","vs/editor/common/diff/diffComputer","vs/editor/common/model/wordHelper","vs/editor/common/modes/linkComputer","vs/editor/common/modes/supports/inplaceReplaceSupport","vs/editor/common/standalone/standaloneBase","vs/editor/common/viewModel/prefixSumComputer","vs/editor/common/model/mirrorModel2","vs/base/common/worker/simpleWorker","vs/editor/common/services/editorSimpleWorker","vs/base/common/winjs.base.raw"];
 var __M = function(deps) {
   var result = [];
   for (var i = 0, len = deps.length; i < len; i++) {
@@ -25,14 +25,12 @@ var __M = function(deps) {
  *---------------------------------------------------------------------------------------------
  *---------------------------------------------------------------------------------------------
  *--------------------------------------------------------------------------------------------*/
-'use strict';
-// Limitation: To load jquery through the loader, always require 'jquery' and add a path for it in the loader configuration
-var _amdLoaderGlobal = this, define;
+var _amdLoaderGlobal = this;
 var AMDLoader;
 (function (AMDLoader) {
-    // ------------------------------------------------------------------------
-    // Utilities
-    function _isWindows() {
+    AMDLoader.global = _amdLoaderGlobal;
+    AMDLoader.isNode = (typeof module !== 'undefined' && !!module.exports);
+    AMDLoader.isWindows = (function _isWindows() {
         if (typeof navigator !== 'undefined') {
             if (navigator.userAgent && navigator.userAgent.indexOf('Windows') >= 0) {
                 return true;
@@ -42,8 +40,77 @@ var AMDLoader;
             return (process.platform === 'win32');
         }
         return false;
+    })();
+    AMDLoader.isWebWorker = (typeof AMDLoader.global.importScripts === 'function');
+    AMDLoader.isElectronRenderer = (typeof process !== 'undefined' && typeof process.versions !== 'undefined' && typeof process.versions.electron !== 'undefined' && process.type === 'renderer');
+    AMDLoader.isElectronMain = (typeof process !== 'undefined' && typeof process.versions !== 'undefined' && typeof process.versions.electron !== 'undefined' && process.type === 'browser');
+    AMDLoader.hasPerformanceNow = (AMDLoader.global.performance && typeof AMDLoader.global.performance.now === 'function');
+})(AMDLoader || (AMDLoader = {}));
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+var AMDLoader;
+(function (AMDLoader) {
+    var LoaderEventType;
+    (function (LoaderEventType) {
+        LoaderEventType[LoaderEventType["LoaderAvailable"] = 1] = "LoaderAvailable";
+        LoaderEventType[LoaderEventType["BeginLoadingScript"] = 10] = "BeginLoadingScript";
+        LoaderEventType[LoaderEventType["EndLoadingScriptOK"] = 11] = "EndLoadingScriptOK";
+        LoaderEventType[LoaderEventType["EndLoadingScriptError"] = 12] = "EndLoadingScriptError";
+        LoaderEventType[LoaderEventType["BeginInvokeFactory"] = 21] = "BeginInvokeFactory";
+        LoaderEventType[LoaderEventType["EndInvokeFactory"] = 22] = "EndInvokeFactory";
+        LoaderEventType[LoaderEventType["NodeBeginEvaluatingScript"] = 31] = "NodeBeginEvaluatingScript";
+        LoaderEventType[LoaderEventType["NodeEndEvaluatingScript"] = 32] = "NodeEndEvaluatingScript";
+        LoaderEventType[LoaderEventType["NodeBeginNativeRequire"] = 33] = "NodeBeginNativeRequire";
+        LoaderEventType[LoaderEventType["NodeEndNativeRequire"] = 34] = "NodeEndNativeRequire";
+    })(LoaderEventType = AMDLoader.LoaderEventType || (AMDLoader.LoaderEventType = {}));
+    function getHighPerformanceTimestamp() {
+        return (AMDLoader.hasPerformanceNow ? AMDLoader.global.performance.now() : Date.now());
     }
-    var isWindows = _isWindows();
+    AMDLoader.getHighPerformanceTimestamp = getHighPerformanceTimestamp;
+    var LoaderEvent = (function () {
+        function LoaderEvent(type, detail, timestamp) {
+            this.type = type;
+            this.detail = detail;
+            this.timestamp = timestamp;
+        }
+        return LoaderEvent;
+    }());
+    AMDLoader.LoaderEvent = LoaderEvent;
+    var LoaderEventRecorder = (function () {
+        function LoaderEventRecorder(loaderAvailableTimestamp) {
+            this._events = [new LoaderEvent(LoaderEventType.LoaderAvailable, '', loaderAvailableTimestamp)];
+        }
+        LoaderEventRecorder.prototype.record = function (type, detail) {
+            this._events.push(new LoaderEvent(type, detail, getHighPerformanceTimestamp()));
+        };
+        LoaderEventRecorder.prototype.getEvents = function () {
+            return this._events;
+        };
+        return LoaderEventRecorder;
+    }());
+    AMDLoader.LoaderEventRecorder = LoaderEventRecorder;
+    var NullLoaderEventRecorder = (function () {
+        function NullLoaderEventRecorder() {
+        }
+        NullLoaderEventRecorder.prototype.record = function (type, detail) {
+            // Nothing to do
+        };
+        NullLoaderEventRecorder.prototype.getEvents = function () {
+            return [];
+        };
+        return NullLoaderEventRecorder;
+    }());
+    NullLoaderEventRecorder.INSTANCE = new NullLoaderEventRecorder();
+    AMDLoader.NullLoaderEventRecorder = NullLoaderEventRecorder;
+})(AMDLoader || (AMDLoader = {}));
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+var AMDLoader;
+(function (AMDLoader) {
     var Utilities = (function () {
         function Utilities() {
         }
@@ -52,7 +119,7 @@ var AMDLoader;
          */
         Utilities.fileUriToFilePath = function (uri) {
             uri = decodeURI(uri);
-            if (isWindows) {
+            if (AMDLoader.isWindows) {
                 if (/^file:\/\/\//.test(uri)) {
                     // This is a URI without a hostname => return only the path segment
                     return uri.substr(8);
@@ -80,17 +147,14 @@ var AMDLoader;
             return /^[^\#]*\?/gi.test(url);
         };
         /**
-         * Does `url` start with http:// or https:// or / ?
+         * Does `url` start with http:// or https:// or file:// or / ?
          */
         Utilities.isAbsolutePath = function (url) {
-            return (Utilities.startsWith(url, 'http://')
-                || Utilities.startsWith(url, 'https://')
-                || Utilities.startsWith(url, 'file://')
-                || Utilities.startsWith(url, '/'));
+            return /^((http:\/\/)|(https:\/\/)|(file:\/\/)|(\/))/.test(url);
         };
         Utilities.forEachProperty = function (obj, callback) {
             if (obj) {
-                var key;
+                var key = void 0;
                 for (key in obj) {
                     if (obj.hasOwnProperty(key)) {
                         callback(key, obj[key]);
@@ -105,17 +169,11 @@ var AMDLoader;
             });
             return isEmpty;
         };
-        Utilities.isArray = function (obj) {
-            if (Array.isArray) {
-                return Array.isArray(obj);
-            }
-            return Object.prototype.toString.call(obj) === '[object Array]';
-        };
         Utilities.recursiveClone = function (obj) {
             if (!obj || typeof obj !== 'object') {
                 return obj;
             }
-            var result = Utilities.isArray(obj) ? [] : {};
+            var result = Array.isArray(obj) ? [] : {};
             Utilities.forEachProperty(obj, function (key, value) {
                 if (value && typeof value === 'object') {
                     result[key] = Utilities.recursiveClone(value);
@@ -130,12 +188,19 @@ var AMDLoader;
             return '===anonymous' + (Utilities.NEXT_ANONYMOUS_ID++) + '===';
         };
         Utilities.isAnonymousModule = function (id) {
-            return id.indexOf('===anonymous') === 0;
+            return /^===anonymous/.test(id);
         };
-        Utilities.NEXT_ANONYMOUS_ID = 1;
         return Utilities;
     }());
+    Utilities.NEXT_ANONYMOUS_ID = 1;
     AMDLoader.Utilities = Utilities;
+})(AMDLoader || (AMDLoader = {}));
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+var AMDLoader;
+(function (AMDLoader) {
     var ConfigurationOptionsUtil = (function () {
         function ConfigurationOptionsUtil() {
         }
@@ -173,18 +238,12 @@ var AMDLoader;
             if (typeof options.paths !== 'object') {
                 options.paths = {};
             }
-            if (typeof options.bundles !== 'object') {
-                options.bundles = [];
-            }
-            if (typeof options.shim !== 'object') {
-                options.shim = {};
-            }
             if (typeof options.config !== 'object') {
                 options.config = {};
             }
             if (typeof options.catchError === 'undefined') {
                 // Catch errors by default in web workers, do not catch errors by default in other contexts
-                options.catchError = isWebWorker;
+                options.catchError = AMDLoader.isWebWorker;
             }
             if (typeof options.urlArgs !== 'string') {
                 options.urlArgs = '';
@@ -192,11 +251,11 @@ var AMDLoader;
             if (typeof options.onError !== 'function') {
                 options.onError = defaultOnError;
             }
-            if (typeof options.ignoreDuplicateModules !== 'object' || !Utilities.isArray(options.ignoreDuplicateModules)) {
+            if (typeof options.ignoreDuplicateModules !== 'object' || !Array.isArray(options.ignoreDuplicateModules)) {
                 options.ignoreDuplicateModules = [];
             }
             if (options.baseUrl.length > 0) {
-                if (!Utilities.endsWith(options.baseUrl, '/')) {
+                if (!AMDLoader.Utilities.endsWith(options.baseUrl, '/')) {
                     options.baseUrl += '/';
                 }
             }
@@ -222,39 +281,20 @@ var AMDLoader;
         ConfigurationOptionsUtil.mergeConfigurationOptions = function (overwrite, base) {
             if (overwrite === void 0) { overwrite = null; }
             if (base === void 0) { base = null; }
-            var result = Utilities.recursiveClone(base || {});
+            var result = AMDLoader.Utilities.recursiveClone(base || {});
             // Merge known properties and overwrite the unknown ones
-            Utilities.forEachProperty(overwrite, function (key, value) {
-                if (key === 'bundles' && typeof result.bundles !== 'undefined') {
-                    if (Utilities.isArray(value)) {
-                        // Compatibility style
-                        result.bundles = result.bundles.concat(value);
-                    }
-                    else {
-                        // AMD API style
-                        Utilities.forEachProperty(value, function (key, value) {
-                            var bundleConfiguration = {
-                                location: key,
-                                modules: value
-                            };
-                            result.bundles.push(bundleConfiguration);
-                        });
-                    }
-                }
-                else if (key === 'ignoreDuplicateModules' && typeof result.ignoreDuplicateModules !== 'undefined') {
+            AMDLoader.Utilities.forEachProperty(overwrite, function (key, value) {
+                if (key === 'ignoreDuplicateModules' && typeof result.ignoreDuplicateModules !== 'undefined') {
                     result.ignoreDuplicateModules = result.ignoreDuplicateModules.concat(value);
                 }
                 else if (key === 'paths' && typeof result.paths !== 'undefined') {
-                    Utilities.forEachProperty(value, function (key2, value2) { return result.paths[key2] = value2; });
-                }
-                else if (key === 'shim' && typeof result.shim !== 'undefined') {
-                    Utilities.forEachProperty(value, function (key2, value2) { return result.shim[key2] = value2; });
+                    AMDLoader.Utilities.forEachProperty(value, function (key2, value2) { return result.paths[key2] = value2; });
                 }
                 else if (key === 'config' && typeof result.config !== 'undefined') {
-                    Utilities.forEachProperty(value, function (key2, value2) { return result.config[key2] = value2; });
+                    AMDLoader.Utilities.forEachProperty(value, function (key2, value2) { return result.config[key2] = value2; });
                 }
                 else {
-                    result[key] = Utilities.recursiveClone(value);
+                    result[key] = AMDLoader.Utilities.recursiveClone(value);
                 }
             });
             return ConfigurationOptionsUtil.validateConfigurationOptions(result);
@@ -266,34 +306,21 @@ var AMDLoader;
         function Configuration(options) {
             this.options = ConfigurationOptionsUtil.mergeConfigurationOptions(options);
             this._createIgnoreDuplicateModulesMap();
+            this._createNodeModulesMap();
             this._createSortedPathsRules();
-            this._createShimModules();
-            this._createOverwriteModuleIdToPath();
             if (this.options.baseUrl === '') {
-                if (isNode && this.options.nodeRequire && this.options.nodeRequire.main && this.options.nodeRequire.main.filename) {
+                if (AMDLoader.isNode && this.options.nodeRequire && this.options.nodeRequire.main && this.options.nodeRequire.main.filename) {
                     var nodeMain = this.options.nodeRequire.main.filename;
                     var dirnameIndex = Math.max(nodeMain.lastIndexOf('/'), nodeMain.lastIndexOf('\\'));
                     this.options.baseUrl = nodeMain.substring(0, dirnameIndex + 1);
                 }
-                if (isNode && this.options.nodeMain) {
+                if (AMDLoader.isNode && this.options.nodeMain) {
                     var nodeMain = this.options.nodeMain;
                     var dirnameIndex = Math.max(nodeMain.lastIndexOf('/'), nodeMain.lastIndexOf('\\'));
                     this.options.baseUrl = nodeMain.substring(0, dirnameIndex + 1);
                 }
             }
         }
-        Configuration.prototype._createOverwriteModuleIdToPath = function () {
-            this.overwriteModuleIdToPath = {};
-            for (var i = 0; i < this.options.bundles.length; i++) {
-                var bundle = this.options.bundles[i];
-                var location = bundle.location;
-                if (bundle.modules) {
-                    for (var j = 0; j < bundle.modules.length; j++) {
-                        this.overwriteModuleIdToPath[bundle.modules[j]] = location;
-                    }
-                }
-            }
-        };
         Configuration.prototype._createIgnoreDuplicateModulesMap = function () {
             // Build a map out of the ignoreDuplicateModules array
             this.ignoreDuplicateModulesMap = {};
@@ -301,13 +328,21 @@ var AMDLoader;
                 this.ignoreDuplicateModulesMap[this.options.ignoreDuplicateModules[i]] = true;
             }
         };
+        Configuration.prototype._createNodeModulesMap = function () {
+            // Build a map out of nodeModules array
+            this.nodeModulesMap = Object.create(null);
+            for (var _i = 0, _a = this.options.nodeModules; _i < _a.length; _i++) {
+                var nodeModule = _a[_i];
+                this.nodeModulesMap[nodeModule] = true;
+            }
+        };
         Configuration.prototype._createSortedPathsRules = function () {
             var _this = this;
             // Create an array our of the paths rules, sorted descending by length to
             // result in a more specific -> less specific order
             this.sortedPathsRules = [];
-            Utilities.forEachProperty(this.options.paths, function (from, to) {
-                if (!Utilities.isArray(to)) {
+            AMDLoader.Utilities.forEachProperty(this.options.paths, function (from, to) {
+                if (!Array.isArray(to)) {
                     _this.sortedPathsRules.push({
                         from: from,
                         to: [to]
@@ -322,84 +357,6 @@ var AMDLoader;
             });
             this.sortedPathsRules.sort(function (a, b) {
                 return b.from.length - a.from.length;
-            });
-        };
-        Configuration.prototype._ensureShimModule1 = function (path, shimMD) {
-            // Ensure dependencies are also shimmed
-            for (var i = 0; i < shimMD.length; i++) {
-                var dependencyId = shimMD[i];
-                if (!this.shimModules.hasOwnProperty(dependencyId)) {
-                    this._ensureShimModule1(dependencyId, []);
-                }
-            }
-            this.shimModules[path] = {
-                stack: null,
-                dependencies: shimMD,
-                callback: null
-            };
-            if (this.options.isBuild) {
-                this.shimModulesStr[path] = 'null';
-            }
-        };
-        Configuration.prototype._ensureShimModule2 = function (path, shimMD) {
-            this.shimModules[path] = {
-                stack: null,
-                dependencies: shimMD.deps || [],
-                callback: function () {
-                    var depsValues = [];
-                    for (var _i = 0; _i < arguments.length; _i++) {
-                        depsValues[_i - 0] = arguments[_i];
-                    }
-                    if (typeof shimMD.init === 'function') {
-                        var initReturnValue = shimMD.init.apply(global, depsValues);
-                        if (typeof initReturnValue !== 'undefined') {
-                            return initReturnValue;
-                        }
-                    }
-                    if (typeof shimMD.exports === 'function') {
-                        return shimMD.exports.apply(global, depsValues);
-                    }
-                    if (typeof shimMD.exports === 'string') {
-                        var pieces = shimMD.exports.split('.');
-                        var obj = global;
-                        for (var i = 0; i < pieces.length; i++) {
-                            if (obj) {
-                                obj = obj[pieces[i]];
-                            }
-                        }
-                        return obj;
-                    }
-                    return shimMD.exports || {};
-                }
-            };
-            if (this.options.isBuild) {
-                if (typeof shimMD.init === 'function') {
-                    this.shimModulesStr[path] = shimMD.init.toString();
-                }
-                else if (typeof shimMD.exports === 'function') {
-                    this.shimModulesStr[path] = shimMD.exports.toString();
-                }
-                else if (typeof shimMD.exports === 'string') {
-                    this.shimModulesStr[path] = 'function() { return this.' + shimMD.exports + '; }';
-                }
-                else {
-                    this.shimModulesStr[path] = JSON.stringify(shimMD.exports);
-                }
-            }
-        };
-        Configuration.prototype._createShimModules = function () {
-            var _this = this;
-            this.shimModules = {};
-            this.shimModulesStr = {};
-            Utilities.forEachProperty(this.options.shim, function (path, shimMD) {
-                if (!shimMD) {
-                    return;
-                }
-                if (Utilities.isArray(shimMD)) {
-                    _this._ensureShimModule1(path, shimMD);
-                    return;
-                }
-                _this._ensureShimModule2(path, shimMD);
             });
         };
         /**
@@ -420,7 +377,7 @@ var AMDLoader;
             var pathRule;
             for (var i = 0, len = this.sortedPathsRules.length; i < len; i++) {
                 pathRule = this.sortedPathsRules[i];
-                if (Utilities.startsWith(moduleId, pathRule.from)) {
+                if (AMDLoader.Utilities.startsWith(moduleId, pathRule.from)) {
                     var result = [];
                     for (var j = 0, lenJ = pathRule.to.length; j < lenJ; j++) {
                         result.push(pathRule.to[j] + moduleId.substr(pathRule.from.length));
@@ -431,7 +388,7 @@ var AMDLoader;
             return [moduleId];
         };
         Configuration.prototype._addUrlArgsToUrl = function (url) {
-            if (Utilities.containsQueryString(url)) {
+            if (AMDLoader.Utilities.containsQueryString(url)) {
                 return url + '&' + this.options.urlArgs;
             }
             else {
@@ -456,31 +413,35 @@ var AMDLoader;
          * Transform a module id to a location. Appends .js to module ids
          */
         Configuration.prototype.moduleIdToPaths = function (moduleId) {
-            if (this.isBuild() && this.options.nodeModules.indexOf(moduleId) >= 0) {
-                // This is a node module and we are at build time, drop it
-                return ['empty:'];
+            if (this.nodeModulesMap[moduleId] === true) {
+                // This is a node module...
+                if (this.isBuild()) {
+                    // ...and we are at build time, drop it
+                    return ['empty:'];
+                }
+                else {
+                    // ...and at runtime we create a `shortcut`-path
+                    return ['node|' + moduleId];
+                }
             }
             var result = moduleId;
-            if (this.overwriteModuleIdToPath.hasOwnProperty(result)) {
-                result = this.overwriteModuleIdToPath[result];
-            }
             var results;
-            if (!Utilities.endsWith(result, '.js') && !Utilities.isAbsolutePath(result)) {
+            if (!AMDLoader.Utilities.endsWith(result, '.js') && !AMDLoader.Utilities.isAbsolutePath(result)) {
                 results = this._applyPaths(result);
                 for (var i = 0, len = results.length; i < len; i++) {
                     if (this.isBuild() && results[i] === 'empty:') {
                         continue;
                     }
-                    if (!Utilities.isAbsolutePath(results[i])) {
+                    if (!AMDLoader.Utilities.isAbsolutePath(results[i])) {
                         results[i] = this.options.baseUrl + results[i];
                     }
-                    if (!Utilities.endsWith(results[i], '.js') && !Utilities.containsQueryString(results[i])) {
+                    if (!AMDLoader.Utilities.endsWith(results[i], '.js') && !AMDLoader.Utilities.containsQueryString(results[i])) {
                         results[i] = results[i] + '.js';
                     }
                 }
             }
             else {
-                if (!Utilities.endsWith(result, '.js') && !Utilities.containsQueryString(result)) {
+                if (!AMDLoader.Utilities.endsWith(result, '.js') && !AMDLoader.Utilities.containsQueryString(result)) {
                     result = result + '.js';
                 }
                 results = [result];
@@ -492,34 +453,19 @@ var AMDLoader;
          */
         Configuration.prototype.requireToUrl = function (url) {
             var result = url;
-            if (!Utilities.isAbsolutePath(result)) {
+            if (!AMDLoader.Utilities.isAbsolutePath(result)) {
                 result = this._applyPaths(result)[0];
-                if (!Utilities.isAbsolutePath(result)) {
+                if (!AMDLoader.Utilities.isAbsolutePath(result)) {
                     result = this.options.baseUrl + result;
                 }
             }
             return this._addUrlArgsIfNecessaryToUrl(result);
         };
         /**
-         * Test if `moduleId` is shimmed.
-         */
-        Configuration.prototype.isShimmed = function (moduleId) {
-            return this.shimModules.hasOwnProperty(moduleId);
-        };
-        /**
          * Flag to indicate if current execution is as part of a build.
          */
         Configuration.prototype.isBuild = function () {
             return this.options.isBuild;
-        };
-        /**
-         * Get a normalized shim definition for `moduleId`.
-         */
-        Configuration.prototype.getShimmedModuleDefine = function (moduleId) {
-            return this.shimModules[moduleId];
-        };
-        Configuration.prototype.getShimmedModulesStr = function (moduleId) {
-            return this.shimModulesStr[moduleId];
         };
         /**
          * Test if module `moduleId` is expected to be defined multiple times
@@ -556,1004 +502,13 @@ var AMDLoader;
         return Configuration;
     }());
     AMDLoader.Configuration = Configuration;
-    // ------------------------------------------------------------------------
-    // ModuleIdResolver
-    var ModuleIdResolver = (function () {
-        function ModuleIdResolver(config, fromModuleId) {
-            this._config = config;
-            var lastSlash = fromModuleId.lastIndexOf('/');
-            if (lastSlash !== -1) {
-                this.fromModulePath = fromModuleId.substr(0, lastSlash + 1);
-            }
-            else {
-                this.fromModulePath = '';
-            }
-        }
-        ModuleIdResolver.prototype.isBuild = function () {
-            return this._config.isBuild();
-        };
-        /**
-         * Normalize 'a/../name' to 'name', etc.
-         */
-        ModuleIdResolver._normalizeModuleId = function (moduleId) {
-            var r = moduleId, pattern;
-            // replace /./ => /
-            pattern = /\/\.\//;
-            while (pattern.test(r)) {
-                r = r.replace(pattern, '/');
-            }
-            // replace ^./ => nothing
-            r = r.replace(/^\.\//g, '');
-            // replace /aa/../ => / (BUT IGNORE /../../)
-            pattern = /\/(([^\/])|([^\/][^\/\.])|([^\/\.][^\/])|([^\/][^\/][^\/]+))\/\.\.\//;
-            while (pattern.test(r)) {
-                r = r.replace(pattern, '/');
-            }
-            // replace ^aa/../ => nothing (BUT IGNORE ../../)
-            r = r.replace(/^(([^\/])|([^\/][^\/\.])|([^\/\.][^\/])|([^\/][^\/][^\/]+))\/\.\.\//, '');
-            return r;
-        };
-        /**
-         * Resolve relative module ids
-         */
-        ModuleIdResolver.prototype.resolveModule = function (moduleId) {
-            var result = moduleId;
-            if (!Utilities.isAbsolutePath(result)) {
-                if (Utilities.startsWith(result, './') || Utilities.startsWith(result, '../')) {
-                    result = ModuleIdResolver._normalizeModuleId(this.fromModulePath + result);
-                }
-            }
-            return result;
-        };
-        /**
-         * Transform a module id to a location. Appends .js to module ids
-         */
-        ModuleIdResolver.prototype.moduleIdToPaths = function (moduleId) {
-            var r = this._config.moduleIdToPaths(moduleId);
-            if (isNode && moduleId.indexOf('/') === -1) {
-                r.push('node|' + this.fromModulePath + '|' + moduleId);
-            }
-            return r;
-        };
-        /**
-         * Transform a module id or url to a location.
-         */
-        ModuleIdResolver.prototype.requireToUrl = function (url) {
-            return this._config.requireToUrl(url);
-        };
-        /**
-         * Should errors be caught when executing module factories?
-         */
-        ModuleIdResolver.prototype.shouldCatchError = function () {
-            return this._config.shouldCatchError();
-        };
-        /**
-         * Forward an error to the error handler.
-         */
-        ModuleIdResolver.prototype.onError = function (err) {
-            this._config.onError(err);
-        };
-        return ModuleIdResolver;
-    }());
-    AMDLoader.ModuleIdResolver = ModuleIdResolver;
-    // ------------------------------------------------------------------------
-    // Module
-    var Module = (function () {
-        function Module(id, dependencies, callback, errorback, recorder, moduleIdResolver, config, defineCallStack) {
-            if (defineCallStack === void 0) { defineCallStack = null; }
-            this._id = id;
-            this._dependencies = dependencies;
-            this._dependenciesValues = [];
-            this._callback = callback;
-            this._errorback = errorback;
-            this._recorder = recorder;
-            this._moduleIdResolver = moduleIdResolver;
-            this._exports = {};
-            this._exportsPassedIn = false;
-            this._config = config;
-            this._defineCallStack = defineCallStack;
-            this._digestDependencies();
-            if (this._unresolvedDependenciesCount === 0) {
-                this._complete();
-            }
-        }
-        Module.prototype._digestDependencies = function () {
-            var _this = this;
-            // Exact count of dependencies
-            this._unresolvedDependenciesCount = this._dependencies.length;
-            // Send on to the manager only a subset of dependencies
-            // For example, 'exports' and 'module' can be fulfilled locally
-            this._normalizedDependencies = [];
-            this._managerDependencies = [];
-            this._managerDependenciesMap = {};
-            var i, len, d;
-            for (i = 0, len = this._dependencies.length; i < len; i++) {
-                d = this._dependencies[i];
-                if (!d) {
-                    // Most likely, undefined sneaked in to the dependency array
-                    // Also, IE8 interprets ['a', 'b',] as ['a', 'b', undefined]
-                    console.warn('Please check module ' + this._id + ', the dependency list looks broken');
-                    this._normalizedDependencies[i] = d;
-                    this._dependenciesValues[i] = null;
-                    this._unresolvedDependenciesCount--;
-                    continue;
-                }
-                if (d === 'exports') {
-                    // Fulfill 'exports' locally and remember that it was passed in
-                    // Later on, we will ignore the return value of the factory method
-                    this._exportsPassedIn = true;
-                    this._normalizedDependencies[i] = d;
-                    this._dependenciesValues[i] = this._exports;
-                    this._unresolvedDependenciesCount--;
-                }
-                else if (d === 'module') {
-                    // Fulfill 'module' locally
-                    this._normalizedDependencies[i] = d;
-                    this._dependenciesValues[i] = {
-                        id: this._id,
-                        config: function () { return _this._config; }
-                    };
-                    this._unresolvedDependenciesCount--;
-                }
-                else if (d === 'require') {
-                    // Request 'requre' from the manager
-                    this._normalizedDependencies[i] = d;
-                    this.addManagerDependency(d, i);
-                }
-                else {
-                    // Normalize dependency and then request it from the manager
-                    var bangIndex = d.indexOf('!');
-                    if (bangIndex >= 0) {
-                        var pluginId = d.substring(0, bangIndex);
-                        var pluginParam = d.substring(bangIndex + 1, d.length);
-                        d = this._moduleIdResolver.resolveModule(pluginId) + '!' + pluginParam;
-                    }
-                    else {
-                        d = this._moduleIdResolver.resolveModule(d);
-                    }
-                    this._normalizedDependencies[i] = d;
-                    this.addManagerDependency(d, i);
-                }
-            }
-        };
-        Module.prototype.addManagerDependency = function (dependency, index) {
-            if (this._managerDependenciesMap.hasOwnProperty(dependency)) {
-                throw new Error('Module ' + this._id + ' contains multiple times a dependency to ' + dependency);
-            }
-            this._managerDependencies.push(dependency);
-            this._managerDependenciesMap[dependency] = index;
-        };
-        /**
-         * Called by the module manager because plugin dependencies can not
-         * be normalized statically, the part after '!' can only be normalized
-         * once the plugin has loaded and its normalize logic is plugged in.
-         */
-        Module.prototype.renameDependency = function (oldDependencyId, newDependencyId) {
-            if (!this._managerDependenciesMap.hasOwnProperty(oldDependencyId)) {
-                throw new Error('Loader: Cannot rename an unknown dependency!');
-            }
-            var index = this._managerDependenciesMap[oldDependencyId];
-            delete this._managerDependenciesMap[oldDependencyId];
-            this._managerDependenciesMap[newDependencyId] = index;
-            this._normalizedDependencies[index] = newDependencyId;
-        };
-        /**
-         * Get module's id
-         */
-        Module.prototype.getId = function () {
-            return this._id;
-        };
-        /**
-         * Get the module id resolver associated with this module
-         */
-        Module.prototype.getModuleIdResolver = function () {
-            return this._moduleIdResolver;
-        };
-        Module.prototype.isExportsPassedIn = function () {
-            return this._exportsPassedIn;
-        };
-        Module.prototype.getExports = function () {
-            return this._exports;
-        };
-        /**
-         * Get the initial dependencies (resolved).
-         * Does not account for any renames
-         */
-        Module.prototype.getDependencies = function () {
-            return this._managerDependencies;
-        };
-        Module.prototype.getNormalizedDependencies = function () {
-            return this._normalizedDependencies;
-        };
-        Module.prototype.getDefineCallStack = function () {
-            return this._defineCallStack;
-        };
-        Module.prototype._invokeFactory = function () {
-            if (this._moduleIdResolver.isBuild() && !Utilities.isAnonymousModule(this._id)) {
-                return {
-                    returnedValue: null,
-                    producedError: null
-                };
-            }
-            var producedError = null, returnedValue = null;
-            if (this._moduleIdResolver.shouldCatchError()) {
-                try {
-                    returnedValue = this._callback.apply(global, this._dependenciesValues);
-                }
-                catch (e) {
-                    producedError = e;
-                }
-                finally {
-                }
-            }
-            else {
-                returnedValue = this._callback.apply(global, this._dependenciesValues);
-            }
-            return {
-                returnedValue: returnedValue,
-                producedError: producedError
-            };
-        };
-        Module.prototype._complete = function () {
-            var producedError = null;
-            if (this._callback) {
-                if (typeof this._callback === 'function') {
-                    this._recorder.record(LoaderEventType.BeginInvokeFactory, this._id);
-                    var r = this._invokeFactory();
-                    producedError = r.producedError;
-                    this._recorder.record(LoaderEventType.EndInvokeFactory, this._id);
-                    if (!producedError && typeof r.returnedValue !== 'undefined' && (!this._exportsPassedIn || Utilities.isEmpty(this._exports))) {
-                        this._exports = r.returnedValue;
-                    }
-                }
-                else {
-                    this._exports = this._callback;
-                }
-            }
-            if (producedError) {
-                this.getModuleIdResolver().onError({
-                    errorCode: 'factory',
-                    moduleId: this._id,
-                    detail: producedError
-                });
-            }
-        };
-        /**
-         * Release references used while resolving module
-         */
-        Module.prototype.cleanUp = function () {
-            if (this._moduleIdResolver && !this._moduleIdResolver.isBuild()) {
-                this._normalizedDependencies = null;
-                this._moduleIdResolver = null;
-            }
-            this._dependencies = null;
-            this._dependenciesValues = null;
-            this._callback = null;
-            this._managerDependencies = null;
-            this._managerDependenciesMap = null;
-        };
-        /**
-         * One of the direct dependencies or a transitive dependency has failed to load.
-         */
-        Module.prototype.onDependencyError = function (err) {
-            if (this._errorback) {
-                this._errorback(err);
-                return true;
-            }
-            return false;
-        };
-        /**
-         * Resolve a dependency with a value.
-         */
-        Module.prototype.resolveDependency = function (id, value) {
-            if (!this._managerDependenciesMap.hasOwnProperty(id)) {
-                throw new Error('Cannot resolve a dependency I do not have!');
-            }
-            this._dependenciesValues[this._managerDependenciesMap[id]] = value;
-            // Prevent resolving the same dependency twice
-            delete this._managerDependenciesMap[id];
-            this._unresolvedDependenciesCount--;
-            if (this._unresolvedDependenciesCount === 0) {
-                this._complete();
-            }
-        };
-        /**
-         * Is the current module complete?
-         */
-        Module.prototype.isComplete = function () {
-            return this._unresolvedDependenciesCount === 0;
-        };
-        return Module;
-    }());
-    AMDLoader.Module = Module;
-    // ------------------------------------------------------------------------
-    // LoaderEvent
-    (function (LoaderEventType) {
-        LoaderEventType[LoaderEventType["LoaderAvailable"] = 1] = "LoaderAvailable";
-        LoaderEventType[LoaderEventType["BeginLoadingScript"] = 10] = "BeginLoadingScript";
-        LoaderEventType[LoaderEventType["EndLoadingScriptOK"] = 11] = "EndLoadingScriptOK";
-        LoaderEventType[LoaderEventType["EndLoadingScriptError"] = 12] = "EndLoadingScriptError";
-        LoaderEventType[LoaderEventType["BeginInvokeFactory"] = 21] = "BeginInvokeFactory";
-        LoaderEventType[LoaderEventType["EndInvokeFactory"] = 22] = "EndInvokeFactory";
-        LoaderEventType[LoaderEventType["NodeBeginEvaluatingScript"] = 31] = "NodeBeginEvaluatingScript";
-        LoaderEventType[LoaderEventType["NodeEndEvaluatingScript"] = 32] = "NodeEndEvaluatingScript";
-        LoaderEventType[LoaderEventType["NodeBeginNativeRequire"] = 33] = "NodeBeginNativeRequire";
-        LoaderEventType[LoaderEventType["NodeEndNativeRequire"] = 34] = "NodeEndNativeRequire";
-    })(AMDLoader.LoaderEventType || (AMDLoader.LoaderEventType = {}));
-    var LoaderEventType = AMDLoader.LoaderEventType;
-    function getHighPerformanceTimestamp() {
-        return (hasPerformanceNow ? global.performance.now() : Date.now());
-    }
-    var LoaderEvent = (function () {
-        function LoaderEvent(type, detail, timestamp) {
-            this.type = type;
-            this.detail = detail;
-            this.timestamp = timestamp;
-        }
-        return LoaderEvent;
-    }());
-    AMDLoader.LoaderEvent = LoaderEvent;
-    var LoaderEventRecorder = (function () {
-        function LoaderEventRecorder(loaderAvailableTimestamp) {
-            this._events = [new LoaderEvent(LoaderEventType.LoaderAvailable, '', loaderAvailableTimestamp)];
-        }
-        LoaderEventRecorder.prototype.record = function (type, detail) {
-            this._events.push(new LoaderEvent(type, detail, getHighPerformanceTimestamp()));
-        };
-        LoaderEventRecorder.prototype.getEvents = function () {
-            return this._events;
-        };
-        return LoaderEventRecorder;
-    }());
-    AMDLoader.LoaderEventRecorder = LoaderEventRecorder;
-    var NullLoaderEventRecorder = (function () {
-        function NullLoaderEventRecorder() {
-        }
-        NullLoaderEventRecorder.prototype.record = function (type, detail) {
-            // Nothing to do
-        };
-        NullLoaderEventRecorder.prototype.getEvents = function () {
-            return [];
-        };
-        NullLoaderEventRecorder.INSTANCE = new NullLoaderEventRecorder();
-        return NullLoaderEventRecorder;
-    }());
-    AMDLoader.NullLoaderEventRecorder = NullLoaderEventRecorder;
-    var ModuleManager = (function () {
-        function ModuleManager(scriptLoader) {
-            this._recorder = null;
-            this._config = new Configuration();
-            this._scriptLoader = scriptLoader;
-            this._modules = {};
-            this._knownModules = {};
-            this._inverseDependencies = {};
-            this._dependencies = {};
-            this._inversePluginDependencies = {};
-            this._queuedDefineCalls = [];
-            this._loadingScriptsCount = 0;
-            this._resolvedScriptPaths = {};
-        }
-        ModuleManager._findRelevantLocationInStack = function (needle, stack) {
-            var normalize = function (str) { return str.replace(/\\/g, '/'); };
-            var normalizedPath = normalize(needle);
-            var stackPieces = stack.split(/\n/);
-            for (var i = 0; i < stackPieces.length; i++) {
-                var m = stackPieces[i].match(/(.*):(\d+):(\d+)\)?$/);
-                if (m) {
-                    var stackPath = m[1];
-                    var stackLine = m[2];
-                    var stackColumn = m[3];
-                    var trimPathOffset = Math.max(stackPath.lastIndexOf(' ') + 1, stackPath.lastIndexOf('(') + 1);
-                    stackPath = stackPath.substr(trimPathOffset);
-                    stackPath = normalize(stackPath);
-                    if (stackPath === normalizedPath) {
-                        var r = {
-                            line: parseInt(stackLine, 10),
-                            col: parseInt(stackColumn, 10)
-                        };
-                        if (r.line === 1) {
-                            r.col -= '(function (require, define, __filename, __dirname) { '.length;
-                        }
-                        return r;
-                    }
-                }
-            }
-            throw new Error('Could not correlate define call site for needle ' + needle);
-        };
-        ModuleManager.prototype.getBuildInfo = function () {
-            var _this = this;
-            if (!this._config.isBuild()) {
-                return null;
-            }
-            return Object.keys(this._modules).map(function (moduleId) {
-                var m = _this._modules[moduleId];
-                var location = _this._resolvedScriptPaths[moduleId] || null;
-                var defineStack = m.getDefineCallStack();
-                return {
-                    id: moduleId,
-                    path: location,
-                    defineLocation: (location && defineStack ? ModuleManager._findRelevantLocationInStack(location, defineStack) : null),
-                    dependencies: m.getNormalizedDependencies(),
-                    shim: (_this._config.isShimmed(moduleId) ? _this._config.getShimmedModulesStr(moduleId) : null),
-                    exports: m.getExports()
-                };
-            });
-        };
-        ModuleManager.prototype.getRecorder = function () {
-            if (!this._recorder) {
-                if (this._config.shouldRecordStats()) {
-                    this._recorder = new LoaderEventRecorder(loaderAvailableTimestamp);
-                }
-                else {
-                    this._recorder = NullLoaderEventRecorder.INSTANCE;
-                }
-            }
-            return this._recorder;
-        };
-        ModuleManager.prototype.getLoaderEvents = function () {
-            return this.getRecorder().getEvents();
-        };
-        /**
-         * Defines a module.
-         * @param id @see defineModule
-         * @param dependencies @see defineModule
-         * @param callback @see defineModule
-         */
-        ModuleManager.prototype.enqueueDefineModule = function (id, dependencies, callback) {
-            if (this._loadingScriptsCount === 0) {
-                // There are no scripts currently loading, so no load event will be fired, so the queue will not be consumed
-                this.defineModule(id, dependencies, callback, null, null);
-            }
-            else {
-                this._queuedDefineCalls.push({
-                    id: id,
-                    stack: null,
-                    dependencies: dependencies,
-                    callback: callback
-                });
-            }
-        };
-        /**
-         * Defines an anonymous module (without an id). Its name will be resolved as we receive a callback from the scriptLoader.
-         * @param dependecies @see defineModule
-         * @param callback @see defineModule
-         */
-        ModuleManager.prototype.enqueueDefineAnonymousModule = function (dependencies, callback) {
-            var stack = null;
-            if (this._config.isBuild()) {
-                stack = (new Error('StackLocation')).stack;
-            }
-            this._queuedDefineCalls.push({
-                id: null,
-                stack: stack,
-                dependencies: dependencies,
-                callback: callback
-            });
-        };
-        /**
-         * Creates a module and stores it in _modules. The manager will immediately begin resolving its dependencies.
-         * @param id An unique and absolute id of the module. This must not collide with another module's id
-         * @param dependencies An array with the dependencies of the module. Special keys are: "require", "exports" and "module"
-         * @param callback if callback is a function, it will be called with the resolved dependencies. if callback is an object, it will be considered as the exports of the module.
-         */
-        ModuleManager.prototype.defineModule = function (id, dependencies, callback, errorback, stack, moduleIdResolver) {
-            if (moduleIdResolver === void 0) { moduleIdResolver = new ModuleIdResolver(this._config, id); }
-            if (this._modules.hasOwnProperty(id)) {
-                if (!this._config.isDuplicateMessageIgnoredFor(id)) {
-                    console.warn('Duplicate definition of module \'' + id + '\'');
-                }
-                // Super important! Completely ignore duplicate module definition
-                return;
-            }
-            var moduleConfig = this._config.getConfigForModule(id);
-            var m = new Module(id, dependencies, callback, errorback, this.getRecorder(), moduleIdResolver, moduleConfig, stack);
-            this._modules[id] = m;
-            // Resolving of dependencies is immediate (not in a timeout). If there's a need to support a packer that concatenates in an
-            // unordered manner, in order to finish processing the file, execute the following method in a timeout
-            this._resolve(m);
-        };
-        ModuleManager.prototype._relativeRequire = function (moduleIdResolver, dependencies, callback, errorback) {
-            if (typeof dependencies === 'string') {
-                return this.synchronousRequire(dependencies, moduleIdResolver);
-            }
-            this.defineModule(Utilities.generateAnonymousModule(), dependencies, callback, errorback, null, moduleIdResolver);
-        };
-        /**
-         * Require synchronously a module by its absolute id. If the module is not loaded, an exception will be thrown.
-         * @param id The unique and absolute id of the required module
-         * @return The exports of module 'id'
-         */
-        ModuleManager.prototype.synchronousRequire = function (id, moduleIdResolver) {
-            if (moduleIdResolver === void 0) { moduleIdResolver = new ModuleIdResolver(this._config, id); }
-            var moduleId = moduleIdResolver.resolveModule(id);
-            var bangIndex = moduleId.indexOf('!');
-            if (bangIndex >= 0) {
-                // This is a synchronous require for a plugin dependency, so be sure to normalize the pluginParam (the piece after '!')
-                var pluginId = moduleId.substring(0, bangIndex), pluginParam = moduleId.substring(bangIndex + 1, moduleId.length), plugin = {};
-                if (this._modules.hasOwnProperty(pluginId)) {
-                    plugin = this._modules[pluginId];
-                }
-                // Helper to normalize the part which comes after '!'
-                var normalize = function (_arg) {
-                    return moduleIdResolver.resolveModule(_arg);
-                };
-                if (typeof plugin.normalize === 'function') {
-                    pluginParam = plugin.normalize(pluginParam, normalize);
-                }
-                else {
-                    pluginParam = normalize(pluginParam);
-                }
-                moduleId = pluginId + '!' + pluginParam;
-            }
-            if (!this._modules.hasOwnProperty(moduleId)) {
-                throw new Error('Check dependency list! Synchronous require cannot resolve module \'' + moduleId + '\'. This is the first mention of this module!');
-            }
-            var m = this._modules[moduleId];
-            if (!m.isComplete()) {
-                throw new Error('Check dependency list! Synchronous require cannot resolve module \'' + moduleId + '\'. This module has not been resolved completely yet.');
-            }
-            return m.getExports();
-        };
-        ModuleManager.prototype.configure = function (params, shouldOverwrite) {
-            var oldShouldRecordStats = this._config.shouldRecordStats();
-            if (shouldOverwrite) {
-                this._config = new Configuration(params);
-            }
-            else {
-                this._config = this._config.cloneAndMerge(params);
-            }
-            if (this._config.shouldRecordStats() && !oldShouldRecordStats) {
-                this._recorder = null;
-            }
-        };
-        ModuleManager.prototype.getConfigurationOptions = function () {
-            return this._config.getOptionsLiteral();
-        };
-        /**
-         * Callback from the scriptLoader when a module has been loaded.
-         * This means its code is available and has been executed.
-         */
-        ModuleManager.prototype._onLoad = function (id) {
-            var defineCall;
-            this._loadingScriptsCount--;
-            if (this._config.isShimmed(id)) {
-                // Do not consume queue, might end up consuming a module that is later expected
-                // If a shimmed module has loaded, create a define call for it
-                defineCall = this._config.getShimmedModuleDefine(id);
-                this.defineModule(id, defineCall.dependencies, defineCall.callback, null, defineCall.stack);
-            }
-            else {
-                if (this._queuedDefineCalls.length === 0) {
-                    // Loaded a file and it didn't call `define`
-                    this._loadingScriptsCount++;
-                    this._onLoadError(id, new Error('No define call received from module ' + id + '.'));
-                }
-                else {
-                    // Consume queue until first anonymous define call
-                    // or until current id is found in the queue
-                    while (this._queuedDefineCalls.length > 0) {
-                        defineCall = this._queuedDefineCalls.shift();
-                        if (defineCall.id === id || defineCall.id === null) {
-                            // Hit an anonymous define call or its own define call
-                            defineCall.id = id;
-                            this.defineModule(defineCall.id, defineCall.dependencies, defineCall.callback, null, defineCall.stack);
-                            break;
-                        }
-                        else {
-                            // Hit other named define calls
-                            this.defineModule(defineCall.id, defineCall.dependencies, defineCall.callback, null, defineCall.stack);
-                        }
-                    }
-                }
-            }
-            if (this._loadingScriptsCount === 0) {
-                // No more on loads will be triggered, so make sure queue is empty
-                while (this._queuedDefineCalls.length > 0) {
-                    defineCall = this._queuedDefineCalls.shift();
-                    if (defineCall.id === null) {
-                        console.warn('Found an unmatched anonymous define call in the define queue. Ignoring it!');
-                        console.warn(defineCall.callback);
-                    }
-                    else {
-                        // Hit other named define calls
-                        this.defineModule(defineCall.id, defineCall.dependencies, defineCall.callback, null, defineCall.stack);
-                    }
-                }
-            }
-        };
-        /**
-         * Callback from the scriptLoader when a module hasn't been loaded.
-         * This means that the script was not found (e.g. 404) or there was an error in the script.
-         */
-        ModuleManager.prototype._onLoadError = function (id, err) {
-            this._loadingScriptsCount--;
-            var error = {
-                errorCode: 'load',
-                moduleId: id,
-                neededBy: (this._inverseDependencies[id] ? this._inverseDependencies[id].slice(0) : []),
-                detail: err
-            };
-            // Find any 'local' error handlers, walk the entire chain of inverse dependencies if necessary.
-            var seenModuleId = {}, queueElement, someoneNotified = false, queue = [];
-            queue.push(id);
-            seenModuleId[id] = true;
-            while (queue.length > 0) {
-                queueElement = queue.shift();
-                if (this._modules[queueElement]) {
-                    someoneNotified = this._modules[queueElement].onDependencyError(error) || someoneNotified;
-                }
-                if (this._inverseDependencies[queueElement]) {
-                    for (var i = 0, len = this._inverseDependencies[queueElement].length; i < len; i++) {
-                        if (!seenModuleId.hasOwnProperty(this._inverseDependencies[queueElement][i])) {
-                            queue.push(this._inverseDependencies[queueElement][i]);
-                            seenModuleId[this._inverseDependencies[queueElement][i]] = true;
-                        }
-                    }
-                }
-            }
-            if (!someoneNotified) {
-                this._config.onError(error);
-            }
-        };
-        /**
-         * Module id has been loaded completely, its exports are available.
-         * @param id module's id
-         * @param exports module's exports
-         */
-        ModuleManager.prototype._onModuleComplete = function (id, exports) {
-            var i, len, inverseDependencyId, inverseDependency;
-            // Clean up module's dependencies since module is now complete
-            delete this._dependencies[id];
-            if (this._inverseDependencies.hasOwnProperty(id)) {
-                // Fetch and clear inverse dependencies
-                var inverseDependencies = this._inverseDependencies[id];
-                delete this._inverseDependencies[id];
-                // Resolve one inverse dependency at a time, always
-                // on the lookout for a completed module.
-                for (i = 0, len = inverseDependencies.length; i < len; i++) {
-                    inverseDependencyId = inverseDependencies[i];
-                    inverseDependency = this._modules[inverseDependencyId];
-                    inverseDependency.resolveDependency(id, exports);
-                    if (inverseDependency.isComplete()) {
-                        this._onModuleComplete(inverseDependencyId, inverseDependency.getExports());
-                    }
-                }
-            }
-            if (this._inversePluginDependencies.hasOwnProperty(id)) {
-                // This module is used as a plugin at least once
-                // Fetch and clear these inverse plugin dependencies
-                var inversePluginDependencies = this._inversePluginDependencies[id];
-                delete this._inversePluginDependencies[id];
-                // Resolve plugin dependencies one at a time
-                for (i = 0, len = inversePluginDependencies.length; i < len; i++) {
-                    var inversePluginDependencyId = inversePluginDependencies[i].moduleId;
-                    var inversePluginDependency = this._modules[inversePluginDependencyId];
-                    this._resolvePluginDependencySync(inversePluginDependencyId, inversePluginDependencies[i].dependencyId, exports);
-                    // Anonymous modules might already be gone at this point
-                    if (inversePluginDependency.isComplete()) {
-                        this._onModuleComplete(inversePluginDependencyId, inversePluginDependency.getExports());
-                    }
-                }
-            }
-            if (Utilities.isAnonymousModule(id)) {
-                // Clean up references to anonymous modules, to prevent memory leaks
-                delete this._modules[id];
-                delete this._dependencies[id];
-            }
-            else {
-                this._modules[id].cleanUp();
-            }
-        };
-        /**
-         * Walks (recursively) the dependencies of 'from' in search of 'to'.
-         * Returns true if there is such a path or false otherwise.
-         * @param from Module id to start at
-         * @param to Module id to look for
-         */
-        ModuleManager.prototype._hasDependencyPath = function (from, to) {
-            var i, len, inQueue = {}, queue = [], element, dependencies, dependency;
-            // Insert 'from' in queue
-            queue.push(from);
-            inQueue[from] = true;
-            while (queue.length > 0) {
-                // Pop first inserted element of queue
-                element = queue.shift();
-                if (this._dependencies.hasOwnProperty(element)) {
-                    dependencies = this._dependencies[element];
-                    // Walk the element's dependencies
-                    for (i = 0, len = dependencies.length; i < len; i++) {
-                        dependency = dependencies[i];
-                        if (dependency === to) {
-                            // There is a path to 'to'
-                            return true;
-                        }
-                        if (!inQueue.hasOwnProperty(dependency)) {
-                            // Insert 'dependency' in queue
-                            inQueue[dependency] = true;
-                            queue.push(dependency);
-                        }
-                    }
-                }
-            }
-            // There is no path to 'to'
-            return false;
-        };
-        /**
-         * Walks (recursively) the dependencies of 'from' in search of 'to'.
-         * Returns cycle as array.
-         * @param from Module id to start at
-         * @param to Module id to look for
-         */
-        ModuleManager.prototype._findCyclePath = function (from, to, depth) {
-            if (from === to || depth === 50) {
-                return [from];
-            }
-            if (!this._dependencies.hasOwnProperty(from)) {
-                return null;
-            }
-            var path, dependencies = this._dependencies[from];
-            // Walk the element's dependencies
-            for (var i = 0, len = dependencies.length; i < len; i++) {
-                path = this._findCyclePath(dependencies[i], to, depth + 1);
-                if (path !== null) {
-                    path.push(from);
-                    return path;
-                }
-            }
-            return null;
-        };
-        /**
-         * Create the local 'require' that is passed into modules
-         */
-        ModuleManager.prototype._createRequire = function (moduleIdResolver) {
-            var _this = this;
-            var result = (function (dependencies, callback, errorback) {
-                return _this._relativeRequire(moduleIdResolver, dependencies, callback, errorback);
-            });
-            result.toUrl = function (id) {
-                return moduleIdResolver.requireToUrl(moduleIdResolver.resolveModule(id));
-            };
-            result.getStats = function () {
-                return _this.getLoaderEvents();
-            };
-            result.__$__nodeRequire = global.nodeRequire;
-            return result;
-        };
-        /**
-         * Resolve a plugin dependency with the plugin loaded & complete
-         * @param moduleId The module that has this dependency
-         * @param dependencyId The semi-normalized dependency that appears in the module. e.g. 'vs/css!./mycssfile'. Only the plugin part (before !) is normalized
-         * @param plugin The plugin (what the plugin exports)
-         */
-        ModuleManager.prototype._resolvePluginDependencySync = function (moduleId, dependencyId, plugin) {
-            var _this = this;
-            var m = this._modules[moduleId], moduleIdResolver = m.getModuleIdResolver(), bangIndex = dependencyId.indexOf('!'), pluginId = dependencyId.substring(0, bangIndex), pluginParam = dependencyId.substring(bangIndex + 1, dependencyId.length);
-            // Helper to normalize the part which comes after '!'
-            var normalize = function (_arg) {
-                return moduleIdResolver.resolveModule(_arg);
-            };
-            if (typeof plugin.normalize === 'function') {
-                pluginParam = plugin.normalize(pluginParam, normalize);
-            }
-            else {
-                pluginParam = normalize(pluginParam);
-            }
-            if (!plugin.dynamic) {
-                // Now normalize the entire dependency
-                var oldDependencyId = dependencyId;
-                dependencyId = pluginId + '!' + pluginParam;
-                // Let the module know that the dependency has been normalized so it can update its internal state
-                m.renameDependency(oldDependencyId, dependencyId);
-                this._resolveDependency(moduleId, dependencyId, function (moduleId) {
-                    // Delegate the loading of the resource to the plugin
-                    var load = (function (value) {
-                        _this.defineModule(dependencyId, [], value, null, null);
-                    });
-                    load.error = function (err) {
-                        _this._config.onError({
-                            errorCode: 'load',
-                            moduleId: dependencyId,
-                            neededBy: (_this._inverseDependencies[dependencyId] ? _this._inverseDependencies[dependencyId].slice(0) : []),
-                            detail: err
-                        });
-                    };
-                    plugin.load(pluginParam, _this._createRequire(moduleIdResolver), load, _this._config.getOptionsLiteral());
-                });
-            }
-            else {
-                // This plugin is dynamic and does not want the loader to cache anything on its behalf
-                // Delegate the loading of the resource to the plugin
-                var load = (function (value) {
-                    m.resolveDependency(dependencyId, value);
-                    if (m.isComplete()) {
-                        _this._onModuleComplete(moduleId, m.getExports());
-                    }
-                });
-                load.error = function (err) {
-                    _this._config.onError({
-                        errorCode: 'load',
-                        moduleId: dependencyId,
-                        neededBy: [moduleId],
-                        detail: err
-                    });
-                };
-                plugin.load(pluginParam, this._createRequire(moduleIdResolver), load, this._config.getOptionsLiteral());
-            }
-        };
-        /**
-         * Resolve a plugin dependency with the plugin not loaded or not complete yet
-         * @param moduleId The module that has this dependency
-         * @param dependencyId The semi-normalized dependency that appears in the module. e.g. 'vs/css!./mycssfile'. Only the plugin part (before !) is normalized
-         */
-        ModuleManager.prototype._resolvePluginDependencyAsync = function (moduleId, dependencyId) {
-            var m = this._modules[moduleId], bangIndex = dependencyId.indexOf('!'), pluginId = dependencyId.substring(0, bangIndex);
-            // Record dependency for when the plugin gets loaded
-            this._inversePluginDependencies[pluginId] = this._inversePluginDependencies[pluginId] || [];
-            this._inversePluginDependencies[pluginId].push({
-                moduleId: moduleId,
-                dependencyId: dependencyId
-            });
-            if (!this._modules.hasOwnProperty(pluginId) && !this._knownModules.hasOwnProperty(pluginId)) {
-                // This is the first mention of module 'pluginId', so load it
-                this._knownModules[pluginId] = true;
-                this._loadModule(m.getModuleIdResolver(), pluginId);
-            }
-        };
-        /**
-         * Resolve a plugin dependency
-         * @param moduleId The module that has this dependency
-         * @param dependencyId The semi-normalized dependency that appears in the module. e.g. 'vs/css!./mycssfile'. Only the plugin part (before !) is normalized
-         */
-        ModuleManager.prototype._resolvePluginDependency = function (moduleId, dependencyId) {
-            var bangIndex = dependencyId.indexOf('!'), pluginId = dependencyId.substring(0, bangIndex);
-            if (this._modules.hasOwnProperty(pluginId) && this._modules[pluginId].isComplete()) {
-                // Plugin has already been loaded & resolved
-                this._resolvePluginDependencySync(moduleId, dependencyId, this._modules[pluginId].getExports());
-            }
-            else {
-                // Plugin is not loaded or not resolved
-                this._resolvePluginDependencyAsync(moduleId, dependencyId);
-            }
-        };
-        /**
-         * Resolve a module dependency to a shimmed module and delegate the loading to loadCallback.
-         * @param moduleId The module that has this dependency
-         * @param dependencyId The normalized dependency that appears in the module -- this module is shimmed
-         * @param loadCallback Callback that will be called to trigger the loading of 'dependencyId' if needed
-         */
-        ModuleManager.prototype._resolveShimmedDependency = function (moduleId, dependencyId, loadCallback) {
-            // If a shimmed module has dependencies, we must first load those dependencies
-            // and only when those are loaded we can load the shimmed module.
-            // To achieve this, we inject a module definition with those dependencies
-            // and from its factory method we really load the shimmed module.
-            var defineInfo = this._config.getShimmedModuleDefine(dependencyId);
-            if (defineInfo.dependencies.length > 0) {
-                this.defineModule(Utilities.generateAnonymousModule(), defineInfo.dependencies, function () { return loadCallback(dependencyId); }, null, null, new ModuleIdResolver(this._config, dependencyId));
-            }
-            else {
-                loadCallback(dependencyId);
-            }
-        };
-        /**
-         * Resolve a module dependency and delegate the loading to loadCallback
-         * @param moduleId The module that has this dependency
-         * @param dependencyId The normalized dependency that appears in the module
-         * @param loadCallback Callback that will be called to trigger the loading of 'dependencyId' if needed
-         */
-        ModuleManager.prototype._resolveDependency = function (moduleId, dependencyId, loadCallback) {
-            var m = this._modules[moduleId];
-            if (this._modules.hasOwnProperty(dependencyId) && this._modules[dependencyId].isComplete()) {
-                // Dependency has already been loaded & resolved
-                m.resolveDependency(dependencyId, this._modules[dependencyId].getExports());
-            }
-            else {
-                // Dependency is not loaded or not resolved
-                // Record dependency
-                this._dependencies[moduleId].push(dependencyId);
-                if (this._hasDependencyPath(dependencyId, moduleId)) {
-                    console.warn('There is a dependency cycle between \'' + dependencyId + '\' and \'' + moduleId + '\'. The cyclic path follows:');
-                    var cyclePath = this._findCyclePath(dependencyId, moduleId, 0);
-                    cyclePath.reverse();
-                    cyclePath.push(dependencyId);
-                    console.warn(cyclePath.join(' => \n'));
-                    // Break the cycle
-                    var dependency = this._modules.hasOwnProperty(dependencyId) ? this._modules[dependencyId] : null;
-                    var dependencyValue;
-                    if (dependency && dependency.isExportsPassedIn()) {
-                        // If dependency uses 'exports', then resolve it with that object
-                        dependencyValue = dependency.getExports();
-                    }
-                    // Resolve dependency with undefined or with 'exports' object
-                    m.resolveDependency(dependencyId, dependencyValue);
-                }
-                else {
-                    // Since we are actually waiting for this dependency,
-                    // record inverse dependency
-                    this._inverseDependencies[dependencyId] = this._inverseDependencies[dependencyId] || [];
-                    this._inverseDependencies[dependencyId].push(moduleId);
-                    if (!this._modules.hasOwnProperty(dependencyId) && !this._knownModules.hasOwnProperty(dependencyId)) {
-                        // This is the first mention of module 'dependencyId', so load it
-                        // Mark this module as loaded so we don't hit this case again
-                        this._knownModules[dependencyId] = true;
-                        if (this._config.isShimmed(dependencyId)) {
-                            this._resolveShimmedDependency(moduleId, dependencyId, loadCallback);
-                        }
-                        else {
-                            loadCallback(dependencyId);
-                        }
-                    }
-                }
-            }
-        };
-        ModuleManager.prototype._loadModule = function (anyModuleIdResolver, moduleId) {
-            var _this = this;
-            this._loadingScriptsCount++;
-            var paths = anyModuleIdResolver.moduleIdToPaths(moduleId);
-            var lastPathIndex = -1;
-            var loadNextPath = function (err) {
-                lastPathIndex++;
-                if (lastPathIndex >= paths.length) {
-                    // No more paths to try
-                    _this._onLoadError(moduleId, err);
-                }
-                else {
-                    var currentPath = paths[lastPathIndex];
-                    var recorder = _this.getRecorder();
-                    if (_this._config.isBuild() && currentPath === 'empty:') {
-                        _this._resolvedScriptPaths[moduleId] = currentPath;
-                        _this.enqueueDefineModule(moduleId, [], null);
-                        _this._onLoad(moduleId);
-                        return;
-                    }
-                    recorder.record(LoaderEventType.BeginLoadingScript, currentPath);
-                    _this._scriptLoader.load(currentPath, function () {
-                        if (_this._config.isBuild()) {
-                            _this._resolvedScriptPaths[moduleId] = currentPath;
-                        }
-                        recorder.record(LoaderEventType.EndLoadingScriptOK, currentPath);
-                        _this._onLoad(moduleId);
-                    }, function (err) {
-                        recorder.record(LoaderEventType.EndLoadingScriptError, currentPath);
-                        loadNextPath(err);
-                    }, recorder);
-                }
-            };
-            loadNextPath(null);
-        };
-        /**
-         * Examine the dependencies of module 'module' and resolve them as needed.
-         */
-        ModuleManager.prototype._resolve = function (m) {
-            var _this = this;
-            var i, len, id, dependencies, dependencyId, moduleIdResolver;
-            id = m.getId();
-            dependencies = m.getDependencies();
-            moduleIdResolver = m.getModuleIdResolver();
-            this._dependencies[id] = [];
-            var loadCallback = function (moduleId) { return _this._loadModule(moduleIdResolver, moduleId); };
-            for (i = 0, len = dependencies.length; i < len; i++) {
-                dependencyId = dependencies[i];
-                if (dependencyId === 'require') {
-                    m.resolveDependency(dependencyId, this._createRequire(moduleIdResolver));
-                    continue;
-                }
-                else {
-                    if (dependencyId.indexOf('!') >= 0) {
-                        this._resolvePluginDependency(id, dependencyId);
-                    }
-                    else {
-                        this._resolveDependency(id, dependencyId, loadCallback);
-                    }
-                }
-            }
-            if (m.isComplete()) {
-                // This module was completed as soon as its been seen.
-                this._onModuleComplete(id, m.getExports());
-            }
-        };
-        return ModuleManager;
-    }());
-    AMDLoader.ModuleManager = ModuleManager;
+})(AMDLoader || (AMDLoader = {}));
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+var AMDLoader;
+(function (AMDLoader) {
     /**
      * Load `scriptSrc` only once (avoid multiple <script> tags)
      */
@@ -1562,10 +517,7 @@ var AMDLoader;
             this.actualScriptLoader = actualScriptLoader;
             this.callbackMap = {};
         }
-        OnlyOnceScriptLoader.prototype.setModuleManager = function (moduleManager) {
-            this.actualScriptLoader.setModuleManager(moduleManager);
-        };
-        OnlyOnceScriptLoader.prototype.load = function (scriptSrc, callback, errorback, recorder) {
+        OnlyOnceScriptLoader.prototype.load = function (moduleManager, scriptSrc, callback, errorback) {
             var _this = this;
             var scriptCallbacks = {
                 callback: callback,
@@ -1576,7 +528,7 @@ var AMDLoader;
                 return;
             }
             this.callbackMap[scriptSrc] = [scriptCallbacks];
-            this.actualScriptLoader.load(scriptSrc, function () { return _this.triggerCallback(scriptSrc); }, function (err) { return _this.triggerErrorback(scriptSrc, err); }, recorder);
+            this.actualScriptLoader.load(moduleManager, scriptSrc, function () { return _this.triggerCallback(scriptSrc); }, function (err) { return _this.triggerErrorback(scriptSrc, err); });
         };
         OnlyOnceScriptLoader.prototype.triggerCallback = function (scriptSrc) {
             var scriptCallbacks = this.callbackMap[scriptSrc];
@@ -1599,35 +551,9 @@ var AMDLoader;
         }
         /**
          * Attach load / error listeners to a script element and remove them when either one has fired.
-         * Implemented for browssers supporting 'onreadystatechange' events, such as IE8 or IE9
-         */
-        BrowserScriptLoader.prototype.attachListenersV1 = function (script, callback, errorback) {
-            var unbind = function () {
-                script.detachEvent('onreadystatechange', loadEventListener);
-                if (script.addEventListener) {
-                    script.removeEventListener('error', errorEventListener);
-                }
-            };
-            var loadEventListener = function (e) {
-                if (script.readyState === 'loaded' || script.readyState === 'complete') {
-                    unbind();
-                    callback();
-                }
-            };
-            var errorEventListener = function (e) {
-                unbind();
-                errorback(e);
-            };
-            script.attachEvent('onreadystatechange', loadEventListener);
-            if (script.addEventListener) {
-                script.addEventListener('error', errorEventListener);
-            }
-        };
-        /**
-         * Attach load / error listeners to a script element and remove them when either one has fired.
          * Implemented for browssers supporting HTML5 standard 'load' and 'error' events.
          */
-        BrowserScriptLoader.prototype.attachListenersV2 = function (script, callback, errorback) {
+        BrowserScriptLoader.prototype.attachListeners = function (script, callback, errorback) {
             var unbind = function () {
                 script.removeEventListener('load', loadEventListener);
                 script.removeEventListener('error', errorEventListener);
@@ -1643,19 +569,11 @@ var AMDLoader;
             script.addEventListener('load', loadEventListener);
             script.addEventListener('error', errorEventListener);
         };
-        BrowserScriptLoader.prototype.setModuleManager = function (moduleManager) {
-            /* Intentional empty */
-        };
-        BrowserScriptLoader.prototype.load = function (scriptSrc, callback, errorback) {
+        BrowserScriptLoader.prototype.load = function (moduleManager, scriptSrc, callback, errorback) {
             var script = document.createElement('script');
             script.setAttribute('async', 'async');
             script.setAttribute('type', 'text/javascript');
-            if (global.attachEvent) {
-                this.attachListenersV1(script, callback, errorback);
-            }
-            else {
-                this.attachListenersV2(script, callback, errorback);
-            }
+            this.attachListeners(script, callback, errorback);
             script.setAttribute('src', scriptSrc);
             document.getElementsByTagName('head')[0].appendChild(script);
         };
@@ -1663,53 +581,14 @@ var AMDLoader;
     }());
     var WorkerScriptLoader = (function () {
         function WorkerScriptLoader() {
-            this.loadCalls = [];
-            this.loadTimeout = -1;
         }
-        WorkerScriptLoader.prototype.setModuleManager = function (moduleManager) {
-            /* Intentional empty */
-        };
-        WorkerScriptLoader.prototype.load = function (scriptSrc, callback, errorback) {
-            var _this = this;
-            this.loadCalls.push({
-                scriptSrc: scriptSrc,
-                callback: callback,
-                errorback: errorback
-            });
-            if (navigator.userAgent.indexOf('Firefox') >= 0) {
-                // Firefox fails installing the timer every now and then :(
-                this._load();
-            }
-            else {
-                if (this.loadTimeout === -1) {
-                    this.loadTimeout = setTimeout(function () {
-                        _this.loadTimeout = -1;
-                        _this._load();
-                    }, 0);
-                }
-            }
-        };
-        WorkerScriptLoader.prototype._load = function () {
-            var loadCalls = this.loadCalls;
-            this.loadCalls = [];
-            var i, len = loadCalls.length, scripts = [];
-            for (i = 0; i < len; i++) {
-                scripts.push(loadCalls[i].scriptSrc);
-            }
-            var errorOccured = false;
+        WorkerScriptLoader.prototype.load = function (moduleManager, scriptSrc, callback, errorback) {
             try {
-                importScripts.apply(null, scripts);
+                importScripts(scriptSrc);
+                callback();
             }
             catch (e) {
-                errorOccured = true;
-                for (i = 0; i < len; i++) {
-                    loadCalls[i].errorback(e);
-                }
-            }
-            if (!errorOccured) {
-                for (i = 0; i < len; i++) {
-                    loadCalls[i].callback();
-                }
+                errorback(e);
             }
         };
         return WorkerScriptLoader;
@@ -1718,9 +597,6 @@ var AMDLoader;
         function NodeScriptLoader() {
             this._initialized = false;
         }
-        NodeScriptLoader.prototype.setModuleManager = function (moduleManager) {
-            this._moduleManager = moduleManager;
-        };
         NodeScriptLoader.prototype._init = function (nodeRequire) {
             if (this._initialized) {
                 return;
@@ -1731,30 +607,28 @@ var AMDLoader;
             this._path = nodeRequire('path');
             this._crypto = nodeRequire('crypto');
         };
-        NodeScriptLoader.prototype.load = function (scriptSrc, callback, errorback, recorder) {
+        NodeScriptLoader.prototype.load = function (moduleManager, scriptSrc, callback, errorback) {
             var _this = this;
-            var opts = this._moduleManager.getConfigurationOptions();
-            var nodeRequire = (opts.nodeRequire || global.nodeRequire);
+            var opts = moduleManager.getConfig().getOptionsLiteral();
+            var nodeRequire = (opts.nodeRequire || AMDLoader.global.nodeRequire);
             var nodeInstrumenter = (opts.nodeInstrumenter || function (c) { return c; });
             this._init(nodeRequire);
+            var recorder = moduleManager.getRecorder();
             if (/^node\|/.test(scriptSrc)) {
                 var pieces = scriptSrc.split('|');
-                var moduleExports = null;
+                var moduleExports_1 = null;
                 try {
-                    recorder.record(LoaderEventType.NodeBeginNativeRequire, pieces[2]);
-                    moduleExports = nodeRequire(pieces[2]);
+                    moduleExports_1 = nodeRequire(pieces[1]);
                 }
                 catch (err) {
-                    recorder.record(LoaderEventType.NodeEndNativeRequire, pieces[2]);
                     errorback(err);
                     return;
                 }
-                recorder.record(LoaderEventType.NodeEndNativeRequire, pieces[2]);
-                this._moduleManager.enqueueDefineAnonymousModule([], function () { return moduleExports; });
+                moduleManager.enqueueDefineAnonymousModule([], function () { return moduleExports_1; });
                 callback();
             }
             else {
-                scriptSrc = Utilities.fileUriToFilePath(scriptSrc);
+                scriptSrc = AMDLoader.Utilities.fileUriToFilePath(scriptSrc);
                 this._fs.readFile(scriptSrc, { encoding: 'utf8' }, function (err, data) {
                     if (err) {
                         errorback(err);
@@ -1762,7 +636,7 @@ var AMDLoader;
                     }
                     var vmScriptSrc = _this._path.normalize(scriptSrc);
                     // Make the script src friendly towards electron
-                    if (isElectronRenderer) {
+                    if (AMDLoader.isElectronRenderer) {
                         var driveLetterMatch = vmScriptSrc.match(/^([a-z])\:(.*)/i);
                         if (driveLetterMatch) {
                             vmScriptSrc = driveLetterMatch[1].toUpperCase() + ':' + driveLetterMatch[2];
@@ -1801,7 +675,7 @@ var AMDLoader;
                                 });
                                 NodeScriptLoader._runSoon(function () { return _this._fs.unlink(cachedDataPath_1, function (err) {
                                     if (err) {
-                                        _this._moduleManager.getConfigurationOptions().onNodeCachedDataError({
+                                        moduleManager.getConfig().getOptionsLiteral().onNodeCachedDataError({
                                             errorCode: 'unlink',
                                             path: cachedDataPath_1,
                                             detail: err
@@ -1813,7 +687,7 @@ var AMDLoader;
                                 // data produced => write cache file
                                 NodeScriptLoader._runSoon(function () { return _this._fs.writeFile(cachedDataPath_1, script.cachedData, function (err) {
                                     if (err) {
-                                        _this._moduleManager.getConfigurationOptions().onNodeCachedDataError({
+                                        moduleManager.getConfig().getOptionsLiteral().onNodeCachedDataError({
                                             errorCode: 'writeFile',
                                             path: cachedDataPath_1,
                                             detail: err
@@ -1828,12 +702,12 @@ var AMDLoader;
         };
         NodeScriptLoader.prototype._loadAndEvalScript = function (scriptSrc, vmScriptSrc, contents, options, recorder) {
             // create script, run script
-            recorder.record(LoaderEventType.NodeBeginEvaluatingScript, scriptSrc);
+            recorder.record(AMDLoader.LoaderEventType.NodeBeginEvaluatingScript, scriptSrc);
             var script = new this._vm.Script(contents, options);
             var r = script.runInThisContext(options);
-            r.call(global, RequireFunc, DefineFunc, vmScriptSrc, this._path.dirname(scriptSrc));
+            r.call(AMDLoader.global, AMDLoader.RequireFunc, AMDLoader.DefineFunc, vmScriptSrc, this._path.dirname(scriptSrc));
             // signal done
-            recorder.record(LoaderEventType.NodeEndEvaluatingScript, scriptSrc);
+            recorder.record(AMDLoader.LoaderEventType.NodeEndEvaluatingScript, scriptSrc);
             return script;
         };
         NodeScriptLoader.prototype._getCachedDataPath = function (baseDir, filename) {
@@ -1845,13 +719,749 @@ var AMDLoader;
             var timeout = minTimeout + Math.ceil(Math.random() * minTimeout);
             setTimeout(callback, timeout);
         };
-        NodeScriptLoader._BOM = 0xFEFF;
         return NodeScriptLoader;
     }());
+    NodeScriptLoader._BOM = 0xFEFF;
+    AMDLoader.scriptLoader = new OnlyOnceScriptLoader(AMDLoader.isWebWorker ?
+        new WorkerScriptLoader()
+        : AMDLoader.isNode ?
+            new NodeScriptLoader()
+            : new BrowserScriptLoader());
+})(AMDLoader || (AMDLoader = {}));
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+var AMDLoader;
+(function (AMDLoader) {
     // ------------------------------------------------------------------------
+    // ModuleIdResolver
+    var ModuleIdResolver = (function () {
+        function ModuleIdResolver(fromModuleId) {
+            var lastSlash = fromModuleId.lastIndexOf('/');
+            if (lastSlash !== -1) {
+                this.fromModulePath = fromModuleId.substr(0, lastSlash + 1);
+            }
+            else {
+                this.fromModulePath = '';
+            }
+        }
+        /**
+         * Normalize 'a/../name' to 'name', etc.
+         */
+        ModuleIdResolver._normalizeModuleId = function (moduleId) {
+            var r = moduleId, pattern;
+            // replace /./ => /
+            pattern = /\/\.\//;
+            while (pattern.test(r)) {
+                r = r.replace(pattern, '/');
+            }
+            // replace ^./ => nothing
+            r = r.replace(/^\.\//g, '');
+            // replace /aa/../ => / (BUT IGNORE /../../)
+            pattern = /\/(([^\/])|([^\/][^\/\.])|([^\/\.][^\/])|([^\/][^\/][^\/]+))\/\.\.\//;
+            while (pattern.test(r)) {
+                r = r.replace(pattern, '/');
+            }
+            // replace ^aa/../ => nothing (BUT IGNORE ../../)
+            r = r.replace(/^(([^\/])|([^\/][^\/\.])|([^\/\.][^\/])|([^\/][^\/][^\/]+))\/\.\.\//, '');
+            return r;
+        };
+        /**
+         * Resolve relative module ids
+         */
+        ModuleIdResolver.prototype.resolveModule = function (moduleId) {
+            var result = moduleId;
+            if (!AMDLoader.Utilities.isAbsolutePath(result)) {
+                if (AMDLoader.Utilities.startsWith(result, './') || AMDLoader.Utilities.startsWith(result, '../')) {
+                    result = ModuleIdResolver._normalizeModuleId(this.fromModulePath + result);
+                }
+            }
+            return result;
+        };
+        return ModuleIdResolver;
+    }());
+    ModuleIdResolver.ROOT = new ModuleIdResolver('');
+    AMDLoader.ModuleIdResolver = ModuleIdResolver;
     // ------------------------------------------------------------------------
-    // ------------------------------------------------------------------------
-    // define
+    // Module
+    var Module = (function () {
+        function Module(id, strId, dependencies, callback, errorback, moduleIdResolver) {
+            this.id = id;
+            this.strId = strId;
+            this.dependencies = dependencies;
+            this._callback = callback;
+            this._errorback = errorback;
+            this.moduleIdResolver = moduleIdResolver;
+            this.exports = {};
+            this.exportsPassedIn = false;
+            this.unresolvedDependenciesCount = this.dependencies.length;
+            this._isComplete = false;
+        }
+        Module._safeInvokeFunction = function (callback, args) {
+            try {
+                return {
+                    returnedValue: callback.apply(AMDLoader.global, args),
+                    producedError: null
+                };
+            }
+            catch (e) {
+                return {
+                    returnedValue: null,
+                    producedError: e
+                };
+            }
+        };
+        Module._invokeFactory = function (config, strModuleId, callback, dependenciesValues) {
+            if (config.isBuild() && !AMDLoader.Utilities.isAnonymousModule(strModuleId)) {
+                return {
+                    returnedValue: null,
+                    producedError: null
+                };
+            }
+            if (config.shouldCatchError()) {
+                return this._safeInvokeFunction(callback, dependenciesValues);
+            }
+            return {
+                returnedValue: callback.apply(AMDLoader.global, dependenciesValues),
+                producedError: null
+            };
+        };
+        Module.prototype.complete = function (recorder, config, dependenciesValues) {
+            this._isComplete = true;
+            var producedError = null;
+            if (this._callback) {
+                if (typeof this._callback === 'function') {
+                    recorder.record(AMDLoader.LoaderEventType.BeginInvokeFactory, this.strId);
+                    var r = Module._invokeFactory(config, this.strId, this._callback, dependenciesValues);
+                    producedError = r.producedError;
+                    recorder.record(AMDLoader.LoaderEventType.EndInvokeFactory, this.strId);
+                    if (!producedError && typeof r.returnedValue !== 'undefined' && (!this.exportsPassedIn || AMDLoader.Utilities.isEmpty(this.exports))) {
+                        this.exports = r.returnedValue;
+                    }
+                }
+                else {
+                    this.exports = this._callback;
+                }
+            }
+            if (producedError) {
+                config.onError({
+                    errorCode: 'factory',
+                    moduleId: this.strId,
+                    detail: producedError
+                });
+            }
+            this.dependencies = null;
+            this._callback = null;
+            this._errorback = null;
+            this.moduleIdResolver = null;
+        };
+        /**
+         * One of the direct dependencies or a transitive dependency has failed to load.
+         */
+        Module.prototype.onDependencyError = function (err) {
+            if (this._errorback) {
+                this._errorback(err);
+                return true;
+            }
+            return false;
+        };
+        /**
+         * Is the current module complete?
+         */
+        Module.prototype.isComplete = function () {
+            return this._isComplete;
+        };
+        return Module;
+    }());
+    AMDLoader.Module = Module;
+    var ModuleIdProvider = (function () {
+        function ModuleIdProvider() {
+            this._nextId = 0;
+            this._strModuleIdToIntModuleId = new Map();
+            this._intModuleIdToStrModuleId = [];
+            // Ensure values 0, 1, 2 are assigned accordingly with ModuleId
+            this.getModuleId('exports');
+            this.getModuleId('module');
+            this.getModuleId('require');
+        }
+        ModuleIdProvider.prototype.getMaxModuleId = function () {
+            return this._nextId;
+        };
+        ModuleIdProvider.prototype.getModuleId = function (strModuleId) {
+            var id = this._strModuleIdToIntModuleId.get(strModuleId);
+            if (typeof id === 'undefined') {
+                id = this._nextId++;
+                this._strModuleIdToIntModuleId.set(strModuleId, id);
+                this._intModuleIdToStrModuleId[id] = strModuleId;
+            }
+            return id;
+        };
+        ModuleIdProvider.prototype.getStrModuleId = function (moduleId) {
+            return this._intModuleIdToStrModuleId[moduleId];
+        };
+        return ModuleIdProvider;
+    }());
+    var RegularDependency = (function () {
+        function RegularDependency(id) {
+            this.id = id;
+        }
+        return RegularDependency;
+    }());
+    RegularDependency.EXPORTS = new RegularDependency(0 /* EXPORTS */);
+    RegularDependency.MODULE = new RegularDependency(1 /* MODULE */);
+    RegularDependency.REQUIRE = new RegularDependency(2 /* REQUIRE */);
+    AMDLoader.RegularDependency = RegularDependency;
+    var PluginDependency = (function () {
+        function PluginDependency(id, pluginId, pluginParam) {
+            this.id = id;
+            this.pluginId = pluginId;
+            this.pluginParam = pluginParam;
+        }
+        return PluginDependency;
+    }());
+    AMDLoader.PluginDependency = PluginDependency;
+    var ModuleManager = (function () {
+        function ModuleManager(scriptLoader, loaderAvailableTimestamp) {
+            if (loaderAvailableTimestamp === void 0) { loaderAvailableTimestamp = 0; }
+            this._recorder = null;
+            this._loaderAvailableTimestamp = loaderAvailableTimestamp;
+            this._moduleIdProvider = new ModuleIdProvider();
+            this._config = new AMDLoader.Configuration();
+            this._scriptLoader = scriptLoader;
+            this._modules2 = [];
+            this._knownModules2 = [];
+            this._inverseDependencies2 = [];
+            this._inversePluginDependencies2 = new Map();
+            this._currentAnnonymousDefineCall = null;
+            this._buildInfoPath = [];
+            this._buildInfoDefineStack = [];
+            this._buildInfoDependencies = [];
+        }
+        ModuleManager._findRelevantLocationInStack = function (needle, stack) {
+            var normalize = function (str) { return str.replace(/\\/g, '/'); };
+            var normalizedPath = normalize(needle);
+            var stackPieces = stack.split(/\n/);
+            for (var i = 0; i < stackPieces.length; i++) {
+                var m = stackPieces[i].match(/(.*):(\d+):(\d+)\)?$/);
+                if (m) {
+                    var stackPath = m[1];
+                    var stackLine = m[2];
+                    var stackColumn = m[3];
+                    var trimPathOffset = Math.max(stackPath.lastIndexOf(' ') + 1, stackPath.lastIndexOf('(') + 1);
+                    stackPath = stackPath.substr(trimPathOffset);
+                    stackPath = normalize(stackPath);
+                    if (stackPath === normalizedPath) {
+                        var r = {
+                            line: parseInt(stackLine, 10),
+                            col: parseInt(stackColumn, 10)
+                        };
+                        if (r.line === 1) {
+                            r.col -= '(function (require, define, __filename, __dirname) { '.length;
+                        }
+                        return r;
+                    }
+                }
+            }
+            throw new Error('Could not correlate define call site for needle ' + needle);
+        };
+        ModuleManager.prototype.getBuildInfo = function () {
+            if (!this._config.isBuild()) {
+                return null;
+            }
+            var result = [], resultLen = 0;
+            for (var i = 0, len = this._modules2.length; i < len; i++) {
+                var m = this._modules2[i];
+                if (!m) {
+                    continue;
+                }
+                var location_1 = this._buildInfoPath[m.id] || null;
+                var defineStack = this._buildInfoDefineStack[m.id] || null;
+                var dependencies = this._buildInfoDependencies[m.id];
+                result[resultLen++] = {
+                    id: m.strId,
+                    path: location_1,
+                    defineLocation: (location_1 && defineStack ? ModuleManager._findRelevantLocationInStack(location_1, defineStack) : null),
+                    dependencies: dependencies,
+                    shim: null,
+                    exports: m.exports
+                };
+            }
+            return result;
+        };
+        ModuleManager.prototype.getRecorder = function () {
+            if (!this._recorder) {
+                if (this._config.shouldRecordStats()) {
+                    this._recorder = new AMDLoader.LoaderEventRecorder(this._loaderAvailableTimestamp);
+                }
+                else {
+                    this._recorder = AMDLoader.NullLoaderEventRecorder.INSTANCE;
+                }
+            }
+            return this._recorder;
+        };
+        ModuleManager.prototype.getLoaderEvents = function () {
+            return this.getRecorder().getEvents();
+        };
+        /**
+         * Defines an anonymous module (without an id). Its name will be resolved as we receive a callback from the scriptLoader.
+         * @param dependecies @see defineModule
+         * @param callback @see defineModule
+         */
+        ModuleManager.prototype.enqueueDefineAnonymousModule = function (dependencies, callback) {
+            if (this._currentAnnonymousDefineCall !== null) {
+                throw new Error('Can only have one anonymous define call per script file');
+            }
+            var stack = null;
+            if (this._config.isBuild()) {
+                stack = new Error('StackLocation').stack;
+            }
+            this._currentAnnonymousDefineCall = {
+                stack: stack,
+                dependencies: dependencies,
+                callback: callback
+            };
+        };
+        /**
+         * Creates a module and stores it in _modules. The manager will immediately begin resolving its dependencies.
+         * @param strModuleId An unique and absolute id of the module. This must not collide with another module's id
+         * @param dependencies An array with the dependencies of the module. Special keys are: "require", "exports" and "module"
+         * @param callback if callback is a function, it will be called with the resolved dependencies. if callback is an object, it will be considered as the exports of the module.
+         */
+        ModuleManager.prototype.defineModule = function (strModuleId, dependencies, callback, errorback, stack, moduleIdResolver) {
+            var _this = this;
+            if (moduleIdResolver === void 0) { moduleIdResolver = new ModuleIdResolver(strModuleId); }
+            var moduleId = this._moduleIdProvider.getModuleId(strModuleId);
+            if (this._modules2[moduleId]) {
+                if (!this._config.isDuplicateMessageIgnoredFor(strModuleId)) {
+                    console.warn('Duplicate definition of module \'' + strModuleId + '\'');
+                }
+                // Super important! Completely ignore duplicate module definition
+                return;
+            }
+            var m = new Module(moduleId, strModuleId, this._normalizeDependencies(dependencies, moduleIdResolver), callback, errorback, moduleIdResolver);
+            this._modules2[moduleId] = m;
+            if (this._config.isBuild()) {
+                this._buildInfoDefineStack[moduleId] = stack;
+                this._buildInfoDependencies[moduleId] = m.dependencies.map(function (dep) { return _this._moduleIdProvider.getStrModuleId(dep.id); });
+            }
+            // Resolving of dependencies is immediate (not in a timeout). If there's a need to support a packer that concatenates in an
+            // unordered manner, in order to finish processing the file, execute the following method in a timeout
+            this._resolve(m);
+        };
+        ModuleManager.prototype._normalizeDependency = function (dependency, moduleIdResolver) {
+            if (dependency === 'exports') {
+                return RegularDependency.EXPORTS;
+            }
+            if (dependency === 'module') {
+                return RegularDependency.MODULE;
+            }
+            if (dependency === 'require') {
+                return RegularDependency.REQUIRE;
+            }
+            // Normalize dependency and then request it from the manager
+            var bangIndex = dependency.indexOf('!');
+            if (bangIndex >= 0) {
+                var strPluginId = moduleIdResolver.resolveModule(dependency.substr(0, bangIndex));
+                var pluginParam = moduleIdResolver.resolveModule(dependency.substr(bangIndex + 1));
+                var dependencyId = this._moduleIdProvider.getModuleId(strPluginId + '!' + pluginParam);
+                var pluginId = this._moduleIdProvider.getModuleId(strPluginId);
+                return new PluginDependency(dependencyId, pluginId, pluginParam);
+            }
+            return new RegularDependency(this._moduleIdProvider.getModuleId(moduleIdResolver.resolveModule(dependency)));
+        };
+        ModuleManager.prototype._normalizeDependencies = function (dependencies, moduleIdResolver) {
+            var result = [], resultLen = 0;
+            for (var i = 0, len = dependencies.length; i < len; i++) {
+                result[resultLen++] = this._normalizeDependency(dependencies[i], moduleIdResolver);
+            }
+            return result;
+        };
+        ModuleManager.prototype._relativeRequire = function (moduleIdResolver, dependencies, callback, errorback) {
+            if (typeof dependencies === 'string') {
+                return this.synchronousRequire(dependencies, moduleIdResolver);
+            }
+            this.defineModule(AMDLoader.Utilities.generateAnonymousModule(), dependencies, callback, errorback, null, moduleIdResolver);
+        };
+        /**
+         * Require synchronously a module by its absolute id. If the module is not loaded, an exception will be thrown.
+         * @param id The unique and absolute id of the required module
+         * @return The exports of module 'id'
+         */
+        ModuleManager.prototype.synchronousRequire = function (_strModuleId, moduleIdResolver) {
+            if (moduleIdResolver === void 0) { moduleIdResolver = new ModuleIdResolver(_strModuleId); }
+            var dependency = this._normalizeDependency(_strModuleId, moduleIdResolver);
+            var m = this._modules2[dependency.id];
+            if (!m) {
+                throw new Error('Check dependency list! Synchronous require cannot resolve module \'' + _strModuleId + '\'. This is the first mention of this module!');
+            }
+            if (!m.isComplete()) {
+                throw new Error('Check dependency list! Synchronous require cannot resolve module \'' + _strModuleId + '\'. This module has not been resolved completely yet.');
+            }
+            return m.exports;
+        };
+        ModuleManager.prototype.configure = function (params, shouldOverwrite) {
+            var oldShouldRecordStats = this._config.shouldRecordStats();
+            if (shouldOverwrite) {
+                this._config = new AMDLoader.Configuration(params);
+            }
+            else {
+                this._config = this._config.cloneAndMerge(params);
+            }
+            if (this._config.shouldRecordStats() && !oldShouldRecordStats) {
+                this._recorder = null;
+            }
+        };
+        ModuleManager.prototype.getConfig = function () {
+            return this._config;
+        };
+        /**
+         * Callback from the scriptLoader when a module has been loaded.
+         * This means its code is available and has been executed.
+         */
+        ModuleManager.prototype._onLoad = function (moduleId) {
+            if (this._currentAnnonymousDefineCall !== null) {
+                var defineCall = this._currentAnnonymousDefineCall;
+                this._currentAnnonymousDefineCall = null;
+                // Hit an anonymous define call
+                this.defineModule(this._moduleIdProvider.getStrModuleId(moduleId), defineCall.dependencies, defineCall.callback, null, defineCall.stack);
+            }
+        };
+        ModuleManager.prototype._createLoadError = function (moduleId, err) {
+            var _this = this;
+            var strModuleId = this._moduleIdProvider.getStrModuleId(moduleId);
+            var neededBy = (this._inverseDependencies2[moduleId] || []).map(function (intModuleId) { return _this._moduleIdProvider.getStrModuleId(intModuleId); });
+            return {
+                errorCode: 'load',
+                moduleId: strModuleId,
+                neededBy: neededBy,
+                detail: err
+            };
+        };
+        /**
+         * Callback from the scriptLoader when a module hasn't been loaded.
+         * This means that the script was not found (e.g. 404) or there was an error in the script.
+         */
+        ModuleManager.prototype._onLoadError = function (moduleId, err) {
+            var error = this._createLoadError(moduleId, err);
+            // Find any 'local' error handlers, walk the entire chain of inverse dependencies if necessary.
+            var seenModuleId = [];
+            for (var i = 0, len = this._moduleIdProvider.getMaxModuleId(); i < len; i++) {
+                seenModuleId[i] = false;
+            }
+            var someoneNotified = false;
+            var queue = [];
+            queue.push(moduleId);
+            seenModuleId[moduleId] = true;
+            while (queue.length > 0) {
+                var queueElement = queue.shift();
+                var m = this._modules2[queueElement];
+                if (m) {
+                    someoneNotified = m.onDependencyError(error) || someoneNotified;
+                }
+                var inverseDeps = this._inverseDependencies2[queueElement];
+                if (inverseDeps) {
+                    for (var i = 0, len = inverseDeps.length; i < len; i++) {
+                        var inverseDep = inverseDeps[i];
+                        if (!seenModuleId[inverseDep]) {
+                            queue.push(inverseDep);
+                            seenModuleId[inverseDep] = true;
+                        }
+                    }
+                }
+            }
+            if (!someoneNotified) {
+                this._config.onError(error);
+            }
+        };
+        /**
+         * Walks (recursively) the dependencies of 'from' in search of 'to'.
+         * Returns true if there is such a path or false otherwise.
+         * @param from Module id to start at
+         * @param to Module id to look for
+         */
+        ModuleManager.prototype._hasDependencyPath = function (fromId, toId) {
+            var from = this._modules2[fromId];
+            if (!from) {
+                return false;
+            }
+            var inQueue = [];
+            for (var i = 0, len = this._moduleIdProvider.getMaxModuleId(); i < len; i++) {
+                inQueue[i] = false;
+            }
+            var queue = [];
+            // Insert 'from' in queue
+            queue.push(from);
+            inQueue[fromId] = true;
+            while (queue.length > 0) {
+                // Pop first inserted element of queue
+                var element = queue.shift();
+                var dependencies = element.dependencies;
+                if (dependencies) {
+                    // Walk the element's dependencies
+                    for (var i = 0, len = dependencies.length; i < len; i++) {
+                        var dependency = dependencies[i];
+                        if (dependency.id === toId) {
+                            // There is a path to 'to'
+                            return true;
+                        }
+                        var dependencyModule = this._modules2[dependency.id];
+                        if (dependencyModule && !inQueue[dependency.id]) {
+                            // Insert 'dependency' in queue
+                            inQueue[dependency.id] = true;
+                            queue.push(dependencyModule);
+                        }
+                    }
+                }
+            }
+            // There is no path to 'to'
+            return false;
+        };
+        /**
+         * Walks (recursively) the dependencies of 'from' in search of 'to'.
+         * Returns cycle as array.
+         * @param from Module id to start at
+         * @param to Module id to look for
+         */
+        ModuleManager.prototype._findCyclePath = function (fromId, toId, depth) {
+            if (fromId === toId || depth === 50) {
+                return [fromId];
+            }
+            var from = this._modules2[fromId];
+            if (!from) {
+                return null;
+            }
+            // Walk the element's dependencies
+            var dependencies = from.dependencies;
+            for (var i = 0, len = dependencies.length; i < len; i++) {
+                var path = this._findCyclePath(dependencies[i].id, toId, depth + 1);
+                if (path !== null) {
+                    path.push(fromId);
+                    return path;
+                }
+            }
+            return null;
+        };
+        /**
+         * Create the local 'require' that is passed into modules
+         */
+        ModuleManager.prototype._createRequire = function (moduleIdResolver) {
+            var _this = this;
+            var result = (function (dependencies, callback, errorback) {
+                return _this._relativeRequire(moduleIdResolver, dependencies, callback, errorback);
+            });
+            result.toUrl = function (id) {
+                return _this._config.requireToUrl(moduleIdResolver.resolveModule(id));
+            };
+            result.getStats = function () {
+                return _this.getLoaderEvents();
+            };
+            result.__$__nodeRequire = AMDLoader.global.nodeRequire;
+            return result;
+        };
+        ModuleManager.prototype._loadModule = function (moduleId) {
+            var _this = this;
+            if (this._modules2[moduleId] || this._knownModules2[moduleId]) {
+                // known module
+                return;
+            }
+            this._knownModules2[moduleId] = true;
+            var strModuleId = this._moduleIdProvider.getStrModuleId(moduleId);
+            var paths = this._config.moduleIdToPaths(strModuleId);
+            if (AMDLoader.isNode && strModuleId.indexOf('/') === -1) {
+                paths.push('node|' + strModuleId);
+            }
+            var lastPathIndex = -1;
+            var loadNextPath = function (err) {
+                lastPathIndex++;
+                if (lastPathIndex >= paths.length) {
+                    // No more paths to try
+                    _this._onLoadError(moduleId, err);
+                }
+                else {
+                    var currentPath_1 = paths[lastPathIndex];
+                    var recorder_1 = _this.getRecorder();
+                    if (_this._config.isBuild() && currentPath_1 === 'empty:') {
+                        _this._buildInfoPath[moduleId] = currentPath_1;
+                        _this.defineModule(_this._moduleIdProvider.getStrModuleId(moduleId), [], null, null, null);
+                        _this._onLoad(moduleId);
+                        return;
+                    }
+                    recorder_1.record(AMDLoader.LoaderEventType.BeginLoadingScript, currentPath_1);
+                    _this._scriptLoader.load(_this, currentPath_1, function () {
+                        if (_this._config.isBuild()) {
+                            _this._buildInfoPath[moduleId] = currentPath_1;
+                        }
+                        recorder_1.record(AMDLoader.LoaderEventType.EndLoadingScriptOK, currentPath_1);
+                        _this._onLoad(moduleId);
+                    }, function (err) {
+                        recorder_1.record(AMDLoader.LoaderEventType.EndLoadingScriptError, currentPath_1);
+                        loadNextPath(err);
+                    });
+                }
+            };
+            loadNextPath(null);
+        };
+        /**
+         * Resolve a plugin dependency with the plugin loaded & complete
+         * @param module The module that has this dependency
+         * @param pluginDependency The semi-normalized dependency that appears in the module. e.g. 'vs/css!./mycssfile'. Only the plugin part (before !) is normalized
+         * @param plugin The plugin (what the plugin exports)
+         */
+        ModuleManager.prototype._loadPluginDependency = function (plugin, pluginDependency) {
+            var _this = this;
+            if (this._modules2[pluginDependency.id] || this._knownModules2[pluginDependency.id]) {
+                // known module
+                return;
+            }
+            this._knownModules2[pluginDependency.id] = true;
+            // Delegate the loading of the resource to the plugin
+            var load = (function (value) {
+                _this.defineModule(_this._moduleIdProvider.getStrModuleId(pluginDependency.id), [], value, null, null);
+            });
+            load.error = function (err) {
+                _this._config.onError(_this._createLoadError(pluginDependency.id, err));
+            };
+            plugin.load(pluginDependency.pluginParam, this._createRequire(ModuleIdResolver.ROOT), load, this._config.getOptionsLiteral());
+        };
+        /**
+         * Examine the dependencies of module 'module' and resolve them as needed.
+         */
+        ModuleManager.prototype._resolve = function (module) {
+            var _this = this;
+            var dependencies = module.dependencies;
+            for (var i = 0, len = dependencies.length; i < len; i++) {
+                var dependency = dependencies[i];
+                if (dependency === RegularDependency.EXPORTS) {
+                    module.exportsPassedIn = true;
+                    module.unresolvedDependenciesCount--;
+                    continue;
+                }
+                if (dependency === RegularDependency.MODULE) {
+                    module.unresolvedDependenciesCount--;
+                    continue;
+                }
+                if (dependency === RegularDependency.REQUIRE) {
+                    module.unresolvedDependenciesCount--;
+                    continue;
+                }
+                var dependencyModule = this._modules2[dependency.id];
+                if (dependencyModule && dependencyModule.isComplete()) {
+                    module.unresolvedDependenciesCount--;
+                    continue;
+                }
+                if (this._hasDependencyPath(dependency.id, module.id)) {
+                    console.warn('There is a dependency cycle between \'' + this._moduleIdProvider.getStrModuleId(dependency.id) + '\' and \'' + this._moduleIdProvider.getStrModuleId(module.id) + '\'. The cyclic path follows:');
+                    var cyclePath = this._findCyclePath(dependency.id, module.id, 0);
+                    cyclePath.reverse();
+                    cyclePath.push(dependency.id);
+                    console.warn(cyclePath.map(function (id) { return _this._moduleIdProvider.getStrModuleId(id); }).join(' => \n'));
+                    // Break the cycle
+                    module.unresolvedDependenciesCount--;
+                    continue;
+                }
+                // record inverse dependency
+                this._inverseDependencies2[dependency.id] = this._inverseDependencies2[dependency.id] || [];
+                this._inverseDependencies2[dependency.id].push(module.id);
+                if (dependency instanceof PluginDependency) {
+                    var plugin = this._modules2[dependency.pluginId];
+                    if (plugin && plugin.isComplete()) {
+                        this._loadPluginDependency(plugin.exports, dependency);
+                        continue;
+                    }
+                    // Record dependency for when the plugin gets loaded
+                    var inversePluginDeps = this._inversePluginDependencies2.get(dependency.pluginId);
+                    if (!inversePluginDeps) {
+                        inversePluginDeps = [];
+                        this._inversePluginDependencies2.set(dependency.pluginId, inversePluginDeps);
+                    }
+                    inversePluginDeps.push(dependency);
+                    this._loadModule(dependency.pluginId);
+                    continue;
+                }
+                this._loadModule(dependency.id);
+            }
+            if (module.unresolvedDependenciesCount === 0) {
+                this._onModuleComplete(module);
+            }
+        };
+        ModuleManager.prototype._onModuleComplete = function (module) {
+            var _this = this;
+            var recorder = this.getRecorder();
+            if (module.isComplete()) {
+                // already done
+                return;
+            }
+            var dependencies = module.dependencies;
+            var dependenciesValues = [];
+            for (var i = 0, len = dependencies.length; i < len; i++) {
+                var dependency = dependencies[i];
+                if (dependency === RegularDependency.EXPORTS) {
+                    dependenciesValues[i] = module.exports;
+                    continue;
+                }
+                if (dependency === RegularDependency.MODULE) {
+                    dependenciesValues[i] = {
+                        id: module.strId,
+                        config: function () {
+                            return _this._config.getConfigForModule(module.strId);
+                        }
+                    };
+                    continue;
+                }
+                if (dependency === RegularDependency.REQUIRE) {
+                    dependenciesValues[i] = this._createRequire(module.moduleIdResolver);
+                    continue;
+                }
+                var dependencyModule = this._modules2[dependency.id];
+                if (dependencyModule) {
+                    dependenciesValues[i] = dependencyModule.exports;
+                    continue;
+                }
+                dependenciesValues[i] = null;
+            }
+            module.complete(recorder, this._config, dependenciesValues);
+            // Fetch and clear inverse dependencies
+            var inverseDeps = this._inverseDependencies2[module.id];
+            this._inverseDependencies2[module.id] = null;
+            if (inverseDeps) {
+                // Resolve one inverse dependency at a time, always
+                // on the lookout for a completed module.
+                for (var i = 0, len = inverseDeps.length; i < len; i++) {
+                    var inverseDependencyId = inverseDeps[i];
+                    var inverseDependency = this._modules2[inverseDependencyId];
+                    inverseDependency.unresolvedDependenciesCount--;
+                    if (inverseDependency.unresolvedDependenciesCount === 0) {
+                        this._onModuleComplete(inverseDependency);
+                    }
+                }
+            }
+            var inversePluginDeps = this._inversePluginDependencies2.get(module.id);
+            if (inversePluginDeps) {
+                // This module is used as a plugin at least once
+                // Fetch and clear these inverse plugin dependencies
+                this._inversePluginDependencies2.delete(module.id);
+                // Resolve plugin dependencies one at a time
+                for (var i = 0, len = inversePluginDeps.length; i < len; i++) {
+                    this._loadPluginDependency(module.exports, inversePluginDeps[i]);
+                }
+            }
+        };
+        return ModuleManager;
+    }());
+    AMDLoader.ModuleManager = ModuleManager;
+})(AMDLoader || (AMDLoader = {}));
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+'use strict';
+// Limitation: To load jquery through the loader, always require 'jquery' and add a path for it in the loader configuration
+var define;
+var AMDLoader;
+(function (AMDLoader) {
+    var moduleManager;
+    var loaderAvailableTimestamp;
     var DefineFunc = (function () {
         function DefineFunc(id, dependencies, callback) {
             if (typeof id !== 'string') {
@@ -1859,7 +1469,7 @@ var AMDLoader;
                 dependencies = id;
                 id = null;
             }
-            if (typeof dependencies !== 'object' || !Utilities.isArray(dependencies)) {
+            if (typeof dependencies !== 'object' || !Array.isArray(dependencies)) {
                 callback = dependencies;
                 dependencies = null;
             }
@@ -1867,21 +1477,22 @@ var AMDLoader;
                 dependencies = ['require', 'exports', 'module'];
             }
             if (id) {
-                moduleManager.enqueueDefineModule(id, dependencies, callback);
+                moduleManager.defineModule(id, dependencies, callback, null, null);
             }
             else {
                 moduleManager.enqueueDefineAnonymousModule(dependencies, callback);
             }
         }
-        DefineFunc.amd = {
-            jQuery: true
-        };
         return DefineFunc;
     }());
+    DefineFunc.amd = {
+        jQuery: true
+    };
+    AMDLoader.DefineFunc = DefineFunc;
     var RequireFunc = (function () {
         function RequireFunc() {
             if (arguments.length === 1) {
-                if ((arguments[0] instanceof Object) && !Utilities.isArray(arguments[0])) {
+                if ((arguments[0] instanceof Object) && !Array.isArray(arguments[0])) {
                     RequireFunc.config(arguments[0]);
                     return;
                 }
@@ -1890,8 +1501,8 @@ var AMDLoader;
                 }
             }
             if (arguments.length === 2 || arguments.length === 3) {
-                if (Utilities.isArray(arguments[0])) {
-                    moduleManager.defineModule(Utilities.generateAnonymousModule(), arguments[0], arguments[1], arguments[2], null);
+                if (Array.isArray(arguments[0])) {
+                    moduleManager.defineModule(AMDLoader.Utilities.generateAnonymousModule(), arguments[0], arguments[1], arguments[2], null);
                     return;
                 }
             }
@@ -1902,14 +1513,13 @@ var AMDLoader;
             moduleManager.configure(params, shouldOverwrite);
         };
         RequireFunc.getConfig = function () {
-            return moduleManager.getConfigurationOptions();
+            return moduleManager.getConfig().getOptionsLiteral();
         };
         /**
          * Non standard extension to reset completely the loader state. This is used for running amdjs tests
          */
         RequireFunc.reset = function () {
-            moduleManager = new ModuleManager(scriptLoader);
-            scriptLoader.setModuleManager(moduleManager);
+            moduleManager = new AMDLoader.ModuleManager(AMDLoader.scriptLoader, loaderAvailableTimestamp);
         };
         /**
          * Non standard extension to fetch loader state for building purposes.
@@ -1925,75 +1535,24 @@ var AMDLoader;
         };
         return RequireFunc;
     }());
-    var global = _amdLoaderGlobal, hasPerformanceNow = (global.performance && typeof global.performance.now === 'function'), isWebWorker, isElectronRenderer, isElectronMain, isNode, scriptLoader, moduleManager, loaderAvailableTimestamp;
-    function initVars() {
-        isWebWorker = (typeof global.importScripts === 'function');
-        isElectronRenderer = (typeof process !== 'undefined' && typeof process.versions !== 'undefined' && typeof process.versions['electron'] !== 'undefined' && process.type === 'renderer');
-        isElectronMain = (typeof process !== 'undefined' && typeof process.versions !== 'undefined' && typeof process.versions['electron'] !== 'undefined' && process.type === 'browser');
-        isNode = (typeof module !== 'undefined' && !!module.exports);
-        if (isWebWorker) {
-            scriptLoader = new OnlyOnceScriptLoader(new WorkerScriptLoader());
-        }
-        else if (isNode) {
-            scriptLoader = new OnlyOnceScriptLoader(new NodeScriptLoader());
-        }
-        else {
-            scriptLoader = new OnlyOnceScriptLoader(new BrowserScriptLoader());
-        }
-        moduleManager = new ModuleManager(scriptLoader);
-        scriptLoader.setModuleManager(moduleManager);
-    }
-    function initConsole() {
-        // Define used console.* functions, in order to not fail in environments where they are not available
-        if (!isNode) {
-            if (!global.console) {
-                global.console = {};
-            }
-            if (!global.console.log) {
-                global.console.log = function () { };
-            }
-            if (!global.console.warn) {
-                global.console.warn = global.console.log;
-            }
-            if (!global.console.error) {
-                global.console.error = global.console.log;
-            }
-        }
-    }
-    function initMainScript() {
-        if (!isWebWorker && !isNode) {
-            window.onload = function () {
-                var i, len, main, scripts = document.getElementsByTagName('script');
-                // Look through all the scripts for the data-main attribute
-                for (i = 0, len = scripts.length; i < len; i++) {
-                    main = scripts[i].getAttribute('data-main');
-                    if (main) {
-                        break;
-                    }
-                }
-                // Load the main script
-                if (main) {
-                    moduleManager.defineModule(Utilities.generateAnonymousModule(), [main], null, null, null, new ModuleIdResolver(new Configuration(), ''));
-                }
-            };
-        }
-    }
+    AMDLoader.RequireFunc = RequireFunc;
     function init() {
-        initVars();
-        initConsole();
-        initMainScript();
-        if (isNode) {
-            var _nodeRequire = (global.require || require);
+        moduleManager = new AMDLoader.ModuleManager(AMDLoader.scriptLoader, loaderAvailableTimestamp);
+        if (AMDLoader.isNode) {
+            var _nodeRequire = (AMDLoader.global.require || require);
             var nodeRequire = function (what) {
-                moduleManager.getRecorder().record(LoaderEventType.NodeBeginNativeRequire, what);
-                var r = _nodeRequire(what);
-                moduleManager.getRecorder().record(LoaderEventType.NodeEndNativeRequire, what);
-                return r;
+                moduleManager.getRecorder().record(AMDLoader.LoaderEventType.NodeBeginNativeRequire, what);
+                try {
+                    return _nodeRequire(what);
+                }
+                finally {
+                    moduleManager.getRecorder().record(AMDLoader.LoaderEventType.NodeEndNativeRequire, what);
+                }
             };
-            global.nodeRequire = nodeRequire;
+            AMDLoader.global.nodeRequire = nodeRequire;
             RequireFunc.nodeRequire = nodeRequire;
         }
-        if (isNode && !isElectronRenderer) {
+        if (AMDLoader.isNode && !AMDLoader.isElectronRenderer) {
             module.exports = RequireFunc;
             // These two defs are fore the local closure defined in node in the case that the loader is concatenated
             define = function () {
@@ -2003,28 +1562,28 @@ var AMDLoader;
         }
         else {
             // The global variable require can configure the loader
-            if (typeof global.require !== 'undefined' && typeof global.require !== 'function') {
-                RequireFunc.config(global.require);
+            if (typeof AMDLoader.global.require !== 'undefined' && typeof AMDLoader.global.require !== 'function') {
+                RequireFunc.config(AMDLoader.global.require);
             }
-            if (!isElectronRenderer) {
-                global.define = define = DefineFunc;
+            if (!AMDLoader.isElectronRenderer) {
+                AMDLoader.global.define = define = DefineFunc;
             }
             else {
                 define = function () {
                     DefineFunc.apply(null, arguments);
                 };
             }
-            global.require = RequireFunc;
-            global.require.__$__nodeRequire = nodeRequire;
+            AMDLoader.global.require = RequireFunc;
+            AMDLoader.global.require.__$__nodeRequire = nodeRequire;
         }
     }
-    if (typeof global.define !== 'function' || !global.define.amd) {
+    if (typeof AMDLoader.global.define !== 'function' || !AMDLoader.global.define.amd) {
         init();
-        loaderAvailableTimestamp = getHighPerformanceTimestamp();
+        loaderAvailableTimestamp = AMDLoader.getHighPerformanceTimestamp();
     }
 })(AMDLoader || (AMDLoader = {}));
 
-define(__m[22/*vs/base/common/diff/diffChange*/], __M([0/*require*/,1/*exports*/]), function (require, exports) {
+define(__m[22/*vs/base/common/diff/diffChange*/], __M([1/*require*/,0/*exports*/]), function (require, exports) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -2081,7 +1640,7 @@ define(__m[22/*vs/base/common/diff/diffChange*/], __M([0/*require*/,1/*exports*/
     exports.DiffChange = DiffChange;
 });
 
-define(__m[14/*vs/base/common/diff/diff*/], __M([0/*require*/,1/*exports*/,22/*vs/base/common/diff/diffChange*/]), function (require, exports, diffChange_1) {
+define(__m[11/*vs/base/common/diff/diff*/], __M([1/*require*/,0/*exports*/,22/*vs/base/common/diff/diffChange*/]), function (require, exports, diffChange_1) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -2220,10 +1779,10 @@ define(__m[14/*vs/base/common/diff/diff*/], __M([0/*require*/,1/*exports*/,22/*v
             }
             return this.m_changes;
         };
+        /**
+         * Retrieves all of the changes marked by the class in the reverse order
+         */
         DiffChangeHelper.prototype.getReverseChanges = function () {
-            /// <summary>
-            /// Retrieves all of the changes marked by the class in the reverse order
-            /// </summary>
             if (this.m_originalCount > 0 || this.m_modifiedCount > 0) {
                 // Finish up on whatever is left
                 this.MarkNextChange();
@@ -2790,13 +2349,46 @@ define(__m[14/*vs/base/common/diff/diff*/], __M([0/*require*/,1/*exports*/,22/*v
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-define(__m[21/*vs/base/common/keyCodes*/], __M([0/*require*/,1/*exports*/]), function (require, exports) {
+define(__m[14/*vs/base/common/functional*/], __M([1/*require*/,0/*exports*/]), function (require, exports) {
+    'use strict';
+    function not(fn) {
+        return function () {
+            var args = [];
+            for (var _i = 0; _i < arguments.length; _i++) {
+                args[_i] = arguments[_i];
+            }
+            return !fn.apply(void 0, args);
+        };
+    }
+    exports.not = not;
+    function once(fn) {
+        var _this = this;
+        var didCall = false;
+        var result;
+        return function () {
+            if (didCall) {
+                return result;
+            }
+            didCall = true;
+            result = fn.apply(_this, arguments);
+            return result;
+        };
+    }
+    exports.once = once;
+});
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+define(__m[18/*vs/base/common/keyCodes*/], __M([1/*require*/,0/*exports*/]), function (require, exports) {
     'use strict';
     /**
      * Virtual Key Codes, the value does not hold any inherent meaning.
      * Inspired somewhat from https://msdn.microsoft.com/en-us/library/windows/desktop/dd375731(v=vs.85).aspx
      * But these are "more general", as they should work across browsers & OS`s.
      */
+    var KeyCode;
     (function (KeyCode) {
         /**
          * Placed first to cover the 0 value of the enum.
@@ -2965,8 +2557,7 @@ define(__m[21/*vs/base/common/keyCodes*/], __M([0/*require*/,1/*exports*/]), fun
          * Please do not depend on this value!
          */
         KeyCode[KeyCode["MAX_VALUE"] = 109] = "MAX_VALUE";
-    })(exports.KeyCode || (exports.KeyCode = {}));
-    var KeyCode = exports.KeyCode;
+    })(KeyCode = exports.KeyCode || (exports.KeyCode = {}));
     var Mapping = (function () {
         function Mapping(fromKeyCode, toKeyCode) {
             this._fromKeyCode = fromKeyCode;
@@ -3155,58 +2746,66 @@ define(__m[21/*vs/base/common/keyCodes*/], __M([0/*require*/,1/*exports*/]), fun
         }
         KeyCodeUtils.fromString = fromString;
     })(KeyCodeUtils = exports.KeyCodeUtils || (exports.KeyCodeUtils = {}));
-    // Binary encoding strategy:
-    // 15:  1 bit for ctrlCmd
-    // 14:  1 bit for shift
-    // 13:  1 bit for alt
-    // 12:  1 bit for winCtrl
-    //  0: 12 bits for keyCode (up to a maximum keyCode of 4096. Given we have 83 at this point thats good enough)
+    /**
+     * Binary encoding strategy:
+     * ```
+     *    1111 11
+     *    5432 1098 7654 3210
+     *    ---- CSAW KKKK KKKK
+     *  C = bit 11 = ctrlCmd flag
+     *  S = bit 10 = shift flag
+     *  A = bit 9 = alt flag
+     *  W = bit 8 = winCtrl flag
+     *  K = bits 0-7 = key code
+     * ```
+     */
     var BinaryKeybindingsMask;
     (function (BinaryKeybindingsMask) {
-        BinaryKeybindingsMask[BinaryKeybindingsMask["CtrlCmd"] = 32768] = "CtrlCmd";
-        BinaryKeybindingsMask[BinaryKeybindingsMask["Shift"] = 16384] = "Shift";
-        BinaryKeybindingsMask[BinaryKeybindingsMask["Alt"] = 8192] = "Alt";
-        BinaryKeybindingsMask[BinaryKeybindingsMask["WinCtrl"] = 4096] = "WinCtrl";
-        BinaryKeybindingsMask[BinaryKeybindingsMask["KeyCode"] = 4095] = "KeyCode";
-        BinaryKeybindingsMask[BinaryKeybindingsMask["ModifierMask"] = 61440] = "ModifierMask";
+        BinaryKeybindingsMask[BinaryKeybindingsMask["CtrlCmd"] = 2048] = "CtrlCmd";
+        BinaryKeybindingsMask[BinaryKeybindingsMask["Shift"] = 1024] = "Shift";
+        BinaryKeybindingsMask[BinaryKeybindingsMask["Alt"] = 512] = "Alt";
+        BinaryKeybindingsMask[BinaryKeybindingsMask["WinCtrl"] = 256] = "WinCtrl";
+        BinaryKeybindingsMask[BinaryKeybindingsMask["KeyCode"] = 255] = "KeyCode";
+        BinaryKeybindingsMask[BinaryKeybindingsMask["ModifierMask"] = 3840] = "ModifierMask";
     })(BinaryKeybindingsMask || (BinaryKeybindingsMask = {}));
+    var KeyMod;
     (function (KeyMod) {
-        KeyMod[KeyMod["CtrlCmd"] = 32768] = "CtrlCmd";
-        KeyMod[KeyMod["Shift"] = 16384] = "Shift";
-        KeyMod[KeyMod["Alt"] = 8192] = "Alt";
-        KeyMod[KeyMod["WinCtrl"] = 4096] = "WinCtrl";
-    })(exports.KeyMod || (exports.KeyMod = {}));
-    var KeyMod = exports.KeyMod;
+        KeyMod[KeyMod["CtrlCmd"] = 2048] = "CtrlCmd";
+        KeyMod[KeyMod["Shift"] = 1024] = "Shift";
+        KeyMod[KeyMod["Alt"] = 512] = "Alt";
+        KeyMod[KeyMod["WinCtrl"] = 256] = "WinCtrl";
+    })(KeyMod = exports.KeyMod || (exports.KeyMod = {}));
     function KeyChord(firstPart, secondPart) {
-        return firstPart | ((secondPart & 0x0000ffff) << 16);
+        var chordPart = ((secondPart & 0x0000ffff) << 16) >>> 0;
+        return (firstPart | chordPart) >>> 0;
     }
     exports.KeyChord = KeyChord;
     var BinaryKeybindings = (function () {
         function BinaryKeybindings() {
         }
         BinaryKeybindings.extractFirstPart = function (keybinding) {
-            return keybinding & 0x0000ffff;
+            return (keybinding & 0x0000ffff) >>> 0;
         };
         BinaryKeybindings.extractChordPart = function (keybinding) {
-            return (keybinding >> 16) & 0x0000ffff;
+            return (keybinding & 0xffff0000) >>> 16;
         };
         BinaryKeybindings.hasChord = function (keybinding) {
             return (this.extractChordPart(keybinding) !== 0);
         };
         BinaryKeybindings.hasCtrlCmd = function (keybinding) {
-            return (keybinding & 32768 /* CtrlCmd */ ? true : false);
+            return (keybinding & 2048 /* CtrlCmd */ ? true : false);
         };
         BinaryKeybindings.hasShift = function (keybinding) {
-            return (keybinding & 16384 /* Shift */ ? true : false);
+            return (keybinding & 1024 /* Shift */ ? true : false);
         };
         BinaryKeybindings.hasAlt = function (keybinding) {
-            return (keybinding & 8192 /* Alt */ ? true : false);
+            return (keybinding & 512 /* Alt */ ? true : false);
         };
         BinaryKeybindings.hasWinCtrl = function (keybinding) {
-            return (keybinding & 4096 /* WinCtrl */ ? true : false);
+            return (keybinding & 256 /* WinCtrl */ ? true : false);
         };
         BinaryKeybindings.isModifierKey = function (keybinding) {
-            if ((keybinding & 61440 /* ModifierMask */) === keybinding) {
+            if ((keybinding & 3840 /* ModifierMask */) === keybinding) {
                 return true;
             }
             var keyCode = this.extractKeyCode(keybinding);
@@ -3216,7 +2815,7 @@ define(__m[21/*vs/base/common/keyCodes*/], __M([0/*require*/,1/*exports*/]), fun
                 || keyCode === 4 /* Shift */);
         };
         BinaryKeybindings.extractKeyCode = function (keybinding) {
-            return (keybinding & 4095 /* KeyCode */);
+            return (keybinding & 255 /* KeyCode */);
         };
         return BinaryKeybindings;
     }());
@@ -3251,16 +2850,149 @@ define(__m[21/*vs/base/common/keyCodes*/], __M([0/*require*/,1/*exports*/]), fun
     exports.Keybinding = Keybinding;
 });
 
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-define(__m[11/*vs/base/common/map*/], __M([0/*require*/,1/*exports*/]), function (require, exports) {
+define(__m[9/*vs/base/common/lifecycle*/], __M([1/*require*/,0/*exports*/]), function (require, exports) {
+    /*---------------------------------------------------------------------------------------------
+     *  Copyright (c) Microsoft Corporation. All rights reserved.
+     *  Licensed under the MIT License. See License.txt in the project root for license information.
+     *--------------------------------------------------------------------------------------------*/
+    'use strict';
+    exports.empty = Object.freeze({
+        dispose: function () { }
+    });
+    function dispose(first) {
+        var rest = [];
+        for (var _i = 1; _i < arguments.length; _i++) {
+            rest[_i - 1] = arguments[_i];
+        }
+        if (Array.isArray(first)) {
+            first.forEach(function (d) { return d && d.dispose(); });
+            return [];
+        }
+        else if (rest.length === 0) {
+            if (first) {
+                first.dispose();
+                return first;
+            }
+        }
+        else {
+            dispose(first);
+            dispose(rest);
+            return [];
+        }
+    }
+    exports.dispose = dispose;
+    function combinedDisposable(disposables) {
+        return { dispose: function () { return dispose(disposables); } };
+    }
+    exports.combinedDisposable = combinedDisposable;
+    function toDisposable() {
+        var fns = [];
+        for (var _i = 0; _i < arguments.length; _i++) {
+            fns[_i] = arguments[_i];
+        }
+        return combinedDisposable(fns.map(function (fn) { return ({ dispose: fn }); }));
+    }
+    exports.toDisposable = toDisposable;
+    var Disposable = (function () {
+        function Disposable() {
+            this._toDispose = [];
+        }
+        Disposable.prototype.dispose = function () {
+            this._toDispose = dispose(this._toDispose);
+        };
+        Disposable.prototype._register = function (t) {
+            this._toDispose.push(t);
+            return t;
+        };
+        return Disposable;
+    }());
+    exports.Disposable = Disposable;
+    var Disposables = (function (_super) {
+        __extends(Disposables, _super);
+        function Disposables() {
+            return _super !== null && _super.apply(this, arguments) || this;
+        }
+        Disposables.prototype.add = function (arg) {
+            if (!Array.isArray(arg)) {
+                return this._register(arg);
+            }
+            else {
+                for (var _i = 0, arg_1 = arg; _i < arg_1.length; _i++) {
+                    var element = arg_1[_i];
+                    return this._register(element);
+                }
+            }
+        };
+        return Disposables;
+    }(Disposable));
+    exports.Disposables = Disposables;
+    var OneDisposable = (function () {
+        function OneDisposable() {
+        }
+        Object.defineProperty(OneDisposable.prototype, "value", {
+            set: function (value) {
+                if (this._value) {
+                    this._value.dispose();
+                }
+                this._value = value;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        OneDisposable.prototype.dispose = function () {
+            this.value = null;
+        };
+        return OneDisposable;
+    }());
+    exports.OneDisposable = OneDisposable;
+    var ReferenceCollection = (function () {
+        function ReferenceCollection() {
+            this.references = Object.create(null);
+        }
+        ReferenceCollection.prototype.acquire = function (key) {
+            var _this = this;
+            var reference = this.references[key];
+            if (!reference) {
+                reference = this.references[key] = { counter: 0, object: this.createReferencedObject(key) };
+            }
+            var object = reference.object;
+            var dispose = function () {
+                if (--reference.counter === 0) {
+                    _this.destroyReferencedObject(reference.object);
+                    delete _this.references[key];
+                }
+            };
+            reference.counter++;
+            return { object: object, dispose: dispose };
+        };
+        return ReferenceCollection;
+    }());
+    exports.ReferenceCollection = ReferenceCollection;
+    var ImmortalReference = (function () {
+        function ImmortalReference(object) {
+            this.object = object;
+        }
+        ImmortalReference.prototype.dispose = function () { };
+        return ImmortalReference;
+    }());
+    exports.ImmortalReference = ImmortalReference;
+});
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+
+
+
+
+define(__m[13/*vs/base/common/map*/], __M([1/*require*/,0/*exports*/]), function (require, exports) {
     'use strict';
     /**
      * A simple map to store value by a key object. Key can be any object that has toString() function to get
@@ -3479,7 +3211,7 @@ define(__m[11/*vs/base/common/map*/], __M([0/*require*/,1/*exports*/]), function
     var LRUCache = (function (_super) {
         __extends(LRUCache, _super);
         function LRUCache(limit) {
-            _super.call(this, limit);
+            return _super.call(this, limit) || this;
         }
         LRUCache.prototype.get = function (key) {
             // Upon access of an entry, make it the head of
@@ -3495,13 +3227,20 @@ define(__m[11/*vs/base/common/map*/], __M([0/*require*/,1/*exports*/]), function
         return LRUCache;
     }(BoundedLinkedMap));
     exports.LRUCache = LRUCache;
+    // --- trie'ish datastructure
+    var Node = (function () {
+        function Node() {
+            this.children = new Map();
+        }
+        return Node;
+    }());
     /**
      * A trie map that allows for fast look up when keys are substrings
      * to the actual search keys (dir/subdir-problem).
      */
     var TrieMap = (function () {
         function TrieMap(splitter) {
-            this._root = { children: Object.create(null) };
+            this._root = new Node();
             this._splitter = splitter;
         }
         TrieMap.prototype.insert = function (path, element) {
@@ -3520,7 +3259,7 @@ define(__m[11/*vs/base/common/map*/], __M([0/*require*/,1/*exports*/]), function
             // create new nodes
             var newNode;
             for (; i < parts.length; i++) {
-                newNode = { children: Object.create(null) };
+                newNode = new Node();
                 node.children[parts[i]] = newNode;
                 node = newNode;
             }
@@ -3577,13 +3316,13 @@ define(__m[11/*vs/base/common/map*/], __M([0/*require*/,1/*exports*/]), function
             result._root = node;
             return result;
         };
-        TrieMap.PathSplitter = function (s) { return s.split(/[\\/]/).filter(function (s) { return !!s; }); };
         return TrieMap;
     }());
+    TrieMap.PathSplitter = function (s) { return s.split(/[\\/]/).filter(function (s) { return !!s; }); };
     exports.TrieMap = TrieMap;
 });
 
-define(__m[4/*vs/base/common/platform*/], __M([0/*require*/,1/*exports*/]), function (require, exports) {
+define(__m[3/*vs/base/common/platform*/], __M([1/*require*/,0/*exports*/]), function (require, exports) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -3630,13 +3369,13 @@ define(__m[4/*vs/base/common/platform*/], __M([0/*require*/,1/*exports*/]), func
         _language = _locale;
         _isQunit = !!self.QUnit;
     }
+    var Platform;
     (function (Platform) {
         Platform[Platform["Web"] = 0] = "Web";
         Platform[Platform["Mac"] = 1] = "Mac";
         Platform[Platform["Linux"] = 2] = "Linux";
         Platform[Platform["Windows"] = 3] = "Windows";
-    })(exports.Platform || (exports.Platform = {}));
-    var Platform = exports.Platform;
+    })(Platform = exports.Platform || (exports.Platform = {}));
     exports._platform = Platform.Web;
     if (_isNative) {
         if (_isMacintosh) {
@@ -3681,7 +3420,7 @@ define(__m[4/*vs/base/common/platform*/], __M([0/*require*/,1/*exports*/]), func
     exports.clearInterval = _globals.clearInterval.bind(_globals);
 });
 
-define(__m[9/*vs/base/common/strings*/], __M([0/*require*/,1/*exports*/,11/*vs/base/common/map*/]), function (require, exports, map_1) {
+define(__m[15/*vs/base/common/strings*/], __M([1/*require*/,0/*exports*/,13/*vs/base/common/map*/]), function (require, exports, map_1) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -3991,7 +3730,34 @@ define(__m[9/*vs/base/common/strings*/], __M([0/*require*/,1/*exports*/,11/*vs/b
         }
     }
     exports.compare = compare;
-    function isAsciiChar(code) {
+    function compareIgnoreCase(a, b) {
+        var len = Math.min(a.length, b.length);
+        for (var i = 0; i < len; i++) {
+            var codeA = a.charCodeAt(i);
+            var codeB = b.charCodeAt(i);
+            if (codeA === codeB) {
+                // equal
+                continue;
+            }
+            var diff = codeA - codeB;
+            if ((diff === 32 || diff === -32) && isAsciiLetter(codeA) && isAsciiLetter(codeB)) {
+                // equal -> ignoreCase
+                continue;
+            }
+            return compare(a[i].toLowerCase(), b[i].toLowerCase());
+        }
+        if (a.length < b.length) {
+            return -1;
+        }
+        else if (a.length > b.length) {
+            return 1;
+        }
+        else {
+            return 0;
+        }
+    }
+    exports.compareIgnoreCase = compareIgnoreCase;
+    function isAsciiLetter(code) {
         return (code >= 97 /* a */ && code <= 122 /* z */) || (code >= 65 /* A */ && code <= 90 /* Z */);
     }
     function equalsIgnoreCase(a, b) {
@@ -4004,7 +3770,7 @@ define(__m[9/*vs/base/common/strings*/], __M([0/*require*/,1/*exports*/,11/*vs/b
             if (codeA === codeB) {
                 continue;
             }
-            else if (isAsciiChar(codeA) && isAsciiChar(codeB)) {
+            else if (isAsciiLetter(codeA) && isAsciiLetter(codeB)) {
                 var diff = Math.abs(codeA - codeB);
                 if (diff !== 0 && diff !== 32) {
                     return false;
@@ -4081,6 +3847,14 @@ define(__m[9/*vs/base/common/strings*/], __M([0/*require*/,1/*exports*/,11/*vs/b
         return CONTAINS_RTL.test(str);
     }
     exports.containsRTL = containsRTL;
+    var IS_BASIC_ASCII = /^[\t\n\r\x20-\x7E]*$/;
+    /**
+     * Returns true if `str` contains only basic ASCII characters in the range 32 - 126 (including 32 and 126) or \n, \r, \t
+     */
+    function isBasicASCII(str) {
+        return IS_BASIC_ASCII.test(str);
+    }
+    exports.isBasicASCII = isBasicASCII;
     function isFullWidthCharacter(charCode) {
         // Do a cheap trick to better support wrapping of wide characters, treat them as 2 columns
         // http://jrgraphix.net/research/unicode_blocks.php
@@ -4249,326 +4023,7 @@ define(__m[9/*vs/base/common/strings*/], __M([0/*require*/,1/*exports*/,11/*vs/b
     exports.repeat = repeat;
 });
 
-define(__m[16/*vs/base/common/filters*/], __M([0/*require*/,1/*exports*/,9/*vs/base/common/strings*/,11/*vs/base/common/map*/]), function (require, exports, strings, map_1) {
-    /*---------------------------------------------------------------------------------------------
-     *  Copyright (c) Microsoft Corporation. All rights reserved.
-     *  Licensed under the MIT License. See License.txt in the project root for license information.
-     *--------------------------------------------------------------------------------------------*/
-    'use strict';
-    // Combined filters
-    /**
-     * @returns A filter which combines the provided set
-     * of filters with an or. The *first* filters that
-     * matches defined the return value of the returned
-     * filter.
-     */
-    function or() {
-        var filter = [];
-        for (var _i = 0; _i < arguments.length; _i++) {
-            filter[_i - 0] = arguments[_i];
-        }
-        return function (word, wordToMatchAgainst) {
-            for (var i = 0, len = filter.length; i < len; i++) {
-                var match = filter[i](word, wordToMatchAgainst);
-                if (match) {
-                    return match;
-                }
-            }
-            return null;
-        };
-    }
-    exports.or = or;
-    /**
-     * @returns A filter which combines the provided set
-     * of filters with an and. The combines matches are
-     * returned if *all* filters match.
-     */
-    function and() {
-        var filter = [];
-        for (var _i = 0; _i < arguments.length; _i++) {
-            filter[_i - 0] = arguments[_i];
-        }
-        return function (word, wordToMatchAgainst) {
-            var result = [];
-            for (var i = 0, len = filter.length; i < len; i++) {
-                var match = filter[i](word, wordToMatchAgainst);
-                if (!match) {
-                    return null;
-                }
-                result = result.concat(match);
-            }
-            return result;
-        };
-    }
-    exports.and = and;
-    // Prefix
-    exports.matchesStrictPrefix = function (word, wordToMatchAgainst) { return _matchesPrefix(false, word, wordToMatchAgainst); };
-    exports.matchesPrefix = function (word, wordToMatchAgainst) { return _matchesPrefix(true, word, wordToMatchAgainst); };
-    function _matchesPrefix(ignoreCase, word, wordToMatchAgainst) {
-        if (!wordToMatchAgainst || wordToMatchAgainst.length === 0 || wordToMatchAgainst.length < word.length) {
-            return null;
-        }
-        if (ignoreCase) {
-            word = word.toLowerCase();
-            wordToMatchAgainst = wordToMatchAgainst.toLowerCase();
-        }
-        for (var i = 0; i < word.length; i++) {
-            if (word[i] !== wordToMatchAgainst[i]) {
-                return null;
-            }
-        }
-        return word.length > 0 ? [{ start: 0, end: word.length }] : [];
-    }
-    // Contiguous Substring
-    function matchesContiguousSubString(word, wordToMatchAgainst) {
-        var index = wordToMatchAgainst.toLowerCase().indexOf(word.toLowerCase());
-        if (index === -1) {
-            return null;
-        }
-        return [{ start: index, end: index + word.length }];
-    }
-    exports.matchesContiguousSubString = matchesContiguousSubString;
-    // Substring
-    function matchesSubString(word, wordToMatchAgainst) {
-        return _matchesSubString(word.toLowerCase(), wordToMatchAgainst.toLowerCase(), 0, 0);
-    }
-    exports.matchesSubString = matchesSubString;
-    function _matchesSubString(word, wordToMatchAgainst, i, j) {
-        if (i === word.length) {
-            return [];
-        }
-        else if (j === wordToMatchAgainst.length) {
-            return null;
-        }
-        else {
-            if (word[i] === wordToMatchAgainst[j]) {
-                var result = null;
-                if (result = _matchesSubString(word, wordToMatchAgainst, i + 1, j + 1)) {
-                    return join({ start: j, end: j + 1 }, result);
-                }
-            }
-            return _matchesSubString(word, wordToMatchAgainst, i, j + 1);
-        }
-    }
-    // CamelCase
-    function isLower(code) {
-        return 97 /* a */ <= code && code <= 122 /* z */;
-    }
-    function isUpper(code) {
-        return 65 /* A */ <= code && code <= 90 /* Z */;
-    }
-    function isNumber(code) {
-        return 48 /* Digit0 */ <= code && code <= 57 /* Digit9 */;
-    }
-    function isWhitespace(code) {
-        return (code === 32 /* Space */
-            || code === 9 /* Tab */
-            || code === 10 /* LineFeed */
-            || code === 13 /* CarriageReturn */);
-    }
-    function isAlphanumeric(code) {
-        return isLower(code) || isUpper(code) || isNumber(code);
-    }
-    function join(head, tail) {
-        if (tail.length === 0) {
-            tail = [head];
-        }
-        else if (head.end === tail[0].start) {
-            tail[0].start = head.start;
-        }
-        else {
-            tail.unshift(head);
-        }
-        return tail;
-    }
-    function nextAnchor(camelCaseWord, start) {
-        for (var i = start; i < camelCaseWord.length; i++) {
-            var c = camelCaseWord.charCodeAt(i);
-            if (isUpper(c) || isNumber(c) || (i > 0 && !isAlphanumeric(camelCaseWord.charCodeAt(i - 1)))) {
-                return i;
-            }
-        }
-        return camelCaseWord.length;
-    }
-    function _matchesCamelCase(word, camelCaseWord, i, j) {
-        if (i === word.length) {
-            return [];
-        }
-        else if (j === camelCaseWord.length) {
-            return null;
-        }
-        else if (word[i] !== camelCaseWord[j].toLowerCase()) {
-            return null;
-        }
-        else {
-            var result = null;
-            var nextUpperIndex = j + 1;
-            result = _matchesCamelCase(word, camelCaseWord, i + 1, j + 1);
-            while (!result && (nextUpperIndex = nextAnchor(camelCaseWord, nextUpperIndex)) < camelCaseWord.length) {
-                result = _matchesCamelCase(word, camelCaseWord, i + 1, nextUpperIndex);
-                nextUpperIndex++;
-            }
-            return result === null ? null : join({ start: j, end: j + 1 }, result);
-        }
-    }
-    // Heuristic to avoid computing camel case matcher for words that don't
-    // look like camelCaseWords.
-    function analyzeCamelCaseWord(word) {
-        var upper = 0, lower = 0, alpha = 0, numeric = 0, code = 0;
-        for (var i = 0; i < word.length; i++) {
-            code = word.charCodeAt(i);
-            if (isUpper(code)) {
-                upper++;
-            }
-            if (isLower(code)) {
-                lower++;
-            }
-            if (isAlphanumeric(code)) {
-                alpha++;
-            }
-            if (isNumber(code)) {
-                numeric++;
-            }
-        }
-        var upperPercent = upper / word.length;
-        var lowerPercent = lower / word.length;
-        var alphaPercent = alpha / word.length;
-        var numericPercent = numeric / word.length;
-        return { upperPercent: upperPercent, lowerPercent: lowerPercent, alphaPercent: alphaPercent, numericPercent: numericPercent };
-    }
-    function isUpperCaseWord(analysis) {
-        var upperPercent = analysis.upperPercent, lowerPercent = analysis.lowerPercent, alphaPercent = analysis.alphaPercent, numericPercent = analysis.numericPercent;
-        return lowerPercent === 0 && upperPercent > 0.6;
-    }
-    function isCamelCaseWord(analysis) {
-        var upperPercent = analysis.upperPercent, lowerPercent = analysis.lowerPercent, alphaPercent = analysis.alphaPercent, numericPercent = analysis.numericPercent;
-        return lowerPercent > 0.2 && upperPercent < 0.8 && alphaPercent > 0.6 && numericPercent < 0.2;
-    }
-    // Heuristic to avoid computing camel case matcher for words that don't
-    // look like camel case patterns.
-    function isCamelCasePattern(word) {
-        var upper = 0, lower = 0, code = 0, whitespace = 0;
-        for (var i = 0; i < word.length; i++) {
-            code = word.charCodeAt(i);
-            if (isUpper(code)) {
-                upper++;
-            }
-            if (isLower(code)) {
-                lower++;
-            }
-            if (isWhitespace(code)) {
-                whitespace++;
-            }
-        }
-        if ((upper === 0 || lower === 0) && whitespace === 0) {
-            return word.length <= 30;
-        }
-        else {
-            return upper <= 5;
-        }
-    }
-    function matchesCamelCase(word, camelCaseWord) {
-        if (!camelCaseWord || camelCaseWord.length === 0) {
-            return null;
-        }
-        if (!isCamelCasePattern(word)) {
-            return null;
-        }
-        if (camelCaseWord.length > 60) {
-            return null;
-        }
-        var analysis = analyzeCamelCaseWord(camelCaseWord);
-        if (!isCamelCaseWord(analysis)) {
-            if (!isUpperCaseWord(analysis)) {
-                return null;
-            }
-            camelCaseWord = camelCaseWord.toLowerCase();
-        }
-        var result = null;
-        var i = 0;
-        while (i < camelCaseWord.length && (result = _matchesCamelCase(word.toLowerCase(), camelCaseWord, 0, i)) === null) {
-            i = nextAnchor(camelCaseWord, i + 1);
-        }
-        return result;
-    }
-    exports.matchesCamelCase = matchesCamelCase;
-    // Matches beginning of words supporting non-ASCII languages
-    // E.g. "gp" or "g p" will match "Git: Pull"
-    // Useful in cases where the target is words (e.g. command labels)
-    function matchesWords(word, target) {
-        if (!target || target.length === 0) {
-            return null;
-        }
-        var result = null;
-        var i = 0;
-        while (i < target.length && (result = _matchesWords(word.toLowerCase(), target, 0, i)) === null) {
-            i = nextWord(target, i + 1);
-        }
-        return result;
-    }
-    exports.matchesWords = matchesWords;
-    function _matchesWords(word, target, i, j) {
-        if (i === word.length) {
-            return [];
-        }
-        else if (j === target.length) {
-            return null;
-        }
-        else if (word[i] !== target[j].toLowerCase()) {
-            return null;
-        }
-        else {
-            var result = null;
-            var nextWordIndex = j + 1;
-            result = _matchesWords(word, target, i + 1, j + 1);
-            while (!result && (nextWordIndex = nextWord(target, nextWordIndex)) < target.length) {
-                result = _matchesWords(word, target, i + 1, nextWordIndex);
-                nextWordIndex++;
-            }
-            return result === null ? null : join({ start: j, end: j + 1 }, result);
-        }
-    }
-    function nextWord(word, start) {
-        for (var i = start; i < word.length; i++) {
-            var c = word.charCodeAt(i);
-            if (isWhitespace(c) || (i > 0 && isWhitespace(word.charCodeAt(i - 1)))) {
-                return i;
-            }
-        }
-        return word.length;
-    }
-    // Fuzzy
-    (function (SubstringMatching) {
-        SubstringMatching[SubstringMatching["Contiguous"] = 0] = "Contiguous";
-        SubstringMatching[SubstringMatching["Separate"] = 1] = "Separate";
-    })(exports.SubstringMatching || (exports.SubstringMatching = {}));
-    var SubstringMatching = exports.SubstringMatching;
-    exports.fuzzyContiguousFilter = or(exports.matchesPrefix, matchesCamelCase, matchesContiguousSubString);
-    var fuzzySeparateFilter = or(exports.matchesPrefix, matchesCamelCase, matchesSubString);
-    var fuzzyRegExpCache = new map_1.BoundedLinkedMap(10000); // bounded to 10000 elements
-    function matchesFuzzy(word, wordToMatchAgainst, enableSeparateSubstringMatching) {
-        if (enableSeparateSubstringMatching === void 0) { enableSeparateSubstringMatching = false; }
-        if (typeof word !== 'string' || typeof wordToMatchAgainst !== 'string') {
-            return null; // return early for invalid input
-        }
-        // Form RegExp for wildcard matches
-        var regexp = fuzzyRegExpCache.get(word);
-        if (!regexp) {
-            regexp = new RegExp(strings.convertSimple2RegExpPattern(word), 'i');
-            fuzzyRegExpCache.set(word, regexp);
-        }
-        // RegExp Filter
-        var match = regexp.exec(wordToMatchAgainst);
-        if (match) {
-            return [{ start: match.index, end: match.index + match[0].length }];
-        }
-        // Default Filter
-        return enableSeparateSubstringMatching ? fuzzySeparateFilter(word, wordToMatchAgainst) : exports.fuzzyContiguousFilter(word, wordToMatchAgainst);
-    }
-    exports.matchesFuzzy = matchesFuzzy;
-});
-
-define(__m[10/*vs/base/common/types*/], __M([0/*require*/,1/*exports*/]), function (require, exports) {
+define(__m[16/*vs/base/common/types*/], __M([1/*require*/,0/*exports*/]), function (require, exports) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -4688,7 +4143,7 @@ define(__m[10/*vs/base/common/types*/], __M([0/*require*/,1/*exports*/]), functi
     function areFunctions() {
         var objects = [];
         for (var _i = 0; _i < arguments.length; _i++) {
-            objects[_i - 0] = arguments[_i];
+            objects[_i] = arguments[_i];
         }
         return objects && objects.length > 0 && objects.every(isFunction);
     }
@@ -4736,7 +4191,7 @@ define(__m[10/*vs/base/common/types*/], __M([0/*require*/,1/*exports*/]), functi
     exports.create = create;
 });
 
-define(__m[2/*vs/base/common/errors*/], __M([0/*require*/,1/*exports*/,4/*vs/base/common/platform*/,10/*vs/base/common/types*/]), function (require, exports, platform, types) {
+define(__m[4/*vs/base/common/errors*/], __M([1/*require*/,0/*exports*/,3/*vs/base/common/platform*/,16/*vs/base/common/types*/]), function (require, exports, platform, types) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -4900,7 +4355,7 @@ define(__m[2/*vs/base/common/errors*/], __M([0/*require*/,1/*exports*/,4/*vs/bas
     exports.getErrorMessage = getErrorMessage;
 });
 
-define(__m[15/*vs/base/common/callbackList*/], __M([0/*require*/,1/*exports*/,2/*vs/base/common/errors*/]), function (require, exports, errors_1) {
+define(__m[19/*vs/base/common/callbackList*/], __M([1/*require*/,0/*exports*/,4/*vs/base/common/errors*/]), function (require, exports, errors_1) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -4948,7 +4403,7 @@ define(__m[15/*vs/base/common/callbackList*/], __M([0/*require*/,1/*exports*/,2/
         CallbackList.prototype.invoke = function () {
             var args = [];
             for (var _i = 0; _i < arguments.length; _i++) {
-                args[_i - 0] = arguments[_i];
+                args[_i] = arguments[_i];
             }
             if (!this._callbacks) {
                 return;
@@ -4984,112 +4439,7 @@ define(__m[15/*vs/base/common/callbackList*/], __M([0/*require*/,1/*exports*/,2/
     exports.default = CallbackList;
 });
 
-
-
-
-
-
-define(__m[5/*vs/base/common/lifecycle*/], __M([0/*require*/,1/*exports*/,10/*vs/base/common/types*/]), function (require, exports, types_1) {
-    /*---------------------------------------------------------------------------------------------
-     *  Copyright (c) Microsoft Corporation. All rights reserved.
-     *  Licensed under the MIT License. See License.txt in the project root for license information.
-     *--------------------------------------------------------------------------------------------*/
-    'use strict';
-    exports.empty = Object.freeze({
-        dispose: function () { }
-    });
-    function dispose() {
-        var disposables = [];
-        for (var _i = 0; _i < arguments.length; _i++) {
-            disposables[_i - 0] = arguments[_i];
-        }
-        var first = disposables[0];
-        if (types_1.isArray(first)) {
-            disposables = first;
-        }
-        disposables.forEach(function (d) { return d && d.dispose(); });
-        return [];
-    }
-    exports.dispose = dispose;
-    function combinedDisposable(disposables) {
-        return { dispose: function () { return dispose(disposables); } };
-    }
-    exports.combinedDisposable = combinedDisposable;
-    function toDisposable() {
-        var fns = [];
-        for (var _i = 0; _i < arguments.length; _i++) {
-            fns[_i - 0] = arguments[_i];
-        }
-        return combinedDisposable(fns.map(function (fn) { return ({ dispose: fn }); }));
-    }
-    exports.toDisposable = toDisposable;
-    var Disposable = (function () {
-        function Disposable() {
-            this._toDispose = [];
-        }
-        Disposable.prototype.dispose = function () {
-            this._toDispose = dispose(this._toDispose);
-        };
-        Disposable.prototype._register = function (t) {
-            this._toDispose.push(t);
-            return t;
-        };
-        return Disposable;
-    }());
-    exports.Disposable = Disposable;
-    var Disposables = (function (_super) {
-        __extends(Disposables, _super);
-        function Disposables() {
-            _super.apply(this, arguments);
-        }
-        Disposables.prototype.add = function (arg) {
-            if (!Array.isArray(arg)) {
-                return this._register(arg);
-            }
-            else {
-                for (var _i = 0, arg_1 = arg; _i < arg_1.length; _i++) {
-                    var element = arg_1[_i];
-                    return this._register(element);
-                }
-            }
-        };
-        return Disposables;
-    }(Disposable));
-    exports.Disposables = Disposables;
-    var ReferenceCollection = (function () {
-        function ReferenceCollection() {
-            this.references = Object.create(null);
-        }
-        ReferenceCollection.prototype.acquire = function (key) {
-            var _this = this;
-            var reference = this.references[key];
-            if (!reference) {
-                reference = this.references[key] = { counter: 0, object: this.createReferencedObject(key) };
-            }
-            var object = reference.object;
-            var dispose = function () {
-                if (--reference.counter === 0) {
-                    _this.destroyReferencedObject(reference.object);
-                    delete _this.references[key];
-                }
-            };
-            reference.counter++;
-            return { object: object, dispose: dispose };
-        };
-        return ReferenceCollection;
-    }());
-    exports.ReferenceCollection = ReferenceCollection;
-    var ImmortalReference = (function () {
-        function ImmortalReference(object) {
-            this.object = object;
-        }
-        ImmortalReference.prototype.dispose = function () { };
-        return ImmortalReference;
-    }());
-    exports.ImmortalReference = ImmortalReference;
-});
-
-define(__m[6/*vs/base/common/event*/], __M([0/*require*/,1/*exports*/,5/*vs/base/common/lifecycle*/,15/*vs/base/common/callbackList*/]), function (require, exports, lifecycle_1, callbackList_1) {
+define(__m[5/*vs/base/common/event*/], __M([1/*require*/,0/*exports*/,9/*vs/base/common/lifecycle*/,19/*vs/base/common/callbackList*/,14/*vs/base/common/functional*/]), function (require, exports, lifecycle_1, callbackList_1, functional_1) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -5186,10 +4536,67 @@ define(__m[6/*vs/base/common/event*/], __M([0/*require*/,1/*exports*/,5/*vs/base
                 this._disposed = true;
             }
         };
-        Emitter._noop = function () { };
         return Emitter;
     }());
+    Emitter._noop = function () { };
     exports.Emitter = Emitter;
+    var EventMultiplexer = (function () {
+        function EventMultiplexer() {
+            var _this = this;
+            this.hasListeners = false;
+            this.events = [];
+            this.emitter = new Emitter({
+                onFirstListenerAdd: function () { return _this.onFirstListenerAdd(); },
+                onLastListenerRemove: function () { return _this.onLastListenerRemove(); }
+            });
+        }
+        Object.defineProperty(EventMultiplexer.prototype, "event", {
+            get: function () {
+                return this.emitter.event;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        EventMultiplexer.prototype.add = function (event) {
+            var _this = this;
+            var e = { event: event, listener: null };
+            this.events.push(e);
+            if (this.hasListeners) {
+                this.hook(e);
+            }
+            var dispose = function () {
+                if (_this.hasListeners) {
+                    _this.unhook(e);
+                }
+                var idx = _this.events.indexOf(e);
+                _this.events.splice(idx, 1);
+            };
+            return lifecycle_1.toDisposable(functional_1.once(dispose));
+        };
+        EventMultiplexer.prototype.onFirstListenerAdd = function () {
+            var _this = this;
+            this.hasListeners = true;
+            this.events.forEach(function (e) { return _this.hook(e); });
+        };
+        EventMultiplexer.prototype.onLastListenerRemove = function () {
+            var _this = this;
+            this.hasListeners = false;
+            this.events.forEach(function (e) { return _this.unhook(e); });
+        };
+        EventMultiplexer.prototype.hook = function (e) {
+            var _this = this;
+            e.listener = e.event(function (r) { return _this.emitter.fire(r); });
+        };
+        EventMultiplexer.prototype.unhook = function (e) {
+            e.listener.dispose();
+            e.listener = null;
+        };
+        EventMultiplexer.prototype.dispose = function () {
+            this.emitter.dispose();
+        };
+        return EventMultiplexer;
+    }());
+    exports.EventMultiplexer = EventMultiplexer;
     /**
      * Creates an Event which is backed-up by the event emitter. This allows
      * to use the existing eventing pattern and is likely using less memory.
@@ -5224,6 +4631,15 @@ define(__m[6/*vs/base/common/event*/], __M([0/*require*/,1/*exports*/,5/*vs/base
         };
     }
     exports.fromEventEmitter = fromEventEmitter;
+    function fromCallback(fn) {
+        var listener;
+        var emitter = new Emitter({
+            onFirstListenerAdd: function () { return listener = fn(function (e) { return emitter.fire(e); }); },
+            onLastListenerRemove: function () { return listener.dispose(); }
+        });
+        return emitter.event;
+    }
+    exports.fromCallback = fromCallback;
     function fromPromise(promise) {
         var emitter = new Emitter();
         var shouldEmit = false;
@@ -5276,7 +4692,7 @@ define(__m[6/*vs/base/common/event*/], __M([0/*require*/,1/*exports*/,5/*vs/base
     function any() {
         var events = [];
         for (var _i = 0; _i < arguments.length; _i++) {
-            events[_i - 0] = arguments[_i];
+            events[_i] = arguments[_i];
         }
         var listeners = [];
         var emitter = new Emitter({
@@ -5473,7 +4889,7 @@ define(__m[6/*vs/base/common/event*/], __M([0/*require*/,1/*exports*/,5/*vs/base
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-define(__m[12/*vs/base/common/cancellation*/], __M([0/*require*/,1/*exports*/,6/*vs/base/common/event*/]), function (require, exports, event_1) {
+define(__m[12/*vs/base/common/cancellation*/], __M([1/*require*/,0/*exports*/,5/*vs/base/common/event*/]), function (require, exports, event_1) {
     'use strict';
     var shortcutEvent = Object.freeze(function (callback, context) {
         var handle = setTimeout(callback.bind(context), 0);
@@ -5559,7 +4975,7 @@ define(__m[12/*vs/base/common/cancellation*/], __M([0/*require*/,1/*exports*/,6/
     exports.CancellationTokenSource = CancellationTokenSource;
 });
 
-define(__m[13/*vs/base/common/uri*/], __M([0/*require*/,1/*exports*/,4/*vs/base/common/platform*/]), function (require, exports, platform) {
+define(__m[10/*vs/base/common/uri*/], __M([1/*require*/,0/*exports*/,3/*vs/base/common/platform*/]), function (require, exports, platform) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -5912,39 +5328,50 @@ define(__m[13/*vs/base/common/uri*/], __M([0/*require*/,1/*exports*/,4/*vs/base/
             return parts.join(URI._empty);
         };
         URI.prototype.toJSON = function () {
-            return {
-                scheme: this.scheme,
-                authority: this.authority,
-                path: this.path,
+            var res = {
                 fsPath: this.fsPath,
-                query: this.query,
-                fragment: this.fragment,
                 external: this.toString(),
                 $mid: 1
             };
+            if (this.path) {
+                res.path = this.path;
+            }
+            if (this.scheme) {
+                res.scheme = this.scheme;
+            }
+            if (this.authority) {
+                res.authority = this.authority;
+            }
+            if (this.query) {
+                res.query = this.query;
+            }
+            if (this.fragment) {
+                res.fragment = this.fragment;
+            }
+            return res;
         };
         URI.revive = function (data) {
             var result = new URI();
-            result._scheme = data.scheme;
-            result._authority = data.authority;
-            result._path = data.path;
-            result._query = data.query;
-            result._fragment = data.fragment;
+            result._scheme = data.scheme || URI._empty;
+            result._authority = data.authority || URI._empty;
+            result._path = data.path || URI._empty;
+            result._query = data.query || URI._empty;
+            result._fragment = data.fragment || URI._empty;
             result._fsPath = data.fsPath;
             result._formatted = data.external;
             URI._validate(result);
             return result;
         };
-        URI._empty = '';
-        URI._slash = '/';
-        URI._regexp = /^(([^:/?#]+?):)?(\/\/([^/?#]*))?([^?#]*)(\?([^#]*))?(#(.*))?/;
-        URI._driveLetterPath = /^\/[a-zA-z]:/;
-        URI._upperCaseDrive = /^(\/)?([A-Z]:)/;
-        URI._schemePattern = /^\w[\w\d+.-]*$/;
-        URI._singleSlashStart = /^\//;
-        URI._doubleSlashStart = /^\/\//;
         return URI;
     }());
+    URI._empty = '';
+    URI._slash = '/';
+    URI._regexp = /^(([^:/?#]+?):)?(\/\/([^/?#]*))?([^?#]*)(\?([^#]*))?(#(.*))?/;
+    URI._driveLetterPath = /^\/[a-zA-z]:/;
+    URI._upperCaseDrive = /^(\/)?([A-Z]:)/;
+    URI._schemePattern = /^\w[\w\d+.-]*$/;
+    URI._singleSlashStart = /^\//;
+    URI._doubleSlashStart = /^\/\//;
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = URI;
 });
@@ -8025,7 +7452,7 @@ if (typeof process !== 'undefined' && typeof process.nextTick === 'function') {
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-define(__m[3/*vs/base/common/winjs.base*/], __M([30/*vs/base/common/winjs.base.raw*/,2/*vs/base/common/errors*/]), function (winjs, __Errors__) {
+define(__m[2/*vs/base/common/winjs.base*/], __M([33/*vs/base/common/winjs.base.raw*/,4/*vs/base/common/errors*/]), function (winjs, __Errors__) {
 	'use strict';
 
 	var outstandingPromiseErrors = {};
@@ -8091,7 +7518,7 @@ define(__m[3/*vs/base/common/winjs.base*/], __M([30/*vs/base/common/winjs.base.r
 
 
 
-define(__m[18/*vs/base/common/async*/], __M([0/*require*/,1/*exports*/,2/*vs/base/common/errors*/,4/*vs/base/common/platform*/,3/*vs/base/common/winjs.base*/,12/*vs/base/common/cancellation*/,5/*vs/base/common/lifecycle*/,6/*vs/base/common/event*/]), function (require, exports, errors, platform, winjs_base_1, cancellation_1, lifecycle_1, event_1) {
+define(__m[17/*vs/base/common/async*/], __M([1/*require*/,0/*exports*/,4/*vs/base/common/errors*/,3/*vs/base/common/platform*/,2/*vs/base/common/winjs.base*/,12/*vs/base/common/cancellation*/,9/*vs/base/common/lifecycle*/,5/*vs/base/common/event*/]), function (require, exports, errors, platform, winjs_base_1, cancellation_1, lifecycle_1, event_1) {
     'use strict';
     function isThenable(obj) {
         return obj && typeof obj.then === 'function';
@@ -8150,8 +7577,8 @@ define(__m[18/*vs/base/common/async*/], __M([0/*require*/,1/*exports*/,2/*vs/bas
      * The throttler implements this via the queue() method, by providing it a task
      * factory. Following the example:
      *
-     * 		var throttler = new Throttler();
-     * 		var letters = [];
+     * 		const throttler = new Throttler();
+     * 		const letters = [];
      *
      * 		function deliver() {
      * 			const lettersToDeliver = letters;
@@ -8235,8 +7662,8 @@ define(__m[18/*vs/base/common/async*/], __M([0/*require*/,1/*exports*/,2/*vs/bas
      * to be executed and the waiting period (delay) must be passed in as arguments. Following
      * the example:
      *
-     * 		var delayer = new Delayer(WAITING_PERIOD);
-     * 		var letters = [];
+     * 		const delayer = new Delayer(WAITING_PERIOD);
+     * 		const letters = [];
      *
      * 		function letterReceived(l) {
      * 			letters.push(l);
@@ -8304,8 +7731,9 @@ define(__m[18/*vs/base/common/async*/], __M([0/*require*/,1/*exports*/,2/*vs/bas
     var ThrottledDelayer = (function (_super) {
         __extends(ThrottledDelayer, _super);
         function ThrottledDelayer(defaultDelay) {
-            _super.call(this, defaultDelay);
-            this.throttler = new Throttler();
+            var _this = _super.call(this, defaultDelay) || this;
+            _this.throttler = new Throttler();
+            return _this;
         }
         ThrottledDelayer.prototype.trigger = function (promiseFactory, delay) {
             var _this = this;
@@ -8322,9 +7750,10 @@ define(__m[18/*vs/base/common/async*/], __M([0/*require*/,1/*exports*/,2/*vs/bas
         __extends(PeriodThrottledDelayer, _super);
         function PeriodThrottledDelayer(defaultDelay, minimumPeriod) {
             if (minimumPeriod === void 0) { minimumPeriod = 0; }
-            _super.call(this, defaultDelay);
-            this.minimumPeriod = minimumPeriod;
-            this.periodThrottler = new Throttler();
+            var _this = _super.call(this, defaultDelay) || this;
+            _this.minimumPeriod = minimumPeriod;
+            _this.periodThrottler = new Throttler();
+            return _this;
         }
         PeriodThrottledDelayer.prototype.trigger = function (promiseFactory, delay) {
             var _this = this;
@@ -8367,8 +7796,9 @@ define(__m[18/*vs/base/common/async*/], __M([0/*require*/,1/*exports*/,2/*vs/bas
     var ShallowCancelThenPromise = (function (_super) {
         __extends(ShallowCancelThenPromise, _super);
         function ShallowCancelThenPromise(outer) {
+            var _this = this;
             var completeCallback, errorCallback, progressCallback;
-            _super.call(this, function (c, e, p) {
+            _this = _super.call(this, function (c, e, p) {
                 completeCallback = c;
                 errorCallback = e;
                 progressCallback = p;
@@ -8376,8 +7806,9 @@ define(__m[18/*vs/base/common/async*/], __M([0/*require*/,1/*exports*/,2/*vs/bas
                 // cancel this promise but not the
                 // outer promise
                 errorCallback(errors.canceled());
-            });
+            }) || this;
             outer.then(completeCallback, errorCallback, progressCallback);
+            return _this;
         }
         return ShallowCancelThenPromise;
     }(winjs_base_1.TPromise));
@@ -8461,20 +7892,6 @@ define(__m[18/*vs/base/common/async*/], __M([0/*require*/,1/*exports*/,2/*vs/bas
         return loop();
     }
     exports.first = first;
-    function once(fn) {
-        var _this = this;
-        var didCall = false;
-        var result;
-        return function () {
-            if (didCall) {
-                return result;
-            }
-            didCall = true;
-            result = fn.apply(_this, arguments);
-            return result;
-        };
-    }
-    exports.once = once;
     /**
      * A helper to queue N promises and run them all with a max degree of parallelism. The helper
      * ensures that at any time no more than M promises are running at the same time.
@@ -8536,7 +7953,7 @@ define(__m[18/*vs/base/common/async*/], __M([0/*require*/,1/*exports*/,2/*vs/bas
     var Queue = (function (_super) {
         __extends(Queue, _super);
         function Queue() {
-            _super.call(this, 1);
+            return _super.call(this, 1) || this;
         }
         return Queue;
     }(Limiter));
@@ -8544,8 +7961,9 @@ define(__m[18/*vs/base/common/async*/], __M([0/*require*/,1/*exports*/,2/*vs/bas
     var TimeoutTimer = (function (_super) {
         __extends(TimeoutTimer, _super);
         function TimeoutTimer() {
-            _super.call(this);
-            this._token = -1;
+            var _this = _super.call(this) || this;
+            _this._token = -1;
+            return _this;
         }
         TimeoutTimer.prototype.dispose = function () {
             this.cancel();
@@ -8582,8 +8000,9 @@ define(__m[18/*vs/base/common/async*/], __M([0/*require*/,1/*exports*/,2/*vs/bas
     var IntervalTimer = (function (_super) {
         __extends(IntervalTimer, _super);
         function IntervalTimer() {
-            _super.call(this);
-            this._token = -1;
+            var _this = _super.call(this) || this;
+            _this._token = -1;
+            return _this;
         }
         IntervalTimer.prototype.dispose = function () {
             this.cancel();
@@ -8679,7 +8098,7 @@ define(__m[18/*vs/base/common/async*/], __M([0/*require*/,1/*exports*/,2/*vs/bas
 
 
 
-define(__m[29/*vs/base/common/worker/simpleWorker*/], __M([0/*require*/,1/*exports*/,2/*vs/base/common/errors*/,5/*vs/base/common/lifecycle*/,3/*vs/base/common/winjs.base*/,18/*vs/base/common/async*/,4/*vs/base/common/platform*/]), function (require, exports, errors_1, lifecycle_1, winjs_base_1, async_1, platform_1) {
+define(__m[31/*vs/base/common/worker/simpleWorker*/], __M([1/*require*/,0/*exports*/,4/*vs/base/common/errors*/,9/*vs/base/common/lifecycle*/,2/*vs/base/common/winjs.base*/,17/*vs/base/common/async*/,3/*vs/base/common/platform*/]), function (require, exports, errors_1, lifecycle_1, winjs_base_1, async_1, platform_1) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -8801,19 +8220,18 @@ define(__m[29/*vs/base/common/worker/simpleWorker*/], __M([0/*require*/,1/*expor
     var SimpleWorkerClient = (function (_super) {
         __extends(SimpleWorkerClient, _super);
         function SimpleWorkerClient(workerFactory, moduleId) {
-            var _this = this;
-            _super.call(this);
-            this._lastRequestTimestamp = -1;
+            var _this = _super.call(this) || this;
+            _this._lastRequestTimestamp = -1;
             var lazyProxyFulfill = null;
             var lazyProxyReject = null;
-            this._worker = this._register(workerFactory.create('vs/base/common/worker/simpleWorker', function (msg) {
+            _this._worker = _this._register(workerFactory.create('vs/base/common/worker/simpleWorker', function (msg) {
                 _this._protocol.handleMessage(msg);
             }, function (err) {
                 // in Firefox, web workers fail lazily :(
                 // we will reject the proxy
                 lazyProxyReject(err);
             }));
-            this._protocol = new SimpleWorkerProtocol({
+            _this._protocol = new SimpleWorkerProtocol({
                 sendMessage: function (msg) {
                     _this._worker.postMessage(msg);
                 },
@@ -8822,7 +8240,7 @@ define(__m[29/*vs/base/common/worker/simpleWorker*/], __M([0/*require*/,1/*expor
                     return winjs_base_1.TPromise.as(null);
                 }
             });
-            this._protocol.setWorkerId(this._worker.getId());
+            _this._protocol.setWorkerId(_this._worker.getId());
             // Gather loader configuration
             var loaderConfiguration = null;
             var globalRequire = self.require;
@@ -8834,17 +8252,17 @@ define(__m[29/*vs/base/common/worker/simpleWorker*/], __M([0/*require*/,1/*expor
                 // Get the configuration from requirejs
                 loaderConfiguration = self.requirejs.s.contexts._.config;
             }
-            this._lazyProxy = new winjs_base_1.TPromise(function (c, e, p) {
+            _this._lazyProxy = new winjs_base_1.TPromise(function (c, e, p) {
                 lazyProxyFulfill = c;
                 lazyProxyReject = e;
             }, function () { });
             // Send initialize message
-            this._onModuleLoaded = this._protocol.sendMessage(INITIALIZE, [
-                this._worker.getId(),
+            _this._onModuleLoaded = _this._protocol.sendMessage(INITIALIZE, [
+                _this._worker.getId(),
                 moduleId,
                 loaderConfiguration
             ]);
-            this._onModuleLoaded.then(function (availableMethods) {
+            _this._onModuleLoaded.then(function (availableMethods) {
                 var proxy = {};
                 for (var i = 0; i < availableMethods.length; i++) {
                     proxy[availableMethods[i]] = createProxyMethod(availableMethods[i], proxyMethodRequest);
@@ -8864,6 +8282,7 @@ define(__m[29/*vs/base/common/worker/simpleWorker*/], __M([0/*require*/,1/*expor
                     return proxyMethodRequest(method, args);
                 };
             };
+            return _this;
         }
         SimpleWorkerClient.prototype.getProxyObject = function () {
             // Do not allow chaining promises to cancel the proxy creation
@@ -8954,7 +8373,7 @@ define(__m[29/*vs/base/common/worker/simpleWorker*/], __M([0/*require*/,1/*expor
             self.require([moduleId], function () {
                 var result = [];
                 for (var _i = 0; _i < arguments.length; _i++) {
-                    result[_i - 0] = arguments[_i];
+                    result[_i] = arguments[_i];
                 }
                 var handlerModule = result[0];
                 _this._requestHandler = handlerModule.create();
@@ -8980,50 +8399,7 @@ define(__m[29/*vs/base/common/worker/simpleWorker*/], __M([0/*require*/,1/*expor
     exports.create = create;
 });
 
-define(__m[20/*vs/editor/common/core/characterClassifier*/], __M([0/*require*/,1/*exports*/]), function (require, exports) {
-    /*---------------------------------------------------------------------------------------------
-     *  Copyright (c) Microsoft Corporation. All rights reserved.
-     *  Licensed under the MIT License. See License.txt in the project root for license information.
-     *--------------------------------------------------------------------------------------------*/
-    'use strict';
-    /**
-     * A fast character classifier that uses a compact array for ASCII values.
-     */
-    var CharacterClassifier = (function () {
-        function CharacterClassifier(defaultValue) {
-            this._defaultValue = defaultValue;
-            this._asciiMap = CharacterClassifier._createAsciiMap(defaultValue);
-            this._map = [];
-        }
-        CharacterClassifier._createAsciiMap = function (defaultValue) {
-            var asciiMap = [];
-            for (var i = 0; i < 256; i++) {
-                asciiMap[i] = defaultValue;
-            }
-            return asciiMap;
-        };
-        CharacterClassifier.prototype.set = function (charCode, value) {
-            if (charCode >= 0 && charCode < 256) {
-                this._asciiMap[charCode] = value;
-            }
-            else {
-                this._map[charCode] = value;
-            }
-        };
-        CharacterClassifier.prototype.get = function (charCode) {
-            if (charCode >= 0 && charCode < 256) {
-                return this._asciiMap[charCode];
-            }
-            else {
-                return this._map[charCode] || this._defaultValue;
-            }
-        };
-        return CharacterClassifier;
-    }());
-    exports.CharacterClassifier = CharacterClassifier;
-});
-
-define(__m[7/*vs/editor/common/core/position*/], __M([0/*require*/,1/*exports*/]), function (require, exports) {
+define(__m[7/*vs/editor/common/core/position*/], __M([1/*require*/,0/*exports*/]), function (require, exports) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -9096,6 +8472,19 @@ define(__m[7/*vs/editor/common/core/position*/], __M([0/*require*/,1/*exports*/]
             return a.column <= b.column;
         };
         /**
+         * A function that compares positions, useful for sorting
+         */
+        Position.compare = function (a, b) {
+            var aLineNumber = a.lineNumber | 0;
+            var bLineNumber = b.lineNumber | 0;
+            if (aLineNumber === bLineNumber) {
+                var aColumn = a.column | 0;
+                var bColumn = b.column | 0;
+                return aColumn - bColumn;
+            }
+            return aLineNumber - bLineNumber;
+        };
+        /**
          * Clone this position.
          */
         Position.prototype.clone = function () {
@@ -9131,7 +8520,7 @@ define(__m[7/*vs/editor/common/core/position*/], __M([0/*require*/,1/*exports*/]
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-define(__m[8/*vs/editor/common/core/range*/], __M([0/*require*/,1/*exports*/,7/*vs/editor/common/core/position*/]), function (require, exports, position_1) {
+define(__m[6/*vs/editor/common/core/range*/], __M([1/*require*/,0/*exports*/,7/*vs/editor/common/core/position*/]), function (require, exports, position_1) {
     'use strict';
     /**
      * A range in the editor. (startLineNumber,startColumn) is <= (endLineNumber,endColumn)
@@ -9388,15 +8777,15 @@ define(__m[8/*vs/editor/common/core/range*/], __M([0/*require*/,1/*exports*/,7/*
         Range.compareRangesUsingStarts = function (a, b) {
             var aStartLineNumber = a.startLineNumber | 0;
             var bStartLineNumber = b.startLineNumber | 0;
-            var aStartColumn = a.startColumn | 0;
-            var bStartColumn = b.startColumn | 0;
-            var aEndLineNumber = a.endLineNumber | 0;
-            var bEndLineNumber = b.endLineNumber | 0;
-            var aEndColumn = a.endColumn | 0;
-            var bEndColumn = b.endColumn | 0;
             if (aStartLineNumber === bStartLineNumber) {
+                var aStartColumn = a.startColumn | 0;
+                var bStartColumn = b.startColumn | 0;
                 if (aStartColumn === bStartColumn) {
+                    var aEndLineNumber = a.endLineNumber | 0;
+                    var bEndLineNumber = b.endLineNumber | 0;
                     if (aEndLineNumber === bEndLineNumber) {
+                        var aEndColumn = a.endColumn | 0;
+                        var bEndColumn = b.endColumn | 0;
                         return aEndColumn - bEndColumn;
                     }
                     return aEndLineNumber - bEndLineNumber;
@@ -9437,7 +8826,7 @@ define(__m[8/*vs/editor/common/core/range*/], __M([0/*require*/,1/*exports*/,7/*
 
 
 
-define(__m[23/*vs/editor/common/core/selection*/], __M([0/*require*/,1/*exports*/,8/*vs/editor/common/core/range*/]), function (require, exports, range_1) {
+define(__m[20/*vs/editor/common/core/selection*/], __M([1/*require*/,0/*exports*/,6/*vs/editor/common/core/range*/]), function (require, exports, range_1) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -9446,6 +8835,7 @@ define(__m[23/*vs/editor/common/core/selection*/], __M([0/*require*/,1/*exports*
     /**
      * The direction of a selection.
      */
+    var SelectionDirection;
     (function (SelectionDirection) {
         /**
          * The selection starts above where it ends.
@@ -9455,8 +8845,7 @@ define(__m[23/*vs/editor/common/core/selection*/], __M([0/*require*/,1/*exports*
          * The selection starts below where it ends.
          */
         SelectionDirection[SelectionDirection["RTL"] = 1] = "RTL";
-    })(exports.SelectionDirection || (exports.SelectionDirection = {}));
-    var SelectionDirection = exports.SelectionDirection;
+    })(SelectionDirection = exports.SelectionDirection || (exports.SelectionDirection = {}));
     /**
      * A selection in the editor.
      * The selection is a range that has an orientation.
@@ -9464,11 +8853,12 @@ define(__m[23/*vs/editor/common/core/selection*/], __M([0/*require*/,1/*exports*
     var Selection = (function (_super) {
         __extends(Selection, _super);
         function Selection(selectionStartLineNumber, selectionStartColumn, positionLineNumber, positionColumn) {
-            _super.call(this, selectionStartLineNumber, selectionStartColumn, positionLineNumber, positionColumn);
-            this.selectionStartLineNumber = selectionStartLineNumber;
-            this.selectionStartColumn = selectionStartColumn;
-            this.positionLineNumber = positionLineNumber;
-            this.positionColumn = positionColumn;
+            var _this = _super.call(this, selectionStartLineNumber, selectionStartColumn, positionLineNumber, positionColumn) || this;
+            _this.selectionStartLineNumber = selectionStartLineNumber;
+            _this.selectionStartColumn = selectionStartColumn;
+            _this.positionLineNumber = positionLineNumber;
+            _this.positionColumn = positionColumn;
+            return _this;
         }
         /**
          * Clone this selection.
@@ -9575,12 +8965,196 @@ define(__m[23/*vs/editor/common/core/selection*/], __M([0/*require*/,1/*exports*
     exports.Selection = Selection;
 });
 
+define(__m[21/*vs/editor/common/core/token*/], __M([1/*require*/,0/*exports*/]), function (require, exports) {
+    /*---------------------------------------------------------------------------------------------
+     *  Copyright (c) Microsoft Corporation. All rights reserved.
+     *  Licensed under the MIT License. See License.txt in the project root for license information.
+     *--------------------------------------------------------------------------------------------*/
+    'use strict';
+    var Token = (function () {
+        function Token(offset, type, language) {
+            this.offset = offset | 0; // @perf
+            this.type = type;
+            this.language = language;
+        }
+        Token.prototype.toString = function () {
+            return '(' + this.offset + ', ' + this.type + ')';
+        };
+        return Token;
+    }());
+    exports.Token = Token;
+    var TokenizationResult = (function () {
+        function TokenizationResult(tokens, endState) {
+            this.tokens = tokens;
+            this.endState = endState;
+        }
+        return TokenizationResult;
+    }());
+    exports.TokenizationResult = TokenizationResult;
+    var TokenizationResult2 = (function () {
+        function TokenizationResult2(tokens, endState) {
+            this.tokens = tokens;
+            this.endState = endState;
+        }
+        return TokenizationResult2;
+    }());
+    exports.TokenizationResult2 = TokenizationResult2;
+});
+
+define(__m[8/*vs/editor/common/core/uint*/], __M([1/*require*/,0/*exports*/]), function (require, exports) {
+    /*---------------------------------------------------------------------------------------------
+     *  Copyright (c) Microsoft Corporation. All rights reserved.
+     *  Licensed under the MIT License. See License.txt in the project root for license information.
+     *--------------------------------------------------------------------------------------------*/
+    'use strict';
+    var Uint8Matrix = (function () {
+        function Uint8Matrix(rows, cols, defaultValue) {
+            var data = new Uint8Array(rows * cols);
+            for (var i = 0, len = rows * cols; i < len; i++) {
+                data[i] = defaultValue;
+            }
+            this._data = data;
+            this._rows = rows;
+            this._cols = cols;
+        }
+        Uint8Matrix.prototype.get = function (row, col) {
+            return this._data[row * this._cols + col];
+        };
+        Uint8Matrix.prototype.set = function (row, col, value) {
+            this._data[row * this._cols + col] = value;
+        };
+        return Uint8Matrix;
+    }());
+    exports.Uint8Matrix = Uint8Matrix;
+    var Constants;
+    (function (Constants) {
+        /**
+         * MAX SMI (SMall Integer) as defined in v8.
+         * one bit is lost for boxing/unboxing flag.
+         * one bit is lost for sign flag.
+         * See https://thibaultlaurens.github.io/javascript/2013/04/29/how-the-v8-engine-works/#tagged-values
+         */
+        Constants[Constants["MAX_SAFE_SMALL_INTEGER"] = 1073741824] = "MAX_SAFE_SMALL_INTEGER";
+        /**
+         * MIN SMI (SMall Integer) as defined in v8.
+         * one bit is lost for boxing/unboxing flag.
+         * one bit is lost for sign flag.
+         * See https://thibaultlaurens.github.io/javascript/2013/04/29/how-the-v8-engine-works/#tagged-values
+         */
+        Constants[Constants["MIN_SAFE_SMALL_INTEGER"] = -1073741824] = "MIN_SAFE_SMALL_INTEGER";
+        /**
+         * Max unsigned integer that fits on 8 bits.
+         */
+        Constants[Constants["MAX_UINT_8"] = 255] = "MAX_UINT_8";
+        /**
+         * Max unsigned integer that fits on 16 bits.
+         */
+        Constants[Constants["MAX_UINT_16"] = 65535] = "MAX_UINT_16";
+        /**
+         * Max unsigned integer that fits on 32 bits.
+         */
+        Constants[Constants["MAX_UINT_32"] = 4294967295] = "MAX_UINT_32";
+    })(Constants = exports.Constants || (exports.Constants = {}));
+    function toUint8(v) {
+        if (v < 0) {
+            return 0;
+        }
+        if (v > 255 /* MAX_UINT_8 */) {
+            return 255 /* MAX_UINT_8 */;
+        }
+        return v | 0;
+    }
+    exports.toUint8 = toUint8;
+    function toUint32(v) {
+        if (v < 0) {
+            return 0;
+        }
+        if (v > 4294967295 /* MAX_UINT_32 */) {
+            return 4294967295 /* MAX_UINT_32 */;
+        }
+        return v | 0;
+    }
+    exports.toUint32 = toUint32;
+    function toUint32Array(arr) {
+        var len = arr.length;
+        var r = new Uint32Array(len);
+        for (var i = 0; i < len; i++) {
+            r[i] = toUint32(arr[i]);
+        }
+        return r;
+    }
+    exports.toUint32Array = toUint32Array;
+});
+
+define(__m[23/*vs/editor/common/core/characterClassifier*/], __M([1/*require*/,0/*exports*/,8/*vs/editor/common/core/uint*/]), function (require, exports, uint_1) {
+    /*---------------------------------------------------------------------------------------------
+     *  Copyright (c) Microsoft Corporation. All rights reserved.
+     *  Licensed under the MIT License. See License.txt in the project root for license information.
+     *--------------------------------------------------------------------------------------------*/
+    'use strict';
+    /**
+     * A fast character classifier that uses a compact array for ASCII values.
+     */
+    var CharacterClassifier = (function () {
+        function CharacterClassifier(_defaultValue) {
+            var defaultValue = uint_1.toUint8(_defaultValue);
+            this._defaultValue = defaultValue;
+            this._asciiMap = CharacterClassifier._createAsciiMap(defaultValue);
+            this._map = new Map();
+        }
+        CharacterClassifier._createAsciiMap = function (defaultValue) {
+            var asciiMap = new Uint8Array(256);
+            for (var i = 0; i < 256; i++) {
+                asciiMap[i] = defaultValue;
+            }
+            return asciiMap;
+        };
+        CharacterClassifier.prototype.set = function (charCode, _value) {
+            var value = uint_1.toUint8(_value);
+            if (charCode >= 0 && charCode < 256) {
+                this._asciiMap[charCode] = value;
+            }
+            else {
+                this._map.set(charCode, value);
+            }
+        };
+        CharacterClassifier.prototype.get = function (charCode) {
+            if (charCode >= 0 && charCode < 256) {
+                return this._asciiMap[charCode];
+            }
+            else {
+                return (this._map.get(charCode) || this._defaultValue);
+            }
+        };
+        return CharacterClassifier;
+    }());
+    exports.CharacterClassifier = CharacterClassifier;
+    var Boolean;
+    (function (Boolean) {
+        Boolean[Boolean["False"] = 0] = "False";
+        Boolean[Boolean["True"] = 1] = "True";
+    })(Boolean || (Boolean = {}));
+    var CharacterSet = (function () {
+        function CharacterSet() {
+            this._actual = new CharacterClassifier(0 /* False */);
+        }
+        CharacterSet.prototype.add = function (charCode) {
+            this._actual.set(charCode, 1 /* True */);
+        };
+        CharacterSet.prototype.has = function (charCode) {
+            return (this._actual.get(charCode) === 1 /* True */);
+        };
+        return CharacterSet;
+    }());
+    exports.CharacterSet = CharacterSet;
+});
 
 
 
 
 
-define(__m[24/*vs/editor/common/diff/diffComputer*/], __M([0/*require*/,1/*exports*/,14/*vs/base/common/diff/diff*/,9/*vs/base/common/strings*/]), function (require, exports, diff_1, strings) {
+
+define(__m[24/*vs/editor/common/diff/diffComputer*/], __M([1/*require*/,0/*exports*/,11/*vs/base/common/diff/diff*/,15/*vs/base/common/strings*/]), function (require, exports, diff_1, strings) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -9642,6 +9216,7 @@ define(__m[24/*vs/editor/common/diff/diffComputer*/], __M([0/*require*/,1/*expor
     var LineMarkerSequence = (function (_super) {
         __extends(LineMarkerSequence, _super);
         function LineMarkerSequence(lines, shouldIgnoreTrimWhitespace) {
+            var _this = this;
             var i, length, pos;
             var buffer = '';
             var startMarkers = [], endMarkers = [], startColumn, endColumn;
@@ -9665,7 +9240,8 @@ define(__m[24/*vs/editor/common/diff/diffComputer*/], __M([0/*require*/,1/*expor
                 });
                 pos += lines[i].length;
             }
-            _super.call(this, buffer, startMarkers, endMarkers);
+            _this = _super.call(this, buffer, startMarkers, endMarkers) || this;
+            return _this;
         }
         LineMarkerSequence._getFirstNonBlankColumn = function (txt, defaultValue) {
             var r = strings.firstNonWhitespaceIndex(txt);
@@ -9825,7 +9401,7 @@ define(__m[24/*vs/editor/common/diff/diffComputer*/], __M([0/*require*/,1/*expor
     exports.DiffComputer = DiffComputer;
 });
 
-define(__m[25/*vs/editor/common/model/wordHelper*/], __M([0/*require*/,1/*exports*/]), function (require, exports) {
+define(__m[25/*vs/editor/common/model/wordHelper*/], __M([1/*require*/,0/*exports*/]), function (require, exports) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -9875,33 +9451,65 @@ define(__m[25/*vs/editor/common/model/wordHelper*/], __M([0/*require*/,1/*export
         return result;
     }
     exports.ensureValidWordDefinition = ensureValidWordDefinition;
-    function getWordAtText(column, wordDefinition, text, textOffset) {
-        // console.log('_getWordAtText: ', column, text, textOffset);
-        var words = text.match(wordDefinition), k, startWord, endWord, startColumn, endColumn, word;
-        if (words) {
-            for (k = 0; k < words.length; k++) {
-                word = words[k].trim();
-                if (word.length > 0) {
-                    startWord = text.indexOf(word, endWord);
-                    endWord = startWord + word.length;
-                    startColumn = textOffset + startWord + 1;
-                    endColumn = textOffset + endWord + 1;
-                    if (startColumn <= column && column <= endColumn) {
-                        return {
-                            word: word,
-                            startColumn: startColumn,
-                            endColumn: endColumn
-                        };
-                    }
-                }
+    function getWordAtPosFast(column, wordDefinition, text, textOffset) {
+        // find whitespace enclosed text around column and match from there
+        if (wordDefinition.test(' ')) {
+            return getWordAtPosSlow(column, wordDefinition, text, textOffset);
+        }
+        var pos = column - 1 - textOffset;
+        var start = text.lastIndexOf(' ', pos - 1) + 1;
+        var end = text.indexOf(' ', pos);
+        if (end === -1) {
+            end = text.length;
+        }
+        wordDefinition.lastIndex = start;
+        var match;
+        while (match = wordDefinition.exec(text)) {
+            if (match.index <= pos && wordDefinition.lastIndex >= pos) {
+                return {
+                    word: match[0],
+                    startColumn: textOffset + 1 + match.index,
+                    endColumn: textOffset + 1 + wordDefinition.lastIndex
+                };
             }
         }
         return null;
     }
+    function getWordAtPosSlow(column, wordDefinition, text, textOffset) {
+        // matches all words starting at the beginning
+        // of the input until it finds a match that encloses
+        // the desired column. slow but correct
+        var pos = column - 1 - textOffset;
+        wordDefinition.lastIndex = 0;
+        var match;
+        while (match = wordDefinition.exec(text)) {
+            if (match.index > pos) {
+                // |nW -> matched only after the pos
+                return null;
+            }
+            else if (wordDefinition.lastIndex >= pos) {
+                // W|W -> match encloses pos
+                return {
+                    word: match[0],
+                    startColumn: textOffset + 1 + match.index,
+                    endColumn: textOffset + 1 + wordDefinition.lastIndex
+                };
+            }
+        }
+        return null;
+    }
+    function getWordAtText(column, wordDefinition, text, textOffset) {
+        var result = getWordAtPosFast(column, wordDefinition, text, textOffset);
+        // both (getWordAtPosFast and getWordAtPosSlow) leave the wordDefinition-RegExp
+        // in an undefined state and to not confuse other users of the wordDefinition
+        // we reset the lastIndex
+        wordDefinition.lastIndex = 0;
+        return result;
+    }
     exports.getWordAtText = getWordAtText;
 });
 
-define(__m[26/*vs/editor/common/modes/linkComputer*/], __M([0/*require*/,1/*exports*/,20/*vs/editor/common/core/characterClassifier*/]), function (require, exports, characterClassifier_1) {
+define(__m[26/*vs/editor/common/modes/linkComputer*/], __M([1/*require*/,0/*exports*/,23/*vs/editor/common/core/characterClassifier*/,8/*vs/editor/common/core/uint*/]), function (require, exports, characterClassifier_1, uint_1) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -9940,76 +9548,80 @@ define(__m[26/*vs/editor/common/modes/linkComputer*/], __M([0/*require*/,1/*expo
                     maxState = to;
                 }
             }
-            var states = [];
-            for (var i = 0; i <= maxState; i++) {
-                var tmp = [];
-                for (var j = 0; j <= maxCharCode; j++) {
-                    tmp[j] = 0 /* Invalid */;
-                }
-                states[i] = tmp;
-            }
+            maxCharCode++;
+            maxState++;
+            var states = new uint_1.Uint8Matrix(maxState, maxCharCode, 0 /* Invalid */);
             for (var i = 0, len = edges.length; i < len; i++) {
                 var _b = edges[i], from = _b[0], chCode = _b[1], to = _b[2];
-                states[from][chCode] = to;
+                states.set(from, chCode, to);
             }
             this._states = states;
             this._maxCharCode = maxCharCode;
         }
         StateMachine.prototype.nextState = function (currentState, chCode) {
-            if (chCode < 0 || chCode > this._maxCharCode) {
+            if (chCode < 0 || chCode >= this._maxCharCode) {
                 return 0 /* Invalid */;
             }
-            return this._states[currentState][chCode];
+            return this._states.get(currentState, chCode);
         };
         return StateMachine;
     }());
     // State machine for http:// or https:// or file://
-    var stateMachine = new StateMachine([
-        [1 /* Start */, 104 /* h */, 2 /* H */],
-        [1 /* Start */, 72 /* H */, 2 /* H */],
-        [1 /* Start */, 102 /* f */, 6 /* F */],
-        [1 /* Start */, 70 /* F */, 6 /* F */],
-        [2 /* H */, 116 /* t */, 3 /* HT */],
-        [2 /* H */, 84 /* T */, 3 /* HT */],
-        [3 /* HT */, 116 /* t */, 4 /* HTT */],
-        [3 /* HT */, 84 /* T */, 4 /* HTT */],
-        [4 /* HTT */, 112 /* p */, 5 /* HTTP */],
-        [4 /* HTT */, 80 /* P */, 5 /* HTTP */],
-        [5 /* HTTP */, 115 /* s */, 9 /* BeforeColon */],
-        [5 /* HTTP */, 83 /* S */, 9 /* BeforeColon */],
-        [5 /* HTTP */, 58 /* Colon */, 10 /* AfterColon */],
-        [6 /* F */, 105 /* i */, 7 /* FI */],
-        [6 /* F */, 73 /* I */, 7 /* FI */],
-        [7 /* FI */, 108 /* l */, 8 /* FIL */],
-        [7 /* FI */, 76 /* L */, 8 /* FIL */],
-        [8 /* FIL */, 101 /* e */, 9 /* BeforeColon */],
-        [8 /* FIL */, 69 /* E */, 9 /* BeforeColon */],
-        [9 /* BeforeColon */, 58 /* Colon */, 10 /* AfterColon */],
-        [10 /* AfterColon */, 47 /* Slash */, 11 /* AlmostThere */],
-        [11 /* AlmostThere */, 47 /* Slash */, 12 /* End */],
-    ]);
+    var _stateMachine = null;
+    function getStateMachine() {
+        if (_stateMachine === null) {
+            _stateMachine = new StateMachine([
+                [1 /* Start */, 104 /* h */, 2 /* H */],
+                [1 /* Start */, 72 /* H */, 2 /* H */],
+                [1 /* Start */, 102 /* f */, 6 /* F */],
+                [1 /* Start */, 70 /* F */, 6 /* F */],
+                [2 /* H */, 116 /* t */, 3 /* HT */],
+                [2 /* H */, 84 /* T */, 3 /* HT */],
+                [3 /* HT */, 116 /* t */, 4 /* HTT */],
+                [3 /* HT */, 84 /* T */, 4 /* HTT */],
+                [4 /* HTT */, 112 /* p */, 5 /* HTTP */],
+                [4 /* HTT */, 80 /* P */, 5 /* HTTP */],
+                [5 /* HTTP */, 115 /* s */, 9 /* BeforeColon */],
+                [5 /* HTTP */, 83 /* S */, 9 /* BeforeColon */],
+                [5 /* HTTP */, 58 /* Colon */, 10 /* AfterColon */],
+                [6 /* F */, 105 /* i */, 7 /* FI */],
+                [6 /* F */, 73 /* I */, 7 /* FI */],
+                [7 /* FI */, 108 /* l */, 8 /* FIL */],
+                [7 /* FI */, 76 /* L */, 8 /* FIL */],
+                [8 /* FIL */, 101 /* e */, 9 /* BeforeColon */],
+                [8 /* FIL */, 69 /* E */, 9 /* BeforeColon */],
+                [9 /* BeforeColon */, 58 /* Colon */, 10 /* AfterColon */],
+                [10 /* AfterColon */, 47 /* Slash */, 11 /* AlmostThere */],
+                [11 /* AlmostThere */, 47 /* Slash */, 12 /* End */],
+            ]);
+        }
+        return _stateMachine;
+    }
     var CharacterClass;
     (function (CharacterClass) {
         CharacterClass[CharacterClass["None"] = 0] = "None";
         CharacterClass[CharacterClass["ForceTermination"] = 1] = "ForceTermination";
         CharacterClass[CharacterClass["CannotEndIn"] = 2] = "CannotEndIn";
     })(CharacterClass || (CharacterClass = {}));
-    var classifier = (function () {
-        var result = new characterClassifier_1.CharacterClassifier(0 /* None */);
-        var FORCE_TERMINATION_CHARACTERS = ' \t<>\'\"、。｡､，．：；？！＠＃＄％＆＊‘“〈《「『【〔（［｛｢｣｝］）〕】』」》〉”’｀～…';
-        for (var i = 0; i < FORCE_TERMINATION_CHARACTERS.length; i++) {
-            result.set(FORCE_TERMINATION_CHARACTERS.charCodeAt(i), 1 /* ForceTermination */);
+    var _classifier = null;
+    function getClassifier() {
+        if (_classifier === null) {
+            _classifier = new characterClassifier_1.CharacterClassifier(0 /* None */);
+            var FORCE_TERMINATION_CHARACTERS = ' \t<>\'\"、。｡､，．：；？！＠＃＄％＆＊‘“〈《「『【〔（［｛｢｣｝］）〕】』」》〉”’｀～…';
+            for (var i = 0; i < FORCE_TERMINATION_CHARACTERS.length; i++) {
+                _classifier.set(FORCE_TERMINATION_CHARACTERS.charCodeAt(i), 1 /* ForceTermination */);
+            }
+            var CANNOT_END_WITH_CHARACTERS = '.,;';
+            for (var i = 0; i < CANNOT_END_WITH_CHARACTERS.length; i++) {
+                _classifier.set(CANNOT_END_WITH_CHARACTERS.charCodeAt(i), 2 /* CannotEndIn */);
+            }
         }
-        var CANNOT_END_WITH_CHARACTERS = '.,;';
-        for (var i = 0; i < CANNOT_END_WITH_CHARACTERS.length; i++) {
-            result.set(CANNOT_END_WITH_CHARACTERS.charCodeAt(i), 2 /* CannotEndIn */);
-        }
-        return result;
-    })();
+        return _classifier;
+    }
     var LinkComputer = (function () {
         function LinkComputer() {
         }
-        LinkComputer._createLink = function (line, lineNumber, linkBeginIndex, linkEndIndex) {
+        LinkComputer._createLink = function (classifier, line, lineNumber, linkBeginIndex, linkEndIndex) {
             // Do not allow to end link in certain characters...
             var lastIncludedCharIndex = linkEndIndex - 1;
             do {
@@ -10031,12 +9643,15 @@ define(__m[26/*vs/editor/common/modes/linkComputer*/], __M([0/*require*/,1/*expo
             };
         };
         LinkComputer.computeLinks = function (model) {
+            var stateMachine = getStateMachine();
+            var classifier = getClassifier();
             var result = [];
             for (var i = 1, lineCount = model.getLineCount(); i <= lineCount; i++) {
                 var line = model.getLineContent(i);
                 var len = line.length;
                 var j = 0;
                 var linkBeginIndex = 0;
+                var linkBeginChCode = 0;
                 var state = 1 /* Start */;
                 var hasOpenParens = false;
                 var hasOpenSquareBracket = false;
@@ -10068,12 +9683,22 @@ define(__m[26/*vs/editor/common/modes/linkComputer*/], __M([0/*require*/,1/*expo
                             case 125 /* CloseCurlyBrace */:
                                 chClass = (hasOpenCurlyBracket ? 0 /* None */ : 1 /* ForceTermination */);
                                 break;
+                            /* The following three rules make it that ' or " or ` are allowed inside links if the link began with a different one */
+                            case 39 /* SingleQuote */:
+                                chClass = (linkBeginChCode === 34 /* DoubleQuote */ || linkBeginChCode === 96 /* BackTick */) ? 0 /* None */ : 1 /* ForceTermination */;
+                                break;
+                            case 34 /* DoubleQuote */:
+                                chClass = (linkBeginChCode === 39 /* SingleQuote */ || linkBeginChCode === 96 /* BackTick */) ? 0 /* None */ : 1 /* ForceTermination */;
+                                break;
+                            case 96 /* BackTick */:
+                                chClass = (linkBeginChCode === 39 /* SingleQuote */ || linkBeginChCode === 34 /* DoubleQuote */) ? 0 /* None */ : 1 /* ForceTermination */;
+                                break;
                             default:
                                 chClass = classifier.get(chCode);
                         }
                         // Check if character terminates link
                         if (chClass === 1 /* ForceTermination */) {
-                            result.push(LinkComputer._createLink(line, i, linkBeginIndex, j));
+                            result.push(LinkComputer._createLink(classifier, line, i, linkBeginIndex, j));
                             resetStateMachine = true;
                         }
                     }
@@ -10100,11 +9725,12 @@ define(__m[26/*vs/editor/common/modes/linkComputer*/], __M([0/*require*/,1/*expo
                         hasOpenCurlyBracket = false;
                         // Record where the link started
                         linkBeginIndex = j + 1;
+                        linkBeginChCode = chCode;
                     }
                     j++;
                 }
                 if (state === 13 /* Accept */) {
-                    result.push(LinkComputer._createLink(line, i, linkBeginIndex, len));
+                    result.push(LinkComputer._createLink(classifier, line, i, linkBeginIndex, len));
                 }
             }
             return result;
@@ -10126,7 +9752,7 @@ define(__m[26/*vs/editor/common/modes/linkComputer*/], __M([0/*require*/,1/*expo
     exports.computeLinks = computeLinks;
 });
 
-define(__m[27/*vs/editor/common/modes/supports/inplaceReplaceSupport*/], __M([0/*require*/,1/*exports*/]), function (require, exports) {
+define(__m[27/*vs/editor/common/modes/supports/inplaceReplaceSupport*/], __M([1/*require*/,0/*exports*/]), function (require, exports) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -10207,13 +9833,13 @@ define(__m[27/*vs/editor/common/modes/supports/inplaceReplaceSupport*/], __M([0/
             }
             return null;
         };
-        BasicInplaceReplace.INSTANCE = new BasicInplaceReplace();
         return BasicInplaceReplace;
     }());
+    BasicInplaceReplace.INSTANCE = new BasicInplaceReplace();
     exports.BasicInplaceReplace = BasicInplaceReplace;
 });
 
-define(__m[28/*vs/editor/common/standalone/standaloneBase*/], __M([0/*require*/,1/*exports*/,6/*vs/base/common/event*/,21/*vs/base/common/keyCodes*/,7/*vs/editor/common/core/position*/,8/*vs/editor/common/core/range*/,23/*vs/editor/common/core/selection*/,3/*vs/base/common/winjs.base*/,12/*vs/base/common/cancellation*/,13/*vs/base/common/uri*/]), function (require, exports, event_1, keyCodes_1, position_1, range_1, selection_1, winjs_base_1, cancellation_1, uri_1) {
+define(__m[28/*vs/editor/common/standalone/standaloneBase*/], __M([1/*require*/,0/*exports*/,5/*vs/base/common/event*/,18/*vs/base/common/keyCodes*/,7/*vs/editor/common/core/position*/,6/*vs/editor/common/core/range*/,20/*vs/editor/common/core/selection*/,2/*vs/base/common/winjs.base*/,12/*vs/base/common/cancellation*/,21/*vs/editor/common/core/token*/,10/*vs/base/common/uri*/]), function (require, exports, event_1, keyCodes_1, position_1, range_1, selection_1, winjs_base_1, cancellation_1, token_1, uri_1) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -10222,13 +9848,13 @@ define(__m[28/*vs/editor/common/standalone/standaloneBase*/], __M([0/*require*/,
     // --------------------------------------------
     // This is repeated here so it can be exported
     // --------------------------------------------
+    var Severity;
     (function (Severity) {
         Severity[Severity["Ignore"] = 0] = "Ignore";
         Severity[Severity["Info"] = 1] = "Info";
         Severity[Severity["Warning"] = 2] = "Warning";
         Severity[Severity["Error"] = 3] = "Error";
-    })(exports.Severity || (exports.Severity = {}));
-    var Severity = exports.Severity;
+    })(Severity = exports.Severity || (exports.Severity = {}));
     // --------------------------------------------
     // This is repeated here so it can be exported
     // --------------------------------------------
@@ -10238,12 +9864,12 @@ define(__m[28/*vs/editor/common/standalone/standaloneBase*/], __M([0/*require*/,
         KeyMod.chord = function (firstPart, secondPart) {
             return keyCodes_1.KeyChord(firstPart, secondPart);
         };
-        KeyMod.CtrlCmd = 32768 /* CtrlCmd */;
-        KeyMod.Shift = 16384 /* Shift */;
-        KeyMod.Alt = 8192 /* Alt */;
-        KeyMod.WinCtrl = 4096 /* WinCtrl */;
         return KeyMod;
     }());
+    KeyMod.CtrlCmd = 2048 /* CtrlCmd */;
+    KeyMod.Shift = 1024 /* Shift */;
+    KeyMod.Alt = 512 /* Alt */;
+    KeyMod.WinCtrl = 256 /* WinCtrl */;
     exports.KeyMod = KeyMod;
     // --------------------------------------------
     // This is repeated here so it can be exported
@@ -10253,6 +9879,7 @@ define(__m[28/*vs/editor/common/standalone/standaloneBase*/], __M([0/*require*/,
      * Inspired somewhat from https://msdn.microsoft.com/en-us/library/windows/desktop/dd375731(v=vs.85).aspx
      * But these are "more general", as they should work across browsers & OS`s.
      */
+    var KeyCode;
     (function (KeyCode) {
         /**
          * Placed first to cover the 0 value of the enum.
@@ -10421,8 +10048,7 @@ define(__m[28/*vs/editor/common/standalone/standaloneBase*/], __M([0/*require*/,
          * Please do not depend on this value!
          */
         KeyCode[KeyCode["MAX_VALUE"] = 109] = "MAX_VALUE";
-    })(exports.KeyCode || (exports.KeyCode = {}));
-    var KeyCode = exports.KeyCode;
+    })(KeyCode = exports.KeyCode || (exports.KeyCode = {}));
     function createMonacoBaseAPI() {
         return {
             editor: undefined,
@@ -10438,13 +10064,14 @@ define(__m[28/*vs/editor/common/standalone/standaloneBase*/], __M([0/*require*/,
             SelectionDirection: selection_1.SelectionDirection,
             Severity: Severity,
             Promise: winjs_base_1.TPromise,
-            Uri: uri_1.default
+            Uri: uri_1.default,
+            Token: token_1.Token
         };
     }
     exports.createMonacoBaseAPI = createMonacoBaseAPI;
 });
 
-define(__m[19/*vs/editor/common/viewModel/prefixSumComputer*/], __M([0/*require*/,1/*exports*/]), function (require, exports) {
+define(__m[29/*vs/editor/common/viewModel/prefixSumComputer*/], __M([1/*require*/,0/*exports*/,8/*vs/editor/common/core/uint*/]), function (require, exports, uint_1) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -10461,53 +10088,35 @@ define(__m[19/*vs/editor/common/viewModel/prefixSumComputer*/], __M([0/*require*
     var PrefixSumComputer = (function () {
         function PrefixSumComputer(values) {
             this.values = values;
-            this.prefixSum = [];
-            for (var i = 0, len = this.values.length; i < len; i++) {
-                this.prefixSum[i] = 0;
-            }
+            this.prefixSum = new Uint32Array(values.length);
             this.prefixSumValidIndex = -1;
         }
         PrefixSumComputer.prototype.getCount = function () {
             return this.values.length;
         };
-        PrefixSumComputer.prototype.insertValue = function (insertIndex, value) {
-            insertIndex = Math.floor(insertIndex); //@perf
-            value = Math.floor(value); //@perf
-            this.values.splice(insertIndex, 0, value);
-            this.prefixSum.splice(insertIndex, 0, 0);
-            if (insertIndex - 1 < this.prefixSumValidIndex) {
-                this.prefixSumValidIndex = insertIndex - 1;
-            }
-        };
-        PrefixSumComputer.prototype.insertValues = function (insertIndex, values) {
-            insertIndex = Math.floor(insertIndex); //@perf
-            if (values.length === 0) {
+        PrefixSumComputer.prototype.insertValues = function (insertIndex, insertValues) {
+            insertIndex = uint_1.toUint32(insertIndex);
+            var oldValues = this.values;
+            var oldPrefixSum = this.prefixSum;
+            var insertValuesLen = insertValues.length;
+            if (insertValuesLen === 0) {
                 return;
             }
-            if (values.length === 1) {
-                // Fast path for one element
-                this.values.splice(insertIndex, 0, values[0]);
-                this.prefixSum.splice(insertIndex, 0, values[0]);
-            }
-            else {
-                this.values = this.values.slice(0, insertIndex).concat(values).concat(this.values.slice(insertIndex));
-                this.prefixSum = this.prefixSum.slice(0, insertIndex).concat(PrefixSumComputer._zeroArray(values.length)).concat(this.prefixSum.slice(insertIndex));
-            }
+            this.values = new Uint32Array(oldValues.length + insertValuesLen);
+            this.values.set(oldValues.subarray(0, insertIndex), 0);
+            this.values.set(oldValues.subarray(insertIndex), insertIndex + insertValuesLen);
+            this.values.set(insertValues, insertIndex);
             if (insertIndex - 1 < this.prefixSumValidIndex) {
                 this.prefixSumValidIndex = insertIndex - 1;
             }
-        };
-        PrefixSumComputer._zeroArray = function (count) {
-            count = Math.floor(count); //@perf
-            var r = [];
-            for (var i = 0; i < count; i++) {
-                r[i] = 0;
+            this.prefixSum = new Uint32Array(this.values.length);
+            if (this.prefixSumValidIndex >= 0) {
+                this.prefixSum.set(oldPrefixSum.subarray(0, this.prefixSumValidIndex + 1));
             }
-            return r;
         };
         PrefixSumComputer.prototype.changeValue = function (index, value) {
-            index = Math.floor(index); //@perf
-            value = Math.floor(value); //@perf
+            index = uint_1.toUint32(index);
+            value = uint_1.toUint32(value);
             if (this.values[index] === value) {
                 return;
             }
@@ -10517,12 +10126,29 @@ define(__m[19/*vs/editor/common/viewModel/prefixSumComputer*/], __M([0/*require*
             }
         };
         PrefixSumComputer.prototype.removeValues = function (startIndex, cnt) {
-            startIndex = Math.floor(startIndex); //@perf
-            cnt = Math.floor(cnt); //@perf
-            this.values.splice(startIndex, cnt);
-            this.prefixSum.splice(startIndex, cnt);
+            startIndex = uint_1.toUint32(startIndex);
+            cnt = uint_1.toUint32(cnt);
+            var oldValues = this.values;
+            var oldPrefixSum = this.prefixSum;
+            if (startIndex >= oldValues.length) {
+                return;
+            }
+            var maxCnt = oldValues.length - startIndex;
+            if (cnt >= maxCnt) {
+                cnt = maxCnt;
+            }
+            if (cnt === 0) {
+                return;
+            }
+            this.values = new Uint32Array(oldValues.length - cnt);
+            this.values.set(oldValues.subarray(0, startIndex), 0);
+            this.values.set(oldValues.subarray(startIndex + cnt), startIndex);
+            this.prefixSum = new Uint32Array(this.values.length);
             if (startIndex - 1 < this.prefixSumValidIndex) {
                 this.prefixSumValidIndex = startIndex - 1;
+            }
+            if (this.prefixSumValidIndex >= 0) {
+                this.prefixSum.set(oldPrefixSum.subarray(0, this.prefixSumValidIndex + 1));
             }
         };
         PrefixSumComputer.prototype.getTotalValue = function () {
@@ -10532,10 +10158,10 @@ define(__m[19/*vs/editor/common/viewModel/prefixSumComputer*/], __M([0/*require*
             return this.getAccumulatedValue(this.values.length - 1);
         };
         PrefixSumComputer.prototype.getAccumulatedValue = function (index) {
-            index = Math.floor(index); //@perf
             if (index < 0) {
                 return 0;
             }
+            index = uint_1.toUint32(index);
             if (index <= this.prefixSumValidIndex) {
                 return this.prefixSum[index];
             }
@@ -10581,7 +10207,7 @@ define(__m[19/*vs/editor/common/viewModel/prefixSumComputer*/], __M([0/*require*
     exports.PrefixSumComputer = PrefixSumComputer;
 });
 
-define(__m[17/*vs/editor/common/model/mirrorModel2*/], __M([0/*require*/,1/*exports*/,19/*vs/editor/common/viewModel/prefixSumComputer*/]), function (require, exports, prefixSumComputer_1) {
+define(__m[30/*vs/editor/common/model/mirrorModel2*/], __M([1/*require*/,0/*exports*/,29/*vs/editor/common/viewModel/prefixSumComputer*/]), function (require, exports, prefixSumComputer_1) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -10636,10 +10262,11 @@ define(__m[17/*vs/editor/common/model/mirrorModel2*/], __M([0/*require*/,1/*expo
         };
         MirrorModel2.prototype._ensureLineStarts = function () {
             if (!this._lineStarts) {
-                var lineStartValues = [];
                 var eolLength = this._eol.length;
-                for (var i = 0, len = this._lines.length; i < len; i++) {
-                    lineStartValues.push(this._lines[i].length + eolLength);
+                var linesLength = this._lines.length;
+                var lineStartValues = new Uint32Array(linesLength);
+                for (var i = 0; i < linesLength; i++) {
+                    lineStartValues[i] = this._lines[i].length + eolLength;
                 }
                 this._lineStarts = new prefixSumComputer_1.PrefixSumComputer(lineStartValues);
             }
@@ -10694,7 +10321,7 @@ define(__m[17/*vs/editor/common/model/mirrorModel2*/], __M([0/*require*/,1/*expo
             this._setLineText(position.lineNumber - 1, this._lines[position.lineNumber - 1].substring(0, position.column - 1)
                 + insertLines[0]);
             // Insert new lines & store lengths
-            var newLengths = new Array(insertLines.length - 1);
+            var newLengths = new Uint32Array(insertLines.length - 1);
             for (var i = 1; i < insertLines.length; i++) {
                 this._lines.splice(position.lineNumber + i - 1, 0, insertLines[i]);
                 newLengths[i - 1] = insertLines[i].length + this._eol.length;
@@ -10718,7 +10345,7 @@ define(__m[17/*vs/editor/common/model/mirrorModel2*/], __M([0/*require*/,1/*expo
 
 
 
-define(__m[31/*vs/editor/common/services/editorSimpleWorker*/], __M([0/*require*/,1/*exports*/,13/*vs/base/common/uri*/,3/*vs/base/common/winjs.base*/,8/*vs/editor/common/core/range*/,16/*vs/base/common/filters*/,24/*vs/editor/common/diff/diffComputer*/,14/*vs/base/common/diff/diff*/,7/*vs/editor/common/core/position*/,17/*vs/editor/common/model/mirrorModel2*/,26/*vs/editor/common/modes/linkComputer*/,27/*vs/editor/common/modes/supports/inplaceReplaceSupport*/,25/*vs/editor/common/model/wordHelper*/,28/*vs/editor/common/standalone/standaloneBase*/]), function (require, exports, uri_1, winjs_base_1, range_1, filters_1, diffComputer_1, diff_1, position_1, mirrorModel2_1, linkComputer_1, inplaceReplaceSupport_1, wordHelper_1, standaloneBase_1) {
+define(__m[32/*vs/editor/common/services/editorSimpleWorker*/], __M([1/*require*/,0/*exports*/,10/*vs/base/common/uri*/,2/*vs/base/common/winjs.base*/,6/*vs/editor/common/core/range*/,24/*vs/editor/common/diff/diffComputer*/,11/*vs/base/common/diff/diff*/,7/*vs/editor/common/core/position*/,30/*vs/editor/common/model/mirrorModel2*/,26/*vs/editor/common/modes/linkComputer*/,27/*vs/editor/common/modes/supports/inplaceReplaceSupport*/,25/*vs/editor/common/model/wordHelper*/,28/*vs/editor/common/standalone/standaloneBase*/]), function (require, exports, uri_1, winjs_base_1, range_1, diffComputer_1, diff_1, position_1, mirrorModel2_1, linkComputer_1, inplaceReplaceSupport_1, wordHelper_1, standaloneBase_1) {
     'use strict';
     /**
      * @internal
@@ -10726,7 +10353,7 @@ define(__m[31/*vs/editor/common/services/editorSimpleWorker*/], __M([0/*require*
     var MirrorModel = (function (_super) {
         __extends(MirrorModel, _super);
         function MirrorModel() {
-            _super.apply(this, arguments);
+            return _super !== null && _super.apply(this, arguments) || this;
         }
         Object.defineProperty(MirrorModel.prototype, "uri", {
             get: function () {
@@ -10814,6 +10441,7 @@ define(__m[31/*vs/editor/common/services/editorSimpleWorker*/], __M([0/*require*
         MirrorModel.prototype._wordenize = function (content, wordDefinition) {
             var result = [];
             var match;
+            wordDefinition.lastIndex = 0; // reset lastIndex just to be sure
             while (match = wordDefinition.exec(content)) {
                 if (match[0].length === 0) {
                     // it did match the empty string
@@ -10824,6 +10452,7 @@ define(__m[31/*vs/editor/common/services/editorSimpleWorker*/], __M([0/*require*
             return result;
         };
         MirrorModel.prototype.getValueInRange = function (range) {
+            range = this._validateRange(range);
             if (range.startLineNumber === range.endLineNumber) {
                 return this._lines[range.startLineNumber - 1].substring(range.startColumn - 1, range.endColumn - 1);
             }
@@ -10851,6 +10480,22 @@ define(__m[31/*vs/editor/common/services/editorSimpleWorker*/], __M([0/*require*
                 lineNumber: 1 + out.index,
                 column: 1 + Math.min(out.remainder, lineLength)
             };
+        };
+        MirrorModel.prototype._validateRange = function (range) {
+            var start = this._validatePosition({ lineNumber: range.startLineNumber, column: range.startColumn });
+            var end = this._validatePosition({ lineNumber: range.endLineNumber, column: range.endColumn });
+            if (start.lineNumber !== range.startLineNumber
+                || start.column !== range.startColumn
+                || end.lineNumber !== range.endLineNumber
+                || end.column !== range.endColumn) {
+                return {
+                    startLineNumber: start.lineNumber,
+                    startColumn: start.column,
+                    endLineNumber: end.lineNumber,
+                    endColumn: end.column
+                };
+            }
+            return range;
         };
         MirrorModel.prototype._validatePosition = function (position) {
             if (!position_1.Position.isIPosition(position)) {
@@ -10974,35 +10619,24 @@ define(__m[31/*vs/editor/common/services/editorSimpleWorker*/], __M([0/*require*
         // ---- BEGIN suggest --------------------------------------------------------------------------
         BaseEditorSimpleWorker.prototype.textualSuggest = function (modelUrl, position, wordDef, wordDefFlags) {
             var model = this._getModel(modelUrl);
-            if (!model) {
-                return null;
+            if (model) {
+                var suggestions = [];
+                var wordDefRegExp = new RegExp(wordDef, wordDefFlags);
+                var currentWord = model.getWordUntilPosition(position, wordDefRegExp).word;
+                for (var _i = 0, _a = model.getAllUniqueWords(wordDefRegExp); _i < _a.length; _i++) {
+                    var word = _a[_i];
+                    if (word !== currentWord && isNaN(Number(word))) {
+                        suggestions.push({
+                            type: 'text',
+                            label: word,
+                            insertText: word,
+                            noAutoAccept: true,
+                            overwriteBefore: currentWord.length
+                        });
+                    }
+                }
+                return winjs_base_1.TPromise.as({ suggestions: suggestions });
             }
-            return winjs_base_1.TPromise.as(this._suggestFiltered(model, position, new RegExp(wordDef, wordDefFlags)));
-        };
-        BaseEditorSimpleWorker.prototype._suggestFiltered = function (model, position, wordDefRegExp) {
-            var currentWord = model.getWordUntilPosition(position, wordDefRegExp).word;
-            var value = this._suggestUnfiltered(model, position, wordDefRegExp);
-            // filter suggestions
-            return {
-                suggestions: value.suggestions.filter(function (element) { return !!filters_1.fuzzyContiguousFilter(currentWord, element.label); }),
-                incomplete: value.incomplete
-            };
-        };
-        BaseEditorSimpleWorker.prototype._suggestUnfiltered = function (model, position, wordDefRegExp) {
-            var currentWord = model.getWordUntilPosition(position, wordDefRegExp).word;
-            var allWords = model.getAllUniqueWords(wordDefRegExp, currentWord);
-            var suggestions = allWords.filter(function (word) {
-                return !(/^-?\d*\.?\d/.test(word)); // filter out numbers
-            }).map(function (word) {
-                return {
-                    type: 'text',
-                    label: word,
-                    insertText: word,
-                    noAutoAccept: true,
-                    overwriteBefore: currentWord.length
-                };
-            });
-            return { suggestions: suggestions };
         };
         // ---- END suggest --------------------------------------------------------------------------
         BaseEditorSimpleWorker.prototype.navigateValueSet = function (modelUrl, range, up, wordDef, wordDefFlags) {
@@ -11062,11 +10696,11 @@ define(__m[31/*vs/editor/common/services/editorSimpleWorker*/], __M([0/*require*
                 return winjs_base_1.TPromise.wrapError(e);
             }
         };
-        // ---- END diff --------------------------------------------------------------------------
-        // ---- BEGIN minimal edits ---------------------------------------------------------------
-        BaseEditorSimpleWorker._diffLimit = 10000;
         return BaseEditorSimpleWorker;
     }());
+    // ---- END diff --------------------------------------------------------------------------
+    // ---- BEGIN minimal edits ---------------------------------------------------------------
+    BaseEditorSimpleWorker._diffLimit = 10000;
     exports.BaseEditorSimpleWorker = BaseEditorSimpleWorker;
     /**
      * @internal
@@ -11074,8 +10708,9 @@ define(__m[31/*vs/editor/common/services/editorSimpleWorker*/], __M([0/*require*
     var EditorSimpleWorkerImpl = (function (_super) {
         __extends(EditorSimpleWorkerImpl, _super);
         function EditorSimpleWorkerImpl() {
-            _super.call(this);
-            this._models = Object.create(null);
+            var _this = _super.call(this) || this;
+            _this._models = Object.create(null);
+            return _this;
         }
         EditorSimpleWorkerImpl.prototype.dispose = function () {
             this._models = Object.create(null);

@@ -3,29 +3,28 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 "use strict";
-var LinkedMap = (function () {
-    function LinkedMap() {
+class LinkedMap {
+    constructor() {
         this.map = Object.create(null);
         this.head = undefined;
         this.tail = undefined;
         this._length = 0;
     }
-    LinkedMap.prototype.isEmpty = function () {
+    isEmpty() {
         return !this.head && !this.tail;
-    };
-    LinkedMap.prototype.length = function () {
+    }
+    length() {
         return this._length;
-    };
-    LinkedMap.prototype.get = function (key) {
-        var item = this.map[key];
+    }
+    get(key) {
+        const item = this.map[key];
         if (!item) {
             return undefined;
         }
         return item.value;
-    };
-    LinkedMap.prototype.add = function (key, value, touch) {
-        if (touch === void 0) { touch = false; }
-        var item = this.map[key];
+    }
+    add(key, value, touch = false) {
+        let item = this.map[key];
         if (item) {
             item.value = value;
             if (touch) {
@@ -33,7 +32,7 @@ var LinkedMap = (function () {
             }
         }
         else {
-            item = { key: key, value: value, next: undefined, previous: undefined };
+            item = { key, value, next: undefined, previous: undefined };
             if (touch) {
                 this.addItemFirst(item);
             }
@@ -43,9 +42,9 @@ var LinkedMap = (function () {
             this.map[key] = item;
             this._length++;
         }
-    };
-    LinkedMap.prototype.remove = function (key) {
-        var item = this.map[key];
+    }
+    remove(key) {
+        const item = this.map[key];
         if (!item) {
             return undefined;
         }
@@ -53,21 +52,21 @@ var LinkedMap = (function () {
         this.removeItem(item);
         this._length--;
         return item.value;
-    };
-    LinkedMap.prototype.shift = function () {
+    }
+    shift() {
         if (!this.head && !this.tail) {
             return undefined;
         }
         if (!this.head || !this.tail) {
             throw new Error('Invalid list');
         }
-        var item = this.head;
+        const item = this.head;
         delete this.map[item.key];
         this.removeItem(item);
         this._length--;
         return item.value;
-    };
-    LinkedMap.prototype.addItemFirst = function (item) {
+    }
+    addItemFirst(item) {
         // First time Insert
         if (!this.head && !this.tail) {
             this.tail = item;
@@ -80,8 +79,8 @@ var LinkedMap = (function () {
             this.head.previous = item;
         }
         this.head = item;
-    };
-    LinkedMap.prototype.addItemLast = function (item) {
+    }
+    addItemLast(item) {
         // First time Insert
         if (!this.head && !this.tail) {
             this.head = item;
@@ -94,8 +93,8 @@ var LinkedMap = (function () {
             this.tail.next = item;
         }
         this.tail = item;
-    };
-    LinkedMap.prototype.removeItem = function (item) {
+    }
+    removeItem(item) {
         if (item === this.head && item === this.tail) {
             this.head = undefined;
             this.tail = undefined;
@@ -107,21 +106,21 @@ var LinkedMap = (function () {
             this.tail = item.previous;
         }
         else {
-            var next = item.next;
-            var previous = item.previous;
+            const next = item.next;
+            const previous = item.previous;
             if (!next || !previous) {
                 throw new Error('Invalid list');
             }
             next.previous = previous;
             previous.next = next;
         }
-    };
-    LinkedMap.prototype.touch = function (item) {
+    }
+    touch(item) {
         if (item === this.head) {
             return;
         }
-        var next = item.next;
-        var previous = item.previous;
+        const next = item.next;
+        const previous = item.previous;
         // Unlink the item
         if (item === this.tail) {
             this.tail = previous;
@@ -143,9 +142,8 @@ var LinkedMap = (function () {
         }
         this.head.previous = item;
         this.head = item;
-    };
-    return LinkedMap;
-}());
+    }
+}
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = LinkedMap;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/38746938a4ab94f2f57d9e1309c51fd6fb37553d/extensions\typescript\out/features\linkedMap.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/f9d0c687ff2ea7aabd85fb9a43129117c0ecf519/extensions\typescript\out/features\linkedMap.js.map

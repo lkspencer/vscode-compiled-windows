@@ -3,16 +3,17 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 'use strict';
-var vscode_languageserver_1 = require('vscode-languageserver');
-var languageModes_1 = require('./modes/languageModes');
-var url = require('url');
-var path = require('path');
-var vscode_uri_1 = require('vscode-uri');
-var nls = require('vscode-nls');
+var vscode_languageserver_1 = require("vscode-languageserver");
+var languageModes_1 = require("./modes/languageModes");
+var formatting_1 = require("./modes/formatting");
+var url = require("url");
+var path = require("path");
+var vscode_uri_1 = require("vscode-uri");
+var nls = require("vscode-nls");
 nls.config(process.env['VSCODE_NLS_CONFIG']);
 var ColorSymbolRequest;
 (function (ColorSymbolRequest) {
-    ColorSymbolRequest.type = { get method() { return 'css/colorSymbols'; }, _: null };
+    ColorSymbolRequest.type = new vscode_languageserver_1.RequestType('css/colorSymbols');
 })(ColorSymbolRequest || (ColorSymbolRequest = {}));
 // Create a connection for the server
 var connection = vscode_languageserver_1.createConnection();
@@ -39,15 +40,16 @@ connection.onInitialize(function (params) {
     connection.onShutdown(function () {
         languageModes.dispose();
     });
+    var snippetSupport = params.capabilities && params.capabilities.textDocument && params.capabilities.textDocument.completion && params.capabilities.textDocument.completion.completionItem && params.capabilities.textDocument.completion.completionItem.snippetSupport;
     return {
         capabilities: {
             // Tell the client that the server works in FULL text document sync mode
             textDocumentSync: documents.syncKind,
-            completionProvider: { resolveProvider: true, triggerCharacters: ['.', ':', '<', '"', '=', '/'] },
+            completionProvider: snippetSupport ? { resolveProvider: true, triggerCharacters: ['.', ':', '<', '"', '=', '/'] } : null,
             hoverProvider: true,
             documentHighlightProvider: true,
             documentRangeFormattingProvider: initializationOptions && initializationOptions['format.enable'],
-            documentLinkProvider: true,
+            documentLinkProvider: { resolveProvider: false },
             documentSymbolProvider: true,
             definitionProvider: true,
             signatureHelpProvider: { triggerCharacters: ['('] },
@@ -55,9 +57,17 @@ connection.onInitialize(function (params) {
         }
     };
 });
+var validation = {
+    html: true,
+    css: true,
+    javascript: true
+};
 // The settings have changed. Is send on server activation as well.
 connection.onDidChangeConfiguration(function (change) {
     settings = change.settings;
+    var validationSettings = settings && settings.html && settings.html.validate || {};
+    validation.css = validationSettings.styles !== false;
+    validation.javascript = validationSettings.scripts !== false;
     languageModes.getAllModes().forEach(function (m) {
         if (m.configure) {
             m.configure(change.settings);
@@ -93,11 +103,13 @@ function triggerValidation(textDocument) {
 }
 function validateTextDocument(textDocument) {
     var diagnostics = [];
-    languageModes.getAllModesInDocument(textDocument).forEach(function (mode) {
-        if (mode.doValidation) {
-            pushAll(diagnostics, mode.doValidation(textDocument));
-        }
-    });
+    if (textDocument.languageId === 'html') {
+        languageModes.getAllModesInDocument(textDocument).forEach(function (mode) {
+            if (mode.doValidation && validation[mode.getId()]) {
+                pushAll(diagnostics, mode.doValidation(textDocument));
+            }
+        });
+    }
     connection.sendDiagnostics({ uri: textDocument.uri, diagnostics: diagnostics });
 }
 function pushAll(to, from) {
@@ -171,18 +183,9 @@ connection.onSignatureHelp(function (signatureHelpParms) {
 });
 connection.onDocumentRangeFormatting(function (formatParams) {
     var document = documents.get(formatParams.textDocument.uri);
-    var ranges = languageModes.getModesInRange(document, formatParams.range);
-    var result = [];
     var unformattedTags = settings && settings.html && settings.html.format && settings.html.format.unformatted || '';
-    var enabledModes = { css: !unformattedTags.match(/\bstyle\b/), javascript: !unformattedTags.match(/\bscript\b/), html: true };
-    ranges.forEach(function (r) {
-        var mode = r.mode;
-        if (mode && mode.format && enabledModes[mode.getId()] && !r.attributeValue) {
-            var edits = mode.format(document, r, formatParams.options);
-            pushAll(result, edits);
-        }
-    });
-    return result;
+    var enabledModes = { css: !unformattedTags.match(/\bstyle\b/), javascript: !unformattedTags.match(/\bscript\b/) };
+    return formatting_1.format(languageModes, document, formatParams.range, formatParams.options, enabledModes);
 });
 connection.onDocumentLinks(function (documentLinkParam) {
     var document = documents.get(documentLinkParam.textDocument.uri);
@@ -226,4 +229,4 @@ connection.onRequest(ColorSymbolRequest.type, function (uri) {
 });
 // Listen on the connection
 connection.listen();
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/38746938a4ab94f2f57d9e1309c51fd6fb37553d/extensions\html\server\out/htmlServerMain.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/f9d0c687ff2ea7aabd85fb9a43129117c0ecf519/extensions\html\server\out/htmlServerMain.js.map

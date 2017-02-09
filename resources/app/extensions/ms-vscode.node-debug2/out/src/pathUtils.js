@@ -3,9 +3,9 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 "use strict";
-const Path = require('path');
-const FS = require('fs');
-const CP = require('child_process');
+const Path = require("path");
+const FS = require("fs");
+const CP = require("child_process");
 /**
  * The input paths must use the path syntax of the underlying operating system.
  */

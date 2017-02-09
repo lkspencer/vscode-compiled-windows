@@ -3,9 +3,9 @@
  *--------------------------------------------------------*/
 define("vs/code/node/cli.nls.zh-tw", {
 	"vs/platform/environment/node/argv": [
-		"`--goto` 模式中的引數格式應為 `FILE(:LINE(:COLUMN))`。",
+		"`--goto` 模式中的引數格式應為 `FILE(:LINE(:CHARACTER))`。",
 		"開啟 Diff 編輯器。要求傳遞兩個檔案路徑作為引數。",
-		"開啟位於行與欄中路徑的檔案 (將 :line[:column] 加入路徑中)。",
+		"開啟位於行與字元中路徑的檔案 (將 :line[:character] 新增到路徑)。",
 		"要使用的地區設定 (例如 en-US 或 zh-TW)。",
 		"強制執行 Code 的新執行個體。",
 		"在已啟用 \'Developer: Startup Performance\' 命令的情況下開始。",

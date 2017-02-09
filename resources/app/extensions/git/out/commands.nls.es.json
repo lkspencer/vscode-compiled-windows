@@ -1,0 +1,15 @@
+[
+	"Etiqueta en {0}",
+	"Rama remota en {0}",
+	"Limpie el árbol de trabajo del repositorio antes de la desprotección.",
+	"Abrir registro de GIT",
+	"¿Seguro que quiere limpiar los cambios de \"{0}\"?",
+	"Sí",
+	"No, quiero mantenerlos",
+	"¿Seguro que quiere limpiar todos los cambios?",
+	"Sí",
+	"No, quiero mantenerlos",
+	"Nombre de rama",
+	"Especifique un nombre para la rama",
+	"Seleccione un elemento remoto para publicar la rama \"{0}\" en:"
+]

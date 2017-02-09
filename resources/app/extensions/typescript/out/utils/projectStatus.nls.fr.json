@@ -1,7 +1,7 @@
 [
-	"Pour accroître les performances, excluez les dossiers contenant de nombreux fichiers, par exemple : {0}",
-	"Pour accroître les performances, excluez les dossiers contenant de nombreux fichiers.",
+	"Pour activer JavaScript /TypeScript IntelliSense, excluez les dossiers contenant de nombreux fichiers, comme : {0}",
+	"Pour activer JavaScript/TypeScript IntelliSense, excluez les dossiers volumineux contenant des fichiers sources inutiles.",
 	"Configurer les exclusions",
 	"Configurer les exclusions",
-	"Pour améliorer les performances, excluez les dossiers contenant de nombreux fichiers."
+	"Pour activer JavaScript/TypeScript IntelliSense, excluez les dossiers volumineux contenant des fichiers sources inutiles."
 ]

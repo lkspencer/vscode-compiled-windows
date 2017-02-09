@@ -1,0 +1,15 @@
+[
+	"Tag bei {0}",
+	"Remotebranch unter {0}",
+	"Bereinigen Sie Ihre Repository-Arbeitsstruktur vor Auftragsabschluss.",
+	"Git-Protokoll öffnen",
+	"Sollen die Änderungen in {0} bereinigt werden?",
+	"Ja",
+	"Nein, Änderungen beibehalten",
+	"Möchten Sie alle Änderungen bereinigen?",
+	"Ja",
+	"Nein, Änderungen beibehalten",
+	"Branchname",
+	"Geben Sie einen Branchnamen an.",
+	"Remotespeicherort auswählen, an dem der Branch \"{0}\" veröffentlicht wird:"
+]

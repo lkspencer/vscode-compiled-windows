@@ -3,11 +3,11 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 'use strict';
-var jsonc_parser_1 = require('jsonc-parser');
-var path_1 = require('path');
-var bowerJSONContribution_1 = require('./bowerJSONContribution');
-var packageJSONContribution_1 = require('./packageJSONContribution');
-var vscode_1 = require('vscode');
+var jsonc_parser_1 = require("jsonc-parser");
+var path_1 = require("path");
+var bowerJSONContribution_1 = require("./bowerJSONContribution");
+var packageJSONContribution_1 = require("./packageJSONContribution");
+var vscode_1 = require("vscode");
 function addJSONProviders(xhr) {
     var contributions = [new packageJSONContribution_1.PackageJSONContribution(xhr), new bowerJSONContribution_1.BowerJSONContribution(xhr)];
     var subscriptions = [];
@@ -131,4 +131,4 @@ var JSONCompletionItemProvider = (function () {
     return JSONCompletionItemProvider;
 }());
 exports.JSONCompletionItemProvider = JSONCompletionItemProvider;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/38746938a4ab94f2f57d9e1309c51fd6fb37553d/extensions\javascript\out/features\jsonContributions.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/f9d0c687ff2ea7aabd85fb9a43129117c0ecf519/extensions\javascript\out/features\jsonContributions.js.map

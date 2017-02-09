@@ -34,6 +34,8 @@
 		"read-only content from remote Node.js",
 		"read-only core module",
 		"{0} <error: {1}>",
+		"skipped due to 'skipFiles'",
+		"skipped due to 'smartStep'",
 		"read-only inlined content from source map",
 		"(anonymous function)",
 		"Local ({0} of {1})",
@@ -126,6 +128,8 @@
 		"origin.from.remote.node",
 		"origin.core.module",
 		"frame.error",
+		"source.skipFiles",
+		"source.smartstep",
 		"origin.inlined.source.map",
 		"anonymous.function",
 		{

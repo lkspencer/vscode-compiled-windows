@@ -2,21 +2,28 @@
  * Copyright (C) Microsoft Corporation. All rights reserved.
  *--------------------------------------------------------*/
 define("vs/workbench/node/extensionHostProcess.nls.ja", {
-	"vs/base/common/processes": [
-		"エラー: 実行可能ファイルの情報は、型 string のコマンドを定義する必要があります。",
-		"警告: isShellCommand は、型ブール値でなければなりません。値 {0} を無視します。",
-		"警告: 引数は、型 string[] でなければなりません。値 {0} を無視します。",
-		"警告: options.cwd は、型 string でなければなりません。値 {0} を無視します。",
+	"vs/base/common/json": [
+		"シンボルが無効です",
+		"数値表示形式が無効です",
+		"プロパティ名が必要です",
+		"値が必要です",
+		"コロンが必要です",
+		"コンマが必要です",
+		"右中かっこが必要です",
+		"右角かっこが必要です",
+		"ファイルの終わりが必要です",
 	],
 	"vs/base/common/severity": [
 		"エラー",
 		"警告",
 		"情報",
 	],
-	"vs/base/node/processes": [
-		"UNC ドライブでシェル コマンドを実行できません。",
+	"vs/editor/common/config/defaultConfig": [
+		"エディターのコンテンツ",
 	],
 	"vs/platform/configuration/common/configurationRegistry": [
+		"上書きされる言語識別子セットの設定を構成します。",
+		"上書き設定",
 		"構成の設定を提供します。",
 		"設定の概要です。このラベルは、設定ファイルでコメントの区切り文字として使用します。",
 		"構成のプロパティの説明です。",

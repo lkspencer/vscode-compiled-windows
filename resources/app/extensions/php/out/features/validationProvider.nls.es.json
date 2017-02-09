@@ -1,4 +1,9 @@
 [
-	"No se puede validar el archivo PHP. El programa PHP no se encontró. Use el valor \"php.validate.executablePath\" para configurar la ubicación de \"php\"",
+	"Do you allow {0} to be executed to lint PHP files?",
+	"Yes",
+	"No",
+	"Learn More",
+	"No se puede validar porque {0} no es un ejecutable PHP válido. Haga clic en el elemento de la barra de estado Ruta de acceso para configurar el ejecutable.",
+	"No se puede validar porque no hay ningún ejecutable PHP establecido. Haga clic en el elemento de la barra de estado Ruta de acceso para configurar el ejecutable.",
 	"No se pudo ejecutar el archivo PHP con la ruta de acceso: {0}. Se desconoce el motivo."
 ]

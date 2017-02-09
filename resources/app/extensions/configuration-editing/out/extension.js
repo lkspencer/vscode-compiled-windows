@@ -3,9 +3,9 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 'use strict';
-var vscode = require('vscode');
-var jsonc_parser_1 = require('jsonc-parser');
-var path = require('path');
+var vscode = require("vscode");
+var jsonc_parser_1 = require("jsonc-parser");
+var path = require("path");
 var decoration = vscode.window.createTextEditorDecorationType({
     color: '#b1b1b1'
 });
@@ -73,4 +73,4 @@ function updateLaunchJsonDecorations(editor) {
     });
     editor.setDecorations(decoration, ranges);
 }
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/38746938a4ab94f2f57d9e1309c51fd6fb37553d/extensions\configuration-editing\out/extension.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/f9d0c687ff2ea7aabd85fb9a43129117c0ecf519/extensions\configuration-editing\out/extension.js.map

@@ -4,6 +4,7 @@
   "applicationName": "code",
   "dataFolderName": ".vscode-oss",
   "win32MutexName": "vscodeoss",
+  "licenseName": "MIT",
   "licenseUrl": "https://github.com/Microsoft/vscode/blob/master/LICENSE.txt",
   "win32DirName": "Microsoft VS Code OSS",
   "win32NameVersion": "Microsoft VS Code OSS",
@@ -14,12 +15,12 @@
   "reportIssueUrl": "https://github.com/Microsoft/vscode/issues/new",
   "urlProtocol": "vscode-oss",
   "win32SetupExeBasename": "VSCodeSetup",
-  "commit": "38746938a4ab94f2f57d9e1309c51fd6fb37553d",
-  "date": "2016-12-16T14:15:53.959Z",
+  "commit": "f9d0c687ff2ea7aabd85fb9a43129117c0ecf519",
+  "date": "2017-02-09T15:12:31.417Z",
   "checksums": {
-    "vs/workbench/electron-browser/workbench.main.js": "wSPhpRAFs1O+5AMo/MOURg",
-    "vs/workbench/electron-browser/workbench.main.css": "Bjh0r/v9GpsOVWbUBNLvvg",
+    "vs/workbench/electron-browser/workbench.main.js": "e4dKIkkzySfrjhhyeCPH1w",
+    "vs/workbench/electron-browser/workbench.main.css": "PWu3An5nNA0hQlw/vF6uTA",
     "vs/workbench/electron-browser/bootstrap/index.html": "liyJ1r8fK4v0m9nveC4/ag",
-    "vs/workbench/electron-browser/bootstrap/index.js": "GibTmX8vK23XaF0YmCCplA"
+    "vs/workbench/electron-browser/bootstrap/index.js": "06jGZioZJacQv9v/CKSZ5w"
   }
 }

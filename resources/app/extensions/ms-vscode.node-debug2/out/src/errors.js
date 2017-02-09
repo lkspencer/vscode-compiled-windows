@@ -2,7 +2,7 @@
  * Copyright (C) Microsoft Corporation. All rights reserved.
  *--------------------------------------------------------*/
 "use strict";
-const utils_1 = require('./utils');
+const utils_1 = require("./utils");
 function runtimeNotFound(_runtime) {
     return {
         id: 2001,
@@ -52,5 +52,13 @@ function cannotLaunchBecauseOutFiles(programPath) {
     };
 }
 exports.cannotLaunchBecauseOutFiles = cannotLaunchBecauseOutFiles;
+function cannotLoadEnvVarsFromFile(error) {
+    return {
+        id: 2029,
+        format: utils_1.localize('VSND2029', "Can't load environment variables from file ({0}).", '{_error}'),
+        variables: { _error: error }
+    };
+}
+exports.cannotLoadEnvVarsFromFile = cannotLoadEnvVarsFromFile;
 
 //# sourceMappingURL=errors.js.map

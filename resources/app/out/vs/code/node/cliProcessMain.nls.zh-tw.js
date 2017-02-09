@@ -34,6 +34,8 @@ define("vs/code/node/cliProcessMain.nls.zh-tw", {
 		"已成功將擴充功能 \'{0}\' 解除安裝!",
 	],
 	"vs/platform/configuration/common/configurationRegistry": [
+		"設定要為一組語言識別碼覆寫的設定。",
+		"覆寫設定",
 		"提供組態設定。",
 		"設定的摘要。此標籤將會在設定檔中作為分隔註解使用。",
 		"組態屬性的描述。",

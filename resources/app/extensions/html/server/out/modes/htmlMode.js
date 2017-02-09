@@ -3,7 +3,7 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 'use strict';
-var languageModelCache_1 = require('../languageModelCache');
+var languageModelCache_1 = require("../languageModelCache");
 function getHTMLMode(htmlLanguageService) {
     var settings = {};
     var htmlDocuments = languageModelCache_1.getLanguageModelCache(10, 60, function (document) { return htmlLanguageService.parseHTMLDocument(document); });
@@ -15,7 +15,7 @@ function getHTMLMode(htmlLanguageService) {
             settings = options && options.html;
         },
         doComplete: function (document, position) {
-            var options = settings && settings.html && settings.html.suggest;
+            var options = settings && settings.suggest;
             return htmlLanguageService.doComplete(document, position, htmlDocuments.get(document), options);
         },
         doHover: function (document, position) {
@@ -55,4 +55,4 @@ function merge(src, dst) {
     }
     return dst;
 }
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/38746938a4ab94f2f57d9e1309c51fd6fb37553d/extensions\html\server\out/modes\htmlMode.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/f9d0c687ff2ea7aabd85fb9a43129117c0ecf519/extensions\html\server\out/modes\htmlMode.js.map

@@ -3,36 +3,34 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 'use strict';
-var vscode_1 = require('vscode');
-var _kindMapping = Object.create(null);
+const vscode_1 = require("vscode");
+let _kindMapping = Object.create(null);
 _kindMapping['method'] = vscode_1.SymbolKind.Method;
 _kindMapping['enum'] = vscode_1.SymbolKind.Enum;
 _kindMapping['function'] = vscode_1.SymbolKind.Function;
 _kindMapping['class'] = vscode_1.SymbolKind.Class;
 _kindMapping['interface'] = vscode_1.SymbolKind.Interface;
 _kindMapping['var'] = vscode_1.SymbolKind.Variable;
-var TypeScriptWorkspaceSymbolProvider = (function () {
-    function TypeScriptWorkspaceSymbolProvider(client, modeId) {
+class TypeScriptWorkspaceSymbolProvider {
+    constructor(client, modeId) {
         this.client = client;
         this.modeId = modeId;
     }
-    TypeScriptWorkspaceSymbolProvider.prototype.provideWorkspaceSymbols = function (search, token) {
-        var _this = this;
+    provideWorkspaceSymbols(search, token) {
         // typescript wants to have a resource even when asking
         // general questions so we check the active editor. If this
         // doesn't match we take the first TS document.
-        var uri = undefined;
-        var editor = vscode_1.window.activeTextEditor;
+        let uri = undefined;
+        let editor = vscode_1.window.activeTextEditor;
         if (editor) {
-            var document = editor.document;
+            let document = editor.document;
             if (document && document.languageId === this.modeId) {
                 uri = document.uri;
             }
         }
         if (!uri) {
-            var documents = vscode_1.workspace.textDocuments;
-            for (var _i = 0, documents_1 = documents; _i < documents_1.length; _i++) {
-                var document = documents_1[_i];
+            let documents = vscode_1.workspace.textDocuments;
+            for (let document of documents) {
                 if (document.languageId === this.modeId) {
                     uri = document.uri;
                     break;
@@ -42,45 +40,43 @@ var TypeScriptWorkspaceSymbolProvider = (function () {
         if (!uri) {
             return Promise.resolve([]);
         }
-        var filepath = this.client.asAbsolutePath(uri);
+        const filepath = this.client.normalizePath(uri);
         if (!filepath) {
             return Promise.resolve([]);
         }
-        var args = {
+        let args = {
             file: filepath,
             searchValue: search
         };
         if (!args.file) {
             return Promise.resolve([]);
         }
-        return this.client.execute('navto', args, token).then(function (response) {
-            var data = response.body;
+        return this.client.execute('navto', args, token).then((response) => {
+            let data = response.body;
             if (data) {
-                var result = [];
-                for (var _i = 0, data_1 = data; _i < data_1.length; _i++) {
-                    var item = data_1[_i];
+                let result = [];
+                for (let item of data) {
                     if (!item.containerName && item.kind === 'alias') {
                         continue;
                     }
-                    var range = new vscode_1.Range(item.start.line - 1, item.start.offset - 1, item.end.line - 1, item.end.offset - 1);
-                    var label = item.name;
+                    let range = new vscode_1.Range(item.start.line - 1, item.start.offset - 1, item.end.line - 1, item.end.offset - 1);
+                    let label = item.name;
                     if (item.kind === 'method' || item.kind === 'function') {
                         label += '()';
                     }
-                    result.push(new vscode_1.SymbolInformation(label, _kindMapping[item.kind], item.containerName ? item.containerName : '', new vscode_1.Location(_this.client.asUrl(item.file), range)));
+                    result.push(new vscode_1.SymbolInformation(label, _kindMapping[item.kind], item.containerName ? item.containerName : '', new vscode_1.Location(this.client.asUrl(item.file), range)));
                 }
                 return result;
             }
             else {
                 return [];
             }
-        }, function (err) {
-            _this.client.error("'navto' request failed with error.", err);
+        }, (err) => {
+            this.client.error(`'navto' request failed with error.`, err);
             return [];
         });
-    };
-    return TypeScriptWorkspaceSymbolProvider;
-}());
+    }
+}
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = TypeScriptWorkspaceSymbolProvider;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/38746938a4ab94f2f57d9e1309c51fd6fb37553d/extensions\typescript\out/features\workspaceSymbolProvider.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/f9d0c687ff2ea7aabd85fb9a43129117c0ecf519/extensions\typescript\out/features\workspaceSymbolProvider.js.map

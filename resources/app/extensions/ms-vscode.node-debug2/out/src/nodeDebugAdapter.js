@@ -2,15 +2,16 @@
  * Copyright (C) Microsoft Corporation. All rights reserved.
  *--------------------------------------------------------*/
 "use strict";
-const vscode_chrome_debug_core_1 = require('vscode-chrome-debug-core');
-const vscode_debugadapter_1 = require('vscode-debugadapter');
-const path = require('path');
-const fs = require('fs');
-const cp = require('child_process');
-const pathUtils = require('./pathUtils');
-const utils = require('./utils');
-const utils_1 = require('./utils');
-const errors = require('./errors');
+const vscode_chrome_debug_core_1 = require("vscode-chrome-debug-core");
+const vscode_debugadapter_1 = require("vscode-debugadapter");
+const url = require("url");
+const path = require("path");
+const fs = require("fs");
+const cp = require("child_process");
+const pathUtils = require("./pathUtils");
+const utils = require("./utils");
+const utils_1 = require("./utils");
+const errors = require("./errors");
 const DefaultSourceMapPathOverrides = {
     'webpack:///./*': '${cwd}/*',
     'webpack:///*': '*',
@@ -31,6 +32,7 @@ class NodeDebugAdapter extends vscode_chrome_debug_core_1.ChromeDebugAdapter {
     }
     launch(args) {
         args.sourceMapPathOverrides = getSourceMapPathOverrides(args.cwd, args.sourceMapPathOverrides);
+        fixNodeInternalsSkipFiles(args);
         super.launch(args);
         const port = args.port || utils.random(3000, 50000);
         let runtimeExecutable = args.runtimeExecutable;
@@ -100,11 +102,12 @@ class NodeDebugAdapter extends vscode_chrome_debug_core_1.ChromeDebugAdapter {
             let launchArgs = [runtimeExecutable];
             if (!args.noDebug) {
                 launchArgs.push(`--inspect=${port}`);
+                // Always stop on entry to set breakpoints
+                launchArgs.push('--debug-brk');
             }
-            // Always stop on entry to set breakpoints
-            launchArgs.push('--debug-brk');
             this._continueAfterConfigDone = !args.stopOnEntry;
             launchArgs = launchArgs.concat(runtimeArgs, program ? [program] : [], programArgs);
+            const envArgs = this.collectEnvFileArgs(args) || args.env;
             let launchP;
             if (args.console === 'integratedTerminal' || args.console === 'externalTerminal') {
                 const termArgs = {
@@ -112,13 +115,13 @@ class NodeDebugAdapter extends vscode_chrome_debug_core_1.ChromeDebugAdapter {
                     title: utils_1.localize('node.console.title', "Node Debug Console"),
                     cwd,
                     args: launchArgs,
-                    env: args.env
+                    env: envArgs
                 };
                 launchP = this.launchInTerminal(termArgs);
             }
             else if (!args.console || args.console === 'internalConsole') {
                 // merge environment variables into a copy of the process.env
-                const env = Object.assign({}, process.env, args.env);
+                const env = Object.assign({}, process.env, envArgs);
                 launchP = this.launchInInternalConsole(runtimeExecutable, launchArgs.slice(1), { cwd, env });
             }
             else {
@@ -135,7 +138,13 @@ class NodeDebugAdapter extends vscode_chrome_debug_core_1.ChromeDebugAdapter {
     attach(args) {
         args.sourceMapPathOverrides = getSourceMapPathOverrides(args.cwd, args.sourceMapPathOverrides);
         this._restartMode = args.restart;
-        return super.attach(args);
+        return super.attach(args).catch(err => {
+            if (err.format && err.format.indexOf('Cannot connect to runtime process') >= 0) {
+                // hack -core error msg
+                err.format = 'Ensure Node was launched with --inspect. ' + err.format;
+            }
+            return Promise.reject(err);
+        });
     }
     doAttach(port, targetUrl, address, timeout) {
         return super.doAttach(port, targetUrl, address, timeout)
@@ -181,21 +190,54 @@ class NodeDebugAdapter extends vscode_chrome_debug_core_1.ChromeDebugAdapter {
                 vscode_chrome_debug_core_1.logger.log(msg);
                 this.terminateSession(msg);
             });
-            nodeProcess.stdout.on('data', (data) => {
+            const noDebugMode = this._launchAttachArgs.noDebug;
+            // Listen to stderr at least until the debugger is attached
+            const onStderr = (data) => {
                 let msg = data.toString();
-                this._session.sendEvent(new vscode_debugadapter_1.OutputEvent(msg, 'stdout'));
-            });
-            nodeProcess.stderr.on('data', (data) => {
-                // Print stderr, but chop off the Chrome-specific message
-                let msg = data.toString();
+                // Stop listening after 'Debugger attached' msg (unless this is noDebugMode)
+                if (!noDebugMode && msg.indexOf('Debugger attached.') >= 0) {
+                    nodeProcess.stderr.removeListener('data', onStderr);
+                }
+                // Chop off the Chrome-specific debug URL message
                 const chromeMsgIndex = msg.indexOf('To start debugging, open the following URL in Chrome:');
                 if (chromeMsgIndex >= 0) {
                     msg = msg.substr(0, chromeMsgIndex);
                 }
                 this._session.sendEvent(new vscode_debugadapter_1.OutputEvent(msg, 'stderr'));
-            });
+            };
+            nodeProcess.stderr.on('data', onStderr);
+            // If only running, use stdout/stderr instead of debug protocol logs
+            if (noDebugMode) {
+                nodeProcess.stdout.on('data', (data) => {
+                    let msg = data.toString();
+                    this._session.sendEvent(new vscode_debugadapter_1.OutputEvent(msg, 'stdout'));
+                });
+            }
             resolve();
         });
+    }
+    collectEnvFileArgs(args) {
+        // read env from disk and merge into envVars
+        if (args.envFile) {
+            try {
+                const env = {};
+                const buffer = fs.readFileSync(args.envFile, 'utf8');
+                buffer.split('\n').forEach(line => {
+                    const r = line.match(/^\s*([\w\.\-]+)\s*=\s*(.*)?\s*$/);
+                    if (r !== null) {
+                        let value = r[2] || '';
+                        if (value.length > 0 && value.charAt(0) === '"' && value.charAt(value.length - 1) === '"') {
+                            value = value.replace(/\\n/gm, '\n');
+                        }
+                        env[r[1]] = value.replace(/(^['"]|['"]$)/g, '');
+                    }
+                });
+                return utils.extendObject(env, args.env); // launch config env vars overwrite .env vars
+            }
+            catch (e) {
+                throw errors.cannotLoadEnvVarsFromFile(e.message);
+            }
+        }
     }
     /**
      * Override so that -core's call on attach will be ignored, and we can wait until the first break when ready to set BPs.
@@ -230,7 +272,7 @@ class NodeDebugAdapter extends vscode_chrome_debug_core_1.ChromeDebugAdapter {
         this.killNodeProcess();
         super.terminateSession(reason, requestRestart);
     }
-    onPaused(notification) {
+    onPaused(notification, expectingStopReason) {
         // If we don't have the entry location, this must be the entry pause
         if (this._waitingForEntryPauseEvent) {
             vscode_chrome_debug_core_1.logger.log('Paused on entry');
@@ -246,7 +288,7 @@ class NodeDebugAdapter extends vscode_chrome_debug_core_1.ChromeDebugAdapter {
                 .then(() => this.sendInitializedEvent());
         }
         else {
-            super.onPaused(notification);
+            super.onPaused(notification, expectingStopReason);
         }
     }
     resolveProgramPath(programPath, sourceMaps) {
@@ -361,9 +403,6 @@ class NodeDebugAdapter extends vscode_chrome_debug_core_1.ChromeDebugAdapter {
             }
         }, error => vscode_chrome_debug_core_1.logger.error('Error evaluating `process.pid`: ' + error.message));
     }
-    onConsoleAPICalled(params) {
-        // Messages come from stdout
-    }
     startPollingForNodeTermination() {
         const intervalId = setInterval(() => {
             try {
@@ -439,14 +478,62 @@ class NodeDebugAdapter extends vscode_chrome_debug_core_1.ChromeDebugAdapter {
             urlLabel: utils_1.localize('more.information', "More Information")
         });
     }
+    getReadonlyOrigin(aPath) {
+        return path.isAbsolute(aPath) || aPath.startsWith(vscode_chrome_debug_core_1.ChromeDebugAdapter.PLACEHOLDER_EVAL_URL_PROTOCOL) ?
+            utils_1.localize('origin.from.node', "read-only content from Node.js") :
+            utils_1.localize('origin.core.module', "read-only core module");
+    }
+    /**
+     * If realPath is an absolute path or a URL, return realPath. Otherwise, prepend the node_internals marker
+     */
+    realPathToDisplayPath(realPath) {
+        const aUrl = url.parse(realPath);
+        if (aUrl.protocol) {
+            return realPath;
+        }
+        return path.isAbsolute(realPath) ? realPath : `${NodeDebugAdapter.NODE_INTERNALS}/${realPath}`;
+    }
+    /**
+     * If displayPath starts with the NODE_INTERNALS indicator, strip it.
+     */
+    displayPathToRealPath(displayPath) {
+        const match = displayPath.match(new RegExp(`^${NodeDebugAdapter.NODE_INTERNALS}/(.*)`));
+        return match ? match[1] : displayPath;
+    }
 }
 NodeDebugAdapter.NODE = 'node';
 NodeDebugAdapter.RUNINTERMINAL_TIMEOUT = 5000;
 NodeDebugAdapter.NODE_TERMINATION_POLL_INTERVAL = 3000;
+NodeDebugAdapter.NODE_INTERNALS = '<node_internals>';
 exports.NodeDebugAdapter = NodeDebugAdapter;
 function getSourceMapPathOverrides(cwd, sourceMapPathOverrides) {
     return sourceMapPathOverrides ? resolveCwdPattern(cwd, sourceMapPathOverrides, /*warnOnMissing=*/ true) :
         resolveCwdPattern(cwd, DefaultSourceMapPathOverrides, /*warnOnMissing=*/ false);
+}
+function fixNodeInternalsSkipFiles(args) {
+    if (args.skipFiles) {
+        args.skipFileRegExps = args.skipFileRegExps || [];
+        args.skipFiles = args.skipFiles.filter(pattern => {
+            const fixed = fixNodeInternalsSkipFilePattern(pattern);
+            if (fixed) {
+                args.skipFileRegExps.push(fixed);
+                return false;
+            }
+            else {
+                return true;
+            }
+        });
+    }
+}
+const internalsRegex = new RegExp(`^${NodeDebugAdapter.NODE_INTERNALS}/(.*)`);
+function fixNodeInternalsSkipFilePattern(pattern) {
+    const internalsMatch = pattern.match(internalsRegex);
+    if (internalsMatch) {
+        return `^(?!\/)(?![a-zA-Z]:)${vscode_chrome_debug_core_1.utils.pathGlobToBlackboxedRegex(internalsMatch[1])}`;
+    }
+    else {
+        return null;
+    }
 }
 /**
  * Returns a copy of sourceMapPathOverrides with the ${cwd} pattern resolved in all entries.

@@ -3,9 +3,9 @@
  *--------------------------------------------------------*/
 define("vs/code/node/cli.nls.es", {
 	"vs/platform/environment/node/argv": [
-		"Los argumentos del modo `--goto` deben tener el formato \"ARCHIVO(:LÍNEA(:COLUMNA))\".",
+		"Los argumentos del modo \"--goto\" deben tener el formato \"ARCHIVO(:LÍNEA(:CARÁCTER))\".",
 		"Abra un editor de diferencias. Necesita pasar dos rutas de acceso a archivos como argumentos.",
-		"Abra el archivo en la ruta de acceso en la línea y columna (agregue :line[:column] a la ruta de acceso).",
+		"Abra el archivo en la ruta de acceso en la línea y el carácter (agregue :línea[:carácter] a la ruta de acceso).",
 		"La configuración regional que se usará (por ejemplo, en-US o zh-TW).",
 		"Fuerce una nueva instancia de Code.",
 		"Comience con el comando \'Developer: Startup Performance\' habilitado.",
@@ -15,7 +15,7 @@ define("vs/code/node/cli.nls.es", {
 		"Espere que se cierre la ventana antes de volver.",
 		"Establezca la ruta de acceso raíz para las extensiones.",
 		"Enumere las extensiones instaladas.",
-		"Muestra las versiones de las extensiones instaladas, cuando se usa --list-extension.",
+		"Muestra las versiones de las extensiones instaladas cuando se usa --list-extension.",
 		"Instala una extensión.",
 		"Desinstala una extensión.",
 		"Deshabilite todas las extensiones instaladas.",

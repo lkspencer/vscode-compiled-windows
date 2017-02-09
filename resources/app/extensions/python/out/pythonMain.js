@@ -3,7 +3,7 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 'use strict';
-var vscode_1 = require('vscode');
+var vscode_1 = require("vscode");
 function activate(context) {
     vscode_1.languages.setLanguageConfiguration('python', {
         onEnterRules: [
@@ -15,4 +15,4 @@ function activate(context) {
     });
 }
 exports.activate = activate;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/38746938a4ab94f2f57d9e1309c51fd6fb37553d/extensions\python\out/pythonMain.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/f9d0c687ff2ea7aabd85fb9a43129117c0ecf519/extensions\python\out/pythonMain.js.map

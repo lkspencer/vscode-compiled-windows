@@ -1,4 +1,9 @@
 [
-	"Die PHP-Datei kann nicht überprüft werden. Die PHP-Anwendung wurde nicht gefunden. Verwenden Sie die Einstellung \"php.validate.executablePath\", um den Speicherort von \"php\" zu konfigurieren.",
+	"Do you allow {0} to be executed to lint PHP files?",
+	"Yes",
+	"No",
+	"Learn More",
+	"Eine Überprüfung ist nicht möglich, da {0} keine ausführbare PHP-Datei ist. Klicken Sie auf das Pfad-Statusleistenelement, um die ausführbare Datei zu konfigurieren.",
+	"Eine Überprüfung ist nicht möglich, da keine ausführbare PHP-Datei festgelegt ist. Klicken Sie auf das Pfad-Statusleistenelement, um die ausführbare Datei zu konfigurieren.",
 	"Fehler beim Ausführen von PHP mithilfe des Pfads \"{0}\". Die Ursache ist unbekannt."
 ]

@@ -33,6 +33,8 @@
 	"contenu en lecture seule à partir du code Node.js distant",
 	"module de base en lecture seule",
 	"{0} <erreur : {1}>",
+	"ignoré en raison de 'skipFiles'",
+	"ignoré en raison de 'smartStep'",
 	"contenu Inline en lecture seule du mappage de source",
 	"(fonction anonyme)",
 	"Local ({0} sur {1})",

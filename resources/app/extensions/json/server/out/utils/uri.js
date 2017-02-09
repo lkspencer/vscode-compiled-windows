@@ -307,13 +307,13 @@ var URI = (function () {
             $mid: 1
         };
     };
-    URI._empty = '';
-    URI._slash = '/';
-    URI._regexp = /^(([^:/?#]+?):)?(\/\/([^/?#]*))?([^?#]*)(\?([^#]*))?(#(.*))?/;
-    URI._driveLetterPath = /^\/[a-zA-z]:/;
-    URI._upperCaseDrive = /^(\/)?([A-Z]:)/;
     return URI;
 }());
+URI._empty = '';
+URI._slash = '/';
+URI._regexp = /^(([^:/?#]+?):)?(\/\/([^/?#]*))?([^?#]*)(\?([^#]*))?(#(.*))?/;
+URI._driveLetterPath = /^\/[a-zA-z]:/;
+URI._upperCaseDrive = /^(\/)?([A-Z]:)/;
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = URI;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/38746938a4ab94f2f57d9e1309c51fd6fb37553d/extensions\json\server\out/utils\uri.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/f9d0c687ff2ea7aabd85fb9a43129117c0ecf519/extensions\json\server\out/utils\uri.js.map

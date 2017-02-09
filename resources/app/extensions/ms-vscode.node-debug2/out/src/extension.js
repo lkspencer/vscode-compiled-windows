@@ -1,10 +1,10 @@
-"use strict";
 /*---------------------------------------------------------
  * Copyright (C) Microsoft Corporation. All rights reserved.
  *--------------------------------------------------------*/
-const vscode = require('vscode');
-const path = require('path');
-const fs = require('fs');
+"use strict";
+const vscode = require("vscode");
+const path = require("path");
+const fs = require("fs");
 const initialConfigurations = [
     {
         name: "Launch Program",
@@ -22,6 +22,7 @@ const initialConfigurations = [
 ];
 function activate(context) {
     context.subscriptions.push(vscode.commands.registerCommand('extension.node-debug2.provideInitialConfigurations', provideInitialConfigurations));
+    context.subscriptions.push(vscode.commands.registerCommand('extension.node-debug2.toggleSkippingFile', toggleSkippingFile));
 }
 exports.activate = activate;
 function deactivate() {
@@ -41,7 +42,6 @@ function provideInitialConfigurations() {
     if (vscode.workspace.textDocuments.some(document => document.languageId === 'typescript' || document.languageId === 'coffeescript')) {
         initialConfigurations.forEach(config => {
             config['outFiles'] = [];
-            config['sourceMaps'] = true;
         });
     }
     // Massage the configuration string, add an aditional tab and comment out processId
@@ -73,6 +73,14 @@ function getProgram() {
     }
     catch (error) { }
     return program;
+}
+function toggleSkippingFile(path) {
+    if (!path) {
+        const activeEditor = vscode.window.activeTextEditor;
+        path = activeEditor && activeEditor.document.fileName;
+    }
+    const args = typeof path === 'string' ? { path } : { sourceReference: path };
+    vscode.commands.executeCommand('workbench.customDebugRequest', 'toggleSkipFileStatus', args);
 }
 
 //# sourceMappingURL=extension.js.map
