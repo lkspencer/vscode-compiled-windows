@@ -1,7 +1,7 @@
 {
 	"messages": [
-		"reference",
-		"references",
+		"1 reference",
+		"{0} references",
 		"Could not determine references"
 	],
 	"keys": [

@@ -1,6 +1,6 @@
 {
 	"messages": [
-		"Do you allow {0} to be executed to lint PHP files?",
+		"Do you allow {0} (defined as a workspace setting) to be executed to lint PHP files?",
 		"Yes",
 		"No",
 		"Learn More",

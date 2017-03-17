@@ -13,7 +13,7 @@ const VersionStatus = require("./utils/versionStatus");
 const is = require("./utils/is");
 const vscode_extension_telemetry_1 = require("vscode-extension-telemetry");
 const nls = require("vscode-nls");
-let localize = nls.loadMessageBundle(__filename);
+const localize = nls.loadMessageBundle(__filename);
 var Trace;
 (function (Trace) {
     Trace[Trace["Off"] = 0] = "Off";
@@ -45,7 +45,7 @@ var MessageAction;
     MessageAction[MessageAction["reportIssue"] = 4] = "reportIssue";
 })(MessageAction || (MessageAction = {}));
 class TypeScriptServiceClient {
-    constructor(host, storagePath, globalState, workspaceState) {
+    constructor(host, storagePath, globalState, workspaceState, disposables) {
         this.workspaceState = workspaceState;
         this._onProjectLanguageServiceStateChanged = new vscode_1.EventEmitter();
         this._onDidBeginInstallTypings = new vscode_1.EventEmitter();
@@ -54,6 +54,7 @@ class TypeScriptServiceClient {
         this.storagePath = storagePath;
         this.globalState = globalState;
         this.pathSeparator = path.sep;
+        this.lastStart = Date.now();
         var p = new Promise((resolve, reject) => {
             this._onReady = { promise: p, resolve, reject };
         });
@@ -74,7 +75,7 @@ class TypeScriptServiceClient {
         this._apiVersion = new typescriptService_1.API('1.0.0');
         this._checkGlobalTSCVersion = true;
         this.trace = this.readTrace();
-        vscode_1.workspace.onDidChangeConfiguration(() => {
+        disposables.push(vscode_1.workspace.onDidChangeConfiguration(() => {
             this.trace = this.readTrace();
             let oldglobalTsdk = this.globalTsdk;
             let oldLocalTsdk = this.localTsdk;
@@ -84,9 +85,10 @@ class TypeScriptServiceClient {
             if (this.servicePromise === null && (oldglobalTsdk !== this.globalTsdk || oldLocalTsdk !== this.localTsdk)) {
                 this.startService();
             }
-        });
+        }));
         if (this.packageInfo && this.packageInfo.aiKey) {
             this.telemetryReporter = new vscode_extension_telemetry_1.default(this.packageInfo.name, this.packageInfo.version, this.packageInfo.aiKey);
+            disposables.push(this.telemetryReporter);
         }
         this.startService();
     }
@@ -278,7 +280,11 @@ class TypeScriptServiceClient {
                 const tsConfig = vscode_1.workspace.getConfiguration('typescript');
                 this.info(`Using tsserver from location: ${modulePath}`);
                 if (!fs.existsSync(modulePath)) {
-                    vscode_1.window.showWarningMessage(localize(1, null, path.dirname(modulePath)));
+                    vscode_1.window.showWarningMessage(localize(1, null, modulePath ? path.dirname(modulePath) : ''));
+                    if (!fs.existsSync(this.bundledTypeScriptPath)) {
+                        vscode_1.window.showErrorMessage(localize(2, null));
+                        return reject(new Error('Could not find bundled tsserver.js'));
+                    }
                     modulePath = this.bundledTypeScriptPath;
                 }
                 let version = this.getTypeScriptVersion(modulePath);
@@ -288,7 +294,7 @@ class TypeScriptServiceClient {
                 if (version) {
                     this._apiVersion = new typescriptService_1.API(version);
                 }
-                const label = version || localize(2, null);
+                const label = version || localize(3, null);
                 const tooltip = modulePath;
                 this.modulePath = modulePath;
                 VersionStatus.showHideStatus();
@@ -331,7 +337,7 @@ class TypeScriptServiceClient {
                         if (err) {
                             this.lastError = err;
                             this.error('Starting TSServer failed with error.', err);
-                            vscode_1.window.showErrorMessage(localize(3, null, err.message || err));
+                            vscode_1.window.showErrorMessage(localize(4, null, err.message || err));
                             this.logTelemetry('error', { message: err.message });
                             return;
                         }
@@ -364,7 +370,7 @@ class TypeScriptServiceClient {
     }
     showVersionPicker(firstRun) {
         const modulePath = this.modulePath || this.globalTypescriptPath;
-        if (!vscode_1.workspace.rootPath) {
+        if (!vscode_1.workspace.rootPath || !modulePath) {
             return Promise.resolve(modulePath);
         }
         const useWorkspaceVersionSetting = this.workspaceState.get(TypeScriptServiceClient.useWorkspaceTsdkStorageKey, false);
@@ -372,22 +378,22 @@ class TypeScriptServiceClient {
         const localModulePath = this.localTypeScriptPath;
         const pickOptions = [];
         pickOptions.push({
-            label: localize(4, null),
+            label: localize(5, null),
             description: shippedVersion || this.globalTypescriptPath,
-            detail: modulePath === this.globalTypescriptPath && (modulePath !== localModulePath || !useWorkspaceVersionSetting) ? localize(5, null) : '',
+            detail: modulePath === this.globalTypescriptPath && (modulePath !== localModulePath || !useWorkspaceVersionSetting) ? localize(6, null) : '',
             id: MessageAction.useBundled,
         });
         if (localModulePath) {
             const localVersion = this.getTypeScriptVersion(localModulePath);
             pickOptions.push({
-                label: localize(6, null),
+                label: localize(7, null),
                 description: localVersion || localModulePath,
-                detail: modulePath === localModulePath && (modulePath !== this.globalTypescriptPath || useWorkspaceVersionSetting) ? localize(7, null) : '',
+                detail: modulePath === localModulePath && (modulePath !== this.globalTypescriptPath || useWorkspaceVersionSetting) ? localize(8, null) : '',
                 id: MessageAction.useLocal
             });
         }
         pickOptions.push({
-            label: localize(8, null),
+            label: localize(9, null),
             description: '',
             id: MessageAction.learnMore
         });
@@ -395,9 +401,9 @@ class TypeScriptServiceClient {
             if (firstRun || newModulePath === this.modulePath) {
                 return;
             }
-            const reloadMessage = { title: localize(9, null) };
-            vscode_1.window.showInformationMessage(localize(10, null), reloadMessage, {
-                title: localize(11, null),
+            const reloadMessage = { title: localize(10, null) };
+            vscode_1.window.showInformationMessage(localize(11, null), reloadMessage, {
+                title: localize(12, null),
                 isCloseAffordance: true
             })
                 .then(selected => {
@@ -407,7 +413,7 @@ class TypeScriptServiceClient {
             });
         };
         return vscode_1.window.showQuickPick(pickOptions, {
-            placeHolder: localize(12, null),
+            placeHolder: localize(13, null),
             ignoreFocusOut: firstRun
         })
             .then(selected => {
@@ -470,6 +476,9 @@ class TypeScriptServiceClient {
         }
     }
     getTypeScriptVersion(serverPath) {
+        if (!fs.existsSync(serverPath)) {
+            return undefined;
+        }
         let p = serverPath.split(path.sep);
         if (p.length <= 2) {
             return undefined;
@@ -505,27 +514,31 @@ class TypeScriptServiceClient {
             let startService = true;
             if (this.numberRestarts > 5) {
                 let prompt = undefined;
-                if (diff < 60 * 1000 /* 1 Minutes */) {
-                    prompt = vscode_1.window.showWarningMessage(localize(13, null), {
-                        title: localize(14, null),
-                        id: MessageAction.reportIssue,
-                        isCloseAffordance: true
-                    });
-                }
-                else if (diff < 2 * 1000 /* 2 seconds */) {
+                this.numberRestarts = 0;
+                if (diff < 10 * 1000 /* 10 seconds */) {
+                    this.lastStart = Date.now();
                     startService = false;
-                    prompt = vscode_1.window.showErrorMessage(localize(15, null), {
-                        title: localize(16, null),
+                    prompt = vscode_1.window.showErrorMessage(localize(14, null), {
+                        title: localize(15, null),
                         id: MessageAction.reportIssue,
                         isCloseAffordance: true
                     });
                     this.logTelemetry('serviceExited');
+                }
+                else if (diff < 60 * 1000 /* 1 Minutes */) {
+                    this.lastStart = Date.now();
+                    prompt = vscode_1.window.showWarningMessage(localize(16, null), {
+                        title: localize(17, null),
+                        id: MessageAction.reportIssue,
+                        isCloseAffordance: true
+                    });
                 }
                 if (prompt) {
                     prompt.then(item => {
                         if (item && item.id === MessageAction.reportIssue) {
                             return vscode_1.commands.executeCommand('workbench.action.reportIssues');
                         }
+                        return undefined;
                     });
                 }
             }
@@ -552,7 +565,8 @@ class TypeScriptServiceClient {
         return result.replace(new RegExp('\\' + this.pathSeparator, 'g'), '/');
     }
     asUrl(filepath) {
-        if (filepath.startsWith(TypeScriptServiceClient.WALK_THROUGH_SNIPPET_SCHEME_COLON)) {
+        if (filepath.startsWith(TypeScriptServiceClient.WALK_THROUGH_SNIPPET_SCHEME_COLON)
+            || (filepath.startsWith('untitled:') && this._apiVersion.has213Features())) {
             return vscode_1.Uri.parse(filepath);
         }
         return vscode_1.Uri.file(filepath);
@@ -759,4 +773,4 @@ TypeScriptServiceClient.WALK_THROUGH_SNIPPET_SCHEME = 'walkThroughSnippet';
 TypeScriptServiceClient.WALK_THROUGH_SNIPPET_SCHEME_COLON = `${TypeScriptServiceClient.WALK_THROUGH_SNIPPET_SCHEME}:`;
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = TypeScriptServiceClient;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/f9d0c687ff2ea7aabd85fb9a43129117c0ecf519/extensions\typescript\out/typescriptServiceClient.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/8076a19fdcab7e1fc1707952d652f0bb6c6db331/extensions\typescript\out/typescriptServiceClient.js.map

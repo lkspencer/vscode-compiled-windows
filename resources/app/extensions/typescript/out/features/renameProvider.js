@@ -6,7 +6,6 @@
 const vscode_1 = require("vscode");
 class TypeScriptRenameProvider {
     constructor(client) {
-        this.tokens = [];
         this.client = client;
     }
     provideRenameEdits(document, position, newName, token) {
@@ -14,28 +13,25 @@ class TypeScriptRenameProvider {
         if (!filepath) {
             return Promise.resolve(null);
         }
-        let args = {
+        const args = {
             file: filepath,
             line: position.line + 1,
             offset: position.character + 1,
             findInStrings: false,
             findInComments: false
         };
-        if (!args.file) {
-            return Promise.resolve(null);
-        }
         return this.client.execute('rename', args, token).then((response) => {
-            let renameResponse = response.body;
+            const renameResponse = response.body;
             if (!renameResponse) {
                 return Promise.resolve(null);
             }
-            let renameInfo = renameResponse.info;
-            let result = new vscode_1.WorkspaceEdit();
+            const renameInfo = renameResponse.info;
+            const result = new vscode_1.WorkspaceEdit();
             if (!renameInfo.canRename) {
                 return Promise.reject(renameInfo.localizedErrorMessage);
             }
             renameResponse.locs.forEach((spanGroup) => {
-                let resource = this.client.asUrl(spanGroup.file);
+                const resource = this.client.asUrl(spanGroup.file);
                 if (!resource) {
                     return;
                 }
@@ -52,4 +48,4 @@ class TypeScriptRenameProvider {
 }
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = TypeScriptRenameProvider;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/f9d0c687ff2ea7aabd85fb9a43129117c0ecf519/extensions\typescript\out/features\renameProvider.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/8076a19fdcab7e1fc1707952d652f0bb6c6db331/extensions\typescript\out/features\renameProvider.js.map

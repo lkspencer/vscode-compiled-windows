@@ -23,7 +23,7 @@ class TypeScriptReferencesCodeLensProvider {
     get onDidChangeCodeLenses() {
         return this.onDidChangeCodeLensesEmitter.event;
     }
-    updateConfiguration(config) {
+    updateConfiguration() {
         const typeScriptConfig = vscode_1.workspace.getConfiguration('typescript');
         const wasEnabled = this.enabled;
         this.enabled = typeScriptConfig.get('referencesCodeLens.enabled', false);
@@ -53,35 +53,34 @@ class TypeScriptReferencesCodeLensProvider {
     }
     resolveCodeLens(inputCodeLens, token) {
         const codeLens = inputCodeLens;
-        if (!codeLens.document) {
-            return Promise.reject(codeLens);
-        }
         const args = {
             file: codeLens.file,
             line: codeLens.range.start.line + 1,
             offset: codeLens.range.start.character + 1
         };
         return this.client.execute('references', args, token).then(response => {
-            if (response && response.body) {
-                // Exclude original definition from references
-                const locations = response.body.refs
-                    .filter(reference => !(reference.start.line === codeLens.range.start.line + 1
-                    && reference.start.offset === codeLens.range.start.character + 1))
-                    .map(reference => new vscode_1.Location(this.client.asUrl(reference.file), new vscode_1.Range(new vscode_1.Position(reference.start.line - 1, reference.start.offset - 1), new vscode_1.Position(reference.end.line - 1, reference.end.offset - 1))));
-                codeLens.command = {
-                    title: locations.length + ' ' + (locations.length === 1 ? localize(0, null) : localize(1, null)),
-                    command: 'editor.action.showReferences',
-                    arguments: [codeLens.document, codeLens.range.start, locations]
-                };
-                return Promise.resolve(codeLens);
+            if (!response || !response.body) {
+                throw codeLens;
             }
-            return Promise.reject(codeLens);
+            // Exclude original definition from references
+            const locations = response.body.refs
+                .filter(reference => !(reference.start.line === codeLens.range.start.line + 1
+                && reference.start.offset === codeLens.range.start.character + 1))
+                .map(reference => new vscode_1.Location(this.client.asUrl(reference.file), new vscode_1.Range(reference.start.line - 1, reference.start.offset - 1, reference.end.line - 1, reference.end.offset - 1)));
+            codeLens.command = {
+                title: locations.length === 1
+                    ? localize(0, null)
+                    : localize(1, null, locations.length),
+                command: 'editor.action.showReferences',
+                arguments: [codeLens.document, codeLens.range.start, locations]
+            };
+            return codeLens;
         }).catch(() => {
             codeLens.command = {
                 title: localize(2, null),
                 command: ''
             };
-            return Promise.resolve(codeLens);
+            return codeLens;
         });
     }
     extractReferenceableSymbols(document, item, results) {
@@ -90,7 +89,7 @@ class TypeScriptReferencesCodeLensProvider {
         }
         const span = item.spans && item.spans[0];
         if (span) {
-            const range = new vscode_1.Range(new vscode_1.Position(span.start.line - 1, span.start.offset - 1), new vscode_1.Position(span.end.line - 1, span.end.offset - 1));
+            const range = new vscode_1.Range(span.start.line - 1, span.start.offset - 1, span.end.line - 1, span.end.offset - 1);
             // TODO: TS currently requires the position for 'references 'to be inside of the identifer
             // Massage the range to make sure this is the case
             const text = document.getText(range);
@@ -117,7 +116,7 @@ class TypeScriptReferencesCodeLensProvider {
                 case PConst.Kind.interface:
                 case PConst.Kind.type:
                 case PConst.Kind.enum:
-                    const identifierMatch = new RegExp(`^(.*?(\\b|\\W))${item.text}\\b`, 'gm');
+                    const identifierMatch = new RegExp(`^(.*?(\\b|\\W))${(item.text || '').replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&')}\\b`, 'gm');
                     const match = identifierMatch.exec(text);
                     const prefixLength = match ? match.index + match[1].length : 0;
                     const startOffset = document.offsetAt(new vscode_1.Position(range.start.line, range.start.character)) + prefixLength;
@@ -131,4 +130,4 @@ class TypeScriptReferencesCodeLensProvider {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = TypeScriptReferencesCodeLensProvider;
 ;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/f9d0c687ff2ea7aabd85fb9a43129117c0ecf519/extensions\typescript\out/features\referencesCodeLensProvider.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/8076a19fdcab7e1fc1707952d652f0bb6c6db331/extensions\typescript\out/features\referencesCodeLensProvider.js.map

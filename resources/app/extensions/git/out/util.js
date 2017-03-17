@@ -20,6 +20,7 @@ function combinedDisposable(disposables) {
     return toDisposable(() => dispose(disposables));
 }
 exports.combinedDisposable = combinedDisposable;
+exports.EmptyDisposable = toDisposable(() => null);
 function mapEvent(event, map) {
     return (listener, thisArgs = null, disposables) => event(i => listener.call(thisArgs, map(i)), null, disposables);
 }
@@ -82,4 +83,4 @@ function denodeify(fn) {
     return (...args) => new Promise((c, e) => fn(...args, (err, r) => err ? e(err) : c(r)));
 }
 exports.denodeify = denodeify;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/f9d0c687ff2ea7aabd85fb9a43129117c0ecf519/extensions\git\out/util.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/8076a19fdcab7e1fc1707952d652f0bb6c6db331/extensions\git\out/util.js.map

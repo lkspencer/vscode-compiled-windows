@@ -6,7 +6,6 @@
 const vscode_1 = require("vscode");
 class TypeScriptReferenceSupport {
     constructor(client) {
-        this.tokens = [];
         this.client = client;
     }
     provideReferences(document, position, options, token) {
@@ -14,28 +13,25 @@ class TypeScriptReferenceSupport {
         if (!filepath) {
             return Promise.resolve([]);
         }
-        let args = {
+        const args = {
             file: filepath,
             line: position.line + 1,
             offset: position.character + 1
         };
-        if (!args.file) {
-            return Promise.resolve([]);
-        }
         const apiVersion = this.client.apiVersion;
         return this.client.execute('references', args, token).then((msg) => {
-            let result = [];
+            const result = [];
             if (!msg.body) {
                 return result;
             }
-            let refs = msg.body.refs;
+            const refs = msg.body.refs;
             for (let i = 0; i < refs.length; i++) {
-                let ref = refs[i];
+                const ref = refs[i];
                 if (!options.includeDeclaration && apiVersion.has203Features() && ref.isDefinition) {
                     continue;
                 }
-                let url = this.client.asUrl(ref.file);
-                let location = new vscode_1.Location(url, new vscode_1.Range(ref.start.line - 1, ref.start.offset - 1, ref.end.line - 1, ref.end.offset - 1));
+                const url = this.client.asUrl(ref.file);
+                const location = new vscode_1.Location(url, new vscode_1.Range(ref.start.line - 1, ref.start.offset - 1, ref.end.line - 1, ref.end.offset - 1));
                 result.push(location);
             }
             return result;
@@ -47,4 +43,4 @@ class TypeScriptReferenceSupport {
 }
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = TypeScriptReferenceSupport;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/f9d0c687ff2ea7aabd85fb9a43129117c0ecf519/extensions\typescript\out/features\referenceProvider.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/8076a19fdcab7e1fc1707952d652f0bb6c6db331/extensions\typescript\out/features\referenceProvider.js.map

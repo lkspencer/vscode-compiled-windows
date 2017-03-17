@@ -297,6 +297,7 @@ define(__m[9/*vs/base/common/lifecycle*/], __M([0/*require*/,1/*exports*/]), fun
                 first.dispose();
                 return first;
             }
+            return undefined;
         }
         else {
             dispose(first);
@@ -345,6 +346,7 @@ define(__m[9/*vs/base/common/lifecycle*/], __M([0/*require*/,1/*exports*/]), fun
                     var element = arg_1[_i];
                     return this._register(element);
                 }
+                return undefined;
             }
         };
         return Disposables;
@@ -692,7 +694,7 @@ define(__m[13/*vs/base/common/map*/], __M([0/*require*/,1/*exports*/]), function
                 var part = parts_1[_i];
                 node = children[part];
                 if (!node) {
-                    return;
+                    return undefined;
                 }
                 children = node.children;
             }
@@ -718,6 +720,7 @@ define(__m[13/*vs/base/common/map*/], __M([0/*require*/,1/*exports*/]), function
             if (lastNode) {
                 return lastNode.element;
             }
+            return undefined;
         };
         TrieMap.prototype.findSuperstr = function (path) {
             var parts = this._splitter(path);
@@ -727,7 +730,7 @@ define(__m[13/*vs/base/common/map*/], __M([0/*require*/,1/*exports*/]), function
                 var part = parts_3[_i];
                 node = children[part];
                 if (!node) {
-                    return;
+                    return undefined;
                 }
                 children = node.children;
             }
@@ -1158,12 +1161,19 @@ define(__m[7/*vs/base/common/strings*/], __M([0/*require*/,1/*exports*/,13/*vs/b
                 // equal
                 continue;
             }
-            var diff = codeA - codeB;
-            if ((diff === 32 || diff === -32) && isAsciiLetter(codeA) && isAsciiLetter(codeB)) {
-                // equal -> ignoreCase
-                continue;
+            if (isAsciiLetter(codeA) && isAsciiLetter(codeB)) {
+                var diff = codeA - codeB;
+                if (diff === 32 || diff === -32) {
+                    // equal -> ignoreCase
+                    continue;
+                }
+                else {
+                    return diff;
+                }
             }
-            return compare(a[i].toLowerCase(), b[i].toLowerCase());
+            else {
+                return compare(a.toLowerCase(), b.toLowerCase());
+            }
         }
         if (a.length < b.length) {
             return -1;
@@ -1488,7 +1498,11 @@ define(__m[8/*vs/base/common/paths*/], __M([0/*require*/,1/*exports*/,2/*vs/base
             return path[0];
         }
         else {
-            return path.substring(0, ~idx);
+            var res = path.substring(0, ~idx);
+            if (platform_1.isWindows && res[res.length - 1] === ':') {
+                res += exports.nativeSep; // make sure drive letters end with backslash
+            }
+            return res;
         }
     }
     exports.dirname = dirname;
@@ -1778,15 +1792,6 @@ define(__m[8/*vs/base/common/paths*/], __M([0/*require*/,1/*exports*/,2/*vs/base
         return true;
     }
     exports.isValidBasename = isValidBasename;
-    exports.isAbsoluteRegex = /^((\/|[a-zA-Z]:\\)[^\(\)<>\\'\"\[\]]+)/;
-    /**
-     * If you have access to node, it is recommended to use node's path.isAbsolute().
-     * This is a simple regex based approach.
-     */
-    function isAbsolute(path) {
-        return exports.isAbsoluteRegex.test(path);
-    }
-    exports.isAbsolute = isAbsolute;
 });
 
 define(__m[19/*vs/base/common/glob*/], __M([0/*require*/,1/*exports*/,11/*vs/base/common/arrays*/,7/*vs/base/common/strings*/,8/*vs/base/common/paths*/,13/*vs/base/common/map*/]), function (require, exports, arrays, strings, paths, map_1) {
@@ -2647,7 +2652,7 @@ define(__m[18/*vs/base/common/callbackList*/], __M([0/*require*/,1/*exports*/,6/
                 args[_i] = arguments[_i];
             }
             if (!this._callbacks) {
-                return;
+                return undefined;
             }
             var ret = [], callbacks = this._callbacks.slice(0), contexts = this._contexts.slice(0);
             for (var i = 0, len = callbacks.length; i < len; i++) {
@@ -2947,8 +2952,9 @@ define(__m[5/*vs/base/common/event*/], __M([0/*require*/,1/*exports*/,9/*vs/base
         return emitter.event;
     }
     exports.any = any;
-    function debounceEvent(event, merger, delay) {
+    function debounceEvent(event, merger, delay, leading) {
         if (delay === void 0) { delay = 100; }
+        if (leading === void 0) { leading = false; }
         var subscription;
         var output;
         var handle;
@@ -2956,11 +2962,15 @@ define(__m[5/*vs/base/common/event*/], __M([0/*require*/,1/*exports*/,9/*vs/base
             onFirstListenerAdd: function () {
                 subscription = event(function (cur) {
                     output = merger(output, cur);
+                    if (!handle && leading) {
+                        emitter.fire(output);
+                    }
                     clearTimeout(handle);
                     handle = setTimeout(function () {
                         var _output = output;
                         output = undefined;
                         emitter.fire(_output);
+                        handle = null;
                     }, delay);
                 });
             },
@@ -6483,6 +6493,7 @@ define(__m[21/*vs/base/common/async*/], __M([0/*require*/,1/*exports*/,6/*vs/bas
                 if (!errors.isPromiseCanceledError(err)) {
                     return winjs_base_1.TPromise.wrapError(err);
                 }
+                return undefined;
             });
         }
         return always(promise, function () { return subscription.dispose(); });
@@ -6881,6 +6892,15 @@ define(__m[21/*vs/base/common/async*/], __M([0/*require*/,1/*exports*/,6/*vs/bas
         return Queue;
     }(Limiter));
     exports.Queue = Queue;
+    function setDisposableTimeout(handler, timeout) {
+        var args = [];
+        for (var _i = 2; _i < arguments.length; _i++) {
+            args[_i - 2] = arguments[_i];
+        }
+        var handle = setTimeout.apply(void 0, [handler, timeout].concat(args));
+        return { dispose: function () { clearTimeout(handle); } };
+    }
+    exports.setDisposableTimeout = setDisposableTimeout;
     var TimeoutTimer = (function (_super) {
         __extends(TimeoutTimer, _super);
         function TimeoutTimer() {
@@ -8749,7 +8769,7 @@ define(__m[23/*vs/workbench/services/search/node/worker/searchWorker*/], __M([0/
                     var i;
                     var line = '';
                     var lineNumber = 0;
-                    var lastBufferHadTraillingCR = false;
+                    var lastBufferHadTrailingCR = false;
                     var decodeBuffer = function (buffer, start, end) {
                         if (options.encoding === encoding_1.UTF8 || options.encoding === encoding_1.UTF8_with_bom) {
                             return buffer.toString(undefined, start, end); // much faster to use built in toString() when encoding is default
@@ -8771,6 +8791,9 @@ define(__m[23/*vs/workbench/services/search/node/worker/searchWorker*/], __M([0/
                             if (error || bytesRead === 0 || _this.isCanceled) {
                                 return clb(error); // return early if canceled or limit reached or no more bytes to read
                             }
+                            var crlfCharSize = 1;
+                            var crBytes = [CR];
+                            var lfBytes = [LF];
                             pos = 0;
                             i = 0;
                             // Detect encoding and mime when this is the beginning of the file
@@ -8794,54 +8817,50 @@ define(__m[23/*vs/workbench/services/search/node/worker/searchWorker*/], __M([0/
                                         options.encoding = encoding_1.UTF16le;
                                         break;
                                 }
-                            }
-                            // when we are running with UTF16le/be, LF and CR are encoded as
-                            // two bytes, like 0A 00 (LF) / 0D 00 (CR) for LE or flipped around
-                            // for BE. We need to account for this when splitting the buffer into
-                            // newlines, and when detecting a CRLF combo.
-                            var byteOffsetMultiplier = 1;
-                            if (options.encoding === encoding_1.UTF16le || options.encoding === encoding_1.UTF16be) {
-                                byteOffsetMultiplier = 2;
-                            }
-                            var peekSingleByteChar = function (char, offset) {
-                                if (offset === void 0) { offset = 0; }
-                                var from = i + offset;
+                                // when we are running with UTF16le/be, LF and CR are encoded as
+                                // two bytes, like 0A 00 (LF) / 0D 00 (CR) for LE or flipped around
+                                // for BE. We need to account for this when splitting the buffer into
+                                // newlines, and when detecting a CRLF combo.
                                 if (options.encoding === encoding_1.UTF16le) {
-                                    return buffer[from] === char && buffer[from + 1] === 0x00;
+                                    crlfCharSize = 2;
+                                    crBytes = [CR, 0x00];
+                                    lfBytes = [LF, 0x00];
                                 }
                                 else if (options.encoding === encoding_1.UTF16be) {
-                                    return buffer[from] === 0x00 && buffer[from + 1] === char;
+                                    crlfCharSize = 2;
+                                    crBytes = [0x00, CR];
+                                    lfBytes = [0x00, LF];
                                 }
-                                else {
-                                    return buffer[from] === char;
-                                }
-                            };
-                            var peekLF = function (offset) { return peekSingleByteChar(LF, offset); };
-                            var peekCR = function (offset) { return peekSingleByteChar(CR, offset); };
-                            if (lastBufferHadTraillingCR) {
-                                if (peekLF()) {
-                                    lineFinished(1 * byteOffsetMultiplier);
+                            }
+                            if (lastBufferHadTrailingCR) {
+                                if (buffer[i] === lfBytes[0] && (lfBytes.length === 1 || buffer[i + 1] === lfBytes[1])) {
+                                    lineFinished(1 * crlfCharSize);
                                     i++;
                                 }
                                 else {
                                     lineFinished(0);
                                 }
-                                lastBufferHadTraillingCR = false;
+                                lastBufferHadTrailingCR = false;
                             }
+                            /**
+                             * This loop executes for every byte of every file in the workspace - it is highly performance-sensitive!
+                             * Hence the duplication in reading the buffer to avoid a function call. Previously a function call was not
+                             * being inlined by V8.
+                             */
                             for (; i < bytesRead; ++i) {
-                                if (peekLF()) {
-                                    lineFinished(1 * byteOffsetMultiplier);
+                                if (buffer[i] === lfBytes[0] && (lfBytes.length === 1 || buffer[i + 1] === lfBytes[1])) {
+                                    lineFinished(1 * crlfCharSize);
                                 }
-                                else if (peekCR()) {
-                                    if (i + byteOffsetMultiplier === bytesRead) {
-                                        lastBufferHadTraillingCR = true;
+                                else if (buffer[i] === crBytes[0] && (crBytes.length === 1 || buffer[i + 1] === crBytes[1])) {
+                                    if (i + crlfCharSize === bytesRead) {
+                                        lastBufferHadTrailingCR = true;
                                     }
-                                    else if (peekLF(1 * byteOffsetMultiplier)) {
-                                        lineFinished(2 * byteOffsetMultiplier);
-                                        i += 2 * byteOffsetMultiplier - 1;
+                                    else if (buffer[i + crlfCharSize] === lfBytes[0] && (lfBytes.length === 1 || buffer[i + crlfCharSize + 1] === lfBytes[1])) {
+                                        lineFinished(2 * crlfCharSize);
+                                        i += 2 * crlfCharSize - 1;
                                     }
                                     else {
-                                        lineFinished(1 * byteOffsetMultiplier);
+                                        lineFinished(1 * crlfCharSize);
                                     }
                                 }
                             }
@@ -8937,6 +8956,7 @@ define(__m[20/*vs/workbench/services/search/node/worker/searchWorkerIpc*/], __M(
                 case 'search': return this.worker.search(arg);
                 case 'cancel': return this.worker.cancel();
             }
+            return undefined;
         };
         return SearchWorkerChannel;
     }());

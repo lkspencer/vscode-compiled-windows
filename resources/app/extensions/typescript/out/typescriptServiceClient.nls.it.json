@@ -1,6 +1,7 @@
 [
 	"TypeScript",
 	"Il percorso {0} non punta a un'installazione valida di tsserver. Verrà eseguito il fallback alla versione in bundle di TypeScript.",
+	"VSCode's tsserver was deleted by another application such as a misbehaving virus detection tool. Please reinstall VS Code.",
 	"personalizzato",
 	"Non è stato possibile avviare il server di linguaggio TypeScript. Messaggio di errore: {0}",
 	"Usa versione di VSCode",
@@ -12,8 +13,8 @@
 	"Ricaricare la finestra per applicare le modifiche",
 	"In seguito",
 	"Selezionare la versione di TypeScript usata per le funzionalità del linguaggio JavaScript e TypeScript",
-	"Il servizio di linguaggio Typescript è stato arrestato in modo imprevisto per cinque volte negli ultimi cinque minuti.",
-	"Segnala problema",
 	"Il servizio di linguaggio TypeScript è stato arrestato in modo imprevisto per cinque volte dopo che è stato avviato e non verrà riavviato.",
+	"Segnala problema",
+	"Il servizio di linguaggio Typescript è stato arrestato in modo imprevisto per cinque volte negli ultimi cinque minuti.",
 	"Segnala problema"
 ]

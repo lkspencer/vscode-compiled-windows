@@ -6,7 +6,6 @@
 const vscode_1 = require("vscode");
 class TypeScriptDefinitionProviderBase {
     constructor(client) {
-        this.tokens = [];
         this.client = client;
     }
     getSymbolLocations(definitionType, document, position, token) {
@@ -14,21 +13,18 @@ class TypeScriptDefinitionProviderBase {
         if (!filepath) {
             return Promise.resolve(null);
         }
-        let args = {
+        const args = {
             file: filepath,
             line: position.line + 1,
             offset: position.character + 1
         };
-        if (!args.file) {
-            return Promise.resolve(null);
-        }
         return this.client.execute(definitionType, args, token).then(response => {
-            let locations = (response && response.body) || [];
+            const locations = (response && response.body) || [];
             if (!locations || locations.length === 0) {
                 return [];
             }
             return locations.map(location => {
-                let resource = this.client.asUrl(location.file);
+                const resource = this.client.asUrl(location.file);
                 if (resource === null) {
                     return null;
                 }
@@ -44,4 +40,4 @@ class TypeScriptDefinitionProviderBase {
 }
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = TypeScriptDefinitionProviderBase;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/f9d0c687ff2ea7aabd85fb9a43129117c0ecf519/extensions\typescript\out/features\definitionProviderBase.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/8076a19fdcab7e1fc1707952d652f0bb6c6db331/extensions\typescript\out/features\definitionProviderBase.js.map

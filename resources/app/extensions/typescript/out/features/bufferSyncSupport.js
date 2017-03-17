@@ -4,7 +4,6 @@
  *--------------------------------------------------------------------------------------------*/
 'use strict';
 const cp = require("child_process");
-const path = require("path");
 const fs = require("fs");
 const vscode_1 = require("vscode");
 const async_1 = require("../utils/async");
@@ -30,14 +29,9 @@ class SyncedBuffer {
             fileContent: this.document.getText(),
         };
         if (this.client.apiVersion.has203Features()) {
-            // we have no extension. So check the mode and
-            // set the script kind accordningly.
-            const ext = path.extname(this.filepath);
-            if (ext === '') {
-                const scriptKind = Mode2ScriptKind[this.document.languageId];
-                if (scriptKind) {
-                    args.scriptKindName = scriptKind;
-                }
+            const scriptKind = Mode2ScriptKind[this.document.languageId];
+            if (scriptKind) {
+                args.scriptKindName = scriptKind;
             }
         }
         this.client.execute('open', args, false);
@@ -133,7 +127,9 @@ class BufferSyncSupport {
         this.syncedBuffers[filepath] = syncedBuffer;
         syncedBuffer.open();
         this.requestDiagnostic(filepath);
-        this.checkTSCVersion();
+        if (document.languageId === 'typescript' || document.languageId === 'typescriptreact') {
+            this.checkTSCVersion();
+        }
     }
     onDidCloseTextDocument(document) {
         let filepath = this.client.normalizePath(document.uri);
@@ -285,4 +281,4 @@ class BufferSyncSupport {
 }
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = BufferSyncSupport;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/f9d0c687ff2ea7aabd85fb9a43129117c0ecf519/extensions\typescript\out/features\bufferSyncSupport.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/8076a19fdcab7e1fc1707952d652f0bb6c6db331/extensions\typescript\out/features\bufferSyncSupport.js.map

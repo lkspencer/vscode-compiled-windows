@@ -2178,6 +2178,65 @@ Applies to all other files
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
+
+.monaco-editor .minimap-slider {
+	opacity: 0;
+	transition: opacity 100ms linear;
+}
+.monaco-editor .minimap:hover .minimap-slider {
+	opacity: 1;
+}
+.monaco-editor .minimap-slider.active {
+	opacity: 1;
+}
+
+.monaco-editor.vs .minimap-slider {
+	background: rgba(100, 100, 100, .4);
+}
+.monaco-editor.vs-dark .minimap-slider {
+	background: rgba(121, 121, 121, .4);
+}
+.monaco-editor.hc-black .minimap-slider {
+	background: rgba(111, 195, 223, .6);
+}
+
+.monaco-editor.vs .minimap-slider:hover,
+.monaco-editor.vs-dark .minimap-slider:hover {
+	background: rgba(100, 100, 100, .7);
+}
+.monaco-editor.hc-black .minimap-slider:hover {
+	background: rgba(111, 195, 223, .8);
+}
+
+.monaco-editor.vs .minimap-slider.active {
+	background: rgba(0, 0, 0, .6);
+}
+.monaco-editor.vs-dark .minimap-slider.active {
+	background: rgba(191, 191, 191, .4);
+}
+.monaco-editor.hc-black .minimap-slider.active {
+	background: rgba(111, 195, 223, 1);
+}
+
+.monaco-editor .minimap-shadow-hidden {
+	position: absolute;
+	width: 0;
+}
+.monaco-editor .minimap-shadow-visible {
+	position: absolute;
+	left: -6px;
+	width: 6px;
+	box-shadow: #DDD -6px 0 6px -6px inset;
+}
+
+.monaco-editor.vs-dark .minimap-shadow-visible {
+	box-shadow: #000 -6px 0 6px -6px inset;
+}
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
 .monaco-editor .overlayWidgets {
 	position: absolute;
 	top: 0;
@@ -2263,9 +2322,25 @@ Applies to all other files
 	opacity: 0.6;
 }
 
-/* -- under-line-style -- */
+/* -- block-outline-style -- */
+.monaco-editor .cursors-layer.cursor-block-outline-style > .cursor {
+	box-sizing: border-box;
+	background: transparent !important;
+	border-style: solid;
+	border-width: 1px;
+}
+
+/* -- underline-style -- */
 .monaco-editor .cursors-layer.cursor-underline-style > .cursor {
 	border-bottom-width: 2px;
+	border-bottom-style: solid;
+	background: transparent !important;
+	box-sizing: border-box;
+}
+
+/* -- underline-thin-style -- */
+.monaco-editor .cursors-layer.cursor-underline-thin-style > .cursor {
+	border-bottom-width: 1px;
 	border-bottom-style: solid;
 	background: transparent !important;
 	box-sizing: border-box;
@@ -2656,7 +2731,6 @@ Applies to all other files
 	text-overflow: ellipsis;
 	font-size: 90%;
 	color: #999999;
-	vertical-align: sub;
 }
 
 .monaco-editor .codelens-decoration > span,
@@ -2666,6 +2740,7 @@ Applies to all other files
 	-ms-user-select: none;
 	user-select: none;
 	white-space: nowrap;
+	vertical-align: sub;
 }
 
 .monaco-editor .codelens-decoration > a {
@@ -2787,6 +2862,23 @@ Applies to all other files
 	padding: 3px 5px;
 }
 
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+.monaco-editor.vs .dnd-target {
+	border-right: 2px dotted black;
+	color: white; /* opposite of black */
+}
+.monaco-editor.vs-dark .dnd-target {
+	border-right: 2px dotted #AEAFAD;
+	color: #51504f; /* opposite of #AEAFAD */
+}
+.monaco-editor.hc-black .dnd-target {
+	border-right: 2px dotted #fff;
+	color: #000; /* opposite of #fff */
+}
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -3332,6 +3424,49 @@ Applies to all other files
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
+
+.monaco-editor .monaco-editor-overlaymessage {
+	padding-bottom: 8px;
+}
+
+@keyframes fadeIn {
+	from { opacity: 0; }
+	to { opacity: 1; }
+}
+.monaco-editor .monaco-editor-overlaymessage.fadeIn {
+	animation: fadeIn 150ms ease-out;
+}
+
+@keyframes fadeOut {
+	from { opacity: 1; }
+	to { opacity: 0; }
+}
+.monaco-editor .monaco-editor-overlaymessage.fadeOut {
+	animation: fadeOut 100ms ease-out;
+}
+
+.monaco-editor .monaco-editor-overlaymessage .message {
+	padding: 1px 4px;
+	background: #1382CE;
+	color: white;
+}
+
+.monaco-editor .monaco-editor-overlaymessage .anchor {
+	width: 0 !important;
+	height: 0 !important;
+	border-color: transparent;
+	border-style: solid;
+	z-index: 1000;
+	border-width: 8px;
+	border-top-color: #1382CE;
+	position: absolute;
+}
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
 /* marker zone */
 
 .monaco-editor .marker-widget {
@@ -3342,11 +3477,31 @@ Applies to all other files
 	white-space: nowrap;
 }
 
+.monaco-editor .zone-widget .zone-widget-container.marker-error-widget {
+	border-top-color: #ff5a5a;
+	border-bottom-color: #ff5a5a;
+}
+
+.monaco-editor .zone-widget .zone-widget-container.marker-warning-widget {
+	border-top-color: #5aac5a;
+	border-bottom-color: #5aac5a;
+}
+
+.monaco-editor .zone-widget-arrow.below.marker-error-widget {
+	border-bottom-color: #ff5a5a;
+}
+
+.monaco-editor .zone-widget-arrow.below.marker-warning-widget {
+	border-bottom-color: #5aac5a;
+}
+
 .monaco-editor.vs-dark .marker-widget {
 	background-color: #2D2D30;
 }
 
+
 /* High Contrast Theming */
+
 .monaco-editor.hc-black .marker-widget {
 	background-color: #0C141F;
 }
@@ -3535,18 +3690,14 @@ Applies to all other files
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-.monaco-editor .detected-link {
+.monaco-editor .detected-link,
+.monaco-editor .detected-link-active {
 	text-decoration: underline;
 }
 
 .monaco-editor .detected-link-active {
-	text-decoration: underline;
 	cursor: pointer;
 	color: blue !important;
-}
-
-.monaco-editor.vs-dark .detected-link {
-	border-color: #1C5DAF;
 }
 
 .monaco-editor.vs-dark .detected-link-active {
@@ -3573,7 +3724,6 @@ Applies to all other files
 
 .monaco-editor .parameter-hints-widget > .wrapper {
 	max-width: 440px;
-	height: 100%;
 	display: flex;
 	flex-direction: column;
 }
@@ -3602,7 +3752,6 @@ Applies to all other files
 }
 
 .monaco-editor .parameter-hints-widget.multiple .body {
-	height: 100%;
 	border-left: 1px solid rgba(204, 204, 204, 0.5);
 }
 
@@ -3615,7 +3764,6 @@ Applies to all other files
 }
 
 .monaco-editor .parameter-hints-widget .docs {
-	height: 100%;
 	padding: 0 10px 0 5px;
 }
 
@@ -3731,15 +3879,12 @@ Applies to all other files
 	cursor: pointer;
 }
 
-.monaco-editor.vs .lightbulb-glyph,
-.monaco-editor.vs .lightbulb-glyph[data-severity="high"] {
+.monaco-editor.vs .lightbulb-glyph {
 	background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' enable-background='new 0 0 16 16' height='16' width='16'%3E%3Cpath fill='%23F6F6F6' d='M13.5 4.2C13.1 2.1 10.8 0 9.3 0H6.7c-.4 0-.6.2-.6.2C4 .8 2.5 2.7 2.5 4.9c0 .5-.1 2.3 1.7 3.8.5.5 1.2 2 1.3 2.4v3.3L7.1 16h2l1.5-1.6V11c.1-.4.8-1.9 1.3-2.3 1.1-.9 1.5-1.9 1.6-2.7V4.2z'/%3E%3Cg%3E%3Cg fill='%23848484'%3E%3Cpath d='M6.5 12h3v1h-3zM7.5 15h1.1l.9-1h-3z'/%3E%3C/g%3E%3Cpath fill='%23fc0' d='M12.6 5c0-2.3-1.8-4.1-4.1-4.1-.1 0-1.4.1-1.4.1-2.1.3-3.7 2-3.7 4 0 .1-.2 1.6 1.4 3 .7.7 1.5 2.4 1.6 2.9l.1.1h3l.1-.2c.1-.5.9-2.2 1.6-2.9 1.6-1.3 1.4-2.8 1.4-2.9zm-3 1l-.5 3h-.6V6c1.1 0 .9-1 .9-1H6.5v.1c0 .2.1.9 1 .9v3H7l-.2-.7L6.5 6c-.7 0-.9-.4-1-.7v-.4c0-.8.9-.9.9-.9h3.1s1 .1 1 1c0 0 .1 1-.9 1z'/%3E%3C/g%3E%3Cpath fill='%23F0EFF1' d='M10.5 5c0-.9-1-1-1-1H6.4s-.9.1-.9.9v.4c0 .3.3.7.9.7l.4 2.3.2.7h.5V6c-1 0-1-.7-1-.9V5h3s.1 1-.9 1v3h.6l.5-3c.9 0 .8-1 .8-1z'/%3E%3C/svg%3E") center center no-repeat;
 }
 
 .monaco-editor.vs-dark .lightbulb-glyph,
-.monaco-editor.hc-black .lightbulb-glyph,
-.monaco-editor.vs-dark .lightbulb-glyph[data-severity="high"],
-.monaco-editor.hc-black .lightbulb-glyph[data-severity="high"] {
+.monaco-editor.hc-black .lightbulb-glyph {
 	background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' enable-background='new 0 0 16 16' height='16' width='16'%3E%3Cpath fill='%231E1E1E' d='M13.5 4.2C13.1 2.1 10.8 0 9.3 0H6.7c-.4 0-.6.2-.6.2C4 .8 2.5 2.7 2.5 4.9c0 .5-.1 2.3 1.7 3.8.5.5 1.2 2 1.3 2.4v3.3L7.1 16h2l1.5-1.6V11c.1-.4.8-1.9 1.3-2.3 1.1-.9 1.5-1.9 1.6-2.7V4.2z'/%3E%3Cg%3E%3Cg fill='%23C5C5C5'%3E%3Cpath d='M6.5 12h3v1h-3zM7.5 15h1.1l.9-1h-3z'/%3E%3C/g%3E%3Cpath fill='%23DDB204' d='M12.6 5c0-2.3-1.8-4.1-4.1-4.1-.1 0-1.4.1-1.4.1-2.1.3-3.7 2-3.7 4 0 .1-.2 1.6 1.4 3 .7.7 1.5 2.4 1.6 2.9l.1.1h3l.1-.2c.1-.5.9-2.2 1.6-2.9 1.6-1.3 1.4-2.8 1.4-2.9zm-3 1l-.5 3h-.6V6c1.1 0 .9-1 .9-1H6.5v.1c0 .2.1.9 1 .9v3H7l-.2-.7L6.5 6c-.7 0-.9-.4-1-.7v-.4c0-.8.9-.9.9-.9h3.1s1 .1 1 1c0 0 .1 1-.9 1z'/%3E%3C/g%3E%3Cpath fill='%23252526' d='M10.5 5c0-.9-1-1-1-1H6.4s-.9.1-.9.9v.4c0 .3.3.7.9.7l.4 2.3.2.7h.5V6c-1 0-1-.7-1-.9V5h3s.1 1-.9 1v3h.6l.5-3c.9 0 .8-1 .8-1z'/%3E%3C/svg%3E") center center no-repeat;
 }
 
@@ -3752,6 +3897,10 @@ Applies to all other files
 .monaco-editor .zone-widget .zone-widget-container.reference-zone-widget {
 	border-top-width: 1px;
 	border-bottom-width: 1px;
+}
+
+.monaco-editor .reference-zone-widget.zone-widget-arrow.below {
+	background: transparent;
 }
 
 .monaco-editor .zone-widget .zone-widget-container.reference-zone-widget.results-loaded {
@@ -4311,7 +4460,6 @@ Applies to all other files
 
 .monaco-editor .peekview-widget .head {
 	background-color: #fff;
-	border-top: 1px solid;
 	-webkit-box-sizing:	border-box;
 	-o-box-sizing: border-box;
 	-moz-box-sizing: border-box;
@@ -4355,8 +4503,8 @@ Applies to all other files
 
 .monaco-editor .peekview-widget > .body {
 	border-top: 1px solid;
-	border-bottom: 1px solid;
 	position: relative;
+	border-color: rgb(0, 122, 204);
 }
 
 /* Dark Theme */
@@ -4413,7 +4561,7 @@ Applies to all other files
 }
 
 .monaco-editor .zone-widget-arrow.below {
-	border-bottom-color: yellowGreen;
+	border-bottom-color: rgb(0, 122, 204);
 }
 
 .monaco-editor .zone-widget .zone-widget-container {
@@ -4421,8 +4569,8 @@ Applies to all other files
 	border-bottom-style: solid;
 	border-top-width: 0;
 	border-bottom-width: 0;
-	border-top-color: yellowGreen;
-	border-bottom-color: yellowGreen;
+	border-top-color: rgb(0, 122, 204);
+	border-bottom-color: rgb(0, 122, 204);
 	position: relative;
 }
 
@@ -5185,6 +5333,10 @@ Applies to all other files
 	margin-bottom: auto;
 }
 
+.monaco-workbench > .part.editor > .content > .one-editor-silo > .container > .title .tabs-container > .tab .monaco-icon-label {
+	overflow: visible; /* fixes https://github.com/Microsoft/vscode/issues/20182 */
+}
+
 .monaco-workbench > .part.editor > .content > .one-editor-silo > .container > .title .tabs-container > .tab .monaco-icon-label::before {
 	height: 16px; /* tweak the icon size of the editor labels when icons are enabled */
 }
@@ -5272,13 +5424,15 @@ Applies to all other files
 /* No Tab Close Button */
 
 .monaco-workbench > .part.editor > .content > .one-editor-silo > .container > .title .tabs-container > .tab.close-button-off {
-	padding-right: 28px; /* make room for dirty indication when we are running without close button */
+	padding-right: 12px;
+	transition: padding-right ease-in-out 100ms;
 }
 
 .monaco-workbench > .part.editor > .content > .one-editor-silo > .container > .title .tabs-container > .tab.close-button-off.dirty {
 	background-repeat: no-repeat;
 	background-position-y: center;
 	background-position-x: calc(100% - 6px); /* to the right of the tab label */
+	padding-right: 28px; /* make room for dirty indication when we are running without close button */
 }
 
 .vs .monaco-workbench > .part.editor > .content > .one-editor-silo > .container > .title .tabs-container > .tab.close-button-off.dirty {
@@ -6215,6 +6369,7 @@ a:active {
 .monaco-editor .zone-widget .zone-widget-container.breakpoint-widget {
 	height: 30px !important;
 	display: flex;
+	border-color: #007ACC;
 }
 
 .monaco-editor .zone-widget .zone-widget-container.breakpoint-widget .breakpoint-select-container {
@@ -6262,16 +6417,13 @@ a:active {
 	background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'%3E%3Cstyle type='text/css'%3E.icon-canvas-transparent{opacity:0;fill:%23F6F6F6;} .icon-white{fill:%23FFFFFF;}%3C/style%3E%3Cpath class='icon-canvas-transparent' d='M32 32H0V0h32v32z' id='canvas'/%3E%3Cg id='iconBg'%3E%3Cpath class='icon-white' d='M17 19.488v4.248c0 .462.09 1.264-.373 1.264H15v-1h1v-3.19l-.173-.18c-1.453 1.205-3.528 1.248-4.67.108C10 19.578 10.118 18 11.376 16H8v1H7v-1.627C7 14.91 7.802 15 8.264 15h4.105L17 19.488zM14 9h-1V8h1.955c.46 0 1.045.22 1.045.682v3.345l.736.875c.18-.973.89-1.71 1.914-1.71.143 0 .35.014.35.04V9h1v2.618c0 .117.265.382.382.382H23v1h-2.233c.027 0 .042.154.042.298 0 1.025-.74 1.753-1.712 1.932l.875.77H23.318c.462 0 .682.583.682 1.045V19h-1v-1h-2.52L14 11.698V9zM16 4C9.373 4 4 9.373 4 16s5.373 12 12 12 12-5.373 12-12S22.627 4 16 4zm10 12c0 2.397-.85 4.6-2.262 6.324L9.676 8.262C11.4 6.85 13.602 6 16 6c5.514 0 10 4.486 10 10zM6 16c0-2.398.85-4.6 2.262-6.324L22.324 23.74C20.6 25.15 18.397 26 16 26c-5.514 0-10-4.486-10-10z'/%3E%3C/g%3E%3C/svg%3E");
 }
 
-.monaco-editor .debug-top-stack-frame-line {
-	background: rgba(255, 255, 0, 0.35);
-}
-
+.monaco-editor .debug-top-stack-frame-line,
 .monaco-editor .debug-top-stack-frame-exception-line {
-	background: rgba(242, 222, 222, 0.7);
+	background: rgba(255, 255, 102, 0.45);
 }
 
-.monaco-editor .debug-top-stack-frame-column {
-	background: rgba(255, 255, 0, 0.7);
+.monaco-editor .debug-top-stack-frame-column::before {
+	background: url("data:image/svg+xml,%3Csvg width='16' height='16' viewBox='0 0 16 16' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg stroke-opacity='.2' stroke='%23000' fill='%23FFD838'%3E%3Cg%3E%3Cpath d='M10.188 3H5.375C2.96 3 1 5.24 1 8s1.96 5 4.375 5h5.25L16 8l-5.375-5h-.438z'/%3E%3C/g%3E%3C/g%3E%3C/g%3E%3C/svg%3E") center center no-repeat;
 }
 
 .monaco-editor .debug-focused-stack-frame-line {
@@ -6282,11 +6434,13 @@ a:active {
 	background: url("data:image/svg+xml,%3Csvg width='16' height='16' viewBox='0 0 16 16' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd' fill-opacity='0.4'%3E%3Cg fill='%23E51400'%3E%3Ccircle cx='8' cy='8' r='5'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E") center center no-repeat;
 }
 
-.monaco-editor .debug-breakpoint-disabled-glyph {
+.monaco-editor .debug-breakpoint-disabled-glyph,
+.monaco-editor .debug-breakpoint-column.debug-breakpoint-disabled-glyph-column::before {
 	background: url("data:image/svg+xml,%3Csvg width='16' height='16' viewBox='0 0 16 16' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd' fill-opacity='0.6'%3E%3Cg fill='%236C6C6C'%3E%3Ccircle cx='8' cy='8' r='5'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E") center center no-repeat;
 }
 
-.monaco-editor .debug-breakpoint-unverified-glyph {
+.monaco-editor .debug-breakpoint-unverified-glyph,
+.monaco-editor .debug-breakpoint-column.debug-breakpoint-unverified-glyph-column::before {
 	background: url("data:image/svg+xml,%3Csvg width='16' height='16' viewBox='0 0 16 16' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg stroke='%236C6C6C' stroke-width='3' stroke-opacity='0.6'%3E%3Ccircle cx='8' cy='8' r='4'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E") center center no-repeat;
 }
 
@@ -6298,20 +6452,36 @@ a:active {
 	background: url("data:image/svg+xml,%3Csvg width='16' height='16' viewBox='0 0 16 16' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg stroke-opacity='.25' stroke='%23000' fill='%23CEE7CE'%3E%3Cg%3E%3Cpath d='M10.188 3H5.375C2.96 3 1 5.24 1 8s1.96 5 4.375 5h5.25L16 8l-5.375-5h-.438z'/%3E%3C/g%3E%3C/g%3E%3C/g%3E%3C/svg%3E") center center no-repeat;
 }
 
-.monaco-editor .debug-breakpoint-glyph {
+.monaco-editor .debug-breakpoint-glyph,
+.monaco-editor .debug-breakpoint-column.debug-breakpoint-glyph-column::before {
 	background: url("data:image/svg+xml,%3Csvg width='16' height='16' viewBox='0 0 16 16' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23E51400'%3E%3Ccircle cx='8' cy='8' r='5'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E") center center no-repeat;
 }
 
-.monaco-editor .debug-breakpoint-conditional-glyph {
+.monaco-editor .debug-breakpoint-column::before,
+.monaco-editor .debug-top-stack-frame-column::before {
+	content: " ";
+	width: 0.9em;
+	height: 0.8em;
+	display: inline-block;
+	margin-right: 2px;
+	margin-left: 2px;
+	background-size: 110% !important;
+	background-position: initial !important;
+}
+
+.monaco-editor .debug-breakpoint-conditional-glyph,
+.monaco-editor .debug-breakpoint-column.debug-breakpoint-conditional-glyph-column::before {
 	background: url("data:image/svg+xml,%3C?xml version='1.0' encoding='utf-8'?%3E %3C!-- Generator: Adobe Illustrator 19.2.0, SVG Export Plug-In . SVG Version: 6.00 Build 0) --%3E %3Csvg version='1.1' id='Layer_1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' x='0px' y='0px' viewBox='0 0 16 16' style='enable-background:new 0 0 16 16;' xml:space='preserve'%3E %3Cstyle type='text/css'%3E .st0{fill:%23E51400;} %3C/style%3E %3Cpath class='st0' d='M8,3C5.2,3,3,5.2,3,8s2.2,5,5,5s5-2.2,5-5S10.8,3,8,3z M10.8,9.9H5.2V8.7h5.7V9.9z M10.8,7.3H5.2V6.1h5.7V7.3z' /%3E %3C/svg%3E ") center center no-repeat;
 }
 
-.monaco-editor .debug-breakpoint-unsupported-glyph {
+.monaco-editor .debug-breakpoint-unsupported-glyph,
+.monaco-editor .debug-breakpoint-column.debug-breakpoint-unsupported-glyph-column::before {
 	background: url("data:image/svg+xml,%3C?xml version='1.0' encoding='utf-8'?%3E %3Csvg version='1.1' id='Layer_1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' x='0px' y='0px' viewBox='0 0 16 16' style='enable-background:new 0 0 16 16;' xml:space='preserve'%3E %3Cstyle type='text/css'%3E .st0{fill:%23E51400;} .st1{fill:%23FFFFFF;} %3C/style%3E %3Cg%3E %3Cg%3E %3Ccircle class='st0' cx='8' cy='8' r='5'/%3E %3C/g%3E %3C/g%3E %3Cg%3E %3Crect x='7.3' y='10.2' class='st1' width='1.5' height='1.5'/%3E %3Crect x='7.3' y='4.4' class='st1' width='1.5' height='4.4'/%3E %3C/g%3E %3C/svg%3E ") center center no-repeat;
 }
 
 .monaco-editor .debug-top-stack-frame-glyph.debug-breakpoint-glyph,
-.monaco-editor .debug-top-stack-frame-glyph.debug-breakpoint-conditional-glyph {
+.monaco-editor .debug-top-stack-frame-glyph.debug-breakpoint-conditional-glyph,
+.monaco-editor .debug-breakpoint-column.debug-breakpoint-glyph-column.debug-top-stack-frame-column::before {
 	background: url("data:image/svg+xml,%3Csvg width='16' height='16' viewBox='0 0 16 16' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg%3E%3Cg transform='translate(1 3)'%3E%3Cpath d='M9.188 0H4.375C1.96 0 0 2.24 0 5s1.96 5 4.375 5h5.25L15 5 9.625 0h-.438z' stroke-opacity='.2' stroke='%23000' fill='%23FFD838'/%3E%3Ccircle fill='%23E51400' cx='5' cy='5' r='3'/%3E%3C/g%3E%3C/g%3E%3C/g%3E%3C/svg%3E") center center no-repeat;
 }
 
@@ -6418,35 +6588,37 @@ a:active {
 	background: rgba(122, 189, 122, 0.3);
 }
 
-.monaco-editor.vs-dark .debug-top-stack-frame-line {
-	background: rgba(255, 255, 0, 0.20);
-}
-
+.monaco-editor.vs-dark .debug-top-stack-frame-line,
 .monaco-editor.vs-dark .debug-top-stack-frame-exception-line {
-	background-color: rgba(90, 29, 29, 0.6);
+	background-color: rgba(255, 255, 0, 0.2)
 }
 
-.monaco-editor.vs-dark .debug-top-stack-frame-column {
-	background: rgba(255, 255, 0, 0.15);
+.monaco-editor.vs-dark .debug-top-stack-frame-column::before {
+	background: url("data:image/svg+xml,%3Csvg width='16' height='16' viewBox='0 0 16 16' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23FFD838'%3E%3Cg%3E%3Cpath d='M10.188 3H5.375C2.96 3 1 5.24 1 8s1.96 5 4.375 5h5.25L16 8l-5.375-5h-.438z'/%3E%3C/g%3E%3C/g%3E%3C/g%3E%3C/svg%3E") center center no-repeat;
 }
 
-.monaco-editor.vs-dark .debug-breakpoint-glyph {
+.monaco-editor.vs-dark .debug-breakpoint-glyph,
+.monaco-editor.vs-dark .debug-breakpoint-column.debug-breakpoint-glyph-column::before {
 	background: url("data:image/svg+xml,%3Csvg width='16' height='16' viewBox='0 0 16 16' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23c10'%3E%3Ccircle cx='8' cy='8' r='5'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E") center center no-repeat;
 }
 
-.monaco-editor.vs-dark .debug-breakpoint-conditional-glyph {
+.monaco-editor.vs-dark .debug-breakpoint-conditional-glyph,
+.monaco-editor.vs-dark .debug-breakpoint-column.debug-breakpoint-conditional-glyph-column::before {
 	background: url("data:image/svg+xml,%3C?xml version='1.0' encoding='utf-8'?%3E %3C!-- Generator: Adobe Illustrator 19.2.0, SVG Export Plug-In . SVG Version: 6.00 Build 0) --%3E %3Csvg version='1.1' id='Layer_1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' x='0px' y='0px' viewBox='0 0 16 16' style='enable-background:new 0 0 16 16;' xml:space='preserve'%3E %3Cstyle type='text/css'%3E .st0{fill:%23CC1100;} %3C/style%3E %3Cpath class='st0' d='M8,3C5.2,3,3,5.2,3,8s2.2,5,5,5s5-2.2,5-5S10.8,3,8,3z M10.8,9.9H5.2V8.7h5.7V9.9z M10.8,7.3H5.2V6.1h5.7V7.3z' /%3E %3C/svg%3E ") center center no-repeat;
 }
 
-.monaco-editor.vs-dark .debug-breakpoint-unsupported-glyph {
+.monaco-editor.vs-dark .debug-breakpoint-unsupported-glyph,
+.monaco-editor.vs-dark .debug-breakpoint-column.debug-breakpoint-unsupported-glyph-column::before {
 	background: url("data:image/svg+xml,%3C?xml version='1.0' encoding='utf-8'?%3E %3Csvg version='1.1' id='Layer_1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' x='0px' y='0px' viewBox='0 0 16 16' style='enable-background:new 0 0 16 16;' xml:space='preserve'%3E %3Cstyle type='text/css'%3E .st0{fill:%23CC1100;} .st1{fill:%23FFFFFF;} %3C/style%3E %3Cg%3E %3Cg%3E %3Ccircle class='st0' cx='8' cy='8' r='5'/%3E %3C/g%3E %3C/g%3E %3Cg%3E %3Crect x='7.3' y='10.2' class='st1' width='1.5' height='1.5'/%3E %3Crect x='7.3' y='4.4' class='st1' width='1.5' height='4.4'/%3E %3C/g%3E %3C/svg%3E ") center center no-repeat;
 }
 
-.monaco-editor.vs-dark .debug-breakpoint-disabled-glyph {
+.monaco-editor.vs-dark .debug-breakpoint-disabled-glyph,
+.monaco-editor.vs-dark .debug-breakpoint-column.debug-breakpoint-disabled-glyph-column::before {
 	background: url("data:image/svg+xml,%3Csvg width='16' height='16' viewBox='0 0 16 16' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd' fill-opacity='0.8'%3E%3Cg fill='%235A5A5A'%3E%3Ccircle cx='8' cy='8' r='5'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E") center center no-repeat;
 }
 
-.monaco-editor.vs-dark .debug-breakpoint-unverified-glyph {
+.monaco-editor.vs-dark .debug-breakpoint-unverified-glyph,
+.monaco-editor.vs-dark .debug-breakpoint-column.debug-breakpoint-unverified-glyph-column::before {
 	background: url("data:image/svg+xml,%3Csvg width='16' height='16' viewBox='0 0 16 16' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg stroke='%235A5A5A' stroke-width='3' stroke-opacity='0.8'%3E%3Ccircle cx='8' cy='8' r='4'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E") center center no-repeat;
 }
 
@@ -6459,7 +6631,8 @@ a:active {
 }
 
 .monaco-editor.vs-dark .debug-top-stack-frame-glyph.debug-breakpoint-glyph,
-.monaco-editor.vs-dark .debug-top-stack-frame-glyph.debug-breakpoint-conditional-glyph {
+.monaco-editor.vs-dark .debug-top-stack-frame-glyph.debug-breakpoint-conditional-glyph,
+.monaco-editor.vs-dark .debug-breakpoint-column.debug-breakpoint-glyph-column.debug-top-stack-frame-column::before {
 	background: url("data:image/svg+xml,%3Csvg width='16' height='16' viewBox='0 0 16 16' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg%3E%3Cg transform='translate(1 3)'%3E%3Cpath d='M9.188 0H4.375C1.96 0 0 2.24 0 5s1.96 5 4.375 5h5.25L15 5 9.625 0h-.438z' fill='%23FFD838'/%3E%3Ccircle fill='%23c10' cx='5' cy='5' r='3'/%3E%3C/g%3E%3C/g%3E%3C/g%3E%3C/svg%3E") center center no-repeat;
 }
 
@@ -6475,9 +6648,10 @@ a:active {
 }
 
 .hc-black .monaco-editor .debug-top-stack-frame-line {
-	background: rgba(255, 246, 0, .87);
+	background: rgba(255, 246, 0, .8);
 	mix-blend-mode: lighten; /* Preserves text selection's contrast */
 }
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -6926,7 +7100,7 @@ a:active {
 	text-overflow: ellipsis;
 	overflow: hidden;
 	white-space: nowrap;
-	padding-left: 5px;
+	margin: 0px 10px;
 }
 
 .debug-viewlet .debug-call-stack-title > .pause-message > .label {
@@ -7162,6 +7336,60 @@ a:active {
 
 .debug-viewlet > .noworkspace-view > p {
 	line-height: 1.5em;
+}
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+.monaco-editor .zone-widget .zone-widget-container.exception-widget {
+	padding: 6px 10px;
+	white-space: pre-wrap;
+	-webkit-user-select: text;
+	-ms-user-select: text;
+	-khtml-user-select: text;
+	-moz-user-select: text;
+	-o-user-select: text;
+	user-select: text;
+}
+
+.monaco-editor .zone-widget .zone-widget-container.exception-widget .title {
+	font-weight: bold;
+}
+
+.monaco-editor .zone-widget .zone-widget-container.exception-widget .message {
+	font-family: Monaco, Menlo, Consolas, "Droid Sans Mono", "Inconsolata", "Courier New", monospace, "Droid Sans Fallback";
+}
+
+.monaco-editor .zone-widget-arrow.below.exception-widget {
+	border-bottom-color: rgb(163, 21, 21);
+}
+
+/* Light and Dark Theming */
+
+.monaco-editor .zone-widget .zone-widget-container.exception-widget {
+	background-color: rgba(163, 21, 21, 0.05);
+	border-top-color: rgb(163, 21, 21);
+	border-bottom-color: rgb(163, 21, 21);
+}
+
+.monaco-editor.vs-dark .zone-widget .zone-widget-container.exception-widget {
+	background-color: rgba(163, 21, 21, 0.25);
+}
+
+/* High Contrast Theming */
+.monaco-editor.hc-black .zone-widget .zone-widget-container.exception-widget {
+	background-color: rgba(163, 21, 21, 0.45);
+}
+
+.monaco-workbench.mac .zone-widget .zone-widget-container.exception-widget {
+	font-size: 11px;
+}
+
+.monaco-workbench.windows .zone-widget .zone-widget-container.exception-widget,
+.monaco-workbench.linux .zone-widget .zone-widget-container.exception-widget {
+	font-size: 13px;
 }
 
 /*---------------------------------------------------------------------------------------------
@@ -7543,23 +7771,23 @@ a:active {
 	font-style: italic;
 }
 
-.extension-editor > .header > .details > .actions > .monaco-action-bar .action-item .action-label.extension-action.built-in-status {
+.extension-editor>.header>.details>.actions>.monaco-action-bar .action-item .action-label.extension-action.built-in-status {
 	font-weight: normal;
 }
 
-.extensions-viewlet > .extensions .extension > .details > .footer > .monaco-action-bar .action-item .action-label.extension-action.manage.no-extension {
+.extensions-viewlet>.extensions .extension>.details>.footer>.monaco-action-bar .action-item .action-label.extension-action.manage.hide {
 	display: none;
 }
 
-.extensions-viewlet > .extensions .extension > .details > .footer > .monaco-action-bar .action-item .action-label.extension-action.manage {
+.extensions-viewlet>.extensions .extension>.details>.footer>.monaco-action-bar .action-item .action-label.extension-action.manage {
 	height: 18px;
 	width: 10px;
 	border: none;
 	background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16'%3E%3Cg fill='%23424242'%3E%3Cpath d='M12.714 9.603c-.07.207-.15.407-.246.601l1.017 2.139c-.335.424-.718.807-1.142 1.143l-2.14-1.018c-.193.097-.394.176-.601.247l-.795 2.235c-.265.03-.534.05-.807.05-.272 0-.541-.02-.806-.05l-.795-2.235c-.207-.071-.408-.15-.602-.247l-2.14 1.017c-.424-.336-.807-.719-1.143-1.143l1.017-2.139c-.094-.193-.175-.393-.245-.6l-2.236-.796c-.03-.265-.05-.534-.05-.807s.02-.542.05-.807l2.236-.795c.07-.207.15-.407.246-.601l-1.016-2.139c.336-.423.719-.807 1.143-1.142l2.14 1.017c.193-.096.394-.176.602-.247l.793-2.236c.265-.03.534-.05.806-.05.273 0 .542.02.808.05l.795 2.236c.207.07.407.15.601.246l2.14-1.017c.424.335.807.719 1.142 1.142l-1.017 2.139c.096.194.176.394.246.601l2.236.795c.029.266.049.535.049.808s-.02.542-.05.807l-2.236.796zm-4.714-4.603c-1.657 0-3 1.343-3 3s1.343 3 3 3 3-1.343 3-3-1.343-3-3-3z'/%3E%3Ccircle cx='8' cy='8' r='1.5'/%3E%3C/g%3E%3C/svg%3E") center center no-repeat;
 }
 
-.hc-black .extensions-viewlet > .extensions .extension > .details > .footer > .monaco-action-bar .action-item .action-label.extension-action.manage,
-.vs-dark .extensions-viewlet > .extensions .extension > .details > .footer > .monaco-action-bar .action-item .action-label.extension-action.manage {
+.hc-black .extensions-viewlet>.extensions .extension>.details>.footer>.monaco-action-bar .action-item .action-label.extension-action.manage,
+.vs-dark .extensions-viewlet>.extensions .extension>.details>.footer>.monaco-action-bar .action-item .action-label.extension-action.manage {
 	background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16'%3E%3Cg fill='%23C5C5C5'%3E%3Cpath d='M12.714 9.603c-.07.207-.15.407-.246.601l1.017 2.139c-.335.424-.718.807-1.142 1.143l-2.14-1.018c-.193.097-.394.176-.601.247l-.795 2.235c-.265.03-.534.05-.807.05-.272 0-.541-.02-.806-.05l-.795-2.235c-.207-.071-.408-.15-.602-.247l-2.14 1.017c-.424-.336-.807-.719-1.143-1.143l1.017-2.139c-.094-.193-.175-.393-.245-.6l-2.236-.796c-.03-.265-.05-.534-.05-.807s.02-.542.05-.807l2.236-.795c.07-.207.15-.407.246-.601l-1.016-2.139c.336-.423.719-.807 1.143-1.142l2.14 1.017c.193-.096.394-.176.602-.247l.793-2.236c.265-.03.534-.05.806-.05.273 0 .542.02.808.05l.795 2.236c.207.07.407.15.601.246l2.14-1.017c.424.335.807.719 1.142 1.142l-1.017 2.139c.096.194.176.394.246.601l2.236.795c.029.266.049.535.049.808s-.02.542-.05.807l-2.236.796zm-4.714-4.603c-1.657 0-3 1.343-3 3s1.343 3 3 3 3-1.343 3-3-1.343-3-3-3z'/%3E%3Ccircle cx='8' cy='8' r='1.5'/%3E%3C/g%3E%3C/svg%3E") center center no-repeat;
 }
 /*---------------------------------------------------------------------------------------------
@@ -9471,25 +9699,24 @@ a:active {
 	background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16'%3E%3Cpath fill='%231E1E1E' d='M4.222 0h-2.222v.479c-.526.648-.557 1.57-.043 2.269l.043.059v3.203l-.4.296-.053.053c-.353.352-.547.822-.547 1.321s.194.967.549 1.32c.134.134.288.236.451.322v6.678h14v-16h-11.778z'/%3E%3Cpath fill='%23E8E8E8' d='M10.798 7l-1.83-2h6.032v2h-4.202zm-2.292-6h-3.207l1.337 1.52 1.87-1.52zm-5.506 8.531v1.469h12v-2h-10.813l-.024.021c-.3.299-.716.479-1.163.51zm0 5.469h12v-2h-12v2zm3.323-8h.631l-.347-.266-.284.266zm8.677-4v-2h-3.289l-1.743 2h5.032z'/%3E%3Cpath fill='%23F48771' d='M7.246 4.6l2.856-3.277-.405-.002-3.176 2.581-2.607-2.962c-.336-.221-.786-.2-1.082.096-.308.306-.319.779-.069 1.12l2.83 2.444-3.339 2.466c-.339.338-.339.887 0 1.225.339.337.888.337 1.226 0l3.063-2.867 3.33 2.555h.466l-3.093-3.379z'/%3E%3C/svg%3E") center center no-repeat;
 }
 
-.monaco-workbench .output-action.toggle-output-scroll-lock {
-	background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cdefs%3E%3Cstyle%3E.icon-canvas-transparent,.icon-vs-out{fill:%23f6f6f6}.icon-canvas-transparent{opacity:0}.icon-vs-bg{fill:%23424242}%3C/style%3E%3C/defs%3E%3Ctitle%3EScrollLock%3C/title%3E%3Cpath class='icon-canvas-transparent' d='M16 16H0V0h16z' id='canvas'/%3E%3Cpath class='icon-vs-out' d='M15 9a3 3 0 0 0-6 0h-.836l-.018-.018L8.129 9H8v.129l-1 1V5.871l1.146 1.147L10.268 4.9 5.5.129.732 4.9l2.122 2.118L4 5.871v4.258L2.854 8.982.732 11.1 5.5 15.871l2.5-2.5V16h8V9z' id='outline' style='display: none;'/%3E%3Cpath class='icon-vs-bg' d='M5.5 1.543L8.854 4.9l-.708.7L6 3.457v9.086l2-2v1.414l-2.5 2.5L2.146 11.1l.707-.707L5 12.543V3.457L2.854 5.6l-.708-.7zM15 10v5H9v-5h1V9a2 2 0 0 1 4 0v1zm-4 0h2V9a1 1 0 0 0-2 0zm3 1h-4v3h4z' id='iconBg'/%3E%3C/svg%3E") center center no-repeat;
+.monaco-workbench .output-action.output-scroll-lock {
+	background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cstyle%3E.icon-canvas-transparent{opacity:0;fill:%23f6f6f6}.icon-vs-out{fill:%23f6f6f6}.icon-vs-bg{fill:%23424242}.icon-vs-fg{fill:%23f0eff1}%3C/style%3E%3Cpath class='icon-canvas-transparent' d='M16 16H0V0h16v16z' id='canvas'/%3E%3Cpath class='icon-vs-out' d='M13 5v-.25C13 2.513 11.513.636 9.483 0H6.517C4.487.636 3 2.513 3 4.75V5H1v11h14V5h-2z' id='outline' style='display: none;'/%3E%3Cpath class='icon-vs-fg' d='M13 7v7H3V7h10zM9.25 9.25a1.25 1.25 0 0 0-2.5 0c0 .512.309.95.75 1.143V13h1v-2.607c.441-.193.75-.631.75-1.143z' id='iconFg' style='display: none;'/%3E%3Cg id='iconBg'%3E%3Cpath class='icon-vs-bg' d='M12 6V4.75c0-2.206-1.794-4-4-4s-4 1.794-4 4V6H2v9h12V6h-2zM5 4.75c0-1.654 1.346-3 3-3s3 1.346 3 3V6H5V4.75zM13 14H3V7h10v7zM6.75 9.25a1.25 1.25 0 0 1 2.5 0c0 .512-.309.95-.75 1.143V13h-1v-2.607a1.248 1.248 0 0 1-.75-1.143z'/%3E%3C/g%3E%3C/svg%3E") center center no-repeat;
 }
 
-.vs-dark .monaco-workbench .output-action.toggle-output-scroll-lock,
-.hc-black .monaco-workbench .output-action.toggle-output-scroll-lock {
-	background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cdefs%3E%3Cstyle%3E.icon-canvas-transparent,.icon-vs-out{fill:%232d2d30}.icon-canvas-transparent{opacity:0}.icon-vs-bg{fill:%23c5c5c5}%3C/style%3E%3C/defs%3E%3Ctitle%3EScrollLock%3C/title%3E%3Cpath class='icon-canvas-transparent' d='M16 16H0V0h16z' id='canvas'/%3E%3Cpath class='icon-vs-out' d='M15 9a3 3 0 0 0-6 0h-.836l-.018-.018L8.129 9H8v.129l-1 1V5.871l1.146 1.147L10.268 4.9 5.5.129.732 4.9l2.122 2.118L4 5.871v4.258L2.854 8.982.732 11.1 5.5 15.871l2.5-2.5V16h8V9z' id='outline' style='display: none;'/%3E%3Cpath class='icon-vs-bg' d='M5.5 1.543L8.854 4.9l-.708.7L6 3.457v9.086l2-2v1.414l-2.5 2.5L2.146 11.1l.707-.707L5 12.543V3.457L2.854 5.6l-.708-.7zM15 10v5H9v-5h1V9a2 2 0 0 1 4 0v1zm-4 0h2V9a1 1 0 0 0-2 0zm3 1h-4v3h4z' id='iconBg'/%3E%3C/svg%3E") center center no-repeat;
+.vs-dark .monaco-workbench .output-action.output-scroll-lock,
+.hc-black .monaco-workbench .output-action.output-scroll-lock {
+	background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cstyle%3E.icon-canvas-transparent{opacity:0;fill:%232d2d30}.icon-vs-out{fill:%232d2d30}.icon-vs-bg{fill:%23c5c5c5}.icon-vs-fg{fill:%232b282e}%3C/style%3E%3Cpath class='icon-canvas-transparent' d='M16 16H0V0h16v16z' id='canvas'/%3E%3Cpath class='icon-vs-out' d='M13 5v-.25C13 2.513 11.513.636 9.483 0H6.517C4.487.636 3 2.513 3 4.75V5H1v11h14V5h-2z' id='outline' style='display: none;'/%3E%3Cpath class='icon-vs-fg' d='M13 7v7H3V7h10zM9.25 9.25a1.25 1.25 0 0 0-2.5 0c0 .512.309.95.75 1.143V13h1v-2.607c.441-.193.75-.631.75-1.143z' id='iconFg' style='display: none;'/%3E%3Cg id='iconBg'%3E%3Cpath class='icon-vs-bg' d='M12 6V4.75c0-2.206-1.794-4-4-4s-4 1.794-4 4V6H2v9h12V6h-2zM5 4.75c0-1.654 1.346-3 3-3s3 1.346 3 3V6H5V4.75zM13 14H3V7h10v7zM6.75 9.25a1.25 1.25 0 0 1 2.5 0c0 .512-.309.95-.75 1.143V13h-1v-2.607a1.248 1.248 0 0 1-.75-1.143z'/%3E%3C/g%3E%3C/svg%3E") center center no-repeat;
 }
 
-.monaco-workbench .output-action.toggle-output-scroll-lock.checked::after {
-	position: absolute;
-	content: "";
-	left: 4px;
-	top: 7px;
-	z-index: 1;
-	width: 20px;
-	height: 20px;
-	border: #007ACC 1px solid;
+.monaco-workbench .output-action.output-scroll-unlock {
+	background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cstyle%3E.icon-canvas-transparent{opacity:0;fill:%23f6f6f6}.icon-vs-out{fill:%23f6f6f6}.icon-vs-bg{fill:%23424242}.icon-vs-fg{fill:%23f0eff1}%3C/style%3E%3Cpath class='icon-canvas-transparent' d='M16 0v16H0V0h16z' id='canvas'/%3E%3Cpath class='icon-vs-out' d='M1 16V6h7V4c0-2.393 1.607-4 4-4s4 1.607 4 4v4h-3v8H1z' id='outline' style='display: none;'/%3E%3Cpath class='icon-vs-fg' d='M3 8v6h8V8H3zm4.501 2.846L7.502 13h-1l-.001-2.153A.986.986 0 0 1 6 10a1 1 0 0 1 2 0 .984.984 0 0 1-.499.846z' id='iconFg' style='display: none;'/%3E%3Cpath class='icon-vs-bg' d='M12 1c-1.822 0-3 1.178-3 3v3H2v8h10V7h-2V4c0-1.271.729-2 2-2s2 .729 2 2v3h1V4c0-1.822-1.178-3-3-3zm-1 7v6H3V8h8zm-3.499 2.846L7.502 13h-1l-.001-2.153A.986.986 0 0 1 6 10a1 1 0 0 1 2 0 .984.984 0 0 1-.499.846z' id='iconBg'/%3E%3C/svg%3E") center center no-repeat;
 }
+
+.vs-dark .monaco-workbench .output-action.output-scroll-unlock,
+.hc-black .monaco-workbench .output-action.output-scroll-unlock {
+	background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cstyle%3E.icon-canvas-transparent{opacity:0;fill:%232d2d30}.icon-vs-out{fill:%232d2d30}.icon-vs-bg{fill:%23c5c5c5}.icon-vs-fg{fill:%232b282e}%3C/style%3E%3Cpath class='icon-canvas-transparent' d='M16 0v16H0V0h16z' id='canvas'/%3E%3Cpath class='icon-vs-out' d='M1 16V6h7V4c0-2.393 1.607-4 4-4s4 1.607 4 4v4h-3v8H1z' id='outline' style='display: none;'/%3E%3Cpath class='icon-vs-fg' d='M3 8v6h8V8H3zm4.501 2.846L7.502 13h-1l-.001-2.153A.986.986 0 0 1 6 10a1 1 0 0 1 2 0 .984.984 0 0 1-.499.846z' id='iconFg' style='display: none;'/%3E%3Cpath class='icon-vs-bg' d='M12 1c-1.822 0-3 1.178-3 3v3H2v8h10V7h-2V4c0-1.271.729-2 2-2s2 .729 2 2v3h1V4c0-1.822-1.178-3-3-3zm-1 7v6H3V8h8zm-3.499 2.846L7.502 13h-1l-.001-2.153A.986.986 0 0 1 6 10a1 1 0 0 1 2 0 .984.984 0 0 1-.499.846z' id='iconBg'/%3E%3C/svg%3E") center center no-repeat;
+}
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -9639,14 +9866,7 @@ a:active {
 
 .settings-header-widget > .settings-search-container > .settings-search-input > .monaco-inputbox .input {
 	font-size: 14px;
-	padding-left:30px;
-	background-image: url("data:image/svg+xml,%3Csvg id='Layer_1' data-name='Layer 1' xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3E%3Cdefs%3E%3Cstyle%3E.cls-1{fill:%23f6f6f6;fill-opacity:0;}.cls-2{fill:none;}.cls-3{fill:%23424242;}%3C/style%3E%3C/defs%3E%3Ctitle%3ESearch_16x%3C/title%3E%3Cpath id='canvas' class='cls-1' d='M16,16H0V0H16Z'/%3E%3Cpath id='outline' class='cls-2' d='M11.11,0a5.9,5.9,0,0,1-1,11.71,5.69,5.69,0,0,1-1.91-.33L3.57,16H2.68L0,13.36V12.2L4.51,7.72A5.68,5.68,0,0,1,4.2,5.81,5.91,5.91,0,0,1,9.09,0h2'/%3E%3Cpath id='iconBg' class='cls-3' d='M1.32,13.07l1.61,1.61L7.75,9.86a3.82,3.82,0,0,0,2.42.8,4.83,4.83,0,1,0-4.8-4.83,3.48,3.48,0,0,0,.78,2.42ZM6.44,5.83a3.7,3.7,0,0,1,3.72-3.76,3.75,3.75,0,1,1,0,7.51A3.7,3.7,0,0,1,6.44,5.83'/%3E%3Cpath id='iconFg' class='cls-2' d='M6.44,5.83a3.7,3.7,0,0,1,3.72-3.76,3.75,3.75,0,1,1,0,7.51A3.7,3.7,0,0,1,6.44,5.83'/%3E%3C/svg%3E");
-	background-repeat: no-repeat;
-	background-position: 8px 50%;
-}
-
-.settings-header-widget > .settings-search-container > .settings-search-input > .monaco-inputbox .input {
-	background-image: url("data:image/svg+xml,%3Csvg id='Layer_1' data-name='Layer 1' xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3E%3Cdefs%3E%3Cstyle%3E.cls-1{fill:%232d2d30;fill-opacity:0;}.cls-2{fill:none;}.cls-3{fill:%23c5c5c5;}%3C/style%3E%3C/defs%3E%3Ctitle%3ESearch_16x%3C/title%3E%3Cpath id='canvas' class='cls-1' d='M16,16H0V0H16Z'/%3E%3Cpath id='outline' class='cls-2' d='M11.11,0a5.9,5.9,0,0,1-1,11.71,5.69,5.69,0,0,1-1.91-.33L3.57,16H2.68L0,13.36V12.2L4.51,7.72A5.68,5.68,0,0,1,4.2,5.81,5.91,5.91,0,0,1,9.09,0h2'/%3E%3Cpath id='iconBg' class='cls-3' d='M1.32,13.07l1.61,1.61L7.75,9.86a3.82,3.82,0,0,0,2.42.8,4.83,4.83,0,1,0-4.8-4.83,3.48,3.48,0,0,0,.78,2.42ZM6.44,5.83a3.7,3.7,0,0,1,3.72-3.76,3.75,3.75,0,1,1,0,7.51A3.7,3.7,0,0,1,6.44,5.83'/%3E%3Cpath id='iconFg' class='cls-2' d='M6.44,5.83a3.7,3.7,0,0,1,3.72-3.76,3.75,3.75,0,1,1,0,7.51A3.7,3.7,0,0,1,6.44,5.83'/%3E%3C/svg%3E");
+	padding-left:10px;
 }
 
 .vs-dark .preferences-editor .side-by-side-preferences-editor > .editable-preferences-editor-container {
@@ -9684,15 +9904,9 @@ a:active {
 	outline: none !important;
 }
 
-.monaco-editor.vs .settings-group-title-widget .title-container.focused,
-.monaco-editor.vs .settings-group-title-widget .title-container:hover {
-	background-color: #e2e2e2;
-}
-
-.monaco-editor.hc-black .settings-group-title-widget .title-container:hover,
-.monaco-editor.vs-dark .settings-group-title-widget .title-container.focused,
-.monaco-editor.vs-dark .settings-group-title-widget .title-container:hover {
-	background-color: #323232;
+.monaco-editor .settings-group-title-widget .title-container.focused,
+.monaco-editor .settings-group-title-widget .title-container:hover {
+	background-color: rgba(153, 153, 153, 0.2);
 }
 
 .monaco-editor.hc-black .settings-group-title-widget .title-container.focused {
@@ -9923,18 +10137,6 @@ a:active {
 	background-position: center;
 }
 
-.scm-viewlet > .scm-commit-box {
-	padding: 5px 9px 5px 16px;
-}
-
-.scm-viewlet > .scm-commit-box > .monaco-inputbox > .wrapper > .mirror {
-	max-height: 134px;
-}
-
-.scm-viewlet > .scm-commit-box.scroll > .monaco-inputbox > .wrapper > textarea.input {
-	overflow-y: scroll;
-}
-
 .scm-viewlet .monaco-list-row {
 	padding: 0 12px 0 20px;
 	line-height: 22px;
@@ -9998,15 +10200,30 @@ a:active {
 	display: none;
 }
 
-/* HACK */
-.action-label.scm-commit {
-	background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16'%3E%3Cpolygon points='5.382,13 2.382,7 6.618,7 7,7.764 9.382,3 13.618,3 8.618,13' fill='%23F6F6F6'/%3E%3Cpath d='M12 4l-4 8h-2l-2-4h2l1 2 3-6h2z' fill='%23424242'/%3E%3C/svg%3E");
+.scm-viewlet > .scm-editor {
+	padding: 5px 9px 5px 16px;
 }
 
-.vs-dark .action-label.scm-commit {
-	background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='-2 -2 16 16' enable-background='new -2 -2 16 16'%3E%3Cpolygon fill='%23C5C5C5' points='9,0 4.5,9 3,6 0,6 3,12 6,12 12,0'/%3E%3C/svg%3E");
+.scm-viewlet > .scm-editor {
+	box-sizing: border-box;
+	padding: 5px 9px 5px 16px;
 }
 
+.scm-viewlet > .scm-editor > .monaco-inputbox {
+	width: 100%;
+}
+
+.scm-viewlet > .scm-editor > .monaco-inputbox > .wrapper > .mirror {
+	max-height: 134px;
+}
+
+.scm-viewlet > .scm-editor > .monaco-inputbox > .wrapper > textarea.input {
+	min-height: 26px;
+}
+
+.scm-viewlet > .scm-editor.scroll > .monaco-inputbox > .wrapper > textarea.input {
+	overflow-y: scroll;
+}
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -10022,7 +10239,8 @@ a:active {
  *--------------------------------------------------------------------------------------------*/
 
 .search-viewlet .search-widgets-container {
-	margin: 6px 9px 0 2px;
+	margin: 0px 9px 0 2px;
+	padding-top: 6px;
 }
 
 .search-viewlet .search-widget .toggle-replace-button {
@@ -10090,7 +10308,7 @@ a:active {
 .search-viewlet .query-details {
 	min-height: 1em;
 	position: relative;
-	margin: 0 0 6px 17px;
+	margin: 0 0 0 17px;
 }
 
 .search-viewlet .query-details .more {
@@ -10100,6 +10318,7 @@ a:active {
 	cursor: pointer;
 	width: 16px;
 	height: 13px;
+	z-index: 2; /* Force it above the search results message, which has a negative top margin */
 }
 
 .hc-black .monaco-workbench .search-viewlet .query-details .more,
@@ -10125,7 +10344,7 @@ a:active {
 }
 
 .search-viewlet .query-details.more .file-types:last-child {
-	padding-bottom: 4px;
+	padding-bottom: 10px;
 }
 
 .search-viewlet .query-details .search-pattern-info {
@@ -10161,14 +10380,23 @@ a:active {
 	font-weight: normal;
 }
 
+.search-viewlet .messages {
+	margin-top: -5px;
+	cursor: default;
+}
+
 .search-viewlet .message {
 	padding-left: 22px;
 	padding-right: 22px;
-	padding-top: 2px;
+	padding-top: 0px;
 }
 
 .search-viewlet .message p:first-child {
-	margin-top: 0;
+	margin-top: 0px;
+	margin-bottom: 0px;
+	padding-bottom: 4px;
+	-webkit-user-select: text;
+	user-select: text;
 }
 
 .search-viewlet .filematch {
@@ -10564,6 +10792,14 @@ a:active {
 	left: 0;
 }
 
+.monaco-workbench .panel.integrated-terminal {
+	font-variant-ligatures: none;
+}
+
+.monaco-workbench .panel.integrated-terminal.enable-ligatures {
+	font-variant-ligatures: normal;
+}
+
 /* Terminal actions */
 
 /* Light theme */
@@ -10583,14 +10819,6 @@ a:active {
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-.monaco-workbench .panel.integrated-terminal {
-	font-feature-settings: "liga" 0;
-}
-
-.monaco-workbench .panel.integrated-terminal.enable-ligatures {
-	font-feature-settings: "liga" 1;
-}
-
 .monaco-workbench .panel.integrated-terminal .xterm {
 	background-color: transparent!important;
 	position: relative;
@@ -10602,10 +10830,16 @@ a:active {
 	outline: none;
 }
 
-.hc-black .monaco-workbench .panel.integrated-terminal .xterm.focus,
-.hc-black .monaco-workbench .panel.integrated-terminal .xterm:focus {
-	outline: 2px solid #f38518;
-	outline-offset: -2px;
+.hc-black .monaco-workbench .panel.integrated-terminal .xterm.focus::before,
+.hc-black .monaco-workbench .panel.integrated-terminal .xterm:focus::before {
+	display: block;
+	content: "";
+	border: 2px solid #f38518;
+	position: absolute;
+	left: -5px;
+	top: 0;
+	right: -5px;
+	bottom: 0;
 }
 
 .monaco-workbench .panel.integrated-terminal .xterm .xterm-helpers {
@@ -10630,6 +10864,16 @@ a:active {
 .monaco-workbench .panel.integrated-terminal .xterm .xterm-helper-textarea:focus {
 	/* Override the general vscode style applies `opacity:1!important` to textareas */
 	opacity: 0 !important;
+}
+
+.monaco-workbench .panel.integrated-terminal .xterm a {
+	color: inherit;
+	text-decoration: none;
+}
+
+.monaco-workbench .panel.integrated-terminal .xterm a:hover {
+	cursor: pointer;
+	text-decoration: underline;
 }
 
 .monaco-workbench .panel.integrated-terminal .xterm:not(.xterm-cursor-style-underline):not(.xterm-cursor-style-bar).focus .reverse-video,
@@ -10663,42 +10907,15 @@ a:active {
 }
 
 .monaco-workbench .panel.integrated-terminal .xterm.xterm-cursor-blink:not(.xterm-cursor-style-underline):not(.xterm-cursor-style-bar).focus .terminal-cursor,
-.monaco-workbench .panel.integrated-terminal .xterm.xterm-cursor-blink:not(.xterm-cursor-style-underline):not(.xterm-cursor-style-bar):focus .terminal-cursor { animation: cursor-blink 1.2s infinite step-end; }
-.vs-dark .monaco-workbench .panel.integrated-terminal .xterm.xterm-cursor-blink:not(.xterm-cursor-style-underline):not(.xterm-cursor-style-bar).focus .terminal-cursor,
-.vs-dark .monaco-workbench .panel.integrated-terminal .xterm.xterm-cursor-blink:not(.xterm-cursor-style-underline):not(.xterm-cursor-style-bar):focus .terminal-cursor { animation: cursor-blink-dark 1.2s infinite step-end; }
-.hc-black .monaco-workbench .panel.integrated-terminal .xterm.xterm-cursor-blink:not(.xterm-cursor-style-underline):not(.xterm-cursor-style-bar).focus .terminal-cursor,
-.hc-black .monaco-workbench .panel.integrated-terminal .xterm.xterm-cursor-blink:not(.xterm-cursor-style-underline):not(.xterm-cursor-style-bar):focus .terminal-cursor { animation: cursor-blink-hc-black 1.2s infinite step-end; }
+.monaco-workbench .panel.integrated-terminal .xterm.xterm-cursor-blink:not(.xterm-cursor-style-underline):not(.xterm-cursor-style-bar):focus .terminal-cursor {
+	animation: cursor-blink 1.2s infinite step-end;
+}
 
 @keyframes cursor-blink {
-	0% {
-		background-color: #333;
-		color: #CCC;
-	}
+	0% {}
 	50% {
 		background-color: transparent;
-		color: #333;
-	}
-}
-
-@keyframes cursor-blink-dark {
-	0% {
-		background-color: #CCC;
-		color: #1e1e1e;
-	}
-	50% {
-		background-color: transparent;
-		color: #CCC;
-	}
-}
-
-@keyframes cursor-blink-hc-black {
-	0% {
-		background-color: #fff;
-		color: #000;
-	}
-	50% {
-		background-color: transparent;
-		color: #FFF;
+		color: inherit;
 	}
 }
 
@@ -12763,181 +12980,6 @@ a:active {
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-.monaco-workbench > .part.editor > .content .walkThroughContent {
-	box-sizing: border-box;
-	padding: 10px 20px;
-	line-height: 22px;
-	user-select: initial;
-	-webkit-user-select: initial;
-}
-
-.monaco-workbench > .part.editor > .content .walkThroughContent img {
-	max-width: 100%;
-	max-height: 100%;
-}
-
-.monaco-workbench > .part.editor > .content .walkThroughContent a {
-	color: #4080D0;
-	text-decoration: none;
-}
-
-.monaco-workbench > .part.editor > .content .walkThroughContent a:focus,
-.monaco-workbench > .part.editor > .content .walkThroughContent input:focus,
-.monaco-workbench > .part.editor > .content .walkThroughContent select:focus,
-.monaco-workbench > .part.editor > .content .walkThroughContent textarea:focus {
-	outline: 1px solid -webkit-focus-ring-color;
-	outline-offset: -1px;
-}
-
-.monaco-workbench > .part.editor > .content .walkThroughContent hr {
-	border: 0;
-	height: 2px;
-	border-bottom: 2px solid;
-}
-
-.monaco-workbench > .part.editor > .content .walkThroughContent h1, h2, h3 {
-	font-weight: lighter;
-	margin-top: 20px;
-	margin-bottom: 10px;
-}
-
-.monaco-workbench > .part.editor > .content .walkThroughContent h1 {
-	padding-bottom: 0.3em;
-	line-height: 1.2;
-	border-bottom-width: 1px;
-	border-bottom-style: solid;
-	font-size: 40px;
-	margin-bottom: 15px;
-}
-
-.monaco-workbench > .part.editor > .content .walkThroughContent h2 {
-	font-size: 30px;
-	margin-top: 30px;
-}
-
-.monaco-workbench > .part.editor > .content .walkThroughContent h3 {
-	font-size: 22px;
-}
-
-.monaco-workbench > .part.editor > .content .walkThroughContent h4 {
-	font-size: 12px;
-	text-transform: uppercase;
-	margin-top: 30px;
-	margin-bottom: 10px;
-}
-
-.monaco-workbench > .part.editor > .content .walkThroughContent a:hover {
-	color: #4080D0;
-	text-decoration: underline;
-}
-
-.monaco-workbench > .part.editor > .content .walkThroughContent table {
-	border-collapse: collapse;
-}
-
-.monaco-workbench > .part.editor > .content .walkThroughContent table > thead > tr > th {
-	text-align: left;
-	border-bottom: 1px solid;
-}
-
-.monaco-workbench > .part.editor > .content .walkThroughContent table > thead > tr > th,
-.monaco-workbench > .part.editor > .content .walkThroughContent table > thead > tr > td,
-.monaco-workbench > .part.editor > .content .walkThroughContent table > tbody > tr > th,
-.monaco-workbench > .part.editor > .content .walkThroughContent table > tbody > tr > td {
-	padding: 5px 10px;
-}
-
-.monaco-workbench > .part.editor > .content .walkThroughContent table > tbody > tr + tr > td {
-	border-top: 1px solid;
-}
-
-.monaco-workbench > .part.editor > .content .walkThroughContent blockquote {
-	margin: 0 7px 0 5px;
-	padding: 0 16px 0 10px;
-	border-left: 5px solid;
-}
-
-.monaco-workbench > .part.editor > .content .walkThroughContent code,
-.monaco-workbench > .part.editor > .content .walkThroughContent .shortcut {
-	font-family: Menlo, Monaco, Consolas, "Droid Sans Mono", "Courier New", monospace, "Droid Sans Fallback";
-	font-size: 14px;
-	line-height: 19px;
-}
-
-/*.monaco-workbench.mac > .part.editor > .content .walkThroughContent code,
-.monaco-workbench.mac > .part.editor > .content .walkThroughContent .shortcut {
-	font-size: 12px;
-	line-height: 18px;
-}*/
-
-.vs .monaco-workbench > .part.editor > .content .walkThroughContent code,
-.vs .monaco-workbench > .part.editor > .content .walkThroughContent .shortcut {
-	color: #A31515;
-}
-
-.vs-dark .monaco-workbench > .part.editor > .content .walkThroughContent code,
-.vs-dark .monaco-workbench > .part.editor > .content .walkThroughContent .shortcut {
-	color: #D7BA7D;
-}
-
-.monaco-workbench > .part.editor > .content .walkThroughContent blockquote {
-	margin: 0 7px 0 5px;
-	padding: 0 16px 0 10px;
-	border-left: 5px solid;
-}
-.vs .monaco-workbench > .part.editor > .content .walkThroughContent blockquote,
-.vs-dark .monaco-workbench > .part.editor > .content .walkThroughContent blockquote {
-	background: rgba(127, 127, 127, 0.1);
-	border-color: rgba(0, 122, 204, 0.5);
-}
-.hc-black .monaco-workbench > .part.editor > .content .walkThroughContent blockquote {
-	background: transparent;
-	border-color: #fff;
-}
-
-.monaco-workbench > .part.editor > .content .walkThroughContent .monaco-tokenized-source {
-	white-space: pre;
-}
-
-.file-icons-enabled .show-file-icons .vs_code_editor_walkthrough\.md-name-file-icon.md-ext-file-icon.markdown-lang-file-icon.file-icon::before {
-	content: ' ';
-	background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cstyle%3E.icon-canvas-transparent{opacity:0;fill:%23f6f6f6}.icon-vs-out{fill:%23f6f6f6}.icon-vs-bg{fill:%23424242}.icon-vs-fg{fill:%23f0eff1}%3C/style%3E%3Cpath class='icon-canvas-transparent' d='M16 16H0V0h16v16z' id='canvas'/%3E%3Cpath class='icon-vs-out' d='M15 16H2V0h8.621L15 4.379V16z' id='outline'/%3E%3Cpath class='icon-vs-fg' d='M13 14H4V2h5v4h4v8zm-3-9V2.207L12.793 5H10z' id='iconFg'/%3E%3Cpath class='icon-vs-bg' d='M3 1v14h11V4.793L10.207 1H3zm10 13H4V2h5v4h4v8zm-3-9V2.207L12.793 5H10z' id='iconBg'/%3E%3C/svg%3E");
-}
-
-.monaco-workbench > .part.editor > .content .walkThroughContent .mac-only,
-.monaco-workbench > .part.editor > .content .walkThroughContent .windows-only,
-.monaco-workbench > .part.editor > .content .walkThroughContent .linux-only {
-	display: none;
-}
-.monaco-workbench.mac > .part.editor > .content .walkThroughContent .mac-only {
-	display: initial;
-}
-.monaco-workbench.windows > .part.editor > .content .walkThroughContent .windows-only {
-	display: initial;
-}
-.monaco-workbench.linux > .part.editor > .content .walkThroughContent .linux-only {
-	display: initial;
-}
-
-.vs .monaco-workbench > .part.editor > .content .walkThroughContent .monaco-editor-background,
-.vs .monaco-workbench > .part.editor > .content .walkThroughContent .glyph-margin {
-	background-color: #eee;
-}
-
-.vs-dark .monaco-workbench > .part.editor > .content .walkThroughContent .monaco-editor-background,
-.vs-dark .monaco-workbench > .part.editor > .content .walkThroughContent .glyph-margin {
-	background-color: #111;
-}
-
-.hc-black .monaco-workbench > .part.editor > .content .walkThroughContent .monaco-editor {
-	border: 1px white solid
-}
-
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
-
 .monaco-workbench .part.editor.empty {
 	background-position-y: calc(50% - 100px);
 }
@@ -12962,19 +13004,11 @@ a:active {
 	border-spacing: 13px 17px;
 }
 
-@media (min-height: 501px) {
-	.monaco-workbench > .part.editor.empty > .content > .watermark {
-		display: block;
-	}
+.monaco-workbench > .part.editor.empty.max-height-478px > .content > .watermark {
+	display: none;
 }
-
-@media (max-height: 500px) {
-	.monaco-workbench > .part.editor.empty > .content > .watermark {
-		display: none;
-	}
-	.monaco-workbench .part.editor.empty {
-		background-position-y: 50%;
-	}
+.monaco-workbench .part.editor.empty.max-height-478px {
+	background-position-y: 50%;
 }
 
 .monaco-workbench > .part.editor.empty > .content > .watermark dl {
@@ -13059,12 +13093,16 @@ a:active {
 	transition: filter .25s, opacity .2s;
 }
 
-#workbench\.parts\.editor.blur-background {
-	filter: blur(3px);
-	opacity: .28;
+.monaco-workbench.blur-background #workbench\.parts\.panel,
+.monaco-workbench.blur-background #workbench\.parts\.sidebar,
+.monaco-workbench.blur-background #workbench\.parts\.editor {
+	filter: blur(2px);
+	opacity: .4;
 }
 
-.hc-black #workbench\.parts\.editor.blur-background {
+.hc-black .monaco-workbench.blur-background #workbench\.parts\.panel,
+.hc-black .monaco-workbench.blur-background #workbench\.parts\.sidebar,
+.hc-black .monaco-workbench.blur-background #workbench\.parts\.editor {
 	opacity: .2;
 }
 
@@ -13181,14 +13219,14 @@ a:active {
 	left: calc(50% - 193px);
 	width: 386px;
 	height: 197px;
-	background-image: url(../parts/welcomeOverlay/browser/media/commandpalette.svg);
+	background-image: url(../parts/welcome/overlay/browser/media/commandpalette.svg);
 	background-repeat: no-repeat;
 	background-size: 100%;
 }
 
 .vs-dark .monaco-workbench > .welcomeOverlay > .commandPalettePlaceholder,
 .hc-black .monaco-workbench > .welcomeOverlay > .commandPalettePlaceholder {
-	background-image: url(../parts/welcomeOverlay/browser/media/commandpalette-dark.svg);
+	background-image: url(../parts/welcome/overlay/browser/media/commandpalette-dark.svg);
 }
 @media screen and (max-width: 880px) {
 	.monaco-workbench > .welcomeOverlay {
@@ -13278,6 +13316,7 @@ a:active {
 	font-weight: normal;
 	color: rgba(0,0,0,.8);
 	font-size: 3.6em;
+	white-space: nowrap;
 }
 
 .vs-dark .monaco-workbench > .part.editor > .content .welcomePage h1 {
@@ -13402,6 +13441,7 @@ a:active {
 }
 
 .monaco-workbench > .part.editor > .content .welcomePage .commands li button h3 {
+	font-weight: normal;
 	font-size: 1em;
 	margin: 0;
 	margin-bottom: .25em;
@@ -13458,13 +13498,23 @@ a:active {
 	outline-offset: -5px;
 }
 
+.monaco-workbench > .part.editor > .content .welcomePage .commands li button .currentKeymap {
+	display: none;
+}
+.monaco-workbench > .part.editor > .content .welcomePage .commands li button .installKeymap.installed {
+	display: none;
+}
+.monaco-workbench > .part.editor > .content .welcomePage .commands li button .currentKeymap.installed {
+	display: inline;
+}
+
 .monaco-workbench > .part.editor > .content .welcomePageContainer.max-height-685px .title {
 	display: none;
 }
 
-.file-icons-enabled .show-file-icons .vs_code_welcome_page\.html-name-file-icon.html-ext-file-icon.html-lang-file-icon.file-icon::before {
+.file-icons-enabled .show-file-icons .vs_code_welcome_page-name-file-icon.file-icon::before {
 	content: ' ';
-	background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cstyle%3E.icon-canvas-transparent{opacity:0;fill:%23f6f6f6}.icon-vs-out{fill:%23f6f6f6}.icon-vs-bg{fill:%23424242}.icon-vs-fg{fill:%23f0eff1}%3C/style%3E%3Cpath class='icon-canvas-transparent' d='M16 16H0V0h16v16z' id='canvas'/%3E%3Cpath class='icon-vs-out' d='M15 16H2V0h8.621L15 4.379V16z' id='outline'/%3E%3Cpath class='icon-vs-fg' d='M13 14H4V2h5v4h4v8zm-3-9V2.207L12.793 5H10z' id='iconFg'/%3E%3Cpath class='icon-vs-bg' d='M3 1v14h11V4.793L10.207 1H3zm10 13H4V2h5v4h4v8zm-3-9V2.207L12.793 5H10z' id='iconBg'/%3E%3C/svg%3E");
+	background-image: url("data:image/svg+xml,%3Csvg id='Layer_1' xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1024 1024'%3E%3Cstyle%3E.st0{fill:%23f6f6f6;fill-opacity:0}.st1{fill:%23fff}.st2{fill:%23167abf}%3C/style%3E%3Cpath class='st0' d='M1024 1024H0V0h1024v1024z'/%3E%3Cpath class='st1' d='M1024 85.333v853.333H0V85.333h1024z'/%3E%3Cpath class='st2' d='M0 85.333h298.667v853.333H0V85.333zm1024 0v853.333H384V85.333h640zm-554.667 160h341.333v-64H469.333v64zm341.334 533.334H469.333v64h341.333l.001-64zm128-149.334H597.333v64h341.333l.001-64zm0-149.333H597.333v64h341.333l.001-64zm0-149.333H597.333v64h341.333l.001-64z'/%3E%3C/svg%3E");
 }
 
 .monaco-workbench > .part.editor > .content .welcomePage .mac-only,
@@ -13481,6 +13531,203 @@ a:active {
 .monaco-workbench.linux > .part.editor > .content .welcomePage .linux-only {
 	display: initial;
 }
+
+.monaco-workbench > .part.editor > .content .welcomePageContainer .scm-only {
+	display: none;
+}
+.monaco-workbench > .part.editor > .content .welcomePageContainer.scmEnabled .scm-only {
+	display: initial;
+}
+.monaco-workbench > .part.editor > .content .welcomePageContainer.scmEnabled .git-only {
+	display: none;
+}
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+.monaco-workbench > .part.editor > .content .walkThroughContent {
+	box-sizing: border-box;
+	padding: 10px 20px;
+	line-height: 22px;
+	user-select: initial;
+	-webkit-user-select: initial;
+}
+
+.monaco-workbench > .part.editor > .content .walkThroughContent img {
+	max-width: 100%;
+	max-height: 100%;
+}
+
+.monaco-workbench > .part.editor > .content .walkThroughContent a {
+	color: #4080D0;
+	text-decoration: none;
+}
+
+.monaco-workbench > .part.editor > .content .walkThroughContent a:focus,
+.monaco-workbench > .part.editor > .content .walkThroughContent input:focus,
+.monaco-workbench > .part.editor > .content .walkThroughContent select:focus,
+.monaco-workbench > .part.editor > .content .walkThroughContent textarea:focus {
+	outline: 1px solid -webkit-focus-ring-color;
+	outline-offset: -1px;
+}
+
+.monaco-workbench > .part.editor > .content .walkThroughContent hr {
+	border: 0;
+	height: 2px;
+	border-bottom: 2px solid;
+}
+
+.monaco-workbench > .part.editor > .content .walkThroughContent h1,
+.monaco-workbench > .part.editor > .content .walkThroughContent h2,
+.monaco-workbench > .part.editor > .content .walkThroughContent h3 {
+	font-weight: lighter;
+	margin-top: 20px;
+	margin-bottom: 10px;
+}
+
+.monaco-workbench > .part.editor > .content .walkThroughContent h1 {
+	padding-bottom: 0.3em;
+	line-height: 1.2;
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+	font-size: 40px;
+	margin-bottom: 15px;
+}
+
+.monaco-workbench > .part.editor > .content .walkThroughContent h2 {
+	font-size: 30px;
+	margin-top: 30px;
+}
+
+.monaco-workbench > .part.editor > .content .walkThroughContent h3 {
+	font-size: 22px;
+}
+
+.monaco-workbench > .part.editor > .content .walkThroughContent h4 {
+	font-size: 12px;
+	text-transform: uppercase;
+	margin-top: 30px;
+	margin-bottom: 10px;
+}
+
+.monaco-workbench > .part.editor > .content .walkThroughContent a:hover {
+	color: #4080D0;
+	text-decoration: underline;
+}
+
+.monaco-workbench > .part.editor > .content .walkThroughContent table {
+	border-collapse: collapse;
+}
+
+.monaco-workbench > .part.editor > .content .walkThroughContent table > thead > tr > th {
+	text-align: left;
+	border-bottom: 1px solid;
+}
+
+.monaco-workbench > .part.editor > .content .walkThroughContent table > thead > tr > th,
+.monaco-workbench > .part.editor > .content .walkThroughContent table > thead > tr > td,
+.monaco-workbench > .part.editor > .content .walkThroughContent table > tbody > tr > th,
+.monaco-workbench > .part.editor > .content .walkThroughContent table > tbody > tr > td {
+	padding: 5px 10px;
+}
+
+.monaco-workbench > .part.editor > .content .walkThroughContent table > tbody > tr + tr > td {
+	border-top: 1px solid;
+}
+
+.monaco-workbench > .part.editor > .content .walkThroughContent blockquote {
+	margin: 0 7px 0 5px;
+	padding: 0 16px 0 10px;
+	border-left: 5px solid;
+}
+
+.monaco-workbench > .part.editor > .content .walkThroughContent code,
+.monaco-workbench > .part.editor > .content .walkThroughContent .shortcut {
+	font-family: Menlo, Monaco, Consolas, "Droid Sans Mono", "Courier New", monospace, "Droid Sans Fallback";
+	font-size: 14px;
+	line-height: 19px;
+}
+
+/*.monaco-workbench.mac > .part.editor > .content .walkThroughContent code,
+.monaco-workbench.mac > .part.editor > .content .walkThroughContent .shortcut {
+	font-size: 12px;
+	line-height: 18px;
+}*/
+
+.vs .monaco-workbench > .part.editor > .content .walkThroughContent code,
+.vs .monaco-workbench > .part.editor > .content .walkThroughContent .shortcut {
+	color: #A31515;
+}
+
+.vs-dark .monaco-workbench > .part.editor > .content .walkThroughContent code,
+.vs-dark .monaco-workbench > .part.editor > .content .walkThroughContent .shortcut {
+	color: #D7BA7D;
+}
+
+.monaco-workbench > .part.editor > .content .walkThroughContent blockquote {
+	margin: 0 7px 0 5px;
+	padding: 0 16px 0 10px;
+	border-left: 5px solid;
+}
+.vs .monaco-workbench > .part.editor > .content .walkThroughContent blockquote,
+.vs-dark .monaco-workbench > .part.editor > .content .walkThroughContent blockquote {
+	background: rgba(127, 127, 127, 0.1);
+	border-color: rgba(0, 122, 204, 0.5);
+}
+.hc-black .monaco-workbench > .part.editor > .content .walkThroughContent blockquote {
+	background: transparent;
+	border-color: #fff;
+}
+
+.monaco-workbench > .part.editor > .content .walkThroughContent .monaco-tokenized-source {
+	white-space: pre;
+}
+
+.file-icons-enabled .show-file-icons .vs_code_editor_walkthrough\.md-name-file-icon.md-ext-file-icon.markdown-lang-file-icon.file-icon::before {
+	content: ' ';
+	background-image: url("data:image/svg+xml,%3Csvg id='Layer_1' xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1024 1024'%3E%3Cstyle%3E.st0{fill:%23f6f6f6;fill-opacity:0}.st1{fill:%23fff}.st2{fill:%23167abf}%3C/style%3E%3Cpath class='st0' d='M1024 1024H0V0h1024v1024z'/%3E%3Cpath class='st1' d='M1024 85.333v853.333H0V85.333h1024z'/%3E%3Cpath class='st2' d='M0 85.333h298.667v853.333H0V85.333zm1024 0v853.333H384V85.333h640zm-554.667 160h341.333v-64H469.333v64zm341.334 533.334H469.333v64h341.333l.001-64zm128-149.334H597.333v64h341.333l.001-64zm0-149.333H597.333v64h341.333l.001-64zm0-149.333H597.333v64h341.333l.001-64z'/%3E%3C/svg%3E");
+}
+
+.monaco-workbench > .part.editor > .content .walkThroughContent .mac-only,
+.monaco-workbench > .part.editor > .content .walkThroughContent .windows-only,
+.monaco-workbench > .part.editor > .content .walkThroughContent .linux-only {
+	display: none;
+}
+.monaco-workbench.mac > .part.editor > .content .walkThroughContent .mac-only {
+	display: initial;
+}
+.monaco-workbench.windows > .part.editor > .content .walkThroughContent .windows-only {
+	display: initial;
+}
+.monaco-workbench.linux > .part.editor > .content .walkThroughContent .linux-only {
+	display: initial;
+}
+
+.monaco-workbench > .part.editor > .content .walkThroughContent .scm-only {
+	display: none;
+}
+.monaco-workbench > .part.editor > .content .walkThroughContent.scmEnabled .scm-only {
+	display: initial;
+}
+.monaco-workbench > .part.editor > .content .walkThroughContent.scmEnabled .git-only {
+	display: none;
+}
+
+.vs .monaco-workbench > .part.editor > .content .walkThroughContent .monaco-editor-background,
+.vs .monaco-workbench > .part.editor > .content .walkThroughContent .glyph-margin {
+	background-color: #eee;
+}
+
+.vs-dark .monaco-workbench > .part.editor > .content .walkThroughContent .monaco-editor-background,
+.vs-dark .monaco-workbench > .part.editor > .content .walkThroughContent .glyph-margin {
+	background-color: #111;
+}
+
+.hc-black .monaco-workbench > .part.editor > .content .walkThroughContent .monaco-editor {
+	border: 1px white solid
+}
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.

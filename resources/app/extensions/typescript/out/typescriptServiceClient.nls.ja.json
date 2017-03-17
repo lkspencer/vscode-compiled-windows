@@ -1,6 +1,7 @@
 [
 	"TypeScript",
 	"パス {0} は、有効な tsserver インストールを指していません。バンドルされている TypeScript バージョンにフォールバックしています。",
+	"VSCode's tsserver was deleted by another application such as a misbehaving virus detection tool. Please reinstall VS Code.",
 	"カスタム",
 	"TypeScript 言語サーバーを起動できません。エラー メッセージ: {0}",
 	"VSCode のバージョンの使用",
@@ -10,10 +11,10 @@
 	"詳細情報",
 	"再読み込む",
 	"ウィンドウを再度読み込んで、変更を適用します",
-	"Later",
-	"言語機能に使用する TypeScript バージョンを選択します",
-	"TypeScript 言語サービスは、直前の 5 分間に 5 回、予期せずに停止しました。",
-	"問題の報告",
+	"後続",
+	"JavaScript および TypeScript 言語の機能に使用する TypeScript バージョンを選択します",
 	"TypeScript 言語サービスは、開始直後に 5 回停止しました。サービスは再開されません。",
+	"問題の報告",
+	"TypeScript 言語サービスは、直前の 5 分間に 5 回、予期せずに停止しました。",
 	"問題の報告"
 ]

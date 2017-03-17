@@ -41,7 +41,7 @@ log('ELECTRON_RUN_AS_NODE: ' + process.env['ELECTRON_RUN_AS_NODE']);
     stdErrStream.unref();
     // handle process.stderr
     process.__defineGetter__('stderr', function () { return stdErrStream; });
-    var fsWriteSyncString = function (fd, str, position, encoding) {
+    var fsWriteSyncString = function (fd, str, _position, encoding) {
         //  fs.writeSync(fd, string[, position[, encoding]]);
         var buf = new Buffer(str, encoding || 'utf8');
         return fsWriteSyncBuffer(fd, buf, 0, buf.length);
@@ -78,7 +78,7 @@ log('ELECTRON_RUN_AS_NODE: ' + process.env['ELECTRON_RUN_AS_NODE']);
     };
     // handle fs.writeSync(1, ...)
     var originalWriteSync = fs.writeSync;
-    fs.writeSync = function (fd, data, position, encoding) {
+    fs.writeSync = function (fd, data, _position, _encoding) {
         if (fd !== 1 && fd !== 2) {
             return originalWriteSync.apply(fs, arguments);
         }
@@ -158,4 +158,4 @@ log('ELECTRON_RUN_AS_NODE: ' + process.env['ELECTRON_RUN_AS_NODE']);
         process.stdout.write('ready');
     });
 })();
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/f9d0c687ff2ea7aabd85fb9a43129117c0ecf519/extensions\typescript\out/utils\electronForkStart.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/8076a19fdcab7e1fc1707952d652f0bb6c6db331/extensions\typescript\out/utils\electronForkStart.js.map

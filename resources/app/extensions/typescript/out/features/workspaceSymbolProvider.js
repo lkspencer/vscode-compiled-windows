@@ -4,7 +4,7 @@
  *--------------------------------------------------------------------------------------------*/
 'use strict';
 const vscode_1 = require("vscode");
-let _kindMapping = Object.create(null);
+const _kindMapping = Object.create(null);
 _kindMapping['method'] = vscode_1.SymbolKind.Method;
 _kindMapping['enum'] = vscode_1.SymbolKind.Enum;
 _kindMapping['function'] = vscode_1.SymbolKind.Function;
@@ -79,4 +79,4 @@ class TypeScriptWorkspaceSymbolProvider {
 }
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = TypeScriptWorkspaceSymbolProvider;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/f9d0c687ff2ea7aabd85fb9a43129117c0ecf519/extensions\typescript\out/features\workspaceSymbolProvider.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/8076a19fdcab7e1fc1707952d652f0bb6c6db331/extensions\typescript\out/features\workspaceSymbolProvider.js.map

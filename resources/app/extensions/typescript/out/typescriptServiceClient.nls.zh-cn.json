@@ -1,6 +1,7 @@
 [
 	"TypeScript",
 	"路径 {0} 未指向有效的 tsserver 安装。请回退到捆绑的 TypeScript 版本。",
+	"VSCode's tsserver was deleted by another application such as a misbehaving virus detection tool. Please reinstall VS Code.",
 	"自定义",
 	"无法启动 TypeScript 语言服务器。错误消息为: {0}",
 	"使用 VSCode 的版本",
@@ -10,10 +11,10 @@
 	"了解详细信息",
 	"重新加载",
 	"重新加载窗口以应用更改",
-	"Later",
-	"选择用作语言功能的 TypeScript 版本",
-	"在过去 5 分钟内，TypeScript 语言服务意外中止了 5 次。",
-	"报告问题",
+	"稍后",
+	"选择用于 JavaScript 和 TypeScript 语言功能的 TypeScript 版本",
 	"TypeScript 语言服务在其启动后已中止 5 次。将不会重启该服务。",
+	"报告问题",
+	"在过去 5 分钟内，TypeScript 语言服务意外中止了 5 次。",
 	"报告问题"
 ]

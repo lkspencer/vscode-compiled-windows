@@ -55,5 +55,8 @@
 	"scss.lint.unknownVendorSpecificProperties.desc": "Propriété spécifique à un fournisseur inconnue.",
 	"scss.lint.vendorPrefix.desc": "Lors de l'utilisation d'un préfixe spécifique à un fournisseur, ajouter également la propriété standard",
 	"scss.lint.zeroUnits.desc": "Aucune unité nécessaire pour zéro",
-	"scss.validate.desc": "Active ou désactive toutes les validations"
+	"scss.validate.desc": "Active ou désactive toutes les validations",
+	"less.colorDecorators.enable.desc": "Active ou désactive les éléments décoratifs de couleurs",
+	"scss.colorDecorators.enable.desc": "Active ou désactive les éléments décoratifs de couleurs",
+	"css.colorDecorators.enable.desc": "Active ou désactive les éléments décoratifs de couleurs"
 }

@@ -9,7 +9,7 @@ var MarkdownDocumentLinkProvider = (function () {
     function MarkdownDocumentLinkProvider() {
         this._linkPattern = /(\[[^\]]*\]\(\s*?)(\S+?)(\s+[^\)]*)?\)/g;
     }
-    MarkdownDocumentLinkProvider.prototype.provideDocumentLinks = function (document, token) {
+    MarkdownDocumentLinkProvider.prototype.provideDocumentLinks = function (document, _token) {
         var results = [];
         var base = path.dirname(document.uri.fsPath);
         var text = document.getText();
@@ -18,32 +18,37 @@ var MarkdownDocumentLinkProvider = (function () {
         while ((match = this._linkPattern.exec(text))) {
             var pre = match[1];
             var link = match[2];
-            var offset = match.index + pre.length;
+            var offset = (match.index || 0) + pre.length;
             var linkStart = document.positionAt(offset);
             var linkEnd = document.positionAt(offset + link.length);
             try {
-                var uri = vscode.Uri.parse(link);
-                if (!uri.scheme) {
-                    // assume it must be a file
-                    var file = void 0;
-                    if (uri.path[0] === '/') {
-                        file = path.join(vscode.workspace.rootPath, uri.path);
-                    }
-                    else {
-                        file = path.join(base, uri.path);
-                    }
-                    uri = vscode.Uri.file(file);
-                }
-                results.push(new vscode.DocumentLink(new vscode.Range(linkStart, linkEnd), uri));
+                results.push(new vscode.DocumentLink(new vscode.Range(linkStart, linkEnd), this.normalizeLink(document, link, base)));
             }
             catch (e) {
             }
         }
         return results;
     };
+    MarkdownDocumentLinkProvider.prototype.normalizeLink = function (document, link, base) {
+        var uri = vscode.Uri.parse(link);
+        if (uri.scheme) {
+            return uri;
+        }
+        // assume it must be a file
+        var resourcePath;
+        if (!uri.path) {
+            resourcePath = document.uri.path;
+        }
+        else if (uri.path[0] === '/') {
+            resourcePath = path.join(vscode.workspace.rootPath || '', uri.path);
+        }
+        else {
+            resourcePath = path.join(base, uri.path);
+        }
+        return vscode.Uri.parse("command:_markdown.openDocumentLink?" + encodeURIComponent(JSON.stringify({ fragment: uri.fragment, path: resourcePath })));
+    };
     return MarkdownDocumentLinkProvider;
 }());
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.default = MarkdownDocumentLinkProvider;
-;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/f9d0c687ff2ea7aabd85fb9a43129117c0ecf519/extensions\markdown\out/documentLinkProvider.js.map
+exports.default = MarkdownDocumentLinkProvider;
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/8076a19fdcab7e1fc1707952d652f0bb6c6db331/extensions\markdown\out/documentLinkProvider.js.map

@@ -29,9 +29,7 @@ class CheckoutStatusBar {
     update() {
         const HEAD = this.model.HEAD;
         if (!HEAD) {
-            this.raw.command = '';
-            this.raw.color = 'rgb(100, 100, 100)';
-            this.raw.text = 'unknown';
+            this.raw.hide();
             return;
         }
         const tag = this.model.refs.filter(iref => iref.type === git_1.RefType.Tag && iref.commit === HEAD.commit)[0];
@@ -39,11 +37,13 @@ class CheckoutStatusBar {
         const head = HEAD.name || tagName || (HEAD.commit || '').substr(0, 8);
         this.raw.command = 'git.checkout';
         this.raw.color = 'rgb(255, 255, 255)';
+        this.raw.tooltip = localize(0, null);
         this.raw.text = '$(git-branch) ' +
             head +
             (this.model.workingTreeGroup.resources.length > 0 ? '*' : '') +
             (this.model.indexGroup.resources.length > 0 ? '+' : '') +
             (this.model.mergeGroup.resources.length > 0 ? '!' : '');
+        this.raw.show();
     }
     dispose() {
         this.disposables.forEach(d => d.dispose());
@@ -88,12 +88,12 @@ class SyncStatusBar {
                     text += `${HEAD.behind}↓ ${HEAD.ahead}↑`;
                 }
                 command = 'git.sync';
-                tooltip = localize(0, null);
+                tooltip = localize(1, null);
             }
             else {
                 icon = '$(cloud-upload)';
                 command = 'git.publish';
-                tooltip = localize(1, null);
+                tooltip = localize(2, null);
             }
         }
         else {
@@ -103,7 +103,7 @@ class SyncStatusBar {
         if (this.state.isSyncRunning) {
             text = '';
             command = '';
-            tooltip = localize(2, null);
+            tooltip = localize(3, null);
         }
         this.raw.text = [icon, text].join(' ').trim();
         this.raw.command = command;
@@ -126,4 +126,4 @@ SyncStatusBar.StartState = {
     HEAD: undefined
 };
 exports.SyncStatusBar = SyncStatusBar;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/f9d0c687ff2ea7aabd85fb9a43129117c0ecf519/extensions\git\out/statusbar.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/8076a19fdcab7e1fc1707952d652f0bb6c6db331/extensions\git\out/statusbar.js.map

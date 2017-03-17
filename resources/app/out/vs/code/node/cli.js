@@ -3514,7 +3514,8 @@ define(__m[10/*vs/platform/environment/node/argv*/], __M([1/*require*/,0/*export
             'uninstall-extension',
             'debugBrkPluginHost',
             'debugPluginHost',
-            'open-url'
+            'open-url',
+            'prof-startup-timers'
         ],
         boolean: [
             'help',
@@ -3523,7 +3524,7 @@ define(__m[10/*vs/platform/environment/node/argv*/], __M([1/*require*/,0/*export
             'diff',
             'goto',
             'new-window',
-            'new-window-if-not-first',
+            'unity-launch',
             'reuse-window',
             'performance',
             'verbose',
@@ -3557,6 +3558,7 @@ define(__m[10/*vs/platform/environment/node/argv*/], __M([1/*require*/,0/*export
         if (index > -1) {
             return argv.slice(0, index).concat(argv.slice(index + 1));
         }
+        return undefined;
     }
     /**
      * Use this to parse raw code process.argv such as: `Electron . --verbose --wait`

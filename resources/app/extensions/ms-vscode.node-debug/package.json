@@ -1,7 +1,7 @@
 {
 	"name": "node-debug",
 	"displayName": "Node Debug",
-	"version": "1.9.16",
+	"version": "1.10.21",
 	"publisher": "ms-vscode",
 	"description": "%extension.description%",
 	"icon": "images/node-debug-icon.svg",
@@ -24,9 +24,12 @@
 		"vscode": "^1.8.0",
 		"node": "^6.3.0"
 	},
+	"extensionDependencies": [
+		"ms-vscode.node-debug2"
+	],
 	"dependencies": {
-		"vscode-debugprotocol": "^1.16.0",
-		"vscode-debugadapter": "^1.16.0",
+		"vscode-debugprotocol": "^1.17.0",
+		"vscode-debugadapter": "^1.17.0",
 		"source-map": "0.5.6",
 		"vscode-nls": "^2.0.1",
 		"request-light": "^0.1.0",
@@ -62,7 +65,7 @@
 		"typescript": "^2.0.10",
 		"vscode": "^1.0.3",
 		"vscode-nls-dev": "^2.0.1",
-		"vscode-debugadapter-testsupport": "^1.16.0",
+		"vscode-debugadapter-testsupport": "^1.17.0",
 		"event-stream": "^3.3.4",
 		"nodemon": "^1.11.0",
 		"vsce": "^1.17.0"
@@ -103,8 +106,7 @@
 					"type": "node",
 					"request": "launch",
 					"name": "${2:Launch Program}",
-					"program": "^\"\\${workspaceRoot}/${1:app.js}\"",
-					"cwd": "^\"\\${workspaceRoot}\""
+					"program": "^\"\\${workspaceRoot}/${1:app.js}\""
 				}
 			}, {
 				"label": "%node.snippet.npm.label%",
@@ -112,7 +114,7 @@
 				"body": {
 					"type": "node",
 					"request": "launch",
-					"name": "${2:Launch via NPM}",
+					"name": "${1:Launch via NPM}",
 					"runtimeExecutable": "npm",
 					"windows": {
 						"runtimeExecutable": "npm.cmd"
@@ -121,17 +123,39 @@
 						"run-script",
 						"debug"
 					],
-					"port": 5858,
-					"cwd": "^\"\\${workspaceRoot}\""
+					"port": 5858
 				}
 			}, {
-				"label": "%node.snippet.attach.label%",
-				"description": "%node.snippet.attach.description%",
+				"label": "%node.snippet.attachLegacy.label%",
+				"description": "%node.snippet.attachLegacy.description%",
 				"body": {
 					"type": "node",
 					"request": "attach",
-					"name": "${2:Attach to Port}",
-					"port": 5858
+					"name": "${1:Attach (Legacy Protocol)}",
+					"port": 5858,
+					"protocol": "legacy"
+				}
+			}, {
+				"label": "%node.snippet.attachInspector.label%",
+				"description": "%node.snippet.attachInspector.description%",
+				"body": {
+					"type": "node",
+					"request": "attach",
+					"name": "${1:Attach (Inspector Protocol)}",
+					"port": 9229,
+					"protocol": "inspector"
+				}
+			}, {
+				"label": "%node.snippet.remoteattach.label%",
+				"description": "%node.snippet.remoteattach.description%",
+				"body": {
+					"type": "node",
+					"request": "attach",
+					"name": "${1:Attach to Remote}",
+					"address": "${2:TCP/IP address of process to be debugged}",
+					"port": 5858,
+					"localRoot": "^\"\\${workspaceRoot}\"",
+					"remoteRoot": "${3:Absolute path to the remote directory containing the program}"
 				}
 			}, {
 				"label": "%node.snippet.attachProcess.label%",
@@ -139,8 +163,8 @@
 				"body": {
 					"type": "node",
 					"request": "attach",
-					"name": "${2:Attach to Process}",
-					"processId": "^\"\\${command.PickProcess}\"",
+					"name": "${1:Attach to Process}",
+					"processId": "^\"\\${command:PickProcess}\"",
 					"port": 5858
 				}
 			}, {
@@ -150,7 +174,6 @@
 					"type": "node",
 					"request": "launch",
 					"name": "nodemon",
-					"cwd": "^\"\\${workspaceRoot}\"",
 					"runtimeExecutable": "nodemon",
 					"runtimeArgs": [
 						"--debug=5858"
@@ -168,12 +191,8 @@
 					"type": "node",
 					"request": "launch",
 					"name": "Mocha Tests",
-					"cwd": "^\"\\${workspaceRoot}\"",
-					"runtimeExecutable": "^\"\\${workspaceRoot}/node_modules/.bin/mocha\"",
-					"windows": {
-						"runtimeExecutable": "^\"\\${workspaceRoot}/node_modules/.bin/mocha.cmd\""
-					},
-					"runtimeArgs": [
+					"program": "^\"\\${workspaceRoot}/node_modules/mocha/bin/_mocha\"",
+					"args": [
 						"-u",
 						"tdd",
 						"--timeout",
@@ -194,7 +213,6 @@
 					"args": [
 						"${1:generator}"
 					],
-					"cwd": "^\"\\${workspaceRoot}\"",
 					"console": "integratedTerminal",
 					"internalConsoleOptions": "neverOpen"
 				}
@@ -205,19 +223,44 @@
 					"type": "node",
 					"request": "launch",
 					"name": "Gulp ${1:task}",
-					"cwd": "^\"\\${workspaceRoot}\"",
 					"program": "^\"\\${workspaceRoot}/node_modules/gulp/bin/gulp.js\"",
 					"args": [
 						"${1:task}"
 					]
 				}
+			}, {
+				"label": "%node.snippet.electron.label%",
+				"description": "%node.snippet.electron.description%",
+				"body": {
+					"type": "node",
+					"request": "launch",
+					"name": "Electron Main",
+					"runtimeExecutable": "^\"\\${workspaceRoot}/node_modules/.bin/electron\"",
+					"windows": {
+						"runtimeExecutable": "^\"\\${workspaceRoot}/node_modules/.bin/electron.cmd\""
+					},
+					"program": "^\"\\${workspaceRoot}/main.js\"",
+					"protocol": "legacy"
+				}
 			}],
 			"configurationAttributes": {
 				"launch": {
-					"required": [
-						"cwd"
-					],
 					"properties": {
+						"protocol": {
+							"type": "string",
+							"enum": [
+								"auto",
+								"inspector",
+								"legacy"
+							],
+							"enumDescriptions": [
+								"%node.protocol.auto.description%",
+								"%node.protocol.inspector.description%",
+								"%node.protocol.legacy.description%"
+							],
+							"description": "%node.protocol.description%",
+							"default": "legacy"
+						},
 						"program": {
 							"type": "string",
 							"description": "%node.launch.program.description%"
@@ -233,10 +276,16 @@
 							"default": true
 						},
 						"console": {
+							"type": "string",
 							"enum": [
 								"internalConsole",
 								"integratedTerminal",
 								"externalTerminal"
+							],
+							"enumDescriptions": [
+								"%node.launch.console.internalConsole.description%",
+								"%node.launch.console.integratedTerminal.description%",
+								"%node.launch.console.externalTerminal.description%"
 							],
 							"description": "%node.launch.console.description%",
 							"default": "internalConsole"
@@ -341,6 +390,21 @@
 				},
 				"attach": {
 					"properties": {
+						"protocol": {
+							"type": "string",
+							"enum": [
+								"auto",
+								"inspector",
+								"legacy"
+							],
+							"enumDescriptions": [
+								"%node.protocol.auto.description%",
+								"%node.protocol.inspector.description%",
+								"%node.protocol.legacy.description%"
+							],
+							"description": "%node.protocol.description%",
+							"default": "legacy"
+						},
 						"processId": {
 							"type": "string",
 							"description": "%node.attach.processId.description%",

@@ -1,6 +1,6 @@
 {
-	"typescript.reloadProjects.title": "TypeScript プロジェクトを再度読み込みます",
-	"javascript.reloadProjects.title": "JavaScript プロジェクトを再度読み込みます",
+	"typescript.reloadProjects.title": "プロジェクトの再読み込み",
+	"javascript.reloadProjects.title": "プロジェクトの再読み込み",
 	"configuration.typescript": "TypeScript",
 	"typescript.useCodeSnippetsOnMethodSuggest.dec": "パラメーター シグネチャを含む完全な関数。",
 	"typescript.tsdk.desc": "使用する tsserver と lib*.d.ts ファイルが含まれているフォルダーのパスを指定します。",
@@ -24,5 +24,8 @@
 	"format.placeOpenBraceOnNewLineForFunctions": "新しい行に関数の始め波かっこを配置するかどうかを定義します。",
 	"format.placeOpenBraceOnNewLineForControlBlocks": "新しい行にコントロール ブロックの始め波かっこを配置するかどうかを定義します。",
 	"javascript.validate.enable": "JavaScript の検証を有効/無効にします。",
-	"typescript.referencesCodeLens.enabled": "参照コードのレンズを有効/無効にします"
+	"typescript.goToProjectConfig.title": "プロジェクト構成に移動",
+	"javascript.goToProjectConfig.title": "プロジェクト構成に移動",
+	"typescript.referencesCodeLens.enabled": "CodeLens の参照を有効/無効にします。",
+	"typescript.selectTypeScriptVersion.title": "TypeScript のバージョンの選択"
 }

@@ -5,9 +5,12 @@
 'use strict';
 var vscode = require("vscode");
 var ts = require("typescript");
+var packageDocumentHelper_1 = require("./packageDocumentHelper");
 function activate(context) {
     var registration = vscode.languages.registerDocumentLinkProvider({ language: 'typescript', pattern: '**/vscode.d.ts' }, _linkProvider);
     context.subscriptions.push(registration);
+    //package.json suggestions
+    context.subscriptions.push(registerPackageDocumentCompletions());
 }
 exports.activate = activate;
 var _linkProvider = new (function () {
@@ -80,5 +83,12 @@ var ast;
         };
     }
     ast.createNamedNodeLookUp = createNamedNodeLookUp;
-})(ast || (ast = {}));
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/f9d0c687ff2ea7aabd85fb9a43129117c0ecf519/extensions\extension-editing\out/extension.js.map
+})(ast || (ast = {}));
+function registerPackageDocumentCompletions() {
+    return vscode.languages.registerCompletionItemProvider({ language: 'json', pattern: '**/package.json' }, {
+        provideCompletionItems: function (document, position, token) {
+            return new packageDocumentHelper_1.PackageDocument(document).provideCompletionItems(position, token);
+        }
+    });
+}
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/8076a19fdcab7e1fc1707952d652f0bb6c6db331/extensions\extension-editing\out/extension.js.map

@@ -71,8 +71,8 @@ class TypeScriptFormattingProvider {
         return this.config.enable;
     }
     ensureFormatOptions(document, options, token) {
-        let key = document.uri.toString();
-        let currentOptions = this.formatOptions[key];
+        const key = document.uri.toString();
+        const currentOptions = this.formatOptions[key];
         if (currentOptions && currentOptions.tabSize === options.tabSize && currentOptions.indentSize === options.tabSize && currentOptions.convertTabsToSpaces === options.insertSpaces) {
             return Promise.resolve(currentOptions);
         }
@@ -81,11 +81,11 @@ class TypeScriptFormattingProvider {
             if (!absPath) {
                 return Promise.resolve(Object.create(null));
             }
-            let args = {
+            const args = {
                 file: absPath,
                 formatOptions: this.getFormatOptions(options)
             };
-            return this.client.execute('configure', args, token).then((response) => {
+            return this.client.execute('configure', args, token).then(_ => {
                 this.formatOptions[key] = args.formatOptions;
                 return args.formatOptions;
             });
@@ -111,7 +111,7 @@ class TypeScriptFormattingProvider {
         if (!absPath) {
             return Promise.resolve([]);
         }
-        let args = {
+        const args = {
             file: absPath,
             line: range.start.line + 1,
             offset: range.start.character + 1,
@@ -189,4 +189,4 @@ class TypeScriptFormattingProvider {
 }
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = TypeScriptFormattingProvider;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/f9d0c687ff2ea7aabd85fb9a43129117c0ecf519/extensions\typescript\out/features\formattingProvider.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/8076a19fdcab7e1fc1707952d652f0bb6c6db331/extensions\typescript\out/features\formattingProvider.js.map

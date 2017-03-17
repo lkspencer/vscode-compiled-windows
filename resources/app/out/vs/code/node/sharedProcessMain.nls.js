@@ -25,14 +25,18 @@ define("vs/code/node/sharedProcessMain.nls", {
 		"{0} not found inside zip."
 	],
 	"vs/platform/configuration/common/configurationRegistry": [
-		"Configure settings to be overridden for a set of language identifiers.",
-		"Override Settings",
+		"Default Configuration Overrides",
+		"Configure editor settings to be overridden for {0} language.",
+		"Configure editor settings to be overridden for a language.",
 		"Contributes configuration settings.",
 		"A summary of the settings. This label will be used in the settings file as separating comment.",
 		"Description of the configuration properties.",
+		"Cannot register '{0}'. This matches property pattern '\\\\[.*\\\\]$' for describing language specific editor settings. Use 'configurationDefaults' contribution.",
+		"Cannot register '{0}'. This property is already registered.",
+		"'configuration.properties' must be an object",
 		"if set, 'configuration.type' must be set to 'object",
 		"'configuration.title' must be a string",
-		"'configuration.properties' must be an object"
+		"Contributes default editor configuration settings by language."
 	],
 	"vs/platform/extensionManagement/common/extensionManagement": [
 		"Extensions",

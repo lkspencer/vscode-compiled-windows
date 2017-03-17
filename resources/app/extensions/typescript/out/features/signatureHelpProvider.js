@@ -14,24 +14,19 @@ class TypeScriptSignatureHelpProvider {
         if (!filepath) {
             return Promise.resolve(null);
         }
-        let args = {
+        const args = {
             file: filepath,
             line: position.line + 1,
             offset: position.character + 1
         };
-        if (!args.file) {
-            return Promise.resolve(null);
-        }
         return this.client.execute('signatureHelp', args, token).then((response) => {
-            let info = response.body;
+            const info = response.body;
             if (!info) {
                 return null;
             }
-            let result = new vscode_1.SignatureHelp();
+            const result = new vscode_1.SignatureHelp();
             result.activeSignature = info.selectedItemIndex;
             result.activeParameter = info.argumentIndex;
-            if (info.items[info.selectedItemIndex].isVariadic) {
-            }
             info.items.forEach((item, i) => {
                 if (!info) {
                     return;
@@ -40,10 +35,10 @@ class TypeScriptSignatureHelpProvider {
                 if (i === info.selectedItemIndex && item.isVariadic) {
                     result.activeParameter = Math.min(info.argumentIndex, item.parameters.length - 1);
                 }
-                let signature = new vscode_1.SignatureInformation('');
+                const signature = new vscode_1.SignatureInformation('');
                 signature.label += Previewer.plain(item.prefixDisplayParts);
                 item.parameters.forEach((p, i, a) => {
-                    let parameter = new vscode_1.ParameterInformation(Previewer.plain(p.displayParts), Previewer.plain(p.documentation));
+                    const parameter = new vscode_1.ParameterInformation(Previewer.plain(p.displayParts), Previewer.plain(p.documentation));
                     signature.label += parameter.label;
                     signature.parameters.push(parameter);
                     if (i < a.length - 1) {
@@ -63,4 +58,4 @@ class TypeScriptSignatureHelpProvider {
 }
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = TypeScriptSignatureHelpProvider;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/f9d0c687ff2ea7aabd85fb9a43129117c0ecf519/extensions\typescript\out/features\signatureHelpProvider.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/8076a19fdcab7e1fc1707952d652f0bb6c6db331/extensions\typescript\out/features\signatureHelpProvider.js.map

@@ -18,16 +18,26 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 const vscode_1 = require("vscode");
+const git_1 = require("./git");
 const util_1 = require("./util");
 const decorators_1 = require("./decorators");
 const watch_1 = require("./watch");
 const path = require("path");
+const fs = require("fs");
 const nls = require("vscode-nls");
+const timeout = (millis) => new Promise(c => setTimeout(c, millis));
+const exists = (path) => new Promise(c => fs.exists(path, c));
 const localize = nls.loadMessageBundle(__filename);
 const iconsRootPath = path.join(path.dirname(__dirname), 'resources', 'icons');
 function getIconUri(iconName, theme) {
     return vscode_1.Uri.file(path.join(iconsRootPath, theme, `${iconName}.svg`));
 }
+var State;
+(function (State) {
+    State[State["Uninitialized"] = 0] = "Uninitialized";
+    State[State["Idle"] = 1] = "Idle";
+    State[State["NotAGitRepository"] = 2] = "NotAGitRepository";
+})(State = exports.State || (exports.State = {}));
 var Status;
 (function (Status) {
     Status[Status["INDEX_MODIFIED"] = 0] = "INDEX_MODIFIED";
@@ -48,12 +58,21 @@ var Status;
     Status[Status["BOTH_MODIFIED"] = 15] = "BOTH_MODIFIED";
 })(Status = exports.Status || (exports.Status = {}));
 class Resource {
-    constructor(_uri, _type) {
+    constructor(_uri, _type, _rename) {
         this._uri = _uri;
         this._type = _type;
+        this._rename = _rename;
+        // console.log(this);
     }
-    get uri() { return this._uri; }
+    get uri() {
+        if (this.rename && (this._type === Status.MODIFIED || this._type === Status.DELETED || this._type === Status.INDEX_RENAMED)) {
+            return this.rename;
+        }
+        return this._uri;
+    }
     get type() { return this._type; }
+    get original() { return this._uri; }
+    get rename() { return this._rename; }
     getIconPath(theme) {
         switch (this.type) {
             case Status.INDEX_MODIFIED: return Resource.Icons[theme].Modified;
@@ -127,21 +146,21 @@ class ResourceGroup {
 }
 exports.ResourceGroup = ResourceGroup;
 class MergeGroup extends ResourceGroup {
-    constructor(resources) {
+    constructor(resources = []) {
         super(MergeGroup.ID, localize(0, null), resources);
     }
 }
 MergeGroup.ID = 'merge';
 exports.MergeGroup = MergeGroup;
 class IndexGroup extends ResourceGroup {
-    constructor(resources) {
+    constructor(resources = []) {
         super(IndexGroup.ID, localize(1, null), resources);
     }
 }
 IndexGroup.ID = 'index';
 exports.IndexGroup = IndexGroup;
 class WorkingTreeGroup extends ResourceGroup {
-    constructor(resources) {
+    constructor(resources = []) {
         super(WorkingTreeGroup.ID, localize(2, null), resources);
     }
 }
@@ -150,16 +169,52 @@ exports.WorkingTreeGroup = WorkingTreeGroup;
 var Operation;
 (function (Operation) {
     Operation[Operation["Status"] = 1] = "Status";
-    Operation[Operation["Stage"] = 2] = "Stage";
-    Operation[Operation["Unstage"] = 4] = "Unstage";
+    Operation[Operation["Add"] = 2] = "Add";
+    Operation[Operation["RevertFiles"] = 4] = "RevertFiles";
     Operation[Operation["Commit"] = 8] = "Commit";
     Operation[Operation["Clean"] = 16] = "Clean";
     Operation[Operation["Branch"] = 32] = "Branch";
     Operation[Operation["Checkout"] = 64] = "Checkout";
-    Operation[Operation["Fetch"] = 128] = "Fetch";
-    Operation[Operation["Sync"] = 256] = "Sync";
-    Operation[Operation["Push"] = 512] = "Push";
+    Operation[Operation["Reset"] = 128] = "Reset";
+    Operation[Operation["Fetch"] = 256] = "Fetch";
+    Operation[Operation["Pull"] = 512] = "Pull";
+    Operation[Operation["Push"] = 1024] = "Push";
+    Operation[Operation["Sync"] = 2048] = "Sync";
+    Operation[Operation["Init"] = 4096] = "Init";
+    Operation[Operation["Show"] = 8192] = "Show";
+    Operation[Operation["Stage"] = 16384] = "Stage";
+    Operation[Operation["GetCommitTemplate"] = 32768] = "GetCommitTemplate";
 })(Operation = exports.Operation || (exports.Operation = {}));
+// function getOperationName(operation: Operation): string {
+// 	switch (operation) {
+// 		case Operation.Status: return 'Status';
+// 		case Operation.Add: return 'Add';
+// 		case Operation.RevertFiles: return 'RevertFiles';
+// 		case Operation.Commit: return 'Commit';
+// 		case Operation.Clean: return 'Clean';
+// 		case Operation.Branch: return 'Branch';
+// 		case Operation.Checkout: return 'Checkout';
+// 		case Operation.Reset: return 'Reset';
+// 		case Operation.Fetch: return 'Fetch';
+// 		case Operation.Pull: return 'Pull';
+// 		case Operation.Push: return 'Push';
+// 		case Operation.Sync: return 'Sync';
+// 		case Operation.Init: return 'Init';
+// 		case Operation.Show: return 'Show';
+// 		case Operation.Stage: return 'Stage';
+// 		case Operation.GetCommitTemplate: return 'GetCommitTemplate';
+// 		default: return 'unknown';
+// 	}
+// }
+function isReadOnly(operation) {
+    switch (operation) {
+        case Operation.Show:
+        case Operation.GetCommitTemplate:
+            return true;
+        default:
+            return false;
+    }
+}
 class OperationsImpl {
     constructor(operations = 0) {
         this.operations = operations;
@@ -179,11 +234,16 @@ class OperationsImpl {
     }
 }
 class Model {
-    constructor(_repositoryRoot, repository, onWorkspaceChange) {
-        this._repositoryRoot = _repositoryRoot;
-        this.repository = repository;
-        this._onDidChange = new vscode_1.EventEmitter();
-        this.onDidChange = this._onDidChange.event;
+    constructor(_git, workspaceRootPath, askpass) {
+        this._git = _git;
+        this.workspaceRootPath = workspaceRootPath;
+        this.askpass = askpass;
+        this._onDidChangeRepository = new vscode_1.EventEmitter();
+        this.onDidChangeRepository = this._onDidChangeRepository.event;
+        this._onDidChangeState = new vscode_1.EventEmitter();
+        this.onDidChangeState = this._onDidChangeState.event;
+        this._onDidChangeResources = new vscode_1.EventEmitter();
+        this.onDidChangeResources = this._onDidChangeResources.event;
         this._onRunOperation = new vscode_1.EventEmitter();
         this.onRunOperation = this._onRunOperation.event;
         this._onDidRunOperation = new vscode_1.EventEmitter();
@@ -191,27 +251,25 @@ class Model {
         this._mergeGroup = new MergeGroup([]);
         this._indexGroup = new IndexGroup([]);
         this._workingTreeGroup = new WorkingTreeGroup([]);
-        this._operations = new OperationsImpl();
-        this.disposables = [];
         this._refs = [];
         this._remotes = [];
-        /* We use the native Node `watch` for faster, non debounced events.
-         * That way we hopefully get the events during the operations we're
-         * performing, thus sparing useless `git status` calls to refresh
-         * the model's state.
-         */
-        const gitPath = path.join(_repositoryRoot, '.git');
-        const { event, disposable } = watch_1.watch(gitPath);
-        const onGitChange = util_1.mapEvent(event, ({ filename }) => vscode_1.Uri.file(path.join(gitPath, filename)));
-        const onRelevantGitChange = util_1.filterEvent(onGitChange, uri => !/\/\.git\/index\.lock$/.test(uri.fsPath));
-        onRelevantGitChange(this.onFSChange, this, this.disposables);
-        this.disposables.push(disposable);
-        const onNonGitChange = util_1.filterEvent(onWorkspaceChange, uri => !/\/\.git\//.test(uri.fsPath));
-        onNonGitChange(this.onFSChange, this, this.disposables);
+        this._operations = new OperationsImpl();
+        this._state = State.Uninitialized;
+        this.repositoryDisposable = util_1.EmptyDisposable;
+        this.disposables = [];
+        const fsWatcher = vscode_1.workspace.createFileSystemWatcher('**');
+        this.onWorkspaceChange = util_1.anyEvent(fsWatcher.onDidChange, fsWatcher.onDidCreate, fsWatcher.onDidDelete);
+        this.disposables.push(fsWatcher);
         this.status();
+    }
+    get onDidChange() {
+        return util_1.anyEvent(this.onDidChangeState, this.onDidChangeResources);
     }
     get onDidChangeOperations() {
         return util_1.anyEvent(this.onRunOperation, this.onDidRunOperation);
+    }
+    get git() {
+        return this._git;
     }
     get mergeGroup() { return this._mergeGroup; }
     get indexGroup() { return this._indexGroup; }
@@ -227,10 +285,6 @@ class Model {
         result.push(this._workingTreeGroup);
         return result;
     }
-    get operations() { return this._operations; }
-    get repositoryRoot() {
-        return this._repositoryRoot;
-    }
     get HEAD() {
         return this._HEAD;
     }
@@ -240,19 +294,69 @@ class Model {
     get remotes() {
         return this._remotes;
     }
+    get operations() { return this._operations; }
+    get state() { return this._state; }
+    set state(state) {
+        this._state = state;
+        this._onDidChangeState.fire(state);
+        this._HEAD = undefined;
+        this._refs = [];
+        this._remotes = [];
+        this._mergeGroup = new MergeGroup();
+        this._indexGroup = new IndexGroup();
+        this._workingTreeGroup = new WorkingTreeGroup();
+        this._onDidChangeResources.fire(this.resources);
+    }
+    whenIdle() {
+        return __awaiter(this, void 0, void 0, function* () {
+            while (!this.operations.isIdle()) {
+                yield util_1.eventToPromise(this.onDidRunOperation);
+            }
+        });
+    }
+    /**
+     * Returns promise which resolves when there is no `.git/index.lock` file,
+     * or when it has attempted way too many times. Back off mechanism.
+     */
+    whenUnlocked() {
+        return __awaiter(this, void 0, void 0, function* () {
+            let millis = 100;
+            let retries = 0;
+            while (retries < 10 && (yield exists(path.join(this.repository.root, '.git', 'index.lock')))) {
+                retries += 1;
+                millis *= 1.4;
+                yield timeout(millis);
+            }
+        });
+    }
+    init() {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (this.state !== State.NotAGitRepository) {
+                return;
+            }
+            yield this.git.init(this.workspaceRootPath);
+            yield this.status();
+        });
+    }
     status() {
         return __awaiter(this, void 0, void 0, function* () {
             yield this.run(Operation.Status);
         });
     }
-    stage(...resources) {
+    add(...resources) {
         return __awaiter(this, void 0, void 0, function* () {
-            yield this.run(Operation.Stage, () => this.repository.add(resources.map(r => r.uri.fsPath)));
+            yield this.run(Operation.Add, () => this.repository.add(resources.map(r => r.uri.fsPath)));
         });
     }
-    unstage(...resources) {
+    stage(uri, contents) {
         return __awaiter(this, void 0, void 0, function* () {
-            yield this.run(Operation.Unstage, () => this.repository.revertFiles('HEAD', resources.map(r => r.uri.fsPath)));
+            const relativePath = path.relative(this.repository.root, uri.fsPath).replace(/\\/g, '/');
+            yield this.run(Operation.Stage, () => this.repository.stage(relativePath, contents));
+        });
+    }
+    revertFiles(...resources) {
+        return __awaiter(this, void 0, void 0, function* () {
+            yield this.run(Operation.RevertFiles, () => this.repository.revertFiles('HEAD', resources.map(r => r.uri.fsPath)));
         });
     }
     commit(message, opts = Object.create(null)) {
@@ -302,14 +406,24 @@ class Model {
             yield this.run(Operation.Checkout, () => this.repository.checkout(treeish, []));
         });
     }
+    getCommit(ref) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield this.repository.getCommit(ref);
+        });
+    }
+    reset(treeish, hard) {
+        return __awaiter(this, void 0, void 0, function* () {
+            yield this.run(Operation.Reset, () => this.repository.reset(treeish, hard));
+        });
+    }
     fetch() {
         return __awaiter(this, void 0, void 0, function* () {
             yield this.run(Operation.Fetch, () => this.repository.fetch());
         });
     }
-    sync() {
+    pull(rebase) {
         return __awaiter(this, void 0, void 0, function* () {
-            yield this.run(Operation.Sync, () => this.repository.sync());
+            yield this.run(Operation.Pull, () => this.repository.pull(rebase));
         });
     }
     push(remote, name, options) {
@@ -317,20 +431,87 @@ class Model {
             yield this.run(Operation.Push, () => this.repository.push(remote, name, options));
         });
     }
-    run(operation, fn = () => Promise.resolve()) {
+    sync() {
+        return __awaiter(this, void 0, void 0, function* () {
+            yield this.run(Operation.Sync, () => this.repository.sync());
+        });
+    }
+    show(ref, uri) {
+        return __awaiter(this, void 0, void 0, function* () {
+            // TODO@Joao: should we make this a general concept?
+            yield this.whenIdle();
+            return yield this.run(Operation.Show, () => __awaiter(this, void 0, void 0, function* () {
+                const relativePath = path.relative(this.repository.root, uri.fsPath).replace(/\\/g, '/');
+                const result = yield this.repository.git.exec(this.repository.root, ['show', `${ref}:${relativePath}`]);
+                if (result.exitCode !== 0) {
+                    throw new git_1.GitError({
+                        message: localize(3, null),
+                        exitCode: result.exitCode
+                    });
+                }
+                return result.stdout;
+            }));
+        });
+    }
+    getCommitTemplate() {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield this.run(Operation.GetCommitTemplate, () => __awaiter(this, void 0, void 0, function* () { return this.repository.getCommitTemplate(); }));
+        });
+    }
+    run(operation, runOperation = () => Promise.resolve(null)) {
         return __awaiter(this, void 0, void 0, function* () {
             return vscode_1.window.withScmProgress(() => __awaiter(this, void 0, void 0, function* () {
                 this._operations = this._operations.start(operation);
                 this._onRunOperation.fire(operation);
                 try {
-                    yield fn();
-                    yield this.update();
+                    yield this.assertIdleState();
+                    yield this.whenUnlocked();
+                    const result = yield runOperation();
+                    if (!isReadOnly(operation)) {
+                        yield this.update();
+                    }
+                    return result;
+                }
+                catch (err) {
+                    if (err.gitErrorCode === git_1.GitErrorCodes.NotAGitRepository) {
+                        this.repositoryDisposable.dispose();
+                        this.state = State.NotAGitRepository;
+                    }
+                    throw err;
                 }
                 finally {
                     this._operations = this._operations.end(operation);
                     this._onDidRunOperation.fire(operation);
                 }
             }));
+        });
+    }
+    /* We use the native Node `watch` for faster, non debounced events.
+     * That way we hopefully get the events during the operations we're
+     * performing, thus sparing useless `git status` calls to refresh
+     * the model's state.
+     */
+    assertIdleState() {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (this.state === State.Idle) {
+                return;
+            }
+            this.repositoryDisposable.dispose();
+            const disposables = [];
+            const repositoryRoot = yield this.git.getRepositoryRoot(this.workspaceRootPath);
+            const askpassEnv = yield this.askpass.getEnv();
+            this.repository = this.git.open(repositoryRoot, askpassEnv);
+            const dotGitPath = path.join(repositoryRoot, '.git');
+            const { event: onRawGitChange, disposable: watcher } = watch_1.watch(dotGitPath);
+            disposables.push(watcher);
+            const onGitChange = util_1.mapEvent(onRawGitChange, ({ filename }) => vscode_1.Uri.file(path.join(dotGitPath, filename)));
+            const onRelevantGitChange = util_1.filterEvent(onGitChange, uri => !/\/\.git\/index\.lock$/.test(uri.fsPath));
+            onRelevantGitChange(this.onFSChange, this, disposables);
+            onRelevantGitChange(this._onDidChangeRepository.fire, this._onDidChangeRepository, disposables);
+            const onNonGitChange = util_1.filterEvent(this.onWorkspaceChange, uri => !/\/\.git\//.test(uri.fsPath));
+            onNonGitChange(this.onFSChange, this, disposables);
+            this.repositoryDisposable = util_1.combinedDisposable(disposables);
+            this.state = State.Idle;
         });
     }
     update() {
@@ -357,7 +538,8 @@ class Model {
             const workingTree = [];
             const merge = [];
             status.forEach(raw => {
-                const uri = vscode_1.Uri.file(path.join(this.repositoryRoot, raw.path));
+                const uri = vscode_1.Uri.file(path.join(this.repository.root, raw.path));
+                const renameUri = raw.rename ? vscode_1.Uri.file(path.join(this.repository.root, raw.rename)) : undefined;
                 switch (raw.x + raw.y) {
                     case '??': return workingTree.push(new Resource(uri, Status.UNTRACKED));
                     case '!!': return workingTree.push(new Resource(uri, Status.IGNORED));
@@ -382,7 +564,7 @@ class Model {
                         index.push(new Resource(uri, Status.INDEX_DELETED));
                         break;
                     case 'R':
-                        index.push(new Resource(uri, Status.INDEX_RENAMED /*, raw.rename*/));
+                        index.push(new Resource(uri, Status.INDEX_RENAMED, renameUri));
                         break;
                     case 'C':
                         index.push(new Resource(uri, Status.INDEX_COPIED));
@@ -390,20 +572,25 @@ class Model {
                 }
                 switch (raw.y) {
                     case 'M':
-                        workingTree.push(new Resource(uri, Status.MODIFIED /*, raw.rename*/));
+                        workingTree.push(new Resource(uri, Status.MODIFIED, renameUri));
                         break;
                     case 'D':
-                        workingTree.push(new Resource(uri, Status.DELETED /*, raw.rename*/));
+                        workingTree.push(new Resource(uri, Status.DELETED, renameUri));
                         break;
                 }
             });
             this._mergeGroup = new MergeGroup(merge);
             this._indexGroup = new IndexGroup(index);
             this._workingTreeGroup = new WorkingTreeGroup(workingTree);
-            this._onDidChange.fire(this.resources);
+            this._onDidChangeResources.fire(this.resources);
         });
     }
     onFSChange(uri) {
+        const config = vscode_1.workspace.getConfiguration('git');
+        const autorefresh = config.get('autorefresh');
+        if (!autorefresh) {
+            return;
+        }
         if (!this.operations.isIdle()) {
             return;
         }
@@ -416,29 +603,35 @@ class Model {
         return __awaiter(this, void 0, void 0, function* () {
             yield this.whenIdle();
             yield this.status();
-            yield new Promise(c => setTimeout(c, 5000));
+            yield timeout(5000);
         });
     }
-    whenIdle() {
-        return __awaiter(this, void 0, void 0, function* () {
-            while (!this.operations.isIdle()) {
-                yield util_1.eventToPromise(this.onDidRunOperation);
-            }
-        });
+    dispose() {
+        this.repositoryDisposable.dispose();
+        this.disposables = util_1.dispose(this.disposables);
     }
 }
+__decorate([
+    decorators_1.memoize
+], Model.prototype, "onDidChange", null);
 __decorate([
     decorators_1.memoize
 ], Model.prototype, "onDidChangeOperations", null);
 __decorate([
     decorators_1.throttle
+], Model.prototype, "init", null);
+__decorate([
+    decorators_1.throttle
 ], Model.prototype, "status", null);
+__decorate([
+    decorators_1.throttle
+], Model.prototype, "add", null);
 __decorate([
     decorators_1.throttle
 ], Model.prototype, "stage", null);
 __decorate([
     decorators_1.throttle
-], Model.prototype, "unstage", null);
+], Model.prototype, "revertFiles", null);
 __decorate([
     decorators_1.throttle
 ], Model.prototype, "commit", null);
@@ -453,13 +646,22 @@ __decorate([
 ], Model.prototype, "checkout", null);
 __decorate([
     decorators_1.throttle
+], Model.prototype, "getCommit", null);
+__decorate([
+    decorators_1.throttle
+], Model.prototype, "reset", null);
+__decorate([
+    decorators_1.throttle
 ], Model.prototype, "fetch", null);
 __decorate([
     decorators_1.throttle
-], Model.prototype, "sync", null);
+], Model.prototype, "pull", null);
 __decorate([
     decorators_1.throttle
 ], Model.prototype, "push", null);
+__decorate([
+    decorators_1.throttle
+], Model.prototype, "sync", null);
 __decorate([
     decorators_1.throttle
 ], Model.prototype, "update", null);
@@ -470,4 +672,4 @@ __decorate([
     decorators_1.throttle
 ], Model.prototype, "updateWhenIdleAndWait", null);
 exports.Model = Model;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/f9d0c687ff2ea7aabd85fb9a43129117c0ecf519/extensions\git\out/model.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/8076a19fdcab7e1fc1707952d652f0bb6c6db331/extensions\git\out/model.js.map

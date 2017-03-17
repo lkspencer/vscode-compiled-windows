@@ -283,7 +283,11 @@ define(__m[3/*vs/base/common/paths*/], __M([1/*require*/,2/*exports*/,5/*vs/base
             return path[0];
         }
         else {
-            return path.substring(0, ~idx);
+            var res = path.substring(0, ~idx);
+            if (platform_1.isWindows && res[res.length - 1] === ':') {
+                res += exports.nativeSep; // make sure drive letters end with backslash
+            }
+            return res;
         }
     }
     exports.dirname = dirname;
@@ -573,15 +577,6 @@ define(__m[3/*vs/base/common/paths*/], __M([1/*require*/,2/*exports*/,5/*vs/base
         return true;
     }
     exports.isValidBasename = isValidBasename;
-    exports.isAbsoluteRegex = /^((\/|[a-zA-Z]:\\)[^\(\)<>\\'\"\[\]]+)/;
-    /**
-     * If you have access to node, it is recommended to use node's path.isAbsolute().
-     * This is a simple regex based approach.
-     */
-    function isAbsolute(path) {
-        return exports.isAbsoluteRegex.test(path);
-    }
-    exports.isAbsolute = isAbsolute;
 });
 
 define(__m[6/*vs/workbench/parts/output/common/outputLinkComputer*/], __M([1/*require*/,2/*exports*/,7/*vs/base/common/winjs.base*/,8/*vs/base/common/uri*/,3/*vs/base/common/paths*/,4/*vs/base/common/strings*/,0/*vs/base/common/arrays*/,9/*vs/editor/common/core/range*/]), function (require, exports, winjs_base_1, uri_1, paths, strings, arrays, range_1) {
@@ -610,7 +605,7 @@ define(__m[6/*vs/workbench/parts/output/common/outputLinkComputer*/], __M([1/*re
             var _this = this;
             var model = this._getModel(uri);
             if (!model) {
-                return;
+                return undefined;
             }
             var links = [];
             var resourceCreator = {

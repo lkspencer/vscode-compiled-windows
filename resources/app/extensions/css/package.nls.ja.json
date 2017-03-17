@@ -55,5 +55,8 @@
 	"scss.lint.unknownVendorSpecificProperties.desc": "不明なベンダー固有のプロパティ。",
 	"scss.lint.vendorPrefix.desc": "ベンダー固有のプレフィックスを使用する場合は、標準のプロパティも含めます",
 	"scss.lint.zeroUnits.desc": "0 の単位は必要ありません",
-	"scss.validate.desc": "すべての検証を有効または無効にします"
+	"scss.validate.desc": "すべての検証を有効または無効にします",
+	"less.colorDecorators.enable.desc": "カラー デコレーターを有効または無効にします",
+	"scss.colorDecorators.enable.desc": "カラー デコレーターを有効または無効にします",
+	"css.colorDecorators.enable.desc": "カラー デコレーターを有効または無効にします"
 }

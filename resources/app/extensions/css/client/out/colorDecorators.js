@@ -19,10 +19,14 @@ var decorationType = {
         }
     }
 };
-function activateColorDecorations(decoratorProvider, supportedLanguages) {
+function activateColorDecorations(decoratorProvider, supportedLanguages, isDecoratorEnabled) {
     var disposables = [];
     var colorsDecorationType = vscode_1.window.createTextEditorDecorationType(decorationType);
     disposables.push(colorsDecorationType);
+    var decoratorEnablement = {};
+    for (var languageId in supportedLanguages) {
+        decoratorEnablement[languageId] = isDecoratorEnabled(languageId);
+    }
     var pendingUpdateRequests = {};
     vscode_1.window.onDidChangeVisibleTextEditors(function (editors) {
         for (var _i = 0, editors_1 = editors; _i < editors_1.length; _i++) {
@@ -31,32 +35,55 @@ function activateColorDecorations(decoratorProvider, supportedLanguages) {
         }
     }, null, disposables);
     vscode_1.workspace.onDidChangeTextDocument(function (event) { return triggerUpdateDecorations(event.document); }, null, disposables);
-    // we care about all visible editors
-    vscode_1.window.visibleTextEditors.forEach(function (editor) {
-        if (editor.document) {
-            triggerUpdateDecorations(editor.document);
+    // track open and close for document languageId changes
+    vscode_1.workspace.onDidCloseTextDocument(function (event) { return triggerUpdateDecorations(event, true); });
+    vscode_1.workspace.onDidOpenTextDocument(function (event) { return triggerUpdateDecorations(event); });
+    vscode_1.workspace.onDidChangeConfiguration(function (_) {
+        var hasChanges = false;
+        for (var languageId in supportedLanguages) {
+            var prev = decoratorEnablement[languageId];
+            var curr = isDecoratorEnabled(languageId);
+            if (prev !== curr) {
+                decoratorEnablement[languageId] = curr;
+                hasChanges = true;
+            }
         }
-    });
-    function triggerUpdateDecorations(document) {
-        var triggerUpdate = supportedLanguages[document.languageId];
-        var documentUri = document.uri;
-        var documentUriStr = documentUri.toString();
-        var timeout = pendingUpdateRequests[documentUriStr];
-        if (typeof timeout !== 'undefined') {
-            clearTimeout(timeout);
-            triggerUpdate = true; // force update, even if languageId is not supported (anymore)
+        if (hasChanges) {
+            updateAllVisibleEditors(true);
         }
+    }, null, disposables);
+    updateAllVisibleEditors(false);
+    function updateAllVisibleEditors(settingsChanges) {
+        vscode_1.window.visibleTextEditors.forEach(function (editor) {
+            if (editor.document) {
+                triggerUpdateDecorations(editor.document, settingsChanges);
+            }
+        });
+    }
+    function triggerUpdateDecorations(document, settingsChanges) {
+        if (settingsChanges === void 0) { settingsChanges = false; }
+        var triggerUpdate = supportedLanguages[document.languageId] && (decoratorEnablement[document.languageId] || settingsChanges);
         if (triggerUpdate) {
-            pendingUpdateRequests[documentUriStr] = setTimeout(function () {
+            var documentUriStr_1 = document.uri.toString();
+            var timeout = pendingUpdateRequests[documentUriStr_1];
+            if (typeof timeout !== 'undefined') {
+                clearTimeout(timeout);
+            }
+            pendingUpdateRequests[documentUriStr_1] = setTimeout(function () {
                 // check if the document is in use by an active editor
                 for (var _i = 0, _a = vscode_1.window.visibleTextEditors; _i < _a.length; _i++) {
                     var editor = _a[_i];
-                    if (editor.document && documentUriStr === editor.document.uri.toString()) {
-                        updateDecorationForEditor(documentUriStr, editor.document.version);
-                        break;
+                    if (editor.document && documentUriStr_1 === editor.document.uri.toString()) {
+                        if (decoratorEnablement[editor.document.languageId]) {
+                            updateDecorationForEditor(documentUriStr_1, editor.document.version);
+                            break;
+                        }
+                        else {
+                            editor.setDecorations(colorsDecorationType, []);
+                        }
                     }
                 }
-                delete pendingUpdateRequests[documentUriStr];
+                delete pendingUpdateRequests[documentUriStr_1];
             }, 500);
         }
     }
@@ -88,4 +115,4 @@ function activateColorDecorations(decoratorProvider, supportedLanguages) {
     return vscode_1.Disposable.from.apply(vscode_1.Disposable, disposables);
 }
 exports.activateColorDecorations = activateColorDecorations;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/f9d0c687ff2ea7aabd85fb9a43129117c0ecf519/extensions\css\client\out/colorDecorators.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/8076a19fdcab7e1fc1707952d652f0bb6c6db331/extensions\css\client\out/colorDecorators.js.map

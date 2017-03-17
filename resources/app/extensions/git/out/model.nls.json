@@ -2,11 +2,13 @@
 	"messages": [
 		"Merge Changes",
 		"Staged Changes",
-		"Changes"
+		"Changes",
+		"Could not show object"
 	],
 	"keys": [
 		"merge changes",
 		"staged changes",
-		"changes"
+		"changes",
+		"cantshow"
 	]
 }

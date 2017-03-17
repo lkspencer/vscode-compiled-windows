@@ -3,6 +3,12 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 'use strict';
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
@@ -12,44 +18,70 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 const vscode_1 = require("vscode");
-const path = require("path");
+const decorators_1 = require("./decorators");
+const THREE_MINUTES = 1000 * 60 * 3;
+const FIVE_MINUTES = 1000 * 60 * 5;
 class GitContentProvider {
-    constructor(git, rootPath, onGitChange) {
-        this.git = git;
-        this.rootPath = rootPath;
-        this.disposables = [];
+    constructor(model) {
+        this.model = model;
         this.onDidChangeEmitter = new vscode_1.EventEmitter();
-        this.uris = new Set();
-        this.disposables.push(onGitChange(this.fireChangeEvents, this), vscode_1.workspace.registerTextDocumentContentProvider('git', this));
+        this.cache = Object.create(null);
+        this.disposables = [];
+        this.disposables.push(model.onDidChangeRepository(this.eventuallyFireChangeEvents, this), vscode_1.workspace.registerTextDocumentContentProvider('git', this));
+        setInterval(() => this.cleanup(), FIVE_MINUTES);
     }
     get onDidChange() { return this.onDidChangeEmitter.event; }
+    eventuallyFireChangeEvents() {
+        this.fireChangeEvents();
+    }
     fireChangeEvents() {
-        for (let uri of this.uris) {
-            this.onDidChangeEmitter.fire(uri);
-        }
+        return __awaiter(this, void 0, void 0, function* () {
+            yield this.model.whenIdle();
+            Object.keys(this.cache)
+                .forEach(key => this.onDidChangeEmitter.fire(this.cache[key].uri));
+        });
     }
     provideTextDocumentContent(uri) {
         return __awaiter(this, void 0, void 0, function* () {
-            const treeish = uri.query;
-            const relativePath = path.relative(this.rootPath, uri.fsPath).replace(/\\/g, '/');
+            let ref = uri.query;
+            if (ref === '~') {
+                const fileUri = uri.with({ scheme: 'file', query: '' });
+                const uriString = fileUri.toString();
+                const [indexStatus] = this.model.indexGroup.resources.filter(r => r.original.toString() === uriString);
+                ref = indexStatus ? '' : 'HEAD';
+            }
+            const timestamp = new Date().getTime();
+            this.cache[uri.toString()] = { uri, timestamp };
             try {
-                const result = yield this.git.exec(this.rootPath, ['show', `${treeish}:${relativePath}`]);
-                if (result.exitCode !== 0) {
-                    this.uris.delete(uri);
-                    return '';
-                }
-                this.uris.add(uri);
-                return result.stdout;
+                const result = yield this.model.show(ref, uri);
+                return result;
             }
             catch (err) {
-                this.uris.delete(uri);
                 return '';
             }
         });
+    }
+    cleanup() {
+        const now = new Date().getTime();
+        const cache = Object.create(null);
+        Object.keys(this.cache).forEach(key => {
+            const row = this.cache[key];
+            const isOpen = vscode_1.window.visibleTextEditors.some(e => e.document.uri.fsPath === row.uri.fsPath);
+            if (isOpen || now - row.timestamp < THREE_MINUTES) {
+                cache[row.uri.toString()] = row;
+            }
+        });
+        this.cache = cache;
     }
     dispose() {
         this.disposables.forEach(d => d.dispose());
     }
 }
+__decorate([
+    decorators_1.debounce(1100)
+], GitContentProvider.prototype, "eventuallyFireChangeEvents", null);
+__decorate([
+    decorators_1.throttle
+], GitContentProvider.prototype, "fireChangeEvents", null);
 exports.GitContentProvider = GitContentProvider;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/f9d0c687ff2ea7aabd85fb9a43129117c0ecf519/extensions\git\out/contentProvider.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/8076a19fdcab7e1fc1707952d652f0bb6c6db331/extensions\git\out/contentProvider.js.map

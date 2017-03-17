@@ -67,7 +67,7 @@ function fork(modulePath, args, options, callback) {
     // Begin listening to stdout pipe
     let stdOutServer = net.createServer((stdOutStream) => {
         // The child process will write exactly one chunk with content `ready` when it has installed a listener to the stdin pipe
-        stdOutStream.once('data', (chunk) => {
+        stdOutStream.once('data', (_chunk) => {
             // The child process is sending me the `ready` chunk, time to connect to the stdin pipe
             childProcess.stdin = net.connect(stdInPipeName);
             // From now on the childProcess.stdout is available for reading
@@ -103,4 +103,4 @@ function fork(modulePath, args, options, callback) {
     });
 }
 exports.fork = fork;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/f9d0c687ff2ea7aabd85fb9a43129117c0ecf519/extensions\typescript\out/utils\electron.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/8076a19fdcab7e1fc1707952d652f0bb6c6db331/extensions\typescript\out/utils\electron.js.map

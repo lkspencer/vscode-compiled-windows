@@ -5,7 +5,8 @@
 'use strict';
 var vscode = require("vscode");
 var path = require("path");
-var FrontMatterRegex = /^---\s*(.|\s)*?---\s*/;
+var tableOfContentsProvider_1 = require("./tableOfContentsProvider");
+var FrontMatterRegex = /^---\s*[^]*?---\s*/;
 var MarkdownEngine = (function () {
     function MarkdownEngine() {
     }
@@ -26,7 +27,9 @@ var MarkdownEngine = (function () {
                         }
                         return "<pre class=\"hljs\"><code><div>" + _this.engine.utils.escapeHtml(str) + "</div></code></pre>";
                     }
-                }).use(mdnh, {});
+                }).use(mdnh, {
+                    slugify: function (header) { return tableOfContentsProvider_1.TableOfContentsProvider.slugify(header); }
+                });
                 for (var _i = 0, _a = ['paragraph_open', 'heading_open', 'image', 'code_block', 'blockquote_open', 'list_item_open']; _i < _a.length; _i++) {
                     var renderName = _a[_i];
                     this.addLineNumberRenderer(this.md, renderName);
@@ -95,7 +98,7 @@ var MarkdownEngine = (function () {
                 if (!uri.scheme && uri.path && !uri.fragment) {
                     // Assume it must be a file
                     if (uri.path[0] === '/') {
-                        uri = vscode.Uri.file(path.join(vscode.workspace.rootPath, uri.path));
+                        uri = vscode.Uri.file(path.join(vscode.workspace.rootPath || '', uri.path));
                     }
                     else {
                         uri = vscode.Uri.file(path.join(path.dirname(_this.currentDocument.path), uri.path));
@@ -118,4 +121,4 @@ var MarkdownEngine = (function () {
     return MarkdownEngine;
 }());
 exports.MarkdownEngine = MarkdownEngine;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/f9d0c687ff2ea7aabd85fb9a43129117c0ecf519/extensions\markdown\out/markdownEngine.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/8076a19fdcab7e1fc1707952d652f0bb6c6db331/extensions\markdown\out/markdownEngine.js.map

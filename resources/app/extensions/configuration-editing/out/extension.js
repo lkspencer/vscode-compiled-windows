@@ -6,17 +6,24 @@
 var vscode = require("vscode");
 var jsonc_parser_1 = require("jsonc-parser");
 var path = require("path");
+var settingsDocumentHelper_1 = require("./settingsDocumentHelper");
 var decoration = vscode.window.createTextEditorDecorationType({
     color: '#b1b1b1'
 });
+var pendingLaunchJsonDecoration;
 function activate(context) {
     //keybindings.json command-suggestions
     context.subscriptions.push(registerKeybindingsCompletions());
+    //settings.json suggestions
+    context.subscriptions.push(registerSettingsCompletions());
     // launch.json decorations
     context.subscriptions.push(vscode.window.onDidChangeActiveTextEditor(function (editor) { return updateLaunchJsonDecorations(editor); }, null, context.subscriptions));
     context.subscriptions.push(vscode.workspace.onDidChangeTextDocument(function (event) {
         if (vscode.window.activeTextEditor && event.document === vscode.window.activeTextEditor.document) {
-            updateLaunchJsonDecorations(vscode.window.activeTextEditor);
+            if (pendingLaunchJsonDecoration) {
+                clearTimeout(pendingLaunchJsonDecoration);
+            }
+            pendingLaunchJsonDecoration = setTimeout(function () { return updateLaunchJsonDecorations(vscode.window.activeTextEditor); }, 1000);
         }
     }, null, context.subscriptions));
     updateLaunchJsonDecorations(vscode.window.activeTextEditor);
@@ -29,18 +36,24 @@ function registerKeybindingsCompletions() {
             var location = jsonc_parser_1.getLocation(document.getText(), document.offsetAt(position));
             if (location.path[1] === 'command') {
                 var range_1 = document.getWordRangeAtPosition(position) || new vscode.Range(position, position);
-                return commands.then(function (ids) { return ids.map(function (id) { return newCompletionItem(id, range_1); }); });
+                return commands.then(function (ids) { return ids.map(function (id) { return newSimpleCompletionItem(JSON.stringify(id), range_1); }); });
             }
         }
     });
 }
-function newCompletionItem(text, range) {
-    var item = new vscode.CompletionItem(JSON.stringify(text));
+function registerSettingsCompletions() {
+    return vscode.languages.registerCompletionItemProvider({ language: 'json', pattern: '**/settings.json' }, {
+        provideCompletionItems: function (document, position, token) {
+            return new settingsDocumentHelper_1.SettingsDocument(document).provideCompletionItems(position, token);
+        }
+    });
+}
+function newSimpleCompletionItem(text, range, description) {
+    var item = new vscode.CompletionItem(text);
     item.kind = vscode.CompletionItemKind.Value;
-    item.textEdit = {
-        range: range,
-        newText: item.label
-    };
+    item.detail = description;
+    item.insertText = text;
+    item.range = range;
     return item;
 }
 function updateLaunchJsonDecorations(editor) {
@@ -73,4 +86,4 @@ function updateLaunchJsonDecorations(editor) {
     });
     editor.setDecorations(decoration, ranges);
 }
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/f9d0c687ff2ea7aabd85fb9a43129117c0ecf519/extensions\configuration-editing\out/extension.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/8076a19fdcab7e1fc1707952d652f0bb6c6db331/extensions\configuration-editing\out/extension.js.map

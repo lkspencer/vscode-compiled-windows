@@ -55,5 +55,8 @@
 	"scss.lint.unknownVendorSpecificProperties.desc": "Unbekannte anbieterspezifische Eigenschaft.",
 	"scss.lint.vendorPrefix.desc": "Beim Verwenden von anbieterspezifischen Präfix auch die Standardeigenschaft miteinbeziehen",
 	"scss.lint.zeroUnits.desc": "Keine Einheit für Null erforderlich",
-	"scss.validate.desc": "Aktiviert oder deaktiviert alle Überprüfungen."
+	"scss.validate.desc": "Aktiviert oder deaktiviert alle Überprüfungen.",
+	"less.colorDecorators.enable.desc": "Aktiviert oder deaktiviert Farb-Decorators",
+	"scss.colorDecorators.enable.desc": "Aktiviert oder deaktiviert Farb-Decorators",
+	"css.colorDecorators.enable.desc": "Aktiviert oder deaktiviert Farb-Decorators"
 }

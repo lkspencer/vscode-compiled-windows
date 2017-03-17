@@ -34,7 +34,7 @@ function findSpecificGit(path) {
     return new Promise((c, e) => {
         const buffers = [];
         const child = cp.spawn(path, ['--version']);
-        child.stdout.on('data', b => buffers.push(b));
+        child.stdout.on('data', (b) => buffers.push(b));
         child.on('error', e);
         child.on('exit', code => code ? e(new Error('Not found')) : c({ path, version: parseVersion(Buffer.concat(buffers).toString('utf8').trim()) }));
     });
@@ -196,6 +196,26 @@ class Git {
     open(repository, env = {}) {
         return new Repository(this, repository, env);
     }
+    init(repository) {
+        return __awaiter(this, void 0, void 0, function* () {
+            yield this.exec(repository, ['init']);
+            return;
+        });
+    }
+    clone(url, parentPath) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const folderName = url.replace(/^.*\//, '').replace(/\.git$/, '') || 'repository';
+            const folderPath = path.join(parentPath, folderName);
+            yield this.exec(parentPath, ['clone', url, folderPath]);
+            return folderPath;
+        });
+    }
+    getRepositoryRoot(path) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const result = yield this.exec(path, ['rev-parse', '--show-toplevel']);
+            return result.stdout.trim();
+        });
+    }
     exec(cwd, args, options = {}) {
         return __awaiter(this, void 0, void 0, function* () {
             options = util_1.assign({ cwd }, options || {});
@@ -258,7 +278,10 @@ class Git {
         if (!options.stdio && !options.input) {
             options.stdio = ['ignore', null, null]; // Unless provided, ignore stdin and leave default streams for stdout and stderr
         }
-        options.env = util_1.assign({}, process.env, options.env || {});
+        options.env = util_1.assign({}, process.env, options.env || {}, {
+            VSCODE_GIT_COMMAND: args[0],
+            LANG: 'en_US.UTF-8'
+        });
         if (options.log !== false) {
             this.log(`git ${args.join(' ')}\n`);
         }
@@ -270,37 +293,34 @@ class Git {
 }
 exports.Git = Git;
 class Repository {
-    constructor(_git, repository, env = {}) {
+    constructor(_git, repositoryRoot, env = {}) {
         this._git = _git;
-        this.repository = repository;
+        this.repositoryRoot = repositoryRoot;
         this.env = env;
     }
     get git() {
         return this._git;
     }
-    get path() {
-        return this.repository;
+    get root() {
+        return this.repositoryRoot;
     }
     // TODO@Joao: rename to exec
     run(args, options = {}) {
         return __awaiter(this, void 0, void 0, function* () {
             options.env = util_1.assign({}, options.env || {});
             options.env = util_1.assign(options.env, this.env);
-            return yield this.git.exec(this.repository, args, options);
+            return yield this.git.exec(this.repositoryRoot, args, options);
         });
     }
     stream(args, options = {}) {
         options.env = util_1.assign({}, options.env || {});
         options.env = util_1.assign(options.env, this.env);
-        return this.git.stream(this.repository, args, options);
+        return this.git.stream(this.repositoryRoot, args, options);
     }
     spawn(args, options = {}) {
         options.env = util_1.assign({}, options.env || {});
         options.env = util_1.assign(options.env, this.env);
         return this.git.spawn(args, options);
-    }
-    init() {
-        return this.run(['init']);
     }
     config(scope, key, value, options) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -582,12 +602,6 @@ class Repository {
             yield this.push();
         });
     }
-    getRoot() {
-        return __awaiter(this, void 0, void 0, function* () {
-            const result = yield this.run(['rev-parse', '--show-toplevel']);
-            return result.stdout.trim();
-        });
-    }
     getStatus() {
         return __awaiter(this, void 0, void 0, function* () {
             const executionResult = yield this.run(['status', '-z', '-u']);
@@ -724,7 +738,7 @@ class Repository {
                 let templatePath = result.stdout.trim()
                     .replace(/^~([^\/]*)\//, (_, user) => `${user ? path.join(path.dirname(homedir), user) : homedir}/`);
                 if (!path.isAbsolute(templatePath)) {
-                    templatePath = path.join(this.repository, templatePath);
+                    templatePath = path.join(this.repositoryRoot, templatePath);
                 }
                 const raw = yield readfile(templatePath, 'utf8');
                 return raw.replace(/^\s*#.*$\n?/gm, '').trim();
@@ -746,4 +760,4 @@ class Repository {
     }
 }
 exports.Repository = Repository;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/f9d0c687ff2ea7aabd85fb9a43129117c0ecf519/extensions\git\out/git.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/8076a19fdcab7e1fc1707952d652f0bb6c6db331/extensions\git\out/git.js.map

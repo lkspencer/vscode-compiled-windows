@@ -2,7 +2,7 @@
  * Copyright (C) Microsoft Corporation. All rights reserved.
  *--------------------------------------------------------*/
 (function() {
-var __m = ["exports","require","vs/base/common/platform","vs/base/common/strings","vs/base/common/types","vs/base/common/winjs.base","vs/base/common/arrays","vs/base/common/objects","vs/base/common/event","path","vs/base/common/errors","vs/base/common/paths","vs/base/common/lifecycle","vs/base/common/uri","vs/base/common/scorer","child_process","vs/base/common/map","vs/base/parts/ipc/common/ipc","fs","vs/base/parts/ipc/node/ipc.cp","vs/nls!vs/workbench/services/search/node/searchApp","vs/base/node/flow","vs/nls","vs/base/common/functional","vs/base/node/decoder","vs/base/node/event","vs/base/common/async","vs/base/common/uuid","vs/base/node/extfs","vs/base/common/parsers","vs/base/common/cancellation","vs/base/node/stdFork","os","vs/base/common/callbackList","vs/base/common/glob","vs/nls!vs/base/common/errorMessage","vs/base/common/comparers","string_decoder","vs/base/common/errorMessage","vs/nls!vs/base/common/processes","vs/base/common/processes","vs/nls!vs/base/node/processes","vs/base/node/processes","vs/base/common/events","vs/platform/instantiation/common/instantiation","vs/platform/files/common/files","vs/workbench/services/search/node/fileSearch","vs/workbench/services/search/node/searchIpc","vs/workbench/services/search/node/textSearch","vs/workbench/services/search/node/worker/searchWorkerIpc","vs/workbench/services/search/node/textSearchWorkerProvider","vs/workbench/services/search/node/rawSearchService","net","vs/base/common/winjs.base.raw","stream","vs/workbench/services/search/node/searchApp","graceful-fs","assert"];
+var __m = ["exports","require","vs/base/common/platform","vs/base/common/strings","vs/base/common/types","vs/base/common/winjs.base","vs/base/common/arrays","vs/base/common/objects","path","vs/base/common/event","vs/base/common/errors","vs/base/common/lifecycle","vs/base/common/uri","vs/base/common/paths","vs/base/common/scorer","child_process","vs/base/common/map","vs/base/parts/ipc/common/ipc","fs","vs/base/parts/ipc/node/ipc.cp","vs/nls!vs/workbench/services/search/node/searchApp","vs/base/node/flow","vs/nls","vs/base/common/functional","vs/base/node/decoder","vs/base/node/event","vs/base/common/async","vs/base/common/uuid","vs/base/node/extfs","vs/base/common/parsers","vs/base/common/cancellation","vs/base/node/stdFork","os","vs/base/common/callbackList","vs/base/common/glob","vs/nls!vs/base/common/errorMessage","vs/base/common/comparers","string_decoder","vs/base/common/errorMessage","vs/nls!vs/base/common/processes","vs/base/common/processes","vs/nls!vs/base/node/processes","vs/base/node/processes","vs/base/common/events","vs/platform/instantiation/common/instantiation","vs/platform/files/common/files","vs/workbench/services/search/node/fileSearch","vs/workbench/services/search/node/searchIpc","vs/workbench/services/search/node/textSearch","vs/workbench/services/search/node/worker/searchWorkerIpc","vs/workbench/services/search/node/textSearchWorkerProvider","vs/workbench/services/search/node/rawSearchService","net","vs/base/common/winjs.base.raw","stream","vs/workbench/services/search/node/searchApp","graceful-fs","assert"];
 var __M = function(deps) {
   var result = [];
   for (var i = 0, len = deps.length; i < len; i++) {
@@ -335,7 +335,7 @@ define(__m[23/*vs/base/common/functional*/], __M([1/*require*/,0/*exports*/]), f
 
 
 
-define(__m[12/*vs/base/common/lifecycle*/], __M([1/*require*/,0/*exports*/]), function (require, exports) {
+define(__m[11/*vs/base/common/lifecycle*/], __M([1/*require*/,0/*exports*/]), function (require, exports) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -358,6 +358,7 @@ define(__m[12/*vs/base/common/lifecycle*/], __M([1/*require*/,0/*exports*/]), fu
                 first.dispose();
                 return first;
             }
+            return undefined;
         }
         else {
             dispose(first);
@@ -406,6 +407,7 @@ define(__m[12/*vs/base/common/lifecycle*/], __M([1/*require*/,0/*exports*/]), fu
                     var element = arg_1[_i];
                     return this._register(element);
                 }
+                return undefined;
             }
         };
         return Disposables;
@@ -753,7 +755,7 @@ define(__m[16/*vs/base/common/map*/], __M([1/*require*/,0/*exports*/]), function
                 var part = parts_1[_i];
                 node = children[part];
                 if (!node) {
-                    return;
+                    return undefined;
                 }
                 children = node.children;
             }
@@ -779,6 +781,7 @@ define(__m[16/*vs/base/common/map*/], __M([1/*require*/,0/*exports*/]), function
             if (lastNode) {
                 return lastNode.element;
             }
+            return undefined;
         };
         TrieMap.prototype.findSuperstr = function (path) {
             var parts = this._splitter(path);
@@ -788,7 +791,7 @@ define(__m[16/*vs/base/common/map*/], __M([1/*require*/,0/*exports*/]), function
                 var part = parts_3[_i];
                 node = children[part];
                 if (!node) {
-                    return;
+                    return undefined;
                 }
                 children = node.children;
             }
@@ -1339,12 +1342,19 @@ define(__m[3/*vs/base/common/strings*/], __M([1/*require*/,0/*exports*/,16/*vs/b
                 // equal
                 continue;
             }
-            var diff = codeA - codeB;
-            if ((diff === 32 || diff === -32) && isAsciiLetter(codeA) && isAsciiLetter(codeB)) {
-                // equal -> ignoreCase
-                continue;
+            if (isAsciiLetter(codeA) && isAsciiLetter(codeB)) {
+                var diff = codeA - codeB;
+                if (diff === 32 || diff === -32) {
+                    // equal -> ignoreCase
+                    continue;
+                }
+                else {
+                    return diff;
+                }
             }
-            return compare(a[i].toLowerCase(), b[i].toLowerCase());
+            else {
+                return compare(a.toLowerCase(), b.toLowerCase());
+            }
         }
         if (a.length < b.length) {
             return -1;
@@ -1712,9 +1722,6 @@ define(__m[36/*vs/base/common/comparers*/], __M([1/*require*/,0/*exports*/,14/*v
         // Give higher importance to label score
         var labelAScore = scorer.score(labelA, lookFor, scorerCache);
         var labelBScore = scorer.score(labelB, lookFor, scorerCache);
-        // Useful for understanding the scoring
-        // elementA.setPrefix(labelAScore + ' ');
-        // elementB.setPrefix(labelBScore + ' ');
         if (labelAScore !== labelBScore) {
             return labelAScore > labelBScore ? -1 : 1;
         }
@@ -1724,9 +1731,6 @@ define(__m[36/*vs/base/common/comparers*/], __M([1/*require*/,0/*exports*/,14/*v
         if (resourcePathA && resourcePathB) {
             var resourceAScore = scorer.score(resourcePathA, lookFor, scorerCache);
             var resourceBScore = scorer.score(resourcePathB, lookFor, scorerCache);
-            // Useful for understanding the scoring
-            // elementA.setPrefix(elementA.getPrefix() + ' ' + resourceAScore + ': ');
-            // elementB.setPrefix(elementB.getPrefix() + ' ' + resourceBScore + ': ');
             if (resourceAScore !== resourceBScore) {
                 return resourceAScore > resourceBScore ? -1 : 1;
             }
@@ -1747,7 +1751,7 @@ define(__m[36/*vs/base/common/comparers*/], __M([1/*require*/,0/*exports*/,14/*v
     exports.compareByScore = compareByScore;
 });
 
-define(__m[11/*vs/base/common/paths*/], __M([1/*require*/,0/*exports*/,2/*vs/base/common/platform*/,6/*vs/base/common/arrays*/,3/*vs/base/common/strings*/]), function (require, exports, platform_1, arrays_1, strings_1) {
+define(__m[13/*vs/base/common/paths*/], __M([1/*require*/,0/*exports*/,2/*vs/base/common/platform*/,6/*vs/base/common/arrays*/,3/*vs/base/common/strings*/]), function (require, exports, platform_1, arrays_1, strings_1) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -1793,7 +1797,11 @@ define(__m[11/*vs/base/common/paths*/], __M([1/*require*/,0/*exports*/,2/*vs/bas
             return path[0];
         }
         else {
-            return path.substring(0, ~idx);
+            var res = path.substring(0, ~idx);
+            if (platform_1.isWindows && res[res.length - 1] === ':') {
+                res += exports.nativeSep; // make sure drive letters end with backslash
+            }
+            return res;
         }
     }
     exports.dirname = dirname;
@@ -2083,18 +2091,9 @@ define(__m[11/*vs/base/common/paths*/], __M([1/*require*/,0/*exports*/,2/*vs/bas
         return true;
     }
     exports.isValidBasename = isValidBasename;
-    exports.isAbsoluteRegex = /^((\/|[a-zA-Z]:\\)[^\(\)<>\\'\"\[\]]+)/;
-    /**
-     * If you have access to node, it is recommended to use node's path.isAbsolute().
-     * This is a simple regex based approach.
-     */
-    function isAbsolute(path) {
-        return exports.isAbsoluteRegex.test(path);
-    }
-    exports.isAbsolute = isAbsolute;
 });
 
-define(__m[34/*vs/base/common/glob*/], __M([1/*require*/,0/*exports*/,6/*vs/base/common/arrays*/,3/*vs/base/common/strings*/,11/*vs/base/common/paths*/,16/*vs/base/common/map*/]), function (require, exports, arrays, strings, paths, map_1) {
+define(__m[34/*vs/base/common/glob*/], __M([1/*require*/,0/*exports*/,6/*vs/base/common/arrays*/,3/*vs/base/common/strings*/,13/*vs/base/common/paths*/,16/*vs/base/common/map*/]), function (require, exports, arrays, strings, paths, map_1) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -2952,7 +2951,7 @@ define(__m[33/*vs/base/common/callbackList*/], __M([1/*require*/,0/*exports*/,10
                 args[_i] = arguments[_i];
             }
             if (!this._callbacks) {
-                return;
+                return undefined;
             }
             var ret = [], callbacks = this._callbacks.slice(0), contexts = this._contexts.slice(0);
             for (var i = 0, len = callbacks.length; i < len; i++) {
@@ -2985,7 +2984,7 @@ define(__m[33/*vs/base/common/callbackList*/], __M([1/*require*/,0/*exports*/,10
     exports.default = CallbackList;
 });
 
-define(__m[8/*vs/base/common/event*/], __M([1/*require*/,0/*exports*/,12/*vs/base/common/lifecycle*/,33/*vs/base/common/callbackList*/,23/*vs/base/common/functional*/]), function (require, exports, lifecycle_1, callbackList_1, functional_1) {
+define(__m[9/*vs/base/common/event*/], __M([1/*require*/,0/*exports*/,11/*vs/base/common/lifecycle*/,33/*vs/base/common/callbackList*/,23/*vs/base/common/functional*/]), function (require, exports, lifecycle_1, callbackList_1, functional_1) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -3252,8 +3251,9 @@ define(__m[8/*vs/base/common/event*/], __M([1/*require*/,0/*exports*/,12/*vs/bas
         return emitter.event;
     }
     exports.any = any;
-    function debounceEvent(event, merger, delay) {
+    function debounceEvent(event, merger, delay, leading) {
         if (delay === void 0) { delay = 100; }
+        if (leading === void 0) { leading = false; }
         var subscription;
         var output;
         var handle;
@@ -3261,11 +3261,15 @@ define(__m[8/*vs/base/common/event*/], __M([1/*require*/,0/*exports*/,12/*vs/bas
             onFirstListenerAdd: function () {
                 subscription = event(function (cur) {
                     output = merger(output, cur);
+                    if (!handle && leading) {
+                        emitter.fire(output);
+                    }
                     clearTimeout(handle);
                     handle = setTimeout(function () {
                         var _output = output;
                         output = undefined;
                         emitter.fire(_output);
+                        handle = null;
                     }, delay);
                 });
             },
@@ -3435,7 +3439,7 @@ define(__m[8/*vs/base/common/event*/], __M([1/*require*/,0/*exports*/,12/*vs/bas
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-define(__m[30/*vs/base/common/cancellation*/], __M([1/*require*/,0/*exports*/,8/*vs/base/common/event*/]), function (require, exports, event_1) {
+define(__m[30/*vs/base/common/cancellation*/], __M([1/*require*/,0/*exports*/,9/*vs/base/common/event*/]), function (require, exports, event_1) {
     'use strict';
     var shortcutEvent = Object.freeze(function (callback, context) {
         var handle = setTimeout(callback.bind(context), 0);
@@ -3996,7 +4000,7 @@ define(__m[29/*vs/base/common/parsers*/], __M([1/*require*/,0/*exports*/,4/*vs/b
     exports.AbstractSystemVariables = AbstractSystemVariables;
 });
 
-define(__m[13/*vs/base/common/uri*/], __M([1/*require*/,0/*exports*/,2/*vs/base/common/platform*/]), function (require, exports, platform) {
+define(__m[12/*vs/base/common/uri*/], __M([1/*require*/,0/*exports*/,2/*vs/base/common/platform*/]), function (require, exports, platform) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -4473,10 +4477,6 @@ define(__m[27/*vs/base/common/uuid*/], __M([1/*require*/,0/*exports*/]), functio
     }(ValueUUID));
     V4UUID._chars = ['0', '1', '2', '3', '4', '5', '6', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'];
     V4UUID._timeHighBits = ['8', '9', 'a', 'b'];
-    /**
-     * An empty UUID that contains only zeros.
-     */
-    exports.empty = new ValueUUID('00000000-0000-0000-0000-000000000000');
     function v4() {
         return new V4UUID();
     }
@@ -6645,7 +6645,7 @@ define(__m[5/*vs/base/common/winjs.base*/], __M([53/*vs/base/common/winjs.base.r
 
 
 
-define(__m[26/*vs/base/common/async*/], __M([1/*require*/,0/*exports*/,10/*vs/base/common/errors*/,2/*vs/base/common/platform*/,5/*vs/base/common/winjs.base*/,30/*vs/base/common/cancellation*/,12/*vs/base/common/lifecycle*/,8/*vs/base/common/event*/]), function (require, exports, errors, platform, winjs_base_1, cancellation_1, lifecycle_1, event_1) {
+define(__m[26/*vs/base/common/async*/], __M([1/*require*/,0/*exports*/,10/*vs/base/common/errors*/,2/*vs/base/common/platform*/,5/*vs/base/common/winjs.base*/,30/*vs/base/common/cancellation*/,11/*vs/base/common/lifecycle*/,9/*vs/base/common/event*/]), function (require, exports, errors, platform, winjs_base_1, cancellation_1, lifecycle_1, event_1) {
     'use strict';
     function isThenable(obj) {
         return obj && typeof obj.then === 'function';
@@ -6687,6 +6687,7 @@ define(__m[26/*vs/base/common/async*/], __M([1/*require*/,0/*exports*/,10/*vs/ba
                 if (!errors.isPromiseCanceledError(err)) {
                     return winjs_base_1.TPromise.wrapError(err);
                 }
+                return undefined;
             });
         }
         return always(promise, function () { return subscription.dispose(); });
@@ -7085,6 +7086,15 @@ define(__m[26/*vs/base/common/async*/], __M([1/*require*/,0/*exports*/,10/*vs/ba
         return Queue;
     }(Limiter));
     exports.Queue = Queue;
+    function setDisposableTimeout(handler, timeout) {
+        var args = [];
+        for (var _i = 2; _i < arguments.length; _i++) {
+            args[_i - 2] = arguments[_i];
+        }
+        var handle = setTimeout.apply(void 0, [handler, timeout].concat(args));
+        return { dispose: function () { clearTimeout(handle); } };
+    }
+    exports.setDisposableTimeout = setDisposableTimeout;
     var TimeoutTimer = (function (_super) {
         __extends(TimeoutTimer, _super);
         function TimeoutTimer() {
@@ -7283,7 +7293,7 @@ define(__m[24/*vs/base/node/decoder*/], __M([1/*require*/,0/*exports*/,37/*strin
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-define(__m[25/*vs/base/node/event*/], __M([1/*require*/,0/*exports*/,8/*vs/base/common/event*/]), function (require, exports, event_1) {
+define(__m[25/*vs/base/node/event*/], __M([1/*require*/,0/*exports*/,9/*vs/base/common/event*/]), function (require, exports, event_1) {
     'use strict';
     function fromEventEmitter(emitter, eventName, map) {
         if (map === void 0) { map = function (id) { return id; }; }
@@ -7450,7 +7460,7 @@ define(__m[21/*vs/base/node/flow*/], __M([1/*require*/,0/*exports*/,57/*assert*/
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-define(__m[28/*vs/base/node/extfs*/], __M([1/*require*/,0/*exports*/,27/*vs/base/common/uuid*/,3/*vs/base/common/strings*/,2/*vs/base/common/platform*/,21/*vs/base/node/flow*/,18/*fs*/,9/*path*/]), function (require, exports, uuid, strings, platform, flow, fs, paths) {
+define(__m[28/*vs/base/node/extfs*/], __M([1/*require*/,0/*exports*/,27/*vs/base/common/uuid*/,3/*vs/base/common/strings*/,2/*vs/base/common/platform*/,21/*vs/base/node/flow*/,18/*fs*/,8/*path*/]), function (require, exports, uuid, strings, platform, flow, fs, paths) {
     'use strict';
     var loop = flow.loop;
     function readdirSync(path) {
@@ -7785,13 +7795,54 @@ define(__m[28/*vs/base/node/extfs*/], __M([1/*require*/,0/*exports*/,27/*vs/base
         });
     }
     exports.writeFileAndFlush = writeFileAndFlush;
+    /**
+     * Copied from: https://github.com/Microsoft/vscode-node-debug/blob/master/src/node/pathUtilities.ts#L83
+     *
+     * Given an absolute, normalized, and existing file path 'realpath' returns the exact path that the file has on disk.
+     * On a case insensitive file system, the returned path might differ from the original path by character casing.
+     * On a case sensitive file system, the returned path will always be identical to the original path.
+     * In case of errors, null is returned. But you cannot use this function to verify that a path exists.
+     * realpathSync does not handle '..' or '.' path segments and it does not take the locale into account.
+     */
+    function realpathSync(path) {
+        var dir = paths.dirname(path);
+        if (path === dir) {
+            return path;
+        }
+        var name = paths.basename(path).toLowerCase();
+        try {
+            var entries = readdirSync(dir);
+            var found = entries.filter(function (e) { return e.toLowerCase() === name; }); // use a case insensitive search
+            if (found.length === 1) {
+                // on a case sensitive filesystem we cannot determine here, whether the file exists or not, hence we need the 'file exists' precondition
+                var prefix = realpathSync(dir); // recurse
+                if (prefix) {
+                    return paths.join(prefix, found[0]);
+                }
+            }
+            else if (found.length > 1) {
+                // must be a case sensitive $filesystem
+                var ix = found.indexOf(name);
+                if (ix >= 0) {
+                    var prefix = realpathSync(dir); // recurse
+                    if (prefix) {
+                        return paths.join(prefix, found[ix]);
+                    }
+                }
+            }
+        }
+        catch (error) {
+        }
+        return null;
+    }
+    exports.realpathSync = realpathSync;
 });
 
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-define(__m[31/*vs/base/node/stdFork*/], __M([1/*require*/,0/*exports*/,9/*path*/,32/*os*/,52/*net*/,15/*child_process*/,13/*vs/base/common/uri*/]), function (require, exports, path, os, net, cp, uri_1) {
+define(__m[31/*vs/base/node/stdFork*/], __M([1/*require*/,0/*exports*/,8/*path*/,32/*os*/,52/*net*/,15/*child_process*/,12/*vs/base/common/uri*/]), function (require, exports, path, os, net, cp, uri_1) {
     'use strict';
     function makeRandomHexString(length) {
         var chars = ['0', '1', '2', '3', '4', '5', '6', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'];
@@ -7899,7 +7950,7 @@ define(__m[31/*vs/base/node/stdFork*/], __M([1/*require*/,0/*exports*/,9/*path*/
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-define(__m[17/*vs/base/parts/ipc/common/ipc*/], __M([1/*require*/,0/*exports*/,5/*vs/base/common/winjs.base*/,12/*vs/base/common/lifecycle*/,8/*vs/base/common/event*/]), function (require, exports, winjs_base_1, lifecycle_1, event_1) {
+define(__m[17/*vs/base/parts/ipc/common/ipc*/], __M([1/*require*/,0/*exports*/,5/*vs/base/common/winjs.base*/,11/*vs/base/common/lifecycle*/,9/*vs/base/common/event*/]), function (require, exports, winjs_base_1, lifecycle_1, event_1) {
     'use strict';
     var MessageType;
     (function (MessageType) {
@@ -8554,7 +8605,7 @@ define(__m[41/*vs/nls!vs/base/node/processes*/], __M([22/*vs/nls*/,20/*vs/nls!vs
 
 
 
-define(__m[42/*vs/base/node/processes*/], __M([1/*require*/,0/*exports*/,9/*path*/,15/*child_process*/,54/*stream*/,31/*vs/base/node/stdFork*/,41/*vs/nls!vs/base/node/processes*/,5/*vs/base/common/winjs.base*/,4/*vs/base/common/types*/,13/*vs/base/common/uri*/,7/*vs/base/common/objects*/,11/*vs/base/common/paths*/,2/*vs/base/common/platform*/,24/*vs/base/node/decoder*/,40/*vs/base/common/processes*/]), function (require, exports, path, cp, stream_1, stdFork_1, nls, winjs_base_1, Types, uri_1, Objects, TPath, Platform, decoder_1, processes_1) {
+define(__m[42/*vs/base/node/processes*/], __M([1/*require*/,0/*exports*/,8/*path*/,15/*child_process*/,54/*stream*/,31/*vs/base/node/stdFork*/,41/*vs/nls!vs/base/node/processes*/,5/*vs/base/common/winjs.base*/,4/*vs/base/common/types*/,12/*vs/base/common/uri*/,7/*vs/base/common/objects*/,13/*vs/base/common/paths*/,2/*vs/base/common/platform*/,24/*vs/base/node/decoder*/,40/*vs/base/common/processes*/]), function (require, exports, path, cp, stream_1, stdFork_1, nls, winjs_base_1, Types, uri_1, Objects, TPath, Platform, decoder_1, processes_1) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -8993,7 +9044,7 @@ define(__m[42/*vs/base/node/processes*/], __M([1/*require*/,0/*exports*/,9/*path
 
 
 
-define(__m[19/*vs/base/parts/ipc/node/ipc.cp*/], __M([1/*require*/,0/*exports*/,15/*child_process*/,5/*vs/base/common/winjs.base*/,26/*vs/base/common/async*/,7/*vs/base/common/objects*/,8/*vs/base/common/event*/,25/*vs/base/node/event*/,42/*vs/base/node/processes*/,17/*vs/base/parts/ipc/common/ipc*/]), function (require, exports, child_process_1, winjs_base_1, async_1, objects_1, event_1, event_2, processes_1, ipc_1) {
+define(__m[19/*vs/base/parts/ipc/node/ipc.cp*/], __M([1/*require*/,0/*exports*/,15/*child_process*/,5/*vs/base/common/winjs.base*/,26/*vs/base/common/async*/,7/*vs/base/common/objects*/,9/*vs/base/common/event*/,25/*vs/base/node/event*/,42/*vs/base/node/processes*/,17/*vs/base/parts/ipc/common/ipc*/]), function (require, exports, child_process_1, winjs_base_1, async_1, objects_1, event_1, event_2, processes_1, ipc_1) {
     "use strict";
     var Server = (function (_super) {
         __extends(Server, _super);
@@ -9196,7 +9247,7 @@ define(__m[44/*vs/platform/instantiation/common/instantiation*/], __M([1/*requir
 
 
 
-define(__m[45/*vs/platform/files/common/files*/], __M([1/*require*/,0/*exports*/,11/*vs/base/common/paths*/,43/*vs/base/common/events*/,2/*vs/base/common/platform*/,44/*vs/platform/instantiation/common/instantiation*/]), function (require, exports, paths, events, platform_1, instantiation_1) {
+define(__m[45/*vs/platform/files/common/files*/], __M([1/*require*/,0/*exports*/,13/*vs/base/common/paths*/,43/*vs/base/common/events*/,2/*vs/base/common/platform*/,44/*vs/platform/instantiation/common/instantiation*/]), function (require, exports, paths, events, platform_1, instantiation_1) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -9608,7 +9659,7 @@ define(__m[45/*vs/platform/files/common/files*/], __M([1/*require*/,0/*exports*/
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-define(__m[46/*vs/workbench/services/search/node/fileSearch*/], __M([1/*require*/,0/*exports*/,15/*child_process*/,37/*string_decoder*/,38/*vs/base/common/errorMessage*/,18/*fs*/,9/*path*/,14/*vs/base/common/scorer*/,6/*vs/base/common/arrays*/,2/*vs/base/common/platform*/,3/*vs/base/common/strings*/,4/*vs/base/common/types*/,34/*vs/base/common/glob*/,28/*vs/base/node/extfs*/,21/*vs/base/node/flow*/]), function (require, exports, childProcess, string_decoder_1, errorMessage_1, fs, paths, scorer, arrays, platform, strings, types, glob, extfs, flow) {
+define(__m[46/*vs/workbench/services/search/node/fileSearch*/], __M([1/*require*/,0/*exports*/,15/*child_process*/,37/*string_decoder*/,38/*vs/base/common/errorMessage*/,18/*fs*/,8/*path*/,14/*vs/base/common/scorer*/,6/*vs/base/common/arrays*/,2/*vs/base/common/platform*/,3/*vs/base/common/strings*/,4/*vs/base/common/types*/,34/*vs/base/common/glob*/,28/*vs/base/node/extfs*/,21/*vs/base/node/flow*/]), function (require, exports, childProcess, string_decoder_1, errorMessage_1, fs, paths, scorer, arrays, platform, strings, types, glob, extfs, flow) {
     'use strict';
     var Traversal;
     (function (Traversal) {
@@ -10154,6 +10205,7 @@ define(__m[47/*vs/workbench/services/search/node/searchIpc*/], __M([1/*require*/
                 case 'textSearch': return this.service.textSearch(arg);
                 case 'clearCache': return this.service.clearCache(arg);
             }
+            return undefined;
         };
         return SearchChannel;
     }());
@@ -10180,7 +10232,7 @@ define(__m[47/*vs/workbench/services/search/node/searchIpc*/], __M([1/*require*/
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-define(__m[48/*vs/workbench/services/search/node/textSearch*/], __M([1/*require*/,0/*exports*/,9/*path*/,10/*vs/base/common/errors*/]), function (require, exports, path, errors_1) {
+define(__m[48/*vs/workbench/services/search/node/textSearch*/], __M([1/*require*/,0/*exports*/,8/*path*/,10/*vs/base/common/errors*/]), function (require, exports, path, errors_1) {
     'use strict';
     var Engine = (function () {
         function Engine(config, walker, workerProvider) {
@@ -10319,6 +10371,7 @@ define(__m[49/*vs/workbench/services/search/node/worker/searchWorkerIpc*/], __M(
                 case 'search': return this.worker.search(arg);
                 case 'cancel': return this.worker.cancel();
             }
+            return undefined;
         };
         return SearchWorkerChannel;
     }());
@@ -10345,7 +10398,7 @@ define(__m[49/*vs/workbench/services/search/node/worker/searchWorkerIpc*/], __M(
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-define(__m[50/*vs/workbench/services/search/node/textSearchWorkerProvider*/], __M([1/*require*/,0/*exports*/,32/*os*/,13/*vs/base/common/uri*/,17/*vs/base/parts/ipc/common/ipc*/,19/*vs/base/parts/ipc/node/ipc.cp*/,49/*vs/workbench/services/search/node/worker/searchWorkerIpc*/]), function (require, exports, os, uri_1, ipc, ipc_cp_1, searchWorkerIpc_1) {
+define(__m[50/*vs/workbench/services/search/node/textSearchWorkerProvider*/], __M([1/*require*/,0/*exports*/,32/*os*/,12/*vs/base/common/uri*/,17/*vs/base/parts/ipc/common/ipc*/,19/*vs/base/parts/ipc/node/ipc.cp*/,49/*vs/workbench/services/search/node/worker/searchWorkerIpc*/]), function (require, exports, os, uri_1, ipc, ipc_cp_1, searchWorkerIpc_1) {
     'use strict';
     var TextSearchWorkerProvider = (function () {
         function TextSearchWorkerProvider() {
@@ -10383,7 +10436,7 @@ define(__m[50/*vs/workbench/services/search/node/textSearchWorkerProvider*/], __
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-define(__m[51/*vs/workbench/services/search/node/rawSearchService*/], __M([1/*require*/,0/*exports*/,18/*fs*/,56/*graceful-fs*/,6/*vs/base/common/arrays*/,36/*vs/base/common/comparers*/,7/*vs/base/common/objects*/,11/*vs/base/common/paths*/,14/*vs/base/common/scorer*/,3/*vs/base/common/strings*/,5/*vs/base/common/winjs.base*/,45/*vs/platform/files/common/files*/,46/*vs/workbench/services/search/node/fileSearch*/,48/*vs/workbench/services/search/node/textSearch*/,50/*vs/workbench/services/search/node/textSearchWorkerProvider*/]), function (require, exports, fs, gracefulFs, arrays, comparers_1, objects, paths, scorer, strings, winjs_base_1, files_1, fileSearch_1, textSearch_1, textSearchWorkerProvider_1) {
+define(__m[51/*vs/workbench/services/search/node/rawSearchService*/], __M([1/*require*/,0/*exports*/,18/*fs*/,8/*path*/,56/*graceful-fs*/,6/*vs/base/common/arrays*/,36/*vs/base/common/comparers*/,7/*vs/base/common/objects*/,14/*vs/base/common/scorer*/,3/*vs/base/common/strings*/,5/*vs/base/common/winjs.base*/,45/*vs/platform/files/common/files*/,46/*vs/workbench/services/search/node/fileSearch*/,48/*vs/workbench/services/search/node/textSearch*/,50/*vs/workbench/services/search/node/textSearchWorkerProvider*/]), function (require, exports, fs, path_1, gracefulFs, arrays, comparers_1, objects, scorer, strings, winjs_base_1, files_1, fileSearch_1, textSearch_1, textSearchWorkerProvider_1) {
     'use strict';
     gracefulFs.gracefulify(fs);
     var SearchService = (function () {
@@ -10449,7 +10502,7 @@ define(__m[51/*vs/workbench/services/search/node/rawSearchService*/], __M([1/*re
             });
         };
         SearchService.prototype.rawMatchToSearchItem = function (match) {
-            return { path: match.base ? [match.base, match.relativePath].join(paths.nativeSep) : match.relativePath };
+            return { path: match.base ? [match.base, match.relativePath].join(path_1.sep) : match.relativePath };
         };
         SearchService.prototype.doSortedSearch = function (engine, config) {
             var _this = this;
@@ -10509,7 +10562,7 @@ define(__m[51/*vs/workbench/services/search/node/rawSearchService*/], __M([1/*re
             var _this = this;
             var cache = config.cacheKey && this.caches[config.cacheKey];
             if (!cache) {
-                return;
+                return undefined;
             }
             var cacheLookupStartTime = Date.now();
             var cached = this.getResultsFromCache(cache, config.filePattern);
@@ -10547,6 +10600,7 @@ define(__m[51/*vs/workbench/services/search/node/rawSearchService*/], __M([1/*re
                     cached.cancel();
                 });
             }
+            return undefined;
         };
         SearchService.prototype.sortResults = function (config, results, scorerCache) {
             var filePattern = config.filePattern;
@@ -10565,17 +10619,17 @@ define(__m[51/*vs/workbench/services/search/node/rawSearchService*/], __M([1/*re
             }
         };
         SearchService.prototype.getResultsFromCache = function (cache, searchValue) {
-            if (paths.isAbsolute(searchValue)) {
+            if (path_1.isAbsolute(searchValue)) {
                 return null; // bypass cache if user looks up an absolute path where matching goes directly on disk
             }
             // Find cache entries by prefix of search value
-            var hasPathSep = searchValue.indexOf(paths.nativeSep) >= 0;
+            var hasPathSep = searchValue.indexOf(path_1.sep) >= 0;
             var cached;
             var wasResolved;
             for (var previousSearch in cache.resultsToSearchCache) {
                 // If we narrow down, we might be able to reuse the cached results
                 if (strings.startsWith(searchValue, previousSearch)) {
-                    if (hasPathSep && previousSearch.indexOf(paths.nativeSep) < 0) {
+                    if (hasPathSep && previousSearch.indexOf(path_1.sep) < 0) {
                         continue; // since a path character widens the search for potential more matches, require it in previous search too
                     }
                     var c = cache.resultsToSearchCache[previousSearch];

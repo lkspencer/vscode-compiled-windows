@@ -297,6 +297,7 @@ define(__m[7/*vs/base/common/lifecycle*/], __M([1/*require*/,0/*exports*/]), fun
                 first.dispose();
                 return first;
             }
+            return undefined;
         }
         else {
             dispose(first);
@@ -345,6 +346,7 @@ define(__m[7/*vs/base/common/lifecycle*/], __M([1/*require*/,0/*exports*/]), fun
                     var element = arg_1[_i];
                     return this._register(element);
                 }
+                return undefined;
             }
         };
         return Disposables;
@@ -692,7 +694,7 @@ define(__m[20/*vs/base/common/map*/], __M([1/*require*/,0/*exports*/]), function
                 var part = parts_1[_i];
                 node = children[part];
                 if (!node) {
-                    return;
+                    return undefined;
                 }
                 children = node.children;
             }
@@ -718,6 +720,7 @@ define(__m[20/*vs/base/common/map*/], __M([1/*require*/,0/*exports*/]), function
             if (lastNode) {
                 return lastNode.element;
             }
+            return undefined;
         };
         TrieMap.prototype.findSuperstr = function (path) {
             var parts = this._splitter(path);
@@ -727,7 +730,7 @@ define(__m[20/*vs/base/common/map*/], __M([1/*require*/,0/*exports*/]), function
                 var part = parts_3[_i];
                 node = children[part];
                 if (!node) {
-                    return;
+                    return undefined;
                 }
                 children = node.children;
             }
@@ -1158,12 +1161,19 @@ define(__m[14/*vs/base/common/strings*/], __M([1/*require*/,0/*exports*/,20/*vs/
                 // equal
                 continue;
             }
-            var diff = codeA - codeB;
-            if ((diff === 32 || diff === -32) && isAsciiLetter(codeA) && isAsciiLetter(codeB)) {
-                // equal -> ignoreCase
-                continue;
+            if (isAsciiLetter(codeA) && isAsciiLetter(codeB)) {
+                var diff = codeA - codeB;
+                if (diff === 32 || diff === -32) {
+                    // equal -> ignoreCase
+                    continue;
+                }
+                else {
+                    return diff;
+                }
             }
-            return compare(a[i].toLowerCase(), b[i].toLowerCase());
+            else {
+                return compare(a.toLowerCase(), b.toLowerCase());
+            }
         }
         if (a.length < b.length) {
             return -1;
@@ -1488,7 +1498,11 @@ define(__m[16/*vs/base/common/paths*/], __M([1/*require*/,0/*exports*/,2/*vs/bas
             return path[0];
         }
         else {
-            return path.substring(0, ~idx);
+            var res = path.substring(0, ~idx);
+            if (platform_1.isWindows && res[res.length - 1] === ':') {
+                res += exports.nativeSep; // make sure drive letters end with backslash
+            }
+            return res;
         }
     }
     exports.dirname = dirname;
@@ -1778,15 +1792,6 @@ define(__m[16/*vs/base/common/paths*/], __M([1/*require*/,0/*exports*/,2/*vs/bas
         return true;
     }
     exports.isValidBasename = isValidBasename;
-    exports.isAbsoluteRegex = /^((\/|[a-zA-Z]:\\)[^\(\)<>\\'\"\[\]]+)/;
-    /**
-     * If you have access to node, it is recommended to use node's path.isAbsolute().
-     * This is a simple regex based approach.
-     */
-    function isAbsolute(path) {
-        return exports.isAbsoluteRegex.test(path);
-    }
-    exports.isAbsolute = isAbsolute;
 });
 
 define(__m[3/*vs/base/common/types*/], __M([1/*require*/,0/*exports*/]), function (require, exports) {
@@ -2172,7 +2177,7 @@ define(__m[27/*vs/base/common/callbackList*/], __M([1/*require*/,0/*exports*/,8/
                 args[_i] = arguments[_i];
             }
             if (!this._callbacks) {
-                return;
+                return undefined;
             }
             var ret = [], callbacks = this._callbacks.slice(0), contexts = this._contexts.slice(0);
             for (var i = 0, len = callbacks.length; i < len; i++) {
@@ -2472,8 +2477,9 @@ define(__m[5/*vs/base/common/event*/], __M([1/*require*/,0/*exports*/,7/*vs/base
         return emitter.event;
     }
     exports.any = any;
-    function debounceEvent(event, merger, delay) {
+    function debounceEvent(event, merger, delay, leading) {
         if (delay === void 0) { delay = 100; }
+        if (leading === void 0) { leading = false; }
         var subscription;
         var output;
         var handle;
@@ -2481,11 +2487,15 @@ define(__m[5/*vs/base/common/event*/], __M([1/*require*/,0/*exports*/,7/*vs/base
             onFirstListenerAdd: function () {
                 subscription = event(function (cur) {
                     output = merger(output, cur);
+                    if (!handle && leading) {
+                        emitter.fire(output);
+                    }
                     clearTimeout(handle);
                     handle = setTimeout(function () {
                         var _output = output;
                         output = undefined;
                         emitter.fire(_output);
+                        handle = null;
                     }, delay);
                 });
             },
@@ -5801,6 +5811,7 @@ define(__m[19/*vs/base/common/async*/], __M([1/*require*/,0/*exports*/,8/*vs/bas
                 if (!errors.isPromiseCanceledError(err)) {
                     return winjs_base_1.TPromise.wrapError(err);
                 }
+                return undefined;
             });
         }
         return always(promise, function () { return subscription.dispose(); });
@@ -6199,6 +6210,15 @@ define(__m[19/*vs/base/common/async*/], __M([1/*require*/,0/*exports*/,8/*vs/bas
         return Queue;
     }(Limiter));
     exports.Queue = Queue;
+    function setDisposableTimeout(handler, timeout) {
+        var args = [];
+        for (var _i = 2; _i < arguments.length; _i++) {
+            args[_i - 2] = arguments[_i];
+        }
+        var handle = setTimeout.apply(void 0, [handler, timeout].concat(args));
+        return { dispose: function () { clearTimeout(handle); } };
+    }
+    exports.setDisposableTimeout = setDisposableTimeout;
     var TimeoutTimer = (function (_super) {
         __extends(TimeoutTimer, _super);
         function TimeoutTimer() {
@@ -7724,6 +7744,7 @@ define(__m[18/*vs/platform/telemetry/node/appInsightsAppender*/], __M([1/*requir
                     });
                 });
             }
+            return undefined;
         };
         return AppInsightsAppender;
     }());

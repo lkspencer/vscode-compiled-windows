@@ -2,7 +2,7 @@
  * Copyright (C) Microsoft Corporation. All rights reserved.
  *--------------------------------------------------------*/
 (function() {
-var __m = ["exports","require","vs/workbench/api/node/extHost.protocol","vs/base/common/winjs.base","vs/base/common/event","vs/base/common/errors","vs/workbench/api/node/extHostTypes","vs/base/common/uri","vs/nls!vs/workbench/node/extensionHostProcess","vs/base/common/strings","vs/nls","vs/base/common/platform","vs/platform/instantiation/common/instantiation","vs/base/common/types","vs/workbench/api/node/extHostTypeConverters","vs/base/common/paths","vs/base/common/async","vs/base/common/severity","vs/base/common/arrays","path","vs/base/common/objects","vs/base/common/lifecycle","vs/platform/platform","vs/editor/common/editorCommon","vs/editor/common/core/position","vs/base/common/cancellation","vs/base/common/map","vs/base/node/pfs","vs/editor/common/viewModel/prefixSumComputer","vs/editor/common/model/wordHelper","vs/base/common/glob","vs/editor/common/core/range","vs/base/common/callbackList","fs","vs/platform/jsonschemas/common/jsonContributionRegistry","vs/base/common/eventEmitter","vs/base/common/idGenerator","vs/base/common/marshalling","vs/base/common/functional","vs/editor/common/core/uint","vs/editor/common/core/viewLineToken","vs/editor/common/model/indentRanges","vs/editor/common/model/indentationGuesser","vs/editor/common/model/tokensBinaryEncoding","vs/editor/common/core/lineTokens","vs/editor/common/model/modelLine","vs/base/node/event","vs/editor/common/modes/languageConfiguration","vs/editor/common/modes/languageSelector","vs/base/node/flow","vs/editor/common/model/mirrorModel2","vs/nls!vs/base/common/json","vs/workbench/api/node/extHostExtensionService","vs/base/node/extfs","vs/base/common/json","vs/nls!vs/base/common/severity","vs/editor/common/config/defaultConfig","vs/nls!vs/editor/common/config/defaultConfig","vs/base/common/uuid","vs/nls!vs/platform/configuration/common/configurationRegistry","vs/nls!vs/platform/extensions/common/abstractExtensionService","vs/nls!vs/platform/extensions/common/extensionsRegistry","vs/nls!vs/workbench/api/node/extHostDiagnostics","vs/nls!vs/workbench/api/node/extHostTreeExplorers","vs/nls!vs/workbench/node/extensionHostMain","vs/platform/extensions/common/ipcRemoteCom","vs/base/common/assert","vs/platform/contextkey/common/contextkey","os","vs/editor/common/model/textModelSearch","vs/editor/common/model/textModel","vs/platform/editor/common/editor","vs/platform/extensions/common/extensions","vs/platform/extensions/common/abstractExtensionService","vs/platform/node/package","vs/platform/node/product","vs/base/parts/ipc/common/ipc","vs/base/parts/ipc/node/ipc.net","vs/platform/extensions/common/extensionsRegistry","vs/platform/configuration/common/configurationRegistry","vs/platform/configuration/common/model","vs/platform/statusbar/common/statusbar","vs/platform/workspace/common/workspace","vs/workbench/api/node/extHostProgress","net","vs/workbench/services/configuration/common/configurationEditing","vs/workbench/services/textfile/common/textfiles","crypto","vs/workbench/api/node/extHostApiCommands","vs/workbench/services/thread/common/abstractThreadService","vs/workbench/services/thread/common/extHostThreadService","vs/workbench/services/thread/common/threadService","vs/workbench/node/extensionHostMain","vs/workbench/api/node/extHostCommands","vs/workbench/api/node/extHostConfiguration","vs/workbench/api/node/extHostDiagnostics","vs/workbench/api/node/extHostDocumentSaveParticipant","vs/workbench/api/node/extHostDocuments","vs/workbench/api/node/extHostEditors","vs/workbench/api/node/extHostFileSystemEventService","vs/workbench/api/node/extHostHeapService","vs/workbench/api/node/extHostLanguageFeatures","vs/workbench/api/node/extHostLanguages","vs/workbench/api/node/extHostMessageService","vs/workbench/api/node/extHostOutputService","vs/workbench/api/node/extHostQuickOpen","vs/workbench/api/node/extHostSCM","vs/workbench/api/node/extHostStatusBar","vs/workbench/api/node/extHostStorage","vs/workbench/api/node/extHostTelemetry","vs/workbench/api/node/extHostTerminalService","vs/workbench/api/node/extHostTreeExplorers","vs/workbench/api/node/extHostWorkspace","vs/workbench/api/node/extHost.api.impl","assert","vs/base/common/winjs.base.raw","vs/workbench/node/extensionHostProcess"];
+var __m = ["require","exports","vs/workbench/api/node/extHost.protocol","vs/base/common/winjs.base","vs/base/common/event","vs/base/common/errors","vs/workbench/api/node/extHostTypes","vs/base/common/uri","vs/base/common/strings","vs/base/common/async","vs/base/common/platform","vs/platform/instantiation/common/instantiation","vs/nls!vs/workbench/node/extensionHostProcess","vs/nls","vs/base/common/paths","vs/workbench/api/node/extHostTypeConverters","vs/base/common/types","vs/base/common/severity","path","vs/base/common/objects","vs/base/common/arrays","vs/editor/common/core/position","vs/base/common/lifecycle","vs/editor/common/editorCommon","vs/platform/platform","vs/base/common/cancellation","vs/base/common/map","vs/base/common/callbackList","vs/editor/common/viewModel/prefixSumComputer","vs/base/common/glob","vs/base/common/eventEmitter","fs","vs/base/common/marshalling","vs/base/node/pfs","vs/base/common/uuid","vs/editor/common/core/range","vs/platform/jsonschemas/common/jsonContributionRegistry","vs/base/common/idGenerator","vs/editor/common/model/tokensBinaryEncoding","vs/editor/common/model/wordHelper","vs/editor/common/core/uint","vs/editor/common/diff/diffComputer","vs/editor/common/model/indentRanges","vs/editor/common/model/indentationGuesser","vs/base/common/diff/diff","vs/editor/common/core/viewLineToken","vs/editor/common/core/lineTokens","vs/editor/common/model/modelLine","vs/base/node/event","vs/editor/common/modes/languageConfiguration","vs/editor/common/modes/languageSelector","vs/base/node/flow","vs/editor/common/model/mirrorModel2","vs/nls!vs/base/common/json","vs/workbench/api/node/extHostExtensionService","vs/base/node/extfs","vs/base/common/json","vs/nls!vs/base/common/severity","vs/base/common/functional","vs/nls!vs/editor/common/config/defaultConfig","vs/editor/common/config/defaultConfig","vs/nls!vs/platform/configuration/common/configurationRegistry","vs/nls!vs/platform/extensions/common/abstractExtensionService","vs/nls!vs/platform/extensions/common/extensionsRegistry","vs/nls!vs/workbench/api/node/extHostDiagnostics","vs/nls!vs/workbench/api/node/extHostTreeExplorers","vs/nls!vs/workbench/node/extensionHostMain","vs/platform/extensions/common/ipcRemoteCom","vs/base/common/assert","vs/platform/contextkey/common/contextkey","os","vs/editor/common/model/textModelSearch","vs/editor/common/model/textModel","vs/platform/editor/common/editor","vs/platform/extensions/common/extensions","vs/platform/extensions/common/abstractExtensionService","vs/platform/node/package","vs/platform/node/product","vs/base/parts/ipc/common/ipc","vs/base/parts/ipc/node/ipc.net","vs/platform/extensions/common/extensionsRegistry","vs/platform/configuration/common/configurationRegistry","vs/platform/configuration/common/model","vs/platform/statusbar/common/statusbar","vs/platform/workspace/common/workspace","vs/workbench/api/node/extHostFunctions","vs/workbench/api/node/extHostProgress","net","vs/workbench/services/configuration/common/configurationEditing","vs/workbench/services/textfile/common/textfiles","vs/base/common/diff/diffChange","vs/workbench/api/node/extHostApiCommands","vs/workbench/services/thread/common/abstractThreadService","vs/workbench/services/thread/common/extHostThreadService","vs/workbench/services/thread/common/threadService","vs/workbench/node/extensionHostMain","vs/workbench/api/node/extHostCommands","vs/workbench/api/node/extHostConfiguration","vs/workbench/api/node/extHostDiagnostics","vs/workbench/api/node/extHostDocumentSaveParticipant","vs/workbench/api/node/extHostDocuments","vs/workbench/api/node/extHostEditors","vs/workbench/api/node/extHostFileSystemEventService","vs/workbench/api/node/extHostHeapService","vs/workbench/api/node/extHostLanguageFeatures","vs/workbench/api/node/extHostLanguages","vs/workbench/api/node/extHostMessageService","vs/workbench/api/node/extHostOutputService","vs/workbench/api/node/extHostQuickOpen","vs/workbench/api/node/extHostSCM","vs/workbench/api/node/extHostStatusBar","vs/workbench/api/node/extHostStorage","vs/workbench/api/node/extHostTelemetry","vs/workbench/api/node/extHostTerminalService","vs/workbench/api/node/extHostTreeExplorers","vs/workbench/api/node/extHostWorkspace","vs/workbench/api/node/extHost.api.impl","assert","crypto","vs/base/common/winjs.base.raw","vs/workbench/node/extensionHostProcess"];
 var __M = function(deps) {
   var result = [];
   for (var i = 0, len = deps.length; i < len; i++) {
@@ -10,7 +10,7 @@ var __M = function(deps) {
   }
   return result;
 };
-define(__m[18/*vs/base/common/arrays*/], __M([1/*require*/,0/*exports*/]), function (require, exports) {
+define(__m[20/*vs/base/common/arrays*/], __M([0/*require*/,1/*exports*/]), function (require, exports) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -237,7 +237,7 @@ define(__m[18/*vs/base/common/arrays*/], __M([1/*require*/,0/*exports*/]), funct
     exports.insert = insert;
 });
 
-define(__m[66/*vs/base/common/assert*/], __M([1/*require*/,0/*exports*/]), function (require, exports) {
+define(__m[68/*vs/base/common/assert*/], __M([0/*require*/,1/*exports*/]), function (require, exports) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -254,11 +254,773 @@ define(__m[66/*vs/base/common/assert*/], __M([1/*require*/,0/*exports*/]), funct
     exports.ok = ok;
 });
 
+define(__m[90/*vs/base/common/diff/diffChange*/], __M([0/*require*/,1/*exports*/]), function (require, exports) {
+    /*---------------------------------------------------------------------------------------------
+     *  Copyright (c) Microsoft Corporation. All rights reserved.
+     *  Licensed under the MIT License. See License.txt in the project root for license information.
+     *--------------------------------------------------------------------------------------------*/
+    'use strict';
+    exports.DifferenceType = {
+        Add: 0,
+        Remove: 1,
+        Change: 2
+    };
+    /**
+     * Represents information about a specific difference between two sequences.
+     */
+    var DiffChange = (function () {
+        /**
+         * Constructs a new DiffChange with the given sequence information
+         * and content.
+         */
+        function DiffChange(originalStart, originalLength, modifiedStart, modifiedLength) {
+            //Debug.Assert(originalLength > 0 || modifiedLength > 0, "originalLength and modifiedLength cannot both be <= 0");
+            this.originalStart = originalStart;
+            this.originalLength = originalLength;
+            this.modifiedStart = modifiedStart;
+            this.modifiedLength = modifiedLength;
+        }
+        /**
+         * The type of difference.
+         */
+        DiffChange.prototype.getChangeType = function () {
+            if (this.originalLength === 0) {
+                return exports.DifferenceType.Add;
+            }
+            else if (this.modifiedLength === 0) {
+                return exports.DifferenceType.Remove;
+            }
+            else {
+                return exports.DifferenceType.Change;
+            }
+        };
+        /**
+         * The end point (exclusive) of the change in the original sequence.
+         */
+        DiffChange.prototype.getOriginalEnd = function () {
+            return this.originalStart + this.originalLength;
+        };
+        /**
+         * The end point (exclusive) of the change in the modified sequence.
+         */
+        DiffChange.prototype.getModifiedEnd = function () {
+            return this.modifiedStart + this.modifiedLength;
+        };
+        return DiffChange;
+    }());
+    exports.DiffChange = DiffChange;
+});
+
+define(__m[44/*vs/base/common/diff/diff*/], __M([0/*require*/,1/*exports*/,90/*vs/base/common/diff/diffChange*/]), function (require, exports, diffChange_1) {
+    /*---------------------------------------------------------------------------------------------
+     *  Copyright (c) Microsoft Corporation. All rights reserved.
+     *  Licensed under the MIT License. See License.txt in the project root for license information.
+     *--------------------------------------------------------------------------------------------*/
+    'use strict';
+    function createStringSequence(a) {
+        return {
+            getLength: function () { return a.length; },
+            getElementHash: function (pos) { return a[pos]; }
+        };
+    }
+    function stringDiff(original, modified) {
+        return new LcsDiff(createStringSequence(original), createStringSequence(modified)).ComputeDiff();
+    }
+    exports.stringDiff = stringDiff;
+    //
+    // The code below has been ported from a C# implementation in VS
+    //
+    var Debug = (function () {
+        function Debug() {
+        }
+        Debug.Assert = function (condition, message) {
+            if (!condition) {
+                throw new Error(message);
+            }
+        };
+        return Debug;
+    }());
+    exports.Debug = Debug;
+    var MyArray = (function () {
+        function MyArray() {
+        }
+        /**
+         * Copies a range of elements from an Array starting at the specified source index and pastes
+         * them to another Array starting at the specified destination index. The length and the indexes
+         * are specified as 64-bit integers.
+         * sourceArray:
+         *		The Array that contains the data to copy.
+         * sourceIndex:
+         *		A 64-bit integer that represents the index in the sourceArray at which copying begins.
+         * destinationArray:
+         *		The Array that receives the data.
+         * destinationIndex:
+         *		A 64-bit integer that represents the index in the destinationArray at which storing begins.
+         * length:
+         *		A 64-bit integer that represents the number of elements to copy.
+         */
+        MyArray.Copy = function (sourceArray, sourceIndex, destinationArray, destinationIndex, length) {
+            for (var i = 0; i < length; i++) {
+                destinationArray[destinationIndex + i] = sourceArray[sourceIndex + i];
+            }
+        };
+        return MyArray;
+    }());
+    exports.MyArray = MyArray;
+    //*****************************************************************************
+    // LcsDiff.cs
+    //
+    // An implementation of the difference algorithm described in
+    // "An O(ND) Difference Algorithm and its letiations" by Eugene W. Myers
+    //
+    // Copyright (C) 2008 Microsoft Corporation @minifier_do_not_preserve
+    //*****************************************************************************
+    // Our total memory usage for storing history is (worst-case):
+    // 2 * [(MaxDifferencesHistory + 1) * (MaxDifferencesHistory + 1) - 1] * sizeof(int)
+    // 2 * [1448*1448 - 1] * 4 = 16773624 = 16MB
+    var MaxDifferencesHistory = 1447;
+    //let MaxDifferencesHistory = 100;
+    /**
+     * A utility class which helps to create the set of DiffChanges from
+     * a difference operation. This class accepts original DiffElements and
+     * modified DiffElements that are involved in a particular change. The
+     * MarktNextChange() method can be called to mark the separation between
+     * distinct changes. At the end, the Changes property can be called to retrieve
+     * the constructed changes.
+     */
+    var DiffChangeHelper = (function () {
+        /**
+         * Constructs a new DiffChangeHelper for the given DiffSequences.
+         */
+        function DiffChangeHelper() {
+            this.m_changes = [];
+            this.m_originalStart = Number.MAX_VALUE;
+            this.m_modifiedStart = Number.MAX_VALUE;
+            this.m_originalCount = 0;
+            this.m_modifiedCount = 0;
+        }
+        /**
+         * Marks the beginning of the next change in the set of differences.
+         */
+        DiffChangeHelper.prototype.MarkNextChange = function () {
+            // Only add to the list if there is something to add
+            if (this.m_originalCount > 0 || this.m_modifiedCount > 0) {
+                // Add the new change to our list
+                this.m_changes.push(new diffChange_1.DiffChange(this.m_originalStart, this.m_originalCount, this.m_modifiedStart, this.m_modifiedCount));
+            }
+            // Reset for the next change
+            this.m_originalCount = 0;
+            this.m_modifiedCount = 0;
+            this.m_originalStart = Number.MAX_VALUE;
+            this.m_modifiedStart = Number.MAX_VALUE;
+        };
+        /**
+         * Adds the original element at the given position to the elements
+         * affected by the current change. The modified index gives context
+         * to the change position with respect to the original sequence.
+         * @param originalIndex The index of the original element to add.
+         * @param modifiedIndex The index of the modified element that provides corresponding position in the modified sequence.
+         */
+        DiffChangeHelper.prototype.AddOriginalElement = function (originalIndex, modifiedIndex) {
+            // The 'true' start index is the smallest of the ones we've seen
+            this.m_originalStart = Math.min(this.m_originalStart, originalIndex);
+            this.m_modifiedStart = Math.min(this.m_modifiedStart, modifiedIndex);
+            this.m_originalCount++;
+        };
+        /**
+         * Adds the modified element at the given position to the elements
+         * affected by the current change. The original index gives context
+         * to the change position with respect to the modified sequence.
+         * @param originalIndex The index of the original element that provides corresponding position in the original sequence.
+         * @param modifiedIndex The index of the modified element to add.
+         */
+        DiffChangeHelper.prototype.AddModifiedElement = function (originalIndex, modifiedIndex) {
+            // The 'true' start index is the smallest of the ones we've seen
+            this.m_originalStart = Math.min(this.m_originalStart, originalIndex);
+            this.m_modifiedStart = Math.min(this.m_modifiedStart, modifiedIndex);
+            this.m_modifiedCount++;
+        };
+        /**
+         * Retrieves all of the changes marked by the class.
+         */
+        DiffChangeHelper.prototype.getChanges = function () {
+            if (this.m_originalCount > 0 || this.m_modifiedCount > 0) {
+                // Finish up on whatever is left
+                this.MarkNextChange();
+            }
+            return this.m_changes;
+        };
+        /**
+         * Retrieves all of the changes marked by the class in the reverse order
+         */
+        DiffChangeHelper.prototype.getReverseChanges = function () {
+            if (this.m_originalCount > 0 || this.m_modifiedCount > 0) {
+                // Finish up on whatever is left
+                this.MarkNextChange();
+            }
+            this.m_changes.reverse();
+            return this.m_changes;
+        };
+        return DiffChangeHelper;
+    }());
+    var hasOwnProperty = Object.prototype.hasOwnProperty;
+    /**
+     * An implementation of the difference algorithm described in
+     * "An O(ND) Difference Algorithm and its letiations" by Eugene W. Myers
+     */
+    var LcsDiff = (function () {
+        /**
+         * Constructs the DiffFinder
+         */
+        function LcsDiff(originalSequence, newSequence, continueProcessingPredicate) {
+            if (continueProcessingPredicate === void 0) { continueProcessingPredicate = null; }
+            this.OriginalSequence = originalSequence;
+            this.ModifiedSequence = newSequence;
+            this.ContinueProcessingPredicate = continueProcessingPredicate;
+            this.m_originalIds = [];
+            this.m_modifiedIds = [];
+            this.m_forwardHistory = [];
+            this.m_reverseHistory = [];
+            this.ComputeUniqueIdentifiers();
+        }
+        LcsDiff.prototype.ComputeUniqueIdentifiers = function () {
+            var originalSequenceLength = this.OriginalSequence.getLength();
+            var modifiedSequenceLength = this.ModifiedSequence.getLength();
+            this.m_originalIds = new Array(originalSequenceLength);
+            this.m_modifiedIds = new Array(modifiedSequenceLength);
+            // Create a new hash table for unique elements from the original
+            // sequence.
+            var hashTable = {};
+            var currentUniqueId = 1;
+            var i;
+            // Fill up the hash table for unique elements
+            for (i = 0; i < originalSequenceLength; i++) {
+                var originalElementHash = this.OriginalSequence.getElementHash(i);
+                if (!hasOwnProperty.call(hashTable, originalElementHash)) {
+                    // No entry in the hashtable so this is a new unique element.
+                    // Assign the element a new unique identifier and add it to the
+                    // hash table
+                    this.m_originalIds[i] = currentUniqueId++;
+                    hashTable[originalElementHash] = this.m_originalIds[i];
+                }
+                else {
+                    this.m_originalIds[i] = hashTable[originalElementHash];
+                }
+            }
+            // Now match up modified elements
+            for (i = 0; i < modifiedSequenceLength; i++) {
+                var modifiedElementHash = this.ModifiedSequence.getElementHash(i);
+                if (!hasOwnProperty.call(hashTable, modifiedElementHash)) {
+                    this.m_modifiedIds[i] = currentUniqueId++;
+                    hashTable[modifiedElementHash] = this.m_modifiedIds[i];
+                }
+                else {
+                    this.m_modifiedIds[i] = hashTable[modifiedElementHash];
+                }
+            }
+        };
+        LcsDiff.prototype.ElementsAreEqual = function (originalIndex, newIndex) {
+            return this.m_originalIds[originalIndex] === this.m_modifiedIds[newIndex];
+        };
+        LcsDiff.prototype.ComputeDiff = function () {
+            return this._ComputeDiff(0, this.OriginalSequence.getLength() - 1, 0, this.ModifiedSequence.getLength() - 1);
+        };
+        /**
+         * Computes the differences between the original and modified input
+         * sequences on the bounded range.
+         * @returns An array of the differences between the two input sequences.
+         */
+        LcsDiff.prototype._ComputeDiff = function (originalStart, originalEnd, modifiedStart, modifiedEnd) {
+            var quitEarlyArr = [false];
+            return this.ComputeDiffRecursive(originalStart, originalEnd, modifiedStart, modifiedEnd, quitEarlyArr);
+        };
+        /**
+         * Private helper method which computes the differences on the bounded range
+         * recursively.
+         * @returns An array of the differences between the two input sequences.
+         */
+        LcsDiff.prototype.ComputeDiffRecursive = function (originalStart, originalEnd, modifiedStart, modifiedEnd, quitEarlyArr) {
+            quitEarlyArr[0] = false;
+            // Find the start of the differences
+            while (originalStart <= originalEnd && modifiedStart <= modifiedEnd && this.ElementsAreEqual(originalStart, modifiedStart)) {
+                originalStart++;
+                modifiedStart++;
+            }
+            // Find the end of the differences
+            while (originalEnd >= originalStart && modifiedEnd >= modifiedStart && this.ElementsAreEqual(originalEnd, modifiedEnd)) {
+                originalEnd--;
+                modifiedEnd--;
+            }
+            // In the special case where we either have all insertions or all deletions or the sequences are identical
+            if (originalStart > originalEnd || modifiedStart > modifiedEnd) {
+                var changes = void 0;
+                if (modifiedStart <= modifiedEnd) {
+                    Debug.Assert(originalStart === originalEnd + 1, 'originalStart should only be one more than originalEnd');
+                    // All insertions
+                    changes = [
+                        new diffChange_1.DiffChange(originalStart, 0, modifiedStart, modifiedEnd - modifiedStart + 1)
+                    ];
+                }
+                else if (originalStart <= originalEnd) {
+                    Debug.Assert(modifiedStart === modifiedEnd + 1, 'modifiedStart should only be one more than modifiedEnd');
+                    // All deletions
+                    changes = [
+                        new diffChange_1.DiffChange(originalStart, originalEnd - originalStart + 1, modifiedStart, 0)
+                    ];
+                }
+                else {
+                    Debug.Assert(originalStart === originalEnd + 1, 'originalStart should only be one more than originalEnd');
+                    Debug.Assert(modifiedStart === modifiedEnd + 1, 'modifiedStart should only be one more than modifiedEnd');
+                    // Identical sequences - No differences
+                    changes = [];
+                }
+                return changes;
+            }
+            // This problem can be solved using the Divide-And-Conquer technique.
+            var midOriginalArr = [0], midModifiedArr = [0];
+            var result = this.ComputeRecursionPoint(originalStart, originalEnd, modifiedStart, modifiedEnd, midOriginalArr, midModifiedArr, quitEarlyArr);
+            var midOriginal = midOriginalArr[0];
+            var midModified = midModifiedArr[0];
+            if (result !== null) {
+                // Result is not-null when there was enough memory to compute the changes while
+                // searching for the recursion point
+                return result;
+            }
+            else if (!quitEarlyArr[0]) {
+                // We can break the problem down recursively by finding the changes in the
+                // First Half:   (originalStart, modifiedStart) to (midOriginal, midModified)
+                // Second Half:  (midOriginal + 1, minModified + 1) to (originalEnd, modifiedEnd)
+                // NOTE: ComputeDiff() is inclusive, therefore the second range starts on the next point
+                var leftChanges = this.ComputeDiffRecursive(originalStart, midOriginal, modifiedStart, midModified, quitEarlyArr);
+                var rightChanges = [];
+                if (!quitEarlyArr[0]) {
+                    rightChanges = this.ComputeDiffRecursive(midOriginal + 1, originalEnd, midModified + 1, modifiedEnd, quitEarlyArr);
+                }
+                else {
+                    // We did't have time to finish the first half, so we don't have time to compute this half.
+                    // Consider the entire rest of the sequence different.
+                    rightChanges = [
+                        new diffChange_1.DiffChange(midOriginal + 1, originalEnd - (midOriginal + 1) + 1, midModified + 1, modifiedEnd - (midModified + 1) + 1)
+                    ];
+                }
+                return this.ConcatenateChanges(leftChanges, rightChanges);
+            }
+            // If we hit here, we quit early, and so can't return anything meaningful
+            return [
+                new diffChange_1.DiffChange(originalStart, originalEnd - originalStart + 1, modifiedStart, modifiedEnd - modifiedStart + 1)
+            ];
+        };
+        LcsDiff.prototype.WALKTRACE = function (diagonalForwardBase, diagonalForwardStart, diagonalForwardEnd, diagonalForwardOffset, diagonalReverseBase, diagonalReverseStart, diagonalReverseEnd, diagonalReverseOffset, forwardPoints, reversePoints, originalIndex, originalEnd, midOriginalArr, modifiedIndex, modifiedEnd, midModifiedArr, deltaIsEven, quitEarlyArr) {
+            var forwardChanges = null, reverseChanges = null;
+            // First, walk backward through the forward diagonals history
+            var changeHelper = new DiffChangeHelper();
+            var diagonalMin = diagonalForwardStart;
+            var diagonalMax = diagonalForwardEnd;
+            var diagonalRelative = (midOriginalArr[0] - midModifiedArr[0]) - diagonalForwardOffset;
+            var lastOriginalIndex = Number.MIN_VALUE;
+            var historyIndex = this.m_forwardHistory.length - 1;
+            var diagonal;
+            do {
+                // Get the diagonal index from the relative diagonal number
+                diagonal = diagonalRelative + diagonalForwardBase;
+                // Figure out where we came from
+                if (diagonal === diagonalMin || (diagonal < diagonalMax && forwardPoints[diagonal - 1] < forwardPoints[diagonal + 1])) {
+                    // Vertical line (the element is an insert)
+                    originalIndex = forwardPoints[diagonal + 1];
+                    modifiedIndex = originalIndex - diagonalRelative - diagonalForwardOffset;
+                    if (originalIndex < lastOriginalIndex) {
+                        changeHelper.MarkNextChange();
+                    }
+                    lastOriginalIndex = originalIndex;
+                    changeHelper.AddModifiedElement(originalIndex + 1, modifiedIndex);
+                    diagonalRelative = (diagonal + 1) - diagonalForwardBase; //Setup for the next iteration
+                }
+                else {
+                    // Horizontal line (the element is a deletion)
+                    originalIndex = forwardPoints[diagonal - 1] + 1;
+                    modifiedIndex = originalIndex - diagonalRelative - diagonalForwardOffset;
+                    if (originalIndex < lastOriginalIndex) {
+                        changeHelper.MarkNextChange();
+                    }
+                    lastOriginalIndex = originalIndex - 1;
+                    changeHelper.AddOriginalElement(originalIndex, modifiedIndex + 1);
+                    diagonalRelative = (diagonal - 1) - diagonalForwardBase; //Setup for the next iteration
+                }
+                if (historyIndex >= 0) {
+                    forwardPoints = this.m_forwardHistory[historyIndex];
+                    diagonalForwardBase = forwardPoints[0]; //We stored this in the first spot
+                    diagonalMin = 1;
+                    diagonalMax = forwardPoints.length - 1;
+                }
+            } while (--historyIndex >= -1);
+            // Ironically, we get the forward changes as the reverse of the
+            // order we added them since we technically added them backwards
+            forwardChanges = changeHelper.getReverseChanges();
+            if (quitEarlyArr[0]) {
+                // TODO: Calculate a partial from the reverse diagonals.
+                //       For now, just assume everything after the midOriginal/midModified point is a diff
+                var originalStartPoint = midOriginalArr[0] + 1;
+                var modifiedStartPoint = midModifiedArr[0] + 1;
+                if (forwardChanges !== null && forwardChanges.length > 0) {
+                    var lastForwardChange = forwardChanges[forwardChanges.length - 1];
+                    originalStartPoint = Math.max(originalStartPoint, lastForwardChange.getOriginalEnd());
+                    modifiedStartPoint = Math.max(modifiedStartPoint, lastForwardChange.getModifiedEnd());
+                }
+                reverseChanges = [
+                    new diffChange_1.DiffChange(originalStartPoint, originalEnd - originalStartPoint + 1, modifiedStartPoint, modifiedEnd - modifiedStartPoint + 1)
+                ];
+            }
+            else {
+                // Now walk backward through the reverse diagonals history
+                changeHelper = new DiffChangeHelper();
+                diagonalMin = diagonalReverseStart;
+                diagonalMax = diagonalReverseEnd;
+                diagonalRelative = (midOriginalArr[0] - midModifiedArr[0]) - diagonalReverseOffset;
+                lastOriginalIndex = Number.MAX_VALUE;
+                historyIndex = (deltaIsEven) ? this.m_reverseHistory.length - 1 : this.m_reverseHistory.length - 2;
+                do {
+                    // Get the diagonal index from the relative diagonal number
+                    diagonal = diagonalRelative + diagonalReverseBase;
+                    // Figure out where we came from
+                    if (diagonal === diagonalMin || (diagonal < diagonalMax && reversePoints[diagonal - 1] >= reversePoints[diagonal + 1])) {
+                        // Horizontal line (the element is a deletion))
+                        originalIndex = reversePoints[diagonal + 1] - 1;
+                        modifiedIndex = originalIndex - diagonalRelative - diagonalReverseOffset;
+                        if (originalIndex > lastOriginalIndex) {
+                            changeHelper.MarkNextChange();
+                        }
+                        lastOriginalIndex = originalIndex + 1;
+                        changeHelper.AddOriginalElement(originalIndex + 1, modifiedIndex + 1);
+                        diagonalRelative = (diagonal + 1) - diagonalReverseBase; //Setup for the next iteration
+                    }
+                    else {
+                        // Vertical line (the element is an insertion)
+                        originalIndex = reversePoints[diagonal - 1];
+                        modifiedIndex = originalIndex - diagonalRelative - diagonalReverseOffset;
+                        if (originalIndex > lastOriginalIndex) {
+                            changeHelper.MarkNextChange();
+                        }
+                        lastOriginalIndex = originalIndex;
+                        changeHelper.AddModifiedElement(originalIndex + 1, modifiedIndex + 1);
+                        diagonalRelative = (diagonal - 1) - diagonalReverseBase; //Setup for the next iteration
+                    }
+                    if (historyIndex >= 0) {
+                        reversePoints = this.m_reverseHistory[historyIndex];
+                        diagonalReverseBase = reversePoints[0]; //We stored this in the first spot
+                        diagonalMin = 1;
+                        diagonalMax = reversePoints.length - 1;
+                    }
+                } while (--historyIndex >= -1);
+                // There are cases where the reverse history will find diffs that
+                // are correct, but not intuitive, so we need shift them.
+                reverseChanges = changeHelper.getChanges();
+            }
+            return this.ConcatenateChanges(forwardChanges, reverseChanges);
+        };
+        /**
+         * Given the range to compute the diff on, this method finds the point:
+         * (midOriginal, midModified)
+         * that exists in the middle of the LCS of the two sequences and
+         * is the point at which the LCS problem may be broken down recursively.
+         * This method will try to keep the LCS trace in memory. If the LCS recursion
+         * point is calculated and the full trace is available in memory, then this method
+         * will return the change list.
+         * @param originalStart The start bound of the original sequence range
+         * @param originalEnd The end bound of the original sequence range
+         * @param modifiedStart The start bound of the modified sequence range
+         * @param modifiedEnd The end bound of the modified sequence range
+         * @param midOriginal The middle point of the original sequence range
+         * @param midModified The middle point of the modified sequence range
+         * @returns The diff changes, if available, otherwise null
+         */
+        LcsDiff.prototype.ComputeRecursionPoint = function (originalStart, originalEnd, modifiedStart, modifiedEnd, midOriginalArr, midModifiedArr, quitEarlyArr) {
+            var originalIndex, modifiedIndex;
+            var diagonalForwardStart = 0, diagonalForwardEnd = 0;
+            var diagonalReverseStart = 0, diagonalReverseEnd = 0;
+            var numDifferences;
+            // To traverse the edit graph and produce the proper LCS, our actual
+            // start position is just outside the given boundary
+            originalStart--;
+            modifiedStart--;
+            // We set these up to make the compiler happy, but they will
+            // be replaced before we return with the actual recursion point
+            midOriginalArr[0] = 0;
+            midModifiedArr[0] = 0;
+            // Clear out the history
+            this.m_forwardHistory = [];
+            this.m_reverseHistory = [];
+            // Each cell in the two arrays corresponds to a diagonal in the edit graph.
+            // The integer value in the cell represents the originalIndex of the furthest
+            // reaching point found so far that ends in that diagonal.
+            // The modifiedIndex can be computed mathematically from the originalIndex and the diagonal number.
+            var maxDifferences = (originalEnd - originalStart) + (modifiedEnd - modifiedStart);
+            var numDiagonals = maxDifferences + 1;
+            var forwardPoints = new Array(numDiagonals);
+            var reversePoints = new Array(numDiagonals);
+            // diagonalForwardBase: Index into forwardPoints of the diagonal which passes through (originalStart, modifiedStart)
+            // diagonalReverseBase: Index into reversePoints of the diagonal which passes through (originalEnd, modifiedEnd)
+            var diagonalForwardBase = (modifiedEnd - modifiedStart);
+            var diagonalReverseBase = (originalEnd - originalStart);
+            // diagonalForwardOffset: Geometric offset which allows modifiedIndex to be computed from originalIndex and the
+            //    diagonal number (relative to diagonalForwardBase)
+            // diagonalReverseOffset: Geometric offset which allows modifiedIndex to be computed from originalIndex and the
+            //    diagonal number (relative to diagonalReverseBase)
+            var diagonalForwardOffset = (originalStart - modifiedStart);
+            var diagonalReverseOffset = (originalEnd - modifiedEnd);
+            // delta: The difference between the end diagonal and the start diagonal. This is used to relate diagonal numbers
+            //   relative to the start diagonal with diagonal numbers relative to the end diagonal.
+            // The Even/Oddn-ness of this delta is important for determining when we should check for overlap
+            var delta = diagonalReverseBase - diagonalForwardBase;
+            var deltaIsEven = (delta % 2 === 0);
+            // Here we set up the start and end points as the furthest points found so far
+            // in both the forward and reverse directions, respectively
+            forwardPoints[diagonalForwardBase] = originalStart;
+            reversePoints[diagonalReverseBase] = originalEnd;
+            // Remember if we quit early, and thus need to do a best-effort result instead of a real result.
+            quitEarlyArr[0] = false;
+            // A couple of points:
+            // --With this method, we iterate on the number of differences between the two sequences.
+            //   The more differences there actually are, the longer this will take.
+            // --Also, as the number of differences increases, we have to search on diagonals further
+            //   away from the reference diagonal (which is diagonalForwardBase for forward, diagonalReverseBase for reverse).
+            // --We extend on even diagonals (relative to the reference diagonal) only when numDifferences
+            //   is even and odd diagonals only when numDifferences is odd.
+            var diagonal, tempOriginalIndex;
+            for (numDifferences = 1; numDifferences <= (maxDifferences / 2) + 1; numDifferences++) {
+                var furthestOriginalIndex = 0;
+                var furthestModifiedIndex = 0;
+                // Run the algorithm in the forward direction
+                diagonalForwardStart = this.ClipDiagonalBound(diagonalForwardBase - numDifferences, numDifferences, diagonalForwardBase, numDiagonals);
+                diagonalForwardEnd = this.ClipDiagonalBound(diagonalForwardBase + numDifferences, numDifferences, diagonalForwardBase, numDiagonals);
+                for (diagonal = diagonalForwardStart; diagonal <= diagonalForwardEnd; diagonal += 2) {
+                    // STEP 1: We extend the furthest reaching point in the present diagonal
+                    // by looking at the diagonals above and below and picking the one whose point
+                    // is further away from the start point (originalStart, modifiedStart)
+                    if (diagonal === diagonalForwardStart || (diagonal < diagonalForwardEnd && forwardPoints[diagonal - 1] < forwardPoints[diagonal + 1])) {
+                        originalIndex = forwardPoints[diagonal + 1];
+                    }
+                    else {
+                        originalIndex = forwardPoints[diagonal - 1] + 1;
+                    }
+                    modifiedIndex = originalIndex - (diagonal - diagonalForwardBase) - diagonalForwardOffset;
+                    // Save the current originalIndex so we can test for false overlap in step 3
+                    tempOriginalIndex = originalIndex;
+                    // STEP 2: We can continue to extend the furthest reaching point in the present diagonal
+                    // so long as the elements are equal.
+                    while (originalIndex < originalEnd && modifiedIndex < modifiedEnd && this.ElementsAreEqual(originalIndex + 1, modifiedIndex + 1)) {
+                        originalIndex++;
+                        modifiedIndex++;
+                    }
+                    forwardPoints[diagonal] = originalIndex;
+                    if (originalIndex + modifiedIndex > furthestOriginalIndex + furthestModifiedIndex) {
+                        furthestOriginalIndex = originalIndex;
+                        furthestModifiedIndex = modifiedIndex;
+                    }
+                    // STEP 3: If delta is odd (overlap first happens on forward when delta is odd)
+                    // and diagonal is in the range of reverse diagonals computed for numDifferences-1
+                    // (the previous iteration; we haven't computed reverse diagonals for numDifferences yet)
+                    // then check for overlap.
+                    if (!deltaIsEven && Math.abs(diagonal - diagonalReverseBase) <= (numDifferences - 1)) {
+                        if (originalIndex >= reversePoints[diagonal]) {
+                            midOriginalArr[0] = originalIndex;
+                            midModifiedArr[0] = modifiedIndex;
+                            if (tempOriginalIndex <= reversePoints[diagonal] && MaxDifferencesHistory > 0 && numDifferences <= (MaxDifferencesHistory + 1)) {
+                                // BINGO! We overlapped, and we have the full trace in memory!
+                                return this.WALKTRACE(diagonalForwardBase, diagonalForwardStart, diagonalForwardEnd, diagonalForwardOffset, diagonalReverseBase, diagonalReverseStart, diagonalReverseEnd, diagonalReverseOffset, forwardPoints, reversePoints, originalIndex, originalEnd, midOriginalArr, modifiedIndex, modifiedEnd, midModifiedArr, deltaIsEven, quitEarlyArr);
+                            }
+                            else {
+                                // Either false overlap, or we didn't have enough memory for the full trace
+                                // Just return the recursion point
+                                return null;
+                            }
+                        }
+                    }
+                }
+                // Check to see if we should be quitting early, before moving on to the next iteration.
+                var matchLengthOfLongest = ((furthestOriginalIndex - originalStart) + (furthestModifiedIndex - modifiedStart) - numDifferences) / 2;
+                if (this.ContinueProcessingPredicate !== null && !this.ContinueProcessingPredicate(furthestOriginalIndex, this.OriginalSequence, matchLengthOfLongest)) {
+                    // We can't finish, so skip ahead to generating a result from what we have.
+                    quitEarlyArr[0] = true;
+                    // Use the furthest distance we got in the forward direction.
+                    midOriginalArr[0] = furthestOriginalIndex;
+                    midModifiedArr[0] = furthestModifiedIndex;
+                    if (matchLengthOfLongest > 0 && MaxDifferencesHistory > 0 && numDifferences <= (MaxDifferencesHistory + 1)) {
+                        // Enough of the history is in memory to walk it backwards
+                        return this.WALKTRACE(diagonalForwardBase, diagonalForwardStart, diagonalForwardEnd, diagonalForwardOffset, diagonalReverseBase, diagonalReverseStart, diagonalReverseEnd, diagonalReverseOffset, forwardPoints, reversePoints, originalIndex, originalEnd, midOriginalArr, modifiedIndex, modifiedEnd, midModifiedArr, deltaIsEven, quitEarlyArr);
+                    }
+                    else {
+                        // We didn't actually remember enough of the history.
+                        //Since we are quiting the diff early, we need to shift back the originalStart and modified start
+                        //back into the boundary limits since we decremented their value above beyond the boundary limit.
+                        originalStart++;
+                        modifiedStart++;
+                        return [
+                            new diffChange_1.DiffChange(originalStart, originalEnd - originalStart + 1, modifiedStart, modifiedEnd - modifiedStart + 1)
+                        ];
+                    }
+                }
+                // Run the algorithm in the reverse direction
+                diagonalReverseStart = this.ClipDiagonalBound(diagonalReverseBase - numDifferences, numDifferences, diagonalReverseBase, numDiagonals);
+                diagonalReverseEnd = this.ClipDiagonalBound(diagonalReverseBase + numDifferences, numDifferences, diagonalReverseBase, numDiagonals);
+                for (diagonal = diagonalReverseStart; diagonal <= diagonalReverseEnd; diagonal += 2) {
+                    // STEP 1: We extend the furthest reaching point in the present diagonal
+                    // by looking at the diagonals above and below and picking the one whose point
+                    // is further away from the start point (originalEnd, modifiedEnd)
+                    if (diagonal === diagonalReverseStart || (diagonal < diagonalReverseEnd && reversePoints[diagonal - 1] >= reversePoints[diagonal + 1])) {
+                        originalIndex = reversePoints[diagonal + 1] - 1;
+                    }
+                    else {
+                        originalIndex = reversePoints[diagonal - 1];
+                    }
+                    modifiedIndex = originalIndex - (diagonal - diagonalReverseBase) - diagonalReverseOffset;
+                    // Save the current originalIndex so we can test for false overlap
+                    tempOriginalIndex = originalIndex;
+                    // STEP 2: We can continue to extend the furthest reaching point in the present diagonal
+                    // as long as the elements are equal.
+                    while (originalIndex > originalStart && modifiedIndex > modifiedStart && this.ElementsAreEqual(originalIndex, modifiedIndex)) {
+                        originalIndex--;
+                        modifiedIndex--;
+                    }
+                    reversePoints[diagonal] = originalIndex;
+                    // STEP 4: If delta is even (overlap first happens on reverse when delta is even)
+                    // and diagonal is in the range of forward diagonals computed for numDifferences
+                    // then check for overlap.
+                    if (deltaIsEven && Math.abs(diagonal - diagonalForwardBase) <= numDifferences) {
+                        if (originalIndex <= forwardPoints[diagonal]) {
+                            midOriginalArr[0] = originalIndex;
+                            midModifiedArr[0] = modifiedIndex;
+                            if (tempOriginalIndex >= forwardPoints[diagonal] && MaxDifferencesHistory > 0 && numDifferences <= (MaxDifferencesHistory + 1)) {
+                                // BINGO! We overlapped, and we have the full trace in memory!
+                                return this.WALKTRACE(diagonalForwardBase, diagonalForwardStart, diagonalForwardEnd, diagonalForwardOffset, diagonalReverseBase, diagonalReverseStart, diagonalReverseEnd, diagonalReverseOffset, forwardPoints, reversePoints, originalIndex, originalEnd, midOriginalArr, modifiedIndex, modifiedEnd, midModifiedArr, deltaIsEven, quitEarlyArr);
+                            }
+                            else {
+                                // Either false overlap, or we didn't have enough memory for the full trace
+                                // Just return the recursion point
+                                return null;
+                            }
+                        }
+                    }
+                }
+                // Save current vectors to history before the next iteration
+                if (numDifferences <= MaxDifferencesHistory) {
+                    // We are allocating space for one extra int, which we fill with
+                    // the index of the diagonal base index
+                    var temp = new Array(diagonalForwardEnd - diagonalForwardStart + 2);
+                    temp[0] = diagonalForwardBase - diagonalForwardStart + 1;
+                    MyArray.Copy(forwardPoints, diagonalForwardStart, temp, 1, diagonalForwardEnd - diagonalForwardStart + 1);
+                    this.m_forwardHistory.push(temp);
+                    temp = new Array(diagonalReverseEnd - diagonalReverseStart + 2);
+                    temp[0] = diagonalReverseBase - diagonalReverseStart + 1;
+                    MyArray.Copy(reversePoints, diagonalReverseStart, temp, 1, diagonalReverseEnd - diagonalReverseStart + 1);
+                    this.m_reverseHistory.push(temp);
+                }
+            }
+            // If we got here, then we have the full trace in history. We just have to convert it to a change list
+            // NOTE: This part is a bit messy
+            return this.WALKTRACE(diagonalForwardBase, diagonalForwardStart, diagonalForwardEnd, diagonalForwardOffset, diagonalReverseBase, diagonalReverseStart, diagonalReverseEnd, diagonalReverseOffset, forwardPoints, reversePoints, originalIndex, originalEnd, midOriginalArr, modifiedIndex, modifiedEnd, midModifiedArr, deltaIsEven, quitEarlyArr);
+        };
+        /**
+         * Concatenates the two input DiffChange lists and returns the resulting
+         * list.
+         * @param The left changes
+         * @param The right changes
+         * @returns The concatenated list
+         */
+        LcsDiff.prototype.ConcatenateChanges = function (left, right) {
+            var mergedChangeArr = [];
+            var result = null;
+            if (left.length === 0 || right.length === 0) {
+                return (right.length > 0) ? right : left;
+            }
+            else if (this.ChangesOverlap(left[left.length - 1], right[0], mergedChangeArr)) {
+                // Since we break the problem down recursively, it is possible that we
+                // might recurse in the middle of a change thereby splitting it into
+                // two changes. Here in the combining stage, we detect and fuse those
+                // changes back together
+                result = new Array(left.length + right.length - 1);
+                MyArray.Copy(left, 0, result, 0, left.length - 1);
+                result[left.length - 1] = mergedChangeArr[0];
+                MyArray.Copy(right, 1, result, left.length, right.length - 1);
+                return result;
+            }
+            else {
+                result = new Array(left.length + right.length);
+                MyArray.Copy(left, 0, result, 0, left.length);
+                MyArray.Copy(right, 0, result, left.length, right.length);
+                return result;
+            }
+        };
+        /**
+         * Returns true if the two changes overlap and can be merged into a single
+         * change
+         * @param left The left change
+         * @param right The right change
+         * @param mergedChange The merged change if the two overlap, null otherwise
+         * @returns True if the two changes overlap
+         */
+        LcsDiff.prototype.ChangesOverlap = function (left, right, mergedChangeArr) {
+            Debug.Assert(left.originalStart <= right.originalStart, 'Left change is not less than or equal to right change');
+            Debug.Assert(left.modifiedStart <= right.modifiedStart, 'Left change is not less than or equal to right change');
+            if (left.originalStart + left.originalLength >= right.originalStart || left.modifiedStart + left.modifiedLength >= right.modifiedStart) {
+                var originalStart = left.originalStart;
+                var originalLength = left.originalLength;
+                var modifiedStart = left.modifiedStart;
+                var modifiedLength = left.modifiedLength;
+                if (left.originalStart + left.originalLength >= right.originalStart) {
+                    originalLength = right.originalStart + right.originalLength - left.originalStart;
+                }
+                if (left.modifiedStart + left.modifiedLength >= right.modifiedStart) {
+                    modifiedLength = right.modifiedStart + right.modifiedLength - left.modifiedStart;
+                }
+                mergedChangeArr[0] = new diffChange_1.DiffChange(originalStart, originalLength, modifiedStart, modifiedLength);
+                return true;
+            }
+            else {
+                mergedChangeArr[0] = null;
+                return false;
+            }
+        };
+        /**
+         * Helper method used to clip a diagonal index to the range of valid
+         * diagonals. This also decides whether or not the diagonal index,
+         * if it exceeds the boundary, should be clipped to the boundary or clipped
+         * one inside the boundary depending on the Even/Odd status of the boundary
+         * and numDifferences.
+         * @param diagonal The index of the diagonal to clip.
+         * @param numDifferences The current number of differences being iterated upon.
+         * @param diagonalBaseIndex The base reference diagonal.
+         * @param numDiagonals The total number of diagonals.
+         * @returns The clipped diagonal index.
+         */
+        LcsDiff.prototype.ClipDiagonalBound = function (diagonal, numDifferences, diagonalBaseIndex, numDiagonals) {
+            if (diagonal >= 0 && diagonal < numDiagonals) {
+                // Nothing to clip, its in range
+                return diagonal;
+            }
+            // diagonalsBelow: The number of diagonals below the reference diagonal
+            // diagonalsAbove: The number of diagonals above the reference diagonal
+            var diagonalsBelow = diagonalBaseIndex;
+            var diagonalsAbove = numDiagonals - diagonalBaseIndex - 1;
+            var diffEven = (numDifferences % 2 === 0);
+            if (diagonal < 0) {
+                var lowerBoundEven = (diagonalsBelow % 2 === 0);
+                return (diffEven === lowerBoundEven) ? 0 : 1;
+            }
+            else {
+                var upperBoundEven = (diagonalsAbove % 2 === 0);
+                return (diffEven === upperBoundEven) ? numDiagonals - 1 : numDiagonals - 2;
+            }
+        };
+        return LcsDiff;
+    }());
+    exports.LcsDiff = LcsDiff;
+});
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-define(__m[38/*vs/base/common/functional*/], __M([1/*require*/,0/*exports*/]), function (require, exports) {
+define(__m[58/*vs/base/common/functional*/], __M([0/*require*/,1/*exports*/]), function (require, exports) {
     'use strict';
     function not(fn) {
         return function () {
@@ -286,7 +1048,7 @@ define(__m[38/*vs/base/common/functional*/], __M([1/*require*/,0/*exports*/]), f
     exports.once = once;
 });
 
-define(__m[36/*vs/base/common/idGenerator*/], __M([1/*require*/,0/*exports*/]), function (require, exports) {
+define(__m[37/*vs/base/common/idGenerator*/], __M([0/*require*/,1/*exports*/]), function (require, exports) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -311,7 +1073,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-define(__m[21/*vs/base/common/lifecycle*/], __M([1/*require*/,0/*exports*/]), function (require, exports) {
+define(__m[22/*vs/base/common/lifecycle*/], __M([0/*require*/,1/*exports*/]), function (require, exports) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -334,6 +1096,7 @@ define(__m[21/*vs/base/common/lifecycle*/], __M([1/*require*/,0/*exports*/]), fu
                 first.dispose();
                 return first;
             }
+            return undefined;
         }
         else {
             dispose(first);
@@ -382,6 +1145,7 @@ define(__m[21/*vs/base/common/lifecycle*/], __M([1/*require*/,0/*exports*/]), fu
                     var element = arg_1[_i];
                     return this._register(element);
                 }
+                return undefined;
             }
         };
         return Disposables;
@@ -448,7 +1212,7 @@ define(__m[21/*vs/base/common/lifecycle*/], __M([1/*require*/,0/*exports*/]), fu
 
 
 
-define(__m[26/*vs/base/common/map*/], __M([1/*require*/,0/*exports*/]), function (require, exports) {
+define(__m[26/*vs/base/common/map*/], __M([0/*require*/,1/*exports*/]), function (require, exports) {
     'use strict';
     /**
      * A simple map to store value by a key object. Key can be any object that has toString() function to get
@@ -729,7 +1493,7 @@ define(__m[26/*vs/base/common/map*/], __M([1/*require*/,0/*exports*/]), function
                 var part = parts_1[_i];
                 node = children[part];
                 if (!node) {
-                    return;
+                    return undefined;
                 }
                 children = node.children;
             }
@@ -755,6 +1519,7 @@ define(__m[26/*vs/base/common/map*/], __M([1/*require*/,0/*exports*/]), function
             if (lastNode) {
                 return lastNode.element;
             }
+            return undefined;
         };
         TrieMap.prototype.findSuperstr = function (path) {
             var parts = this._splitter(path);
@@ -764,7 +1529,7 @@ define(__m[26/*vs/base/common/map*/], __M([1/*require*/,0/*exports*/]), function
                 var part = parts_3[_i];
                 node = children[part];
                 if (!node) {
-                    return;
+                    return undefined;
                 }
                 children = node.children;
             }
@@ -778,7 +1543,7 @@ define(__m[26/*vs/base/common/map*/], __M([1/*require*/,0/*exports*/]), function
     exports.TrieMap = TrieMap;
 });
 
-define(__m[11/*vs/base/common/platform*/], __M([1/*require*/,0/*exports*/]), function (require, exports) {
+define(__m[10/*vs/base/common/platform*/], __M([0/*require*/,1/*exports*/]), function (require, exports) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -876,7 +1641,7 @@ define(__m[11/*vs/base/common/platform*/], __M([1/*require*/,0/*exports*/]), fun
     exports.clearInterval = _globals.clearInterval.bind(_globals);
 });
 
-define(__m[9/*vs/base/common/strings*/], __M([1/*require*/,0/*exports*/,26/*vs/base/common/map*/]), function (require, exports, map_1) {
+define(__m[8/*vs/base/common/strings*/], __M([0/*require*/,1/*exports*/,26/*vs/base/common/map*/]), function (require, exports, map_1) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -1195,12 +1960,19 @@ define(__m[9/*vs/base/common/strings*/], __M([1/*require*/,0/*exports*/,26/*vs/b
                 // equal
                 continue;
             }
-            var diff = codeA - codeB;
-            if ((diff === 32 || diff === -32) && isAsciiLetter(codeA) && isAsciiLetter(codeB)) {
-                // equal -> ignoreCase
-                continue;
+            if (isAsciiLetter(codeA) && isAsciiLetter(codeB)) {
+                var diff = codeA - codeB;
+                if (diff === 32 || diff === -32) {
+                    // equal -> ignoreCase
+                    continue;
+                }
+                else {
+                    return diff;
+                }
             }
-            return compare(a[i].toLowerCase(), b[i].toLowerCase());
+            else {
+                return compare(a.toLowerCase(), b.toLowerCase());
+            }
         }
         if (a.length < b.length) {
             return -1;
@@ -1479,7 +2251,7 @@ define(__m[9/*vs/base/common/strings*/], __M([1/*require*/,0/*exports*/,26/*vs/b
     exports.repeat = repeat;
 });
 
-define(__m[15/*vs/base/common/paths*/], __M([1/*require*/,0/*exports*/,11/*vs/base/common/platform*/,18/*vs/base/common/arrays*/,9/*vs/base/common/strings*/]), function (require, exports, platform_1, arrays_1, strings_1) {
+define(__m[14/*vs/base/common/paths*/], __M([0/*require*/,1/*exports*/,10/*vs/base/common/platform*/,20/*vs/base/common/arrays*/,8/*vs/base/common/strings*/]), function (require, exports, platform_1, arrays_1, strings_1) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -1525,7 +2297,11 @@ define(__m[15/*vs/base/common/paths*/], __M([1/*require*/,0/*exports*/,11/*vs/ba
             return path[0];
         }
         else {
-            return path.substring(0, ~idx);
+            var res = path.substring(0, ~idx);
+            if (platform_1.isWindows && res[res.length - 1] === ':') {
+                res += exports.nativeSep; // make sure drive letters end with backslash
+            }
+            return res;
         }
     }
     exports.dirname = dirname;
@@ -1815,18 +2591,9 @@ define(__m[15/*vs/base/common/paths*/], __M([1/*require*/,0/*exports*/,11/*vs/ba
         return true;
     }
     exports.isValidBasename = isValidBasename;
-    exports.isAbsoluteRegex = /^((\/|[a-zA-Z]:\\)[^\(\)<>\\'\"\[\]]+)/;
-    /**
-     * If you have access to node, it is recommended to use node's path.isAbsolute().
-     * This is a simple regex based approach.
-     */
-    function isAbsolute(path) {
-        return exports.isAbsoluteRegex.test(path);
-    }
-    exports.isAbsolute = isAbsolute;
 });
 
-define(__m[30/*vs/base/common/glob*/], __M([1/*require*/,0/*exports*/,18/*vs/base/common/arrays*/,9/*vs/base/common/strings*/,15/*vs/base/common/paths*/,26/*vs/base/common/map*/]), function (require, exports, arrays, strings, paths, map_1) {
+define(__m[29/*vs/base/common/glob*/], __M([0/*require*/,1/*exports*/,20/*vs/base/common/arrays*/,8/*vs/base/common/strings*/,14/*vs/base/common/paths*/,26/*vs/base/common/map*/]), function (require, exports, arrays, strings, paths, map_1) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -2301,7 +3068,7 @@ define(__m[30/*vs/base/common/glob*/], __M([1/*require*/,0/*exports*/,18/*vs/bas
     }
 });
 
-define(__m[13/*vs/base/common/types*/], __M([1/*require*/,0/*exports*/]), function (require, exports) {
+define(__m[16/*vs/base/common/types*/], __M([0/*require*/,1/*exports*/]), function (require, exports) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -2469,7 +3236,7 @@ define(__m[13/*vs/base/common/types*/], __M([1/*require*/,0/*exports*/]), functi
     exports.create = create;
 });
 
-define(__m[5/*vs/base/common/errors*/], __M([1/*require*/,0/*exports*/,11/*vs/base/common/platform*/,13/*vs/base/common/types*/]), function (require, exports, platform, types) {
+define(__m[5/*vs/base/common/errors*/], __M([0/*require*/,1/*exports*/,10/*vs/base/common/platform*/,16/*vs/base/common/types*/]), function (require, exports, platform, types) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -2633,7 +3400,7 @@ define(__m[5/*vs/base/common/errors*/], __M([1/*require*/,0/*exports*/,11/*vs/ba
     exports.getErrorMessage = getErrorMessage;
 });
 
-define(__m[32/*vs/base/common/callbackList*/], __M([1/*require*/,0/*exports*/,5/*vs/base/common/errors*/]), function (require, exports, errors_1) {
+define(__m[27/*vs/base/common/callbackList*/], __M([0/*require*/,1/*exports*/,5/*vs/base/common/errors*/]), function (require, exports, errors_1) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -2684,7 +3451,7 @@ define(__m[32/*vs/base/common/callbackList*/], __M([1/*require*/,0/*exports*/,5/
                 args[_i] = arguments[_i];
             }
             if (!this._callbacks) {
-                return;
+                return undefined;
             }
             var ret = [], callbacks = this._callbacks.slice(0), contexts = this._contexts.slice(0);
             for (var i = 0, len = callbacks.length; i < len; i++) {
@@ -2717,7 +3484,7 @@ define(__m[32/*vs/base/common/callbackList*/], __M([1/*require*/,0/*exports*/,5/
     exports.default = CallbackList;
 });
 
-define(__m[4/*vs/base/common/event*/], __M([1/*require*/,0/*exports*/,21/*vs/base/common/lifecycle*/,32/*vs/base/common/callbackList*/,38/*vs/base/common/functional*/]), function (require, exports, lifecycle_1, callbackList_1, functional_1) {
+define(__m[4/*vs/base/common/event*/], __M([0/*require*/,1/*exports*/,22/*vs/base/common/lifecycle*/,27/*vs/base/common/callbackList*/,58/*vs/base/common/functional*/]), function (require, exports, lifecycle_1, callbackList_1, functional_1) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -2984,8 +3751,9 @@ define(__m[4/*vs/base/common/event*/], __M([1/*require*/,0/*exports*/,21/*vs/bas
         return emitter.event;
     }
     exports.any = any;
-    function debounceEvent(event, merger, delay) {
+    function debounceEvent(event, merger, delay, leading) {
         if (delay === void 0) { delay = 100; }
+        if (leading === void 0) { leading = false; }
         var subscription;
         var output;
         var handle;
@@ -2993,11 +3761,15 @@ define(__m[4/*vs/base/common/event*/], __M([1/*require*/,0/*exports*/,21/*vs/bas
             onFirstListenerAdd: function () {
                 subscription = event(function (cur) {
                     output = merger(output, cur);
+                    if (!handle && leading) {
+                        emitter.fire(output);
+                    }
                     clearTimeout(handle);
                     handle = setTimeout(function () {
                         var _output = output;
                         output = undefined;
                         emitter.fire(_output);
+                        handle = null;
                     }, delay);
                 });
             },
@@ -3167,7 +3939,7 @@ define(__m[4/*vs/base/common/event*/], __M([1/*require*/,0/*exports*/,21/*vs/bas
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-define(__m[25/*vs/base/common/cancellation*/], __M([1/*require*/,0/*exports*/,4/*vs/base/common/event*/]), function (require, exports, event_1) {
+define(__m[25/*vs/base/common/cancellation*/], __M([0/*require*/,1/*exports*/,4/*vs/base/common/event*/]), function (require, exports, event_1) {
     'use strict';
     var shortcutEvent = Object.freeze(function (callback, context) {
         var handle = setTimeout(callback.bind(context), 0);
@@ -3258,7 +4030,7 @@ define(__m[25/*vs/base/common/cancellation*/], __M([1/*require*/,0/*exports*/,4/
 
 
 
-define(__m[35/*vs/base/common/eventEmitter*/], __M([1/*require*/,0/*exports*/,5/*vs/base/common/errors*/]), function (require, exports, Errors) {
+define(__m[30/*vs/base/common/eventEmitter*/], __M([0/*require*/,1/*exports*/,5/*vs/base/common/errors*/]), function (require, exports, Errors) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -3504,6 +4276,7 @@ define(__m[35/*vs/base/common/eventEmitter*/], __M([1/*require*/,0/*exports*/,5/
         catch (e) {
             Errors.onUnexpectedError(e);
         }
+        return undefined;
     }
     function safeInvoke1Arg(func, arg1) {
         try {
@@ -3515,7 +4288,7 @@ define(__m[35/*vs/base/common/eventEmitter*/], __M([1/*require*/,0/*exports*/,5/
     }
 });
 
-define(__m[20/*vs/base/common/objects*/], __M([1/*require*/,0/*exports*/,13/*vs/base/common/types*/]), function (require, exports, Types) {
+define(__m[19/*vs/base/common/objects*/], __M([0/*require*/,1/*exports*/,16/*vs/base/common/types*/]), function (require, exports, Types) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -3810,7 +4583,7 @@ define(__m[20/*vs/base/common/objects*/], __M([1/*require*/,0/*exports*/,13/*vs/
     exports.getOrDefault = getOrDefault;
 });
 
-define(__m[7/*vs/base/common/uri*/], __M([1/*require*/,0/*exports*/,11/*vs/base/common/platform*/]), function (require, exports, platform) {
+define(__m[7/*vs/base/common/uri*/], __M([0/*require*/,1/*exports*/,10/*vs/base/common/platform*/]), function (require, exports, platform) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -4211,7 +4984,7 @@ define(__m[7/*vs/base/common/uri*/], __M([1/*require*/,0/*exports*/,11/*vs/base/
     exports.default = URI;
 });
 
-define(__m[37/*vs/base/common/marshalling*/], __M([1/*require*/,0/*exports*/,7/*vs/base/common/uri*/]), function (require, exports, uri_1) {
+define(__m[32/*vs/base/common/marshalling*/], __M([0/*require*/,1/*exports*/,7/*vs/base/common/uri*/]), function (require, exports, uri_1) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -4258,7 +5031,7 @@ define(__m[37/*vs/base/common/marshalling*/], __M([1/*require*/,0/*exports*/,7/*
 
 
 
-define(__m[58/*vs/base/common/uuid*/], __M([1/*require*/,0/*exports*/]), function (require, exports) {
+define(__m[34/*vs/base/common/uuid*/], __M([0/*require*/,1/*exports*/]), function (require, exports) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -4329,10 +5102,6 @@ define(__m[58/*vs/base/common/uuid*/], __M([1/*require*/,0/*exports*/]), functio
     }(ValueUUID));
     V4UUID._chars = ['0', '1', '2', '3', '4', '5', '6', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'];
     V4UUID._timeHighBits = ['8', '9', 'a', 'b'];
-    /**
-     * An empty UUID that contains only zeros.
-     */
-    exports.empty = new ValueUUID('00000000-0000-0000-0000-000000000000');
     function v4() {
         return new V4UUID();
     }
@@ -6435,7 +7204,7 @@ if (typeof process !== 'undefined' && typeof process.nextTick === 'function') {
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-define(__m[3/*vs/base/common/winjs.base*/], __M([115/*vs/base/common/winjs.base.raw*/,5/*vs/base/common/errors*/]), function (winjs, __Errors__) {
+define(__m[3/*vs/base/common/winjs.base*/], __M([119/*vs/base/common/winjs.base.raw*/,5/*vs/base/common/errors*/]), function (winjs, __Errors__) {
 	'use strict';
 
 	var outstandingPromiseErrors = {};
@@ -6501,7 +7270,7 @@ define(__m[3/*vs/base/common/winjs.base*/], __M([115/*vs/base/common/winjs.base.
 
 
 
-define(__m[16/*vs/base/common/async*/], __M([1/*require*/,0/*exports*/,5/*vs/base/common/errors*/,11/*vs/base/common/platform*/,3/*vs/base/common/winjs.base*/,25/*vs/base/common/cancellation*/,21/*vs/base/common/lifecycle*/,4/*vs/base/common/event*/]), function (require, exports, errors, platform, winjs_base_1, cancellation_1, lifecycle_1, event_1) {
+define(__m[9/*vs/base/common/async*/], __M([0/*require*/,1/*exports*/,5/*vs/base/common/errors*/,10/*vs/base/common/platform*/,3/*vs/base/common/winjs.base*/,25/*vs/base/common/cancellation*/,22/*vs/base/common/lifecycle*/,4/*vs/base/common/event*/]), function (require, exports, errors, platform, winjs_base_1, cancellation_1, lifecycle_1, event_1) {
     'use strict';
     function isThenable(obj) {
         return obj && typeof obj.then === 'function';
@@ -6543,6 +7312,7 @@ define(__m[16/*vs/base/common/async*/], __M([1/*require*/,0/*exports*/,5/*vs/bas
                 if (!errors.isPromiseCanceledError(err)) {
                     return winjs_base_1.TPromise.wrapError(err);
                 }
+                return undefined;
             });
         }
         return always(promise, function () { return subscription.dispose(); });
@@ -6941,6 +7711,15 @@ define(__m[16/*vs/base/common/async*/], __M([1/*require*/,0/*exports*/,5/*vs/bas
         return Queue;
     }(Limiter));
     exports.Queue = Queue;
+    function setDisposableTimeout(handler, timeout) {
+        var args = [];
+        for (var _i = 2; _i < arguments.length; _i++) {
+            args[_i - 2] = arguments[_i];
+        }
+        var handle = setTimeout.apply(void 0, [handler, timeout].concat(args));
+        return { dispose: function () { clearTimeout(handle); } };
+    }
+    exports.setDisposableTimeout = setDisposableTimeout;
     var TimeoutTimer = (function (_super) {
         __extends(TimeoutTimer, _super);
         function TimeoutTimer() {
@@ -7080,7 +7859,7 @@ define(__m[16/*vs/base/common/async*/], __M([1/*require*/,0/*exports*/,5/*vs/bas
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-define(__m[46/*vs/base/node/event*/], __M([1/*require*/,0/*exports*/,4/*vs/base/common/event*/]), function (require, exports, event_1) {
+define(__m[48/*vs/base/node/event*/], __M([0/*require*/,1/*exports*/,4/*vs/base/common/event*/]), function (require, exports, event_1) {
     'use strict';
     function fromEventEmitter(emitter, eventName, map) {
         if (map === void 0) { map = function (id) { return id; }; }
@@ -7104,7 +7883,7 @@ define(__m[46/*vs/base/node/event*/], __M([1/*require*/,0/*exports*/,4/*vs/base/
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-define(__m[49/*vs/base/node/flow*/], __M([1/*require*/,0/*exports*/,114/*assert*/]), function (require, exports, assert) {
+define(__m[51/*vs/base/node/flow*/], __M([0/*require*/,1/*exports*/,117/*assert*/]), function (require, exports, assert) {
     'use strict';
     /**
      * Executes the given function (fn) over the given array of items (list) in parallel and returns the resulting errors and results as
@@ -7247,7 +8026,7 @@ define(__m[49/*vs/base/node/flow*/], __M([1/*require*/,0/*exports*/,114/*assert*
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-define(__m[53/*vs/base/node/extfs*/], __M([1/*require*/,0/*exports*/,58/*vs/base/common/uuid*/,9/*vs/base/common/strings*/,11/*vs/base/common/platform*/,49/*vs/base/node/flow*/,33/*fs*/,19/*path*/]), function (require, exports, uuid, strings, platform, flow, fs, paths) {
+define(__m[55/*vs/base/node/extfs*/], __M([0/*require*/,1/*exports*/,34/*vs/base/common/uuid*/,8/*vs/base/common/strings*/,10/*vs/base/common/platform*/,51/*vs/base/node/flow*/,31/*fs*/,18/*path*/]), function (require, exports, uuid, strings, platform, flow, fs, paths) {
     'use strict';
     var loop = flow.loop;
     function readdirSync(path) {
@@ -7582,13 +8361,54 @@ define(__m[53/*vs/base/node/extfs*/], __M([1/*require*/,0/*exports*/,58/*vs/base
         });
     }
     exports.writeFileAndFlush = writeFileAndFlush;
+    /**
+     * Copied from: https://github.com/Microsoft/vscode-node-debug/blob/master/src/node/pathUtilities.ts#L83
+     *
+     * Given an absolute, normalized, and existing file path 'realpath' returns the exact path that the file has on disk.
+     * On a case insensitive file system, the returned path might differ from the original path by character casing.
+     * On a case sensitive file system, the returned path will always be identical to the original path.
+     * In case of errors, null is returned. But you cannot use this function to verify that a path exists.
+     * realpathSync does not handle '..' or '.' path segments and it does not take the locale into account.
+     */
+    function realpathSync(path) {
+        var dir = paths.dirname(path);
+        if (path === dir) {
+            return path;
+        }
+        var name = paths.basename(path).toLowerCase();
+        try {
+            var entries = readdirSync(dir);
+            var found = entries.filter(function (e) { return e.toLowerCase() === name; }); // use a case insensitive search
+            if (found.length === 1) {
+                // on a case sensitive filesystem we cannot determine here, whether the file exists or not, hence we need the 'file exists' precondition
+                var prefix = realpathSync(dir); // recurse
+                if (prefix) {
+                    return paths.join(prefix, found[0]);
+                }
+            }
+            else if (found.length > 1) {
+                // must be a case sensitive $filesystem
+                var ix = found.indexOf(name);
+                if (ix >= 0) {
+                    var prefix = realpathSync(dir); // recurse
+                    if (prefix) {
+                        return paths.join(prefix, found[ix]);
+                    }
+                }
+            }
+        }
+        catch (error) {
+        }
+        return null;
+    }
+    exports.realpathSync = realpathSync;
 });
 
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-define(__m[27/*vs/base/node/pfs*/], __M([1/*require*/,0/*exports*/,3/*vs/base/common/winjs.base*/,53/*vs/base/node/extfs*/,15/*vs/base/common/paths*/,19/*path*/,16/*vs/base/common/async*/,33/*fs*/,68/*os*/,11/*vs/base/common/platform*/,4/*vs/base/common/event*/]), function (require, exports, winjs_base_1, extfs, paths, path_1, async_1, fs, os, platform, event_1) {
+define(__m[33/*vs/base/node/pfs*/], __M([0/*require*/,1/*exports*/,3/*vs/base/common/winjs.base*/,55/*vs/base/node/extfs*/,14/*vs/base/common/paths*/,18/*path*/,9/*vs/base/common/async*/,31/*fs*/,70/*os*/,10/*vs/base/common/platform*/,4/*vs/base/common/event*/]), function (require, exports, winjs_base_1, extfs, paths, path_1, async_1, fs, os, platform, event_1) {
     'use strict';
     function readdir(path) {
         return async_1.nfcall(extfs.readdir, path);
@@ -7754,7 +8574,7 @@ define(__m[27/*vs/base/node/pfs*/], __M([1/*require*/,0/*exports*/,3/*vs/base/co
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-define(__m[76/*vs/base/parts/ipc/common/ipc*/], __M([1/*require*/,0/*exports*/,3/*vs/base/common/winjs.base*/,21/*vs/base/common/lifecycle*/,4/*vs/base/common/event*/]), function (require, exports, winjs_base_1, lifecycle_1, event_1) {
+define(__m[78/*vs/base/parts/ipc/common/ipc*/], __M([0/*require*/,1/*exports*/,3/*vs/base/common/winjs.base*/,22/*vs/base/common/lifecycle*/,4/*vs/base/common/event*/]), function (require, exports, winjs_base_1, lifecycle_1, event_1) {
     'use strict';
     var MessageType;
     (function (MessageType) {
@@ -8114,10 +8934,10 @@ define(__m[76/*vs/base/parts/ipc/common/ipc*/], __M([1/*require*/,0/*exports*/,3
 
 
 
-define(__m[77/*vs/base/parts/ipc/node/ipc.net*/], __M([1/*require*/,0/*exports*/,84/*net*/,3/*vs/base/common/winjs.base*/,4/*vs/base/common/event*/,46/*vs/base/node/event*/,76/*vs/base/parts/ipc/common/ipc*/,19/*path*/,68/*os*/,87/*crypto*/]), function (require, exports, net_1, winjs_base_1, event_1, event_2, ipc_1, path_1, os_1, crypto_1) {
+define(__m[79/*vs/base/parts/ipc/node/ipc.net*/], __M([0/*require*/,1/*exports*/,87/*net*/,3/*vs/base/common/winjs.base*/,4/*vs/base/common/event*/,48/*vs/base/node/event*/,78/*vs/base/parts/ipc/common/ipc*/,18/*path*/,70/*os*/,34/*vs/base/common/uuid*/]), function (require, exports, net_1, winjs_base_1, event_1, event_2, ipc_1, path_1, os_1, uuid_1) {
     'use strict';
     function generateRandomPipeName() {
-        var randomSuffix = crypto_1.randomBytes(21).toString('hex');
+        var randomSuffix = uuid_1.generateUuid();
         if (process.platform === 'win32') {
             return "\\\\.\\pipe\\vscode-" + randomSuffix + "-sock";
         }
@@ -8304,7 +9124,7 @@ define(__m[77/*vs/base/parts/ipc/node/ipc.net*/], __M([1/*require*/,0/*exports*/
     exports.connect = connect;
 });
 
-define(__m[24/*vs/editor/common/core/position*/], __M([1/*require*/,0/*exports*/]), function (require, exports) {
+define(__m[21/*vs/editor/common/core/position*/], __M([0/*require*/,1/*exports*/]), function (require, exports) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -8425,7 +9245,7 @@ define(__m[24/*vs/editor/common/core/position*/], __M([1/*require*/,0/*exports*/
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-define(__m[31/*vs/editor/common/core/range*/], __M([1/*require*/,0/*exports*/,24/*vs/editor/common/core/position*/]), function (require, exports, position_1) {
+define(__m[35/*vs/editor/common/core/range*/], __M([0/*require*/,1/*exports*/,21/*vs/editor/common/core/position*/]), function (require, exports, position_1) {
     'use strict';
     /**
      * A range in the editor. (startLineNumber,startColumn) is <= (endLineNumber,endColumn)
@@ -8726,7 +9546,7 @@ define(__m[31/*vs/editor/common/core/range*/], __M([1/*require*/,0/*exports*/,24
     exports.Range = Range;
 });
 
-define(__m[39/*vs/editor/common/core/uint*/], __M([1/*require*/,0/*exports*/]), function (require, exports) {
+define(__m[40/*vs/editor/common/core/uint*/], __M([0/*require*/,1/*exports*/]), function (require, exports) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -8811,47 +9631,263 @@ define(__m[39/*vs/editor/common/core/uint*/], __M([1/*require*/,0/*exports*/]), 
     exports.toUint32Array = toUint32Array;
 });
 
-define(__m[40/*vs/editor/common/core/viewLineToken*/], __M([1/*require*/,0/*exports*/]), function (require, exports) {
+
+
+
+
+
+define(__m[41/*vs/editor/common/diff/diffComputer*/], __M([0/*require*/,1/*exports*/,44/*vs/base/common/diff/diff*/,8/*vs/base/common/strings*/]), function (require, exports, diff_1, strings) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
      *--------------------------------------------------------------------------------------------*/
     'use strict';
-    /**
-     * A token on a line.
-     */
-    var ViewLineToken = (function () {
-        function ViewLineToken(endIndex, type) {
-            this.endIndex = endIndex;
-            this.type = type;
+    var MAXIMUM_RUN_TIME = 5000; // 5 seconds
+    var MINIMUM_MATCHING_CHARACTER_LENGTH = 3;
+    function computeDiff(originalSequence, modifiedSequence, continueProcessingPredicate) {
+        var diffAlgo = new diff_1.LcsDiff(originalSequence, modifiedSequence, continueProcessingPredicate);
+        return diffAlgo.ComputeDiff();
+    }
+    var MarkerSequence = (function () {
+        function MarkerSequence(buffer, startMarkers, endMarkers) {
+            this.buffer = buffer;
+            this.startMarkers = startMarkers;
+            this.endMarkers = endMarkers;
         }
-        ViewLineToken._equals = function (a, b) {
-            return (a.endIndex === b.endIndex
-                && a.type === b.type);
-        };
-        ViewLineToken.equalsArr = function (a, b) {
-            var aLen = a.length;
-            var bLen = b.length;
-            if (aLen !== bLen) {
+        MarkerSequence.prototype.equals = function (other) {
+            if (!(other instanceof MarkerSequence)) {
                 return false;
             }
-            for (var i = 0; i < aLen; i++) {
-                if (!this._equals(a[i], b[i])) {
+            var otherMarkerSequence = other;
+            if (this.getLength() !== otherMarkerSequence.getLength()) {
+                return false;
+            }
+            for (var i = 0, len = this.getLength(); i < len; i++) {
+                var myElement = this.getElementHash(i);
+                var otherElement = otherMarkerSequence.getElementHash(i);
+                if (myElement !== otherElement) {
                     return false;
                 }
             }
             return true;
         };
-        return ViewLineToken;
+        MarkerSequence.prototype.getLength = function () {
+            return this.startMarkers.length;
+        };
+        MarkerSequence.prototype.getElementHash = function (i) {
+            return this.buffer.substring(this.startMarkers[i].offset, this.endMarkers[i].offset);
+        };
+        MarkerSequence.prototype.getStartLineNumber = function (i) {
+            if (i === this.startMarkers.length) {
+                // This is the special case where a change happened after the last marker
+                return this.startMarkers[i - 1].lineNumber + 1;
+            }
+            return this.startMarkers[i].lineNumber;
+        };
+        MarkerSequence.prototype.getStartColumn = function (i) {
+            return this.startMarkers[i].column;
+        };
+        MarkerSequence.prototype.getEndLineNumber = function (i) {
+            return this.endMarkers[i].lineNumber;
+        };
+        MarkerSequence.prototype.getEndColumn = function (i) {
+            return this.endMarkers[i].column;
+        };
+        return MarkerSequence;
     }());
-    exports.ViewLineToken = ViewLineToken;
+    var LineMarkerSequence = (function (_super) {
+        __extends(LineMarkerSequence, _super);
+        function LineMarkerSequence(lines, shouldIgnoreTrimWhitespace) {
+            var _this = this;
+            var i, length, pos;
+            var buffer = '';
+            var startMarkers = [], endMarkers = [], startColumn, endColumn;
+            for (pos = 0, i = 0, length = lines.length; i < length; i++) {
+                buffer += lines[i];
+                startColumn = 1;
+                endColumn = lines[i].length + 1;
+                if (shouldIgnoreTrimWhitespace) {
+                    startColumn = LineMarkerSequence._getFirstNonBlankColumn(lines[i], 1);
+                    endColumn = LineMarkerSequence._getLastNonBlankColumn(lines[i], 1);
+                }
+                startMarkers.push({
+                    offset: pos + startColumn - 1,
+                    lineNumber: i + 1,
+                    column: startColumn
+                });
+                endMarkers.push({
+                    offset: pos + endColumn - 1,
+                    lineNumber: i + 1,
+                    column: endColumn
+                });
+                pos += lines[i].length;
+            }
+            _this = _super.call(this, buffer, startMarkers, endMarkers) || this;
+            return _this;
+        }
+        LineMarkerSequence._getFirstNonBlankColumn = function (txt, defaultValue) {
+            var r = strings.firstNonWhitespaceIndex(txt);
+            if (r === -1) {
+                return defaultValue;
+            }
+            return r + 1;
+        };
+        LineMarkerSequence._getLastNonBlankColumn = function (txt, defaultValue) {
+            var r = strings.lastNonWhitespaceIndex(txt);
+            if (r === -1) {
+                return defaultValue;
+            }
+            return r + 2;
+        };
+        LineMarkerSequence.prototype.getCharSequence = function (startIndex, endIndex) {
+            var startMarkers = [], endMarkers = [], index, i, startMarker, endMarker;
+            for (index = startIndex; index <= endIndex; index++) {
+                startMarker = this.startMarkers[index];
+                endMarker = this.endMarkers[index];
+                for (i = startMarker.offset; i < endMarker.offset; i++) {
+                    startMarkers.push({
+                        offset: i,
+                        lineNumber: startMarker.lineNumber,
+                        column: startMarker.column + (i - startMarker.offset)
+                    });
+                    endMarkers.push({
+                        offset: i + 1,
+                        lineNumber: startMarker.lineNumber,
+                        column: startMarker.column + (i - startMarker.offset) + 1
+                    });
+                }
+            }
+            return new MarkerSequence(this.buffer, startMarkers, endMarkers);
+        };
+        return LineMarkerSequence;
+    }(MarkerSequence));
+    var CharChange = (function () {
+        function CharChange(diffChange, originalCharSequence, modifiedCharSequence) {
+            if (diffChange.originalLength === 0) {
+                this.originalStartLineNumber = 0;
+                this.originalStartColumn = 0;
+                this.originalEndLineNumber = 0;
+                this.originalEndColumn = 0;
+            }
+            else {
+                this.originalStartLineNumber = originalCharSequence.getStartLineNumber(diffChange.originalStart);
+                this.originalStartColumn = originalCharSequence.getStartColumn(diffChange.originalStart);
+                this.originalEndLineNumber = originalCharSequence.getEndLineNumber(diffChange.originalStart + diffChange.originalLength - 1);
+                this.originalEndColumn = originalCharSequence.getEndColumn(diffChange.originalStart + diffChange.originalLength - 1);
+            }
+            if (diffChange.modifiedLength === 0) {
+                this.modifiedStartLineNumber = 0;
+                this.modifiedStartColumn = 0;
+                this.modifiedEndLineNumber = 0;
+                this.modifiedEndColumn = 0;
+            }
+            else {
+                this.modifiedStartLineNumber = modifiedCharSequence.getStartLineNumber(diffChange.modifiedStart);
+                this.modifiedStartColumn = modifiedCharSequence.getStartColumn(diffChange.modifiedStart);
+                this.modifiedEndLineNumber = modifiedCharSequence.getEndLineNumber(diffChange.modifiedStart + diffChange.modifiedLength - 1);
+                this.modifiedEndColumn = modifiedCharSequence.getEndColumn(diffChange.modifiedStart + diffChange.modifiedLength - 1);
+            }
+        }
+        return CharChange;
+    }());
+    function postProcessCharChanges(rawChanges) {
+        if (rawChanges.length <= 1) {
+            return rawChanges;
+        }
+        var result = [rawChanges[0]];
+        var i, len, originalMatchingLength, modifiedMatchingLength, matchingLength, prevChange = result[0], currChange;
+        for (i = 1, len = rawChanges.length; i < len; i++) {
+            currChange = rawChanges[i];
+            originalMatchingLength = currChange.originalStart - (prevChange.originalStart + prevChange.originalLength);
+            modifiedMatchingLength = currChange.modifiedStart - (prevChange.modifiedStart + prevChange.modifiedLength);
+            // Both of the above should be equal, but the continueProcessingPredicate may prevent this from being true
+            matchingLength = Math.min(originalMatchingLength, modifiedMatchingLength);
+            if (matchingLength < MINIMUM_MATCHING_CHARACTER_LENGTH) {
+                // Merge the current change into the previous one
+                prevChange.originalLength = (currChange.originalStart + currChange.originalLength) - prevChange.originalStart;
+                prevChange.modifiedLength = (currChange.modifiedStart + currChange.modifiedLength) - prevChange.modifiedStart;
+            }
+            else {
+                // Add the current change
+                result.push(currChange);
+                prevChange = currChange;
+            }
+        }
+        return result;
+    }
+    var LineChange = (function () {
+        function LineChange(diffChange, originalLineSequence, modifiedLineSequence, continueProcessingPredicate, shouldPostProcessCharChanges) {
+            if (diffChange.originalLength === 0) {
+                this.originalStartLineNumber = originalLineSequence.getStartLineNumber(diffChange.originalStart) - 1;
+                this.originalEndLineNumber = 0;
+            }
+            else {
+                this.originalStartLineNumber = originalLineSequence.getStartLineNumber(diffChange.originalStart);
+                this.originalEndLineNumber = originalLineSequence.getEndLineNumber(diffChange.originalStart + diffChange.originalLength - 1);
+            }
+            if (diffChange.modifiedLength === 0) {
+                this.modifiedStartLineNumber = modifiedLineSequence.getStartLineNumber(diffChange.modifiedStart) - 1;
+                this.modifiedEndLineNumber = 0;
+            }
+            else {
+                this.modifiedStartLineNumber = modifiedLineSequence.getStartLineNumber(diffChange.modifiedStart);
+                this.modifiedEndLineNumber = modifiedLineSequence.getEndLineNumber(diffChange.modifiedStart + diffChange.modifiedLength - 1);
+            }
+            if (diffChange.originalLength !== 0 && diffChange.modifiedLength !== 0 && continueProcessingPredicate()) {
+                var originalCharSequence = originalLineSequence.getCharSequence(diffChange.originalStart, diffChange.originalStart + diffChange.originalLength - 1);
+                var modifiedCharSequence = modifiedLineSequence.getCharSequence(diffChange.modifiedStart, diffChange.modifiedStart + diffChange.modifiedLength - 1);
+                var rawChanges = computeDiff(originalCharSequence, modifiedCharSequence, continueProcessingPredicate);
+                if (shouldPostProcessCharChanges) {
+                    rawChanges = postProcessCharChanges(rawChanges);
+                }
+                this.charChanges = [];
+                for (var i = 0, length = rawChanges.length; i < length; i++) {
+                    this.charChanges.push(new CharChange(rawChanges[i], originalCharSequence, modifiedCharSequence));
+                }
+            }
+        }
+        return LineChange;
+    }());
+    var DiffComputer = (function () {
+        function DiffComputer(originalLines, modifiedLines, opts) {
+            this.shouldPostProcessCharChanges = opts.shouldPostProcessCharChanges;
+            this.shouldIgnoreTrimWhitespace = opts.shouldIgnoreTrimWhitespace;
+            this.maximumRunTimeMs = MAXIMUM_RUN_TIME;
+            this.original = new LineMarkerSequence(originalLines, this.shouldIgnoreTrimWhitespace);
+            this.modified = new LineMarkerSequence(modifiedLines, this.shouldIgnoreTrimWhitespace);
+            if (opts.shouldConsiderTrimWhitespaceInEmptyCase && this.shouldIgnoreTrimWhitespace && this.original.equals(this.modified)) {
+                // Diff would be empty with `shouldIgnoreTrimWhitespace`
+                this.shouldIgnoreTrimWhitespace = false;
+                this.original = new LineMarkerSequence(originalLines, this.shouldIgnoreTrimWhitespace);
+                this.modified = new LineMarkerSequence(modifiedLines, this.shouldIgnoreTrimWhitespace);
+            }
+        }
+        DiffComputer.prototype.computeDiff = function () {
+            this.computationStartTime = (new Date()).getTime();
+            var rawChanges = computeDiff(this.original, this.modified, this._continueProcessingPredicate.bind(this));
+            var lineChanges = [];
+            for (var i = 0, length = rawChanges.length; i < length; i++) {
+                lineChanges.push(new LineChange(rawChanges[i], this.original, this.modified, this._continueProcessingPredicate.bind(this), this.shouldPostProcessCharChanges));
+            }
+            return lineChanges;
+        };
+        DiffComputer.prototype._continueProcessingPredicate = function () {
+            if (this.maximumRunTimeMs === 0) {
+                return true;
+            }
+            var now = (new Date()).getTime();
+            return now - this.computationStartTime < this.maximumRunTimeMs;
+        };
+        return DiffComputer;
+    }());
+    exports.DiffComputer = DiffComputer;
 });
 
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-define(__m[41/*vs/editor/common/model/indentRanges*/], __M([1/*require*/,0/*exports*/]), function (require, exports) {
+define(__m[42/*vs/editor/common/model/indentRanges*/], __M([0/*require*/,1/*exports*/]), function (require, exports) {
     'use strict';
     var IndentRange = (function () {
         function IndentRange(startLineNumber, endLineNumber, indent) {
@@ -8906,7 +9942,7 @@ define(__m[41/*vs/editor/common/model/indentRanges*/], __M([1/*require*/,0/*expo
     exports.computeRanges = computeRanges;
 });
 
-define(__m[42/*vs/editor/common/model/indentationGuesser*/], __M([1/*require*/,0/*exports*/]), function (require, exports) {
+define(__m[43/*vs/editor/common/model/indentationGuesser*/], __M([0/*require*/,1/*exports*/]), function (require, exports) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -9041,7 +10077,7 @@ define(__m[42/*vs/editor/common/model/indentationGuesser*/], __M([1/*require*/,0
     exports.guessIndentation = guessIndentation;
 });
 
-define(__m[43/*vs/editor/common/model/tokensBinaryEncoding*/], __M([1/*require*/,0/*exports*/,40/*vs/editor/common/core/viewLineToken*/]), function (require, exports, viewLineToken_1) {
+define(__m[38/*vs/editor/common/model/tokensBinaryEncoding*/], __M([0/*require*/,1/*exports*/]), function (require, exports) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -9050,27 +10086,6 @@ define(__m[43/*vs/editor/common/model/tokensBinaryEncoding*/], __M([1/*require*/
     var TokenMetadata = (function () {
         function TokenMetadata() {
         }
-        TokenMetadata.toBinaryStr = function (metadata) {
-            var r = metadata.toString(2);
-            while (r.length < 32) {
-                r = '0' + r;
-            }
-            return r;
-        };
-        TokenMetadata.printMetadata = function (metadata) {
-            var languageId = TokenMetadata.getLanguageId(metadata);
-            var tokenType = TokenMetadata.getTokenType(metadata);
-            var fontStyle = TokenMetadata.getFontStyle(metadata);
-            var foreground = TokenMetadata.getForeground(metadata);
-            var background = TokenMetadata.getBackground(metadata);
-            console.log({
-                languageId: languageId,
-                tokenType: tokenType,
-                fontStyle: fontStyle,
-                foreground: foreground,
-                background: background,
-            });
-        };
         TokenMetadata.getLanguageId = function (metadata) {
             return (metadata & 255 /* LANGUAGEID_MASK */) >>> 0 /* LANGUAGEID_OFFSET */;
         };
@@ -9086,7 +10101,7 @@ define(__m[43/*vs/editor/common/model/tokensBinaryEncoding*/], __M([1/*require*/
         TokenMetadata.getBackground = function (metadata) {
             return (metadata & 4286578688 /* BACKGROUND_MASK */) >>> 23 /* BACKGROUND_OFFSET */;
         };
-        TokenMetadata._getClassNameFromMetadata = function (metadata) {
+        TokenMetadata.getClassNameFromMetadata = function (metadata) {
             var foreground = this.getForeground(metadata);
             var className = 'mtk' + foreground;
             var fontStyle = this.getFontStyle(metadata);
@@ -9101,17 +10116,84 @@ define(__m[43/*vs/editor/common/model/tokensBinaryEncoding*/], __M([1/*require*/
             }
             return className;
         };
-        TokenMetadata.inflateArr = function (tokens, lineLength) {
+        TokenMetadata.getInlineStyleFromMetadata = function (metadata, colorMap) {
+            var foreground = this.getForeground(metadata);
+            var fontStyle = this.getFontStyle(metadata);
+            var result = "color: " + colorMap[foreground] + ";";
+            if (fontStyle & 1 /* Italic */) {
+                result += 'font-style: italic;';
+            }
+            if (fontStyle & 2 /* Bold */) {
+                result += 'font-weight: bold;';
+            }
+            if (fontStyle & 4 /* Underline */) {
+                result += 'text-decoration: underline;';
+            }
+            return result;
+        };
+        return TokenMetadata;
+    }());
+    exports.TokenMetadata = TokenMetadata;
+});
+
+define(__m[45/*vs/editor/common/core/viewLineToken*/], __M([0/*require*/,1/*exports*/,38/*vs/editor/common/model/tokensBinaryEncoding*/]), function (require, exports, tokensBinaryEncoding_1) {
+    /*---------------------------------------------------------------------------------------------
+     *  Copyright (c) Microsoft Corporation. All rights reserved.
+     *  Licensed under the MIT License. See License.txt in the project root for license information.
+     *--------------------------------------------------------------------------------------------*/
+    'use strict';
+    /**
+     * A token on a line.
+     */
+    var ViewLineToken = (function () {
+        function ViewLineToken(endIndex, metadata) {
+            this.endIndex = endIndex;
+            this._metadata = metadata;
+        }
+        ViewLineToken.prototype.getForeground = function () {
+            return tokensBinaryEncoding_1.TokenMetadata.getForeground(this._metadata);
+        };
+        ViewLineToken.prototype.getType = function () {
+            return tokensBinaryEncoding_1.TokenMetadata.getClassNameFromMetadata(this._metadata);
+        };
+        ViewLineToken.prototype.getInlineStyle = function (colorMap) {
+            return tokensBinaryEncoding_1.TokenMetadata.getInlineStyleFromMetadata(this._metadata, colorMap);
+        };
+        ViewLineToken._equals = function (a, b) {
+            return (a.endIndex === b.endIndex
+                && a._metadata === b._metadata);
+        };
+        ViewLineToken.equalsArr = function (a, b) {
+            var aLen = a.length;
+            var bLen = b.length;
+            if (aLen !== bLen) {
+                return false;
+            }
+            for (var i = 0; i < aLen; i++) {
+                if (!this._equals(a[i], b[i])) {
+                    return false;
+                }
+            }
+            return true;
+        };
+        return ViewLineToken;
+    }());
+    exports.ViewLineToken = ViewLineToken;
+    var ViewLineTokenFactory = (function () {
+        function ViewLineTokenFactory() {
+        }
+        ViewLineTokenFactory.inflateArr = function (tokens, lineLength) {
             var result = [];
             for (var i = 0, len = (tokens.length >>> 1); i < len; i++) {
                 var endOffset = (i + 1 < len ? tokens[((i + 1) << 1)] : lineLength);
                 var metadata = tokens[(i << 1) + 1];
-                result[i] = new viewLineToken_1.ViewLineToken(endOffset, this._getClassNameFromMetadata(metadata));
+                result[i] = new ViewLineToken(endOffset, metadata);
             }
             return result;
         };
-        TokenMetadata.sliceAndInflate = function (tokens, startOffset, endOffset, deltaOffset, lineLength) {
+        ViewLineTokenFactory.sliceAndInflate = function (tokens, startOffset, endOffset, deltaOffset, lineLength) {
             var tokenIndex = this.findIndexInSegmentsArray(tokens, startOffset);
+            var maxEndOffset = (endOffset - startOffset + deltaOffset);
             var result = [], resultLen = 0;
             for (var i = tokenIndex, len = (tokens.length >>> 1); i < len; i++) {
                 var tokenStartOffset = tokens[(i << 1)];
@@ -9119,13 +10201,13 @@ define(__m[43/*vs/editor/common/model/tokensBinaryEncoding*/], __M([1/*require*/
                     break;
                 }
                 var tokenEndOffset = (i + 1 < len ? tokens[((i + 1) << 1)] : lineLength);
-                var newEndOffset = tokenEndOffset - startOffset + deltaOffset;
+                var newEndOffset = Math.min(maxEndOffset, tokenEndOffset - startOffset + deltaOffset);
                 var metadata = tokens[(i << 1) + 1];
-                result[resultLen++] = new viewLineToken_1.ViewLineToken(newEndOffset, this._getClassNameFromMetadata(metadata));
+                result[resultLen++] = new ViewLineToken(newEndOffset, metadata);
             }
             return result;
         };
-        TokenMetadata.findIndexInSegmentsArray = function (tokens, desiredIndex) {
+        ViewLineTokenFactory.findIndexInSegmentsArray = function (tokens, desiredIndex) {
             var low = 0;
             var high = (tokens.length >>> 1) - 1;
             while (low < high) {
@@ -9140,37 +10222,19 @@ define(__m[43/*vs/editor/common/model/tokensBinaryEncoding*/], __M([1/*require*/
             }
             return low;
         };
-        return TokenMetadata;
+        return ViewLineTokenFactory;
     }());
-    exports.TokenMetadata = TokenMetadata;
+    exports.ViewLineTokenFactory = ViewLineTokenFactory;
 });
 
-define(__m[44/*vs/editor/common/core/lineTokens*/], __M([1/*require*/,0/*exports*/,43/*vs/editor/common/model/tokensBinaryEncoding*/]), function (require, exports, tokensBinaryEncoding_1) {
+define(__m[46/*vs/editor/common/core/lineTokens*/], __M([0/*require*/,1/*exports*/,38/*vs/editor/common/model/tokensBinaryEncoding*/,45/*vs/editor/common/core/viewLineToken*/]), function (require, exports, tokensBinaryEncoding_1, viewLineToken_1) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
      *--------------------------------------------------------------------------------------------*/
     'use strict';
-    var STANDARD_TOKEN_TYPE_REGEXP = /\b(comment|string|regex)\b/;
-    function toStandardTokenType(tokenType) {
-        var m = tokenType.match(STANDARD_TOKEN_TYPE_REGEXP);
-        if (!m) {
-            return 0 /* Other */;
-        }
-        switch (m[1]) {
-            case 'comment':
-                return 1 /* Comment */;
-            case 'string':
-                return 2 /* String */;
-            case 'regex':
-                return 4 /* RegEx */;
-        }
-        throw new Error('Unexpected match for standard token type!');
-    }
-    exports.toStandardTokenType = toStandardTokenType;
     var LineToken = (function () {
-        function LineToken(colorMap, source, tokenIndex, tokenCount, startOffset, endOffset, metadata) {
-            this._colorMap = colorMap;
+        function LineToken(source, tokenIndex, tokenCount, startOffset, endOffset, metadata) {
             this._source = source;
             this._tokenIndex = tokenIndex;
             this._metadata = metadata;
@@ -9207,23 +10271,9 @@ define(__m[44/*vs/editor/common/core/lineTokens*/], __M([1/*require*/,0/*exports
             enumerable: true,
             configurable: true
         });
-        Object.defineProperty(LineToken.prototype, "foreground", {
-            get: function () {
-                return this._colorMap[this.foregroundId];
-            },
-            enumerable: true,
-            configurable: true
-        });
         Object.defineProperty(LineToken.prototype, "backgroundId", {
             get: function () {
                 return tokensBinaryEncoding_1.TokenMetadata.getBackground(this._metadata);
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(LineToken.prototype, "background", {
-            get: function () {
-                return this._colorMap[this.backgroundId];
             },
             enumerable: true,
             configurable: true
@@ -9244,8 +10294,7 @@ define(__m[44/*vs/editor/common/core/lineTokens*/], __M([1/*require*/,0/*exports
     }());
     exports.LineToken = LineToken;
     var LineTokens = (function () {
-        function LineTokens(colorMap, tokens, text) {
-            this._colorMap = colorMap;
+        function LineTokens(tokens, text) {
             this._tokens = tokens;
             this._tokensCount = (this._tokens.length >>> 1);
             this._text = text;
@@ -9289,7 +10338,7 @@ define(__m[44/*vs/editor/common/core/lineTokens*/], __M([1/*require*/,0/*exports
          * @return The index of the token containing the offset.
          */
         LineTokens.prototype.findTokenIndexAtOffset = function (offset) {
-            return tokensBinaryEncoding_1.TokenMetadata.findIndexInSegmentsArray(this._tokens, offset);
+            return viewLineToken_1.ViewLineTokenFactory.findIndexInSegmentsArray(this._tokens, offset);
         };
         LineTokens.prototype.findTokenAtOffset = function (offset) {
             var tokenIndex = this.findTokenIndexAtOffset(offset);
@@ -9305,7 +10354,7 @@ define(__m[44/*vs/editor/common/core/lineTokens*/], __M([1/*require*/,0/*exports
                 endOffset = this._textLength;
             }
             var metadata = this._tokens[(tokenIndex << 1) + 1];
-            return new LineToken(this._colorMap, this, tokenIndex, this._tokensCount, startOffset, endOffset, metadata);
+            return new LineToken(this, tokenIndex, this._tokensCount, startOffset, endOffset, metadata);
         };
         LineTokens.prototype.firstToken = function () {
             if (this._textLength === 0) {
@@ -9320,17 +10369,17 @@ define(__m[44/*vs/editor/common/core/lineTokens*/], __M([1/*require*/,0/*exports
             return this.tokenAt(this._tokensCount - 1);
         };
         LineTokens.prototype.inflate = function () {
-            return tokensBinaryEncoding_1.TokenMetadata.inflateArr(this._tokens, this._textLength);
+            return viewLineToken_1.ViewLineTokenFactory.inflateArr(this._tokens, this._textLength);
         };
         LineTokens.prototype.sliceAndInflate = function (startOffset, endOffset, deltaOffset) {
-            return tokensBinaryEncoding_1.TokenMetadata.sliceAndInflate(this._tokens, startOffset, endOffset, deltaOffset, this._textLength);
+            return viewLineToken_1.ViewLineTokenFactory.sliceAndInflate(this._tokens, startOffset, endOffset, deltaOffset, this._textLength);
         };
         return LineTokens;
     }());
     exports.LineTokens = LineTokens;
 });
 
-define(__m[45/*vs/editor/common/model/modelLine*/], __M([1/*require*/,0/*exports*/,44/*vs/editor/common/core/lineTokens*/,24/*vs/editor/common/core/position*/]), function (require, exports, lineTokens_1, position_1) {
+define(__m[47/*vs/editor/common/model/modelLine*/], __M([0/*require*/,1/*exports*/,46/*vs/editor/common/core/lineTokens*/,21/*vs/editor/common/core/position*/]), function (require, exports, lineTokens_1, position_1) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -9521,15 +10570,15 @@ define(__m[45/*vs/editor/common/model/modelLine*/], __M([1/*require*/,0/*exports
             }
             this._lineTokens = tokens.buffer;
         };
-        ModelLine.prototype.getTokens = function (topLevelLanguageId, colorMap) {
+        ModelLine.prototype.getTokens = function (topLevelLanguageId) {
             var rawLineTokens = this._lineTokens;
             if (rawLineTokens) {
-                return new lineTokens_1.LineTokens(colorMap, new Uint32Array(rawLineTokens), this._text);
+                return new lineTokens_1.LineTokens(new Uint32Array(rawLineTokens), this._text);
             }
             var lineTokens = new Uint32Array(2);
             lineTokens[0] = 0;
             lineTokens[1] = ModelLine._getDefaultMetadata(topLevelLanguageId);
-            return new lineTokens_1.LineTokens(colorMap, lineTokens, this._text);
+            return new lineTokens_1.LineTokens(lineTokens, this._text);
         };
         // --- END TOKENS
         ModelLine.prototype._createTokensAdjuster = function () {
@@ -9903,9 +10952,9 @@ define(__m[45/*vs/editor/common/model/modelLine*/], __M([1/*require*/,0/*exports
         };
         ModelLine.prototype.getMarkers = function () {
             if (!this._markers) {
-                return [];
+                return null;
             }
-            return this._markers.slice(0);
+            return this._markers;
         };
         ModelLine.prototype.updateLineNumber = function (markersTracker, newLineNumber) {
             if (this._lineNumber === newLineNumber) {
@@ -9933,13 +10982,14 @@ define(__m[45/*vs/editor/common/model/modelLine*/], __M([1/*require*/,0/*exports
                     return i;
                 }
             }
+            return undefined;
         };
         return ModelLine;
     }());
     exports.ModelLine = ModelLine;
 });
 
-define(__m[29/*vs/editor/common/model/wordHelper*/], __M([1/*require*/,0/*exports*/]), function (require, exports) {
+define(__m[39/*vs/editor/common/model/wordHelper*/], __M([0/*require*/,1/*exports*/]), function (require, exports) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -10047,7 +11097,7 @@ define(__m[29/*vs/editor/common/model/wordHelper*/], __M([1/*require*/,0/*export
     exports.getWordAtText = getWordAtText;
 });
 
-define(__m[47/*vs/editor/common/modes/languageConfiguration*/], __M([1/*require*/,0/*exports*/]), function (require, exports) {
+define(__m[49/*vs/editor/common/modes/languageConfiguration*/], __M([0/*require*/,1/*exports*/]), function (require, exports) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -10115,7 +11165,7 @@ define(__m[47/*vs/editor/common/modes/languageConfiguration*/], __M([1/*require*
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-define(__m[48/*vs/editor/common/modes/languageSelector*/], __M([1/*require*/,0/*exports*/,30/*vs/base/common/glob*/]), function (require, exports, glob_1) {
+define(__m[50/*vs/editor/common/modes/languageSelector*/], __M([0/*require*/,1/*exports*/,29/*vs/base/common/glob*/]), function (require, exports, glob_1) {
     'use strict';
     function matches(selection, uri, language) {
         return score(selection, uri, language) > 0;
@@ -10181,11 +11231,12 @@ define(__m[48/*vs/editor/common/modes/languageSelector*/], __M([1/*require*/,0/*
             }
             return Math.max(valueLanguage, valueScheme, valuePattern);
         }
+        return undefined;
     }
     exports.score = score;
 });
 
-define(__m[28/*vs/editor/common/viewModel/prefixSumComputer*/], __M([1/*require*/,0/*exports*/,39/*vs/editor/common/core/uint*/]), function (require, exports, uint_1) {
+define(__m[28/*vs/editor/common/viewModel/prefixSumComputer*/], __M([0/*require*/,1/*exports*/,40/*vs/editor/common/core/uint*/]), function (require, exports, uint_1) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -10203,7 +11254,8 @@ define(__m[28/*vs/editor/common/viewModel/prefixSumComputer*/], __M([1/*require*
         function PrefixSumComputer(values) {
             this.values = values;
             this.prefixSum = new Uint32Array(values.length);
-            this.prefixSumValidIndex = -1;
+            this.prefixSumValidIndex = new Int32Array(1);
+            this.prefixSumValidIndex[0] = -1;
         }
         PrefixSumComputer.prototype.getCount = function () {
             return this.values.length;
@@ -10214,30 +11266,32 @@ define(__m[28/*vs/editor/common/viewModel/prefixSumComputer*/], __M([1/*require*
             var oldPrefixSum = this.prefixSum;
             var insertValuesLen = insertValues.length;
             if (insertValuesLen === 0) {
-                return;
+                return false;
             }
             this.values = new Uint32Array(oldValues.length + insertValuesLen);
             this.values.set(oldValues.subarray(0, insertIndex), 0);
             this.values.set(oldValues.subarray(insertIndex), insertIndex + insertValuesLen);
             this.values.set(insertValues, insertIndex);
-            if (insertIndex - 1 < this.prefixSumValidIndex) {
-                this.prefixSumValidIndex = insertIndex - 1;
+            if (insertIndex - 1 < this.prefixSumValidIndex[0]) {
+                this.prefixSumValidIndex[0] = insertIndex - 1;
             }
             this.prefixSum = new Uint32Array(this.values.length);
-            if (this.prefixSumValidIndex >= 0) {
-                this.prefixSum.set(oldPrefixSum.subarray(0, this.prefixSumValidIndex + 1));
+            if (this.prefixSumValidIndex[0] >= 0) {
+                this.prefixSum.set(oldPrefixSum.subarray(0, this.prefixSumValidIndex[0] + 1));
             }
+            return true;
         };
         PrefixSumComputer.prototype.changeValue = function (index, value) {
             index = uint_1.toUint32(index);
             value = uint_1.toUint32(value);
             if (this.values[index] === value) {
-                return;
+                return false;
             }
             this.values[index] = value;
-            if (index - 1 < this.prefixSumValidIndex) {
-                this.prefixSumValidIndex = index - 1;
+            if (index - 1 < this.prefixSumValidIndex[0]) {
+                this.prefixSumValidIndex[0] = index - 1;
             }
+            return true;
         };
         PrefixSumComputer.prototype.removeValues = function (startIndex, cnt) {
             startIndex = uint_1.toUint32(startIndex);
@@ -10245,41 +11299,45 @@ define(__m[28/*vs/editor/common/viewModel/prefixSumComputer*/], __M([1/*require*
             var oldValues = this.values;
             var oldPrefixSum = this.prefixSum;
             if (startIndex >= oldValues.length) {
-                return;
+                return false;
             }
             var maxCnt = oldValues.length - startIndex;
             if (cnt >= maxCnt) {
                 cnt = maxCnt;
             }
             if (cnt === 0) {
-                return;
+                return false;
             }
             this.values = new Uint32Array(oldValues.length - cnt);
             this.values.set(oldValues.subarray(0, startIndex), 0);
             this.values.set(oldValues.subarray(startIndex + cnt), startIndex);
             this.prefixSum = new Uint32Array(this.values.length);
-            if (startIndex - 1 < this.prefixSumValidIndex) {
-                this.prefixSumValidIndex = startIndex - 1;
+            if (startIndex - 1 < this.prefixSumValidIndex[0]) {
+                this.prefixSumValidIndex[0] = startIndex - 1;
             }
-            if (this.prefixSumValidIndex >= 0) {
-                this.prefixSum.set(oldPrefixSum.subarray(0, this.prefixSumValidIndex + 1));
+            if (this.prefixSumValidIndex[0] >= 0) {
+                this.prefixSum.set(oldPrefixSum.subarray(0, this.prefixSumValidIndex[0] + 1));
             }
+            return true;
         };
         PrefixSumComputer.prototype.getTotalValue = function () {
             if (this.values.length === 0) {
                 return 0;
             }
-            return this.getAccumulatedValue(this.values.length - 1);
+            return this._getAccumulatedValue(this.values.length - 1);
         };
         PrefixSumComputer.prototype.getAccumulatedValue = function (index) {
             if (index < 0) {
                 return 0;
             }
             index = uint_1.toUint32(index);
-            if (index <= this.prefixSumValidIndex) {
+            return this._getAccumulatedValue(index);
+        };
+        PrefixSumComputer.prototype._getAccumulatedValue = function (index) {
+            if (index <= this.prefixSumValidIndex[0]) {
                 return this.prefixSum[index];
             }
-            var startIndex = this.prefixSumValidIndex + 1;
+            var startIndex = this.prefixSumValidIndex[0] + 1;
             if (startIndex === 0) {
                 this.prefixSum[0] = this.values[0];
                 startIndex++;
@@ -10290,11 +11348,13 @@ define(__m[28/*vs/editor/common/viewModel/prefixSumComputer*/], __M([1/*require*
             for (var i = startIndex; i <= index; i++) {
                 this.prefixSum[i] = this.prefixSum[i - 1] + this.values[i];
             }
-            this.prefixSumValidIndex = Math.max(this.prefixSumValidIndex, index);
+            this.prefixSumValidIndex[0] = Math.max(this.prefixSumValidIndex[0], index);
             return this.prefixSum[index];
         };
         PrefixSumComputer.prototype.getIndexOf = function (accumulatedValue) {
             accumulatedValue = Math.floor(accumulatedValue); //@perf
+            // Compute all sums (to get a fully valid prefixSum)
+            this.getTotalValue();
             var low = 0;
             var high = this.values.length - 1;
             var mid;
@@ -10302,7 +11362,7 @@ define(__m[28/*vs/editor/common/viewModel/prefixSumComputer*/], __M([1/*require*
             var midStart;
             while (low <= high) {
                 mid = low + ((high - low) / 2) | 0;
-                midStop = this.getAccumulatedValue(mid);
+                midStop = this.prefixSum[mid];
                 midStart = midStop - this.values[mid];
                 if (accumulatedValue < midStart) {
                     high = mid - 1;
@@ -10319,9 +11379,70 @@ define(__m[28/*vs/editor/common/viewModel/prefixSumComputer*/], __M([1/*require*
         return PrefixSumComputer;
     }());
     exports.PrefixSumComputer = PrefixSumComputer;
+    var PrefixSumComputerWithCache = (function () {
+        function PrefixSumComputerWithCache(values) {
+            this._cacheAccumulatedValueStart = 0;
+            this._cache = null;
+            this._actual = new PrefixSumComputer(values);
+            this._bustCache();
+        }
+        PrefixSumComputerWithCache.prototype._bustCache = function () {
+            this._cacheAccumulatedValueStart = 0;
+            this._cache = null;
+        };
+        PrefixSumComputerWithCache.prototype.getCount = function () {
+            return this._actual.getCount();
+        };
+        PrefixSumComputerWithCache.prototype.insertValues = function (insertIndex, insertValues) {
+            if (this._actual.insertValues(insertIndex, insertValues)) {
+                this._bustCache();
+            }
+        };
+        PrefixSumComputerWithCache.prototype.changeValue = function (index, value) {
+            if (this._actual.changeValue(index, value)) {
+                this._bustCache();
+            }
+        };
+        PrefixSumComputerWithCache.prototype.removeValues = function (startIndex, cnt) {
+            if (this._actual.removeValues(startIndex, cnt)) {
+                this._bustCache();
+            }
+        };
+        PrefixSumComputerWithCache.prototype.getTotalValue = function () {
+            return this._actual.getTotalValue();
+        };
+        PrefixSumComputerWithCache.prototype.getAccumulatedValue = function (index) {
+            return this._actual.getAccumulatedValue(index);
+        };
+        PrefixSumComputerWithCache.prototype.getIndexOf = function (accumulatedValue) {
+            accumulatedValue = Math.floor(accumulatedValue); //@perf
+            if (this._cache !== null) {
+                var cacheIndex = accumulatedValue - this._cacheAccumulatedValueStart;
+                if (cacheIndex >= 0 && cacheIndex < this._cache.length) {
+                    // Cache hit!
+                    return this._cache[cacheIndex];
+                }
+            }
+            // Cache miss!
+            return this._actual.getIndexOf(accumulatedValue);
+        };
+        /**
+         * Gives a hint that a lot of requests are about to come in for these accumulated values.
+         */
+        PrefixSumComputerWithCache.prototype.warmUpCache = function (accumulatedValueStart, accumulatedValueEnd) {
+            var newCache = [];
+            for (var accumulatedValue = accumulatedValueStart; accumulatedValue <= accumulatedValueEnd; accumulatedValue++) {
+                newCache[accumulatedValue - accumulatedValueStart] = this.getIndexOf(accumulatedValue);
+            }
+            this._cache = newCache;
+            this._cacheAccumulatedValueStart = accumulatedValueStart;
+        };
+        return PrefixSumComputerWithCache;
+    }());
+    exports.PrefixSumComputerWithCache = PrefixSumComputerWithCache;
 });
 
-define(__m[50/*vs/editor/common/model/mirrorModel2*/], __M([1/*require*/,0/*exports*/,28/*vs/editor/common/viewModel/prefixSumComputer*/]), function (require, exports, prefixSumComputer_1) {
+define(__m[52/*vs/editor/common/model/mirrorModel2*/], __M([0/*require*/,1/*exports*/,28/*vs/editor/common/viewModel/prefixSumComputer*/]), function (require, exports, prefixSumComputer_1) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -10450,8 +11571,8 @@ define(__m[50/*vs/editor/common/model/mirrorModel2*/], __M([1/*require*/,0/*expo
     exports.MirrorModel2 = MirrorModel2;
 });
 
-define(__m[51/*vs/nls!vs/base/common/json*/], __M([10/*vs/nls*/,8/*vs/nls!vs/workbench/node/extensionHostProcess*/]), function(nls, data) { return nls.create("vs/base/common/json", data); });
-define(__m[54/*vs/base/common/json*/], __M([1/*require*/,0/*exports*/,51/*vs/nls!vs/base/common/json*/]), function (require, exports, nls_1) {
+define(__m[53/*vs/nls!vs/base/common/json*/], __M([13/*vs/nls*/,12/*vs/nls!vs/workbench/node/extensionHostProcess*/]), function(nls, data) { return nls.create("vs/base/common/json", data); });
+define(__m[56/*vs/base/common/json*/], __M([0/*require*/,1/*exports*/,53/*vs/nls!vs/base/common/json*/]), function (require, exports, nls_1) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -11313,6 +12434,7 @@ define(__m[54/*vs/base/common/json*/], __M([1/*require*/,0/*exports*/,51/*vs/nls
         }
         var onObjectBegin = toNoArgVisit(visitor.onObjectBegin), onObjectProperty = toOneArgVisit(visitor.onObjectProperty), onObjectEnd = toNoArgVisit(visitor.onObjectEnd), onArrayBegin = toNoArgVisit(visitor.onArrayBegin), onArrayEnd = toNoArgVisit(visitor.onArrayEnd), onLiteralValue = toOneArgVisit(visitor.onLiteralValue), onSeparator = toOneArgVisit(visitor.onSeparator), onError = toOneArgVisit(visitor.onError);
         var disallowComments = options && options.disallowComments;
+        var allowTrailingComma = options && options.allowTrailingComma;
         function scanNext() {
             while (true) {
                 var token = _scanner.scan();
@@ -11423,6 +12545,9 @@ define(__m[54/*vs/base/common/json*/], __M([1/*require*/,0/*exports*/,51/*vs/nls
                     }
                     onSeparator(',');
                     scanNext(); // consume comma
+                    if (_scanner.getToken() === SyntaxKind.CloseBraceToken && allowTrailingComma) {
+                        break;
+                    }
                 }
                 else if (needsComma) {
                     handleError(ParseErrorCode.CommaExpected, [], []);
@@ -11498,8 +12623,8 @@ define(__m[54/*vs/base/common/json*/], __M([1/*require*/,0/*exports*/,51/*vs/nls
     exports.visit = visit;
 });
 
-define(__m[55/*vs/nls!vs/base/common/severity*/], __M([10/*vs/nls*/,8/*vs/nls!vs/workbench/node/extensionHostProcess*/]), function(nls, data) { return nls.create("vs/base/common/severity", data); });
-define(__m[17/*vs/base/common/severity*/], __M([1/*require*/,0/*exports*/,55/*vs/nls!vs/base/common/severity*/,9/*vs/base/common/strings*/]), function (require, exports, nls, strings) {
+define(__m[57/*vs/nls!vs/base/common/severity*/], __M([13/*vs/nls*/,12/*vs/nls!vs/workbench/node/extensionHostProcess*/]), function(nls, data) { return nls.create("vs/base/common/severity", data); });
+define(__m[17/*vs/base/common/severity*/], __M([0/*require*/,1/*exports*/,57/*vs/nls!vs/base/common/severity*/,8/*vs/base/common/strings*/]), function (require, exports, nls, strings) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -11551,8 +12676,8 @@ define(__m[17/*vs/base/common/severity*/], __M([1/*require*/,0/*exports*/,55/*vs
     exports.default = Severity;
 });
 
-define(__m[57/*vs/nls!vs/editor/common/config/defaultConfig*/], __M([10/*vs/nls*/,8/*vs/nls!vs/workbench/node/extensionHostProcess*/]), function(nls, data) { return nls.create("vs/editor/common/config/defaultConfig", data); });
-define(__m[56/*vs/editor/common/config/defaultConfig*/], __M([1/*require*/,0/*exports*/,57/*vs/nls!vs/editor/common/config/defaultConfig*/,11/*vs/base/common/platform*/,29/*vs/editor/common/model/wordHelper*/]), function (require, exports, nls, platform, wordHelper_1) {
+define(__m[59/*vs/nls!vs/editor/common/config/defaultConfig*/], __M([13/*vs/nls*/,12/*vs/nls!vs/workbench/node/extensionHostProcess*/]), function(nls, data) { return nls.create("vs/editor/common/config/defaultConfig", data); });
+define(__m[60/*vs/editor/common/config/defaultConfig*/], __M([0/*require*/,1/*exports*/,59/*vs/nls!vs/editor/common/config/defaultConfig*/,10/*vs/base/common/platform*/,39/*vs/editor/common/model/wordHelper*/]), function (require, exports, nls, platform, wordHelper_1) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -11595,6 +12720,11 @@ define(__m[56/*vs/editor/common/config/defaultConfig*/], __M([1/*require*/,0/*ex
                     verticalHasArrows: false,
                     horizontalHasArrows: false
                 },
+                minimap: {
+                    enabled: false,
+                    renderCharacters: true,
+                    maxColumn: 120
+                },
                 fixedOverflowWidgets: false,
                 overviewRulerLanes: 2,
                 cursorBlinking: 'blink',
@@ -11606,8 +12736,8 @@ define(__m[56/*vs/editor/common/config/defaultConfig*/], __M([1/*require*/,0/*ex
                 hideCursorInOverviewRuler: false,
                 scrollBeyondLastLine: true,
                 automaticLayout: false,
-                wrappingColumn: 300,
-                wordWrap: false,
+                wordWrap: 'off',
+                wordWrapColumn: 80,
                 wrappingIndent: 'same',
                 wordWrapBreakBeforeCharacters: '([{‘“〈《「『【〔（［｛｢£¥＄￡￥+＋',
                 wordWrapBreakAfterCharacters: ' \t})]?|&,;¢°′″‰℃、。｡､￠，．：；？！％・･ゝゞヽヾーァィゥェォッャュョヮヵヶぁぃぅぇぉっゃゅょゎゕゖㇰㇱㇲㇳㇴㇵㇶㇷㇸㇹㇺㇻㇼㇽㇾㇿ々〻ｧｨｩｪｫｬｭｮｯｰ’”〉》」』】〕）］｝｣',
@@ -11628,7 +12758,6 @@ define(__m[56/*vs/editor/common/config/defaultConfig*/], __M([1/*require*/,0/*ex
                 acceptSuggestionOnCommitCharacter: true,
                 snippetSuggestions: 'bottom',
                 emptySelectionClipboard: true,
-                tabCompletion: false,
                 wordBasedSuggestions: true,
                 suggestFontSize: 0,
                 suggestLineHeight: 0,
@@ -11641,6 +12770,8 @@ define(__m[56/*vs/editor/common/config/defaultConfig*/], __M([1/*require*/,0/*ex
                 renderIndentGuides: false,
                 renderLineHighlight: 'line',
                 useTabStops: true,
+                matchBrackets: true,
+                dragAndDrop: false,
                 fontFamily: (platform.isMacintosh ? DEFAULT_MAC_FONT_FAMILY : (platform.isLinux ? DEFAULT_LINUX_FONT_FAMILY : DEFAULT_WINDOWS_FONT_FAMILY)),
                 fontWeight: 'normal',
                 fontSize: (platform.isMacintosh ? 12 : 14),
@@ -11652,13 +12783,13 @@ define(__m[56/*vs/editor/common/config/defaultConfig*/], __M([1/*require*/,0/*ex
     exports.DefaultConfig = new ConfigClass();
 });
 
-define(__m[59/*vs/nls!vs/platform/configuration/common/configurationRegistry*/], __M([10/*vs/nls*/,8/*vs/nls!vs/workbench/node/extensionHostProcess*/]), function(nls, data) { return nls.create("vs/platform/configuration/common/configurationRegistry", data); });
-define(__m[60/*vs/nls!vs/platform/extensions/common/abstractExtensionService*/], __M([10/*vs/nls*/,8/*vs/nls!vs/workbench/node/extensionHostProcess*/]), function(nls, data) { return nls.create("vs/platform/extensions/common/abstractExtensionService", data); });
-define(__m[61/*vs/nls!vs/platform/extensions/common/extensionsRegistry*/], __M([10/*vs/nls*/,8/*vs/nls!vs/workbench/node/extensionHostProcess*/]), function(nls, data) { return nls.create("vs/platform/extensions/common/extensionsRegistry", data); });
-define(__m[62/*vs/nls!vs/workbench/api/node/extHostDiagnostics*/], __M([10/*vs/nls*/,8/*vs/nls!vs/workbench/node/extensionHostProcess*/]), function(nls, data) { return nls.create("vs/workbench/api/node/extHostDiagnostics", data); });
-define(__m[63/*vs/nls!vs/workbench/api/node/extHostTreeExplorers*/], __M([10/*vs/nls*/,8/*vs/nls!vs/workbench/node/extensionHostProcess*/]), function(nls, data) { return nls.create("vs/workbench/api/node/extHostTreeExplorers", data); });
-define(__m[64/*vs/nls!vs/workbench/node/extensionHostMain*/], __M([10/*vs/nls*/,8/*vs/nls!vs/workbench/node/extensionHostProcess*/]), function(nls, data) { return nls.create("vs/workbench/node/extensionHostMain", data); });
-define(__m[65/*vs/platform/extensions/common/ipcRemoteCom*/], __M([1/*require*/,0/*exports*/,3/*vs/base/common/winjs.base*/,37/*vs/base/common/marshalling*/,5/*vs/base/common/errors*/]), function (require, exports, winjs, marshalling, errors) {
+define(__m[61/*vs/nls!vs/platform/configuration/common/configurationRegistry*/], __M([13/*vs/nls*/,12/*vs/nls!vs/workbench/node/extensionHostProcess*/]), function(nls, data) { return nls.create("vs/platform/configuration/common/configurationRegistry", data); });
+define(__m[62/*vs/nls!vs/platform/extensions/common/abstractExtensionService*/], __M([13/*vs/nls*/,12/*vs/nls!vs/workbench/node/extensionHostProcess*/]), function(nls, data) { return nls.create("vs/platform/extensions/common/abstractExtensionService", data); });
+define(__m[63/*vs/nls!vs/platform/extensions/common/extensionsRegistry*/], __M([13/*vs/nls*/,12/*vs/nls!vs/workbench/node/extensionHostProcess*/]), function(nls, data) { return nls.create("vs/platform/extensions/common/extensionsRegistry", data); });
+define(__m[64/*vs/nls!vs/workbench/api/node/extHostDiagnostics*/], __M([13/*vs/nls*/,12/*vs/nls!vs/workbench/node/extensionHostProcess*/]), function(nls, data) { return nls.create("vs/workbench/api/node/extHostDiagnostics", data); });
+define(__m[65/*vs/nls!vs/workbench/api/node/extHostTreeExplorers*/], __M([13/*vs/nls*/,12/*vs/nls!vs/workbench/node/extensionHostProcess*/]), function(nls, data) { return nls.create("vs/workbench/api/node/extHostTreeExplorers", data); });
+define(__m[66/*vs/nls!vs/workbench/node/extensionHostMain*/], __M([13/*vs/nls*/,12/*vs/nls!vs/workbench/node/extensionHostProcess*/]), function(nls, data) { return nls.create("vs/workbench/node/extensionHostMain", data); });
+define(__m[67/*vs/platform/extensions/common/ipcRemoteCom*/], __M([0/*require*/,1/*exports*/,3/*vs/base/common/winjs.base*/,32/*vs/base/common/marshalling*/,5/*vs/base/common/errors*/]), function (require, exports, winjs, marshalling, errors) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -11869,7 +13000,7 @@ define(__m[65/*vs/platform/extensions/common/ipcRemoteCom*/], __M([1/*require*/,
     exports.createProxyProtocol = createProxyProtocol;
 });
 
-define(__m[12/*vs/platform/instantiation/common/instantiation*/], __M([1/*require*/,0/*exports*/]), function (require, exports) {
+define(__m[11/*vs/platform/instantiation/common/instantiation*/], __M([0/*require*/,1/*exports*/]), function (require, exports) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -11933,7 +13064,7 @@ define(__m[12/*vs/platform/instantiation/common/instantiation*/], __M([1/*requir
 
 
 
-define(__m[67/*vs/platform/contextkey/common/contextkey*/], __M([1/*require*/,0/*exports*/,12/*vs/platform/instantiation/common/instantiation*/]), function (require, exports, instantiation_1) {
+define(__m[69/*vs/platform/contextkey/common/contextkey*/], __M([0/*require*/,1/*exports*/,11/*vs/platform/instantiation/common/instantiation*/]), function (require, exports, instantiation_1) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -12234,6 +13365,7 @@ define(__m[67/*vs/platform/contextkey/common/contextkey*/], __M([1/*require*/,0/
                 }
                 return true;
             }
+            return false;
         };
         ContextKeyAndExpr.prototype.evaluate = function (context) {
             for (var i = 0, len = this.expr.length; i < len; i++) {
@@ -12320,7 +13452,7 @@ define(__m[67/*vs/platform/contextkey/common/contextkey*/], __M([1/*require*/,0/
     exports.SET_CONTEXT_COMMAND_ID = 'setContext';
 });
 
-define(__m[23/*vs/editor/common/editorCommon*/], __M([1/*require*/,0/*exports*/,13/*vs/base/common/types*/,67/*vs/platform/contextkey/common/contextkey*/]), function (require, exports, types, contextkey_1) {
+define(__m[23/*vs/editor/common/editorCommon*/], __M([0/*require*/,1/*exports*/,16/*vs/base/common/types*/,69/*vs/platform/contextkey/common/contextkey*/]), function (require, exports, types, contextkey_1) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -12388,6 +13520,32 @@ define(__m[23/*vs/editor/common/editorCommon*/], __M([1/*require*/,0/*exports*/,
         return InternalEditorScrollbarOptions;
     }());
     exports.InternalEditorScrollbarOptions = InternalEditorScrollbarOptions;
+    var InternalEditorMinimapOptions = (function () {
+        /**
+         * @internal
+         */
+        function InternalEditorMinimapOptions(source) {
+            this.enabled = Boolean(source.enabled);
+            this.renderCharacters = Boolean(source.renderCharacters);
+            this.maxColumn = source.maxColumn | 0;
+        }
+        /**
+         * @internal
+         */
+        InternalEditorMinimapOptions.prototype.equals = function (other) {
+            return (this.enabled === other.enabled
+                && this.renderCharacters === other.renderCharacters
+                && this.maxColumn === other.maxColumn);
+        };
+        /**
+         * @internal
+         */
+        InternalEditorMinimapOptions.prototype.clone = function () {
+            return new InternalEditorMinimapOptions(this);
+        };
+        return InternalEditorMinimapOptions;
+    }());
+    exports.InternalEditorMinimapOptions = InternalEditorMinimapOptions;
     var EditorWrappingInfo = (function () {
         /**
          * @internal
@@ -12451,6 +13609,7 @@ define(__m[23/*vs/editor/common/editorCommon*/], __M([1/*require*/,0/*exports*/,
             this.renderIndentGuides = Boolean(source.renderIndentGuides);
             this.renderLineHighlight = source.renderLineHighlight;
             this.scrollbar = source.scrollbar.clone();
+            this.minimap = source.minimap.clone();
             this.fixedOverflowWidgets = Boolean(source.fixedOverflowWidgets);
         }
         InternalEditorViewOptions._toSortedIntegerArray = function (source) {
@@ -12509,6 +13668,7 @@ define(__m[23/*vs/editor/common/editorCommon*/], __M([1/*require*/,0/*exports*/,
                 && this.renderIndentGuides === other.renderIndentGuides
                 && this.renderLineHighlight === other.renderLineHighlight
                 && this.scrollbar.equals(other.scrollbar)
+                && this.minimap.equals(other.minimap)
                 && this.fixedOverflowWidgets === other.fixedOverflowWidgets);
         };
         /**
@@ -12542,6 +13702,7 @@ define(__m[23/*vs/editor/common/editorCommon*/], __M([1/*require*/,0/*exports*/,
                 renderIndentGuides: this.renderIndentGuides !== newOpts.renderIndentGuides,
                 renderLineHighlight: this.renderLineHighlight !== newOpts.renderLineHighlight,
                 scrollbar: (!this.scrollbar.equals(newOpts.scrollbar)),
+                minimap: (!this.minimap.equals(newOpts.minimap)),
                 fixedOverflowWidgets: this.fixedOverflowWidgets !== newOpts.fixedOverflowWidgets
             };
         };
@@ -12573,13 +13734,13 @@ define(__m[23/*vs/editor/common/editorCommon*/], __M([1/*require*/,0/*exports*/,
             this.acceptSuggestionOnCommitCharacter = Boolean(source.acceptSuggestionOnCommitCharacter);
             this.snippetSuggestions = source.snippetSuggestions;
             this.emptySelectionClipboard = source.emptySelectionClipboard;
-            this.tabCompletion = source.tabCompletion;
             this.wordBasedSuggestions = source.wordBasedSuggestions;
             this.suggestFontSize = source.suggestFontSize;
             this.suggestLineHeight = source.suggestLineHeight;
             this.selectionHighlight = Boolean(source.selectionHighlight);
             this.codeLens = Boolean(source.codeLens);
             this.folding = Boolean(source.folding);
+            this.matchBrackets = Boolean(source.matchBrackets);
         }
         /**
          * @internal
@@ -12599,13 +13760,13 @@ define(__m[23/*vs/editor/common/editorCommon*/], __M([1/*require*/,0/*exports*/,
                 && this.acceptSuggestionOnCommitCharacter === other.acceptSuggestionOnCommitCharacter
                 && this.snippetSuggestions === other.snippetSuggestions
                 && this.emptySelectionClipboard === other.emptySelectionClipboard
-                && this.tabCompletion === other.tabCompletion
                 && this.wordBasedSuggestions === other.wordBasedSuggestions
                 && this.suggestFontSize === other.suggestFontSize
                 && this.suggestLineHeight === other.suggestLineHeight
                 && this.selectionHighlight === other.selectionHighlight
                 && this.codeLens === other.codeLens
-                && this.folding === other.folding);
+                && this.folding === other.folding
+                && this.matchBrackets === other.matchBrackets);
         };
         /**
          * @internal
@@ -12630,6 +13791,7 @@ define(__m[23/*vs/editor/common/editorCommon*/], __M([1/*require*/,0/*exports*/,
             this.autoClosingBrackets = Boolean(source.autoClosingBrackets);
             this.useTabStops = Boolean(source.useTabStops);
             this.tabFocusMode = Boolean(source.tabFocusMode);
+            this.dragAndDrop = Boolean(source.dragAndDrop);
             this.layoutInfo = source.layoutInfo.clone();
             this.fontInfo = source.fontInfo.clone();
             this.viewInfo = source.viewInfo.clone();
@@ -12646,6 +13808,7 @@ define(__m[23/*vs/editor/common/editorCommon*/], __M([1/*require*/,0/*exports*/,
                 && this.autoClosingBrackets === other.autoClosingBrackets
                 && this.useTabStops === other.useTabStops
                 && this.tabFocusMode === other.tabFocusMode
+                && this.dragAndDrop === other.dragAndDrop
                 && this.layoutInfo.equals(other.layoutInfo)
                 && this.fontInfo.equals(other.fontInfo)
                 && this.viewInfo.equals(other.viewInfo)
@@ -12663,6 +13826,7 @@ define(__m[23/*vs/editor/common/editorCommon*/], __M([1/*require*/,0/*exports*/,
                 autoClosingBrackets: (this.autoClosingBrackets !== newOpts.autoClosingBrackets),
                 useTabStops: (this.useTabStops !== newOpts.useTabStops),
                 tabFocusMode: (this.tabFocusMode !== newOpts.tabFocusMode),
+                dragAndDrop: (this.dragAndDrop !== newOpts.dragAndDrop),
                 layoutInfo: (!this.layoutInfo.equals(newOpts.layoutInfo)),
                 fontInfo: (!this.fontInfo.equals(newOpts.fontInfo)),
                 viewInfo: this.viewInfo.createChangeEvent(newOpts.viewInfo),
@@ -12864,6 +14028,14 @@ define(__m[23/*vs/editor/common/editorCommon*/], __M([1/*require*/,0/*exports*/,
         return OverviewRulerPosition;
     }());
     exports.OverviewRulerPosition = OverviewRulerPosition;
+    var RenderMinimap;
+    (function (RenderMinimap) {
+        RenderMinimap[RenderMinimap["None"] = 0] = "None";
+        RenderMinimap[RenderMinimap["Small"] = 1] = "Small";
+        RenderMinimap[RenderMinimap["Large"] = 2] = "Large";
+        RenderMinimap[RenderMinimap["SmallBlocks"] = 3] = "SmallBlocks";
+        RenderMinimap[RenderMinimap["LargeBlocks"] = 4] = "LargeBlocks";
+    })(RenderMinimap = exports.RenderMinimap || (exports.RenderMinimap = {}));
     /**
      * The internal layout details of the editor.
      */
@@ -12886,6 +14058,9 @@ define(__m[23/*vs/editor/common/editorCommon*/], __M([1/*require*/,0/*exports*/,
             this.contentLeft = source.contentLeft | 0;
             this.contentWidth = source.contentWidth | 0;
             this.contentHeight = source.contentHeight | 0;
+            this.renderMinimap = source.renderMinimap | 0;
+            this.minimapWidth = source.minimapWidth | 0;
+            this.viewportColumn = source.viewportColumn | 0;
             this.verticalScrollbarWidth = source.verticalScrollbarWidth | 0;
             this.horizontalScrollbarHeight = source.horizontalScrollbarHeight | 0;
             this.overviewRuler = source.overviewRuler.clone();
@@ -12908,6 +14083,9 @@ define(__m[23/*vs/editor/common/editorCommon*/], __M([1/*require*/,0/*exports*/,
                 && this.contentLeft === other.contentLeft
                 && this.contentWidth === other.contentWidth
                 && this.contentHeight === other.contentHeight
+                && this.renderMinimap === other.renderMinimap
+                && this.minimapWidth === other.minimapWidth
+                && this.viewportColumn === other.viewportColumn
                 && this.verticalScrollbarWidth === other.verticalScrollbarWidth
                 && this.horizontalScrollbarHeight === other.horizontalScrollbarHeight
                 && this.overviewRuler.equals(other.overviewRuler));
@@ -12978,6 +14156,10 @@ define(__m[23/*vs/editor/common/editorCommon*/], __M([1/*require*/,0/*exports*/,
          * Mouse is on top of an overlay widget.
          */
         MouseTargetType[MouseTargetType["OVERLAY_WIDGET"] = 12] = "OVERLAY_WIDGET";
+        /**
+         * Mouse is outside of the editor.
+         */
+        MouseTargetType[MouseTargetType["OUTSIDE_EDITOR"] = 13] = "OUTSIDE_EDITOR";
     })(MouseTargetType = exports.MouseTargetType || (exports.MouseTargetType = {}));
     /**
      * @internal
@@ -13064,6 +14246,10 @@ define(__m[23/*vs/editor/common/editorCommon*/], __M([1/*require*/,0/*exports*/,
         /**
          * @internal
          */
+        ModeContextKeys.hasTypeDefinitionProvider = new contextkey_1.RawContextKey('editorHasTypeDefinitionProvider', undefined);
+        /**
+         * @internal
+         */
         ModeContextKeys.hasHoverProvider = new contextkey_1.RawContextKey('editorHasHoverProvider', undefined);
         /**
          * @internal
@@ -13098,23 +14284,6 @@ define(__m[23/*vs/editor/common/editorCommon*/], __M([1/*require*/,0/*exports*/,
          */
         ModeContextKeys.isInEmbeddedEditor = new contextkey_1.RawContextKey('isInEmbeddedEditor', undefined);
     })(ModeContextKeys = exports.ModeContextKeys || (exports.ModeContextKeys = {}));
-    // --- view
-    /**
-     * @internal
-     */
-    exports.ViewEventNames = {
-        ModelFlushedEvent: 'modelFlushedEvent',
-        LinesDeletedEvent: 'linesDeletedEvent',
-        LinesInsertedEvent: 'linesInsertedEvent',
-        LineChangedEvent: 'lineChangedEvent',
-        TokensChangedEvent: 'tokensChangedEvent',
-        DecorationsChangedEvent: 'decorationsChangedEvent',
-        CursorPositionChangedEvent: 'cursorPositionChangedEvent',
-        CursorSelectionChangedEvent: 'cursorSelectionChangedEvent',
-        RevealRangeEvent: 'revealRangeEvent',
-        LineMappingChangedEvent: 'lineMappingChangedEvent',
-        ScrollRequestEvent: 'scrollRequestEvent'
-    };
     /**
      * @internal
      */
@@ -13204,15 +14373,14 @@ define(__m[23/*vs/editor/common/editorCommon*/], __M([1/*require*/,0/*exports*/,
         CursorScrollRequest: 'scrollRequest',
         ViewFocusGained: 'focusGained',
         ViewFocusLost: 'focusLost',
-        ViewFocusChanged: 'focusChanged',
-        ViewScrollChanged: 'scrollChanged',
         ViewZonesChanged: 'zonesChanged',
-        ViewLayoutChanged: 'viewLayoutChanged',
         ContextMenu: 'contextMenu',
         MouseDown: 'mousedown',
         MouseUp: 'mouseup',
         MouseMove: 'mousemove',
         MouseLeave: 'mouseleave',
+        MouseDrag: 'mousedrag',
+        MouseDrop: 'mousedrop',
         KeyDown: 'keydown',
         KeyUp: 'keyup',
         WillType: 'willType',
@@ -13480,6 +14648,18 @@ define(__m[23/*vs/editor/common/editorCommon*/], __M([1/*require*/,0/*exports*/,
          * As a horizontal line (sitting under a character).
          */
         TextEditorCursorStyle[TextEditorCursorStyle["Underline"] = 3] = "Underline";
+        /**
+         * As a thin vertical line (sitting between two characters).
+         */
+        TextEditorCursorStyle[TextEditorCursorStyle["LineThin"] = 4] = "LineThin";
+        /**
+         * As an outlined block (sitting on top of a character).
+         */
+        TextEditorCursorStyle[TextEditorCursorStyle["BlockOutline"] = 5] = "BlockOutline";
+        /**
+         * As a thin horizontal line (sitting under a character).
+         */
+        TextEditorCursorStyle[TextEditorCursorStyle["UnderlineThin"] = 6] = "UnderlineThin";
     })(TextEditorCursorStyle = exports.TextEditorCursorStyle || (exports.TextEditorCursorStyle = {}));
     /**
      * The kind of animation in which the editor's cursor should be rendered.
@@ -13523,6 +14703,15 @@ define(__m[23/*vs/editor/common/editorCommon*/], __M([1/*require*/,0/*exports*/,
         }
         else if (cursorStyle === TextEditorCursorStyle.Underline) {
             return 'underline';
+        }
+        else if (cursorStyle === TextEditorCursorStyle.LineThin) {
+            return 'line-thin';
+        }
+        else if (cursorStyle === TextEditorCursorStyle.BlockOutline) {
+            return 'block-outline';
+        }
+        else if (cursorStyle === TextEditorCursorStyle.UnderlineThin) {
+            return 'underline-thin';
         }
         else {
             throw new Error('cursorStyleToString: Unknown cursorStyle');
@@ -13602,7 +14791,7 @@ define(__m[23/*vs/editor/common/editorCommon*/], __M([1/*require*/,0/*exports*/,
     exports.OverviewRulerZone = OverviewRulerZone;
 });
 
-define(__m[69/*vs/editor/common/model/textModelSearch*/], __M([1/*require*/,0/*exports*/,9/*vs/base/common/strings*/,24/*vs/editor/common/core/position*/,31/*vs/editor/common/core/range*/,23/*vs/editor/common/editorCommon*/]), function (require, exports, strings, position_1, range_1, editorCommon_1) {
+define(__m[71/*vs/editor/common/model/textModelSearch*/], __M([0/*require*/,1/*exports*/,8/*vs/base/common/strings*/,21/*vs/editor/common/core/position*/,35/*vs/editor/common/core/range*/,23/*vs/editor/common/editorCommon*/]), function (require, exports, strings, position_1, range_1, editorCommon_1) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -13928,7 +15117,7 @@ define(__m[69/*vs/editor/common/model/textModelSearch*/], __M([1/*require*/,0/*e
 
 
 
-define(__m[70/*vs/editor/common/model/textModel*/], __M([1/*require*/,0/*exports*/,35/*vs/base/common/eventEmitter*/,9/*vs/base/common/strings*/,24/*vs/editor/common/core/position*/,31/*vs/editor/common/core/range*/,23/*vs/editor/common/editorCommon*/,45/*vs/editor/common/model/modelLine*/,42/*vs/editor/common/model/indentationGuesser*/,56/*vs/editor/common/config/defaultConfig*/,28/*vs/editor/common/viewModel/prefixSumComputer*/,41/*vs/editor/common/model/indentRanges*/,69/*vs/editor/common/model/textModelSearch*/]), function (require, exports, eventEmitter_1, strings, position_1, range_1, editorCommon, modelLine_1, indentationGuesser_1, defaultConfig_1, prefixSumComputer_1, indentRanges_1, textModelSearch_1) {
+define(__m[72/*vs/editor/common/model/textModel*/], __M([0/*require*/,1/*exports*/,30/*vs/base/common/eventEmitter*/,8/*vs/base/common/strings*/,21/*vs/editor/common/core/position*/,35/*vs/editor/common/core/range*/,23/*vs/editor/common/editorCommon*/,47/*vs/editor/common/model/modelLine*/,43/*vs/editor/common/model/indentationGuesser*/,60/*vs/editor/common/config/defaultConfig*/,28/*vs/editor/common/viewModel/prefixSumComputer*/,42/*vs/editor/common/model/indentRanges*/,71/*vs/editor/common/model/textModelSearch*/]), function (require, exports, eventEmitter_1, strings, position_1, range_1, editorCommon, modelLine_1, indentationGuesser_1, defaultConfig_1, prefixSumComputer_1, indentRanges_1, textModelSearch_1) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -14512,7 +15701,7 @@ define(__m[70/*vs/editor/common/model/textModel*/], __M([1/*require*/,0/*exports
                 this.emit(editorCommon.EventType.ModelRawContentChanged, e);
             }
         };
-        TextModel.toRawText = function (rawText, opts) {
+        TextModel.toTextSource = function (rawText) {
             // Count the number of lines that end with \r\n
             var carriageReturnCnt = 0;
             var lastCarriageReturnIndex = -1;
@@ -14529,23 +15718,46 @@ define(__m[70/*vs/editor/common/model/textModel*/], __M([1/*require*/,0/*exports
                 BOM = strings.UTF8_BOM_CHARACTER;
                 lines[0] = lines[0].substr(1);
             }
-            var lineFeedCnt = lines.length - 1;
-            var EOL = '';
+            return {
+                BOM: BOM,
+                lines: lines,
+                length: rawText.length,
+                containsRTL: containsRTL,
+                isBasicASCII: isBasicASCII,
+                totalCRCount: carriageReturnCnt
+            };
+        };
+        /**
+         * if text source is empty or with precisely one line, returns null. No end of line is detected.
+         * if text source contains more lines ending with '\r\n', returns '\r\n'.
+         * Otherwise returns '\n'. More lines end with '\n'.
+         */
+        TextModel.getEndOfLine = function (textSource) {
+            var lineFeedCnt = textSource.lines.length - 1;
             if (lineFeedCnt === 0) {
+                // This is an empty file or a file with precisely one line
+                return null;
+            }
+            if (textSource.totalCRCount > lineFeedCnt / 2) {
+                // More than half of the file contains \r\n ending lines
+                return '\r\n';
+            }
+            // At least one line more ends in \n
+            return '\n';
+        };
+        TextModel.toRawText = function (rawText, opts) {
+            var textSource = TextModel.toTextSource(rawText);
+            return TextModel.toRawTextFromTextSource(textSource, opts);
+        };
+        TextModel.toRawTextFromTextSource = function (textSource, opts) {
+            var EOL = TextModel.getEndOfLine(textSource);
+            if (!EOL) {
                 // This is an empty file or a file with precisely one line
                 EOL = (opts.defaultEOL === editorCommon.DefaultEndOfLine.LF ? '\n' : '\r\n');
             }
-            else if (carriageReturnCnt > lineFeedCnt / 2) {
-                // More than half of the file contains \r\n ending lines
-                EOL = '\r\n';
-            }
-            else {
-                // At least one line more ends in \n
-                EOL = '\n';
-            }
             var resolvedOpts;
             if (opts.detectIndentation) {
-                var guessedIndentation = indentationGuesser_1.guessIndentation(lines, opts.tabSize, opts.insertSpaces);
+                var guessedIndentation = indentationGuesser_1.guessIndentation(textSource.lines, opts.tabSize, opts.insertSpaces);
                 resolvedOpts = new editorCommon.TextModelResolvedOptions({
                     tabSize: guessedIndentation.tabSize,
                     insertSpaces: guessedIndentation.insertSpaces,
@@ -14562,17 +15774,17 @@ define(__m[70/*vs/editor/common/model/textModel*/], __M([1/*require*/,0/*exports
                 });
             }
             return {
-                BOM: BOM,
+                BOM: textSource.BOM,
                 EOL: EOL,
-                lines: lines,
-                length: rawText.length,
-                containsRTL: containsRTL,
-                isBasicASCII: isBasicASCII,
+                lines: textSource.lines,
+                length: textSource.length,
+                containsRTL: textSource.containsRTL,
+                isBasicASCII: textSource.isBasicASCII,
                 options: resolvedOpts
             };
         };
         TextModel.prototype._constructLines = function (rawText) {
-            var tabSize = rawText.options.tabSize;
+            var tabSize = this._options.tabSize;
             var rawLines = rawText.lines;
             var modelLines = [];
             for (var i = 0, len = rawLines.length; i < len; i++) {
@@ -14634,12 +15846,41 @@ define(__m[70/*vs/editor/common/model/textModel*/], __M([1/*require*/,0/*exports
     var RawText = (function () {
         function RawText() {
         }
+        RawText.toRawText = function (textSourceOrString, opts) {
+            if (typeof textSourceOrString === 'string') {
+                return RawText.fromString(textSourceOrString, opts);
+            }
+            else {
+                return RawText.fromTextSource(textSourceOrString, opts);
+            }
+        };
+        RawText.toRawTextWithModelOptions = function (textSourceOrString, model) {
+            if (typeof textSourceOrString === 'string') {
+                return RawText.fromStringWithModelOptions(textSourceOrString, model);
+            }
+            else {
+                return RawText.fromTextSourceWithModelOptions(textSourceOrString, model);
+            }
+        };
         RawText.fromString = function (rawText, opts) {
             return TextModel.toRawText(rawText, opts);
+        };
+        RawText.fromTextSource = function (textSource, opts) {
+            return TextModel.toRawTextFromTextSource(textSource, opts);
         };
         RawText.fromStringWithModelOptions = function (rawText, model) {
             var opts = model.getOptions();
             return TextModel.toRawText(rawText, {
+                tabSize: opts.tabSize,
+                insertSpaces: opts.insertSpaces,
+                trimAutoWhitespace: opts.trimAutoWhitespace,
+                detectIndentation: false,
+                defaultEOL: opts.defaultEOL
+            });
+        };
+        RawText.fromTextSourceWithModelOptions = function (textSource, model) {
+            var opts = model.getOptions();
+            return TextModel.toRawTextFromTextSource(textSource, {
                 tabSize: opts.tabSize,
                 insertSpaces: opts.insertSpaces,
                 trimAutoWhitespace: opts.trimAutoWhitespace,
@@ -14652,7 +15893,7 @@ define(__m[70/*vs/editor/common/model/textModel*/], __M([1/*require*/,0/*exports
     exports.RawText = RawText;
 });
 
-define(__m[71/*vs/platform/editor/common/editor*/], __M([1/*require*/,0/*exports*/,12/*vs/platform/instantiation/common/instantiation*/]), function (require, exports, instantiation_1) {
+define(__m[73/*vs/platform/editor/common/editor*/], __M([0/*require*/,1/*exports*/,11/*vs/platform/instantiation/common/instantiation*/]), function (require, exports, instantiation_1) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -14679,7 +15920,7 @@ define(__m[71/*vs/platform/editor/common/editor*/], __M([1/*require*/,0/*exports
     })(Direction = exports.Direction || (exports.Direction = {}));
 });
 
-define(__m[72/*vs/platform/extensions/common/extensions*/], __M([1/*require*/,0/*exports*/,12/*vs/platform/instantiation/common/instantiation*/]), function (require, exports, instantiation_1) {
+define(__m[74/*vs/platform/extensions/common/extensions*/], __M([0/*require*/,1/*exports*/,11/*vs/platform/instantiation/common/instantiation*/]), function (require, exports, instantiation_1) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -14696,7 +15937,7 @@ define(__m[72/*vs/platform/extensions/common/extensions*/], __M([1/*require*/,0/
     exports.ExtensionPointContribution = ExtensionPointContribution;
 });
 
-define(__m[73/*vs/platform/extensions/common/abstractExtensionService*/], __M([1/*require*/,0/*exports*/,60/*vs/nls!vs/platform/extensions/common/abstractExtensionService*/,17/*vs/base/common/severity*/,3/*vs/base/common/winjs.base*/,72/*vs/platform/extensions/common/extensions*/]), function (require, exports, nls, severity_1, winjs_base_1, extensions_1) {
+define(__m[75/*vs/platform/extensions/common/abstractExtensionService*/], __M([0/*require*/,1/*exports*/,62/*vs/nls!vs/platform/extensions/common/abstractExtensionService*/,17/*vs/base/common/severity*/,3/*vs/base/common/winjs.base*/,74/*vs/platform/extensions/common/extensions*/]), function (require, exports, nls, severity_1, winjs_base_1, extensions_1) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -14936,7 +16177,7 @@ define(__m[73/*vs/platform/extensions/common/abstractExtensionService*/], __M([1
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-define(__m[74/*vs/platform/node/package*/], __M([1/*require*/,0/*exports*/,19/*path*/,7/*vs/base/common/uri*/]), function (require, exports, path, uri_1) {
+define(__m[76/*vs/platform/node/package*/], __M([0/*require*/,1/*exports*/,18/*path*/,7/*vs/base/common/uri*/]), function (require, exports, path, uri_1) {
     "use strict";
     var rootPath = path.dirname(uri_1.default.parse(require.toUrl('')).fsPath);
     var packageJsonPath = path.join(rootPath, 'package.json');
@@ -14948,7 +16189,7 @@ define(__m[74/*vs/platform/node/package*/], __M([1/*require*/,0/*exports*/,19/*p
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-define(__m[75/*vs/platform/node/product*/], __M([1/*require*/,0/*exports*/,19/*path*/,7/*vs/base/common/uri*/]), function (require, exports, path, uri_1) {
+define(__m[77/*vs/platform/node/product*/], __M([0/*require*/,1/*exports*/,18/*path*/,7/*vs/base/common/uri*/]), function (require, exports, path, uri_1) {
     "use strict";
     var rootPath = path.dirname(uri_1.default.parse(require.toUrl('')).fsPath);
     var productJsonPath = path.join(rootPath, 'product.json');
@@ -14962,7 +16203,7 @@ define(__m[75/*vs/platform/node/product*/], __M([1/*require*/,0/*exports*/,19/*p
     exports.default = product;
 });
 
-define(__m[22/*vs/platform/platform*/], __M([1/*require*/,0/*exports*/,13/*vs/base/common/types*/,66/*vs/base/common/assert*/]), function (require, exports, Types, Assert) {
+define(__m[24/*vs/platform/platform*/], __M([0/*require*/,1/*exports*/,16/*vs/base/common/types*/,68/*vs/base/common/assert*/]), function (require, exports, Types, Assert) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -15025,7 +16266,7 @@ define(__m[22/*vs/platform/platform*/], __M([1/*require*/,0/*exports*/,13/*vs/ba
     exports.BaseRegistry = BaseRegistry;
 });
 
-define(__m[34/*vs/platform/jsonschemas/common/jsonContributionRegistry*/], __M([1/*require*/,0/*exports*/,22/*vs/platform/platform*/,35/*vs/base/common/eventEmitter*/]), function (require, exports, platform, eventEmitter_1) {
+define(__m[36/*vs/platform/jsonschemas/common/jsonContributionRegistry*/], __M([0/*require*/,1/*exports*/,24/*vs/platform/platform*/,30/*vs/base/common/eventEmitter*/]), function (require, exports, platform, eventEmitter_1) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -15063,7 +16304,7 @@ define(__m[34/*vs/platform/jsonschemas/common/jsonContributionRegistry*/], __M([
     platform.Registry.add(exports.Extensions.JSONContribution, jsonContributionRegistry);
 });
 
-define(__m[78/*vs/platform/extensions/common/extensionsRegistry*/], __M([1/*require*/,0/*exports*/,61/*vs/nls!vs/platform/extensions/common/extensionsRegistry*/,5/*vs/base/common/errors*/,17/*vs/base/common/severity*/,34/*vs/platform/jsonschemas/common/jsonContributionRegistry*/,22/*vs/platform/platform*/]), function (require, exports, nls, errors_1, severity_1, jsonContributionRegistry_1, platform_1) {
+define(__m[80/*vs/platform/extensions/common/extensionsRegistry*/], __M([0/*require*/,1/*exports*/,63/*vs/nls!vs/platform/extensions/common/extensionsRegistry*/,5/*vs/base/common/errors*/,17/*vs/base/common/severity*/,36/*vs/platform/jsonschemas/common/jsonContributionRegistry*/,24/*vs/platform/platform*/]), function (require, exports, nls, errors_1, severity_1, jsonContributionRegistry_1, platform_1) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -15272,7 +16513,7 @@ define(__m[78/*vs/platform/extensions/common/extensionsRegistry*/], __M([1/*requ
     schemaRegistry.registerSchema(schemaId, schema);
 });
 
-define(__m[79/*vs/platform/configuration/common/configurationRegistry*/], __M([1/*require*/,0/*exports*/,59/*vs/nls!vs/platform/configuration/common/configurationRegistry*/,4/*vs/base/common/event*/,22/*vs/platform/platform*/,20/*vs/base/common/objects*/,13/*vs/base/common/types*/,78/*vs/platform/extensions/common/extensionsRegistry*/,34/*vs/platform/jsonschemas/common/jsonContributionRegistry*/]), function (require, exports, nls, event_1, platform_1, objects, types, extensionsRegistry_1, jsonContributionRegistry_1) {
+define(__m[81/*vs/platform/configuration/common/configurationRegistry*/], __M([0/*require*/,1/*exports*/,61/*vs/nls!vs/platform/configuration/common/configurationRegistry*/,4/*vs/base/common/event*/,24/*vs/platform/platform*/,19/*vs/base/common/objects*/,16/*vs/base/common/types*/,80/*vs/platform/extensions/common/extensionsRegistry*/,36/*vs/platform/jsonschemas/common/jsonContributionRegistry*/]), function (require, exports, nls, event_1, platform_1, objects, types, extensionsRegistry_1, jsonContributionRegistry_1) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -15282,17 +16523,19 @@ define(__m[79/*vs/platform/configuration/common/configurationRegistry*/], __M([1
         Configuration: 'base.contributions.configuration'
     };
     var schemaId = 'vscode://schemas/settings';
+    var editorConfigurationSchemaId = 'vscode://schemas/settings/editor';
     var contributionRegistry = platform_1.Registry.as(jsonContributionRegistry_1.Extensions.JSONContribution);
     var ConfigurationRegistry = (function () {
         function ConfigurationRegistry() {
             this.overrideIdentifiers = [];
             this.configurationContributors = [];
             this.configurationSchema = { properties: {}, patternProperties: {}, additionalProperties: false, errorMessage: 'Unknown configuration setting' };
+            this.editorConfigurationSchema = { properties: {}, patternProperties: {}, additionalProperties: false, errorMessage: 'Unknown editor configuration setting' };
             this._onDidRegisterConfiguration = new event_1.Emitter();
             this.configurationProperties = {};
             this.computeOverridePropertyPattern();
             contributionRegistry.registerSchema(schemaId, this.configurationSchema);
-            this.registerOverrideSettingsConfiguration();
+            contributionRegistry.registerSchema(editorConfigurationSchemaId, this.editorConfigurationSchema);
         }
         Object.defineProperty(ConfigurationRegistry.prototype, "onDidRegisterConfiguration", {
             get: function () {
@@ -15301,13 +16544,15 @@ define(__m[79/*vs/platform/configuration/common/configurationRegistry*/], __M([1
             enumerable: true,
             configurable: true
         });
-        ConfigurationRegistry.prototype.registerConfiguration = function (configuration) {
-            this.registerConfigurations([configuration]);
+        ConfigurationRegistry.prototype.registerConfiguration = function (configuration, validate) {
+            if (validate === void 0) { validate = true; }
+            this.registerConfigurations([configuration], validate);
         };
-        ConfigurationRegistry.prototype.registerConfigurations = function (configurations) {
+        ConfigurationRegistry.prototype.registerConfigurations = function (configurations, validate) {
             var _this = this;
+            if (validate === void 0) { validate = true; }
             configurations.forEach(function (configuration) {
-                _this.registerProperties(configuration); // fills in defaults
+                _this.validateAndRegisterProperties(configuration, validate); // fills in defaults
                 _this.configurationContributors.push(configuration);
                 _this.registerJSONConfiguration(configuration);
                 _this.updateSchemaForOverrideSettingsConfiguration(configuration);
@@ -15319,12 +16564,43 @@ define(__m[79/*vs/platform/configuration/common/configurationRegistry*/], __M([1
             this.updateOverridePropertyPatternKey();
             var _a;
         };
-        ConfigurationRegistry.prototype.registerProperties = function (configuration, overridable) {
+        ConfigurationRegistry.prototype.registerDefaultConfigurations = function (defaultConfigurations) {
+            var configurationNode = {
+                id: 'defaultOverrides',
+                title: nls.localize(0, null),
+                properties: {}
+            };
+            for (var _i = 0, defaultConfigurations_1 = defaultConfigurations; _i < defaultConfigurations_1.length; _i++) {
+                var defaultConfiguration = defaultConfigurations_1[_i];
+                for (var key in defaultConfiguration.defaults) {
+                    var defaultValue = defaultConfiguration.defaults[key];
+                    if (exports.OVERRIDE_PROPERTY_PATTERN.test(key) && typeof defaultValue === 'object') {
+                        configurationNode.properties[key] = {
+                            type: 'object',
+                            default: defaultValue,
+                            description: nls.localize(1, null, key),
+                            $ref: editorConfigurationSchemaId
+                        };
+                    }
+                }
+            }
+            if (Object.keys(configurationNode.properties).length) {
+                this.registerConfiguration(configurationNode, false);
+            }
+        };
+        ConfigurationRegistry.prototype.validateAndRegisterProperties = function (configuration, validate, overridable) {
+            if (validate === void 0) { validate = true; }
             if (overridable === void 0) { overridable = false; }
             overridable = configuration.overridable || overridable;
             var properties = configuration.properties;
             if (properties) {
                 for (var key in properties) {
+                    var message = void 0;
+                    if (validate && (message = validateProperty(key))) {
+                        console.warn(message);
+                        delete properties[key];
+                        continue;
+                    }
                     // fill in default values
                     var property = properties[key];
                     var defaultValue = property.default;
@@ -15343,9 +16619,12 @@ define(__m[79/*vs/platform/configuration/common/configurationRegistry*/], __M([1
             if (subNodes) {
                 for (var _i = 0, subNodes_1 = subNodes; _i < subNodes_1.length; _i++) {
                     var node = subNodes_1[_i];
-                    this.registerProperties(node, overridable);
+                    this.validateAndRegisterProperties(node, validate, overridable);
                 }
             }
+        };
+        ConfigurationRegistry.prototype.validateProperty = function (property) {
+            return !exports.OVERRIDE_PROPERTY_PATTERN.test(property) && this.getConfigurationProperties()[property] !== void 0;
         };
         ConfigurationRegistry.prototype.getConfigurations = function () {
             return this.configurationContributors;
@@ -15368,34 +16647,29 @@ define(__m[79/*vs/platform/configuration/common/configurationRegistry*/], __M([1
                 }
             }
             ;
-            if (configuration.id === SETTINGS_OVERRRIDE_NODE_ID) {
-                configurationSchema.patternProperties[this.overridePropertyPattern] = objects.clone(configuration.properties['[]']);
-            }
-            else {
-                register(configuration);
-            }
+            register(configuration);
             contributionRegistry.registerSchema(schemaId, configurationSchema);
         };
         ConfigurationRegistry.prototype.updateSchemaForOverrideSettingsConfiguration = function (configuration) {
             if (configuration.id !== SETTINGS_OVERRRIDE_NODE_ID) {
-                var patternProperties = this.configurationSchema.patternProperties[this.overridePropertyPattern];
-                if (patternProperties) {
-                    if (!patternProperties.properties) {
-                        patternProperties.properties = {};
-                    }
-                    this.update(configuration, patternProperties);
-                    contributionRegistry.registerSchema(schemaId, this.configurationSchema);
-                }
+                this.update(configuration, this.editorConfigurationSchema);
+                contributionRegistry.registerSchema(editorConfigurationSchemaId, this.editorConfigurationSchema);
             }
         };
         ConfigurationRegistry.prototype.updateOverridePropertyPatternKey = function () {
             var patternProperties = this.configurationSchema.patternProperties[this.overridePropertyPattern];
-            if (patternProperties) {
-                delete this.configurationSchema.patternProperties[this.overridePropertyPattern];
-                this.computeOverridePropertyPattern();
-                this.configurationSchema.patternProperties[this.overridePropertyPattern] = patternProperties;
-                contributionRegistry.registerSchema(schemaId, this.configurationSchema);
+            if (!patternProperties) {
+                patternProperties = {
+                    type: 'object',
+                    description: nls.localize(2, null),
+                    errorMessage: 'Unknown Identifier. Use language identifiers',
+                    $ref: editorConfigurationSchemaId
+                };
             }
+            delete this.configurationSchema.patternProperties[this.overridePropertyPattern];
+            this.computeOverridePropertyPattern();
+            this.configurationSchema.patternProperties[this.overridePropertyPattern] = patternProperties;
+            contributionRegistry.registerSchema(schemaId, this.configurationSchema);
         };
         ConfigurationRegistry.prototype.update = function (configuration, overridePropertiesSchema) {
             var _this = this;
@@ -15414,22 +16688,6 @@ define(__m[79/*vs/platform/configuration/common/configurationRegistry*/], __M([1
         };
         ConfigurationRegistry.prototype.computeOverridePropertyPattern = function () {
             this.overridePropertyPattern = this.overrideIdentifiers.length ? OVERRIDE_PATTERN_WITH_SUBSTITUTION.replace('${0}', this.overrideIdentifiers.join('|')) : OVERRIDE_PROPERTY;
-        };
-        ConfigurationRegistry.prototype.registerOverrideSettingsConfiguration = function () {
-            var properties = {
-                '[]': {
-                    type: 'object',
-                    description: nls.localize(0, null),
-                    additionalProperties: false,
-                    errorMessage: 'Unknown Identifier. Use language identifiers'
-                }
-            };
-            this.registerConfiguration({
-                id: SETTINGS_OVERRRIDE_NODE_ID,
-                type: 'object',
-                title: nls.localize(1, null),
-                properties: properties
-            });
         };
         return ConfigurationRegistry;
     }());
@@ -15458,16 +16716,16 @@ define(__m[79/*vs/platform/configuration/common/configurationRegistry*/], __M([1
     var configurationRegistry = new ConfigurationRegistry();
     platform_1.Registry.add(exports.Extensions.Configuration, configurationRegistry);
     var configurationExtPoint = extensionsRegistry_1.ExtensionsRegistry.registerExtensionPoint('configuration', [], {
-        description: nls.localize(2, null),
+        description: nls.localize(3, null),
         type: 'object',
         defaultSnippets: [{ body: { title: '', properties: {} } }],
         properties: {
             title: {
-                description: nls.localize(3, null),
+                description: nls.localize(4, null),
                 type: 'string'
             },
             properties: {
-                description: nls.localize(4, null),
+                description: nls.localize(5, null),
                 type: 'object',
                 additionalProperties: {
                     anyOf: [
@@ -15482,32 +16740,83 @@ define(__m[79/*vs/platform/configuration/common/configurationRegistry*/], __M([1
                         }
                     ]
                 }
-            },
+            }
         }
     });
+    function validateProperty(property) {
+        if (exports.OVERRIDE_PROPERTY_PATTERN.test(property)) {
+            return nls.localize(6, null, property);
+        }
+        if (configurationRegistry.getConfigurationProperties()[property] !== void 0) {
+            return nls.localize(7, null, property);
+        }
+        return null;
+    }
+    function validateProperties(configuration, collector) {
+        var properties = configuration.properties;
+        if (properties) {
+            if (typeof properties !== 'object') {
+                collector.error(nls.localize(8, null));
+                configuration.properties = {};
+            }
+            for (var key in properties) {
+                var message = validateProperty(key);
+                if (message) {
+                    collector.warn(message);
+                    delete properties[key];
+                }
+            }
+        }
+        var subNodes = configuration.allOf;
+        if (subNodes) {
+            for (var _i = 0, subNodes_2 = subNodes; _i < subNodes_2.length; _i++) {
+                var node = subNodes_2[_i];
+                validateProperties(node, collector);
+            }
+        }
+    }
     configurationExtPoint.setHandler(function (extensions) {
         var configurations = [];
         for (var i = 0; i < extensions.length; i++) {
-            var configuration = extensions[i].value;
+            var configuration = objects.clone(extensions[i].value);
             var collector = extensions[i].collector;
             if (configuration.type && configuration.type !== 'object') {
-                collector.warn(nls.localize(5, null));
+                collector.warn(nls.localize(9, null));
             }
             else {
                 configuration.type = 'object';
             }
             if (configuration.title && (typeof configuration.title !== 'string')) {
-                collector.error(nls.localize(6, null));
+                collector.error(nls.localize(10, null));
             }
-            if (configuration.properties && (typeof configuration.properties !== 'object')) {
-                collector.error(nls.localize(7, null));
-                return;
-            }
-            var clonedConfiguration = objects.clone(configuration);
-            clonedConfiguration.id = extensions[i].description.id;
-            configurations.push(clonedConfiguration);
+            validateProperties(configuration, collector);
+            configuration.id = extensions[i].description.id;
+            configurations.push(configuration);
         }
-        configurationRegistry.registerConfigurations(configurations);
+        configurationRegistry.registerConfigurations(configurations, false);
+    });
+    var defaultConfigurationExtPoint = extensionsRegistry_1.ExtensionsRegistry.registerExtensionPoint('configurationDefaults', [], {
+        description: nls.localize(11, null),
+        type: 'object',
+        defaultSnippets: [{ body: {} }],
+        patternProperties: {
+            '\\[.*\\]$': {
+                type: 'object',
+                default: {},
+                $ref: editorConfigurationSchemaId,
+            }
+        }
+    });
+    defaultConfigurationExtPoint.setHandler(function (extensions) {
+        var defaultConfigurations = extensions.map(function (extension) {
+            var id = extension.description.id;
+            var name = extension.description.name;
+            var defaults = objects.clone(extension.value);
+            return {
+                id: id, name: name, defaults: defaults
+            };
+        });
+        configurationRegistry.registerDefaultConfigurations(defaultConfigurations);
     });
 });
 
@@ -15516,7 +16825,7 @@ define(__m[79/*vs/platform/configuration/common/configurationRegistry*/], __M([1
 
 
 
-define(__m[80/*vs/platform/configuration/common/model*/], __M([1/*require*/,0/*exports*/,22/*vs/platform/platform*/,13/*vs/base/common/types*/,54/*vs/base/common/json*/,20/*vs/base/common/objects*/,18/*vs/base/common/arrays*/,79/*vs/platform/configuration/common/configurationRegistry*/]), function (require, exports, platform_1, types, json, objects, arrays, configurationRegistry_1) {
+define(__m[82/*vs/platform/configuration/common/model*/], __M([0/*require*/,1/*exports*/,24/*vs/platform/platform*/,16/*vs/base/common/types*/,56/*vs/base/common/json*/,19/*vs/base/common/objects*/,20/*vs/base/common/arrays*/,81/*vs/platform/configuration/common/configurationRegistry*/]), function (require, exports, platform_1, types, json, objects, arrays, configurationRegistry_1) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -15590,11 +16899,12 @@ define(__m[80/*vs/platform/configuration/common/model*/], __M([1/*require*/,0/*e
     exports.merge = merge;
     var ConfigModel = (function () {
         function ConfigModel(content, name) {
+            if (content === void 0) { content = ''; }
             if (name === void 0) { name = ''; }
             this.name = name;
+            this._contents = {};
             this._overrides = [];
-            this._raw = {};
-            this._unfilteredRaw = {};
+            this._keys = [];
             this._parseErrors = [];
             if (content) {
                 this.update(content);
@@ -15602,7 +16912,7 @@ define(__m[80/*vs/platform/configuration/common/model*/], __M([1/*require*/,0/*e
         }
         Object.defineProperty(ConfigModel.prototype, "contents", {
             get: function () {
-                return this._contents || {};
+                return this._contents;
             },
             enumerable: true,
             configurable: true
@@ -15616,21 +16926,7 @@ define(__m[80/*vs/platform/configuration/common/model*/], __M([1/*require*/,0/*e
         });
         Object.defineProperty(ConfigModel.prototype, "keys", {
             get: function () {
-                return Object.keys(this._raw);
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(ConfigModel.prototype, "raw", {
-            get: function () {
-                return this._raw;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(ConfigModel.prototype, "unfilteredRaw", {
-            get: function () {
-                return this._unfilteredRaw;
+                return this._keys;
             },
             enumerable: true,
             configurable: true
@@ -15651,8 +16947,7 @@ define(__m[80/*vs/platform/configuration/common/model*/], __M([1/*require*/,0/*e
         };
         ConfigModel.prototype.doMerge = function (source, target, overwrite) {
             if (overwrite === void 0) { overwrite = true; }
-            source._contents = objects.clone(this.contents);
-            merge(source.contents, target.contents, overwrite);
+            merge(source.contents, objects.clone(target.contents), overwrite);
             var overrides = objects.clone(source.overrides);
             var _loop_1 = function (override) {
                 var sourceOverride = overrides.filter(function (o) { return arrays.equals(o.identifiers, override.identifiers); })[0];
@@ -15669,7 +16964,7 @@ define(__m[80/*vs/platform/configuration/common/model*/], __M([1/*require*/,0/*e
             }
             source._overrides = overrides;
         };
-        ConfigModel.prototype.config = function (section) {
+        ConfigModel.prototype.getContentsFor = function (section) {
             return objects.clone(this.contents[section]);
         };
         ConfigModel.prototype.configWithOverrides = function (identifier) {
@@ -15688,6 +16983,7 @@ define(__m[80/*vs/platform/configuration/common/model*/], __M([1/*require*/,0/*e
         };
         ConfigModel.prototype.update = function (content) {
             var _this = this;
+            var parsed = {};
             var overrides = [];
             var currentProperty = null;
             var currentParent = [];
@@ -15743,17 +17039,14 @@ define(__m[80/*vs/platform/configuration/common/model*/], __M([1/*require*/,0/*e
             if (content) {
                 try {
                     json.visit(content, visitor);
-                    this._raw = currentParent[0] || {};
+                    parsed = currentParent[0] || {};
                 }
                 catch (e) {
                     console.error("Error while parsing settings file " + this.name + ": " + e);
-                    this._raw = {};
                     this._parseErrors = [e];
                 }
             }
-            this._unfilteredRaw = this._raw;
-            this._raw = this.filterRaw(this._unfilteredRaw);
-            this._contents = toValuesTree(this._raw, function (message) { return console.error("Conflict in settings file " + _this.name + ": " + message); });
+            this.processRaw(parsed);
             var configurationProperties = platform_1.Registry.as(configurationRegistry_1.Extensions.Configuration).getConfigurationProperties();
             this._overrides = overrides.map(function (override) {
                 // Filter unknown and non-overridable properties
@@ -15769,20 +17062,10 @@ define(__m[80/*vs/platform/configuration/common/model*/], __M([1/*require*/,0/*e
                 };
             });
         };
-        /*
-         * If filterRaw is not a no-op, the returned object needs to be a copy.
-         * The input may not be modified in place. The default implementation
-         * is a no op.
-         */
-        ConfigModel.prototype.filterRaw = function (raw) {
-            return raw;
-        };
-        ConfigModel.prototype.refilter = function () {
+        ConfigModel.prototype.processRaw = function (raw) {
             var _this = this;
-            if (this._unfilteredRaw) {
-                this._raw = this.filterRaw(this._unfilteredRaw);
-                this._contents = toValuesTree(this._raw, function (message) { return console.error("Conflict in settings file " + _this.name + ": " + message); });
-            }
+            this._contents = toValuesTree(raw, function (message) { return console.error("Conflict in settings file " + _this.name + ": " + message); });
+            this._keys = Object.keys(raw);
         };
         return ConfigModel;
     }());
@@ -15802,8 +17085,17 @@ define(__m[80/*vs/platform/configuration/common/model*/], __M([1/*require*/,0/*e
             configurable: true
         });
         DefaultConfigModel.prototype.update = function () {
+            var _this = this;
             this._contents = getDefaultValues(); // defaults coming from contributions to registries
             this._keys = getConfigurationKeys();
+            this._overrides = Object.keys(this._contents)
+                .filter(function (key) { return configurationRegistry_1.OVERRIDE_PROPERTY_PATTERN.test(key); })
+                .map(function (key) {
+                return {
+                    identifiers: [overrideIdentifierFromKey(key).trim()],
+                    contents: toValuesTree(_this._contents[key], function (message) { return console.error("Conflict in default settings file: " + message); })
+                };
+            });
         };
         return DefaultConfigModel;
     }(ConfigModel));
@@ -15822,7 +17114,7 @@ define(__m[80/*vs/platform/configuration/common/model*/], __M([1/*require*/,0/*e
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-define(__m[81/*vs/platform/statusbar/common/statusbar*/], __M([1/*require*/,0/*exports*/,12/*vs/platform/instantiation/common/instantiation*/]), function (require, exports, instantiation_1) {
+define(__m[83/*vs/platform/statusbar/common/statusbar*/], __M([0/*require*/,1/*exports*/,11/*vs/platform/instantiation/common/instantiation*/]), function (require, exports, instantiation_1) {
     'use strict';
     exports.IStatusbarService = instantiation_1.createDecorator('statusbarService');
     var StatusbarAlignment;
@@ -15832,7 +17124,7 @@ define(__m[81/*vs/platform/statusbar/common/statusbar*/], __M([1/*require*/,0/*e
     })(StatusbarAlignment = exports.StatusbarAlignment || (exports.StatusbarAlignment = {}));
 });
 
-define(__m[82/*vs/platform/workspace/common/workspace*/], __M([1/*require*/,0/*exports*/,7/*vs/base/common/uri*/,12/*vs/platform/instantiation/common/instantiation*/,15/*vs/base/common/paths*/]), function (require, exports, uri_1, instantiation_1, paths) {
+define(__m[84/*vs/platform/workspace/common/workspace*/], __M([0/*require*/,1/*exports*/,7/*vs/base/common/uri*/,11/*vs/platform/instantiation/common/instantiation*/,14/*vs/base/common/paths*/]), function (require, exports, uri_1, instantiation_1, paths) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -15855,9 +17147,9 @@ define(__m[82/*vs/platform/workspace/common/workspace*/], __M([1/*require*/,0/*e
             }
             return false;
         };
-        WorkspaceContextService.prototype.toWorkspaceRelativePath = function (resource) {
+        WorkspaceContextService.prototype.toWorkspaceRelativePath = function (resource, toOSPath) {
             if (this.isInsideWorkspace(resource)) {
-                return paths.normalize(paths.relative(this.workspace.resource.fsPath, resource.fsPath));
+                return paths.normalize(paths.relative(this.workspace.resource.fsPath, resource.fsPath), toOSPath);
             }
             return null;
         };
@@ -15872,7 +17164,33 @@ define(__m[82/*vs/platform/workspace/common/workspace*/], __M([1/*require*/,0/*e
     exports.WorkspaceContextService = WorkspaceContextService;
 });
 
-define(__m[83/*vs/workbench/api/node/extHostProgress*/], __M([1/*require*/,0/*exports*/]), function (require, exports) {
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+define(__m[85/*vs/workbench/api/node/extHostFunctions*/], __M([0/*require*/,1/*exports*/,9/*vs/base/common/async*/,41/*vs/editor/common/diff/diffComputer*/]), function (require, exports, async_1, diffComputer_1) {
+    'use strict';
+    function getTextDocumentLines(document) {
+        var result = [];
+        for (var i = 0; i < document.lineCount; i++) {
+            result.push(document.lineAt(i).text);
+        }
+        return result;
+    }
+    function computeDiff(oneDocument, otherDocument) {
+        var oneLines = getTextDocumentLines(oneDocument);
+        var otherLines = getTextDocumentLines(otherDocument);
+        var computer = new diffComputer_1.DiffComputer(oneLines, otherLines, {
+            shouldPostProcessCharChanges: false,
+            shouldIgnoreTrimWhitespace: false,
+            shouldConsiderTrimWhitespaceInEmptyCase: false
+        });
+        return async_1.toThenable(computer.computeDiff());
+    }
+    exports.computeDiff = computeDiff;
+});
+
+define(__m[86/*vs/workbench/api/node/extHostProgress*/], __M([0/*require*/,1/*exports*/]), function (require, exports) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -15926,7 +17244,7 @@ define(__m[83/*vs/workbench/api/node/extHostProgress*/], __M([1/*require*/,0/*ex
 
 
 
-define(__m[6/*vs/workbench/api/node/extHostTypes*/], __M([1/*require*/,0/*exports*/,7/*vs/base/common/uri*/,5/*vs/base/common/errors*/]), function (require, exports, uri_1, errors_1) {
+define(__m[6/*vs/workbench/api/node/extHostTypes*/], __M([0/*require*/,1/*exports*/,7/*vs/base/common/uri*/,5/*vs/base/common/errors*/]), function (require, exports, uri_1, errors_1) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -16198,7 +17516,7 @@ define(__m[6/*vs/workbench/api/node/extHostTypes*/], __M([1/*require*/,0/*export
                 // this happens when there is no overlap:
                 // |-----|
                 //          |----|
-                return;
+                return undefined;
             }
             return new Range(start, end);
         };
@@ -16793,6 +18111,7 @@ define(__m[6/*vs/workbench/api/node/extHostTypes*/], __M([1/*require*/,0/*export
                 case 'mouse': return TextEditorSelectionChangeKind.Mouse;
                 case 'api': return TextEditorSelectionChangeKind.Command;
             }
+            return undefined;
         }
         TextEditorSelectionChangeKind.fromValue = fromValue;
     })(TextEditorSelectionChangeKind = exports.TextEditorSelectionChangeKind || (exports.TextEditorSelectionChangeKind = {}));
@@ -16812,7 +18131,7 @@ define(__m[6/*vs/workbench/api/node/extHostTypes*/], __M([1/*require*/,0/*export
     exports.DocumentLink = DocumentLink;
 });
 
-define(__m[85/*vs/workbench/services/configuration/common/configurationEditing*/], __M([1/*require*/,0/*exports*/,12/*vs/platform/instantiation/common/instantiation*/]), function (require, exports, instantiation_1) {
+define(__m[88/*vs/workbench/services/configuration/common/configurationEditing*/], __M([0/*require*/,1/*exports*/,11/*vs/platform/instantiation/common/instantiation*/]), function (require, exports, instantiation_1) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -16855,7 +18174,7 @@ define(__m[85/*vs/workbench/services/configuration/common/configurationEditing*/
     })(ConfigurationTarget = exports.ConfigurationTarget || (exports.ConfigurationTarget = {}));
 });
 
-define(__m[86/*vs/workbench/services/textfile/common/textfiles*/], __M([1/*require*/,0/*exports*/,12/*vs/platform/instantiation/common/instantiation*/]), function (require, exports, instantiation_1) {
+define(__m[89/*vs/workbench/services/textfile/common/textfiles*/], __M([0/*require*/,1/*exports*/,11/*vs/platform/instantiation/common/instantiation*/]), function (require, exports, instantiation_1) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -16923,7 +18242,7 @@ define(__m[86/*vs/workbench/services/textfile/common/textfiles*/], __M([1/*requi
     exports.ITextFileService = instantiation_1.createDecorator(exports.TEXT_FILE_SERVICE_ID);
 });
 
-define(__m[14/*vs/workbench/api/node/extHostTypeConverters*/], __M([1/*require*/,0/*exports*/,17/*vs/base/common/severity*/,6/*vs/workbench/api/node/extHostTypes*/,71/*vs/platform/editor/common/editor*/,7/*vs/base/common/uri*/,86/*vs/workbench/services/textfile/common/textfiles*/]), function (require, exports, severity_1, types, editor_1, uri_1, textfiles_1) {
+define(__m[15/*vs/workbench/api/node/extHostTypeConverters*/], __M([0/*require*/,1/*exports*/,17/*vs/base/common/severity*/,6/*vs/workbench/api/node/extHostTypes*/,73/*vs/platform/editor/common/editor*/,7/*vs/base/common/uri*/,89/*vs/workbench/services/textfile/common/textfiles*/]), function (require, exports, severity_1, types, editor_1, uri_1, textfiles_1) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -17012,7 +18331,7 @@ define(__m[14/*vs/workbench/api/node/extHostTypeConverters*/], __M([1/*require*/
     exports.fromViewColumn = fromViewColumn;
     function toViewColumn(position) {
         if (typeof position !== 'number') {
-            return;
+            return undefined;
         }
         if (position === editor_1.Position.ONE) {
             return types.ViewColumn.One;
@@ -17023,6 +18342,7 @@ define(__m[14/*vs/workbench/api/node/extHostTypeConverters*/], __M([1/*require*/
         else if (position === editor_1.Position.THREE) {
             return types.ViewColumn.Three;
         }
+        return undefined;
     }
     exports.toViewColumn = toViewColumn;
     function isDecorationOptions(something) {
@@ -17231,7 +18551,7 @@ define(__m[14/*vs/workbench/api/node/extHostTypeConverters*/], __M([1/*require*/
     })(TextDocumentSaveReason = exports.TextDocumentSaveReason || (exports.TextDocumentSaveReason = {}));
 });
 
-define(__m[88/*vs/workbench/api/node/extHostApiCommands*/], __M([1/*require*/,0/*exports*/,7/*vs/base/common/uri*/,3/*vs/base/common/winjs.base*/,14/*vs/workbench/api/node/extHostTypeConverters*/,6/*vs/workbench/api/node/extHostTypes*/]), function (require, exports, uri_1, winjs_base_1, typeConverters, types) {
+define(__m[91/*vs/workbench/api/node/extHostApiCommands*/], __M([0/*require*/,1/*exports*/,7/*vs/base/common/uri*/,3/*vs/base/common/winjs.base*/,15/*vs/workbench/api/node/extHostTypeConverters*/,6/*vs/workbench/api/node/extHostTypes*/]), function (require, exports, uri_1, winjs_base_1, typeConverters, types) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -17457,6 +18777,7 @@ define(__m[88/*vs/workbench/api/node/extHostApiCommands*/], __M([1/*require*/,0/
                 if (Array.isArray(value)) {
                     return value.map(typeConverters.location.to);
                 }
+                return undefined;
             });
         };
         ExtHostApiCommands.prototype._executeImplementationProvider = function (resource, position) {
@@ -17468,6 +18789,7 @@ define(__m[88/*vs/workbench/api/node/extHostApiCommands*/], __M([1/*require*/,0/
                 if (Array.isArray(value)) {
                     return value.map(typeConverters.location.to);
                 }
+                return undefined;
             });
         };
         ExtHostApiCommands.prototype._executeHoverProvider = function (resource, position) {
@@ -17479,6 +18801,7 @@ define(__m[88/*vs/workbench/api/node/extHostApiCommands*/], __M([1/*require*/,0/
                 if (Array.isArray(value)) {
                     return value.map(typeConverters.toHover);
                 }
+                return undefined;
             });
         };
         ExtHostApiCommands.prototype._executeDocumentHighlights = function (resource, position) {
@@ -17490,6 +18813,7 @@ define(__m[88/*vs/workbench/api/node/extHostApiCommands*/], __M([1/*require*/,0/
                 if (Array.isArray(value)) {
                     return value.map(typeConverters.toDocumentHighlight);
                 }
+                return undefined;
             });
         };
         ExtHostApiCommands.prototype._executeReferenceProvider = function (resource, position) {
@@ -17501,6 +18825,7 @@ define(__m[88/*vs/workbench/api/node/extHostApiCommands*/], __M([1/*require*/,0/
                 if (Array.isArray(value)) {
                     return value.map(typeConverters.location.to);
                 }
+                return undefined;
             });
         };
         ExtHostApiCommands.prototype._executeDocumentRenameProvider = function (resource, position, newName) {
@@ -17511,7 +18836,7 @@ define(__m[88/*vs/workbench/api/node/extHostApiCommands*/], __M([1/*require*/,0/
             };
             return this._commands.executeCommand('_executeDocumentRenameProvider', args).then(function (value) {
                 if (!value) {
-                    return;
+                    return undefined;
                 }
                 if (value.rejectReason) {
                     return winjs_base_1.TPromise.wrapError(value.rejectReason);
@@ -17534,6 +18859,7 @@ define(__m[88/*vs/workbench/api/node/extHostApiCommands*/], __M([1/*require*/,0/
                 if (value) {
                     return typeConverters.SignatureHelp.to(value);
                 }
+                return undefined;
             });
         };
         ExtHostApiCommands.prototype._executeCompletionItemProvider = function (resource, position, triggerCharacter) {
@@ -17547,6 +18873,7 @@ define(__m[88/*vs/workbench/api/node/extHostApiCommands*/], __M([1/*require*/,0/
                     var items = result.suggestions.map(function (suggestion) { return typeConverters.Suggest.to(position, suggestion); });
                     return new types.CompletionList(items, result.incomplete);
                 }
+                return undefined;
             });
         };
         ExtHostApiCommands.prototype._executeDocumentSymbolProvider = function (resource) {
@@ -17557,6 +18884,7 @@ define(__m[88/*vs/workbench/api/node/extHostApiCommands*/], __M([1/*require*/,0/
                 if (value && Array.isArray(value.entries)) {
                     return value.entries.map(typeConverters.SymbolInformation.fromOutlineEntry);
                 }
+                return undefined;
             });
         };
         ExtHostApiCommands.prototype._executeCodeActionProvider = function (resource, range) {
@@ -17567,7 +18895,7 @@ define(__m[88/*vs/workbench/api/node/extHostApiCommands*/], __M([1/*require*/,0/
             };
             return this._commands.executeCommand('_executeCodeActionProvider', args).then(function (value) {
                 if (!Array.isArray(value)) {
-                    return;
+                    return undefined;
                 }
                 return value.map(function (quickFix) { return _this._commands.converter.fromInternal(quickFix.command); });
             });
@@ -17581,6 +18909,7 @@ define(__m[88/*vs/workbench/api/node/extHostApiCommands*/], __M([1/*require*/,0/
                         return new types.CodeLens(typeConverters.toRange(item.symbol.range), _this._commands.converter.fromInternal(item.symbol.command));
                     });
                 }
+                return undefined;
             });
         };
         ExtHostApiCommands.prototype._executeFormatDocumentProvider = function (resource, options) {
@@ -17592,6 +18921,7 @@ define(__m[88/*vs/workbench/api/node/extHostApiCommands*/], __M([1/*require*/,0/
                 if (Array.isArray(value)) {
                     return value.map(function (edit) { return new types.TextEdit(typeConverters.toRange(edit.range), edit.text); });
                 }
+                return undefined;
             });
         };
         ExtHostApiCommands.prototype._executeFormatRangeProvider = function (resource, range, options) {
@@ -17604,6 +18934,7 @@ define(__m[88/*vs/workbench/api/node/extHostApiCommands*/], __M([1/*require*/,0/
                 if (Array.isArray(value)) {
                     return value.map(function (edit) { return new types.TextEdit(typeConverters.toRange(edit.range), edit.text); });
                 }
+                return undefined;
             });
         };
         ExtHostApiCommands.prototype._executeFormatOnTypeProvider = function (resource, position, ch, options) {
@@ -17617,6 +18948,7 @@ define(__m[88/*vs/workbench/api/node/extHostApiCommands*/], __M([1/*require*/,0/
                 if (Array.isArray(value)) {
                     return value.map(function (edit) { return new types.TextEdit(typeConverters.toRange(edit.range), edit.text); });
                 }
+                return undefined;
             });
         };
         ExtHostApiCommands.prototype._executeDocumentLinkProvider = function (resource) {
@@ -17624,6 +18956,7 @@ define(__m[88/*vs/workbench/api/node/extHostApiCommands*/], __M([1/*require*/,0/
                 if (Array.isArray(value)) {
                     return value.map(typeConverters.DocumentLink.to);
                 }
+                return undefined;
             });
         };
         return ExtHostApiCommands;
@@ -17631,7 +18964,7 @@ define(__m[88/*vs/workbench/api/node/extHostApiCommands*/], __M([1/*require*/,0/
     exports.ExtHostApiCommands = ExtHostApiCommands;
 });
 
-define(__m[89/*vs/workbench/services/thread/common/abstractThreadService*/], __M([1/*require*/,0/*exports*/]), function (require, exports) {
+define(__m[92/*vs/workbench/services/thread/common/abstractThreadService*/], __M([0/*require*/,1/*exports*/]), function (require, exports) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -17705,7 +19038,7 @@ define(__m[89/*vs/workbench/services/thread/common/abstractThreadService*/], __M
 
 
 
-define(__m[90/*vs/workbench/services/thread/common/extHostThreadService*/], __M([1/*require*/,0/*exports*/,89/*vs/workbench/services/thread/common/abstractThreadService*/]), function (require, exports, abstractThreadService_1) {
+define(__m[93/*vs/workbench/services/thread/common/extHostThreadService*/], __M([0/*require*/,1/*exports*/,92/*vs/workbench/services/thread/common/abstractThreadService*/]), function (require, exports, abstractThreadService_1) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -17727,7 +19060,7 @@ define(__m[90/*vs/workbench/services/thread/common/extHostThreadService*/], __M(
     exports.ExtHostThreadService = ExtHostThreadService;
 });
 
-define(__m[91/*vs/workbench/services/thread/common/threadService*/], __M([1/*require*/,0/*exports*/,12/*vs/platform/instantiation/common/instantiation*/]), function (require, exports, instantiation_1) {
+define(__m[94/*vs/workbench/services/thread/common/threadService*/], __M([0/*require*/,1/*exports*/,11/*vs/platform/instantiation/common/instantiation*/]), function (require, exports, instantiation_1) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -17758,7 +19091,7 @@ define(__m[91/*vs/workbench/services/thread/common/threadService*/], __M([1/*req
     exports.createExtHostContextProxyIdentifier = createExtHostContextProxyIdentifier;
 });
 
-define(__m[2/*vs/workbench/api/node/extHost.protocol*/], __M([1/*require*/,0/*exports*/,91/*vs/workbench/services/thread/common/threadService*/]), function (require, exports, threadService_1) {
+define(__m[2/*vs/workbench/api/node/extHost.protocol*/], __M([0/*require*/,1/*exports*/,94/*vs/workbench/services/thread/common/threadService*/]), function (require, exports, threadService_1) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -17878,6 +19211,7 @@ define(__m[2/*vs/workbench/api/node/extHost.protocol*/], __M([1/*require*/,0/*ex
         MainThreadLanguageFeaturesShape.prototype.$emitCodeLensEvent = function (eventHandle, event) { throw ni(); };
         MainThreadLanguageFeaturesShape.prototype.$registerDeclaractionSupport = function (handle, selector) { throw ni(); };
         MainThreadLanguageFeaturesShape.prototype.$registerImplementationSupport = function (handle, selector) { throw ni(); };
+        MainThreadLanguageFeaturesShape.prototype.$registerTypeDefinitionSupport = function (handle, selector) { throw ni(); };
         MainThreadLanguageFeaturesShape.prototype.$registerHoverProvider = function (handle, selector) { throw ni(); };
         MainThreadLanguageFeaturesShape.prototype.$registerDocumentHighlightProvider = function (handle, selector) { throw ni(); };
         MainThreadLanguageFeaturesShape.prototype.$registerReferenceSupport = function (handle, selector) { throw ni(); };
@@ -17904,7 +19238,7 @@ define(__m[2/*vs/workbench/api/node/extHost.protocol*/], __M([1/*require*/,0/*ex
     var MainThreadMessageServiceShape = (function () {
         function MainThreadMessageServiceShape() {
         }
-        MainThreadMessageServiceShape.prototype.$showMessage = function (severity, message, commands) { throw ni(); };
+        MainThreadMessageServiceShape.prototype.$showMessage = function (severity, message, options, commands) { throw ni(); };
         return MainThreadMessageServiceShape;
     }());
     exports.MainThreadMessageServiceShape = MainThreadMessageServiceShape;
@@ -17913,6 +19247,7 @@ define(__m[2/*vs/workbench/api/node/extHost.protocol*/], __M([1/*require*/,0/*ex
         }
         MainThreadOutputServiceShape.prototype.$append = function (channelId, label, value) { throw ni(); };
         MainThreadOutputServiceShape.prototype.$clear = function (channelId, label) { throw ni(); };
+        MainThreadOutputServiceShape.prototype.$dispose = function (channelId, label) { throw ni(); };
         MainThreadOutputServiceShape.prototype.$reveal = function (channelId, label, preserveFocus) { throw ni(); };
         MainThreadOutputServiceShape.prototype.$close = function (channelId) { throw ni(); };
         return MainThreadOutputServiceShape;
@@ -17999,7 +19334,8 @@ define(__m[2/*vs/workbench/api/node/extHost.protocol*/], __M([1/*require*/,0/*ex
         }
         MainThreadSCMShape.prototype.$register = function (id, features) { throw ni(); };
         MainThreadSCMShape.prototype.$unregister = function (id) { throw ni(); };
-        MainThreadSCMShape.prototype.$onChange = function (id, resources) { throw ni(); };
+        MainThreadSCMShape.prototype.$onChange = function (id, resources, count, state) { throw ni(); };
+        MainThreadSCMShape.prototype.$setInputBoxValue = function (value) { throw ni(); };
         return MainThreadSCMShape;
     }());
     exports.MainThreadSCMShape = MainThreadSCMShape;
@@ -18117,6 +19453,7 @@ define(__m[2/*vs/workbench/api/node/extHost.protocol*/], __M([1/*require*/,0/*ex
         ExtHostLanguageFeaturesShape.prototype.$resolveCodeLens = function (handle, resource, symbol) { throw ni(); };
         ExtHostLanguageFeaturesShape.prototype.$provideDefinition = function (handle, resource, position) { throw ni(); };
         ExtHostLanguageFeaturesShape.prototype.$provideImplementation = function (handle, resource, position) { throw ni(); };
+        ExtHostLanguageFeaturesShape.prototype.$provideTypeDefinition = function (handle, resource, position) { throw ni(); };
         ExtHostLanguageFeaturesShape.prototype.$provideHover = function (handle, resource, position) { throw ni(); };
         ExtHostLanguageFeaturesShape.prototype.$provideDocumentHighlights = function (handle, resource, position) { throw ni(); };
         ExtHostLanguageFeaturesShape.prototype.$provideReferences = function (handle, resource, position, context) { throw ni(); };
@@ -18154,10 +19491,11 @@ define(__m[2/*vs/workbench/api/node/extHost.protocol*/], __M([1/*require*/,0/*ex
     var ExtHostSCMShape = (function () {
         function ExtHostSCMShape() {
         }
-        ExtHostSCMShape.prototype.$commit = function (id, message) { throw ni(); };
         ExtHostSCMShape.prototype.$open = function (id, resourceGroupId, uri) { throw ni(); };
+        ExtHostSCMShape.prototype.$acceptChanges = function (id) { throw ni(); };
         ExtHostSCMShape.prototype.$drag = function (id, fromResourceGroupId, fromUri, toResourceGroupId) { throw ni(); };
         ExtHostSCMShape.prototype.$getOriginalResource = function (id, uri) { throw ni(); };
+        ExtHostSCMShape.prototype.$onInputBoxValueChange = function (value) { throw ni(); };
         return ExtHostSCMShape;
     }());
     exports.ExtHostSCMShape = ExtHostSCMShape;
@@ -18207,7 +19545,7 @@ define(__m[2/*vs/workbench/api/node/extHost.protocol*/], __M([1/*require*/,0/*ex
 
 
 
-define(__m[93/*vs/workbench/api/node/extHostCommands*/], __M([1/*require*/,0/*exports*/,13/*vs/base/common/types*/,3/*vs/base/common/winjs.base*/,6/*vs/workbench/api/node/extHostTypes*/,14/*vs/workbench/api/node/extHostTypeConverters*/,20/*vs/base/common/objects*/,2/*vs/workbench/api/node/extHost.protocol*/,18/*vs/base/common/arrays*/]), function (require, exports, types_1, winjs_base_1, extHostTypes, extHostTypeConverter, objects_1, extHost_protocol_1, arrays_1) {
+define(__m[96/*vs/workbench/api/node/extHostCommands*/], __M([0/*require*/,1/*exports*/,16/*vs/base/common/types*/,3/*vs/base/common/winjs.base*/,6/*vs/workbench/api/node/extHostTypes*/,15/*vs/workbench/api/node/extHostTypeConverters*/,19/*vs/base/common/objects*/,2/*vs/workbench/api/node/extHost.protocol*/,20/*vs/base/common/arrays*/]), function (require, exports, types_1, winjs_base_1, extHostTypes, extHostTypeConverter, objects_1, extHost_protocol_1, arrays_1) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -18340,7 +19678,7 @@ define(__m[93/*vs/workbench/api/node/extHostCommands*/], __M([1/*require*/,0/*ex
         }
         CommandsConverter.prototype.toInternal = function (command) {
             if (!command) {
-                return;
+                return undefined;
             }
             var result = {
                 id: command.command,
@@ -18358,7 +19696,7 @@ define(__m[93/*vs/workbench/api/node/extHostCommands*/], __M([1/*require*/,0/*ex
         };
         CommandsConverter.prototype.fromInternal = function (command) {
             if (!command) {
-                return;
+                return undefined;
             }
             var id = extHost_protocol_1.ObjectIdentifier.of(command);
             if (typeof id === 'number') {
@@ -18391,7 +19729,7 @@ define(__m[93/*vs/workbench/api/node/extHostCommands*/], __M([1/*require*/,0/*ex
 
 
 
-define(__m[94/*vs/workbench/api/node/extHostConfiguration*/], __M([1/*require*/,0/*exports*/,20/*vs/base/common/objects*/,4/*vs/base/common/event*/,2/*vs/workbench/api/node/extHost.protocol*/,85/*vs/workbench/services/configuration/common/configurationEditing*/,80/*vs/platform/configuration/common/model*/]), function (require, exports, objects_1, event_1, extHost_protocol_1, configurationEditing_1, model_1) {
+define(__m[97/*vs/workbench/api/node/extHostConfiguration*/], __M([0/*require*/,1/*exports*/,19/*vs/base/common/objects*/,4/*vs/base/common/event*/,2/*vs/workbench/api/node/extHost.protocol*/,88/*vs/workbench/services/configuration/common/configurationEditing*/,82/*vs/platform/configuration/common/model*/]), function (require, exports, objects_1, event_1, extHost_protocol_1, configurationEditing_1, model_1) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -18478,6 +19816,7 @@ define(__m[94/*vs/workbench/api/node/extHostConfiguration*/], __M([1/*require*/,
                             workspaceValue: config.workspace
                         };
                     }
+                    return undefined;
                 }
             };
             if (typeof config === 'object') {
@@ -18495,7 +19834,7 @@ define(__m[94/*vs/workbench/api/node/extHostConfiguration*/], __M([1/*require*/,
 
 
 
-define(__m[95/*vs/workbench/api/node/extHostDiagnostics*/], __M([1/*require*/,0/*exports*/,62/*vs/nls!vs/workbench/api/node/extHostDiagnostics*/,7/*vs/base/common/uri*/,17/*vs/base/common/severity*/,2/*vs/workbench/api/node/extHost.protocol*/,6/*vs/workbench/api/node/extHostTypes*/]), function (require, exports, nls_1, uri_1, severity_1, extHost_protocol_1, extHostTypes_1) {
+define(__m[98/*vs/workbench/api/node/extHostDiagnostics*/], __M([0/*require*/,1/*exports*/,64/*vs/nls!vs/workbench/api/node/extHostDiagnostics*/,7/*vs/base/common/uri*/,17/*vs/base/common/severity*/,2/*vs/workbench/api/node/extHost.protocol*/,6/*vs/workbench/api/node/extHostTypes*/]), function (require, exports, nls_1, uri_1, severity_1, extHost_protocol_1, extHostTypes_1) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -18637,6 +19976,7 @@ define(__m[95/*vs/workbench/api/node/extHostDiagnostics*/], __M([1/*require*/,0/
             if (Array.isArray(result)) {
                 return Object.freeze(result.slice(0));
             }
+            return undefined;
         };
         DiagnosticCollection.prototype.has = function (uri) {
             this._checkDisposed();
@@ -18735,7 +20075,7 @@ define(__m[95/*vs/workbench/api/node/extHostDiagnostics*/], __M([1/*require*/,0/
 
 
 
-define(__m[96/*vs/workbench/api/node/extHostDocumentSaveParticipant*/], __M([1/*require*/,0/*exports*/,32/*vs/base/common/callbackList*/,16/*vs/base/common/async*/,5/*vs/base/common/errors*/,3/*vs/base/common/winjs.base*/,2/*vs/workbench/api/node/extHost.protocol*/,6/*vs/workbench/api/node/extHostTypes*/,14/*vs/workbench/api/node/extHostTypeConverters*/]), function (require, exports, callbackList_1, async_1, errors_1, winjs_base_1, extHost_protocol_1, extHostTypes_1, extHostTypeConverters_1) {
+define(__m[99/*vs/workbench/api/node/extHostDocumentSaveParticipant*/], __M([0/*require*/,1/*exports*/,27/*vs/base/common/callbackList*/,9/*vs/base/common/async*/,5/*vs/base/common/errors*/,3/*vs/base/common/winjs.base*/,2/*vs/workbench/api/node/extHost.protocol*/,6/*vs/workbench/api/node/extHostTypes*/,15/*vs/workbench/api/node/extHostTypeConverters*/]), function (require, exports, callbackList_1, async_1, errors_1, winjs_base_1, extHost_protocol_1, extHostTypes_1, extHostTypeConverters_1) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -18785,7 +20125,7 @@ define(__m[96/*vs/workbench/api/node/extHostDocumentSaveParticipant*/], __M([1/*
                 return function () {
                     if (didTimeout) {
                         // timeout - no more listeners
-                        return;
+                        return undefined;
                     }
                     var document = _this._documents.getDocumentData(resource).document;
                     return _this._deliverEventAsyncAndBlameBadListeners(fn, thisArg, { document: document, reason: extHostTypeConverters_1.TextDocumentSaveReason.to(reason) });
@@ -18857,7 +20197,7 @@ define(__m[96/*vs/workbench/api/node/extHostDocumentSaveParticipant*/], __M([1/*
                 // apply edits iff any and iff document
                 // didn't change somehow in the meantime
                 if (edits.length === 0) {
-                    return;
+                    return undefined;
                 }
                 if (version === document.version) {
                     return _this._workspace.$applyWorkspaceEdit(edits);
@@ -18876,7 +20216,7 @@ define(__m[96/*vs/workbench/api/node/extHostDocumentSaveParticipant*/], __M([1/*
 
 
 
-define(__m[97/*vs/workbench/api/node/extHostDocuments*/], __M([1/*require*/,0/*exports*/,5/*vs/base/common/errors*/,9/*vs/base/common/strings*/,23/*vs/editor/common/editorCommon*/,70/*vs/editor/common/model/textModel*/,50/*vs/editor/common/model/mirrorModel2*/,4/*vs/base/common/event*/,6/*vs/workbench/api/node/extHostTypes*/,14/*vs/workbench/api/node/extHostTypeConverters*/,3/*vs/base/common/winjs.base*/,16/*vs/base/common/async*/,29/*vs/editor/common/model/wordHelper*/,2/*vs/workbench/api/node/extHost.protocol*/]), function (require, exports, errors_1, strings_1, editorCommon, textModel_1, mirrorModel2_1, event_1, extHostTypes_1, TypeConverters, winjs_base_1, async_1, wordHelper_1, extHost_protocol_1) {
+define(__m[100/*vs/workbench/api/node/extHostDocuments*/], __M([0/*require*/,1/*exports*/,5/*vs/base/common/errors*/,8/*vs/base/common/strings*/,23/*vs/editor/common/editorCommon*/,72/*vs/editor/common/model/textModel*/,52/*vs/editor/common/model/mirrorModel2*/,4/*vs/base/common/event*/,6/*vs/workbench/api/node/extHostTypes*/,15/*vs/workbench/api/node/extHostTypeConverters*/,3/*vs/base/common/winjs.base*/,9/*vs/base/common/async*/,39/*vs/editor/common/model/wordHelper*/,2/*vs/workbench/api/node/extHost.protocol*/]), function (require, exports, errors_1, strings_1, editorCommon, textModel_1, mirrorModel2_1, event_1, extHostTypes_1, TypeConverters, winjs_base_1, async_1, wordHelper_1, extHost_protocol_1) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -18914,12 +20254,13 @@ define(__m[97/*vs/workbench/api/node/extHostDocuments*/], __M([1/*require*/,0/*e
         };
         ExtHostDocuments.prototype.getDocumentData = function (resource) {
             if (!resource) {
-                return;
+                return undefined;
             }
             var data = this._documentData.get(resource.toString());
             if (data) {
                 return data;
             }
+            return undefined;
         };
         ExtHostDocuments.prototype.ensureDocumentData = function (uri) {
             var _this = this;
@@ -19229,6 +20570,7 @@ define(__m[97/*vs/workbench/api/node/extHostDocuments*/], __M([1/*require*/,0/*e
             if (wordAtText) {
                 return new extHostTypes_1.Range(position.line, wordAtText.startColumn - 1, position.line, wordAtText.endColumn - 1);
             }
+            return undefined;
         };
         return ExtHostDocumentData;
     }(mirrorModel2_1.MirrorModel2));
@@ -19246,7 +20588,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
-define(__m[98/*vs/workbench/api/node/extHostEditors*/], __M([1/*require*/,0/*exports*/,5/*vs/base/common/errors*/,18/*vs/base/common/arrays*/,36/*vs/base/common/idGenerator*/,4/*vs/base/common/event*/,3/*vs/base/common/winjs.base*/,6/*vs/workbench/api/node/extHostTypes*/,14/*vs/workbench/api/node/extHostTypeConverters*/,2/*vs/workbench/api/node/extHost.protocol*/]), function (require, exports, errors_1, arrays_1, idGenerator_1, event_1, winjs_base_1, extHostTypes_1, TypeConverters, extHost_protocol_1) {
+define(__m[101/*vs/workbench/api/node/extHostEditors*/], __M([0/*require*/,1/*exports*/,5/*vs/base/common/errors*/,20/*vs/base/common/arrays*/,37/*vs/base/common/idGenerator*/,4/*vs/base/common/event*/,3/*vs/base/common/winjs.base*/,6/*vs/workbench/api/node/extHostTypes*/,15/*vs/workbench/api/node/extHostTypeConverters*/,2/*vs/workbench/api/node/extHost.protocol*/]), function (require, exports, errors_1, arrays_1, idGenerator_1, event_1, winjs_base_1, extHostTypes_1, TypeConverters, extHost_protocol_1) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -19653,7 +20995,9 @@ define(__m[98/*vs/workbench/api/node/extHostEditors*/], __M([1/*require*/,0/*exp
         Object.defineProperty(ExtHostTextEditor.prototype, "document", {
             // ---- the document
             get: function () {
-                return this._documentData.document;
+                return this._documentData
+                    ? this._documentData.document
+                    : undefined;
             },
             set: function (value) {
                 throw errors_1.readonly('document');
@@ -19793,6 +21137,7 @@ define(__m[98/*vs/workbench/api/node/extHostEditors*/], __M([1/*require*/,0/*exp
                     return winjs_base_1.TPromise.wrapError(silent);
                 }
                 console.warn(err);
+                return undefined;
             });
         };
         return ExtHostTextEditor;
@@ -19815,7 +21160,7 @@ define(__m[98/*vs/workbench/api/node/extHostEditors*/], __M([1/*require*/,0/*exp
 
 
 
-define(__m[99/*vs/workbench/api/node/extHostFileSystemEventService*/], __M([1/*require*/,0/*exports*/,4/*vs/base/common/event*/,6/*vs/workbench/api/node/extHostTypes*/,30/*vs/base/common/glob*/,2/*vs/workbench/api/node/extHost.protocol*/]), function (require, exports, event_1, extHostTypes_1, glob_1, extHost_protocol_1) {
+define(__m[102/*vs/workbench/api/node/extHostFileSystemEventService*/], __M([0/*require*/,1/*exports*/,4/*vs/base/common/event*/,6/*vs/workbench/api/node/extHostTypes*/,29/*vs/base/common/glob*/,2/*vs/workbench/api/node/extHost.protocol*/]), function (require, exports, event_1, extHostTypes_1, glob_1, extHost_protocol_1) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -19935,7 +21280,7 @@ define(__m[99/*vs/workbench/api/node/extHostFileSystemEventService*/], __M([1/*r
 
 
 
-define(__m[100/*vs/workbench/api/node/extHostHeapService*/], __M([1/*require*/,0/*exports*/,2/*vs/workbench/api/node/extHost.protocol*/]), function (require, exports, extHost_protocol_1) {
+define(__m[103/*vs/workbench/api/node/extHostHeapService*/], __M([0/*require*/,1/*exports*/,2/*vs/workbench/api/node/extHost.protocol*/]), function (require, exports, extHost_protocol_1) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -19976,7 +21321,7 @@ define(__m[100/*vs/workbench/api/node/extHostHeapService*/], __M([1/*require*/,0
 
 
 
-define(__m[101/*vs/workbench/api/node/extHostLanguageFeatures*/], __M([1/*require*/,0/*exports*/,3/*vs/base/common/winjs.base*/,20/*vs/base/common/objects*/,14/*vs/workbench/api/node/extHostTypeConverters*/,6/*vs/workbench/api/node/extHostTypes*/,16/*vs/base/common/async*/,2/*vs/workbench/api/node/extHost.protocol*/,9/*vs/base/common/strings*/]), function (require, exports, winjs_base_1, objects_1, TypeConverters, extHostTypes_1, async_1, extHost_protocol_1, strings_1) {
+define(__m[104/*vs/workbench/api/node/extHostLanguageFeatures*/], __M([0/*require*/,1/*exports*/,3/*vs/base/common/winjs.base*/,19/*vs/base/common/objects*/,15/*vs/workbench/api/node/extHostTypeConverters*/,6/*vs/workbench/api/node/extHostTypes*/,9/*vs/base/common/async*/,2/*vs/workbench/api/node/extHost.protocol*/,8/*vs/base/common/strings*/]), function (require, exports, winjs_base_1, objects_1, TypeConverters, extHostTypes_1, async_1, extHost_protocol_1, strings_1) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -19995,6 +21340,7 @@ define(__m[101/*vs/workbench/api/node/extHostLanguageFeatures*/], __M([1/*requir
                 if (Array.isArray(value)) {
                     return value.map(TypeConverters.SymbolInformation.toOutlineEntry);
                 }
+                return undefined;
             });
         };
         return OutlineAdapter;
@@ -20019,13 +21365,14 @@ define(__m[101/*vs/workbench/api/node/extHostLanguageFeatures*/], __M([1/*requir
                         }, id);
                     });
                 }
+                return undefined;
             });
         };
         CodeLensAdapter.prototype.resolveCodeLens = function (resource, symbol) {
             var _this = this;
             var lens = this._heapService.get(extHost_protocol_1.ObjectIdentifier.of(symbol));
             if (!lens) {
-                return;
+                return undefined;
             }
             var resolve;
             if (typeof this._provider.resolveCodeLens !== 'function' || lens.isResolved) {
@@ -20059,6 +21406,7 @@ define(__m[101/*vs/workbench/api/node/extHostLanguageFeatures*/], __M([1/*requir
                 else if (value) {
                     return TypeConverters.location.from(value);
                 }
+                return undefined;
             });
         };
         return DefinitionAdapter;
@@ -20079,9 +21427,31 @@ define(__m[101/*vs/workbench/api/node/extHostLanguageFeatures*/], __M([1/*requir
                 else if (value) {
                     return TypeConverters.location.from(value);
                 }
+                return undefined;
             });
         };
         return ImplementationAdapter;
+    }());
+    var TypeDefinitionAdapter = (function () {
+        function TypeDefinitionAdapter(documents, provider) {
+            this._documents = documents;
+            this._provider = provider;
+        }
+        TypeDefinitionAdapter.prototype.provideTypeDefinition = function (resource, position) {
+            var _this = this;
+            var doc = this._documents.getDocumentData(resource).document;
+            var pos = TypeConverters.toPosition(position);
+            return async_1.asWinJsPromise(function (token) { return _this._provider.provideTypeDefinition(doc, pos, token); }).then(function (value) {
+                if (Array.isArray(value)) {
+                    return value.map(TypeConverters.location.from);
+                }
+                else if (value) {
+                    return TypeConverters.location.from(value);
+                }
+                return undefined;
+            });
+        };
+        return TypeDefinitionAdapter;
     }());
     var HoverAdapter = (function () {
         function HoverAdapter(documents, provider) {
@@ -20094,7 +21464,7 @@ define(__m[101/*vs/workbench/api/node/extHostLanguageFeatures*/], __M([1/*requir
             var pos = TypeConverters.toPosition(position);
             return async_1.asWinJsPromise(function (token) { return _this._provider.provideHover(doc, pos, token); }).then(function (value) {
                 if (!value) {
-                    return;
+                    return undefined;
                 }
                 if (!value.range) {
                     value.range = doc.getWordRangeAtPosition(pos);
@@ -20120,6 +21490,7 @@ define(__m[101/*vs/workbench/api/node/extHostLanguageFeatures*/], __M([1/*requir
                 if (Array.isArray(value)) {
                     return value.map(DocumentHighlightAdapter._convertDocumentHighlight);
                 }
+                return undefined;
             });
         };
         DocumentHighlightAdapter._convertDocumentHighlight = function (documentHighlight) {
@@ -20143,6 +21514,7 @@ define(__m[101/*vs/workbench/api/node/extHostLanguageFeatures*/], __M([1/*requir
                 if (Array.isArray(value)) {
                     return value.map(TypeConverters.location.from);
                 }
+                return undefined;
             });
         };
         return ReferenceAdapter;
@@ -20171,7 +21543,7 @@ define(__m[101/*vs/workbench/api/node/extHostLanguageFeatures*/], __M([1/*requir
             });
             return async_1.asWinJsPromise(function (token) { return _this._provider.provideCodeActions(doc, ran, { diagnostics: allDiagnostics }, token); }).then(function (commands) {
                 if (!Array.isArray(commands)) {
-                    return;
+                    return undefined;
                 }
                 return commands.map(function (command, i) {
                     return {
@@ -20195,6 +21567,7 @@ define(__m[101/*vs/workbench/api/node/extHostLanguageFeatures*/], __M([1/*requir
                 if (Array.isArray(value)) {
                     return value.map(TypeConverters.TextEdit.from);
                 }
+                return undefined;
             });
         };
         return DocumentFormattingAdapter;
@@ -20212,6 +21585,7 @@ define(__m[101/*vs/workbench/api/node/extHostLanguageFeatures*/], __M([1/*requir
                 if (Array.isArray(value)) {
                     return value.map(TypeConverters.TextEdit.from);
                 }
+                return undefined;
             });
         };
         return RangeFormattingAdapter;
@@ -20230,6 +21604,7 @@ define(__m[101/*vs/workbench/api/node/extHostLanguageFeatures*/], __M([1/*requir
                 if (Array.isArray(value)) {
                     return value.map(TypeConverters.TextEdit.from);
                 }
+                return undefined;
             });
         };
         return OnTypeFormattingAdapter;
@@ -20249,6 +21624,7 @@ define(__m[101/*vs/workbench/api/node/extHostLanguageFeatures*/], __M([1/*requir
                         return extHost_protocol_1.ObjectIdentifier.mixin(result, id);
                     });
                 }
+                return undefined;
             });
         };
         NavigateTypeAdapter.prototype.resolveWorkspaceSymbol = function (item) {
@@ -20262,6 +21638,7 @@ define(__m[101/*vs/workbench/api/node/extHostLanguageFeatures*/], __M([1/*requir
                     return value && TypeConverters.fromSymbolInformation(value);
                 });
             }
+            return undefined;
         };
         return NavigateTypeAdapter;
     }());
@@ -20276,7 +21653,7 @@ define(__m[101/*vs/workbench/api/node/extHostLanguageFeatures*/], __M([1/*requir
             var pos = TypeConverters.toPosition(position);
             return async_1.asWinJsPromise(function (token) { return _this._provider.provideRenameEdits(doc, pos, newName, token); }).then(function (value) {
                 if (!value) {
-                    return;
+                    return undefined;
                 }
                 var result = {
                     edits: []
@@ -20324,7 +21701,7 @@ define(__m[101/*vs/workbench/api/node/extHostLanguageFeatures*/], __M([1/*requir
                 var list;
                 if (!value) {
                     // undefined and null are valid results
-                    return;
+                    return undefined;
                 }
                 else if (Array.isArray(value)) {
                     list = new extHostTypes_1.CompletionList(value);
@@ -20377,7 +21754,7 @@ define(__m[101/*vs/workbench/api/node/extHostLanguageFeatures*/], __M([1/*requir
         SuggestAdapter.prototype._convertCompletionItem = function (item, position, defaultRange) {
             if (!item.label) {
                 console.warn('INVALID text edit -> must have at least a label');
-                return;
+                return undefined;
             }
             var result = {
                 //
@@ -20425,7 +21802,7 @@ define(__m[101/*vs/workbench/api/node/extHostLanguageFeatures*/], __M([1/*requir
             result.overwriteAfter = range.end.character - position.character;
             if (!range.isSingleLine || range.start.line !== position.line) {
                 console.warn('INVALID text edit -> must be single line and on the same line');
-                return;
+                return undefined;
             }
             return result;
         };
@@ -20444,6 +21821,7 @@ define(__m[101/*vs/workbench/api/node/extHostLanguageFeatures*/], __M([1/*requir
                 if (value) {
                     return TypeConverters.SignatureHelp.from(value);
                 }
+                return undefined;
             });
         };
         return SignatureHelpAdapter;
@@ -20460,6 +21838,7 @@ define(__m[101/*vs/workbench/api/node/extHostLanguageFeatures*/], __M([1/*requir
                 if (Array.isArray(links)) {
                     return links.map(TypeConverters.DocumentLink.from);
                 }
+                return undefined;
             });
         };
         LinkProviderAdapter.prototype.resolveLink = function (link) {
@@ -20469,8 +21848,10 @@ define(__m[101/*vs/workbench/api/node/extHostLanguageFeatures*/], __M([1/*requir
                     if (value) {
                         return TypeConverters.DocumentLink.from(value);
                     }
+                    return undefined;
                 });
             }
+            return undefined;
         };
         return LinkProviderAdapter;
     }());
@@ -20551,6 +21932,15 @@ define(__m[101/*vs/workbench/api/node/extHostLanguageFeatures*/], __M([1/*requir
         };
         ExtHostLanguageFeatures.prototype.$provideImplementation = function (handle, resource, position) {
             return this._withAdapter(handle, ImplementationAdapter, function (adapter) { return adapter.provideImplementation(resource, position); });
+        };
+        ExtHostLanguageFeatures.prototype.registerTypeDefinitionProvider = function (selector, provider) {
+            var handle = this._nextHandle();
+            this._adapter.set(handle, new TypeDefinitionAdapter(this._documents, provider));
+            this._proxy.$registerTypeDefinitionSupport(handle, selector);
+            return this._createDisposable(handle);
+        };
+        ExtHostLanguageFeatures.prototype.$provideTypeDefinition = function (handle, resource, position) {
+            return this._withAdapter(handle, TypeDefinitionAdapter, function (adapter) { return adapter.provideTypeDefinition(resource, position); });
         };
         // --- extra info
         ExtHostLanguageFeatures.prototype.registerHoverProvider = function (selector, provider) {
@@ -20703,7 +22093,7 @@ define(__m[101/*vs/workbench/api/node/extHostLanguageFeatures*/], __M([1/*requir
     exports.ExtHostLanguageFeatures = ExtHostLanguageFeatures;
 });
 
-define(__m[102/*vs/workbench/api/node/extHostLanguages*/], __M([1/*require*/,0/*exports*/,2/*vs/workbench/api/node/extHost.protocol*/]), function (require, exports, extHost_protocol_1) {
+define(__m[105/*vs/workbench/api/node/extHostLanguages*/], __M([0/*require*/,1/*exports*/,2/*vs/workbench/api/node/extHost.protocol*/]), function (require, exports, extHost_protocol_1) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -20721,35 +22111,49 @@ define(__m[102/*vs/workbench/api/node/extHostLanguages*/], __M([1/*require*/,0/*
     exports.ExtHostLanguages = ExtHostLanguages;
 });
 
-define(__m[103/*vs/workbench/api/node/extHostMessageService*/], __M([1/*require*/,0/*exports*/,2/*vs/workbench/api/node/extHost.protocol*/]), function (require, exports, extHost_protocol_1) {
+define(__m[106/*vs/workbench/api/node/extHostMessageService*/], __M([0/*require*/,1/*exports*/,2/*vs/workbench/api/node/extHost.protocol*/]), function (require, exports, extHost_protocol_1) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
      *--------------------------------------------------------------------------------------------*/
     'use strict';
+    var emptyMessageOptions = Object.create(null);
+    function isMessageItem(item) {
+        return item && item.title;
+    }
+    function parseMessageArguments(first, rest) {
+        if (typeof first === 'string' || isMessageItem(first)) {
+            return { options: emptyMessageOptions, items: [first].concat(rest) };
+        }
+        else {
+            return { options: first || emptyMessageOptions, items: rest };
+        }
+    }
     var ExtHostMessageService = (function () {
         function ExtHostMessageService(threadService) {
             this._proxy = threadService.get(extHost_protocol_1.MainContext.MainThreadMessageService);
         }
-        ExtHostMessageService.prototype.showMessage = function (severity, message, commands) {
-            var items = [];
-            for (var handle = 0; handle < commands.length; handle++) {
-                var command = commands[handle];
+        ExtHostMessageService.prototype.showMessage = function (severity, message, optionsOrFirstItem, rest) {
+            var _a = parseMessageArguments(optionsOrFirstItem, rest), options = _a.options, items = _a.items;
+            var commands = [];
+            for (var handle = 0; handle < items.length; handle++) {
+                var command = items[handle];
                 if (typeof command === 'string') {
-                    items.push({ title: command, handle: handle, isCloseAffordance: false });
+                    commands.push({ title: command, handle: handle, isCloseAffordance: false });
                 }
                 else if (typeof command === 'object') {
                     var title = command.title, isCloseAffordance = command.isCloseAffordance;
-                    items.push({ title: title, isCloseAffordance: isCloseAffordance, handle: handle });
+                    commands.push({ title: title, isCloseAffordance: isCloseAffordance, handle: handle });
                 }
                 else {
                     console.warn('Invalid message item:', command);
                 }
             }
-            return this._proxy.$showMessage(severity, message, items).then(function (handle) {
+            return this._proxy.$showMessage(severity, message, options, commands).then(function (handle) {
                 if (typeof handle === 'number') {
-                    return commands[handle];
+                    return items[handle];
                 }
+                return undefined;
             });
         };
         return ExtHostMessageService;
@@ -20757,7 +22161,7 @@ define(__m[103/*vs/workbench/api/node/extHostMessageService*/], __M([1/*require*
     exports.ExtHostMessageService = ExtHostMessageService;
 });
 
-define(__m[104/*vs/workbench/api/node/extHostOutputService*/], __M([1/*require*/,0/*exports*/,2/*vs/workbench/api/node/extHost.protocol*/]), function (require, exports, extHost_protocol_1) {
+define(__m[107/*vs/workbench/api/node/extHostOutputService*/], __M([0/*require*/,1/*exports*/,2/*vs/workbench/api/node/extHost.protocol*/]), function (require, exports, extHost_protocol_1) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -20779,7 +22183,7 @@ define(__m[104/*vs/workbench/api/node/extHostOutputService*/], __M([1/*require*/
         ExtHostOutputChannel.prototype.dispose = function () {
             var _this = this;
             if (!this._disposed) {
-                this._proxy.$clear(this._id, this._name).then(function () {
+                this._proxy.$dispose(this._id, this._name).then(function () {
                     _this._disposed = true;
                 });
             }
@@ -20829,7 +22233,7 @@ define(__m[104/*vs/workbench/api/node/extHostOutputService*/], __M([1/*require*/
 
 
 
-define(__m[105/*vs/workbench/api/node/extHostQuickOpen*/], __M([1/*require*/,0/*exports*/,3/*vs/base/common/winjs.base*/,16/*vs/base/common/async*/,25/*vs/base/common/cancellation*/,2/*vs/workbench/api/node/extHost.protocol*/]), function (require, exports, winjs_base_1, async_1, cancellation_1, extHost_protocol_1) {
+define(__m[108/*vs/workbench/api/node/extHostQuickOpen*/], __M([0/*require*/,1/*exports*/,3/*vs/base/common/winjs.base*/,9/*vs/base/common/async*/,25/*vs/base/common/cancellation*/,2/*vs/workbench/api/node/extHost.protocol*/]), function (require, exports, winjs_base_1, async_1, cancellation_1, extHost_protocol_1) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -20889,6 +22293,7 @@ define(__m[105/*vs/workbench/api/node/extHostQuickOpen*/], __M([1/*require*/,0/*
                     if (typeof handle === 'number') {
                         return items[handle];
                     }
+                    return undefined;
                 });
             }, function (err) {
                 _this._proxy.$setError(err);
@@ -20913,13 +22318,14 @@ define(__m[105/*vs/workbench/api/node/extHostQuickOpen*/], __M([1/*require*/,0/*
             if (this._validateInput) {
                 return winjs_base_1.TPromise.as(this._validateInput(input));
             }
+            return undefined;
         };
         return ExtHostQuickOpen;
     }(extHost_protocol_1.ExtHostQuickOpenShape));
     exports.ExtHostQuickOpen = ExtHostQuickOpen;
 });
 
-define(__m[106/*vs/workbench/api/node/extHostSCM*/], __M([1/*require*/,0/*exports*/,7/*vs/base/common/uri*/,3/*vs/base/common/winjs.base*/,4/*vs/base/common/event*/,16/*vs/base/common/async*/,6/*vs/workbench/api/node/extHostTypes*/,2/*vs/workbench/api/node/extHost.protocol*/]), function (require, exports, uri_1, winjs_base_1, event_1, async_1, extHostTypes_1, extHost_protocol_1) {
+define(__m[109/*vs/workbench/api/node/extHostSCM*/], __M([0/*require*/,1/*exports*/,7/*vs/base/common/uri*/,3/*vs/base/common/winjs.base*/,4/*vs/base/common/event*/,9/*vs/base/common/async*/,6/*vs/workbench/api/node/extHostTypes*/,2/*vs/workbench/api/node/extHost.protocol*/]), function (require, exports, uri_1, winjs_base_1, event_1, async_1, extHostTypes_1, extHost_protocol_1) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -20935,13 +22341,49 @@ define(__m[106/*vs/workbench/api/node/extHostSCM*/], __M([1/*require*/,0/*export
         else if (decorations.iconPath) {
             return "" + decorations.iconPath;
         }
+        return undefined;
     }
+    var ExtHostSCMInputBox = (function () {
+        function ExtHostSCMInputBox(_proxy) {
+            this._proxy = _proxy;
+            this._value = '';
+            this._onDidChange = new event_1.Emitter();
+            // noop
+        }
+        Object.defineProperty(ExtHostSCMInputBox.prototype, "value", {
+            get: function () {
+                return this._value;
+            },
+            set: function (value) {
+                this._proxy.$setInputBoxValue(value);
+                this.updateValue(value);
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(ExtHostSCMInputBox.prototype, "onDidChange", {
+            get: function () {
+                return this._onDidChange.event;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        ExtHostSCMInputBox.prototype.$onInputBoxValueChange = function (value) {
+            this.updateValue(value);
+        };
+        ExtHostSCMInputBox.prototype.updateValue = function (value) {
+            this._value = value;
+            this._onDidChange.fire(value);
+        };
+        return ExtHostSCMInputBox;
+    }());
     var ExtHostSCM = (function () {
         function ExtHostSCM(threadService) {
             this._providers = Object.create(null);
             this._onDidChangeActiveProvider = new event_1.Emitter();
             this.cache = Object.create(null);
             this._proxy = threadService.get(extHost_protocol_1.MainContext.MainThreadSCM);
+            this._inputBox = new ExtHostSCMInputBox(this._proxy);
         }
         Object.defineProperty(ExtHostSCM.prototype, "onDidChangeActiveProvider", {
             get: function () { return this._onDidChangeActiveProvider.event; },
@@ -20950,6 +22392,11 @@ define(__m[106/*vs/workbench/api/node/extHostSCM*/], __M([1/*require*/,0/*export
         });
         Object.defineProperty(ExtHostSCM.prototype, "activeProvider", {
             get: function () { return this._activeProvider; },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(ExtHostSCM.prototype, "inputBox", {
+            get: function () { return this._inputBox; },
             enumerable: true,
             configurable: true
         });
@@ -21002,8 +22449,8 @@ define(__m[106/*vs/workbench/api/node/extHostSCM*/], __M([1/*require*/,0/*export
             this._providers[providerId] = provider;
             this._proxy.$register(providerId, {
                 label: provider.label,
-                supportsCommit: !!provider.commit,
                 supportsOpen: !!provider.open,
+                supportsAcceptChanges: !!provider.acceptChanges,
                 supportsDrag: !!provider.drag,
                 supportsOriginalResource: !!provider.getOriginalResource
             });
@@ -21031,20 +22478,13 @@ define(__m[106/*vs/workbench/api/node/extHostSCM*/], __M([1/*require*/,0/*export
                     _this.cache[providerId][g.id] = { resourceGroup: g, resources: resources };
                     return [g.id, g.label, rawResources];
                 });
-                _this._proxy.$onChange(providerId, rawResourceGroups);
+                _this._proxy.$onChange(providerId, rawResourceGroups, provider.count, provider.state);
             });
             return new extHostTypes_1.Disposable(function () {
                 onDidChangeListener.dispose();
                 delete _this._providers[providerId];
                 _this._proxy.$unregister(providerId);
             });
-        };
-        ExtHostSCM.prototype.$commit = function (providerId, message) {
-            var provider = this._providers[providerId];
-            if (!provider) {
-                return winjs_base_1.TPromise.as(null);
-            }
-            return async_1.asWinJsPromise(function (token) { return provider.commit(message, token); });
         };
         ExtHostSCM.prototype.$open = function (providerId, resourceGroupId, uri) {
             var provider = this._providers[providerId];
@@ -21058,6 +22498,13 @@ define(__m[106/*vs/workbench/api/node/extHostSCM*/], __M([1/*require*/,0/*export
                 return winjs_base_1.TPromise.as(null);
             }
             return async_1.asWinJsPromise(function (token) { return provider.open(resource, token); });
+        };
+        ExtHostSCM.prototype.$acceptChanges = function (providerId) {
+            var provider = this._providers[providerId];
+            if (!provider) {
+                return winjs_base_1.TPromise.as(null);
+            }
+            return async_1.asWinJsPromise(function (token) { return provider.acceptChanges(token); });
         };
         ExtHostSCM.prototype.$drag = function (providerId, fromResourceGroupId, fromUri, toResourceGroupId) {
             var provider = this._providers[providerId];
@@ -21081,12 +22528,16 @@ define(__m[106/*vs/workbench/api/node/extHostSCM*/], __M([1/*require*/,0/*export
             }
             return async_1.asWinJsPromise(function (token) { return provider.getOriginalResource(uri, token); });
         };
+        ExtHostSCM.prototype.$onInputBoxValueChange = function (value) {
+            this._inputBox.$onInputBoxValueChange(value);
+            return winjs_base_1.TPromise.as(null);
+        };
         return ExtHostSCM;
     }());
     exports.ExtHostSCM = ExtHostSCM;
 });
 
-define(__m[107/*vs/workbench/api/node/extHostStatusBar*/], __M([1/*require*/,0/*exports*/,81/*vs/platform/statusbar/common/statusbar*/,6/*vs/workbench/api/node/extHostTypes*/,2/*vs/workbench/api/node/extHost.protocol*/]), function (require, exports, statusbar_1, extHostTypes_1, extHost_protocol_1) {
+define(__m[110/*vs/workbench/api/node/extHostStatusBar*/], __M([0/*require*/,1/*exports*/,83/*vs/platform/statusbar/common/statusbar*/,6/*vs/workbench/api/node/extHostTypes*/,2/*vs/workbench/api/node/extHost.protocol*/]), function (require, exports, statusbar_1, extHostTypes_1, extHost_protocol_1) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -21256,7 +22707,7 @@ define(__m[107/*vs/workbench/api/node/extHostStatusBar*/], __M([1/*require*/,0/*
     exports.ExtHostStatusBar = ExtHostStatusBar;
 });
 
-define(__m[108/*vs/workbench/api/node/extHostStorage*/], __M([1/*require*/,0/*exports*/,2/*vs/workbench/api/node/extHost.protocol*/]), function (require, exports, extHost_protocol_1) {
+define(__m[111/*vs/workbench/api/node/extHostStorage*/], __M([0/*require*/,1/*exports*/,2/*vs/workbench/api/node/extHost.protocol*/]), function (require, exports, extHost_protocol_1) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -21277,7 +22728,7 @@ define(__m[108/*vs/workbench/api/node/extHostStorage*/], __M([1/*require*/,0/*ex
     exports.ExtHostStorage = ExtHostStorage;
 });
 
-define(__m[109/*vs/workbench/api/node/extHostTelemetry*/], __M([1/*require*/,0/*exports*/,5/*vs/base/common/errors*/,3/*vs/base/common/winjs.base*/,2/*vs/workbench/api/node/extHost.protocol*/]), function (require, exports, errors_1, winjs_base_1, extHost_protocol_1) {
+define(__m[112/*vs/workbench/api/node/extHostTelemetry*/], __M([0/*require*/,1/*exports*/,5/*vs/base/common/errors*/,3/*vs/base/common/winjs.base*/,2/*vs/workbench/api/node/extHost.protocol*/]), function (require, exports, errors_1, winjs_base_1, extHost_protocol_1) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -21318,7 +22769,7 @@ define(__m[109/*vs/workbench/api/node/extHostTelemetry*/], __M([1/*require*/,0/*
     exports.RemoteTelemetryService = RemoteTelemetryService;
 });
 
-define(__m[110/*vs/workbench/api/node/extHostTerminalService*/], __M([1/*require*/,0/*exports*/,3/*vs/base/common/winjs.base*/,4/*vs/base/common/event*/,2/*vs/workbench/api/node/extHost.protocol*/]), function (require, exports, winjs_base_1, event_1, extHost_protocol_1) {
+define(__m[113/*vs/workbench/api/node/extHostTerminalService*/], __M([0/*require*/,1/*exports*/,3/*vs/base/common/winjs.base*/,4/*vs/base/common/event*/,2/*vs/workbench/api/node/extHost.protocol*/]), function (require, exports, winjs_base_1, event_1, extHost_protocol_1) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -21444,6 +22895,7 @@ define(__m[110/*vs/workbench/api/node/extHostTerminalService*/], __M([1/*require
                     index = i;
                     return true;
                 }
+                return false;
             });
             return index;
         };
@@ -21467,7 +22919,7 @@ define(__m[110/*vs/workbench/api/node/extHostTerminalService*/], __M([1/*require
 
 
 
-define(__m[111/*vs/workbench/api/node/extHostTreeExplorers*/], __M([1/*require*/,0/*exports*/,63/*vs/nls!vs/workbench/api/node/extHostTreeExplorers*/,36/*vs/base/common/idGenerator*/,3/*vs/base/common/winjs.base*/,6/*vs/workbench/api/node/extHostTypes*/,2/*vs/workbench/api/node/extHost.protocol*/,16/*vs/base/common/async*/]), function (require, exports, nls_1, idGenerator_1, winjs_base_1, extHostTypes_1, extHost_protocol_1, async_1) {
+define(__m[114/*vs/workbench/api/node/extHostTreeExplorers*/], __M([0/*require*/,1/*exports*/,65/*vs/nls!vs/workbench/api/node/extHostTreeExplorers*/,37/*vs/base/common/idGenerator*/,3/*vs/base/common/winjs.base*/,6/*vs/workbench/api/node/extHostTypes*/,2/*vs/workbench/api/node/extHost.protocol*/,9/*vs/base/common/async*/]), function (require, exports, nls_1, idGenerator_1, winjs_base_1, extHostTypes_1, extHost_protocol_1, async_1) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -21557,7 +23009,7 @@ define(__m[111/*vs/workbench/api/node/extHostTreeExplorers*/], __M([1/*require*/
     exports.ExtHostTreeExplorers = ExtHostTreeExplorers;
 });
 
-define(__m[112/*vs/workbench/api/node/extHostWorkspace*/], __M([1/*require*/,0/*exports*/,15/*vs/base/common/paths*/,19/*path*/,14/*vs/workbench/api/node/extHostTypeConverters*/,2/*vs/workbench/api/node/extHost.protocol*/]), function (require, exports, paths_1, path_1, extHostTypeConverters_1, extHost_protocol_1) {
+define(__m[115/*vs/workbench/api/node/extHostWorkspace*/], __M([0/*require*/,1/*exports*/,14/*vs/base/common/paths*/,18/*path*/,15/*vs/workbench/api/node/extHostTypeConverters*/,2/*vs/workbench/api/node/extHost.protocol*/]), function (require, exports, paths_1, path_1, extHostTypeConverters_1, extHost_protocol_1) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -21632,7 +23084,7 @@ define(__m[112/*vs/workbench/api/node/extHostWorkspace*/], __M([1/*require*/,0/*
 
 
 
-define(__m[113/*vs/workbench/api/node/extHost.api.impl*/], __M([1/*require*/,0/*exports*/,4/*vs/base/common/event*/,26/*vs/base/common/map*/,48/*vs/editor/common/modes/languageSelector*/,11/*vs/base/common/platform*/,5/*vs/base/common/errors*/,75/*vs/platform/node/product*/,74/*vs/platform/node/package*/,99/*vs/workbench/api/node/extHostFileSystemEventService*/,97/*vs/workbench/api/node/extHostDocuments*/,96/*vs/workbench/api/node/extHostDocumentSaveParticipant*/,94/*vs/workbench/api/node/extHostConfiguration*/,95/*vs/workbench/api/node/extHostDiagnostics*/,111/*vs/workbench/api/node/extHostTreeExplorers*/,112/*vs/workbench/api/node/extHostWorkspace*/,105/*vs/workbench/api/node/extHostQuickOpen*/,83/*vs/workbench/api/node/extHostProgress*/,106/*vs/workbench/api/node/extHostSCM*/,100/*vs/workbench/api/node/extHostHeapService*/,107/*vs/workbench/api/node/extHostStatusBar*/,93/*vs/workbench/api/node/extHostCommands*/,104/*vs/workbench/api/node/extHostOutputService*/,110/*vs/workbench/api/node/extHostTerminalService*/,103/*vs/workbench/api/node/extHostMessageService*/,98/*vs/workbench/api/node/extHostEditors*/,102/*vs/workbench/api/node/extHostLanguages*/,101/*vs/workbench/api/node/extHostLanguageFeatures*/,88/*vs/workbench/api/node/extHostApiCommands*/,6/*vs/workbench/api/node/extHostTypes*/,7/*vs/base/common/uri*/,17/*vs/base/common/severity*/,23/*vs/editor/common/editorCommon*/,3/*vs/base/common/winjs.base*/,25/*vs/base/common/cancellation*/,15/*vs/base/common/paths*/,33/*fs*/,2/*vs/workbench/api/node/extHost.protocol*/,47/*vs/editor/common/modes/languageConfiguration*/]), function (require, exports, event_1, map_1, languageSelector_1, Platform, errors, product_1, package_1, extHostFileSystemEventService_1, extHostDocuments_1, extHostDocumentSaveParticipant_1, extHostConfiguration_1, extHostDiagnostics_1, extHostTreeExplorers_1, extHostWorkspace_1, extHostQuickOpen_1, extHostProgress_1, extHostSCM_1, extHostHeapService_1, extHostStatusBar_1, extHostCommands_1, extHostOutputService_1, extHostTerminalService_1, extHostMessageService_1, extHostEditors_1, extHostLanguages_1, extHostLanguageFeatures_1, extHostApiCommands_1, extHostTypes, uri_1, severity_1, EditorCommon, winjs_base_1, cancellation_1, paths, fs_1, extHost_protocol_1, languageConfiguration) {
+define(__m[116/*vs/workbench/api/node/extHost.api.impl*/], __M([0/*require*/,1/*exports*/,4/*vs/base/common/event*/,26/*vs/base/common/map*/,50/*vs/editor/common/modes/languageSelector*/,10/*vs/base/common/platform*/,5/*vs/base/common/errors*/,77/*vs/platform/node/product*/,76/*vs/platform/node/package*/,102/*vs/workbench/api/node/extHostFileSystemEventService*/,100/*vs/workbench/api/node/extHostDocuments*/,99/*vs/workbench/api/node/extHostDocumentSaveParticipant*/,97/*vs/workbench/api/node/extHostConfiguration*/,98/*vs/workbench/api/node/extHostDiagnostics*/,114/*vs/workbench/api/node/extHostTreeExplorers*/,115/*vs/workbench/api/node/extHostWorkspace*/,108/*vs/workbench/api/node/extHostQuickOpen*/,86/*vs/workbench/api/node/extHostProgress*/,109/*vs/workbench/api/node/extHostSCM*/,103/*vs/workbench/api/node/extHostHeapService*/,110/*vs/workbench/api/node/extHostStatusBar*/,96/*vs/workbench/api/node/extHostCommands*/,107/*vs/workbench/api/node/extHostOutputService*/,113/*vs/workbench/api/node/extHostTerminalService*/,106/*vs/workbench/api/node/extHostMessageService*/,101/*vs/workbench/api/node/extHostEditors*/,105/*vs/workbench/api/node/extHostLanguages*/,104/*vs/workbench/api/node/extHostLanguageFeatures*/,91/*vs/workbench/api/node/extHostApiCommands*/,85/*vs/workbench/api/node/extHostFunctions*/,6/*vs/workbench/api/node/extHostTypes*/,7/*vs/base/common/uri*/,17/*vs/base/common/severity*/,23/*vs/editor/common/editorCommon*/,3/*vs/base/common/winjs.base*/,25/*vs/base/common/cancellation*/,14/*vs/base/common/paths*/,31/*fs*/,2/*vs/workbench/api/node/extHost.protocol*/,49/*vs/editor/common/modes/languageConfiguration*/]), function (require, exports, event_1, map_1, languageSelector_1, Platform, errors, product_1, package_1, extHostFileSystemEventService_1, extHostDocuments_1, extHostDocumentSaveParticipant_1, extHostConfiguration_1, extHostDiagnostics_1, extHostTreeExplorers_1, extHostWorkspace_1, extHostQuickOpen_1, extHostProgress_1, extHostSCM_1, extHostHeapService_1, extHostStatusBar_1, extHostCommands_1, extHostOutputService_1, extHostTerminalService_1, extHostMessageService_1, extHostEditors_1, extHostLanguages_1, extHostLanguageFeatures_1, extHostApiCommands_1, extHostFunctions_1, extHostTypes, uri_1, severity_1, EditorCommon, winjs_base_1, cancellation_1, paths, fs_1, extHost_protocol_1, languageConfiguration) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -21726,7 +23178,7 @@ define(__m[113/*vs/workbench/api/node/extHost.api.impl*/], __M([1/*require*/,0/*
                         var activeTextEditor = extHostEditors.getActiveTextEditor();
                         if (!activeTextEditor) {
                             console.warn('Cannot execute ' + id + ' because there is no active text editor.');
-                            return;
+                            return undefined;
                         }
                         return activeTextEditor.edit(function (edit) {
                             args.unshift(activeTextEditor, edit);
@@ -21766,6 +23218,7 @@ define(__m[113/*vs/workbench/api/node/extHost.api.impl*/], __M([1/*require*/,0/*
                     if (desc) {
                         return new Extension(extensionService, desc);
                     }
+                    return undefined;
                 },
                 get all() {
                     return extensionService.getAllExtensionDescriptions().map(function (desc) { return new Extension(extensionService, desc); });
@@ -21793,6 +23246,9 @@ define(__m[113/*vs/workbench/api/node/extHost.api.impl*/], __M([1/*require*/,0/*
                 },
                 registerImplementationProvider: function (selector, provider) {
                     return languageFeatures.registerImplementationProvider(selector, provider);
+                },
+                registerTypeDefinitionProvider: function (selector, provider) {
+                    return languageFeatures.registerTypeDefinitionProvider(selector, provider);
                 },
                 registerHoverProvider: function (selector, provider) {
                     return languageFeatures.registerHoverProvider(selector, provider);
@@ -21878,26 +23334,26 @@ define(__m[113/*vs/workbench/api/node/extHost.api.impl*/], __M([1/*require*/,0/*
                 onDidCloseTerminal: function (listener, thisArg, disposables) {
                     return extHostTerminalService.onDidCloseTerminal(listener, thisArg, disposables);
                 },
-                showInformationMessage: function (message) {
-                    var items = [];
-                    for (var _i = 1; _i < arguments.length; _i++) {
-                        items[_i - 1] = arguments[_i];
+                showInformationMessage: function (message, first) {
+                    var rest = [];
+                    for (var _i = 2; _i < arguments.length; _i++) {
+                        rest[_i - 2] = arguments[_i];
                     }
-                    return extHostMessageService.showMessage(severity_1.default.Info, message, items);
+                    return extHostMessageService.showMessage(severity_1.default.Info, message, first, rest);
                 },
-                showWarningMessage: function (message) {
-                    var items = [];
-                    for (var _i = 1; _i < arguments.length; _i++) {
-                        items[_i - 1] = arguments[_i];
+                showWarningMessage: function (message, first) {
+                    var rest = [];
+                    for (var _i = 2; _i < arguments.length; _i++) {
+                        rest[_i - 2] = arguments[_i];
                     }
-                    return extHostMessageService.showMessage(severity_1.default.Warning, message, items);
+                    return extHostMessageService.showMessage(severity_1.default.Warning, message, first, rest);
                 },
-                showErrorMessage: function (message) {
-                    var items = [];
-                    for (var _i = 1; _i < arguments.length; _i++) {
-                        items[_i - 1] = arguments[_i];
+                showErrorMessage: function (message, first) {
+                    var rest = [];
+                    for (var _i = 2; _i < arguments.length; _i++) {
+                        rest[_i - 2] = arguments[_i];
                     }
-                    return extHostMessageService.showMessage(severity_1.default.Error, message, items);
+                    return extHostMessageService.showMessage(severity_1.default.Error, message, first, rest);
                 },
                 showQuickPick: function (items, options, token) {
                     return extHostQuickOpen.showQuickPick(items, options, token);
@@ -21928,7 +23384,7 @@ define(__m[113/*vs/workbench/api/node/extHost.api.impl*/], __M([1/*require*/,0/*
                 },
                 // proposed API
                 sampleFunction: proposedApiFunction(extension, function () {
-                    return extHostMessageService.showMessage(severity_1.default.Info, 'Hello Proposed Api!', []);
+                    return extHostMessageService.showMessage(severity_1.default.Info, 'Hello Proposed Api!', {}, []);
                 }),
                 registerTreeExplorerNodeProvider: proposedApiFunction(extension, function (providerId, provider) {
                     return extHostExplorers.registerTreeExplorerNodeProvider(providerId, provider);
@@ -22027,6 +23483,13 @@ define(__m[113/*vs/workbench/api/node/extHost.api.impl*/], __M([1/*require*/,0/*
                     enumerable: true,
                     configurable: true
                 });
+                Object.defineProperty(SCM.prototype, "inputBox", {
+                    get: function () {
+                        return extHostSCM.inputBox;
+                    },
+                    enumerable: true,
+                    configurable: true
+                });
                 SCM.prototype.getResourceFromURI = function (uri) {
                     return extHostSCM.getResourceFromURI(uri);
                 };
@@ -22041,6 +23504,9 @@ define(__m[113/*vs/workbench/api/node/extHost.api.impl*/], __M([1/*require*/,0/*
             __decorate([
                 proposed(extension)
             ], SCM.prototype, "onDidChangeActiveProvider", null);
+            __decorate([
+                proposed(extension)
+            ], SCM.prototype, "inputBox", null);
             __decorate([
                 proposed(extension)
             ], SCM.prototype, "getResourceFromURI", null);
@@ -22096,6 +23562,8 @@ define(__m[113/*vs/workbench/api/node/extHost.api.impl*/], __M([1/*require*/,0/*
                 Uri: uri_1.default,
                 ViewColumn: extHostTypes.ViewColumn,
                 WorkspaceEdit: extHostTypes.WorkspaceEdit,
+                // functions
+                computeDiff: extHostFunctions_1.computeDiff
             };
         };
     }
@@ -22136,7 +23604,7 @@ define(__m[113/*vs/workbench/api/node/extHost.api.impl*/], __M([1/*require*/,0/*
         var trie = new map_1.TrieMap(map_1.TrieMap.PathSplitter);
         var extensions = extensionService.getAllExtensionDescriptions().map(function (ext) {
             if (!ext.main) {
-                return;
+                return undefined;
             }
             return new winjs_base_1.TPromise(function (resolve, reject) {
                 fs_1.realpath(ext.extensionFolderPath, function (err, path) {
@@ -22200,7 +23668,7 @@ define(__m[113/*vs/workbench/api/node/extHost.api.impl*/], __M([1/*require*/,0/*
 
 
 
-define(__m[52/*vs/workbench/api/node/extHostExtensionService*/], __M([1/*require*/,0/*exports*/,21/*vs/base/common/lifecycle*/,15/*vs/base/common/paths*/,27/*vs/base/node/pfs*/,17/*vs/base/common/severity*/,3/*vs/base/common/winjs.base*/,73/*vs/platform/extensions/common/abstractExtensionService*/,108/*vs/workbench/api/node/extHostStorage*/,113/*vs/workbench/api/node/extHost.api.impl*/,2/*vs/workbench/api/node/extHost.protocol*/,87/*crypto*/]), function (require, exports, lifecycle_1, paths, pfs_1, severity_1, winjs_base_1, abstractExtensionService_1, extHostStorage_1, extHost_api_impl_1, extHost_protocol_1, crypto_1) {
+define(__m[54/*vs/workbench/api/node/extHostExtensionService*/], __M([0/*require*/,1/*exports*/,22/*vs/base/common/lifecycle*/,14/*vs/base/common/paths*/,33/*vs/base/node/pfs*/,17/*vs/base/common/severity*/,3/*vs/base/common/winjs.base*/,75/*vs/platform/extensions/common/abstractExtensionService*/,111/*vs/workbench/api/node/extHostStorage*/,116/*vs/workbench/api/node/extHost.api.impl*/,2/*vs/workbench/api/node/extHost.protocol*/,118/*crypto*/]), function (require, exports, lifecycle_1, paths, pfs_1, severity_1, winjs_base_1, abstractExtensionService_1, extHostStorage_1, extHost_api_impl_1, extHost_protocol_1, crypto_1) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -22278,6 +23746,7 @@ define(__m[52/*vs/workbench/api/node/extHostExtensionService*/], __M([1/*require
             if (this._value) {
                 return paths.join(this._value, extension.id);
             }
+            return undefined;
         };
         ExtensionStoragePath.prototype._getOrCreateWorkspaceStoragePath = function () {
             var workspace = this._contextService.getWorkspace();
@@ -22429,6 +23898,7 @@ define(__m[52/*vs/workbench/api/node/extHostExtensionService*/], __M([1/*require
                     if (errors[1]) {
                         return winjs_base_1.TPromise.wrapError(errors[1]);
                     }
+                    return undefined;
                 });
             });
         };
@@ -22515,7 +23985,7 @@ define(__m[52/*vs/workbench/api/node/extHostExtensionService*/], __M([1/*require
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-define(__m[92/*vs/workbench/node/extensionHostMain*/], __M([1/*require*/,0/*exports*/,64/*vs/nls!vs/workbench/node/extensionHostMain*/,27/*vs/base/node/pfs*/,3/*vs/base/common/winjs.base*/,15/*vs/base/common/paths*/,52/*vs/workbench/api/node/extHostExtensionService*/,90/*vs/workbench/services/thread/common/extHostThreadService*/,109/*vs/workbench/api/node/extHostTelemetry*/,82/*vs/platform/workspace/common/workspace*/,2/*vs/workbench/api/node/extHost.protocol*/,5/*vs/base/common/errors*/]), function (require, exports, nls, pfs, winjs_base_1, paths, extHostExtensionService_1, extHostThreadService_1, extHostTelemetry_1, workspace_1, extHost_protocol_1, errors) {
+define(__m[95/*vs/workbench/node/extensionHostMain*/], __M([0/*require*/,1/*exports*/,66/*vs/nls!vs/workbench/node/extensionHostMain*/,33/*vs/base/node/pfs*/,3/*vs/base/common/winjs.base*/,14/*vs/base/common/paths*/,54/*vs/workbench/api/node/extHostExtensionService*/,93/*vs/workbench/services/thread/common/extHostThreadService*/,112/*vs/workbench/api/node/extHostTelemetry*/,84/*vs/platform/workspace/common/workspace*/,2/*vs/workbench/api/node/extHost.protocol*/,5/*vs/base/common/errors*/]), function (require, exports, nls, pfs, winjs_base_1, paths, extHostExtensionService_1, extHostThreadService_1, extHostTelemetry_1, workspace_1, extHost_protocol_1, errors) {
     'use strict';
     var nativeExit = process.exit.bind(process);
     process.exit = function () {
@@ -22658,7 +24128,7 @@ define(__m[92/*vs/workbench/node/extensionHostMain*/], __M([1/*require*/,0/*expo
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-define(__m[116/*vs/workbench/node/extensionHostProcess*/], __M([1/*require*/,0/*exports*/,5/*vs/base/common/errors*/,3/*vs/base/common/winjs.base*/,92/*vs/workbench/node/extensionHostMain*/,65/*vs/platform/extensions/common/ipcRemoteCom*/,37/*vs/base/common/marshalling*/,77/*vs/base/parts/ipc/node/ipc.net*/,84/*net*/,4/*vs/base/common/event*/]), function (require, exports, errors_1, winjs_base_1, extensionHostMain_1, ipcRemoteCom_1, marshalling_1, ipc_net_1, net_1, event_1) {
+define(__m[120/*vs/workbench/node/extensionHostProcess*/], __M([0/*require*/,1/*exports*/,5/*vs/base/common/errors*/,3/*vs/base/common/winjs.base*/,95/*vs/workbench/node/extensionHostMain*/,67/*vs/platform/extensions/common/ipcRemoteCom*/,32/*vs/base/common/marshalling*/,79/*vs/base/parts/ipc/node/ipc.net*/,87/*net*/,4/*vs/base/common/event*/]), function (require, exports, errors_1, winjs_base_1, extensionHostMain_1, ipcRemoteCom_1, marshalling_1, ipc_net_1, net_1, event_1) {
     'use strict';
     // This calls exit directly in case the initialization is not finished and we need to exit
     // Otherwise, if initialization completed we go to extensionHostMain.terminate()
@@ -22684,6 +24154,7 @@ define(__m[116/*vs/workbench/node/extensionHostProcess*/], __M([1/*require*/,0/*
                         }
                         _this._terminating = true;
                         onTerminate();
+                        return false;
                     });
                 }
                 class_1.prototype.send = function (msg) {

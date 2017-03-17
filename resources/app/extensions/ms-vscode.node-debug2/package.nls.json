@@ -1,7 +1,7 @@
 {
-	"extension.description": "Experimental Visual Studio Code debugger extension for Node.js v6.3+, using the new Inspector Protocol",
+	"extension.description": "Visual Studio Code debugger extension for Node.js v6.3+, using the new Inspector Protocol",
 
-	"node.label": "Node.js v6.3+ (Experimental) via Inspector Protocol",
+	"node.label": "Node.js v6.3+ via Inspector Protocol",
 
 	"node.sourceMaps.description": "Use JavaScript source maps (if they exist).",
 	"node.outDir.description": "If source maps are enabled, the generated code is expected in this directory. Deprecated: use 'outFiles' attribute instead.",
@@ -16,6 +16,7 @@
 	"node.verboseDiagnosticLogging.description": "When true, the adapter logs all traffic with the client and target (as well as the info logged by 'diagnosticLogging')",
 	"node.sourceMapPathOverrides.description": "A set of mappings for rewriting the locations of source files from what the sourcemap says, to their locations on disk. See README for details.",
 	"node.skipFiles.description": "An array of file or folder names, or glob patterns, to skip when debugging.",
+	"node.restart.description": "Restart session after Node.js has terminated.",
 
 	"node.launch.program.description": "Absolute path to the program.",
 	"node.launch.console.description": "Where to launch the debug target: internal console, integrated terminal, or external terminal.",
@@ -29,18 +30,12 @@
 	"node.launch.config.name": "Launch",
 
 	"node.attach.processId.description": "Id of process to attach to.",
-	"node.attach.restart.description": "Restart session after Node.js has terminated.",
 	"node.attach.localRoot.description": "The local source root that corresponds to the 'remoteRoot'.",
 	"node.attach.remoteRoot.description": "The source root of the remote host.",
 
 	"node.attach.config.name": "Attach",
 
 	"node.processattach.config.name": "Attach to Process",
-
-	"node.snippet.launch.label": "Node.js v6.3+ (Experimental): Launch Configuration",
-	"node.snippet.launch.description": "A new configuration for launching a node program, using the new Inspector Protocol",
-	"node.snippet.attach.label": "Node.js v6.3+ (Experimental): Attach Configuration",
-	"node.snippet.attach.description": "A new configuration for attaching to a running node program, using the new Inspector Protocol",
 
 	"extensionHost.label": "VS Code Extension Development",
 

@@ -358,6 +358,7 @@ define(__m[9/*vs/base/common/lifecycle*/], __M([0/*require*/,1/*exports*/]), fun
                 first.dispose();
                 return first;
             }
+            return undefined;
         }
         else {
             dispose(first);
@@ -406,6 +407,7 @@ define(__m[9/*vs/base/common/lifecycle*/], __M([0/*require*/,1/*exports*/]), fun
                     var element = arg_1[_i];
                     return this._register(element);
                 }
+                return undefined;
             }
         };
         return Disposables;
@@ -753,7 +755,7 @@ define(__m[25/*vs/base/common/map*/], __M([0/*require*/,1/*exports*/]), function
                 var part = parts_1[_i];
                 node = children[part];
                 if (!node) {
-                    return;
+                    return undefined;
                 }
                 children = node.children;
             }
@@ -779,6 +781,7 @@ define(__m[25/*vs/base/common/map*/], __M([0/*require*/,1/*exports*/]), function
             if (lastNode) {
                 return lastNode.element;
             }
+            return undefined;
         };
         TrieMap.prototype.findSuperstr = function (path) {
             var parts = this._splitter(path);
@@ -788,7 +791,7 @@ define(__m[25/*vs/base/common/map*/], __M([0/*require*/,1/*exports*/]), function
                 var part = parts_3[_i];
                 node = children[part];
                 if (!node) {
-                    return;
+                    return undefined;
                 }
                 children = node.children;
             }
@@ -1219,12 +1222,19 @@ define(__m[10/*vs/base/common/strings*/], __M([0/*require*/,1/*exports*/,25/*vs/
                 // equal
                 continue;
             }
-            var diff = codeA - codeB;
-            if ((diff === 32 || diff === -32) && isAsciiLetter(codeA) && isAsciiLetter(codeB)) {
-                // equal -> ignoreCase
-                continue;
+            if (isAsciiLetter(codeA) && isAsciiLetter(codeB)) {
+                var diff = codeA - codeB;
+                if (diff === 32 || diff === -32) {
+                    // equal -> ignoreCase
+                    continue;
+                }
+                else {
+                    return diff;
+                }
             }
-            return compare(a[i].toLowerCase(), b[i].toLowerCase());
+            else {
+                return compare(a.toLowerCase(), b.toLowerCase());
+            }
         }
         if (a.length < b.length) {
             return -1;
@@ -1549,7 +1559,11 @@ define(__m[8/*vs/base/common/paths*/], __M([0/*require*/,1/*exports*/,2/*vs/base
             return path[0];
         }
         else {
-            return path.substring(0, ~idx);
+            var res = path.substring(0, ~idx);
+            if (platform_1.isWindows && res[res.length - 1] === ':') {
+                res += exports.nativeSep; // make sure drive letters end with backslash
+            }
+            return res;
         }
     }
     exports.dirname = dirname;
@@ -1839,15 +1853,6 @@ define(__m[8/*vs/base/common/paths*/], __M([0/*require*/,1/*exports*/,2/*vs/base
         return true;
     }
     exports.isValidBasename = isValidBasename;
-    exports.isAbsoluteRegex = /^((\/|[a-zA-Z]:\\)[^\(\)<>\\'\"\[\]]+)/;
-    /**
-     * If you have access to node, it is recommended to use node's path.isAbsolute().
-     * This is a simple regex based approach.
-     */
-    function isAbsolute(path) {
-        return exports.isAbsoluteRegex.test(path);
-    }
-    exports.isAbsolute = isAbsolute;
 });
 
 define(__m[43/*vs/base/common/glob*/], __M([0/*require*/,1/*exports*/,14/*vs/base/common/arrays*/,10/*vs/base/common/strings*/,8/*vs/base/common/paths*/,25/*vs/base/common/map*/]), function (require, exports, arrays, strings, paths, map_1) {
@@ -2708,7 +2713,7 @@ define(__m[32/*vs/base/common/callbackList*/], __M([0/*require*/,1/*exports*/,16
                 args[_i] = arguments[_i];
             }
             if (!this._callbacks) {
-                return;
+                return undefined;
             }
             var ret = [], callbacks = this._callbacks.slice(0), contexts = this._contexts.slice(0);
             for (var i = 0, len = callbacks.length; i < len; i++) {
@@ -3008,8 +3013,9 @@ define(__m[4/*vs/base/common/event*/], __M([0/*require*/,1/*exports*/,9/*vs/base
         return emitter.event;
     }
     exports.any = any;
-    function debounceEvent(event, merger, delay) {
+    function debounceEvent(event, merger, delay, leading) {
         if (delay === void 0) { delay = 100; }
+        if (leading === void 0) { leading = false; }
         var subscription;
         var output;
         var handle;
@@ -3017,11 +3023,15 @@ define(__m[4/*vs/base/common/event*/], __M([0/*require*/,1/*exports*/,9/*vs/base
             onFirstListenerAdd: function () {
                 subscription = event(function (cur) {
                     output = merger(output, cur);
+                    if (!handle && leading) {
+                        emitter.fire(output);
+                    }
                     clearTimeout(handle);
                     handle = setTimeout(function () {
                         var _output = output;
                         output = undefined;
                         emitter.fire(_output);
+                        handle = null;
                     }, delay);
                 });
             },
@@ -4436,10 +4446,6 @@ define(__m[20/*vs/base/common/uuid*/], __M([0/*require*/,1/*exports*/]), functio
     }(ValueUUID));
     V4UUID._chars = ['0', '1', '2', '3', '4', '5', '6', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'];
     V4UUID._timeHighBits = ['8', '9', 'a', 'b'];
-    /**
-     * An empty UUID that contains only zeros.
-     */
-    exports.empty = new ValueUUID('00000000-0000-0000-0000-000000000000');
     function v4() {
         return new V4UUID();
     }
@@ -6650,6 +6656,7 @@ define(__m[12/*vs/base/common/async*/], __M([0/*require*/,1/*exports*/,16/*vs/ba
                 if (!errors.isPromiseCanceledError(err)) {
                     return winjs_base_1.TPromise.wrapError(err);
                 }
+                return undefined;
             });
         }
         return always(promise, function () { return subscription.dispose(); });
@@ -7048,6 +7055,15 @@ define(__m[12/*vs/base/common/async*/], __M([0/*require*/,1/*exports*/,16/*vs/ba
         return Queue;
     }(Limiter));
     exports.Queue = Queue;
+    function setDisposableTimeout(handler, timeout) {
+        var args = [];
+        for (var _i = 2; _i < arguments.length; _i++) {
+            args[_i - 2] = arguments[_i];
+        }
+        var handle = setTimeout.apply(void 0, [handler, timeout].concat(args));
+        return { dispose: function () { clearTimeout(handle); } };
+    }
+    exports.setDisposableTimeout = setDisposableTimeout;
     var TimeoutTimer = (function (_super) {
         __extends(TimeoutTimer, _super);
         function TimeoutTimer() {
@@ -7748,6 +7764,47 @@ define(__m[31/*vs/base/node/extfs*/], __M([0/*require*/,1/*exports*/,20/*vs/base
         });
     }
     exports.writeFileAndFlush = writeFileAndFlush;
+    /**
+     * Copied from: https://github.com/Microsoft/vscode-node-debug/blob/master/src/node/pathUtilities.ts#L83
+     *
+     * Given an absolute, normalized, and existing file path 'realpath' returns the exact path that the file has on disk.
+     * On a case insensitive file system, the returned path might differ from the original path by character casing.
+     * On a case sensitive file system, the returned path will always be identical to the original path.
+     * In case of errors, null is returned. But you cannot use this function to verify that a path exists.
+     * realpathSync does not handle '..' or '.' path segments and it does not take the locale into account.
+     */
+    function realpathSync(path) {
+        var dir = paths.dirname(path);
+        if (path === dir) {
+            return path;
+        }
+        var name = paths.basename(path).toLowerCase();
+        try {
+            var entries = readdirSync(dir);
+            var found = entries.filter(function (e) { return e.toLowerCase() === name; }); // use a case insensitive search
+            if (found.length === 1) {
+                // on a case sensitive filesystem we cannot determine here, whether the file exists or not, hence we need the 'file exists' precondition
+                var prefix = realpathSync(dir); // recurse
+                if (prefix) {
+                    return paths.join(prefix, found[0]);
+                }
+            }
+            else if (found.length > 1) {
+                // must be a case sensitive $filesystem
+                var ix = found.indexOf(name);
+                if (ix >= 0) {
+                    var prefix = realpathSync(dir); // recurse
+                    if (prefix) {
+                        return paths.join(prefix, found[ix]);
+                    }
+                }
+            }
+        }
+        catch (error) {
+        }
+        return null;
+    }
+    exports.realpathSync = realpathSync;
 });
 
 /*---------------------------------------------------------------------------------------------
@@ -10100,6 +10157,7 @@ define(__m[35/*vs/workbench/parts/git/common/gitIpc*/], __M([0/*require*/,1/*exp
                 case 'getCommitTemplate': return this.service.then(function (s) { return s.getCommitTemplate(); });
                 case 'getCommit': return this.service.then(function (s) { return s.getCommit(args); });
             }
+            return undefined;
         };
         return GitChannel;
     }());
@@ -10206,6 +10264,7 @@ define(__m[35/*vs/workbench/parts/git/common/gitIpc*/], __M([0/*require*/,1/*exp
             switch (command) {
                 case 'askpass': return this.service.askpass(args[0], args[1], args[2]);
             }
+            return undefined;
         };
         return AskpassChannel;
     }());

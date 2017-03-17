@@ -2878,6 +2878,7 @@ define(__m[9/*vs/base/common/lifecycle*/], __M([1/*require*/,0/*exports*/]), fun
                 first.dispose();
                 return first;
             }
+            return undefined;
         }
         else {
             dispose(first);
@@ -2926,6 +2927,7 @@ define(__m[9/*vs/base/common/lifecycle*/], __M([1/*require*/,0/*exports*/]), fun
                     var element = arg_1[_i];
                     return this._register(element);
                 }
+                return undefined;
             }
         };
         return Disposables;
@@ -3273,7 +3275,7 @@ define(__m[13/*vs/base/common/map*/], __M([1/*require*/,0/*exports*/]), function
                 var part = parts_1[_i];
                 node = children[part];
                 if (!node) {
-                    return;
+                    return undefined;
                 }
                 children = node.children;
             }
@@ -3299,6 +3301,7 @@ define(__m[13/*vs/base/common/map*/], __M([1/*require*/,0/*exports*/]), function
             if (lastNode) {
                 return lastNode.element;
             }
+            return undefined;
         };
         TrieMap.prototype.findSuperstr = function (path) {
             var parts = this._splitter(path);
@@ -3308,7 +3311,7 @@ define(__m[13/*vs/base/common/map*/], __M([1/*require*/,0/*exports*/]), function
                 var part = parts_3[_i];
                 node = children[part];
                 if (!node) {
-                    return;
+                    return undefined;
                 }
                 children = node.children;
             }
@@ -3739,12 +3742,19 @@ define(__m[15/*vs/base/common/strings*/], __M([1/*require*/,0/*exports*/,13/*vs/
                 // equal
                 continue;
             }
-            var diff = codeA - codeB;
-            if ((diff === 32 || diff === -32) && isAsciiLetter(codeA) && isAsciiLetter(codeB)) {
-                // equal -> ignoreCase
-                continue;
+            if (isAsciiLetter(codeA) && isAsciiLetter(codeB)) {
+                var diff = codeA - codeB;
+                if (diff === 32 || diff === -32) {
+                    // equal -> ignoreCase
+                    continue;
+                }
+                else {
+                    return diff;
+                }
             }
-            return compare(a[i].toLowerCase(), b[i].toLowerCase());
+            else {
+                return compare(a.toLowerCase(), b.toLowerCase());
+            }
         }
         if (a.length < b.length) {
             return -1;
@@ -4406,7 +4416,7 @@ define(__m[19/*vs/base/common/callbackList*/], __M([1/*require*/,0/*exports*/,4/
                 args[_i] = arguments[_i];
             }
             if (!this._callbacks) {
-                return;
+                return undefined;
             }
             var ret = [], callbacks = this._callbacks.slice(0), contexts = this._contexts.slice(0);
             for (var i = 0, len = callbacks.length; i < len; i++) {
@@ -4706,8 +4716,9 @@ define(__m[5/*vs/base/common/event*/], __M([1/*require*/,0/*exports*/,9/*vs/base
         return emitter.event;
     }
     exports.any = any;
-    function debounceEvent(event, merger, delay) {
+    function debounceEvent(event, merger, delay, leading) {
         if (delay === void 0) { delay = 100; }
+        if (leading === void 0) { leading = false; }
         var subscription;
         var output;
         var handle;
@@ -4715,11 +4726,15 @@ define(__m[5/*vs/base/common/event*/], __M([1/*require*/,0/*exports*/,9/*vs/base
             onFirstListenerAdd: function () {
                 subscription = event(function (cur) {
                     output = merger(output, cur);
+                    if (!handle && leading) {
+                        emitter.fire(output);
+                    }
                     clearTimeout(handle);
                     handle = setTimeout(function () {
                         var _output = output;
                         output = undefined;
                         emitter.fire(_output);
+                        handle = null;
                     }, delay);
                 });
             },
@@ -7560,6 +7575,7 @@ define(__m[17/*vs/base/common/async*/], __M([1/*require*/,0/*exports*/,4/*vs/bas
                 if (!errors.isPromiseCanceledError(err)) {
                     return winjs_base_1.TPromise.wrapError(err);
                 }
+                return undefined;
             });
         }
         return always(promise, function () { return subscription.dispose(); });
@@ -7958,6 +7974,15 @@ define(__m[17/*vs/base/common/async*/], __M([1/*require*/,0/*exports*/,4/*vs/bas
         return Queue;
     }(Limiter));
     exports.Queue = Queue;
+    function setDisposableTimeout(handler, timeout) {
+        var args = [];
+        for (var _i = 2; _i < arguments.length; _i++) {
+            args[_i - 2] = arguments[_i];
+        }
+        var handle = setTimeout.apply(void 0, [handler, timeout].concat(args));
+        return { dispose: function () { clearTimeout(handle); } };
+    }
+    exports.setDisposableTimeout = setDisposableTimeout;
     var TimeoutTimer = (function (_super) {
         __extends(TimeoutTimer, _super);
         function TimeoutTimer() {
@@ -10089,7 +10114,8 @@ define(__m[29/*vs/editor/common/viewModel/prefixSumComputer*/], __M([1/*require*
         function PrefixSumComputer(values) {
             this.values = values;
             this.prefixSum = new Uint32Array(values.length);
-            this.prefixSumValidIndex = -1;
+            this.prefixSumValidIndex = new Int32Array(1);
+            this.prefixSumValidIndex[0] = -1;
         }
         PrefixSumComputer.prototype.getCount = function () {
             return this.values.length;
@@ -10100,30 +10126,32 @@ define(__m[29/*vs/editor/common/viewModel/prefixSumComputer*/], __M([1/*require*
             var oldPrefixSum = this.prefixSum;
             var insertValuesLen = insertValues.length;
             if (insertValuesLen === 0) {
-                return;
+                return false;
             }
             this.values = new Uint32Array(oldValues.length + insertValuesLen);
             this.values.set(oldValues.subarray(0, insertIndex), 0);
             this.values.set(oldValues.subarray(insertIndex), insertIndex + insertValuesLen);
             this.values.set(insertValues, insertIndex);
-            if (insertIndex - 1 < this.prefixSumValidIndex) {
-                this.prefixSumValidIndex = insertIndex - 1;
+            if (insertIndex - 1 < this.prefixSumValidIndex[0]) {
+                this.prefixSumValidIndex[0] = insertIndex - 1;
             }
             this.prefixSum = new Uint32Array(this.values.length);
-            if (this.prefixSumValidIndex >= 0) {
-                this.prefixSum.set(oldPrefixSum.subarray(0, this.prefixSumValidIndex + 1));
+            if (this.prefixSumValidIndex[0] >= 0) {
+                this.prefixSum.set(oldPrefixSum.subarray(0, this.prefixSumValidIndex[0] + 1));
             }
+            return true;
         };
         PrefixSumComputer.prototype.changeValue = function (index, value) {
             index = uint_1.toUint32(index);
             value = uint_1.toUint32(value);
             if (this.values[index] === value) {
-                return;
+                return false;
             }
             this.values[index] = value;
-            if (index - 1 < this.prefixSumValidIndex) {
-                this.prefixSumValidIndex = index - 1;
+            if (index - 1 < this.prefixSumValidIndex[0]) {
+                this.prefixSumValidIndex[0] = index - 1;
             }
+            return true;
         };
         PrefixSumComputer.prototype.removeValues = function (startIndex, cnt) {
             startIndex = uint_1.toUint32(startIndex);
@@ -10131,41 +10159,45 @@ define(__m[29/*vs/editor/common/viewModel/prefixSumComputer*/], __M([1/*require*
             var oldValues = this.values;
             var oldPrefixSum = this.prefixSum;
             if (startIndex >= oldValues.length) {
-                return;
+                return false;
             }
             var maxCnt = oldValues.length - startIndex;
             if (cnt >= maxCnt) {
                 cnt = maxCnt;
             }
             if (cnt === 0) {
-                return;
+                return false;
             }
             this.values = new Uint32Array(oldValues.length - cnt);
             this.values.set(oldValues.subarray(0, startIndex), 0);
             this.values.set(oldValues.subarray(startIndex + cnt), startIndex);
             this.prefixSum = new Uint32Array(this.values.length);
-            if (startIndex - 1 < this.prefixSumValidIndex) {
-                this.prefixSumValidIndex = startIndex - 1;
+            if (startIndex - 1 < this.prefixSumValidIndex[0]) {
+                this.prefixSumValidIndex[0] = startIndex - 1;
             }
-            if (this.prefixSumValidIndex >= 0) {
-                this.prefixSum.set(oldPrefixSum.subarray(0, this.prefixSumValidIndex + 1));
+            if (this.prefixSumValidIndex[0] >= 0) {
+                this.prefixSum.set(oldPrefixSum.subarray(0, this.prefixSumValidIndex[0] + 1));
             }
+            return true;
         };
         PrefixSumComputer.prototype.getTotalValue = function () {
             if (this.values.length === 0) {
                 return 0;
             }
-            return this.getAccumulatedValue(this.values.length - 1);
+            return this._getAccumulatedValue(this.values.length - 1);
         };
         PrefixSumComputer.prototype.getAccumulatedValue = function (index) {
             if (index < 0) {
                 return 0;
             }
             index = uint_1.toUint32(index);
-            if (index <= this.prefixSumValidIndex) {
+            return this._getAccumulatedValue(index);
+        };
+        PrefixSumComputer.prototype._getAccumulatedValue = function (index) {
+            if (index <= this.prefixSumValidIndex[0]) {
                 return this.prefixSum[index];
             }
-            var startIndex = this.prefixSumValidIndex + 1;
+            var startIndex = this.prefixSumValidIndex[0] + 1;
             if (startIndex === 0) {
                 this.prefixSum[0] = this.values[0];
                 startIndex++;
@@ -10176,11 +10208,13 @@ define(__m[29/*vs/editor/common/viewModel/prefixSumComputer*/], __M([1/*require*
             for (var i = startIndex; i <= index; i++) {
                 this.prefixSum[i] = this.prefixSum[i - 1] + this.values[i];
             }
-            this.prefixSumValidIndex = Math.max(this.prefixSumValidIndex, index);
+            this.prefixSumValidIndex[0] = Math.max(this.prefixSumValidIndex[0], index);
             return this.prefixSum[index];
         };
         PrefixSumComputer.prototype.getIndexOf = function (accumulatedValue) {
             accumulatedValue = Math.floor(accumulatedValue); //@perf
+            // Compute all sums (to get a fully valid prefixSum)
+            this.getTotalValue();
             var low = 0;
             var high = this.values.length - 1;
             var mid;
@@ -10188,7 +10222,7 @@ define(__m[29/*vs/editor/common/viewModel/prefixSumComputer*/], __M([1/*require*
             var midStart;
             while (low <= high) {
                 mid = low + ((high - low) / 2) | 0;
-                midStop = this.getAccumulatedValue(mid);
+                midStop = this.prefixSum[mid];
                 midStart = midStop - this.values[mid];
                 if (accumulatedValue < midStart) {
                     high = mid - 1;
@@ -10205,6 +10239,67 @@ define(__m[29/*vs/editor/common/viewModel/prefixSumComputer*/], __M([1/*require*
         return PrefixSumComputer;
     }());
     exports.PrefixSumComputer = PrefixSumComputer;
+    var PrefixSumComputerWithCache = (function () {
+        function PrefixSumComputerWithCache(values) {
+            this._cacheAccumulatedValueStart = 0;
+            this._cache = null;
+            this._actual = new PrefixSumComputer(values);
+            this._bustCache();
+        }
+        PrefixSumComputerWithCache.prototype._bustCache = function () {
+            this._cacheAccumulatedValueStart = 0;
+            this._cache = null;
+        };
+        PrefixSumComputerWithCache.prototype.getCount = function () {
+            return this._actual.getCount();
+        };
+        PrefixSumComputerWithCache.prototype.insertValues = function (insertIndex, insertValues) {
+            if (this._actual.insertValues(insertIndex, insertValues)) {
+                this._bustCache();
+            }
+        };
+        PrefixSumComputerWithCache.prototype.changeValue = function (index, value) {
+            if (this._actual.changeValue(index, value)) {
+                this._bustCache();
+            }
+        };
+        PrefixSumComputerWithCache.prototype.removeValues = function (startIndex, cnt) {
+            if (this._actual.removeValues(startIndex, cnt)) {
+                this._bustCache();
+            }
+        };
+        PrefixSumComputerWithCache.prototype.getTotalValue = function () {
+            return this._actual.getTotalValue();
+        };
+        PrefixSumComputerWithCache.prototype.getAccumulatedValue = function (index) {
+            return this._actual.getAccumulatedValue(index);
+        };
+        PrefixSumComputerWithCache.prototype.getIndexOf = function (accumulatedValue) {
+            accumulatedValue = Math.floor(accumulatedValue); //@perf
+            if (this._cache !== null) {
+                var cacheIndex = accumulatedValue - this._cacheAccumulatedValueStart;
+                if (cacheIndex >= 0 && cacheIndex < this._cache.length) {
+                    // Cache hit!
+                    return this._cache[cacheIndex];
+                }
+            }
+            // Cache miss!
+            return this._actual.getIndexOf(accumulatedValue);
+        };
+        /**
+         * Gives a hint that a lot of requests are about to come in for these accumulated values.
+         */
+        PrefixSumComputerWithCache.prototype.warmUpCache = function (accumulatedValueStart, accumulatedValueEnd) {
+            var newCache = [];
+            for (var accumulatedValue = accumulatedValueStart; accumulatedValue <= accumulatedValueEnd; accumulatedValue++) {
+                newCache[accumulatedValue - accumulatedValueStart] = this.getIndexOf(accumulatedValue);
+            }
+            this._cache = newCache;
+            this._cacheAccumulatedValueStart = accumulatedValueStart;
+        };
+        return PrefixSumComputerWithCache;
+    }());
+    exports.PrefixSumComputerWithCache = PrefixSumComputerWithCache;
 });
 
 define(__m[30/*vs/editor/common/model/mirrorModel2*/], __M([1/*require*/,0/*exports*/,29/*vs/editor/common/viewModel/prefixSumComputer*/]), function (require, exports, prefixSumComputer_1) {
@@ -10637,6 +10732,7 @@ define(__m[32/*vs/editor/common/services/editorSimpleWorker*/], __M([1/*require*
                 }
                 return winjs_base_1.TPromise.as({ suggestions: suggestions });
             }
+            return undefined;
         };
         // ---- END suggest --------------------------------------------------------------------------
         BaseEditorSimpleWorker.prototype.navigateValueSet = function (modelUrl, range, up, wordDef, wordDefFlags) {

@@ -13,14 +13,11 @@ class TypeScriptDocumentHighlightProvider {
         if (!filepath) {
             return Promise.resolve([]);
         }
-        let args = {
+        const args = {
             file: filepath,
             line: position.line + 1,
             offset: position.character + 1
         };
-        if (!args.file) {
-            return Promise.resolve([]);
-        }
         return this.client.execute('occurrences', args, token).then((response) => {
             let data = response.body;
             if (data && data.length) {
@@ -48,4 +45,4 @@ class TypeScriptDocumentHighlightProvider {
 }
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = TypeScriptDocumentHighlightProvider;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/f9d0c687ff2ea7aabd85fb9a43129117c0ecf519/extensions\typescript\out/features\documentHighlightProvider.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/8076a19fdcab7e1fc1707952d652f0bb6c6db331/extensions\typescript\out/features\documentHighlightProvider.js.map

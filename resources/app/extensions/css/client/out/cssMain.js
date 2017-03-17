@@ -43,7 +43,10 @@ function activate(context) {
         var colorRequestor = function (uri) {
             return client.sendRequest(ColorSymbolRequest.type, uri).then(function (ranges) { return ranges.map(client.protocol2CodeConverter.asRange); });
         };
-        disposable = colorDecorators_1.activateColorDecorations(colorRequestor, { css: true, scss: true, less: true });
+        var isDecoratorEnabled = function (languageId) {
+            return vscode_1.workspace.getConfiguration().get(languageId + '.colorDecorators.enable');
+        };
+        disposable = colorDecorators_1.activateColorDecorations(colorRequestor, { css: true, scss: true, less: true }, isDecoratorEnabled);
         context.subscriptions.push(disposable);
     });
     vscode_1.languages.setLanguageConfiguration('css', {
@@ -76,4 +79,4 @@ function activate(context) {
     }
 }
 exports.activate = activate;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/f9d0c687ff2ea7aabd85fb9a43129117c0ecf519/extensions\css\client\out/cssMain.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/8076a19fdcab7e1fc1707952d652f0bb6c6db331/extensions\css\client\out/cssMain.js.map

@@ -1,6 +1,7 @@
 [
 	"TypeScript",
 	"La ruta de acceso {0} no apunta a una instalación válida de tsserver. Se usará la versión de TypeScript del paquete.",
+	"VSCode's tsserver was deleted by another application such as a misbehaving virus detection tool. Please reinstall VS Code.",
 	"personalizada",
 	"El servidor de lenguaje TypeScript no se pudo iniciar. El mensaje de error es: {0}",
 	"Usar versión de VSCode",
@@ -10,10 +11,10 @@
 	"Más información",
 	"Recargar",
 	"Recargar ventana para aplicar cambios",
-	"Later",
-	"Seleccionar la versión de TypeScript usada para las características del lenguaje",
-	"El servicio de lenguaje Typescript finalizó de forma inesperada cinco veces en los últimos cinco minutos.",
-	"Notificar problema",
+	"Más tarde",
+	"Seleccionar la versión de TypeScript usada para las características del lenguaje de JavaScript y TypeScript",
 	"El servicio de lenguaje TypeScript finalizó de forma inesperada cinco veces después de haberse iniciado y no se reiniciará.",
+	"Notificar problema",
+	"El servicio de lenguaje Typescript finalizó de forma inesperada cinco veces en los últimos cinco minutos.",
 	"Notificar problema"
 ]

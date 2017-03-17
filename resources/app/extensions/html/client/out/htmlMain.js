@@ -18,6 +18,7 @@ var ColorSymbolRequest;
 function activate(context) {
     var packageInfo = getPackageInfo(context);
     var telemetryReporter = packageInfo && new vscode_extension_telemetry_1.default(packageInfo.name, packageInfo.version, packageInfo.aiKey);
+    context.subscriptions.push(telemetryReporter);
     // The server is implemented in node
     var serverModule = context.asAbsolutePath(path.join('server', 'out', 'htmlServerMain.js'));
     // The debug options for the server
@@ -36,21 +37,22 @@ function activate(context) {
         synchronize: {
             configurationSection: ['html', 'css', 'javascript'],
         },
-        initializationOptions: (_a = {
-                embeddedLanguages: embeddedLanguages
-            },
-            _a['format.enable'] = vscode_1.workspace.getConfiguration('html').get('format.enable'),
-            _a)
+        initializationOptions: {
+            embeddedLanguages: embeddedLanguages
+        }
     };
     // Create the language client and start the client.
-    var client = new vscode_languageclient_1.LanguageClient('html', localize(0, null), serverOptions, clientOptions, true);
+    var client = new vscode_languageclient_1.LanguageClient('html', localize(0, null), serverOptions, clientOptions);
     var disposable = client.start();
     context.subscriptions.push(disposable);
     client.onReady().then(function () {
         var colorRequestor = function (uri) {
             return client.sendRequest(ColorSymbolRequest.type, uri).then(function (ranges) { return ranges.map(client.protocol2CodeConverter.asRange); });
         };
-        var disposable = colorDecorators_1.activateColorDecorations(colorRequestor, { html: true, handlebars: true, razor: true });
+        var isDecoratorEnabled = function (languageId) {
+            return vscode_1.workspace.getConfiguration().get('css.colorDecorators.enable');
+        };
+        var disposable = colorDecorators_1.activateColorDecorations(colorRequestor, { html: true, handlebars: true, razor: true }, isDecoratorEnabled);
         context.subscriptions.push(disposable);
         client.onTelemetry(function (e) {
             if (telemetryReporter) {
@@ -100,7 +102,6 @@ function activate(context) {
             }
         ],
     });
-    var _a;
 }
 exports.activate = activate;
 function getPackageInfo(context) {
@@ -114,4 +115,4 @@ function getPackageInfo(context) {
     }
     return null;
 }
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/f9d0c687ff2ea7aabd85fb9a43129117c0ecf519/extensions\html\client\out/htmlMain.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/8076a19fdcab7e1fc1707952d652f0bb6c6db331/extensions\html\client\out/htmlMain.js.map

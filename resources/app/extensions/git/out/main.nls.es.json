@@ -1,3 +1,5 @@
 [
-	"Usando GIT {0} desde {1}"
+	"Usando GIT {0} desde {1}",
+	"Actualizar GIT",
+	"You seem to have git {0} installed. Code works best with git >= 2"
 ]

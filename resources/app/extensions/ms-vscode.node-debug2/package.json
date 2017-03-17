@@ -1,7 +1,7 @@
 {
   "name": "node-debug2",
-  "displayName": "Node Debug 2 - Experimental",
-  "version": "1.9.13",
+  "displayName": "Node Debug 2",
+  "version": "1.10.0",
   "publisher": "ms-vscode",
   "description": "%extension.description%",
   "icon": "images/node-debug-icon.svg",
@@ -14,7 +14,7 @@
   "license": "MIT",
   "private": true,
   "dependencies": {
-    "vscode-chrome-debug-core": "3.12.4",
+    "vscode-chrome-debug-core": "3.12.8",
     "vscode-debugadapter": "^1.16.0-pre.1",
     "vscode-debugprotocol": "^1.16.0-pre.1",
     "vscode-nls": "^1.0.4"
@@ -68,30 +68,10 @@
     }],
     "debuggers": [{
       "type": "node2",
-      "label": "Node.js v6.3+ (Experimental)",
+      "label": "Node.js v6.3+",
       "program": "./out/src/nodeDebug.js",
       "runtime": "node",
       "aiKey": "AIF-d9b70cd4-b9f9-4d70-929b-a071c400b217",
-      "configurationSnippets": [{
-        "label": "%node.snippet.launch.label%",
-        "description": "%node.snippet.launch.description%",
-        "body": {
-          "type": "node2",
-          "request": "launch",
-          "name": "${2:Launch Program}",
-          "program": "^\"\\${workspaceRoot}/${1:app.js}\"",
-          "cwd": "^\"\\${workspaceRoot}\""
-        }
-      }, {
-        "label": "%node.snippet.attach.label%",
-        "description": "%node.snippet.attach.description%",
-        "body": {
-          "type": "node2",
-          "request": "attach",
-          "name": "${2:Attach to Port}",
-          "port": 9229
-        }
-      }],
       "configurationAttributes": {
         "launch": {
           "required": [
@@ -123,6 +103,11 @@
                 "type": "string"
               },
               "default": []
+            },
+            "restart": {
+              "type": "boolean",
+              "description": "%node.restart.description%",
+              "default": true
             },
             "cwd": {
               "type": "string",
@@ -241,7 +226,7 @@
             },
             "restart": {
               "type": "boolean",
-              "description": "%node.attach.restart.description%",
+              "description": "%node.restart.description%",
               "default": true
             },
             "sourceMaps": {
@@ -324,7 +309,7 @@
     },
     "commands": [{
       "command": "extension.node-debug2.toggleSkippingFile",
-      "title": "Toggle skipping this file"
+      "title": "Toggle Skipping This File"
     }]
   },
   "__metadata": {

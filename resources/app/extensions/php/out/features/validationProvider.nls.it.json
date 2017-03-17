@@ -1,5 +1,5 @@
 [
-	"Consentire l'esecuzione di {0} per il lint dei file PHP?",
+	"Consentire l'esecuzione di {0} (definito come impostazione dell'area di lavoro) per il lint dei file PHP?",
 	"Sì",
 	"No",
 	"Altre informazioni",

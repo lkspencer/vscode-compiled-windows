@@ -55,5 +55,8 @@
 	"scss.lint.unknownVendorSpecificProperties.desc": "Неизвестное свойство поставщика.",
 	"scss.lint.vendorPrefix.desc": "При использовании зависящего от поставщика префикса также указывайте стандартное свойство",
 	"scss.lint.zeroUnits.desc": "Для нуля не требуется единица измерения",
-	"scss.validate.desc": "Включает или отключает все проверки"
+	"scss.validate.desc": "Включает или отключает все проверки",
+	"less.colorDecorators.enable.desc": "Включает или отключает декораторы цвета.",
+	"scss.colorDecorators.enable.desc": "Включает или отключает декораторы цвета.",
+	"css.colorDecorators.enable.desc": "Включает или отключает декораторы цвета."
 }

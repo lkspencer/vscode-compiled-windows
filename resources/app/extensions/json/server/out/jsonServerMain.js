@@ -11,9 +11,6 @@ var uri_1 = require("./utils/uri");
 var URL = require("url");
 var Strings = require("./utils/strings");
 var vscode_json_languageservice_1 = require("vscode-json-languageservice");
-var projectJSONContribution_1 = require("./jsoncontributions/projectJSONContribution");
-var globPatternContribution_1 = require("./jsoncontributions/globPatternContribution");
-var fileAssociationContribution_1 = require("./jsoncontributions/fileAssociationContribution");
 var languageModelCache_1 = require("./languageModelCache");
 var nls = require("vscode-nls");
 nls.config(process.env['VSCODE_NLS_CONFIG']);
@@ -35,24 +32,34 @@ var documents = new vscode_languageserver_1.TextDocuments();
 // Make the text document manager listen on the connection
 // for open, change and close text document events
 documents.listen(connection);
-var filesAssociationContribution = new fileAssociationContribution_1.FileAssociationContribution();
+var clientSnippetSupport = false;
+var clientDynamicRegisterSupport = false;
 // After the server has started the client sends an initilize request. The server receives
 // in the passed params the rootPath of the workspace plus the client capabilities.
 var workspaceRoot;
 connection.onInitialize(function (params) {
     workspaceRoot = uri_1.default.parse(params.rootPath);
-    if (params.initializationOptions) {
-        filesAssociationContribution.setLanguageIds(params.initializationOptions.languageIds);
+    function hasClientCapability() {
+        var keys = [];
+        for (var _i = 0; _i < arguments.length; _i++) {
+            keys[_i] = arguments[_i];
+        }
+        var c = params.capabilities;
+        for (var i = 0; c && i < keys.length; i++) {
+            c = c[keys[i]];
+        }
+        return !!c;
     }
-    var snippetSupport = params.capabilities && params.capabilities.textDocument && params.capabilities.textDocument.completion && params.capabilities.textDocument.completion.completionItem && params.capabilities.textDocument.completion.completionItem.snippetSupport;
+    clientSnippetSupport = hasClientCapability('textDocument', 'completion', 'completionItem', 'snippetSupport');
+    clientDynamicRegisterSupport = hasClientCapability('workspace', 'symbol', 'dynamicRegistration');
     return {
         capabilities: {
             // Tell the client that the server works in FULL text document sync mode
             textDocumentSync: documents.syncKind,
-            completionProvider: snippetSupport ? { resolveProvider: true, triggerCharacters: ['"', ':'] } : null,
+            completionProvider: clientDynamicRegisterSupport ? { resolveProvider: true, triggerCharacters: ['"', ':'] } : null,
             hoverProvider: true,
             documentSymbolProvider: true,
-            documentRangeFormattingProvider: !params.initializationOptions || params.initializationOptions['format.enable']
+            documentRangeFormattingProvider: false
         }
     };
 });
@@ -95,20 +102,32 @@ var schemaRequestService = function (uri) {
 var languageService = vscode_json_languageservice_1.getLanguageService({
     schemaRequestService: schemaRequestService,
     workspaceContext: workspaceContext,
-    contributions: [
-        new projectJSONContribution_1.ProjectJSONContribution(),
-        new globPatternContribution_1.GlobPatternContribution(),
-        filesAssociationContribution
-    ]
+    contributions: []
 });
 var jsonConfigurationSettings = void 0;
 var schemaAssociations = void 0;
+var formatterRegistration = null;
 // The settings have changed. Is send on server activation as well.
 connection.onDidChangeConfiguration(function (change) {
     var settings = change.settings;
     request_light_1.configure(settings.http && settings.http.proxy, settings.http && settings.http.proxyStrictSSL);
     jsonConfigurationSettings = settings.json && settings.json.schemas;
     updateConfiguration();
+    // dynamically enable & disable the formatter
+    if (clientDynamicRegisterSupport) {
+        var enableFormatter = settings && settings.json && settings.json.format && settings.json.format.enable;
+        if (enableFormatter) {
+            if (!formatterRegistration) {
+                console.log('enable');
+                formatterRegistration = connection.client.register(vscode_languageserver_1.DocumentRangeFormattingRequest.type, { documentSelector: [{ language: 'json' }] });
+            }
+        }
+        else if (formatterRegistration) {
+            console.log('enable');
+            formatterRegistration.then(function (r) { return r.dispose(); });
+            formatterRegistration = null;
+        }
+    }
 });
 // The jsonValidation extension configuration has changed
 connection.onNotification(SchemaAssociationNotification.type, function (associations) {
@@ -231,4 +250,4 @@ connection.onDocumentRangeFormatting(function (formatParams) {
 });
 // Listen on the connection
 connection.listen();
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/f9d0c687ff2ea7aabd85fb9a43129117c0ecf519/extensions\json\server\out/jsonServerMain.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/8076a19fdcab7e1fc1707952d652f0bb6c6db331/extensions\json\server\out/jsonServerMain.js.map

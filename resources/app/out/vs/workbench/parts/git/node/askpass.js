@@ -2,7 +2,7 @@
  * Copyright (C) Microsoft Corporation. All rights reserved.
  *--------------------------------------------------------*/
 (function() {
-var __m = ["exports","require","vs/base/common/event","vs/base/common/winjs.base","vs/base/common/lifecycle","vs/base/common/errors","vs/base/parts/ipc/common/ipc","vs/base/node/event","vs/base/common/platform","vs/base/common/types","vs/workbench/parts/git/common/gitIpc","vs/base/common/functional","vs/base/common/callbackList","vs/base/parts/ipc/node/ipc.net","vs/workbench/parts/git/common/git","vs/platform/instantiation/common/instantiation","os","crypto","path","net","vs/base/common/winjs.base.raw","vs/workbench/parts/git/node/askpass","fs"];
+var __m = ["exports","require","vs/base/common/event","vs/base/common/winjs.base","vs/base/common/lifecycle","vs/base/common/errors","vs/base/parts/ipc/common/ipc","vs/base/common/uuid","vs/base/common/types","vs/base/common/functional","vs/base/common/callbackList","vs/base/node/event","vs/base/common/platform","vs/base/parts/ipc/node/ipc.net","vs/platform/instantiation/common/instantiation","vs/workbench/parts/git/common/git","vs/workbench/parts/git/common/gitIpc","os","fs","net","path","vs/workbench/parts/git/node/askpass","vs/base/common/winjs.base.raw"];
 var __M = function(deps) {
   var result = [];
   for (var i = 0, len = deps.length; i < len; i++) {
@@ -14,7 +14,7 @@ var __M = function(deps) {
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-define(__m[11/*vs/base/common/functional*/], __M([1/*require*/,0/*exports*/]), function (require, exports) {
+define(__m[9/*vs/base/common/functional*/], __M([1/*require*/,0/*exports*/]), function (require, exports) {
     'use strict';
     function not(fn) {
         return function () {
@@ -70,6 +70,7 @@ define(__m[4/*vs/base/common/lifecycle*/], __M([1/*require*/,0/*exports*/]), fun
                 first.dispose();
                 return first;
             }
+            return undefined;
         }
         else {
             dispose(first);
@@ -118,6 +119,7 @@ define(__m[4/*vs/base/common/lifecycle*/], __M([1/*require*/,0/*exports*/]), fun
                     var element = arg_1[_i];
                     return this._register(element);
                 }
+                return undefined;
             }
         };
         return Disposables;
@@ -175,7 +177,7 @@ define(__m[4/*vs/base/common/lifecycle*/], __M([1/*require*/,0/*exports*/]), fun
     exports.ImmortalReference = ImmortalReference;
 });
 
-define(__m[8/*vs/base/common/platform*/], __M([1/*require*/,0/*exports*/]), function (require, exports) {
+define(__m[12/*vs/base/common/platform*/], __M([1/*require*/,0/*exports*/]), function (require, exports) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -273,7 +275,7 @@ define(__m[8/*vs/base/common/platform*/], __M([1/*require*/,0/*exports*/]), func
     exports.clearInterval = _globals.clearInterval.bind(_globals);
 });
 
-define(__m[9/*vs/base/common/types*/], __M([1/*require*/,0/*exports*/]), function (require, exports) {
+define(__m[8/*vs/base/common/types*/], __M([1/*require*/,0/*exports*/]), function (require, exports) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -441,7 +443,7 @@ define(__m[9/*vs/base/common/types*/], __M([1/*require*/,0/*exports*/]), functio
     exports.create = create;
 });
 
-define(__m[5/*vs/base/common/errors*/], __M([1/*require*/,0/*exports*/,8/*vs/base/common/platform*/,9/*vs/base/common/types*/]), function (require, exports, platform, types) {
+define(__m[5/*vs/base/common/errors*/], __M([1/*require*/,0/*exports*/,12/*vs/base/common/platform*/,8/*vs/base/common/types*/]), function (require, exports, platform, types) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -605,7 +607,7 @@ define(__m[5/*vs/base/common/errors*/], __M([1/*require*/,0/*exports*/,8/*vs/bas
     exports.getErrorMessage = getErrorMessage;
 });
 
-define(__m[12/*vs/base/common/callbackList*/], __M([1/*require*/,0/*exports*/,5/*vs/base/common/errors*/]), function (require, exports, errors_1) {
+define(__m[10/*vs/base/common/callbackList*/], __M([1/*require*/,0/*exports*/,5/*vs/base/common/errors*/]), function (require, exports, errors_1) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -656,7 +658,7 @@ define(__m[12/*vs/base/common/callbackList*/], __M([1/*require*/,0/*exports*/,5/
                 args[_i] = arguments[_i];
             }
             if (!this._callbacks) {
-                return;
+                return undefined;
             }
             var ret = [], callbacks = this._callbacks.slice(0), contexts = this._contexts.slice(0);
             for (var i = 0, len = callbacks.length; i < len; i++) {
@@ -689,7 +691,7 @@ define(__m[12/*vs/base/common/callbackList*/], __M([1/*require*/,0/*exports*/,5/
     exports.default = CallbackList;
 });
 
-define(__m[2/*vs/base/common/event*/], __M([1/*require*/,0/*exports*/,4/*vs/base/common/lifecycle*/,12/*vs/base/common/callbackList*/,11/*vs/base/common/functional*/]), function (require, exports, lifecycle_1, callbackList_1, functional_1) {
+define(__m[2/*vs/base/common/event*/], __M([1/*require*/,0/*exports*/,4/*vs/base/common/lifecycle*/,10/*vs/base/common/callbackList*/,9/*vs/base/common/functional*/]), function (require, exports, lifecycle_1, callbackList_1, functional_1) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -956,8 +958,9 @@ define(__m[2/*vs/base/common/event*/], __M([1/*require*/,0/*exports*/,4/*vs/base
         return emitter.event;
     }
     exports.any = any;
-    function debounceEvent(event, merger, delay) {
+    function debounceEvent(event, merger, delay, leading) {
         if (delay === void 0) { delay = 100; }
+        if (leading === void 0) { leading = false; }
         var subscription;
         var output;
         var handle;
@@ -965,11 +968,15 @@ define(__m[2/*vs/base/common/event*/], __M([1/*require*/,0/*exports*/,4/*vs/base
             onFirstListenerAdd: function () {
                 subscription = event(function (cur) {
                     output = merger(output, cur);
+                    if (!handle && leading) {
+                        emitter.fire(output);
+                    }
                     clearTimeout(handle);
                     handle = setTimeout(function () {
                         var _output = output;
                         output = undefined;
                         emitter.fire(_output);
+                        handle = null;
                     }, delay);
                 });
             },
@@ -1133,6 +1140,108 @@ define(__m[2/*vs/base/common/event*/], __M([1/*require*/,0/*exports*/,4/*vs/base
         return emitter.event;
     }
     exports.buffer = buffer;
+});
+
+
+
+
+
+
+define(__m[7/*vs/base/common/uuid*/], __M([1/*require*/,0/*exports*/]), function (require, exports) {
+    /*---------------------------------------------------------------------------------------------
+     *  Copyright (c) Microsoft Corporation. All rights reserved.
+     *  Licensed under the MIT License. See License.txt in the project root for license information.
+     *--------------------------------------------------------------------------------------------*/
+    'use strict';
+    var ValueUUID = (function () {
+        function ValueUUID(_value) {
+            this._value = _value;
+            // empty
+        }
+        ValueUUID.prototype.asHex = function () {
+            return this._value;
+        };
+        ValueUUID.prototype.equals = function (other) {
+            return this.asHex() === other.asHex();
+        };
+        return ValueUUID;
+    }());
+    var V4UUID = (function (_super) {
+        __extends(V4UUID, _super);
+        function V4UUID() {
+            return _super.call(this, [
+                V4UUID._randomHex(),
+                V4UUID._randomHex(),
+                V4UUID._randomHex(),
+                V4UUID._randomHex(),
+                V4UUID._randomHex(),
+                V4UUID._randomHex(),
+                V4UUID._randomHex(),
+                V4UUID._randomHex(),
+                '-',
+                V4UUID._randomHex(),
+                V4UUID._randomHex(),
+                V4UUID._randomHex(),
+                V4UUID._randomHex(),
+                '-',
+                '4',
+                V4UUID._randomHex(),
+                V4UUID._randomHex(),
+                V4UUID._randomHex(),
+                '-',
+                V4UUID._oneOf(V4UUID._timeHighBits),
+                V4UUID._randomHex(),
+                V4UUID._randomHex(),
+                V4UUID._randomHex(),
+                '-',
+                V4UUID._randomHex(),
+                V4UUID._randomHex(),
+                V4UUID._randomHex(),
+                V4UUID._randomHex(),
+                V4UUID._randomHex(),
+                V4UUID._randomHex(),
+                V4UUID._randomHex(),
+                V4UUID._randomHex(),
+                V4UUID._randomHex(),
+                V4UUID._randomHex(),
+                V4UUID._randomHex(),
+                V4UUID._randomHex(),
+            ].join('')) || this;
+        }
+        V4UUID._oneOf = function (array) {
+            return array[Math.floor(array.length * Math.random())];
+        };
+        V4UUID._randomHex = function () {
+            return V4UUID._oneOf(V4UUID._chars);
+        };
+        return V4UUID;
+    }(ValueUUID));
+    V4UUID._chars = ['0', '1', '2', '3', '4', '5', '6', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'];
+    V4UUID._timeHighBits = ['8', '9', 'a', 'b'];
+    function v4() {
+        return new V4UUID();
+    }
+    exports.v4 = v4;
+    var _UUIDPattern = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+    function isUUID(value) {
+        return _UUIDPattern.test(value);
+    }
+    exports.isUUID = isUUID;
+    /**
+     * Parses a UUID that is of the format xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx.
+     * @param value A uuid string.
+     */
+    function parse(value) {
+        if (!isUUID(value)) {
+            throw new Error('invalid uuid');
+        }
+        return new ValueUUID(value);
+    }
+    exports.parse = parse;
+    function generateUuid() {
+        return v4().asHex();
+    }
+    exports.generateUuid = generateUuid;
 });
 
 /**
@@ -3211,7 +3320,7 @@ if (typeof process !== 'undefined' && typeof process.nextTick === 'function') {
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-define(__m[3/*vs/base/common/winjs.base*/], __M([20/*vs/base/common/winjs.base.raw*/,5/*vs/base/common/errors*/]), function (winjs, __Errors__) {
+define(__m[3/*vs/base/common/winjs.base*/], __M([22/*vs/base/common/winjs.base.raw*/,5/*vs/base/common/errors*/]), function (winjs, __Errors__) {
 	'use strict';
 
 	var outstandingPromiseErrors = {};
@@ -3272,7 +3381,7 @@ define(__m[3/*vs/base/common/winjs.base*/], __M([20/*vs/base/common/winjs.base.r
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-define(__m[7/*vs/base/node/event*/], __M([1/*require*/,0/*exports*/,2/*vs/base/common/event*/]), function (require, exports, event_1) {
+define(__m[11/*vs/base/node/event*/], __M([1/*require*/,0/*exports*/,2/*vs/base/common/event*/]), function (require, exports, event_1) {
     'use strict';
     function fromEventEmitter(emitter, eventName, map) {
         if (map === void 0) { map = function (id) { return id; }; }
@@ -3656,10 +3765,10 @@ define(__m[6/*vs/base/parts/ipc/common/ipc*/], __M([1/*require*/,0/*exports*/,3/
 
 
 
-define(__m[13/*vs/base/parts/ipc/node/ipc.net*/], __M([1/*require*/,0/*exports*/,19/*net*/,3/*vs/base/common/winjs.base*/,2/*vs/base/common/event*/,7/*vs/base/node/event*/,6/*vs/base/parts/ipc/common/ipc*/,18/*path*/,16/*os*/,17/*crypto*/]), function (require, exports, net_1, winjs_base_1, event_1, event_2, ipc_1, path_1, os_1, crypto_1) {
+define(__m[13/*vs/base/parts/ipc/node/ipc.net*/], __M([1/*require*/,0/*exports*/,19/*net*/,3/*vs/base/common/winjs.base*/,2/*vs/base/common/event*/,11/*vs/base/node/event*/,6/*vs/base/parts/ipc/common/ipc*/,20/*path*/,17/*os*/,7/*vs/base/common/uuid*/]), function (require, exports, net_1, winjs_base_1, event_1, event_2, ipc_1, path_1, os_1, uuid_1) {
     'use strict';
     function generateRandomPipeName() {
-        var randomSuffix = crypto_1.randomBytes(21).toString('hex');
+        var randomSuffix = uuid_1.generateUuid();
         if (process.platform === 'win32') {
             return "\\\\.\\pipe\\vscode-" + randomSuffix + "-sock";
         }
@@ -3846,7 +3955,7 @@ define(__m[13/*vs/base/parts/ipc/node/ipc.net*/], __M([1/*require*/,0/*exports*/
     exports.connect = connect;
 });
 
-define(__m[15/*vs/platform/instantiation/common/instantiation*/], __M([1/*require*/,0/*exports*/]), function (require, exports) {
+define(__m[14/*vs/platform/instantiation/common/instantiation*/], __M([1/*require*/,0/*exports*/]), function (require, exports) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -3905,7 +4014,7 @@ define(__m[15/*vs/platform/instantiation/common/instantiation*/], __M([1/*requir
     exports.optional = optional;
 });
 
-define(__m[14/*vs/workbench/parts/git/common/git*/], __M([1/*require*/,0/*exports*/,15/*vs/platform/instantiation/common/instantiation*/]), function (require, exports, instantiation_1) {
+define(__m[15/*vs/workbench/parts/git/common/git*/], __M([1/*require*/,0/*exports*/,14/*vs/platform/instantiation/common/instantiation*/]), function (require, exports, instantiation_1) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -4032,7 +4141,7 @@ define(__m[14/*vs/workbench/parts/git/common/git*/], __M([1/*require*/,0/*export
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-define(__m[10/*vs/workbench/parts/git/common/gitIpc*/], __M([1/*require*/,0/*exports*/,3/*vs/base/common/winjs.base*/,6/*vs/base/parts/ipc/common/ipc*/,14/*vs/workbench/parts/git/common/git*/]), function (require, exports, winjs_base_1, ipc_1, git_1) {
+define(__m[16/*vs/workbench/parts/git/common/gitIpc*/], __M([1/*require*/,0/*exports*/,3/*vs/base/common/winjs.base*/,6/*vs/base/parts/ipc/common/ipc*/,15/*vs/workbench/parts/git/common/git*/]), function (require, exports, winjs_base_1, ipc_1, git_1) {
     'use strict';
     var RawFileStatusSerializer = {
         to: function (a) { return [a.x, a.y, a.path, a.mimetype, a.rename]; },
@@ -4099,6 +4208,7 @@ define(__m[10/*vs/workbench/parts/git/common/gitIpc*/], __M([1/*require*/,0/*exp
                 case 'getCommitTemplate': return this.service.then(function (s) { return s.getCommitTemplate(); });
                 case 'getCommit': return this.service.then(function (s) { return s.getCommit(args); });
             }
+            return undefined;
         };
         return GitChannel;
     }());
@@ -4205,6 +4315,7 @@ define(__m[10/*vs/workbench/parts/git/common/gitIpc*/], __M([1/*require*/,0/*exp
             switch (command) {
                 case 'askpass': return this.service.askpass(args[0], args[1], args[2]);
             }
+            return undefined;
         };
         return AskpassChannel;
     }());
@@ -4225,7 +4336,7 @@ define(__m[10/*vs/workbench/parts/git/common/gitIpc*/], __M([1/*require*/,0/*exp
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-define(__m[21/*vs/workbench/parts/git/node/askpass*/], __M([1/*require*/,0/*exports*/,13/*vs/base/parts/ipc/node/ipc.net*/,10/*vs/workbench/parts/git/common/gitIpc*/,22/*fs*/]), function (require, exports, ipc_net_1, gitIpc_1, fs) {
+define(__m[21/*vs/workbench/parts/git/node/askpass*/], __M([1/*require*/,0/*exports*/,13/*vs/base/parts/ipc/node/ipc.net*/,16/*vs/workbench/parts/git/common/gitIpc*/,18/*fs*/]), function (require, exports, ipc_net_1, gitIpc_1, fs) {
     'use strict';
     function fatal(err) {
         console.error(err);

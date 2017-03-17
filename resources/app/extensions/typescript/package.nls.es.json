@@ -1,6 +1,6 @@
 {
-	"typescript.reloadProjects.title": "Recargar proyecto de TypeScript",
-	"javascript.reloadProjects.title": "Recargar proyecto de JavaScript",
+	"typescript.reloadProjects.title": "Volver a cargar el proyecto",
+	"javascript.reloadProjects.title": "Volver a cargar el proyecto",
 	"configuration.typescript": "TypeScript",
 	"typescript.useCodeSnippetsOnMethodSuggest.dec": "Complete las funciones con la signatura de parámetro.",
 	"typescript.tsdk.desc": "Especifica la ruta de acceso de carpeta que contiene los archivos lib*.d.ts y tsserver que se van a usar.",
@@ -24,5 +24,8 @@
 	"format.placeOpenBraceOnNewLineForFunctions": "Define si una llave de apertura se incluye en una nueva línea para las funciones o no.",
 	"format.placeOpenBraceOnNewLineForControlBlocks": "Define si una llave de apertura se incluye en una nueva línea para los bloques de control o no.",
 	"javascript.validate.enable": "Habilita o deshabilita la validación de JavaScript.",
-	"typescript.referencesCodeLens.enabled": "Habilitar/deshabilitar la lente de código de las referencias"
+	"typescript.goToProjectConfig.title": "Ir a configuración del proyecto",
+	"javascript.goToProjectConfig.title": "Ir a configuración del proyecto",
+	"typescript.referencesCodeLens.enabled": "Habilitar/deshabilitar CodeLens de referencias.",
+	"typescript.selectTypeScriptVersion.title": "Seleccionar versión de TypeScript"
 }

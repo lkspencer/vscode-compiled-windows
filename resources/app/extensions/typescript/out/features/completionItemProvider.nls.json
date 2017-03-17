@@ -4,7 +4,17 @@
 		"Acquiring typings definitions for IntelliSense."
 	],
 	"keys": [
-		"acquiringTypingsLabel",
-		"acquiringTypingsDetail"
+		{
+			"key": "acquiringTypingsLabel",
+			"comment": [
+				"Typings refers to the *.d.ts typings files that power our IntelliSense. It should not be localized"
+			]
+		},
+		{
+			"key": "acquiringTypingsDetail",
+			"comment": [
+				"Typings refers to the *.d.ts typings files that power our IntelliSense. It should not be localized"
+			]
+		}
 	]
 }

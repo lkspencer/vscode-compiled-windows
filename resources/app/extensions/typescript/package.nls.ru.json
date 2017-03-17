@@ -1,6 +1,6 @@
 {
-	"typescript.reloadProjects.title": "Перезагрузка проекта TypeScript",
-	"javascript.reloadProjects.title": "Перезагрузка проекта JavaScript",
+	"typescript.reloadProjects.title": "Перезагрузить проект",
+	"javascript.reloadProjects.title": "Перезагрузить проект",
 	"configuration.typescript": "TypeScript",
 	"typescript.useCodeSnippetsOnMethodSuggest.dec": "Дополните функции сигнатурами их параметров.",
 	"typescript.tsdk.desc": "Указывает путь к папке, содержащей файлы tsserver и lib*.d.ts, которые необходимо использовать.",
@@ -24,5 +24,8 @@
 	"format.placeOpenBraceOnNewLineForFunctions": "Определяет, ставится ли открывающая фигурная скобка с новой строки в функциях.",
 	"format.placeOpenBraceOnNewLineForControlBlocks": "Определяет, ставится ли открывающая фигурная скобка с новой строки в блоках управления.",
 	"javascript.validate.enable": "Включение или отключение проверки JavaScript.",
-	"typescript.referencesCodeLens.enabled": "Включить/отключить CodeLens для ссылок"
+	"typescript.goToProjectConfig.title": "Перейти к конфигурации проекта",
+	"javascript.goToProjectConfig.title": "Перейти к конфигурации проекта",
+	"typescript.referencesCodeLens.enabled": "Включить/отключить CodeLens для ссылок.",
+	"typescript.selectTypeScriptVersion.title": "Выберите версию TypeScript."
 }

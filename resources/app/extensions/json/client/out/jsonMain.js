@@ -20,60 +20,52 @@ var SchemaAssociationNotification;
 function activate(context) {
     var packageInfo = getPackageInfo(context);
     var telemetryReporter = packageInfo && new vscode_extension_telemetry_1.default(packageInfo.name, packageInfo.version, packageInfo.aiKey);
-    // Resolve language ids to pass around as initialization data
-    vscode_1.languages.getLanguages().then(function (languageIds) {
-        // The server is implemented in node
-        var serverModule = context.asAbsolutePath(path.join('server', 'out', 'jsonServerMain.js'));
-        // The debug options for the server
-        var debugOptions = { execArgv: ['--nolazy', '--debug=6004'] };
-        // If the extension is launch in debug mode the debug server options are use
-        // Otherwise the run options are used
-        var serverOptions = {
-            run: { module: serverModule, transport: vscode_languageclient_1.TransportKind.ipc },
-            debug: { module: serverModule, transport: vscode_languageclient_1.TransportKind.ipc, options: debugOptions }
-        };
-        // Options to control the language client
-        var clientOptions = {
-            // Register the server for json documents
-            documentSelector: ['json'],
-            synchronize: {
-                // Synchronize the setting section 'json' to the server
-                configurationSection: ['json.schemas', 'http.proxy', 'http.proxyStrictSSL'],
-                fileEvents: vscode_1.workspace.createFileSystemWatcher('**/*.json')
-            },
-            initializationOptions: (_a = {
-                    languageIds: languageIds
-                },
-                _a['format.enable'] = vscode_1.workspace.getConfiguration('json').get('format.enable'),
-                _a)
-        };
-        // Create the language client and start the client.
-        var client = new vscode_languageclient_1.LanguageClient('json', localize(0, null), serverOptions, clientOptions);
-        var disposable = client.start();
-        client.onReady().then(function () {
-            client.onTelemetry(function (e) {
-                if (telemetryReporter) {
-                    telemetryReporter.sendTelemetryEvent(e.key, e.data);
-                }
-            });
-            // handle content request
-            client.onRequest(VSCodeContentRequest.type, function (uriPath) {
-                var uri = vscode_1.Uri.parse(uriPath);
-                return vscode_1.workspace.openTextDocument(uri).then(function (doc) {
-                    return doc.getText();
-                }, function (error) {
-                    return Promise.reject(error);
-                });
-            });
-            client.sendNotification(SchemaAssociationNotification.type, getSchemaAssociation(context));
+    context.subscriptions.push(telemetryReporter);
+    // The server is implemented in node
+    var serverModule = context.asAbsolutePath(path.join('server', 'out', 'jsonServerMain.js'));
+    // The debug options for the server
+    var debugOptions = { execArgv: ['--nolazy', '--debug=6004'] };
+    // If the extension is launch in debug mode the debug server options are use
+    // Otherwise the run options are used
+    var serverOptions = {
+        run: { module: serverModule, transport: vscode_languageclient_1.TransportKind.ipc },
+        debug: { module: serverModule, transport: vscode_languageclient_1.TransportKind.ipc, options: debugOptions }
+    };
+    // Options to control the language client
+    var clientOptions = {
+        // Register the server for json documents
+        documentSelector: ['json'],
+        synchronize: {
+            // Synchronize the setting section 'json' to the server
+            configurationSection: ['json', 'http.proxy', 'http.proxyStrictSSL'],
+            fileEvents: vscode_1.workspace.createFileSystemWatcher('**/*.json')
+        }
+    };
+    // Create the language client and start the client.
+    var client = new vscode_languageclient_1.LanguageClient('json', localize(0, null), serverOptions, clientOptions);
+    var disposable = client.start();
+    client.onReady().then(function () {
+        client.onTelemetry(function (e) {
+            if (telemetryReporter) {
+                telemetryReporter.sendTelemetryEvent(e.key, e.data);
+            }
         });
-        // Push the disposable to the context's subscriptions so that the
-        // client can be deactivated on extension deactivation
-        context.subscriptions.push(disposable);
-        vscode_1.languages.setLanguageConfiguration('json', {
-            wordPattern: /("(?:[^\\\"]*(?:\\.)?)*"?)|[^\s{}\[\],:]+/
+        // handle content request
+        client.onRequest(VSCodeContentRequest.type, function (uriPath) {
+            var uri = vscode_1.Uri.parse(uriPath);
+            return vscode_1.workspace.openTextDocument(uri).then(function (doc) {
+                return doc.getText();
+            }, function (error) {
+                return Promise.reject(error);
+            });
         });
-        var _a;
+        client.sendNotification(SchemaAssociationNotification.type, getSchemaAssociation(context));
+    });
+    // Push the disposable to the context's subscriptions so that the
+    // client can be deactivated on extension deactivation
+    context.subscriptions.push(disposable);
+    vscode_1.languages.setLanguageConfiguration('json', {
+        wordPattern: /("(?:[^\\\"]*(?:\\.)?)*"?)|[^\s{}\[\],:]+/
     });
 }
 exports.activate = activate;
@@ -120,4 +112,4 @@ function getPackageInfo(context) {
     }
     return null;
 }
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/f9d0c687ff2ea7aabd85fb9a43129117c0ecf519/extensions\json\client\out/jsonMain.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/8076a19fdcab7e1fc1707952d652f0bb6c6db331/extensions\json\client\out/jsonMain.js.map

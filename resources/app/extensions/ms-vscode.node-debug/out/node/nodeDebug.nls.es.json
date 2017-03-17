@@ -44,6 +44,7 @@
 	"no disponible",
 	"expresión no válida: {0}",
 	"No se pudo recuperar el contenido.",
+	"\"Toggle skipping this file\" is not yet implemented for the legacy protocol debugger.",
 	"El atributo '{0}' no existe ('{1}').",
 	"El atributo '{0}' no es absoluto ('{1}'). Pruebe a agregar '{2}' como prefijo para hacerlo absoluto.",
 	"Más información",

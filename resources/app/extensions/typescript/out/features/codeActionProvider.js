@@ -5,14 +5,12 @@
 'use strict';
 const vscode_1 = require("vscode");
 class TypeScriptCodeActionProvider {
-    constructor(client, modeId) {
+    constructor(client, mode) {
         this.client = client;
-        this.commandId = `typescript.codeActions.${modeId}`;
+        this.commandId = `_typescript.applyCodeAction.${mode}`;
         this.supportedCodeActions = client.execute('getSupportedCodeFixes', null, undefined)
             .then(response => response.body || [])
-            .then(codes => {
-            return codes.map(code => +code).filter(code => !isNaN(code));
-        })
+            .then(codes => codes.map(code => +code).filter(code => !isNaN(code)))
             .then(codes => codes.reduce((obj, code) => {
             obj[code] = true;
             return obj;
@@ -24,7 +22,7 @@ class TypeScriptCodeActionProvider {
         if (!file) {
             return Promise.resolve([]);
         }
-        let editor = vscode_1.window.activeTextEditor && vscode_1.window.activeTextEditor.document === document ? vscode_1.window.activeTextEditor : undefined;
+        const editor = vscode_1.window.activeTextEditor && vscode_1.window.activeTextEditor.document === document ? vscode_1.window.activeTextEditor : undefined;
         const source = {
             uri: document.uri,
             version: document.version,
@@ -34,6 +32,9 @@ class TypeScriptCodeActionProvider {
         };
         return this.getSupportedCodeActions(context)
             .then(supportedActions => {
+            if (!supportedActions.length) {
+                return [];
+            }
             return this.client.execute('getCodeFixes', {
                 file: file,
                 startLine: range.start.line + 1,
@@ -41,26 +42,23 @@ class TypeScriptCodeActionProvider {
                 startOffset: range.start.character + 1,
                 endOffset: range.end.character + 1,
                 errorCodes: supportedActions
-            }, token);
+            }, token).then(response => response.body || []);
         })
-            .then(response => response.body || [])
             .then(codeActions => codeActions.map(action => this.actionToEdit(source, action)));
     }
     getSupportedCodeActions(context) {
         return this.supportedCodeActions
-            .then(supportedActions => {
-            return context.diagnostics
-                .map(diagnostic => +diagnostic.code)
-                .filter(code => supportedActions[code]);
-        });
+            .then(supportedActions => context.diagnostics
+            .map(diagnostic => +diagnostic.code)
+            .filter(code => supportedActions[code]));
     }
     actionToEdit(source, action) {
         const workspaceEdit = new vscode_1.WorkspaceEdit();
-        action.changes.forEach(change => {
-            change.textChanges.forEach(textChange => {
+        for (const change of action.changes) {
+            for (const textChange of change.textChanges) {
                 workspaceEdit.replace(this.client.asUrl(change.fileName), new vscode_1.Range(textChange.start.line - 1, textChange.start.offset - 1, textChange.end.line - 1, textChange.end.offset - 1), textChange.newText);
-            });
-        });
+            }
+        }
         return {
             title: action.description,
             command: this.commandId,
@@ -83,7 +81,7 @@ class TypeScriptCodeActionProvider {
                 return true;
             }
             const newLines = firstEdit.newText.match(/\n/g);
-            const editedRange = new vscode_1.Range(new vscode_1.Position(firstEdit.range.start.line, 0), new vscode_1.Position(firstEdit.range.end.line + 1 + (newLines ? newLines.length : 0), 0));
+            const editedRange = new vscode_1.Range(firstEdit.range.start.line, 0, firstEdit.range.end.line + 1 + (newLines ? newLines.length : 0), 0);
             // TODO: Workaround for https://github.com/Microsoft/TypeScript/issues/12249
             // apply formatting to the source range until TS returns formatted results
             return vscode_1.commands.executeCommand('vscode.executeFormatRangeProvider', source.uri, editedRange, source.formattingOptions || {}).then((edits) => {
@@ -99,4 +97,4 @@ class TypeScriptCodeActionProvider {
 }
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = TypeScriptCodeActionProvider;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/f9d0c687ff2ea7aabd85fb9a43129117c0ecf519/extensions\typescript\out/features\codeActionProvider.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/8076a19fdcab7e1fc1707952d652f0bb6c6db331/extensions\typescript\out/features\codeActionProvider.js.map

@@ -31,8 +31,7 @@ class NodeDebugAdapter extends vscode_chrome_debug_core_1.ChromeDebugAdapter {
         return super.initialize(args);
     }
     launch(args) {
-        args.sourceMapPathOverrides = getSourceMapPathOverrides(args.cwd, args.sourceMapPathOverrides);
-        fixNodeInternalsSkipFiles(args);
+        this.commonArgs(args);
         super.launch(args);
         const port = args.port || utils.random(3000, 50000);
         let runtimeExecutable = args.runtimeExecutable;
@@ -136,8 +135,7 @@ class NodeDebugAdapter extends vscode_chrome_debug_core_1.ChromeDebugAdapter {
         });
     }
     attach(args) {
-        args.sourceMapPathOverrides = getSourceMapPathOverrides(args.cwd, args.sourceMapPathOverrides);
-        this._restartMode = args.restart;
+        this.commonArgs(args);
         return super.attach(args).catch(err => {
             if (err.format && err.format.indexOf('Cannot connect to runtime process') >= 0) {
                 // hack -core error msg
@@ -145,6 +143,12 @@ class NodeDebugAdapter extends vscode_chrome_debug_core_1.ChromeDebugAdapter {
             }
             return Promise.reject(err);
         });
+    }
+    commonArgs(args) {
+        super.commonArgs(args);
+        args.sourceMapPathOverrides = getSourceMapPathOverrides(args.cwd, args.sourceMapPathOverrides);
+        fixNodeInternalsSkipFiles(args);
+        this._restartMode = args.restart;
     }
     doAttach(port, targetUrl, address, timeout) {
         return super.doAttach(port, targetUrl, address, timeout)

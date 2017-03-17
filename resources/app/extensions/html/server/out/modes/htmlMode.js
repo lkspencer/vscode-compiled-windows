@@ -27,6 +27,9 @@ function getHTMLMode(htmlLanguageService) {
         findDocumentLinks: function (document, documentContext) {
             return htmlLanguageService.findDocumentLinks(document, documentContext);
         },
+        findDocumentSymbols: function (document) {
+            return htmlLanguageService.findDocumentSymbols(document, htmlDocuments.get(document));
+        },
         format: function (document, range, formatParams) {
             var formatSettings = settings && settings.format;
             if (!formatSettings) {
@@ -55,4 +58,4 @@ function merge(src, dst) {
     }
     return dst;
 }
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/f9d0c687ff2ea7aabd85fb9a43129117c0ecf519/extensions\html\server\out/modes\htmlMode.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/8076a19fdcab7e1fc1707952d652f0bb6c6db331/extensions\html\server\out/modes\htmlMode.js.map

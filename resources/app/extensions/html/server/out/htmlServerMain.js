@@ -28,6 +28,8 @@ documents.listen(connection);
 var workspacePath;
 var languageModes;
 var settings = {};
+var clientSnippetSupport = false;
+var clientDynamicRegisterSupport = false;
 // After the server has started the client sends an initilize request. The server receives
 // in the passed params the rootPath of the workspace plus the client capabilites
 connection.onInitialize(function (params) {
@@ -40,20 +42,32 @@ connection.onInitialize(function (params) {
     connection.onShutdown(function () {
         languageModes.dispose();
     });
-    var snippetSupport = params.capabilities && params.capabilities.textDocument && params.capabilities.textDocument.completion && params.capabilities.textDocument.completion.completionItem && params.capabilities.textDocument.completion.completionItem.snippetSupport;
+    function hasClientCapability() {
+        var keys = [];
+        for (var _i = 0; _i < arguments.length; _i++) {
+            keys[_i] = arguments[_i];
+        }
+        var c = params.capabilities;
+        for (var i = 0; c && i < keys.length; i++) {
+            c = c[keys[i]];
+        }
+        return !!c;
+    }
+    clientSnippetSupport = hasClientCapability('textDocument', 'completion', 'completionItem', 'snippetSupport');
+    clientDynamicRegisterSupport = hasClientCapability('workspace', 'symbol', 'dynamicRegistration');
     return {
         capabilities: {
             // Tell the client that the server works in FULL text document sync mode
             textDocumentSync: documents.syncKind,
-            completionProvider: snippetSupport ? { resolveProvider: true, triggerCharacters: ['.', ':', '<', '"', '=', '/'] } : null,
+            completionProvider: clientDynamicRegisterSupport ? { resolveProvider: true, triggerCharacters: ['.', ':', '<', '"', '=', '/'] } : null,
             hoverProvider: true,
             documentHighlightProvider: true,
-            documentRangeFormattingProvider: initializationOptions && initializationOptions['format.enable'],
+            documentRangeFormattingProvider: false,
             documentLinkProvider: { resolveProvider: false },
             documentSymbolProvider: true,
             definitionProvider: true,
             signatureHelpProvider: { triggerCharacters: ['('] },
-            referencesProvider: true
+            referencesProvider: true,
         }
     };
 });
@@ -62,6 +76,7 @@ var validation = {
     css: true,
     javascript: true
 };
+var formatterRegistration = null;
 // The settings have changed. Is send on server activation as well.
 connection.onDidChangeConfiguration(function (change) {
     settings = change.settings;
@@ -74,6 +89,20 @@ connection.onDidChangeConfiguration(function (change) {
         }
     });
     documents.all().forEach(triggerValidation);
+    // dynamically enable & disable the formatter
+    if (clientDynamicRegisterSupport) {
+        var enableFormatter = settings && settings.html && settings.html.format && settings.html.format.enable;
+        if (enableFormatter) {
+            if (!formatterRegistration) {
+                var documentSelector = [{ language: 'html' }, { language: 'handlebars' }]; // don't register razor, the formatter does more harm than good
+                formatterRegistration = connection.client.register(vscode_languageserver_1.DocumentRangeFormattingRequest.type, { documentSelector: documentSelector });
+            }
+        }
+        else if (formatterRegistration) {
+            formatterRegistration.then(function (r) { return r.dispose(); });
+            formatterRegistration = null;
+        }
+    }
 });
 var pendingValidationRequests = {};
 var validationDelayMs = 200;
@@ -229,4 +258,4 @@ connection.onRequest(ColorSymbolRequest.type, function (uri) {
 });
 // Listen on the connection
 connection.listen();
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/f9d0c687ff2ea7aabd85fb9a43129117c0ecf519/extensions\html\server\out/htmlServerMain.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/8076a19fdcab7e1fc1707952d652f0bb6c6db331/extensions\html\server\out/htmlServerMain.js.map

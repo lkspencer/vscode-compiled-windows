@@ -55,5 +55,8 @@
 	"scss.lint.unknownVendorSpecificProperties.desc": "未知的廠商特定屬性。",
 	"scss.lint.vendorPrefix.desc": "在使用廠商專屬的前置詞時，也包括標準屬性。",
 	"scss.lint.zeroUnits.desc": "零不需要任何單位",
-	"scss.validate.desc": "啟用或停用所有驗證"
+	"scss.validate.desc": "啟用或停用所有驗證",
+	"less.colorDecorators.enable.desc": "啟用或停用彩色裝飾項目",
+	"scss.colorDecorators.enable.desc": "啟用或停用彩色裝飾項目",
+	"css.colorDecorators.enable.desc": "啟用或停用彩色裝飾項目"
 }

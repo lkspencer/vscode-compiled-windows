@@ -3,11 +3,17 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 "use strict";
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
 var vscode_debugadapter_1 = require("vscode-debugadapter");
 var nodeV8Protocol_1 = require("./nodeV8Protocol");
 var sourceMaps_1 = require("./sourceMaps");
@@ -526,13 +532,20 @@ var NodeDebugSession = (function (_super) {
             // we always launch in 'debug-brk' mode, but we only show the break event if 'stopOnEntry' attribute is true.
             var launchArgs = [runtimeExecutable];
             if (!this._noDebug) {
-                launchArgs.push("--debugBrkPluginHost=" + port);
+                if (typeof args.stopOnEntry === 'boolean' && args.stopOnEntry || programArgs.some(function (a) { return a.indexOf('--extensionTestsPath=') === 0; })) {
+                    launchArgs.push("--debugBrkPluginHost=" + port);
+                }
+                else {
+                    launchArgs.push("--debugPluginHost=" + port);
+                }
             }
             launchArgs = launchArgs.concat(runtimeArgs, programArgs);
+            this.log('eh', "launchRequest: launching extensionhost");
             this._sendLaunchCommandToConsole(launchArgs);
             var cmd = CP.spawn(runtimeExecutable, launchArgs.slice(1));
             cmd.on('error', function (err) {
                 _this._terminated("failed to launch extensionHost (" + err + ")");
+                _this.log('eh', "launchRequest: failed to launch extensionHost: " + err);
             });
             this._captureOutput(cmd);
             // we are done!
@@ -637,7 +650,7 @@ var NodeDebugSession = (function (_super) {
         // read env from disk and merge into envVars
         if (args.envFile) {
             try {
-                var buffer = FS.readFileSync(args.envFile, 'utf8');
+                var buffer = PathUtils.stripBOM(FS.readFileSync(args.envFile, 'utf8'));
                 var env_1 = {};
                 buffer.split('\n').forEach(function (line) {
                     var r = line.match(/^\s*([\w\.\-]+)\s*=\s*(.*)?\s*$/);
@@ -791,6 +804,7 @@ var NodeDebugSession = (function (_super) {
         if (this._adapterID === 'extensionHost') {
             // in EH mode 'attach' means 'launch' mode
             this._attachMode = false;
+            this.log('eh', "attachRequest: args: " + JSON.stringify(args));
         }
         else {
             this._attachMode = true;
@@ -875,7 +889,7 @@ var NodeDebugSession = (function (_super) {
                     if (now < endTime) {
                         setTimeout(function () {
                             _this.log('la', '_attach: retry socket.connect');
-                            socket.connect(port);
+                            socket.connect(port, address);
                         }, 200); // retry after 200 ms
                     }
                     else {
@@ -896,7 +910,7 @@ var NodeDebugSession = (function (_super) {
         if (retryCount === void 0) { retryCount = 0; }
         this._node.command('evaluate', { expression: 'process.pid', global: true }, function (resp) {
             var ok = resp.success;
-            if (resp.success) {
+            if (resp.success && resp.body.value !== undefined) {
                 _this._nodeProcessId = +resp.body.value;
                 _this.log('la', "_initialize: got process id " + _this._nodeProcessId + " from node");
             }
@@ -996,6 +1010,7 @@ var NodeDebugSession = (function (_super) {
                     });
                 }
                 catch (e) {
+                    // fall through
                 }
             }
         }
@@ -1027,7 +1042,7 @@ var NodeDebugSession = (function (_super) {
             if (this._nodeProcessId <= 0) {
                 // if we haven't gotten a process pid so far, we try it again
                 this._node.command('evaluate', { expression: 'process.pid', global: true }, function (resp) {
-                    if (resp.success) {
+                    if (resp.success && resp.body.value !== undefined) {
                         _this._nodeProcessId = +resp.body.value;
                         _this.log('la', "_initialize: got process id " + _this._nodeProcessId + " from node (2nd try)");
                     }
@@ -1084,6 +1099,7 @@ var NodeDebugSession = (function (_super) {
             if (this._nodeProcessId > 0 && args && typeof args.restart === 'boolean' && args.restart) {
                 // do not kill extensionHost (since vscode will do this for us in a nicer way without killing the window)
                 this._nodeProcessId = 0;
+                this.log('eh', "disconnectRequest: restart session requested");
             }
         }
         this.shutdown();
@@ -1143,6 +1159,7 @@ var NodeDebugSession = (function (_super) {
                         hitter = Function('hitcnt', expr);
                     }
                     else {
+                        // error
                     }
                 }
                 sbs.push(new InternalSourceBreakpoint(this.convertClientLineToDebugger(b.line), typeof b.column === 'number' ? this.convertClientColumnToDebugger(b.column) : 0, b.condition, hitter));
@@ -1584,7 +1601,7 @@ var NodeDebugSession = (function (_super) {
         var _this = this;
         var threadReference = args.threadId;
         var startFrame = typeof args.startFrame === 'number' ? args.startFrame : 0;
-        var maxLevels = args.levels;
+        var maxLevels = typeof args.levels === 'number' ? args.levels : 10;
         var totalFrames = 0;
         if (threadReference !== NodeDebugSession.DUMMY_THREAD_ID) {
             this.sendErrorResponse(response, 2014, 'Unexpected thread reference {_thread}.', { _thread: threadReference }, vscode_debugadapter_1.ErrorDestination.Telemetry);
@@ -1673,6 +1690,8 @@ var NodeDebugSession = (function (_super) {
                         origin = localize(32, null);
                     }
                     else {
+                        // do not map the script to a file in the workspace
+                        // fall through
                     }
                 }
                 if (!name_2) {
@@ -1849,7 +1868,7 @@ var NodeDebugSession = (function (_super) {
                         errorDispatch(err);
                     }
                     else {
-                        completeDispatch(fileContents);
+                        completeDispatch(PathUtils.stripBOM(fileContents));
                     }
                 });
             });
@@ -1986,6 +2005,7 @@ var NodeDebugSession = (function (_super) {
         var selectedProperties = new Array();
         var found_proto = false;
         if (obj.properties) {
+            count = count || obj.properties.length;
             for (var _i = 0, _a = obj.properties; _i < _a.length; _i++) {
                 var property = _a[_i];
                 if ('name' in property) {
@@ -2665,7 +2685,7 @@ var NodeDebugSession = (function (_super) {
         }
         return script;
     };
-    //--- source request ------------------------------------------------------------------------------------------------------
+    //--- completions request -------------------------------------------------------------------------------------------------
     NodeDebugSession.prototype.completionsRequest = function (response, args) {
         var _this = this;
         var line = args.text;
@@ -2703,10 +2723,21 @@ var NodeDebugSession = (function (_super) {
                         var name_4 = _a[_i];
                         if (!isIndex(name_4) && !set.has(name_4)) {
                             set.add(name_4);
-                            items.push({
+                            var pi = {
                                 label: name_4,
                                 type: 'property'
-                            });
+                            };
+                            if (!NodeDebugSession.PROPERTY_NAME_MATCHER.test(name_4)) {
+                                // we cannot use dot notation
+                                pi.text = "['" + name_4 + "']";
+                                if (dot > 0) {
+                                    // specify a range starting with the '.' and extending to the end of the line
+                                    // which will be replaced by the completion proposal.
+                                    pi.start = dot;
+                                    pi.length = line.length - dot;
+                                }
+                            }
+                            items.push(pi);
                         }
                     }
                 }
@@ -2777,6 +2808,18 @@ var NodeDebugSession = (function (_super) {
             return [];
         });
     };
+    //--- custom request ------------------------------------------------------------------------------------------------------
+    /**
+     * Handle custom requests.
+     */
+    NodeDebugSession.prototype.customRequest = function (command, response, args) {
+        if (command === 'toggleSkipFileStatus') {
+            this.outLine(localize(45, null));
+        }
+        else {
+            _super.prototype.customRequest.call(this, command, response, args);
+        }
+    };
     //---- private helpers ----------------------------------------------------------------------------------------------------
     NodeDebugSession.prototype.log = function (traceCategory, message) {
         if (this._trace && (this._traceAll || this._trace.indexOf(traceCategory) >= 0)) {
@@ -2787,13 +2830,13 @@ var NodeDebugSession = (function (_super) {
      * 'Path does not exist' error
      */
     NodeDebugSession.prototype.sendNotExistErrorResponse = function (response, attribute, path) {
-        this.sendErrorResponse(response, 2007, localize(45, null, attribute, '{path}'), { path: path });
+        this.sendErrorResponse(response, 2007, localize(46, null, attribute, '{path}'), { path: path });
     };
     /**
      * 'Path not absolute' error with 'More Information' link.
      */
     NodeDebugSession.prototype.sendRelativePathErrorResponse = function (response, attribute, path) {
-        var format = localize(46, null, attribute, '{path}', '${workspaceRoot}/');
+        var format = localize(47, null, attribute, '{path}', '${workspaceRoot}/');
         this.sendErrorResponseWithInfoLink(response, 2008, format, { path: path }, 20003);
     };
     /**
@@ -2806,7 +2849,7 @@ var NodeDebugSession = (function (_super) {
             variables: variables,
             showUser: true,
             url: 'http://go.microsoft.com/fwlink/?linkID=534832#_' + infoId.toString(),
-            urlLabel: localize(47, null)
+            urlLabel: localize(48, null)
         });
     };
     /**
@@ -2858,10 +2901,10 @@ var NodeDebugSession = (function (_super) {
         else {
             var errmsg = nodeResponse.message;
             if (errmsg.indexOf('unresponsive') >= 0) {
-                this.sendErrorResponse(response, 2015, localize(48, null), { _request: nodeResponse.command });
+                this.sendErrorResponse(response, 2015, localize(49, null), { _request: nodeResponse.command });
             }
             else if (errmsg.indexOf('timeout') >= 0) {
-                this.sendErrorResponse(response, 2016, localize(49, null), { _request: nodeResponse.command });
+                this.sendErrorResponse(response, 2016, localize(50, null), { _request: nodeResponse.command });
             }
             else {
                 this.sendErrorResponse(response, 2013, 'Node.js request \'{_request}\' failed (reason: {_error}).', { _request: nodeResponse.command, _error: errmsg }, vscode_debugadapter_1.ErrorDestination.Telemetry);
@@ -2920,6 +2963,7 @@ var NodeDebugSession = (function (_super) {
                     lookup.push(handle);
                 }
                 else {
+                    // console.error('shouldn't happen: cannot lookup transient objects');
                 }
             }
         }
@@ -3013,6 +3057,7 @@ var NodeDebugSession = (function (_super) {
             }
         }
         catch (e) {
+            // silently ignore problems
         }
         return false;
     };
@@ -3089,15 +3134,16 @@ NodeDebugSession.NODE_INTERNALS = '<node_internals>';
 NodeDebugSession.NODE_SHEBANG_MATCHER = new RegExp('#! */usr/bin/env +node');
 NodeDebugSession.LONG_STRING_MATCHER = /\.\.\. \(length: [0-9]+\)$/;
 NodeDebugSession.HITCOUNT_MATCHER = /(>|>=|=|==|<|<=|%)?\s*([0-9]+)/;
+NodeDebugSession.PROPERTY_NAME_MATCHER = /^[$_\w][$_\w0-9]*$/;
 //--- scopes request ------------------------------------------------------------------------------------------------------
 NodeDebugSession.SCOPE_NAMES = [
-    localize(50, null),
     localize(51, null),
     localize(52, null),
     localize(53, null),
     localize(54, null),
     localize(55, null),
-    localize(56, null)
+    localize(56, null),
+    localize(57, null)
 ];
 exports.NodeDebugSession = NodeDebugSession;
 var INDEX_PATTERN = /^[0-9]+$/;

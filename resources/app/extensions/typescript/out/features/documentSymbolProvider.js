@@ -5,7 +5,7 @@
 'use strict';
 const vscode_1 = require("vscode");
 const PConst = require("../protocol.const");
-let outlineTypeTable = Object.create(null);
+const outlineTypeTable = Object.create(null);
 outlineTypeTable[PConst.Kind.module] = vscode_1.SymbolKind.Module;
 outlineTypeTable[PConst.Kind.class] = vscode_1.SymbolKind.Class;
 outlineTypeTable[PConst.Kind.enum] = vscode_1.SymbolKind.Enum;
@@ -32,43 +32,17 @@ class TypeScriptDocumentSymbolProvider {
         if (!filepath) {
             return Promise.resolve([]);
         }
-        let args = {
+        const args = {
             file: filepath
         };
-        if (!args.file) {
-            return Promise.resolve([]);
-        }
-        function convertNavBar(indent, foldingMap, bucket, item, containerLabel) {
-            let realIndent = indent + item.indent;
-            let key = `${realIndent}|${item.text}`;
-            if (realIndent !== 0 && !foldingMap[key]) {
-                let result = new vscode_1.SymbolInformation(item.text, outlineTypeTable[item.kind] || vscode_1.SymbolKind.Variable, containerLabel ? containerLabel : '', new vscode_1.Location(resource.uri, textSpan2Range(item.spans[0])));
-                foldingMap[key] = result;
-                bucket.push(result);
-            }
-            if (item.childItems && item.childItems.length > 0) {
-                for (let child of item.childItems) {
-                    convertNavBar(realIndent + 1, foldingMap, bucket, child, item.text);
-                }
-            }
-        }
-        function convertNavTree(bucket, item, containerLabel) {
-            let result = new vscode_1.SymbolInformation(item.text, outlineTypeTable[item.kind] || vscode_1.SymbolKind.Variable, containerLabel ? containerLabel : '', new vscode_1.Location(resource.uri, textSpan2Range(item.spans[0])));
-            if (item.childItems && item.childItems.length > 0) {
-                for (let child of item.childItems) {
-                    convertNavTree(bucket, child, result.name);
-                }
-            }
-            bucket.push(result);
-        }
         if (this.client.apiVersion.has206Features()) {
             return this.client.execute('navtree', args, token).then((response) => {
-                let result = [];
+                const result = [];
                 if (response.body) {
                     // The root represents the file. Ignore this when showing in the UI
                     let tree = response.body;
                     if (tree.childItems) {
-                        tree.childItems.forEach(item => convertNavTree(result, item));
+                        tree.childItems.forEach(item => TypeScriptDocumentSymbolProvider.convertNavTree(resource.uri, result, item));
                     }
                 }
                 return result;
@@ -79,10 +53,10 @@ class TypeScriptDocumentSymbolProvider {
         }
         else {
             return this.client.execute('navbar', args, token).then((response) => {
-                let result = [];
+                const result = [];
                 if (response.body) {
                     let foldingMap = Object.create(null);
-                    response.body.forEach(item => convertNavBar(0, foldingMap, result, item));
+                    response.body.forEach(item => TypeScriptDocumentSymbolProvider.convertNavBar(resource.uri, 0, foldingMap, result, item));
                 }
                 return result;
             }, (err) => {
@@ -91,7 +65,35 @@ class TypeScriptDocumentSymbolProvider {
             });
         }
     }
+    static convertNavBar(resource, indent, foldingMap, bucket, item, containerLabel) {
+        let realIndent = indent + item.indent;
+        let key = `${realIndent}|${item.text}`;
+        if (realIndent !== 0 && !foldingMap[key] && TypeScriptDocumentSymbolProvider.shouldInclueEntry(item.text)) {
+            let result = new vscode_1.SymbolInformation(item.text, outlineTypeTable[item.kind] || vscode_1.SymbolKind.Variable, containerLabel ? containerLabel : '', new vscode_1.Location(resource, textSpan2Range(item.spans[0])));
+            foldingMap[key] = result;
+            bucket.push(result);
+        }
+        if (item.childItems && item.childItems.length > 0) {
+            for (let child of item.childItems) {
+                TypeScriptDocumentSymbolProvider.convertNavBar(resource, realIndent + 1, foldingMap, bucket, child, item.text);
+            }
+        }
+    }
+    static convertNavTree(resource, bucket, item, containerLabel) {
+        const result = new vscode_1.SymbolInformation(item.text, outlineTypeTable[item.kind] || vscode_1.SymbolKind.Variable, containerLabel ? containerLabel : '', new vscode_1.Location(resource, textSpan2Range(item.spans[0])));
+        if (item.childItems && item.childItems.length > 0) {
+            for (const child of item.childItems) {
+                TypeScriptDocumentSymbolProvider.convertNavTree(resource, bucket, child, result.name);
+            }
+        }
+        if (TypeScriptDocumentSymbolProvider.shouldInclueEntry(result.name)) {
+            bucket.push(result);
+        }
+    }
+    static shouldInclueEntry(name) {
+        return !!(name && name !== '<function>' && name !== '<class>');
+    }
 }
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = TypeScriptDocumentSymbolProvider;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/f9d0c687ff2ea7aabd85fb9a43129117c0ecf519/extensions\typescript\out/features\documentSymbolProvider.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/8076a19fdcab7e1fc1707952d652f0bb6c6db331/extensions\typescript\out/features\documentSymbolProvider.js.map
