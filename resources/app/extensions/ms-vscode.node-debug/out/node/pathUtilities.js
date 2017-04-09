@@ -130,12 +130,13 @@ exports.mkdirs = mkdirs;
  */
 function isOnPath(program) {
     if (process.platform === 'win32') {
-        var WHERE = 'C:\\Windows\\System32\\where.exe';
+        return true;
+        /*
+        const WHERE = 'C:\\Windows\\System32\\where.exe';
         try {
             if (FS.existsSync(WHERE)) {
-                CP.execSync(WHERE + " " + program);
-            }
-            else {
+                CP.execSync(`${WHERE} ${program}`);
+            } else {
                 // do not report error if 'where' doesn't exist
             }
             return true;
@@ -143,6 +144,7 @@ function isOnPath(program) {
         catch (Exception) {
             // ignore
         }
+        */
     }
     else {
         var WHICH = '/usr/bin/which';

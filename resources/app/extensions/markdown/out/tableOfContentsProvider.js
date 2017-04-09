@@ -32,7 +32,7 @@ var TableOfContentsProvider = (function () {
     };
     TableOfContentsProvider.prototype.buildToc = function (document) {
         var toc = [];
-        var tokens = this.engine.parse(this.document.getText());
+        var tokens = this.engine.parse(document.uri, document.getText());
         for (var _i = 0, _a = tokens.filter(function (token) { return token.type === 'heading_open'; }); _i < _a.length; _i++) {
             var heading = _a[_i];
             var lineNumber = heading.map[0];
@@ -63,4 +63,4 @@ var TableOfContentsProvider = (function () {
     return TableOfContentsProvider;
 }());
 exports.TableOfContentsProvider = TableOfContentsProvider;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/8076a19fdcab7e1fc1707952d652f0bb6c6db331/extensions\markdown\out/tableOfContentsProvider.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/d9484d12b38879b7f4cdd1150efeb2fd2c1fbf39/extensions\markdown\out/tableOfContentsProvider.js.map

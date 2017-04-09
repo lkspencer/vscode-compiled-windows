@@ -136,6 +136,37 @@ var ScopeContainer = (function () {
     return ScopeContainer;
 }());
 exports.ScopeContainer = ScopeContainer;
+var StoppedEvent2 = (function (_super) {
+    __extends(StoppedEvent2, _super);
+    function StoppedEvent2(reason, threadId, exception_text) {
+        var _this = _super.call(this, reason, threadId, exception_text) || this;
+        switch (reason) {
+            case 'step':
+                _this.body.description = localize(1, null);
+                break;
+            case 'breakpoint':
+                _this.body.description = localize(2, null);
+                break;
+            case 'exception':
+                _this.body.description = localize(3, null);
+                break;
+            case 'pause':
+                _this.body.description = localize(4, null);
+                break;
+            case 'entry':
+                _this.body.description = localize(5, null);
+                break;
+            case 'debugger_statement':
+                _this.body.description = localize(6, null);
+                break;
+            case 'frame_entry':
+                _this.body.description = localize(7, null);
+                break;
+        }
+        return _this;
+    }
+    return StoppedEvent2;
+}(vscode_debugadapter_1.StoppedEvent));
 var Script = (function () {
     function Script(script) {
         this.contents = script.source;
@@ -166,7 +197,7 @@ var SourceSource = (function () {
 var NodeDebugSession = (function (_super) {
     __extends(NodeDebugSession, _super);
     function NodeDebugSession() {
-        var _this = _super.call(this) || this;
+        var _this = _super.call(this, 'node-debug.txt') || this;
         _this._traceAll = false;
         // options
         _this._tryToInjectExtension = true;
@@ -224,7 +255,7 @@ var NodeDebugSession = (function (_super) {
         });
         _this._node.on('exception', function (event) {
             _this._stopped('exception');
-            _this._handleNodeBreakEvent(event.body);
+            _this._handleNodeExceptionEvent(event.body);
         });
         /*
         this._node.on('beforeCompile', (event: NodeV8Event) => {
@@ -250,6 +281,33 @@ var NodeDebugSession = (function (_super) {
     /**
      * Analyse why node has stopped and sends StoppedEvent if necessary.
      */
+    NodeDebugSession.prototype._handleNodeExceptionEvent = function (eventBody) {
+        // in order to identify reject calls and debugger statements extract source at current location
+        var source = null;
+        if (eventBody.sourceLineText && typeof eventBody.sourceColumn === 'number') {
+            source = eventBody.sourceLineText.substr(eventBody.sourceColumn);
+        }
+        if (this._skip(eventBody)) {
+            this._node.command('continue');
+            return;
+        }
+        // if this exception originates from a 'reject', skip it if 'All Exception' is not set.
+        if (this._skipRejects && source && source.indexOf('reject') === 0) {
+            if (!this._catchRejects) {
+                this._node.command('continue');
+                return;
+            }
+            if (eventBody.exception.text === 'undefined') {
+                eventBody.exception.text = 'reject';
+            }
+        }
+        // remember exception
+        this._exception = eventBody;
+        this._handleNodeBreakEvent2('exception', false, eventBody.exception.text);
+    };
+    /**
+     * Analyse why node has stopped and sends StoppedEvent if necessary.
+     */
     NodeDebugSession.prototype._handleNodeBreakEvent = function (eventBody) {
         var _this = this;
         var isEntry = false;
@@ -259,56 +317,32 @@ var NodeDebugSession = (function (_super) {
         if (eventBody.sourceLineText && typeof eventBody.sourceColumn === 'number') {
             source = eventBody.sourceLineText.substr(eventBody.sourceColumn);
         }
-        // is exception?
-        if (eventBody.exception) {
-            if (this._skip(eventBody)) {
-                this._node.command('continue');
-                return;
+        var breakpoints = eventBody.breakpoints;
+        if (Array.isArray(breakpoints) && breakpoints.length > 0) {
+            this._disableSkipFiles = this._skip(eventBody);
+            var id = breakpoints[0];
+            if (!this._gotEntryEvent && id === 1) {
+                isEntry = true;
+                this.log('la', '_analyzeBreak: suppressed stop-on-entry event');
+                reason = 'entry';
+                this._rememberEntryLocation(eventBody.script.name, eventBody.sourceLine, eventBody.sourceColumn);
             }
-            // if this exception originates from a 'reject', skip it if 'All Exception' is not set.
-            if (this._skipRejects && source && source.indexOf('reject') === 0) {
-                if (!this._catchRejects) {
-                    this._node.command('continue');
-                    return;
-                }
-                if (eventBody.exception.text === 'undefined') {
-                    eventBody.exception.text = 'reject';
-                }
-            }
-            // remember exception
-            this._exception = eventBody.exception;
-            this._handleNodeBreakEvent2(this._reasonText('exception'), isEntry, eventBody.exception.text);
-            return;
-        }
-        // is breakpoint?
-        if (!reason) {
-            var breakpoints = eventBody.breakpoints;
-            if (Array.isArray(breakpoints) && breakpoints.length > 0) {
-                this._disableSkipFiles = this._skip(eventBody);
-                var id = breakpoints[0];
-                if (!this._gotEntryEvent && id === 1) {
-                    isEntry = true;
-                    this.log('la', '_analyzeBreak: suppressed stop-on-entry event');
-                    reason = this._reasonText('entry');
-                    this._rememberEntryLocation(eventBody.script.name, eventBody.sourceLine, eventBody.sourceColumn);
-                }
-                else {
-                    var ibp = this._hitCounts.get(id);
-                    if (ibp) {
-                        ibp.hitCount++;
-                        if (ibp.hitter && !ibp.hitter(ibp.hitCount)) {
-                            this._node.command('continue');
-                            return;
-                        }
+            else {
+                var ibp = this._hitCounts.get(id);
+                if (ibp) {
+                    ibp.hitCount++;
+                    if (ibp.hitter && !ibp.hitter(ibp.hitCount)) {
+                        this._node.command('continue');
+                        return;
                     }
-                    reason = this._reasonText('breakpoint');
                 }
+                reason = 'breakpoint';
             }
         }
         // is debugger statement?
         if (!reason) {
             if (source && source.indexOf('debugger') === 0) {
-                reason = this._reasonText('debugger');
+                reason = 'debugger_statement';
                 this._gotDebuggerEvent = true;
             }
         }
@@ -316,10 +350,10 @@ var NodeDebugSession = (function (_super) {
         if (!reason) {
             if (this._restartFramePending) {
                 this._restartFramePending = false;
-                reason = this._reasonText('frame_entry');
+                reason = 'frame_entry';
             }
             else {
-                reason = this._reasonText('step');
+                reason = 'step';
             }
             if (!this._disableSkipFiles) {
                 // should we continue until we find a better place to stop?
@@ -339,28 +373,8 @@ var NodeDebugSession = (function (_super) {
         }
         this._handleNodeBreakEvent2(reason, isEntry);
     };
-    NodeDebugSession.prototype._reasonText = function (reason) {
-        switch (reason) {
-            case 'entry':
-                return localize(1, null);
-            case 'exception':
-                return localize(2, null);
-            case 'breakpoint':
-                return localize(3, null);
-            case 'debugger':
-                return localize(4, null);
-            case 'frame_entry':
-                return localize(5, null);
-            case 'step':
-                return localize(6, null);
-            case 'user_request':
-                return localize(7, null);
-            default:
-                return reason;
-        }
-    };
     NodeDebugSession.prototype._handleNodeBreakEvent2 = function (reason, isEntry, exception_text) {
-        this._lastStoppedEvent = new vscode_debugadapter_1.StoppedEvent(reason, NodeDebugSession.DUMMY_THREAD_ID, exception_text);
+        this._lastStoppedEvent = new StoppedEvent2(reason, NodeDebugSession.DUMMY_THREAD_ID, exception_text);
         if (!isEntry) {
             if (this._smartStepCount > 0) {
                 this.log('ss', "_handleNodeBreakEvent: " + this._smartStepCount + " steps skipped");
@@ -416,6 +430,12 @@ var NodeDebugSession = (function (_super) {
             return NodeDebugSession.NODE_INTERNALS + "/" + scriptName;
         }
         return scriptName;
+    };
+    /**
+     * Special treatment for internal modules: we remove '<internal>/' or '<internal>\'
+     */
+    NodeDebugSession.prototype._pathToScript = function (path) {
+        return path.replace(NodeDebugSession.NODE_INTERNALS_PREFIX, '');
     };
     /**
      * clear everything that is no longer valid after a new stopped event.
@@ -480,6 +500,8 @@ var NodeDebugSession = (function (_super) {
         response.body.supportsRestartFrame = true;
         // This debug adapter supports the completions request
         response.body.supportsCompletionsRequest = true;
+        // This debug adapter supports the exception info request
+        response.body.supportsExceptionInfoRequest = true;
         this.sendResponse(response);
     };
     //---- launch request -----------------------------------------------------------------------------------------------------
@@ -542,7 +564,14 @@ var NodeDebugSession = (function (_super) {
             launchArgs = launchArgs.concat(runtimeArgs, programArgs);
             this.log('eh', "launchRequest: launching extensionhost");
             this._sendLaunchCommandToConsole(launchArgs);
-            var cmd = CP.spawn(runtimeExecutable, launchArgs.slice(1));
+            var options = void 0;
+            if (args.env) {
+                options = {
+                    // merge environment variables into a copy of the process.env
+                    env: PathUtils.extendObject(PathUtils.extendObject({}, process.env), args.env)
+                };
+            }
+            var cmd = CP.spawn(runtimeExecutable, launchArgs.slice(1), options);
             cmd.on('error', function (err) {
                 _this._terminated("failed to launch extensionHost (" + err + ")");
                 _this.log('eh', "launchRequest: failed to launch extensionHost: " + err);
@@ -753,9 +782,16 @@ var NodeDebugSession = (function (_super) {
      * returns true on error.
      */
     NodeDebugSession.prototype._processCommonArgs = function (response, args) {
-        if (typeof args.trace === 'string') {
+        if (typeof args.trace === 'boolean') {
+            this._trace = args.trace ? ['all'] : undefined;
+            this._traceAll = args.trace;
+        }
+        else if (typeof args.trace === 'string') {
             this._trace = args.trace.split(',');
             this._traceAll = this._trace.indexOf('all') >= 0;
+            if (this._trace.indexOf('dap') >= 0) {
+                vscode_debugadapter_1.Logger.setup(vscode_debugadapter_1.Logger.LogLevel.Verbose, /*logToFile=*/ false);
+            }
         }
         if (typeof args.stepBack === 'boolean') {
             this._stepBack = args.stepBack;
@@ -913,6 +949,7 @@ var NodeDebugSession = (function (_super) {
             if (resp.success && resp.body.value !== undefined) {
                 _this._nodeProcessId = +resp.body.value;
                 _this.log('la', "_initialize: got process id " + _this._nodeProcessId + " from node");
+                _this.logNodeVersion();
             }
             else {
                 if (resp.message.indexOf('process is not defined') >= 0) {
@@ -955,6 +992,16 @@ var NodeDebugSession = (function (_super) {
                 else {
                     _this._sendNodeResponse(response, resp);
                 }
+            }
+        });
+    };
+    NodeDebugSession.prototype.logNodeVersion = function () {
+        var _this = this;
+        this._node.command('evaluate', { expression: 'process.version', global: true }, function (resp) {
+            if (resp.success && resp.body.value !== undefined) {
+                var version = resp.body.value;
+                _this.sendEvent(new vscode_debugadapter_1.OutputEvent('nodeVersion', 'telemetry', { version: version }));
+                _this.log('la', "_initialize: target node version: " + version);
             }
         });
     };
@@ -1045,6 +1092,7 @@ var NodeDebugSession = (function (_super) {
                     if (resp.success && resp.body.value !== undefined) {
                         _this._nodeProcessId = +resp.body.value;
                         _this.log('la', "_initialize: got process id " + _this._nodeProcessId + " from node (2nd try)");
+                        _this.logNodeVersion();
                     }
                     _this._startInitialize2(stopped);
                 });
@@ -1078,7 +1126,7 @@ var NodeDebugSession = (function (_super) {
         if (this._stopOnEntry) {
             // user has requested 'stop on entry' so send out a stop-on-entry event
             this.log('la', '_startInitialize2: fire stop-on-entry event');
-            this.sendEvent(new vscode_debugadapter_1.StoppedEvent(this._reasonText('entry'), NodeDebugSession.DUMMY_THREAD_ID));
+            this.sendEvent(new StoppedEvent2('entry', NodeDebugSession.DUMMY_THREAD_ID));
         }
         else {
             // since we are stopped but UI doesn't know about this, remember that we later do the right thing in configurationDoneRequest()
@@ -1205,6 +1253,20 @@ var NodeDebugSession = (function (_super) {
                 return;
             }
         }
+        if (source.path && NodeDebugSession.NODE_INTERNALS_PREFIX.test(source.path)) {
+            // a core module
+            var path_1 = this._pathToScript(source.path);
+            this._findModule(path_1).then(function (scriptId) {
+                if (scriptId >= 0) {
+                    _this._updateBreakpoints(response, null, scriptId, sbs);
+                }
+                else {
+                    _this.sendErrorResponse(response, 2019, localize(25, null, '{_module}'), { _module: path_1 });
+                }
+                return;
+            });
+            return;
+        }
         if (typeof source.sourceReference === 'number' && source.sourceReference > 0) {
             var srcSource = this._sourceHandles.get(source.sourceReference);
             if (srcSource && srcSource.scriptId) {
@@ -1224,7 +1286,7 @@ var NodeDebugSession = (function (_super) {
                     _this._updateBreakpoints(response, null, scriptId, sbs);
                 }
                 else {
-                    _this.sendErrorResponse(response, 2019, localize(25, null, '{_module}'), { _module: source.name });
+                    _this.sendErrorResponse(response, 2019, localize(26, null, '{_module}'), { _module: source.name });
                 }
                 return;
             });
@@ -1343,7 +1405,7 @@ var NodeDebugSession = (function (_super) {
         if (lb.line < 0) {
             // ignore this breakpoint because it couldn't be source mapped successfully
             var bp = new vscode_debugadapter_1.Breakpoint(false);
-            bp.message = localize(26, null);
+            bp.message = localize(27, null);
             return Promise.resolve(bp);
         }
         if (lb.line === 0) {
@@ -1380,6 +1442,8 @@ var NodeDebugSession = (function (_super) {
                 actualLine = al[0].line;
                 actualColumn = _this._adjustColumn(actualLine, al[0].column);
             }
+            var actualSrcLine = actualLine;
+            var actualSrcColumn = actualColumn;
             if (path && sourcemap) {
                 if (actualLine !== args.line || actualColumn !== args.column) {
                     // breakpoint location was adjusted by node.js so we have to map the new location back to source
@@ -1389,27 +1453,27 @@ var NodeDebugSession = (function (_super) {
                     return _this._sourceMaps.MapToSource(localpath_1, null, actualLine, actualColumn).then(function (mapresult) {
                         if (mapresult) {
                             _this.log('sm', "_setBreakpoint: bp verification gen: '" + localpath_1 + "' " + actualLine + ":" + actualColumn + " -> src: '" + mapresult.path + "' " + mapresult.line + ":" + mapresult.column);
-                            actualLine = mapresult.line;
-                            actualColumn = mapresult.column;
+                            actualSrcLine = mapresult.line;
+                            actualSrcColumn = mapresult.column;
                         }
                         else {
-                            actualLine = lb.orgLine;
-                            actualColumn = lb.orgColumn;
+                            actualSrcLine = lb.orgLine;
+                            actualSrcColumn = lb.orgColumn;
                         }
-                        return _this._setBreakpoint2(lb, path, actualLine, actualColumn);
+                        return _this._setBreakpoint2(lb, path, actualSrcLine, actualSrcColumn, actualLine, actualColumn);
                     });
                 }
                 else {
-                    actualLine = lb.orgLine;
-                    actualColumn = lb.orgColumn;
+                    actualSrcLine = lb.orgLine;
+                    actualSrcColumn = lb.orgColumn;
                 }
             }
-            return _this._setBreakpoint2(lb, path, actualLine, actualColumn);
+            return _this._setBreakpoint2(lb, path, actualSrcLine, actualSrcColumn, actualLine, actualColumn);
         }).catch(function (error) {
             return new vscode_debugadapter_1.Breakpoint(false);
         });
     };
-    NodeDebugSession.prototype._setBreakpoint2 = function (ibp, path, actualLine, actualColumn) {
+    NodeDebugSession.prototype._setBreakpoint2 = function (ibp, path, actualSrcLine, actualSrcColumn, actualLine, actualColumn) {
         // nasty corner case: since we ignore the break-on-entry event we have to make sure that we
         // stop in the entry point line if the user has an explicit breakpoint there (or if there is a 'debugger' statement).
         // For this we check here whether a breakpoint is at the same location as the 'break-on-entry' location.
@@ -1423,12 +1487,12 @@ var NodeDebugSession = (function (_super) {
             }
         }
         if (ibp.verificationMessage) {
-            var bp = new vscode_debugadapter_1.Breakpoint(false, this.convertDebuggerLineToClient(actualLine), this.convertDebuggerColumnToClient(actualColumn));
+            var bp = new vscode_debugadapter_1.Breakpoint(false, this.convertDebuggerLineToClient(actualSrcLine), this.convertDebuggerColumnToClient(actualSrcColumn));
             bp.message = ibp.verificationMessage;
             return bp;
         }
         else {
-            return new vscode_debugadapter_1.Breakpoint(true, this.convertDebuggerLineToClient(actualLine), this.convertDebuggerColumnToClient(actualColumn));
+            return new vscode_debugadapter_1.Breakpoint(true, this.convertDebuggerLineToClient(actualSrcLine), this.convertDebuggerColumnToClient(actualSrcColumn));
         }
     };
     /**
@@ -1550,12 +1614,12 @@ var NodeDebugSession = (function (_super) {
         if (this._needBreakpointEvent) {
             this._needBreakpointEvent = false;
             info = 'fire breakpoint event';
-            this.sendEvent(new vscode_debugadapter_1.StoppedEvent(this._reasonText('breakpoint'), NodeDebugSession.DUMMY_THREAD_ID));
+            this.sendEvent(new StoppedEvent2('breakpoint', NodeDebugSession.DUMMY_THREAD_ID));
         }
         if (this._needDebuggerEvent) {
             this._needDebuggerEvent = false;
             info = 'fire debugger statement event';
-            this.sendEvent(new vscode_debugadapter_1.StoppedEvent(this._reasonText('debugger'), NodeDebugSession.DUMMY_THREAD_ID));
+            this.sendEvent(new StoppedEvent2('debugger_statement', NodeDebugSession.DUMMY_THREAD_ID));
         }
         this.log('la', "configurationDoneRequest: " + info);
         this.sendResponse(response);
@@ -1611,9 +1675,8 @@ var NodeDebugSession = (function (_super) {
             fromFrame: startFrame,
             toFrame: startFrame + maxLevels
         };
-        var cmd = this._nodeInjectionAvailable ? 'vscode_backtrace' : 'backtrace';
-        this.log('va', "stackTraceRequest: " + cmd + " " + startFrame + " " + maxLevels);
-        this._node.command2(cmd, backtraceArgs).then(function (response) {
+        this.log('va', "stackTraceRequest: backtrace " + startFrame + " " + maxLevels);
+        this._node.backtrace(backtraceArgs).then(function (response) {
             if (response.body.totalFrames > 0 || response.body.frames) {
                 var frames_1 = response.body.frames;
                 totalFrames = response.body.totalFrames;
@@ -1631,14 +1694,14 @@ var NodeDebugSession = (function (_super) {
         }).catch(function (error) {
             if (error.message === 'no stack') {
                 if (_this._stoppedReason === 'pause') {
-                    _this.sendErrorResponse(response, 2022, localize(27, null));
+                    _this.sendErrorResponse(response, 2022, localize(28, null));
                 }
                 else {
-                    _this.sendErrorResponse(response, 2023, localize(28, null));
+                    _this.sendErrorResponse(response, 2023, localize(29, null));
                 }
             }
             else {
-                _this.sendErrorResponse(response, 2018, localize(29, null), { _command: error.command, _error: error.message });
+                _this.sendErrorResponse(response, 2018, localize(30, null), { _command: error.command, _error: error.message });
             }
         });
     };
@@ -1652,7 +1715,7 @@ var NodeDebugSession = (function (_super) {
             var line = frame.line;
             var column = _this._adjustColumn(line, frame.column);
             var src;
-            var origin = localize(30, null);
+            var origin = localize(31, null);
             var script_val = _this._getValueFromCache(frame.script);
             if (script_val) {
                 var name_2 = script_val.name;
@@ -1674,7 +1737,7 @@ var NodeDebugSession = (function (_super) {
                             var localPath_1 = _this._remoteToLocal(remotePath_1);
                             if (localPath_1 !== remotePath_1 && _this._attachMode) {
                                 // assume attached to remote node process
-                                origin = localize(31, null);
+                                origin = localize(32, null);
                             }
                             // source mapping is enabled
                             if (_this._sourceMaps) {
@@ -1687,7 +1750,7 @@ var NodeDebugSession = (function (_super) {
                         }
                         // if we end up here, 'name' is not a path and is an internal module
                         path = _this._scriptNameToPath(name_2);
-                        origin = localize(32, null);
+                        origin = localize(33, null);
                     }
                     else {
                         // do not map the script to a file in the workspace
@@ -1705,7 +1768,7 @@ var NodeDebugSession = (function (_super) {
             return _this._createStackFrameFromSource(frame, src, line, column);
         }).catch(function (err) {
             var func_name = _this._getFrameName(frame);
-            var name = localize(33, null, func_name, err.message);
+            var name = localize(34, null, func_name, err.message);
             return new vscode_debugadapter_1.StackFrame(_this._frameHandles.create(frame), name);
         });
     };
@@ -1713,12 +1776,12 @@ var NodeDebugSession = (function (_super) {
         if (sourceHandle === void 0) { sourceHandle = 0; }
         var deemphasize = false;
         if (path && this._skipFiles && PathUtils.multiGlobMatches(this._skipFiles, path)) {
-            var skipFiles = localize(34, null);
+            var skipFiles = localize(35, null);
             deemphasize = true;
             origin = origin ? origin + " (" + skipFiles + ")" : skipFiles;
         }
         else if (!hasSource && this._smartStep && this._sourceMaps) {
-            var smartStep = localize(35, null);
+            var smartStep = localize(36, null);
             deemphasize = true;
             origin = origin ? origin + " (" + smartStep + ")" : smartStep;
         }
@@ -1748,7 +1811,7 @@ var NodeDebugSession = (function (_super) {
                     if (mapresult.content) {
                         _this.log('sm', "_createStackFrameFromSourceMap: source '" + mapresult.path + "' doesn't exist -> use inlined source");
                         var sourceHandle = _this._getInlinedContentHandle(mapresult.content);
-                        origin = localize(36, null);
+                        origin = localize(37, null);
                         var src = _this._createSource(true, mapresult.path, undefined, sourceHandle, origin, { inlinePath: mapresult.path });
                         return _this._createStackFrameFromSource(frame, src, mapresult.line, mapresult.column);
                     }
@@ -1818,7 +1881,7 @@ var NodeDebugSession = (function (_super) {
             }
         }
         if (!func_name || func_name.length === 0) {
-            func_name = localize(37, null);
+            func_name = localize(38, null);
         }
         return func_name;
     };
@@ -1913,14 +1976,14 @@ var NodeDebugSession = (function (_super) {
                 if (type >= 0 && type < NodeDebugSession.SCOPE_NAMES.length) {
                     if (type === 1 && typeof scopesResponse.body.vscode_locals === 'number') {
                         expensive = true;
-                        scopeName = localize(38, null, scopesArgs.maxLocals, scopesResponse.body.vscode_locals);
+                        scopeName = localize(39, null, scopesArgs.maxLocals, scopesResponse.body.vscode_locals);
                     }
                     else {
                         scopeName = NodeDebugSession.SCOPE_NAMES[type];
                     }
                 }
                 else {
-                    scopeName = localize(39, null, type);
+                    scopeName = localize(40, null, type);
                 }
                 return _this._resolveValues([scope.object]).then(function (resolved) {
                     return new vscode_debugadapter_1.Scope(scopeName, _this._variableHandles.create(new ScopeContainer(scope, resolved[0], extra)), expensive);
@@ -1931,7 +1994,7 @@ var NodeDebugSession = (function (_super) {
         }).then(function (scopes) {
             // exception scope
             if (frameIx === 0 && _this._exception) {
-                scopes.unshift(new vscode_debugadapter_1.Scope(localize(40, null), _this._variableHandles.create(new PropertyContainer(_this._exception))));
+                scopes.unshift(new vscode_debugadapter_1.Scope(localize(41, null), _this._variableHandles.create(new PropertyContainer(_this._exception.exception))));
             }
             response.body = {
                 scopes: scopes
@@ -2514,7 +2577,7 @@ var NodeDebugSession = (function (_super) {
         this._node.command('suspend', null, function (nodeResponse) {
             if (nodeResponse.success) {
                 _this._stopped('pause');
-                _this._lastStoppedEvent = new vscode_debugadapter_1.StoppedEvent(_this._reasonText('user_request'), NodeDebugSession.DUMMY_THREAD_ID);
+                _this._lastStoppedEvent = new StoppedEvent2('pause', NodeDebugSession.DUMMY_THREAD_ID);
                 _this.sendResponse(response);
                 _this.sendEvent(_this._lastStoppedEvent);
             }
@@ -2618,7 +2681,7 @@ var NodeDebugSession = (function (_super) {
                     }
                     else {
                         response.success = false;
-                        response.message = localize(41, null);
+                        response.message = localize(42, null);
                     }
                     _this.sendResponse(response);
                 });
@@ -2626,11 +2689,11 @@ var NodeDebugSession = (function (_super) {
             else {
                 response.success = false;
                 if (resp.message.indexOf('ReferenceError: ') === 0 || resp.message === 'No frames') {
-                    response.message = localize(42, null);
+                    response.message = localize(43, null);
                 }
                 else if (resp.message.indexOf('SyntaxError: ') === 0) {
                     var m = resp.message.substring('SyntaxError: '.length).toLowerCase();
-                    response.message = localize(43, null, m);
+                    response.message = localize(44, null, m);
                 }
                 else {
                     response.message = resp.message;
@@ -2642,6 +2705,18 @@ var NodeDebugSession = (function (_super) {
     //--- source request ------------------------------------------------------------------------------------------------------
     NodeDebugSession.prototype.sourceRequest = function (response, args) {
         var _this = this;
+        if (args.source && args.source.path) {
+            this._loadScriptByPath(this._pathToScript(args.source.path)).then(function (script) {
+                response.body = {
+                    content: script.contents,
+                    mimeType: 'text/javascript'
+                };
+                _this.sendResponse(response);
+            }).catch(function (err) {
+                _this.sendErrorResponse(response, 2026, localize(45, null));
+            });
+            return;
+        }
         var sourceHandle = args.sourceReference;
         var srcSource = this._sourceHandles.get(sourceHandle);
         if (srcSource) {
@@ -2661,7 +2736,7 @@ var NodeDebugSession = (function (_super) {
                     };
                     _this.sendResponse(response);
                 }).catch(function (err) {
-                    _this.sendErrorResponse(response, 2026, localize(44, null));
+                    _this.sendErrorResponse(response, 2026, localize(46, null));
                 });
                 return;
             }
@@ -2685,6 +2760,19 @@ var NodeDebugSession = (function (_super) {
         }
         return script;
     };
+    NodeDebugSession.prototype._loadScriptByPath = function (name) {
+        this.log('ls', "_loadScriptByPath: " + name);
+        // not found
+        var args = {
+            types: 1 + 2 + 4,
+            includeSource: true,
+            filter: name
+        };
+        var script = this._node.scripts(args).then(function (nodeResponse) {
+            return new Script(nodeResponse.body[0]);
+        });
+        return script;
+    };
     //--- completions request -------------------------------------------------------------------------------------------------
     NodeDebugSession.prototype.completionsRequest = function (response, args) {
         var _this = this;
@@ -2694,7 +2782,10 @@ var NodeDebugSession = (function (_super) {
         var expression;
         var dot = prefix.lastIndexOf('.');
         if (dot >= 0) {
-            expression = prefix.substr(0, dot);
+            var rest = prefix.substr(dot + 1); // everything between the '.' and the cursor
+            if (rest.length === 0 || NodeDebugSession.PROPERTY_NAME_MATCHER.test(rest)) {
+                expression = prefix.substr(0, dot);
+            }
         }
         if (expression) {
             var evalArgs = {
@@ -2753,6 +2844,13 @@ var NodeDebugSession = (function (_super) {
             });
         }
         else {
+            if (prefix[prefix.length - 1] === ')') {
+                response.body = {
+                    targets: []
+                };
+                this.sendResponse(response);
+                return;
+            }
             var frame = void 0;
             if (typeof args.frameId === 'number' && args.frameId > 0) {
                 frame = this._frameHandles.get(args.frameId);
@@ -2808,17 +2906,105 @@ var NodeDebugSession = (function (_super) {
             return [];
         });
     };
+    //--- exception info request ----------------------------------------------------------------------------------------------
+    NodeDebugSession.prototype.exceptionInfoRequest = function (response, args) {
+        var _this = this;
+        if (args.threadId !== NodeDebugSession.DUMMY_THREAD_ID) {
+            this.sendErrorResponse(response, 2030, 'exceptionInfoRequest error: invalid thread {_thread}.', { _thread: args.threadId }, vscode_debugadapter_1.ErrorDestination.Telemetry);
+            return;
+        }
+        if (this._exception) {
+            response.body = {
+                exceptionId: 'undefined',
+                breakMode: this._exception.uncaught ? 'unhandled' : 'never'
+            };
+            Promise.resolve(this._exception.exception).then(function (exception) {
+                if (exception) {
+                    if (exception.className) {
+                        response.body.exceptionId = exception.className;
+                    }
+                    else if (exception.type) {
+                        response.body.exceptionId = exception.type;
+                    }
+                    if (exception.text) {
+                        response.body.description = exception.text;
+                    }
+                    // try to retrieve the stack trace
+                    return _this._createProperties(exception, 'named').then(function (values) {
+                        if (values.length > 0 && values[0].name === 'stack') {
+                            return values[0].value;
+                        }
+                        return undefined;
+                    }).catch(function (_) {
+                        return undefined;
+                    });
+                }
+                else {
+                    return undefined;
+                }
+            }).then(function (stack) {
+                if (stack) {
+                    // remove quotes
+                    if (stack.length > 1 && stack[0] === '"' && stack[stack.length - 1] === '"') {
+                        stack = stack.substr(1, stack.length - 2);
+                    }
+                    // don't return description if it is already part of the stack trace.
+                    if (response.body.description && stack.indexOf(response.body.description) === 0) {
+                        delete response.body.description;
+                    }
+                    response.body.details = {
+                        stackTrace: stack
+                    };
+                }
+                _this.sendResponse(response);
+            }).catch(function (resp) {
+                _this.sendErrorResponse(response, 2031, 'exceptionInfoRequest error', undefined, vscode_debugadapter_1.ErrorDestination.Telemetry);
+            });
+        }
+        else {
+            this.sendErrorResponse(response, 2032, 'exceptionInfoRequest error: no stored exception', undefined, vscode_debugadapter_1.ErrorDestination.Telemetry);
+        }
+    };
     //--- custom request ------------------------------------------------------------------------------------------------------
     /**
      * Handle custom requests.
      */
     NodeDebugSession.prototype.customRequest = function (command, response, args) {
-        if (command === 'toggleSkipFileStatus') {
-            this.outLine(localize(45, null));
+        switch (command) {
+            case 'getLoadedScripts':
+                this.allLoadedScriptsRequest(response, args);
+                break;
+            case 'toggleSkipFileStatus':
+                this.outLine(localize(47, null));
+                this.sendResponse(response);
+                break;
+            default:
+                _super.prototype.customRequest.call(this, command, response, args);
+                break;
         }
-        else {
-            _super.prototype.customRequest.call(this, command, response, args);
-        }
+    };
+    NodeDebugSession.prototype.allLoadedScriptsRequest = function (response, args) {
+        var _this = this;
+        this._node.scripts({ types: 4 }).then(function (resp) {
+            var result = Array();
+            for (var _i = 0, _a = resp.body; _i < _a.length; _i++) {
+                var script = _a[_i];
+                if (script.name) {
+                    script.name = _this._scriptNameToPath(script.name);
+                    var name_5 = Path.basename(script.name);
+                    result.push({
+                        label: name_5,
+                        description: script.name === name_5 ? '' : script.name,
+                        source: new vscode_debugadapter_1.Source(name_5, script.name, _this._getScriptIdHandle(script.id))
+                    });
+                }
+            }
+            result = result.sort(function (a, b) { return a.label.localeCompare(b.label); });
+            response.body = { loadedScripts: result };
+            _this.sendResponse(response);
+        }).catch(function (err) {
+            _this.sendErrorResponse(response, 9999, "scripts error: " + err);
+        });
     };
     //---- private helpers ----------------------------------------------------------------------------------------------------
     NodeDebugSession.prototype.log = function (traceCategory, message) {
@@ -2830,13 +3016,13 @@ var NodeDebugSession = (function (_super) {
      * 'Path does not exist' error
      */
     NodeDebugSession.prototype.sendNotExistErrorResponse = function (response, attribute, path) {
-        this.sendErrorResponse(response, 2007, localize(46, null, attribute, '{path}'), { path: path });
+        this.sendErrorResponse(response, 2007, localize(48, null, attribute, '{path}'), { path: path });
     };
     /**
      * 'Path not absolute' error with 'More Information' link.
      */
     NodeDebugSession.prototype.sendRelativePathErrorResponse = function (response, attribute, path) {
-        var format = localize(47, null, attribute, '{path}', '${workspaceRoot}/');
+        var format = localize(49, null, attribute, '{path}', '${workspaceRoot}/');
         this.sendErrorResponseWithInfoLink(response, 2008, format, { path: path }, 20003);
     };
     /**
@@ -2849,14 +3035,14 @@ var NodeDebugSession = (function (_super) {
             variables: variables,
             showUser: true,
             url: 'http://go.microsoft.com/fwlink/?linkID=534832#_' + infoId.toString(),
-            urlLabel: localize(48, null)
+            urlLabel: localize(50, null)
         });
     };
     /**
-     * send a line of text to an output channel.
+     * send a line of text to the 'console' channel.
      */
-    NodeDebugSession.prototype.outLine = function (message, category) {
-        this.sendEvent(new vscode_debugadapter_1.OutputEvent(message + '\n', category ? category : 'console'));
+    NodeDebugSession.prototype.outLine = function (message) {
+        this.sendEvent(new vscode_debugadapter_1.OutputEvent(message + '\n', 'console'));
     };
     /**
      * Tries to map a (local) VSCode path to a corresponding path on a remote host (where node is running).
@@ -2901,10 +3087,10 @@ var NodeDebugSession = (function (_super) {
         else {
             var errmsg = nodeResponse.message;
             if (errmsg.indexOf('unresponsive') >= 0) {
-                this.sendErrorResponse(response, 2015, localize(49, null), { _request: nodeResponse.command });
+                this.sendErrorResponse(response, 2015, localize(51, null), { _request: nodeResponse.command });
             }
             else if (errmsg.indexOf('timeout') >= 0) {
-                this.sendErrorResponse(response, 2016, localize(50, null), { _request: nodeResponse.command });
+                this.sendErrorResponse(response, 2016, localize(52, null), { _request: nodeResponse.command });
             }
             else {
                 this.sendErrorResponse(response, 2013, 'Node.js request \'{_request}\' failed (reason: {_error}).', { _request: nodeResponse.command, _error: errmsg }, vscode_debugadapter_1.ErrorDestination.Telemetry);
@@ -3116,7 +3302,7 @@ var NodeDebugSession = (function (_super) {
         }
     };
     return NodeDebugSession;
-}(vscode_debugadapter_1.DebugSession));
+}(vscode_debugadapter_1.LoggingDebugSession));
 NodeDebugSession.MAX_STRING_LENGTH = 10000; // max string size to return in 'evaluate' request
 NodeDebugSession.MAX_JSON_LENGTH = 500000; // max size of stringified object to return in 'evaluate' request
 NodeDebugSession.NODE_TERMINATION_POLL_INTERVAL = 3000;
@@ -3131,19 +3317,20 @@ NodeDebugSession.FIRST_LINE_OFFSET = 62;
 NodeDebugSession.PROTO = '__proto__';
 NodeDebugSession.DEBUG_INJECTION = 'debugInjection.js';
 NodeDebugSession.NODE_INTERNALS = '<node_internals>';
+NodeDebugSession.NODE_INTERNALS_PREFIX = /^<node_internals>[/\\]/;
 NodeDebugSession.NODE_SHEBANG_MATCHER = new RegExp('#! */usr/bin/env +node');
 NodeDebugSession.LONG_STRING_MATCHER = /\.\.\. \(length: [0-9]+\)$/;
 NodeDebugSession.HITCOUNT_MATCHER = /(>|>=|=|==|<|<=|%)?\s*([0-9]+)/;
 NodeDebugSession.PROPERTY_NAME_MATCHER = /^[$_\w][$_\w0-9]*$/;
 //--- scopes request ------------------------------------------------------------------------------------------------------
 NodeDebugSession.SCOPE_NAMES = [
-    localize(51, null),
-    localize(52, null),
     localize(53, null),
     localize(54, null),
     localize(55, null),
     localize(56, null),
-    localize(57, null)
+    localize(57, null),
+    localize(58, null),
+    localize(59, null)
 ];
 exports.NodeDebugSession = NodeDebugSession;
 var INDEX_PATTERN = /^[0-9]+$/;

@@ -1,10 +1,12 @@
 {
 	"extension.description": "Расширение отладки Visual Studio Code для Node.js",
 	"node.label": "Node.js",
+	"open.loaded.script": "Открыть загруженный скрипт",
 	"smartStep.description": "Автоматическая пошаговая отработка сформированного кода, который невозможно снова добавить в исходный источник.",
 	"skipFiles.description": "Массив масок для файлов, пропускаемых при отладке.",
 	"outFiles.description": "Если включены сопоставления исходного кода, эти глобальные шаблоны указывают созданные файлы JavaScript. Если шаблон начинается с \"!\", файлы исключаются. Если не указан, созданный код должен быть в том же каталоге, что и исходный.",
 	"outDir.deprecationMessage": "Атрибут outDir устарел, используйте вместо него outFiles.",
+	"trace.description": "Создайте выходные данные диагностики. Чтобы не задавать значение True, можно указать один селектор или несколько, разделяя их запятыми. Селектор \"verbose\" предоставляет подробные выходные данные.",
 	"launch.args.description": "Аргументы командной строки, переданные в программу.",
 	"node.protocol.description": "Протокол отладки Node.js для использования.",
 	"node.protocol.auto.description": "Пытается определить оптимальный протокол автоматически.",
@@ -16,6 +18,7 @@
 	"node.address.description": "TCP/IP-адрес отлаживаемого процесса (только для Node.js >= 5.0). Значение по умолчанию — localhost.",
 	"node.timeout.description": "Повторять в течение этого количества миллисекунд для подключения к Node.js. Значение по умолчанию — 10 000 мс.",
 	"node.restart.description": "Перезапуск сеанса после завершения Node.js.",
+	"node.showAsyncStacks.description": "Отображение асинхронных вызовов, которые привели к текущему стеку вызовов. Только протокол \"inspector\".",
 	"node.launch.program.description": "Абсолютный путь к программе. Созданное значение можно определить, взглянув на package.json и открытые файлы. Изменить этот атрибут.",
 	"node.launch.externalConsole.deprecationMessage": "Атрибут externalConsole устарел и не рекомендуется к использованию, используйте вместо него console.",
 	"node.launch.console.description": "Где следует запускать целевой объект отладки.",
@@ -59,6 +62,7 @@
 	"extensionHost.launch.runtimeExecutable.description": "Абсолютный путь к VS Code.",
 	"extensionHost.launch.stopOnEntry.description": "Автоматически остановить хост-процесс для расширений после запуска.",
 	"extensionHost.launch.sourceMaps.description": "Использовать карты исходного кода JavaScript.",
+	"extensionHost.launch.env.description": "Переменные среды переданы в хост-процесс для расширений.",
 	"extensionHost.snippet.launch.label": "Разработка расширения VS Code",
 	"extensionHost.snippet.launch.description": "Запуск расширения VS Code в режиме отладки",
 	"extensionHost.launch.config.name": "Запуск расширения"

@@ -22,6 +22,10 @@ var VSCodeContentRequest;
 (function (VSCodeContentRequest) {
     VSCodeContentRequest.type = new vscode_languageserver_1.RequestType('vscode/content');
 })(VSCodeContentRequest || (VSCodeContentRequest = {}));
+var ColorSymbolRequest;
+(function (ColorSymbolRequest) {
+    ColorSymbolRequest.type = new vscode_languageserver_1.RequestType('json/colorSymbols');
+})(ColorSymbolRequest || (ColorSymbolRequest = {}));
 // Create a connection for the server
 var connection = vscode_languageserver_1.createConnection();
 console.log = connection.console.log.bind(connection.console);
@@ -248,6 +252,14 @@ connection.onDocumentRangeFormatting(function (formatParams) {
     var document = documents.get(formatParams.textDocument.uri);
     return languageService.format(document, formatParams.range, formatParams.options);
 });
+connection.onRequest(ColorSymbolRequest.type, function (uri) {
+    var document = documents.get(uri);
+    if (document) {
+        var jsonDocument = getJSONDocument(document);
+        return languageService.findColorSymbols(document, jsonDocument);
+    }
+    return [];
+});
 // Listen on the connection
 connection.listen();
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/8076a19fdcab7e1fc1707952d652f0bb6c6db331/extensions\json\server\out/jsonServerMain.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/d9484d12b38879b7f4cdd1150efeb2fd2c1fbf39/extensions\json\server\out/jsonServerMain.js.map

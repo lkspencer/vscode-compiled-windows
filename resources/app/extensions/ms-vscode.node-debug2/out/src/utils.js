@@ -2,6 +2,7 @@
  * Copyright (C) Microsoft Corporation. All rights reserved.
  *--------------------------------------------------------*/
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 const path = require("path");
 const fs = require("fs");
 const cp = require("child_process");
@@ -22,6 +23,7 @@ function isJavaScript(aPath) {
         }
     }
     catch (e) {
+        // silently ignore problems
     }
     return false;
 }
@@ -70,10 +72,12 @@ function isOnPath(program) {
                 cp.execSync(`${WHERE} ${program}`);
             }
             else {
+                // do not report error if 'where' doesn't exist
             }
             return true;
         }
         catch (Exception) {
+            // ignore
         }
     }
     else {
@@ -83,6 +87,7 @@ function isOnPath(program) {
                 cp.execSync(`${WHICH} '${program}'`);
             }
             else {
+                // do not report error if 'which' doesn't exist
             }
             return true;
         }

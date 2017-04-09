@@ -230,7 +230,8 @@ function getJavascriptMode(documentRegions) {
             return null;
         },
         format: function (document, range, formatParams) {
-            updateCurrentTextDocument(document);
+            currentTextDocument = documentRegions.get(document).getEmbeddedDocument('javascript', true);
+            scriptFileVersion++;
             var initialIndentLevel = computeInitialIndent(document, range, formatParams);
             var formatSettings = convertOptions(formatParams, settings && settings.format, initialIndentLevel + 1);
             var start = currentTextDocument.offsetAt(range.start);
@@ -384,4 +385,4 @@ function generateIndent(level, options) {
         return strings_1.repeat('\t', level);
     }
 }
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/8076a19fdcab7e1fc1707952d652f0bb6c6db331/extensions\html\server\out/modes\javascriptMode.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/d9484d12b38879b7f4cdd1150efeb2fd2c1fbf39/extensions\html\server\out/modes\javascriptMode.js.map

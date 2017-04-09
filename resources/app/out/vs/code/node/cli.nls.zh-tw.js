@@ -9,6 +9,7 @@ define("vs/code/node/cli.nls.zh-tw", {
 		"要使用的地區設定 (例如 en-US 或 zh-TW)。",
 		"強制執行 Code 的新執行個體。",
 		"在已啟用 \'Developer: Startup Performance\' 命令的情況下開始。",
+		"啟動時執行 CPU 分析工具",
 		"強制在最近使用的視窗中開啟檔案或資料夾。",
 		"指定保留使用者資料的目錄，這在以根目錄身分執行時有用。",
 		"列印詳細資訊輸出 (表示 --wait)。",

@@ -28,7 +28,6 @@ Kind.constructSignature = 'construct';
 Kind.parameter = 'parameter';
 Kind.typeParameter = 'type parameter';
 Kind.primitiveType = 'primitive type';
-Kind.label = 'label';
 Kind.alias = 'alias';
 Kind.const = 'const';
 Kind.let = 'let';
@@ -36,15 +35,5 @@ Kind.warning = 'warning';
 Kind.directory = 'directory';
 Kind.file = 'file';
 Kind.externalModuleName = 'external module name';
-exports.Kind = Kind;
-class KindModifier {
-}
-KindModifier.none = '';
-KindModifier.staticMember = 'public static';
-KindModifier.privateMember = 'private';
-KindModifier.protectedMember = 'protected';
-KindModifier.exported = 'export';
-KindModifier.ambient = 'declare';
-KindModifier.static = 'static';
-exports.KindModifier = KindModifier;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/8076a19fdcab7e1fc1707952d652f0bb6c6db331/extensions\typescript\out/protocol.const.js.map
+exports.Kind = Kind;
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/d9484d12b38879b7f4cdd1150efeb2fd2c1fbf39/extensions\typescript\out/protocol.const.js.map

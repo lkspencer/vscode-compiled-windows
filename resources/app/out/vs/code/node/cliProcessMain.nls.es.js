@@ -57,9 +57,6 @@ define("vs/code/node/cliProcessMain.nls.es", {
 	],
 	"vs/platform/extensionManagement/node/extensionManagementService": [
 		"Extensión no válida: package.json no es un archivo JSON.",
-		"Extensión no válida: el nombre del manifiesto no coincide.",
-		"Extensión no válida: el publicador del manifiesto no coincide.",
-		"Extensión no válida: la versión del manifiesto no coincide.",
 		"Reinicie Code antes de volver a instalar {0}.",
 		"Reinicie Code antes de volver a instalar {0}.",
 		"Al instalar \'{0}\', se instalan también sus dependencias. ¿Quiere continuar?",

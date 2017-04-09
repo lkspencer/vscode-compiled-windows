@@ -91,6 +91,7 @@ var PHPValidationProvider = (function () {
             _this.diagnosticCollection.delete(textDocument.uri);
             delete _this.delayers[textDocument.uri.toString()];
         }, null, subscriptions);
+        subscriptions.push(vscode.commands.registerCommand('php.untrustValidationExecutable', this.untrustValidationExecutable, this));
     };
     PHPValidationProvider.prototype.dispose = function () {
         this.diagnosticCollection.clear();
@@ -117,6 +118,9 @@ var PHPValidationProvider = (function () {
             }
             this.trigger = RunTrigger.from(section.get('validate.run', RunTrigger.strings.onSave));
         }
+        if (this.executableIsUserDefined !== true && this.workspaceStore.get(CheckedExecutablePath, undefined) !== void 0) {
+            vscode.commands.executeCommand('setContext', 'php.untrustValidationExecutableContext', true);
+        }
         this.delayers = Object.create(null);
         if (this.pauseValidation) {
             this.pauseValidation = oldExecutable === this.executable;
@@ -137,6 +141,10 @@ var PHPValidationProvider = (function () {
             // Configuration has changed. Reevaluate all documents.
             vscode.workspace.textDocuments.forEach(this.triggerValidate, this);
         }
+    };
+    PHPValidationProvider.prototype.untrustValidationExecutable = function () {
+        this.workspaceStore.update(CheckedExecutablePath, undefined);
+        vscode.commands.executeCommand('setContext', 'php.untrustValidationExecutableContext', false);
     };
     PHPValidationProvider.prototype.triggerValidate = function (textDocument) {
         var _this = this;
@@ -162,19 +170,14 @@ var PHPValidationProvider = (function () {
                     title: localize(2, null),
                     isCloseAffordance: true,
                     id: 'no'
-                }, {
-                    title: localize(3, null),
-                    id: 'more'
                 }).then(function (selected) {
                     if (!selected || selected.id === 'no') {
                         _this.pauseValidation = true;
                     }
                     else if (selected.id === 'yes') {
                         _this.workspaceStore.update(CheckedExecutablePath, _this.executable);
+                        vscode.commands.executeCommand('setContext', 'php.untrustValidationExecutableContext', true);
                         trigger();
-                    }
-                    else if (selected.id === 'more') {
-                        vscode.commands.executeCommand('vscode.open', vscode.Uri.parse('https://go.microsoft.com/fwlink/?linkid=839878'));
                     }
                 });
                 return;
@@ -247,14 +250,14 @@ var PHPValidationProvider = (function () {
         var message = null;
         if (error.code === 'ENOENT') {
             if (this.executable) {
-                message = localize(4, null, executable);
+                message = localize(3, null, executable);
             }
             else {
-                message = localize(5, null);
+                message = localize(4, null);
             }
         }
         else {
-            message = error.message ? error.message : localize(6, null, executable);
+            message = error.message ? error.message : localize(5, null, executable);
         }
         vscode.window.showInformationMessage(message);
     };
@@ -265,4 +268,4 @@ PHPValidationProvider.BufferArgs = ['-l', '-n', '-d', 'display_errors=On', '-d',
 PHPValidationProvider.FileArgs = ['-l', '-n', '-d', 'display_errors=On', '-d', 'log_errors=Off', '-f'];
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = PHPValidationProvider;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/8076a19fdcab7e1fc1707952d652f0bb6c6db331/extensions\php\out/features\validationProvider.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/d9484d12b38879b7f4cdd1150efeb2fd2c1fbf39/extensions\php\out/features\validationProvider.js.map

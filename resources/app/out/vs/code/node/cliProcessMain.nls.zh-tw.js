@@ -57,9 +57,6 @@ define("vs/code/node/cliProcessMain.nls.zh-tw", {
 	],
 	"vs/platform/extensionManagement/node/extensionManagementService": [
 		"擴充功能無效: package.json 不是 JSON 檔案。",
-		"擴充功能無效: 資訊清單名稱不相符。",
-		"擴充功能無效: 資訊清單發行者不相符。",
-		"擴充功能無效: 資訊清單版本不相符。",
 		"請先重新啟動 Code，再重新安裝 {0}。",
 		"請先重新啟動 Code，再重新安裝 {0}。",
 		"安裝 \'{0}\' 也會安裝其相依性。要繼續嗎?",

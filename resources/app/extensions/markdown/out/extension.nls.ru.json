@@ -1,7 +1,7 @@
 [
-	"Disable script execution in markdown previews for this workspace",
-	"Current setting",
-	"Enable script execution in markdown previews for this workspace",
-	"Current setting",
-	"Change security settings for the Markdown preview"
+	"Отключить выполнение скрипта в предварительных версиях Markdown для этой рабочей области",
+	"Текущий параметр",
+	"Разрешить выполнение скрипта в предварительных версиях Markdown для этой рабочей области",
+	"Текущий параметр",
+	"Изменение параметров безопасности для предварительной версии Markdown"
 ]

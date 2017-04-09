@@ -4,5 +4,7 @@
 	"json.schemas.fileMatch.desc": "Una matriz de patrones de archivo con los cuales coincidir cuando los archivos JSON se resuelvan en esquemas.",
 	"json.schemas.fileMatch.item.desc": "Un patrón de archivo que puede contener \"*\" con el cual coincidir cuando los archivos JSON se resuelvan en esquemas.",
 	"json.schemas.schema.desc": "La definición de esquema de la dirección URL determinada. Solo se necesita proporcionar el esquema para evitar los accesos a la dirección URL del esquema.",
-	"json.format.enable.desc": "Habilitar/deshabilitar formateador JSON predeterminado (requiere reiniciar)"
+	"json.format.enable.desc": "Habilitar/deshabilitar formateador JSON predeterminado (requiere reiniciar)",
+	"json.tracing.desc": "Traces the communication between VS Code and the JSON language server.",
+	"json.colorDecorators.enable.desc": "Enables or disables color decorators"
 }

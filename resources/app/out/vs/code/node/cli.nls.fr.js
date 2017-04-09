@@ -9,6 +9,7 @@ define("vs/code/node/cli.nls.fr", {
 		"Paramètres régionaux à utiliser (exemple : fr-FR ou en-US).",
 		"Forcez l\'utilisation d\'une nouvelle instance de Code.",
 		"Démarrez avec la commande \'Développeur : performance de démarrage\' activée.",
+		"Exécuter le profileur d\'UC au démarrage",
 		"Forcez l\'ouverture d\'un fichier ou dossier dans la dernière fenêtre active.",
 		"Spécifie le répertoire où sont conservées les données des utilisateurs. S\'avère utile pour une exécution en tant que root.",
 		"Affichez la sortie détaillée (implique --wait).",

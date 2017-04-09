@@ -57,9 +57,6 @@ define("vs/code/node/cliProcessMain.nls.zh-cn", {
 	],
 	"vs/platform/extensionManagement/node/extensionManagementService": [
 		"扩展无效: package.json 不是 JSON 文件。",
-		"扩展无效: 清单名不匹配。",
-		"扩展无效: 清单发布服务器不匹配。",
-		"扩展无效: 清单版本不匹配。",
 		"请先重启 Code 再重新安装 {0}。",
 		"请先重启 Code 再重新安装 {0}。",
 		"安装”{0}“还会安装其依赖项。是否要继续?",

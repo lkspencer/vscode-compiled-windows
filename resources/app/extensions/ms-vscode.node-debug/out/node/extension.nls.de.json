@@ -1,13 +1,15 @@
 [
+	"Skript auswählen",
+	"Keine geladenen Skripts verfügbar",
 	"\"Node.js\" oder Gulp-Prozess zum Anfügen auswählen",
 	"Programm starten",
-	"An den Prozess anfügen",
+	"An den Port anfügen",
 	"Mit Legacy-Protokoll debuggen, da eine ausführbaren Laufzeit festgelegt ist.",
 	"Mit Inspektor-Protokoll debuggen, da Knoten {0} ermittelt wurde.",
 	"Mit Legacy-Protokoll debuggen, da Knoten {0} ermittelt wurde.",
 	"Mit Legacy-Protokoll debuggen, da die Knotenversion nicht ermittelt werden konnte.",
 	"Debugging mit Legacy-Protokoll, da das Anfügen an einen Prozess nach ID nur für Legacy-Protokolle unterstützt wird.",
-	"Mit Inspektor-Protokoll debuggen, da Knoten {0} ermittelt wurde.",
-	"Mit Legacy-Protokoll debuggen, da die Knotenversion nicht ermittelt werden konnte.",
-	"Mit Legacy-Protokoll debuggen, da die Knotenversion nicht ermittelt werden konnte."
+	"Debugging with inspector protocol because it was detected.",
+	"Debugging with legacy protocol because it was detected.",
+	"Debugging with legacy protocol because Node version could not be determined: {0}"
 ]

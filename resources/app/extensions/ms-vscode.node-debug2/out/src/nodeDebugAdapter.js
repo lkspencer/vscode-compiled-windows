@@ -2,9 +2,9 @@
  * Copyright (C) Microsoft Corporation. All rights reserved.
  *--------------------------------------------------------*/
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 const vscode_chrome_debug_core_1 = require("vscode-chrome-debug-core");
 const vscode_debugadapter_1 = require("vscode-debugadapter");
-const url = require("url");
 const path = require("path");
 const fs = require("fs");
 const cp = require("child_process");
@@ -31,7 +31,6 @@ class NodeDebugAdapter extends vscode_chrome_debug_core_1.ChromeDebugAdapter {
         return super.initialize(args);
     }
     launch(args) {
-        this.commonArgs(args);
         super.launch(args);
         const port = args.port || utils.random(3000, 50000);
         let runtimeExecutable = args.runtimeExecutable;
@@ -73,7 +72,7 @@ class NodeDebugAdapter extends vscode_chrome_debug_core_1.ChromeDebugAdapter {
             }
             programPath = path.normalize(programPath);
             if (pathUtils.normalizeDriveLetter(programPath) !== pathUtils.realPath(programPath)) {
-                vscode_chrome_debug_core_1.logger.log(utils_1.localize('program.path.case.mismatch.warning', "Program path uses differently cased character as file on disk; this might result in breakpoints not being hit."), /*forceLog=*/ true);
+                vscode_chrome_debug_core_1.logger.warn(utils_1.localize('program.path.case.mismatch.warning', "Program path uses differently cased character as file on disk; this might result in breakpoints not being hit."));
             }
         }
         return this.resolveProgramPath(programPath, args.sourceMaps).then(resolvedProgramPath => {
@@ -135,7 +134,6 @@ class NodeDebugAdapter extends vscode_chrome_debug_core_1.ChromeDebugAdapter {
         });
     }
     attach(args) {
-        this.commonArgs(args);
         return super.attach(args).catch(err => {
             if (err.format && err.format.indexOf('Cannot connect to runtime process') >= 0) {
                 // hack -core error msg
@@ -145,10 +143,11 @@ class NodeDebugAdapter extends vscode_chrome_debug_core_1.ChromeDebugAdapter {
         });
     }
     commonArgs(args) {
-        super.commonArgs(args);
         args.sourceMapPathOverrides = getSourceMapPathOverrides(args.cwd, args.sourceMapPathOverrides);
         fixNodeInternalsSkipFiles(args);
+        args.showAsyncStacks = typeof args.showAsyncStacks === 'undefined' || args.showAsyncStacks;
         this._restartMode = args.restart;
+        super.commonArgs(args);
     }
     doAttach(port, targetUrl, address, timeout) {
         return super.doAttach(port, targetUrl, address, timeout)
@@ -198,14 +197,11 @@ class NodeDebugAdapter extends vscode_chrome_debug_core_1.ChromeDebugAdapter {
             // Listen to stderr at least until the debugger is attached
             const onStderr = (data) => {
                 let msg = data.toString();
-                // Stop listening after 'Debugger attached' msg (unless this is noDebugMode)
-                if (!noDebugMode && msg.indexOf('Debugger attached.') >= 0) {
-                    nodeProcess.stderr.removeListener('data', onStderr);
-                }
                 // Chop off the Chrome-specific debug URL message
                 const chromeMsgIndex = msg.indexOf('To start debugging, open the following URL in Chrome:');
                 if (chromeMsgIndex >= 0) {
                     msg = msg.substr(0, chromeMsgIndex);
+                    nodeProcess.stderr.removeListener('data', onStderr);
                 }
                 this._session.sendEvent(new vscode_debugadapter_1.OutputEvent(msg, 'stderr'));
             };
@@ -252,6 +248,10 @@ class NodeDebugAdapter extends vscode_chrome_debug_core_1.ChromeDebugAdapter {
         }
     }
     configurationDone() {
+        if (!this.chrome) {
+            // It's possible to get this request after we've detached, see #21973
+            return super.configurationDone();
+        }
         // This message means that all breakpoints have been set by the client. We should be paused at this point.
         // So tell the target to continue, or tell the client that we paused, as needed
         this._finishedConfig = true;
@@ -357,6 +357,9 @@ class NodeDebugAdapter extends vscode_chrome_debug_core_1.ChromeDebugAdapter {
             }
         }, 50);
     }
+    threadName() {
+        return `Node (${this._nodeProcessId})`;
+    }
     /**
      * Override addBreakpoints, which is called by setBreakpoints to make the actual call to Chrome.
      */
@@ -387,6 +390,10 @@ class NodeDebugAdapter extends vscode_chrome_debug_core_1.ChromeDebugAdapter {
             return Promise.resolve();
         }
         return this.chrome.Runtime.evaluate({ expression: '[process.pid, process.version, process.arch]', returnByValue: true, contextId: 1 }).then(response => {
+            if (this._loggedTargetVersion) {
+                // Possible to get two of these requests going simultaneously
+                return;
+            }
             if (response.exceptionDetails) {
                 const description = vscode_chrome_debug_core_1.chromeUtils.errorMessageFromExceptionDetails(response.exceptionDetails);
                 if (description.startsWith('ReferenceError: process is not defined')) {
@@ -397,13 +404,14 @@ class NodeDebugAdapter extends vscode_chrome_debug_core_1.ChromeDebugAdapter {
                 }
             }
             else {
-                const value = response.result.value;
+                const [pid, version, arch] = response.result.value;
                 if (this._pollForNodeProcess) {
-                    this._nodeProcessId = value[0];
+                    this._nodeProcessId = pid;
                     this.startPollingForNodeTermination();
                 }
                 this._loggedTargetVersion = true;
-                vscode_chrome_debug_core_1.logger.log(`Target node version: ${value[1]} ${value[2]}`);
+                vscode_chrome_debug_core_1.logger.log(`Target node version: ${version} ${arch}`);
+                vscode_chrome_debug_core_1.telemetry.reportEvent('nodeVersion', { version });
             }
         }, error => vscode_chrome_debug_core_1.logger.error('Error evaluating `process.pid`: ' + error.message));
     }
@@ -437,7 +445,7 @@ class NodeDebugAdapter extends vscode_chrome_debug_core_1.ChromeDebugAdapter {
             }
             cli += ' ';
         }
-        this._session.sendEvent(new vscode_debugadapter_1.OutputEvent(cli + '\n', 'console'));
+        vscode_chrome_debug_core_1.logger.warn(cli);
     }
     globalEvaluate(args) {
         // contextId: 1 - see https://github.com/nodejs/node/issues/8426
@@ -483,7 +491,7 @@ class NodeDebugAdapter extends vscode_chrome_debug_core_1.ChromeDebugAdapter {
         });
     }
     getReadonlyOrigin(aPath) {
-        return path.isAbsolute(aPath) || aPath.startsWith(vscode_chrome_debug_core_1.ChromeDebugAdapter.PLACEHOLDER_EVAL_URL_PROTOCOL) ?
+        return path.isAbsolute(aPath) || aPath.startsWith(vscode_chrome_debug_core_1.ChromeDebugAdapter.EVAL_NAME_PREFIX) ?
             utils_1.localize('origin.from.node', "read-only content from Node.js") :
             utils_1.localize('origin.core.module', "read-only core module");
     }
@@ -491,8 +499,7 @@ class NodeDebugAdapter extends vscode_chrome_debug_core_1.ChromeDebugAdapter {
      * If realPath is an absolute path or a URL, return realPath. Otherwise, prepend the node_internals marker
      */
     realPathToDisplayPath(realPath) {
-        const aUrl = url.parse(realPath);
-        if (aUrl.protocol) {
+        if (realPath.match(/VM\d+/)) {
             return realPath;
         }
         return path.isAbsolute(realPath) ? realPath : `${NodeDebugAdapter.NODE_INTERNALS}/${realPath}`;
@@ -501,7 +508,7 @@ class NodeDebugAdapter extends vscode_chrome_debug_core_1.ChromeDebugAdapter {
      * If displayPath starts with the NODE_INTERNALS indicator, strip it.
      */
     displayPathToRealPath(displayPath) {
-        const match = displayPath.match(new RegExp(`^${NodeDebugAdapter.NODE_INTERNALS}/(.*)`));
+        const match = displayPath.match(new RegExp(`^${NodeDebugAdapter.NODE_INTERNALS}[\\\\/](.*)`));
         return match ? match[1] : displayPath;
     }
 }

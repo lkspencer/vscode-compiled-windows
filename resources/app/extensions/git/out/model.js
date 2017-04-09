@@ -58,21 +58,29 @@ var Status;
     Status[Status["BOTH_MODIFIED"] = 15] = "BOTH_MODIFIED";
 })(Status = exports.Status || (exports.Status = {}));
 class Resource {
-    constructor(_uri, _type, _rename) {
-        this._uri = _uri;
+    constructor(_resourceGroup, _resourceUri, _type, _renameResourceUri) {
+        this._resourceGroup = _resourceGroup;
+        this._resourceUri = _resourceUri;
         this._type = _type;
-        this._rename = _rename;
-        // console.log(this);
+        this._renameResourceUri = _renameResourceUri;
     }
-    get uri() {
-        if (this.rename && (this._type === Status.MODIFIED || this._type === Status.DELETED || this._type === Status.INDEX_RENAMED)) {
-            return this.rename;
+    get resourceUri() {
+        if (this.renameResourceUri && (this._type === Status.MODIFIED || this._type === Status.DELETED || this._type === Status.INDEX_RENAMED)) {
+            return this.renameResourceUri;
         }
-        return this._uri;
+        return this._resourceUri;
     }
+    get command() {
+        return {
+            command: 'git.openResource',
+            title: localize(0, null),
+            arguments: [this]
+        };
+    }
+    get resourceGroup() { return this._resourceGroup; }
     get type() { return this._type; }
-    get original() { return this._uri; }
-    get rename() { return this._rename; }
+    get original() { return this._resourceUri; }
+    get renameResourceUri() { return this._renameResourceUri; }
     getIconPath(theme) {
         switch (this.type) {
             case Status.INDEX_MODIFIED: return Resource.Icons[theme].Modified;
@@ -133,6 +141,12 @@ Resource.Icons = {
         Conflict: getIconUri('status-conflict', 'dark')
     }
 };
+__decorate([
+    decorators_1.memoize
+], Resource.prototype, "resourceUri", null);
+__decorate([
+    decorators_1.memoize
+], Resource.prototype, "command", null);
 exports.Resource = Resource;
 class ResourceGroup {
     constructor(_id, _label, _resources) {
@@ -141,27 +155,28 @@ class ResourceGroup {
         this._resources = _resources;
     }
     get id() { return this._id; }
+    get contextKey() { return this._id; }
     get label() { return this._label; }
     get resources() { return this._resources; }
 }
 exports.ResourceGroup = ResourceGroup;
 class MergeGroup extends ResourceGroup {
     constructor(resources = []) {
-        super(MergeGroup.ID, localize(0, null), resources);
+        super(MergeGroup.ID, localize(1, null), resources);
     }
 }
 MergeGroup.ID = 'merge';
 exports.MergeGroup = MergeGroup;
 class IndexGroup extends ResourceGroup {
     constructor(resources = []) {
-        super(IndexGroup.ID, localize(1, null), resources);
+        super(IndexGroup.ID, localize(2, null), resources);
     }
 }
 IndexGroup.ID = 'index';
 exports.IndexGroup = IndexGroup;
 class WorkingTreeGroup extends ResourceGroup {
     constructor(resources = []) {
-        super(WorkingTreeGroup.ID, localize(2, null), resources);
+        super(WorkingTreeGroup.ID, localize(3, null), resources);
     }
 }
 WorkingTreeGroup.ID = 'workingTree';
@@ -234,10 +249,9 @@ class OperationsImpl {
     }
 }
 class Model {
-    constructor(_git, workspaceRootPath, askpass) {
+    constructor(_git, workspaceRootPath) {
         this._git = _git;
         this.workspaceRootPath = workspaceRootPath;
-        this.askpass = askpass;
         this._onDidChangeRepository = new vscode_1.EventEmitter();
         this.onDidChangeRepository = this._onDidChangeRepository.event;
         this._onDidChangeState = new vscode_1.EventEmitter();
@@ -268,23 +282,9 @@ class Model {
     get onDidChangeOperations() {
         return util_1.anyEvent(this.onRunOperation, this.onDidRunOperation);
     }
-    get git() {
-        return this._git;
-    }
     get mergeGroup() { return this._mergeGroup; }
     get indexGroup() { return this._indexGroup; }
     get workingTreeGroup() { return this._workingTreeGroup; }
-    get resources() {
-        const result = [];
-        if (this._mergeGroup.resources.length > 0) {
-            result.push(this._mergeGroup);
-        }
-        if (this._indexGroup.resources.length > 0) {
-            result.push(this._indexGroup);
-        }
-        result.push(this._workingTreeGroup);
-        return result;
-    }
     get HEAD() {
         return this._HEAD;
     }
@@ -305,7 +305,7 @@ class Model {
         this._mergeGroup = new MergeGroup();
         this._indexGroup = new IndexGroup();
         this._workingTreeGroup = new WorkingTreeGroup();
-        this._onDidChangeResources.fire(this.resources);
+        this._onDidChangeResources.fire();
     }
     whenIdle() {
         return __awaiter(this, void 0, void 0, function* () {
@@ -334,7 +334,7 @@ class Model {
             if (this.state !== State.NotAGitRepository) {
                 return;
             }
-            yield this.git.init(this.workspaceRootPath);
+            yield this._git.init(this.workspaceRootPath);
             yield this.status();
         });
     }
@@ -345,7 +345,7 @@ class Model {
     }
     add(...resources) {
         return __awaiter(this, void 0, void 0, function* () {
-            yield this.run(Operation.Add, () => this.repository.add(resources.map(r => r.uri.fsPath)));
+            yield this.run(Operation.Add, () => this.repository.add(resources.map(r => r.resourceUri.fsPath)));
         });
     }
     stage(uri, contents) {
@@ -356,7 +356,7 @@ class Model {
     }
     revertFiles(...resources) {
         return __awaiter(this, void 0, void 0, function* () {
-            yield this.run(Operation.RevertFiles, () => this.repository.revertFiles('HEAD', resources.map(r => r.uri.fsPath)));
+            yield this.run(Operation.RevertFiles, () => this.repository.revertFiles('HEAD', resources.map(r => r.resourceUri.fsPath)));
         });
     }
     commit(message, opts = Object.create(null)) {
@@ -378,10 +378,10 @@ class Model {
                     switch (r.type) {
                         case Status.UNTRACKED:
                         case Status.IGNORED:
-                            toClean.push(r.uri.fsPath);
+                            toClean.push(r.resourceUri.fsPath);
                             break;
                         default:
-                            toCheckout.push(r.uri.fsPath);
+                            toCheckout.push(r.resourceUri.fsPath);
                             break;
                     }
                 });
@@ -433,7 +433,13 @@ class Model {
     }
     sync() {
         return __awaiter(this, void 0, void 0, function* () {
-            yield this.run(Operation.Sync, () => this.repository.sync());
+            yield this.run(Operation.Sync, () => __awaiter(this, void 0, void 0, function* () {
+                yield this.repository.pull();
+                const shouldPush = this.HEAD ? this.HEAD.ahead > 0 : true;
+                if (shouldPush) {
+                    yield this.repository.push();
+                }
+            }));
         });
     }
     show(ref, uri) {
@@ -445,7 +451,7 @@ class Model {
                 const result = yield this.repository.git.exec(this.repository.root, ['show', `${ref}:${relativePath}`]);
                 if (result.exitCode !== 0) {
                     throw new git_1.GitError({
-                        message: localize(3, null),
+                        message: localize(4, null),
                         exitCode: result.exitCode
                     });
                 }
@@ -475,6 +481,9 @@ class Model {
                 catch (err) {
                     if (err.gitErrorCode === git_1.GitErrorCodes.NotAGitRepository) {
                         this.repositoryDisposable.dispose();
+                        const disposables = [];
+                        this.onWorkspaceChange(this.onFSChange, this, disposables);
+                        this.repositoryDisposable = util_1.combinedDisposable(disposables);
                         this.state = State.NotAGitRepository;
                     }
                     throw err;
@@ -498,9 +507,8 @@ class Model {
             }
             this.repositoryDisposable.dispose();
             const disposables = [];
-            const repositoryRoot = yield this.git.getRepositoryRoot(this.workspaceRootPath);
-            const askpassEnv = yield this.askpass.getEnv();
-            this.repository = this.git.open(repositoryRoot, askpassEnv);
+            const repositoryRoot = yield this._git.getRepositoryRoot(this.workspaceRootPath);
+            this.repository = this._git.open(repositoryRoot);
             const dotGitPath = path.join(repositoryRoot, '.git');
             const { event: onRawGitChange, disposable: watcher } = watch_1.watch(dotGitPath);
             disposables.push(watcher);
@@ -541,48 +549,48 @@ class Model {
                 const uri = vscode_1.Uri.file(path.join(this.repository.root, raw.path));
                 const renameUri = raw.rename ? vscode_1.Uri.file(path.join(this.repository.root, raw.rename)) : undefined;
                 switch (raw.x + raw.y) {
-                    case '??': return workingTree.push(new Resource(uri, Status.UNTRACKED));
-                    case '!!': return workingTree.push(new Resource(uri, Status.IGNORED));
-                    case 'DD': return merge.push(new Resource(uri, Status.BOTH_DELETED));
-                    case 'AU': return merge.push(new Resource(uri, Status.ADDED_BY_US));
-                    case 'UD': return merge.push(new Resource(uri, Status.DELETED_BY_THEM));
-                    case 'UA': return merge.push(new Resource(uri, Status.ADDED_BY_THEM));
-                    case 'DU': return merge.push(new Resource(uri, Status.DELETED_BY_US));
-                    case 'AA': return merge.push(new Resource(uri, Status.BOTH_ADDED));
-                    case 'UU': return merge.push(new Resource(uri, Status.BOTH_MODIFIED));
+                    case '??': return workingTree.push(new Resource(this.workingTreeGroup, uri, Status.UNTRACKED));
+                    case '!!': return workingTree.push(new Resource(this.workingTreeGroup, uri, Status.IGNORED));
+                    case 'DD': return merge.push(new Resource(this.mergeGroup, uri, Status.BOTH_DELETED));
+                    case 'AU': return merge.push(new Resource(this.mergeGroup, uri, Status.ADDED_BY_US));
+                    case 'UD': return merge.push(new Resource(this.mergeGroup, uri, Status.DELETED_BY_THEM));
+                    case 'UA': return merge.push(new Resource(this.mergeGroup, uri, Status.ADDED_BY_THEM));
+                    case 'DU': return merge.push(new Resource(this.mergeGroup, uri, Status.DELETED_BY_US));
+                    case 'AA': return merge.push(new Resource(this.mergeGroup, uri, Status.BOTH_ADDED));
+                    case 'UU': return merge.push(new Resource(this.mergeGroup, uri, Status.BOTH_MODIFIED));
                 }
                 let isModifiedInIndex = false;
                 switch (raw.x) {
                     case 'M':
-                        index.push(new Resource(uri, Status.INDEX_MODIFIED));
+                        index.push(new Resource(this.indexGroup, uri, Status.INDEX_MODIFIED));
                         isModifiedInIndex = true;
                         break;
                     case 'A':
-                        index.push(new Resource(uri, Status.INDEX_ADDED));
+                        index.push(new Resource(this.indexGroup, uri, Status.INDEX_ADDED));
                         break;
                     case 'D':
-                        index.push(new Resource(uri, Status.INDEX_DELETED));
+                        index.push(new Resource(this.indexGroup, uri, Status.INDEX_DELETED));
                         break;
                     case 'R':
-                        index.push(new Resource(uri, Status.INDEX_RENAMED, renameUri));
+                        index.push(new Resource(this.indexGroup, uri, Status.INDEX_RENAMED, renameUri));
                         break;
                     case 'C':
-                        index.push(new Resource(uri, Status.INDEX_COPIED));
+                        index.push(new Resource(this.indexGroup, uri, Status.INDEX_COPIED));
                         break;
                 }
                 switch (raw.y) {
                     case 'M':
-                        workingTree.push(new Resource(uri, Status.MODIFIED, renameUri));
+                        workingTree.push(new Resource(this.workingTreeGroup, uri, Status.MODIFIED, renameUri));
                         break;
                     case 'D':
-                        workingTree.push(new Resource(uri, Status.DELETED, renameUri));
+                        workingTree.push(new Resource(this.workingTreeGroup, uri, Status.DELETED, renameUri));
                         break;
                 }
             });
             this._mergeGroup = new MergeGroup(merge);
             this._indexGroup = new IndexGroup(index);
             this._workingTreeGroup = new WorkingTreeGroup(workingTree);
-            this._onDidChangeResources.fire(this.resources);
+            this._onDidChangeResources.fire();
         });
     }
     onFSChange(uri) {
@@ -672,4 +680,4 @@ __decorate([
     decorators_1.throttle
 ], Model.prototype, "updateWhenIdleAndWait", null);
 exports.Model = Model;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/8076a19fdcab7e1fc1707952d652f0bb6c6db331/extensions\git\out/model.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/d9484d12b38879b7f4cdd1150efeb2fd2c1fbf39/extensions\git\out/model.js.map

@@ -60,9 +60,6 @@ define("vs/code/node/cliProcessMain.nls", {
 	],
 	"vs/platform/extensionManagement/node/extensionManagementService": [
 		"Extension invalid: package.json is not a JSON file.",
-		"Extension invalid: manifest name mismatch.",
-		"Extension invalid: manifest publisher mismatch.",
-		"Extension invalid: manifest version mismatch.",
 		"Please restart Code before reinstalling {0}.",
 		"Please restart Code before reinstalling {0}.",
 		"Installing '{0}' also installs its dependencies. Would you like to continue?",

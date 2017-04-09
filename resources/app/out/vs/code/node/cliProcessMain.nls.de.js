@@ -57,9 +57,6 @@ define("vs/code/node/cliProcessMain.nls.de", {
 	],
 	"vs/platform/extensionManagement/node/extensionManagementService": [
 		"Die Erweiterung ist ungültig: \"package.json\" ist keine JSON-Datei.",
-		"Die Erweiterung ist ungültig: Manifestnamenkonflikt.",
-		"Die Erweiterung ist ungültig: Manifestherausgeberkonflikt.",
-		"Die Erweiterung ist ungültig: Manifestversionskonflikt.",
 		"Bitte starten Sie Code vor der Neuinstallation von {0} neu.",
 		"Bitte starten Sie Code vor der Neuinstallation von {0} neu.",
 		"Durch das Installieren von \"{0}\" werden auch die abhängigen Komponenten installiert. Möchten Sie den Vorgang fortsetzen?",

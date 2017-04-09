@@ -19,7 +19,7 @@ define(__m[0/*vs/base/common/arrays*/], __M([1/*require*/,2/*exports*/]), functi
     /**
      * Returns the last element of an array.
      * @param array The array.
-     * @param n Which element from the end (default ist zero).
+     * @param n Which element from the end (default is zero).
      */
     function tail(array, n) {
         if (n === void 0) { n = 0; }
@@ -79,6 +79,49 @@ define(__m[0/*vs/base/common/arrays*/], __M([1/*require*/,2/*exports*/]), functi
         return low;
     }
     exports.findFirst = findFirst;
+    /**
+     * Takes two *sorted* arrays and computes their delta (removed, added elements).
+     * Finishes in `Math.min(before.length, after.length)` steps.
+     * @param before
+     * @param after
+     * @param compare
+     */
+    function delta(before, after, compare) {
+        var removed = [];
+        var added = [];
+        var beforeIdx = 0;
+        var afterIdx = 0;
+        while (true) {
+            if (beforeIdx === before.length) {
+                added.push.apply(added, after.slice(afterIdx));
+                break;
+            }
+            if (afterIdx === after.length) {
+                removed.push.apply(removed, before.slice(beforeIdx));
+                break;
+            }
+            var beforeElement = before[beforeIdx];
+            var afterElement = after[afterIdx];
+            var n = compare(beforeElement, afterElement);
+            if (n === 0) {
+                // equal
+                beforeIdx += 1;
+                afterIdx += 1;
+            }
+            else if (n < 0) {
+                // beforeElement is smaller -> before element removed
+                removed.push(beforeElement);
+                beforeIdx += 1;
+            }
+            else if (n > 0) {
+                // beforeElement is greater -> after element added
+                added.push(afterElement);
+                afterIdx += 1;
+            }
+        }
+        return { removed: removed, added: added };
+    }
+    exports.delta = delta;
     /**
      * Returns the top N elements from the array.
      *
@@ -514,43 +557,6 @@ define(__m[3/*vs/base/common/paths*/], __M([1/*require*/,2/*exports*/,5/*vs/base
         return true;
     }
     exports.isUNC = isUNC;
-    function isPosixAbsolute(path) {
-        return path && path[0] === '/';
-    }
-    function makePosixAbsolute(path) {
-        return isPosixAbsolute(normalize(path)) ? path : exports.sep + path;
-    }
-    exports.makePosixAbsolute = makePosixAbsolute;
-    function isEqualOrParent(path, candidate) {
-        if (path === candidate) {
-            return true;
-        }
-        path = normalize(path);
-        candidate = normalize(candidate);
-        var candidateLen = candidate.length;
-        var lastCandidateChar = candidate.charCodeAt(candidateLen - 1);
-        if (lastCandidateChar === 47 /* Slash */) {
-            candidate = candidate.substring(0, candidateLen - 1);
-            candidateLen -= 1;
-        }
-        if (path === candidate) {
-            return true;
-        }
-        if (!platform_1.isLinux) {
-            // case insensitive
-            path = path.toLowerCase();
-            candidate = candidate.toLowerCase();
-        }
-        if (path === candidate) {
-            return true;
-        }
-        if (path.indexOf(candidate) !== 0) {
-            return false;
-        }
-        var char = path.charCodeAt(candidateLen);
-        return char === 47 /* Slash */;
-    }
-    exports.isEqualOrParent = isEqualOrParent;
     // Reference: https://en.wikipedia.org/wiki/Filename
     var INVALID_FILE_CHARS = platform_1.isWindows ? /[\\/:\*\?"<>\|]/g : /[\\/]/g;
     var WINDOWS_FORBIDDEN_NAMES = /^(con|prn|aux|clock\$|nul|lpt[0-9]|com[0-9])$/i;

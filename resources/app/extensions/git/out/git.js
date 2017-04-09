@@ -191,10 +191,11 @@ class Git {
         this._onOutput = new vscode_1.EventEmitter();
         this.gitPath = options.gitPath;
         this.version = options.version;
+        this.env = options.env || {};
     }
     get onOutput() { return this._onOutput.event; }
-    open(repository, env = {}) {
-        return new Repository(this, repository, env);
+    open(repository) {
+        return new Repository(this, repository);
     }
     init(repository) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -206,6 +207,7 @@ class Git {
         return __awaiter(this, void 0, void 0, function* () {
             const folderName = url.replace(/^.*\//, '').replace(/\.git$/, '') || 'repository';
             const folderPath = path.join(parentPath, folderName);
+            yield util_1.mkdirp(parentPath);
             yield this.exec(parentPath, ['clone', url, folderPath]);
             return folderPath;
         });
@@ -278,8 +280,9 @@ class Git {
         if (!options.stdio && !options.input) {
             options.stdio = ['ignore', null, null]; // Unless provided, ignore stdin and leave default streams for stdout and stderr
         }
-        options.env = util_1.assign({}, process.env, options.env || {}, {
+        options.env = util_1.assign({}, process.env, this.env, options.env || {}, {
             VSCODE_GIT_COMMAND: args[0],
+            LC_ALL: 'en_US',
             LANG: 'en_US.UTF-8'
         });
         if (options.log !== false) {
@@ -293,10 +296,9 @@ class Git {
 }
 exports.Git = Git;
 class Repository {
-    constructor(_git, repositoryRoot, env = {}) {
+    constructor(_git, repositoryRoot) {
         this._git = _git;
         this.repositoryRoot = repositoryRoot;
-        this.env = env;
     }
     get git() {
         return this._git;
@@ -307,19 +309,13 @@ class Repository {
     // TODO@Joao: rename to exec
     run(args, options = {}) {
         return __awaiter(this, void 0, void 0, function* () {
-            options.env = util_1.assign({}, options.env || {});
-            options.env = util_1.assign(options.env, this.env);
             return yield this.git.exec(this.repositoryRoot, args, options);
         });
     }
     stream(args, options = {}) {
-        options.env = util_1.assign({}, options.env || {});
-        options.env = util_1.assign(options.env, this.env);
         return this.git.stream(this.repositoryRoot, args, options);
     }
     spawn(args, options = {}) {
-        options.env = util_1.assign({}, options.env || {});
-        options.env = util_1.assign(options.env, this.env);
         return this.git.spawn(args, options);
     }
     config(scope, key, value, options) {
@@ -596,12 +592,6 @@ class Repository {
             }
         });
     }
-    sync() {
-        return __awaiter(this, void 0, void 0, function* () {
-            yield this.pull();
-            yield this.push();
-        });
-    }
     getStatus() {
         return __awaiter(this, void 0, void 0, function* () {
             const executionResult = yield this.run(['status', '-z', '-u']);
@@ -760,4 +750,4 @@ class Repository {
     }
 }
 exports.Repository = Repository;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/8076a19fdcab7e1fc1707952d652f0bb6c6db331/extensions\git\out/git.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/d9484d12b38879b7f4cdd1150efeb2fd2c1fbf39/extensions\git\out/git.js.map

@@ -26,6 +26,10 @@ var SettingsDocument = (function () {
         if (location.path[0] === 'files.exclude' || location.path[0] === 'search.exclude') {
             return this.provideExcludeCompletionItems(location, range);
         }
+        // files.defaultLanguage
+        if (location.path[0] === 'files.defaultLanguage') {
+            return this.provideLanguageCompletionItems(location, range);
+        }
         return this.provideLanguageOverridesCompletionItems(location, position);
     };
     SettingsDocument.prototype.provideWindowTitleCompletionItems = function (location, range) {
@@ -115,17 +119,16 @@ var SettingsDocument = (function () {
         }
         return Promise.resolve(completions);
     };
-    SettingsDocument.prototype.provideLanguageCompletionItems = function (location, range, stringify) {
+    SettingsDocument.prototype.provideLanguageCompletionItems = function (location, range, formatFunc) {
         var _this = this;
-        if (stringify === void 0) { stringify = true; }
+        if (formatFunc === void 0) { formatFunc = function (l) { return JSON.stringify(l); }; }
         return vscode.languages.getLanguages().then(function (languages) {
             return languages.map(function (l) {
-                return _this.newSimpleCompletionItem(stringify ? JSON.stringify(l) : l, range);
+                return _this.newSimpleCompletionItem(formatFunc(l), range);
             });
         });
     };
     SettingsDocument.prototype.provideLanguageOverridesCompletionItems = function (location, position) {
-        var _this = this;
         var range = this.document.getWordRangeAtPosition(position) || new vscode.Range(position, position);
         var text = this.document.getText(range);
         if (location.path.length === 0) {
@@ -145,16 +148,9 @@ var SettingsDocument = (function () {
                 })]);
         }
         if (location.path.length === 1 && location.previousNode && typeof location.previousNode.value === 'string' && location.previousNode.value.startsWith('[')) {
-            // Suggestion model word matching includes starting quote and open sqaure bracket
-            // Hence exclude them from the proposal range
-            range = new vscode.Range(new vscode.Position(range.start.line, range.start.character + 2), range.end);
-            return vscode.languages.getLanguages().then(function (languages) {
-                return languages.map(function (l) {
-                    // Suggestion model word matching includes closed sqaure bracket and ending quote
-                    // Hence include them in the proposal to replace
-                    return _this.newSimpleCompletionItem(l, range, '', l + ']"');
-                });
-            });
+            // Suggestion model word matching includes closed sqaure bracket and ending quote
+            // Hence include them in the proposal to replace
+            return this.provideLanguageCompletionItems(location, range, function (language) { return "\"[" + language + "]\""; });
         }
         return Promise.resolve([]);
     };
@@ -177,4 +173,4 @@ var SettingsDocument = (function () {
     return SettingsDocument;
 }());
 exports.SettingsDocument = SettingsDocument;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/8076a19fdcab7e1fc1707952d652f0bb6c6db331/extensions\configuration-editing\out/settingsDocumentHelper.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/d9484d12b38879b7f4cdd1150efeb2fd2c1fbf39/extensions\configuration-editing\out/settingsDocumentHelper.js.map

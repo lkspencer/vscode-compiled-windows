@@ -1,10 +1,12 @@
 {
 	"extension.description": "Node.js용 Visual Studio Code 디버거 확장",
 	"node.label": "Node.js",
+	"open.loaded.script": "로드된 스크립트 열기",
 	"smartStep.description": "생성된 코드 중 원래 소스로 다시 매핑할 수 없는 코드를 단계별로 자동 실행합니다.",
 	"skipFiles.description": "디버그할 때 건너뛸 파일에 대한 GLOB 패턴의 배열입니다.",
 	"outFiles.description": "소스 맵이 사용되는 경우 이러한 GLOB 패턴은 생성된 JavaScript 파일을 지정합니다. 패턴이 '!'로 시작하면 파일이 제외됩니다. 지정하지 않으면 생성된 코드가 소스와 동일한 디렉터리에 필요합니다.",
 	"outDir.deprecationMessage": "특성 'outDir'은(는) 사용되지 않습니다. 대신 'outFiles'를 사용하세요.",
+	"trace.description": "진단 출력을 생성합니다. true로 설정하는 대신 하나 이상의 선택기를 쉼표로 구분하여 나열할 수 있습니다. '자세한 정보 표시' 선택기를 통해 아주 자세한 출력을 사용할 수 있습니다.",
 	"launch.args.description": "프로그램에 전달된 명령줄 인수입니다.",
 	"node.protocol.description": "사용할 Node.js 디버그 프로토콜입니다.",
 	"node.protocol.auto.description": "가장 적합한 프로토콜을 자동으로 검색하려고 시도합니다.",
@@ -16,6 +18,7 @@
 	"node.address.description": "디버그할 프로세스의 TCP/IP 주소입니다(Node.js >= 5.0인 경우에만). 기본값은 'localhost'입니다.",
 	"node.timeout.description": "이 시간(밀리초) 동안 Node.js에 연결하려고 다시 시도합니다. 기본값은 10000ms입니다.",
 	"node.restart.description": "Node.js가 종료된 후 세션을 다시 시작합니다.",
+	"node.showAsyncStacks.description": "현재 호출 스택을 발생시킨 비동기 호출을 표시합니다. 'inspector' 프로토콜에만 해당됩니다.",
 	"node.launch.program.description": "프로그램의 절대 경로입니다. 생성된 값은 package.json 및 열린 파일을 보고 추측한 것입니다. 이 특성을 편집하세요.",
 	"node.launch.externalConsole.deprecationMessage": "'externalConsole' 특성은 사용되지 않으므로 대신 'console'을 사용하세요.",
 	"node.launch.console.description": "디버그 대상을 시작할 위치입니다.",
@@ -59,6 +62,7 @@
 	"extensionHost.launch.runtimeExecutable.description": "VS Code의 절대 경로입니다.",
 	"extensionHost.launch.stopOnEntry.description": "시작한 후 자동으로 확장 호스트를 중지합니다.",
 	"extensionHost.launch.sourceMaps.description": "JavaScript 소스 맵을 사용합니다.",
+	"extensionHost.launch.env.description": "확장 호스트에 전달된 환경 변수입니다.",
 	"extensionHost.snippet.launch.label": "VS Code 확장 개발",
 	"extensionHost.snippet.launch.description": "디버그 모드에서 VS Code 확장 시작",
 	"extensionHost.launch.config.name": "확장 시작"

@@ -7,12 +7,17 @@ var path = require("path");
 var vscode_1 = require("vscode");
 var vscode_languageclient_1 = require("vscode-languageclient");
 var vscode_extension_telemetry_1 = require("vscode-extension-telemetry");
+var colorDecorators_1 = require("./colorDecorators");
 var nls = require("vscode-nls");
 var localize = nls.loadMessageBundle(__filename);
 var VSCodeContentRequest;
 (function (VSCodeContentRequest) {
     VSCodeContentRequest.type = new vscode_languageclient_1.RequestType('vscode/content');
 })(VSCodeContentRequest || (VSCodeContentRequest = {}));
+var ColorSymbolRequest;
+(function (ColorSymbolRequest) {
+    ColorSymbolRequest.type = new vscode_languageclient_1.RequestType('json/colorSymbols');
+})(ColorSymbolRequest || (ColorSymbolRequest = {}));
 var SchemaAssociationNotification;
 (function (SchemaAssociationNotification) {
     SchemaAssociationNotification.type = new vscode_languageclient_1.NotificationType('json/schemaAssociations');
@@ -60,6 +65,14 @@ function activate(context) {
             });
         });
         client.sendNotification(SchemaAssociationNotification.type, getSchemaAssociation(context));
+        var colorRequestor = function (uri) {
+            return client.sendRequest(ColorSymbolRequest.type, uri).then(function (ranges) { return ranges.map(client.protocol2CodeConverter.asRange); });
+        };
+        var isDecoratorEnabled = function (languageId) {
+            return vscode_1.workspace.getConfiguration().get(languageId + '.colorDecorators.enable');
+        };
+        disposable = colorDecorators_1.activateColorDecorations(colorRequestor, { json: true }, isDecoratorEnabled);
+        context.subscriptions.push(disposable);
     });
     // Push the disposable to the context's subscriptions so that the
     // client can be deactivated on extension deactivation
@@ -112,4 +125,4 @@ function getPackageInfo(context) {
     }
     return null;
 }
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/8076a19fdcab7e1fc1707952d652f0bb6c6db331/extensions\json\client\out/jsonMain.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/d9484d12b38879b7f4cdd1150efeb2fd2c1fbf39/extensions\json\client\out/jsonMain.js.map

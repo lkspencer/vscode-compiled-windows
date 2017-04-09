@@ -3,5 +3,7 @@
 	"configuration.validate.enable": "組み込みの PHP 検証を有効/無効にします。",
 	"configuration.validate.executablePath": "PHP 実行可能ファイルを指します。",
 	"configuration.validate.run": "リンターを保存時に実行するか、入力時に実行するか。",
-	"configuration.title": "PHP"
+	"configuration.title": "PHP",
+	"commands.categroy.php": "PHP",
+	"command.untrustValidationExecutable": "Don't trust PHP validation executable"
 }

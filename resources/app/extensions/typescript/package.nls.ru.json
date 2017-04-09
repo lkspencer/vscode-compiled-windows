@@ -7,6 +7,7 @@
 	"typescript.tsdk_version.desc": "Указывает версию tsserver. Требуется, только если tsserver не установлен с помощью npm.",
 	"typescript.disableAutomaticTypeAcquisition": "Отключает автоматическое получение типа. Требуется TypeScript 2.0.6 и более поздней версии и перезапуск после его изменения.",
 	"typescript.check.tscVersion": "Проверка отличия компилятора TypeScript глобальной установки (например, tsc) от используемой языковой службы TypeScript.",
+	"typescript.tsserver.log": "Включает ведение журнала сервера TS в файле.",
 	"typescript.tsserver.trace": "Включение трассировки сообщений, отправленных на сервер TS.",
 	"typescript.tsserver.experimentalAutoBuild": "Включает экспериментальную автосборку. Требуется версия 1.9 dev или версия 2.x tsserver и перезапуск VS Code после изменения.",
 	"typescript.validate.enable": "Включение или отключение проверки TypeScript.",
@@ -17,6 +18,7 @@
 	"format.insertSpaceBeforeAndAfterBinaryOperators": "Определяет метод обработки пробелов после двоичного оператора.",
 	"format.insertSpaceAfterKeywordsInControlFlowStatements": "Определяет метод обработки пробелов после ключевых слов в операторе управления потоком выполнения.",
 	"format.insertSpaceAfterFunctionKeywordForAnonymousFunctions": "Определяет метод обработки пробелов после ключевого слова function у анонимных функций.",
+	"format.insertSpaceBeforeFunctionParenthesis": "Определяет метод обработки пробелов перед скобками аргумента функции. Требует TypeScript >= 2.1.5.",
 	"format.insertSpaceAfterOpeningAndBeforeClosingNonemptyParenthesis": "Определяет метод обработки пробелов после открытия и до закрытия непустых круглых скобок.",
 	"format.insertSpaceAfterOpeningAndBeforeClosingNonemptyBrackets": "Определяет метод обработки пробелов после открытия и до закрытия непустых квадратных скобок.",
 	"format.insertSpaceAfterOpeningAndBeforeClosingTemplateStringBraces": "Определяет метод обработки пробелов после открытия и до закрытия скобок в строке шаблона. Требуется TypeScript 2.0.6 или более поздней версии.",
@@ -27,5 +29,7 @@
 	"typescript.goToProjectConfig.title": "Перейти к конфигурации проекта",
 	"javascript.goToProjectConfig.title": "Перейти к конфигурации проекта",
 	"typescript.referencesCodeLens.enabled": "Включить/отключить CodeLens для ссылок.",
+	"typescript.implementationsCodeLens.enabled": "Включить или отключить CodeLens для реализаций.",
+	"typescript.openTsServerLog.title": "Открытие файла журнала сервера TS",
 	"typescript.selectTypeScriptVersion.title": "Выберите версию TypeScript."
 }

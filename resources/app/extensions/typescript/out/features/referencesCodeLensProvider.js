@@ -5,51 +5,12 @@
 'use strict';
 const vscode_1 = require("vscode");
 const PConst = require("../protocol.const");
+const baseCodeLensProvider_1 = require("./baseCodeLensProvider");
 const nls = require("vscode-nls");
 const localize = nls.loadMessageBundle(__filename);
-class ReferencesCodeLens extends vscode_1.CodeLens {
-    constructor(document, file, range) {
-        super(range);
-        this.document = document;
-        this.file = file;
-    }
-}
-class TypeScriptReferencesCodeLensProvider {
+class TypeScriptReferencesCodeLensProvider extends baseCodeLensProvider_1.TypeScriptBaseCodeLensProvider {
     constructor(client) {
-        this.client = client;
-        this.enabled = false;
-        this.onDidChangeCodeLensesEmitter = new vscode_1.EventEmitter();
-    }
-    get onDidChangeCodeLenses() {
-        return this.onDidChangeCodeLensesEmitter.event;
-    }
-    updateConfiguration() {
-        const typeScriptConfig = vscode_1.workspace.getConfiguration('typescript');
-        const wasEnabled = this.enabled;
-        this.enabled = typeScriptConfig.get('referencesCodeLens.enabled', false);
-        if (wasEnabled !== this.enabled) {
-            this.onDidChangeCodeLensesEmitter.fire();
-        }
-    }
-    provideCodeLenses(document, token) {
-        if (!this.enabled) {
-            return Promise.resolve([]);
-        }
-        const filepath = this.client.normalizePath(document.uri);
-        if (!filepath) {
-            return Promise.resolve([]);
-        }
-        return this.client.execute('navtree', { file: filepath }, token).then(response => {
-            if (!response) {
-                return [];
-            }
-            const tree = response.body;
-            const referenceableSpans = [];
-            if (tree && tree.childItems) {
-                tree.childItems.forEach(item => this.extractReferenceableSymbols(document, item, referenceableSpans));
-            }
-            return referenceableSpans.map(span => new ReferencesCodeLens(document.uri, filepath, span));
-        });
+        super(client, 'referencesCodeLens.enabled');
     }
     resolveCodeLens(inputCodeLens, token) {
         const codeLens = inputCodeLens;
@@ -62,11 +23,12 @@ class TypeScriptReferencesCodeLensProvider {
             if (!response || !response.body) {
                 throw codeLens;
             }
-            // Exclude original definition from references
             const locations = response.body.refs
-                .filter(reference => !(reference.start.line === codeLens.range.start.line + 1
-                && reference.start.offset === codeLens.range.start.character + 1))
-                .map(reference => new vscode_1.Location(this.client.asUrl(reference.file), new vscode_1.Range(reference.start.line - 1, reference.start.offset - 1, reference.end.line - 1, reference.end.offset - 1)));
+                .map(reference => new vscode_1.Location(this.client.asUrl(reference.file), new vscode_1.Range(reference.start.line - 1, reference.start.offset - 1, reference.end.line - 1, reference.end.offset - 1)))
+                .filter(location => 
+            // Exclude original definition from references
+            !(location.uri.fsPath === codeLens.document.fsPath &&
+                location.range.start.isEqual(codeLens.range.start)));
             codeLens.command = {
                 title: locations.length === 1
                     ? localize(0, null)
@@ -83,51 +45,38 @@ class TypeScriptReferencesCodeLensProvider {
             return codeLens;
         });
     }
-    extractReferenceableSymbols(document, item, results) {
-        if (!item) {
-            return;
+    extractSymbol(document, item, parent) {
+        if (parent && parent.kind === PConst.Kind.enum) {
+            return super.getSymbolRange(document, item);
         }
-        const span = item.spans && item.spans[0];
-        if (span) {
-            const range = new vscode_1.Range(span.start.line - 1, span.start.offset - 1, span.end.line - 1, span.end.offset - 1);
-            // TODO: TS currently requires the position for 'references 'to be inside of the identifer
-            // Massage the range to make sure this is the case
-            const text = document.getText(range);
-            switch (item.kind) {
-                case PConst.Kind.const:
-                case PConst.Kind.let:
-                case PConst.Kind.variable:
-                case PConst.Kind.function:
-                    // Only show references for exported variables
-                    if (!item.kindModifiers.match(/\bexport\b/)) {
-                        break;
-                    }
-                // fallthrough
-                case PConst.Kind.class:
-                    if (item.text === '<class>') {
-                        break;
-                    }
-                // fallthrough
-                case PConst.Kind.memberFunction:
-                case PConst.Kind.memberVariable:
-                case PConst.Kind.memberGetAccessor:
-                case PConst.Kind.memberSetAccessor:
-                case PConst.Kind.constructorImplementation:
-                case PConst.Kind.interface:
-                case PConst.Kind.type:
-                case PConst.Kind.enum:
-                    const identifierMatch = new RegExp(`^(.*?(\\b|\\W))${(item.text || '').replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&')}\\b`, 'gm');
-                    const match = identifierMatch.exec(text);
-                    const prefixLength = match ? match.index + match[1].length : 0;
-                    const startOffset = document.offsetAt(new vscode_1.Position(range.start.line, range.start.character)) + prefixLength;
-                    results.push(new vscode_1.Range(document.positionAt(startOffset), document.positionAt(startOffset + item.text.length)));
+        switch (item.kind) {
+            case PConst.Kind.const:
+            case PConst.Kind.let:
+            case PConst.Kind.variable:
+            case PConst.Kind.function:
+                // Only show references for exported variables
+                if (!item.kindModifiers.match(/\bexport\b/)) {
                     break;
-            }
+                }
+            // fallthrough
+            case PConst.Kind.class:
+                if (item.text === '<class>') {
+                    break;
+                }
+            // fallthrough
+            case PConst.Kind.memberFunction:
+            case PConst.Kind.memberVariable:
+            case PConst.Kind.memberGetAccessor:
+            case PConst.Kind.memberSetAccessor:
+            case PConst.Kind.constructorImplementation:
+            case PConst.Kind.interface:
+            case PConst.Kind.type:
+            case PConst.Kind.enum:
+                return super.getSymbolRange(document, item);
         }
-        (item.childItems || []).forEach(item => this.extractReferenceableSymbols(document, item, results));
+        return null;
     }
 }
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.default = TypeScriptReferencesCodeLensProvider;
-;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/8076a19fdcab7e1fc1707952d652f0bb6c6db331/extensions\typescript\out/features\referencesCodeLensProvider.js.map
+exports.default = TypeScriptReferencesCodeLensProvider;
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/d9484d12b38879b7f4cdd1150efeb2fd2c1fbf39/extensions\typescript\out/features\referencesCodeLensProvider.js.map

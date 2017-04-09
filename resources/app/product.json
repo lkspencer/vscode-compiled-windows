@@ -11,17 +11,17 @@
  "win32RegValueName": "CodeOSS",
  "win32AppId": "{{E34003BB-9E10-4501-8C11-BE3FAA83F23F}",
  "win32AppUserModelId": "Microsoft.CodeOSS",
- "win32ShellNameShort": "VS C&ode - OSS",
  "darwinBundleIdentifier": "com.visualstudio.code.oss",
  "reportIssueUrl": "https://github.com/Microsoft/vscode/issues/new",
  "urlProtocol": "vscode-oss",
  "win32SetupExeBasename": "VSCodeSetup",
- "commit": "8076a19fdcab7e1fc1707952d652f0bb6c6db331",
- "date": "2017-03-17T14:32:53.952Z",
+ "win32ShellNameShort": "VS C&ode",
+ "commit": "d9484d12b38879b7f4cdd1150efeb2fd2c1fbf39",
+ "date": "2017-04-09T00:59:13.979Z",
  "checksums": {
-  "vs/workbench/electron-browser/workbench.main.js": "Aib2dUNpcKaQkGB93CeKjA",
-  "vs/workbench/electron-browser/workbench.main.css": "dJcMQxK5BOHN/5IhY4FAyA",
+  "vs/workbench/electron-browser/workbench.main.js": "Y5GK/4yWwvGsXAC5KrKSTg",
+  "vs/workbench/electron-browser/workbench.main.css": "IQ0bVvhGTD4FtRz3/K3/SA",
   "vs/workbench/electron-browser/bootstrap/index.html": "CaY/b/q8g8QggUN4VFJk8w",
-  "vs/workbench/electron-browser/bootstrap/index.js": "NkIDkPgQhBxCXC4q+VRcLg"
+  "vs/workbench/electron-browser/bootstrap/index.js": "a6oxbov/Qf10V6qZotOn8A"
  }
 }

@@ -66,7 +66,7 @@ function getDocumentRegions(languageService, document) {
     }
     return {
         getLanguageRanges: function (range) { return getLanguageRanges(document, regions, range); },
-        getEmbeddedDocument: function (languageId) { return getEmbeddedDocument(document, regions, languageId); },
+        getEmbeddedDocument: function (languageId, ignoreAttributeValues) { return getEmbeddedDocument(document, regions, languageId, ignoreAttributeValues); },
         getLanguageAtPosition: function (position) { return getLanguageAtPosition(document, regions, position); },
         getLanguagesInDocument: function () { return getLanguagesInDocument(document, regions); },
         getImportedScripts: function () { return importedScripts; }
@@ -143,14 +143,14 @@ function getLanguageAtPosition(document, regions, position) {
     }
     return 'html';
 }
-function getEmbeddedDocument(document, contents, languageId) {
+function getEmbeddedDocument(document, contents, languageId, ignoreAttributeValues) {
     var currentPos = 0;
     var oldContent = document.getText();
     var result = '';
     var lastSuffix = '';
     for (var _i = 0, contents_1 = contents; _i < contents_1.length; _i++) {
         var c = contents_1[_i];
-        if (c.languageId === languageId) {
+        if (c.languageId === languageId && (!ignoreAttributeValues || !c.attributeValue)) {
             result = substituteWithWhitespace(result, currentPos, c.start, oldContent, lastSuffix, getPrefix(c));
             result += oldContent.substring(c.start, c.end);
             currentPos = c.end;
@@ -212,4 +212,4 @@ function getAttributeLanguage(attributeName) {
     }
     return match[1] ? 'css' : 'javascript';
 }
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/8076a19fdcab7e1fc1707952d652f0bb6c6db331/extensions\html\server\out/modes\embeddedSupport.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/d9484d12b38879b7f4cdd1150efeb2fd2c1fbf39/extensions\html\server\out/modes\embeddedSupport.js.map

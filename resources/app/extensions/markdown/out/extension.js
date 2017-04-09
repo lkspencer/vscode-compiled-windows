@@ -19,22 +19,29 @@ var PreviewSecuritySelection;
     PreviewSecuritySelection[PreviewSecuritySelection["DisableEnhancedSecurityForWorkspace"] = 1] = "DisableEnhancedSecurityForWorkspace";
     PreviewSecuritySelection[PreviewSecuritySelection["EnableEnhancedSecurityForWorkspace"] = 2] = "EnableEnhancedSecurityForWorkspace";
 })(PreviewSecuritySelection || (PreviewSecuritySelection = {}));
-var ExtensionContentSecurityProlicyArbiter = (function () {
-    function ExtensionContentSecurityProlicyArbiter(globalState) {
+var ExtensionContentSecurityPolicyArbiter = (function () {
+    function ExtensionContentSecurityPolicyArbiter(globalState) {
         this.globalState = globalState;
         this.key = 'trusted_preview_workspace:';
     }
-    ExtensionContentSecurityProlicyArbiter.prototype.isEnhancedSecurityDisableForWorkspace = function () {
+    ExtensionContentSecurityPolicyArbiter.prototype.isEnhancedSecurityDisableForWorkspace = function () {
         return this.globalState.get(this.key + vscode.workspace.rootPath, false);
     };
-    ExtensionContentSecurityProlicyArbiter.prototype.addTrustedWorkspace = function (rootPath) {
+    ExtensionContentSecurityPolicyArbiter.prototype.addTrustedWorkspace = function (rootPath) {
         return this.globalState.update(this.key + rootPath, true);
     };
-    ExtensionContentSecurityProlicyArbiter.prototype.removeTrustedWorkspace = function (rootPath) {
+    ExtensionContentSecurityPolicyArbiter.prototype.removeTrustedWorkspace = function (rootPath) {
         return this.globalState.update(this.key + rootPath, false);
     };
-    return ExtensionContentSecurityProlicyArbiter;
+    return ExtensionContentSecurityPolicyArbiter;
 }());
+var resolveExtensionResources = function (extension, stylePath) {
+    var resource = vscode.Uri.parse(stylePath);
+    if (resource.scheme) {
+        return resource;
+    }
+    return vscode.Uri.file(path.join(extension.extensionPath, stylePath));
+};
 var telemetryReporter;
 function activate(context) {
     var packageInfo = getPackageInfo();
@@ -42,10 +49,57 @@ function activate(context) {
     if (telemetryReporter) {
         context.subscriptions.push(telemetryReporter);
     }
-    var cspArbiter = new ExtensionContentSecurityProlicyArbiter(context.globalState);
+    var cspArbiter = new ExtensionContentSecurityPolicyArbiter(context.globalState);
     var engine = new markdownEngine_1.MarkdownEngine();
     var contentProvider = new previewContentProvider_1.MDDocumentContentProvider(engine, context, cspArbiter);
     var contentProviderRegistration = vscode.workspace.registerTextDocumentContentProvider('markdown', contentProvider);
+    if (vscode.workspace.getConfiguration('markdown').get('enableExperimentalExtensionApi', false)) {
+        var _loop_1 = function (extension) {
+            var contributes = extension.packageJSON && extension.packageJSON.contributes;
+            if (!contributes) {
+                return "continue";
+            }
+            var styles = contributes['markdown.preview'] && contributes['markdown.preview'].styles;
+            if (styles) {
+                if (!Array.isArray(styles)) {
+                    styles = [styles];
+                }
+                for (var _i = 0, styles_1 = styles; _i < styles_1.length; _i++) {
+                    var style = styles_1[_i];
+                    try {
+                        contentProvider.addStyle(resolveExtensionResources(extension, style));
+                    }
+                    catch (e) {
+                    }
+                }
+            }
+            var scripts = contributes['markdown.preview'] && contributes['markdown.preview'].scripts;
+            if (scripts) {
+                if (!Array.isArray(scripts)) {
+                    scripts = [scripts];
+                }
+                for (var _a = 0, scripts_1 = scripts; _a < scripts_1.length; _a++) {
+                    var script = scripts_1[_a];
+                    try {
+                        contentProvider.addScript(resolveExtensionResources(extension, script));
+                    }
+                    catch (e) {
+                    }
+                }
+            }
+            if (contributes['markdownit.plugins']) {
+                extension.activate().then(function () {
+                    if (extension.exports && extension.exports.extendMarkdownIt) {
+                        engine.addPlugin(function (md) { return extension.exports.extendMarkdownIt(md); });
+                    }
+                });
+            }
+        };
+        for (var _i = 0, _a = vscode.extensions.all; _i < _a.length; _i++) {
+            var extension = _a[_i];
+            _loop_1(extension);
+        }
+    }
     var symbolsProvider = new documentSymbolProvider_1.default(engine);
     var symbolsProviderRegistration = vscode.languages.registerDocumentSymbolProvider({ language: 'markdown' }, symbolsProvider);
     context.subscriptions.push(contentProviderRegistration, symbolsProviderRegistration);
@@ -245,4 +299,4 @@ function getPackageInfo() {
     }
     return null;
 }
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/8076a19fdcab7e1fc1707952d652f0bb6c6db331/extensions\markdown\out/extension.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/d9484d12b38879b7f4cdd1150efeb2fd2c1fbf39/extensions\markdown\out/extension.js.map

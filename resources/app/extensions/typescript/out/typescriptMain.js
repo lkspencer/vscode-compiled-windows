@@ -31,6 +31,7 @@ const workspaceSymbolProvider_1 = require("./features/workspaceSymbolProvider");
 const codeActionProvider_1 = require("./features/codeActionProvider");
 const referencesCodeLensProvider_1 = require("./features/referencesCodeLensProvider");
 const jsDocCompletionProvider_1 = require("./features/jsDocCompletionProvider");
+const implementationsCodeLensProvider_1 = require("./features/implementationsCodeLensProvider");
 const BuildStatus = require("./utils/buildStatus");
 const ProjectStatus = require("./utils/projectStatus");
 const typingsStatus_1 = require("./utils/typingsStatus");
@@ -73,6 +74,9 @@ function activate(context) {
     }));
     context.subscriptions.push(vscode_1.commands.registerCommand('typescript.selectTypeScriptVersion', () => {
         client.onVersionStatusClicked();
+    }));
+    context.subscriptions.push(vscode_1.commands.registerCommand('typescript.openTsServerLog', () => {
+        client.openTsServerLogFile();
     }));
     context.subscriptions.push(vscode_1.languages.registerCompletionItemProvider(selector, new jsDocCompletionProvider_1.default(client), '*'));
     const goToProjectConfig = (isTypeScript) => {
@@ -156,6 +160,9 @@ class LanguageProvider {
             this.referenceCodeLensProvider = new referencesCodeLensProvider_1.default(client);
             this.referenceCodeLensProvider.updateConfiguration();
             this.disposables.push(vscode_1.languages.registerCodeLensProvider(selector, this.referenceCodeLensProvider));
+            this.implementationCodeLensProvider = new implementationsCodeLensProvider_1.default(client);
+            this.implementationCodeLensProvider.updateConfiguration();
+            this.disposables.push(vscode_1.languages.registerCodeLensProvider(selector, this.implementationCodeLensProvider));
         }
         if (client.apiVersion.has213Features()) {
             this.disposables.push(vscode_1.languages.registerCodeActionsProvider(selector, new codeActionProvider_1.default(client, this.description.id)));
@@ -227,6 +234,9 @@ class LanguageProvider {
         }
         if (this.referenceCodeLensProvider) {
             this.referenceCodeLensProvider.updateConfiguration();
+        }
+        if (this.implementationCodeLensProvider) {
+            this.implementationCodeLensProvider.updateConfiguration();
         }
         if (this.formattingProvider) {
             this.formattingProvider.updateConfiguration(config);
@@ -494,4 +504,4 @@ class TypeScriptServiceClientHost {
         return result;
     }
 }
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/8076a19fdcab7e1fc1707952d652f0bb6c6db331/extensions\typescript\out/typescriptMain.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/d9484d12b38879b7f4cdd1150efeb2fd2c1fbf39/extensions\typescript\out/typescriptMain.js.map

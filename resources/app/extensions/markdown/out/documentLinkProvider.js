@@ -7,7 +7,7 @@ var vscode = require("vscode");
 var path = require("path");
 var MarkdownDocumentLinkProvider = (function () {
     function MarkdownDocumentLinkProvider() {
-        this._linkPattern = /(\[[^\]]*\]\(\s*?)(\S+?)(\s+[^\)]*)?\)/g;
+        this._linkPattern = /(\[[^\]]*\]\(\s*?)([^\s\)]+?)(\s+[^\)]+)?\)/g;
     }
     MarkdownDocumentLinkProvider.prototype.provideDocumentLinks = function (document, _token) {
         var results = [];
@@ -51,4 +51,4 @@ var MarkdownDocumentLinkProvider = (function () {
 }());
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = MarkdownDocumentLinkProvider;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/8076a19fdcab7e1fc1707952d652f0bb6c6db331/extensions\markdown\out/documentLinkProvider.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/d9484d12b38879b7f4cdd1150efeb2fd2c1fbf39/extensions\markdown\out/documentLinkProvider.js.map

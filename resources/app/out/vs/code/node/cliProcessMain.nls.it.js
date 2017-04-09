@@ -57,9 +57,6 @@ define("vs/code/node/cliProcessMain.nls.it", {
 	],
 	"vs/platform/extensionManagement/node/extensionManagementService": [
 		"Estensione non valida: package.json non è un file JSON.",
-		"Estensione non valida: il nome del manifesto non corrisponde.",
-		"Estensione non valida: l\'editore del manifesto non corrisponde.",
-		"Estensione non valida: la versione del manifesto non corrisponde.",
 		"Riavviare Code prima di reinstallare {0}.",
 		"Riavviare Code prima di reinstallare {0}.",
 		"Se si installa \'{0}\', verranno installate anche le relative dipendenze. Continuare?",

@@ -9,6 +9,7 @@ define("vs/code/node/cli.nls.es", {
 		"La configuración regional que se usará (por ejemplo, en-US o zh-TW).",
 		"Fuerce una nueva instancia de Code.",
 		"Comience con el comando \'Developer: Startup Performance\' habilitado.",
+		"Ejecutar generador de perfiles de CPU durante el inicio",
 		"Fuerce la apertura de un archivo o carpeta en la última ventana activa.",
 		"Especifica el directorio en que se conservan los datos de usuario; es útil cuando se ejecuta como raíz.",
 		"Imprima salidas detalladas (implica --wait).",

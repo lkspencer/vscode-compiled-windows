@@ -1,7 +1,7 @@
 {
 	"name": "node-debug",
 	"displayName": "Node Debug",
-	"version": "1.10.21",
+	"version": "1.11.17",
 	"publisher": "ms-vscode",
 	"description": "%extension.description%",
 	"icon": "images/node-debug-icon.svg",
@@ -28,8 +28,8 @@
 		"ms-vscode.node-debug2"
 	],
 	"dependencies": {
-		"vscode-debugprotocol": "^1.17.0",
-		"vscode-debugadapter": "^1.17.0",
+		"vscode-debugprotocol": "^1.18.0",
+		"vscode-debugadapter": "^1.18.0",
 		"source-map": "0.5.6",
 		"vscode-nls": "^2.0.1",
 		"request-light": "^0.1.0",
@@ -62,21 +62,33 @@
 		"run-sequence": "^1.2.2",
 		"mocha": "^3.1.2",
 		"tslint": "^3.15.1",
-		"typescript": "^2.0.10",
+		"typescript": "^2.2.1",
 		"vscode": "^1.0.3",
 		"vscode-nls-dev": "^2.0.1",
-		"vscode-debugadapter-testsupport": "^1.17.0",
+		"vscode-debugadapter-testsupport": "^1.18.0",
 		"event-stream": "^3.3.4",
 		"nodemon": "^1.11.0",
-		"vsce": "^1.17.0"
+		"vsce": "^1.20.0"
 	},
 	"main": "./out/node/extension",
 	"activationEvents": [
+		"onCommand:extension.node-debug.pickLoadedScript",
 		"onCommand:extension.pickNodeProcess",
 		"onCommand:extension.node-debug.provideInitialConfigurations",
 		"onCommand:extension.node-debug.startSession"
 	],
 	"contributes": {
+		"commands": [{
+			"command": "extension.node-debug.pickLoadedScript",
+			"title": "%open.loaded.script%",
+			"category": "Debug"
+		}],
+		"keybindings": [{
+			"command": "extension.node-debug.pickLoadedScript",
+			"key": "ctrl+f4",
+			"mac": "cmd+f4",
+			"when": "debugType == 'node'"
+		}],
 		"breakpoints": [{
 			"language": "javascript"
 		}, {
@@ -385,6 +397,19 @@
 								"type": "string"
 							},
 							"default": []
+						},
+						"showAsyncStacks": {
+							"type": "boolean",
+							"description": "%node.showAsyncStacks.description%",
+							"default": true
+						},
+						"trace": {
+							"type": [
+								"boolean",
+								"string"
+							],
+							"description": "%trace.description%",
+							"default": true
 						}
 					}
 				},
@@ -408,7 +433,7 @@
 						"processId": {
 							"type": "string",
 							"description": "%node.attach.processId.description%",
-							"default": "${command.PickProcess}"
+							"default": "${command:PickProcess}"
 						},
 						"port": {
 							"type": "number",
@@ -484,6 +509,19 @@
 								"type": "string"
 							},
 							"default": []
+						},
+						"showAsyncStacks": {
+							"type": "boolean",
+							"description": "%node.showAsyncStacks.description%",
+							"default": true
+						},
+						"trace": {
+							"type": [
+								"boolean",
+								"string"
+							],
+							"description": "%trace.description%",
+							"default": true
 						}
 					}
 				}
@@ -537,6 +575,14 @@
 								"--extensionDevelopmentPath=${workspaceRoot}"
 							]
 						},
+						"env": {
+							"type": "object",
+							"additionalProperties": {
+								"type": "string"
+							},
+							"description": "%extensionHost.launch.env.description%",
+							"default": {}
+						},
 						"stopOnEntry": {
 							"type": "boolean",
 							"description": "%extensionHost.launch.stopOnEntry.description%",
@@ -577,6 +623,14 @@
 								"type": "string"
 							},
 							"default": []
+						},
+						"trace": {
+							"type": [
+								"boolean",
+								"string"
+							],
+							"description": "%trace.description%",
+							"default": true
 						}
 					}
 				}

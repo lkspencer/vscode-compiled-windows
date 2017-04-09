@@ -6,10 +6,26 @@
 var vscode = require("vscode");
 var path = require("path");
 var tableOfContentsProvider_1 = require("./tableOfContentsProvider");
-var FrontMatterRegex = /^---\s*[^]*?---\s*/;
+var FrontMatterRegex = /^---\s*[^]*?(-{3}|\.{3})\s*/;
 var MarkdownEngine = (function () {
     function MarkdownEngine() {
+        this.plugins = [];
     }
+    MarkdownEngine.prototype.addPlugin = function (factory) {
+        if (this.md) {
+            this.usePlugin(factory);
+        }
+        else {
+            this.plugins.push(factory);
+        }
+    };
+    MarkdownEngine.prototype.usePlugin = function (factory) {
+        try {
+            this.md = factory(this.md);
+        }
+        catch (e) {
+        }
+    };
     Object.defineProperty(MarkdownEngine.prototype, "engine", {
         get: function () {
             var _this = this;
@@ -30,8 +46,13 @@ var MarkdownEngine = (function () {
                 }).use(mdnh, {
                     slugify: function (header) { return tableOfContentsProvider_1.TableOfContentsProvider.slugify(header); }
                 });
-                for (var _i = 0, _a = ['paragraph_open', 'heading_open', 'image', 'code_block', 'blockquote_open', 'list_item_open']; _i < _a.length; _i++) {
-                    var renderName = _a[_i];
+                for (var _i = 0, _a = this.plugins; _i < _a.length; _i++) {
+                    var plugin = _a[_i];
+                    this.usePlugin(plugin);
+                }
+                this.plugins = [];
+                for (var _b = 0, _c = ['paragraph_open', 'heading_open', 'image', 'code_block', 'blockquote_open', 'list_item_open']; _b < _c.length; _b++) {
+                    var renderName = _c[_b];
                     this.addLineNumberRenderer(this.md, renderName);
                 }
                 this.addLinkNormalizer(this.md);
@@ -63,9 +84,10 @@ var MarkdownEngine = (function () {
         this.firstLine = offset;
         return this.engine.render(text);
     };
-    MarkdownEngine.prototype.parse = function (source) {
+    MarkdownEngine.prototype.parse = function (document, source) {
         var _a = this.stripFrontmatter(source), text = _a.text, offset = _a.offset;
-        return this.engine.parse(text).map(function (token) {
+        this.currentDocument = document;
+        return this.engine.parse(text, {}).map(function (token) {
             if (token.map) {
                 token.map[0] += offset;
             }
@@ -77,7 +99,7 @@ var MarkdownEngine = (function () {
         var original = md.renderer.rules[ruleName];
         md.renderer.rules[ruleName] = function (tokens, idx, options, env, self) {
             var token = tokens[idx];
-            if ((token.level === 0 || token.type === 'list_item_open' && token.level === 1) && token.map && token.map.length) {
+            if (token.map && token.map.length) {
                 token.attrSet('data-line', _this.firstLine + token.map[0]);
                 token.attrJoin('class', 'code-line');
             }
@@ -121,4 +143,4 @@ var MarkdownEngine = (function () {
     return MarkdownEngine;
 }());
 exports.MarkdownEngine = MarkdownEngine;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/8076a19fdcab7e1fc1707952d652f0bb6c6db331/extensions\markdown\out/markdownEngine.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/d9484d12b38879b7f4cdd1150efeb2fd2c1fbf39/extensions\markdown\out/markdownEngine.js.map

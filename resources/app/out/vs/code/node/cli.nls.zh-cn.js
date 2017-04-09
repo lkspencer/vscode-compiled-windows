@@ -9,6 +9,7 @@ define("vs/code/node/cli.nls.zh-cn", {
 		"要使用的区域设置(例如 en-US 或 zh-TW)。",
 		"强制创建一个新的 Code 实例。",
 		"通过启用 \"Developer: Startup Performance\" 命令开始。",
+		"启动期间运行 CPU 探查器",
 		"在上一活动窗口中强制打开文件或文件夹。",
 		"指定存放用户数据的目录，此目录在作为根运行时十分有用。",
 		"打印详细输出(表示 - 等待)。",

@@ -1,7 +1,7 @@
 {
   "name": "node-debug2",
   "displayName": "Node Debug 2",
-  "version": "1.10.0",
+  "version": "1.11.13",
   "publisher": "ms-vscode",
   "description": "%extension.description%",
   "icon": "images/node-debug-icon.svg",
@@ -14,9 +14,9 @@
   "license": "MIT",
   "private": true,
   "dependencies": {
-    "vscode-chrome-debug-core": "3.12.8",
-    "vscode-debugadapter": "^1.16.0-pre.1",
-    "vscode-debugprotocol": "^1.16.0-pre.1",
+    "vscode-chrome-debug-core": "3.14.12",
+    "vscode-debugadapter": "^1.18.0-pre.5",
+    "vscode-debugprotocol": "^1.18.0-pre.2",
     "vscode-nls": "^1.0.4"
   },
   "devDependencies": {
@@ -36,6 +36,7 @@
     "typescript": "^2.1.4",
     "vsce": "^1.14.0",
     "vscode": "^1.0.0",
+    "vscode-chrome-debug-core-testsupport": "^3.14.3",
     "vscode-debugadapter-testsupport": "^1.15.0-pre.0",
     "vscode-nls-dev": "^2.0.0-beta.1"
   },
@@ -46,7 +47,8 @@
   "scripts": {
     "postinstall": "node ./node_modules/vscode/bin/install",
     "build": "gulp build",
-    "test": "mocha --timeout 20000 -s 2000 -u tdd --colors --reporter out/test/loggingReporter.js ./out/test/",
+    "watch": "gulp watch",
+    "test": "mocha --timeout 20000 -s 2000 -u tdd --colors --reporter node_modules/vscode-chrome-debug-core-testsupport/out/loggingReporter.js ./out/test/",
     "vscode:prepublish": "gulp verify-no-linked-modules"
   },
   "engines": {
@@ -183,12 +185,26 @@
             "diagnosticLogging": {
               "type": "boolean",
               "description": "%node.diagnosticLogging.description%",
-              "default": true
+              "default": true,
+              "deprecationMessage": "%node.diagnosticLogging.deprecationMessage%"
             },
             "verboseDiagnosticLogging": {
               "type": "boolean",
               "description": "%node.verboseDiagnosticLogging.description%",
-              "default": true
+              "default": true,
+              "deprecationMessage": "%node.verboseDiagnosticLogging.deprecationMessage%"
+            },
+            "trace": {
+              "type": [
+                "boolean",
+                "string"
+              ],
+              "enum": [
+                "verbose",
+                true
+              ],
+              "default": true,
+              "description": "%node.trace.description%"
             },
             "sourceMapPathOverrides": {
               "type": "object",
@@ -204,6 +220,11 @@
               "type": "string",
               "description": "%node.launch.envFile.description%",
               "default": "${workspaceRoot}/.env"
+            },
+            "showAsyncStacks": {
+              "type": "boolean",
+              "description": "%node.showAsyncStacks.description%",
+              "default": true
             }
           }
         },
@@ -280,12 +301,26 @@
             "diagnosticLogging": {
               "type": "boolean",
               "description": "%node.diagnosticLogging.description%",
-              "default": true
+              "default": true,
+              "deprecationMessage": "%node.diagnosticLogging.deprecationMessage%"
             },
             "verboseDiagnosticLogging": {
               "type": "boolean",
               "description": "%node.verboseDiagnosticLogging.description%",
-              "default": true
+              "default": true,
+              "deprecationMessage": "%node.verboseDiagnosticLogging.deprecationMessage%"
+            },
+            "trace": {
+              "type": [
+                "boolean",
+                "string"
+              ],
+              "enum": [
+                "verbose",
+                true
+              ],
+              "default": true,
+              "description": "%node.trace.description%"
             },
             "sourceMapPathOverrides": {
               "type": "object",
@@ -296,6 +331,11 @@
               "type": "array",
               "description": "%node.skipFiles.description%",
               "default": []
+            },
+            "showAsyncStacks": {
+              "type": "boolean",
+              "description": "%node.showAsyncStacks.description%",
+              "default": true
             }
           }
         }
@@ -304,12 +344,19 @@
     "menus": {
       "debug/callstack/context": [{
         "command": "extension.node-debug2.toggleSkippingFile",
-        "group": "navigation"
+        "group": "navigation",
+        "when": "inDebugMode && debugType == 'node2'"
       }]
     },
     "commands": [{
       "command": "extension.node-debug2.toggleSkippingFile",
       "title": "Toggle Skipping This File"
+    }],
+    "keybindings": [{
+      "command": "extension.node-debug.pickLoadedScript",
+      "key": "ctrl+f4",
+      "mac": "cmd+f4",
+      "when": "debugType == 'node2'"
     }]
   },
   "__metadata": {

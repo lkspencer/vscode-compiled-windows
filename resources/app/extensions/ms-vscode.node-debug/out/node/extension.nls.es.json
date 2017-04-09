@@ -1,13 +1,15 @@
 [
+	"Seleccione un script",
+	"No hay scripts cargados disponibles",
 	"Elija el proceso de node.js o Gulp para la asociación",
 	"Iniciar programa",
-	"Asociar al proceso",
+	"Asociar al puerto",
 	"Depuración con el protocolo heredado porque hay un ejecutable en tiempo de ejecución configurado.",
 	"Depuración con el protocolo de inspector porque se detectó el nodo {0}.",
 	"Depuración con el protocolo heredado porque se detectó el nodo {0}.",
 	"Depuración con el protocolo heredado porque no se pudo determinar la versión del nodo.",
 	"Depurando con protocolos heredados porque la asociación a un proceso por el id. solo se admite para protocolos heredados.",
-	"Depuración con el protocolo de inspector porque se detectó el nodo {0}.",
-	"Depuración con el protocolo heredado porque no se pudo determinar la versión del nodo.",
-	"Depuración con el protocolo heredado porque no se pudo determinar la versión del nodo."
+	"Debugging with inspector protocol because it was detected.",
+	"Debugging with legacy protocol because it was detected.",
+	"Debugging with legacy protocol because Node version could not be determined: {0}"
 ]

@@ -11,6 +11,7 @@ var Configuration;
     Configuration.insertSpaceBeforeAndAfterBinaryOperators = 'insertSpaceBeforeAndAfterBinaryOperators';
     Configuration.insertSpaceAfterKeywordsInControlFlowStatements = 'insertSpaceAfterKeywordsInControlFlowStatements';
     Configuration.insertSpaceAfterFunctionKeywordForAnonymousFunctions = 'insertSpaceAfterFunctionKeywordForAnonymousFunctions';
+    Configuration.insertSpaceBeforeFunctionParenthesis = 'insertSpaceBeforeFunctionParenthesis';
     Configuration.insertSpaceAfterOpeningAndBeforeClosingNonemptyParenthesis = 'insertSpaceAfterOpeningAndBeforeClosingNonemptyParenthesis';
     Configuration.insertSpaceAfterOpeningAndBeforeClosingNonemptyBrackets = 'insertSpaceAfterOpeningAndBeforeClosingNonemptyBrackets';
     Configuration.insertSpaceAfterOpeningAndBeforeClosingTemplateStringBraces = 'insertSpaceAfterOpeningAndBeforeClosingTemplateStringBraces';
@@ -36,6 +37,7 @@ var Configuration;
         result.insertSpaceBeforeAndAfterBinaryOperators = true;
         result.insertSpaceAfterKeywordsInControlFlowStatements = true;
         result.insertSpaceAfterFunctionKeywordForAnonymousFunctions = false;
+        result.insertSpaceBeforeFunctionParenthesis = false;
         result.insertSpaceAfterOpeningAndBeforeClosingNonemptyParenthesis = false;
         result.insertSpaceAfterOpeningAndBeforeClosingNonemptyBrackets = false;
         result.insertSpaceAfterOpeningAndBeforeClosingTemplateStringBraces = false;
@@ -178,6 +180,7 @@ class TypeScriptFormattingProvider {
             insertSpaceBeforeAndAfterBinaryOperators: this.config.insertSpaceBeforeAndAfterBinaryOperators,
             insertSpaceAfterKeywordsInControlFlowStatements: this.config.insertSpaceAfterKeywordsInControlFlowStatements,
             insertSpaceAfterFunctionKeywordForAnonymousFunctions: this.config.insertSpaceAfterFunctionKeywordForAnonymousFunctions,
+            insertSpaceBeforeFunctionParenthesis: this.config.insertSpaceBeforeFunctionParenthesis,
             insertSpaceAfterOpeningAndBeforeClosingNonemptyParenthesis: this.config.insertSpaceAfterOpeningAndBeforeClosingNonemptyParenthesis,
             insertSpaceAfterOpeningAndBeforeClosingNonemptyBrackets: this.config.insertSpaceAfterOpeningAndBeforeClosingNonemptyBrackets,
             insertSpaceAfterOpeningAndBeforeClosingTemplateStringBraces: this.config.insertSpaceAfterOpeningAndBeforeClosingTemplateStringBraces,
@@ -189,4 +192,4 @@ class TypeScriptFormattingProvider {
 }
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = TypeScriptFormattingProvider;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/8076a19fdcab7e1fc1707952d652f0bb6c6db331/extensions\typescript\out/features\formattingProvider.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/d9484d12b38879b7f4cdd1150efeb2fd2c1fbf39/extensions\typescript\out/features\formattingProvider.js.map

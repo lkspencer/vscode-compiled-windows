@@ -3,6 +3,7 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 const Path = require("path");
 const FS = require("fs");
 const CP = require("child_process");
@@ -98,6 +99,7 @@ function realPath(path) {
         }
     }
     catch (error) {
+        // silently ignore error
     }
     return null;
 }
@@ -204,10 +206,12 @@ function isOnPath(program) {
                 CP.execSync(`${WHERE} ${program}`);
             }
             else {
+                // do not report error if 'where' doesn't exist
             }
             return true;
         }
         catch (e) {
+            // ignore
         }
     }
     else {
@@ -217,6 +221,7 @@ function isOnPath(program) {
                 CP.execSync(`${WHICH} '${program}'`);
             }
             else {
+                // do not report error if 'which' doesn't exist
             }
             return true;
         }

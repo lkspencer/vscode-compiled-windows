@@ -57,9 +57,6 @@ define("vs/code/node/cliProcessMain.nls.ko", {
 	],
 	"vs/platform/extensionManagement/node/extensionManagementService": [
 		"잘못된 확장: package.json이 JSON 파일이 아닙니다.",
-		"잘못된 확장: 매니페스트 이름이 일치하지 않습니다.",
-		"잘못된 확장: 매니페스트 게시자가 일치하지 않습니다.",
-		"잘못된 확장: 매니페스트 버전이 일치하지 않습니다.",
 		"{0}을(를) 다시 설치하기 전에 Code를 다시 시작하세요.",
 		"{0}을(를) 다시 설치하기 전에 Code를 다시 시작하세요.",
 		"\'{0}\'을(를) 설치하면 종속성도 설치됩니다. 계속할까요?",

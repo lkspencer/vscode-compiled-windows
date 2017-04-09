@@ -2,7 +2,7 @@
  * Copyright (C) Microsoft Corporation. All rights reserved.
  *--------------------------------------------------------*/
 (function() {
-var __m = ["exports","require","vs/base/common/platform","vs/base/common/strings","vs/base/common/types","vs/base/common/winjs.base","vs/base/common/arrays","vs/base/common/objects","path","vs/base/common/event","vs/base/common/errors","vs/base/common/lifecycle","vs/base/common/uri","vs/base/common/paths","vs/base/common/scorer","child_process","vs/base/common/map","vs/base/parts/ipc/common/ipc","fs","vs/base/parts/ipc/node/ipc.cp","vs/nls!vs/workbench/services/search/node/searchApp","vs/base/node/flow","vs/nls","vs/base/common/functional","vs/base/node/decoder","vs/base/node/event","vs/base/common/async","vs/base/common/uuid","vs/base/node/extfs","vs/base/common/parsers","vs/base/common/cancellation","vs/base/node/stdFork","os","vs/base/common/callbackList","vs/base/common/glob","vs/nls!vs/base/common/errorMessage","vs/base/common/comparers","string_decoder","vs/base/common/errorMessage","vs/nls!vs/base/common/processes","vs/base/common/processes","vs/nls!vs/base/node/processes","vs/base/node/processes","vs/base/common/events","vs/platform/instantiation/common/instantiation","vs/platform/files/common/files","vs/workbench/services/search/node/fileSearch","vs/workbench/services/search/node/searchIpc","vs/workbench/services/search/node/textSearch","vs/workbench/services/search/node/worker/searchWorkerIpc","vs/workbench/services/search/node/textSearchWorkerProvider","vs/workbench/services/search/node/rawSearchService","net","vs/base/common/winjs.base.raw","stream","vs/workbench/services/search/node/searchApp","graceful-fs","assert"];
+var __m = ["exports","require","vs/base/common/winjs.base","vs/base/common/platform","vs/base/common/strings","vs/base/common/types","path","vs/base/common/objects","vs/base/common/arrays","vs/base/common/event","vs/base/common/paths","child_process","vs/base/common/errors","vs/base/common/uri","vs/base/common/lifecycle","vs/base/common/scorer","fs","vs/base/node/flow","vs/base/common/map","vs/base/node/extfs","vs/base/common/functional","vs/base/parts/ipc/node/ipc.cp","vs/base/common/glob","vs/base/parts/ipc/common/ipc","vs/nls","vs/nls!vs/workbench/services/search/node/searchApp","vs/base/node/stream","string_decoder","vs/base/node/event","vs/workbench/services/search/node/rawSearchService","vs/workbench/services/search/node/ripgrepTextSearch","vs/base/common/async","vs/base/common/network","vs/base/common/events","vs/base/node/stdFork","os","vs/workbench/services/search/node/textSearchWorkerProvider","vs/base/common/parsers","vs/base/common/cancellation","vs/base/node/encoding","vs/workbench/services/search/node/worker/searchWorkerIpc","vs/workbench/services/search/node/textSearch","vs/base/common/uuid","vs/nls!vs/base/common/errorMessage","vs/base/common/comparers","vs/base/common/callbackList","vs/base/common/errorMessage","vs/nls!vs/base/common/processes","vs/base/common/processes","vs/nls!vs/base/node/processes","vs/base/node/processes","vs/workbench/services/search/node/searchIpc","vs/base/node/decoder","vs/platform/instantiation/common/instantiation","vs/platform/files/common/files","vs/workbench/services/search/node/fileSearch","stream","jschardet","iconv-lite","net","assert","events","vscode-ripgrep","vs/base/common/winjs.base.raw","graceful-fs","vs/workbench/services/search/node/searchApp"];
 var __M = function(deps) {
   var result = [];
   for (var i = 0, len = deps.length; i < len; i++) {
@@ -10,7 +10,7 @@ var __M = function(deps) {
   }
   return result;
 };
-define(__m[6/*vs/base/common/arrays*/], __M([1/*require*/,0/*exports*/]), function (require, exports) {
+define(__m[8/*vs/base/common/arrays*/], __M([1/*require*/,0/*exports*/]), function (require, exports) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -19,7 +19,7 @@ define(__m[6/*vs/base/common/arrays*/], __M([1/*require*/,0/*exports*/]), functi
     /**
      * Returns the last element of an array.
      * @param array The array.
-     * @param n Which element from the end (default ist zero).
+     * @param n Which element from the end (default is zero).
      */
     function tail(array, n) {
         if (n === void 0) { n = 0; }
@@ -79,6 +79,49 @@ define(__m[6/*vs/base/common/arrays*/], __M([1/*require*/,0/*exports*/]), functi
         return low;
     }
     exports.findFirst = findFirst;
+    /**
+     * Takes two *sorted* arrays and computes their delta (removed, added elements).
+     * Finishes in `Math.min(before.length, after.length)` steps.
+     * @param before
+     * @param after
+     * @param compare
+     */
+    function delta(before, after, compare) {
+        var removed = [];
+        var added = [];
+        var beforeIdx = 0;
+        var afterIdx = 0;
+        while (true) {
+            if (beforeIdx === before.length) {
+                added.push.apply(added, after.slice(afterIdx));
+                break;
+            }
+            if (afterIdx === after.length) {
+                removed.push.apply(removed, before.slice(beforeIdx));
+                break;
+            }
+            var beforeElement = before[beforeIdx];
+            var afterElement = after[afterIdx];
+            var n = compare(beforeElement, afterElement);
+            if (n === 0) {
+                // equal
+                beforeIdx += 1;
+                afterIdx += 1;
+            }
+            else if (n < 0) {
+                // beforeElement is smaller -> before element removed
+                removed.push(beforeElement);
+                beforeIdx += 1;
+            }
+            else if (n > 0) {
+                // beforeElement is greater -> after element added
+                added.push(afterElement);
+                afterIdx += 1;
+            }
+        }
+        return { removed: removed, added: added };
+    }
+    exports.delta = delta;
     /**
      * Returns the top N elements from the array.
      *
@@ -242,7 +285,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-define(__m[43/*vs/base/common/events*/], __M([1/*require*/,0/*exports*/]), function (require, exports) {
+define(__m[33/*vs/base/common/events*/], __M([1/*require*/,0/*exports*/]), function (require, exports) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -302,7 +345,7 @@ define(__m[43/*vs/base/common/events*/], __M([1/*require*/,0/*exports*/]), funct
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-define(__m[23/*vs/base/common/functional*/], __M([1/*require*/,0/*exports*/]), function (require, exports) {
+define(__m[20/*vs/base/common/functional*/], __M([1/*require*/,0/*exports*/]), function (require, exports) {
     'use strict';
     function not(fn) {
         return function () {
@@ -330,16 +373,16 @@ define(__m[23/*vs/base/common/functional*/], __M([1/*require*/,0/*exports*/]), f
     exports.once = once;
 });
 
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
 
 
 
 
 
-define(__m[11/*vs/base/common/lifecycle*/], __M([1/*require*/,0/*exports*/]), function (require, exports) {
-    /*---------------------------------------------------------------------------------------------
-     *  Copyright (c) Microsoft Corporation. All rights reserved.
-     *  Licensed under the MIT License. See License.txt in the project root for license information.
-     *--------------------------------------------------------------------------------------------*/
+define(__m[14/*vs/base/common/lifecycle*/], __M([1/*require*/,0/*exports*/,20/*vs/base/common/functional*/]), function (require, exports, functional_1) {
     'use strict';
     exports.empty = Object.freeze({
         dispose: function () { }
@@ -443,12 +486,12 @@ define(__m[11/*vs/base/common/lifecycle*/], __M([1/*require*/,0/*exports*/]), fu
                 reference = this.references[key] = { counter: 0, object: this.createReferencedObject(key) };
             }
             var object = reference.object;
-            var dispose = function () {
+            var dispose = functional_1.once(function () {
                 if (--reference.counter === 0) {
                     _this.destroyReferencedObject(reference.object);
                     delete _this.references[key];
                 }
-            };
+            });
             reference.counter++;
             return { object: object, dispose: dispose };
         };
@@ -465,347 +508,7 @@ define(__m[11/*vs/base/common/lifecycle*/], __M([1/*require*/,0/*exports*/]), fu
     exports.ImmortalReference = ImmortalReference;
 });
 
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
-
-
-
-
-
-define(__m[16/*vs/base/common/map*/], __M([1/*require*/,0/*exports*/]), function (require, exports) {
-    'use strict';
-    /**
-     * A simple map to store value by a key object. Key can be any object that has toString() function to get
-     * string value of the key.
-     */
-    var LinkedMap = (function () {
-        function LinkedMap() {
-            this.map = Object.create(null);
-            this._size = 0;
-        }
-        Object.defineProperty(LinkedMap.prototype, "size", {
-            get: function () {
-                return this._size;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        LinkedMap.prototype.get = function (k) {
-            var value = this.peek(k);
-            return value ? value : null;
-        };
-        LinkedMap.prototype.getOrSet = function (k, t) {
-            var res = this.get(k);
-            if (res) {
-                return res;
-            }
-            this.set(k, t);
-            return t;
-        };
-        LinkedMap.prototype.keys = function () {
-            var keys = [];
-            for (var key in this.map) {
-                keys.push(this.map[key].key);
-            }
-            return keys;
-        };
-        LinkedMap.prototype.values = function () {
-            var values = [];
-            for (var key in this.map) {
-                values.push(this.map[key].value);
-            }
-            return values;
-        };
-        LinkedMap.prototype.entries = function () {
-            var entries = [];
-            for (var key in this.map) {
-                entries.push(this.map[key]);
-            }
-            return entries;
-        };
-        LinkedMap.prototype.set = function (k, t) {
-            if (this.get(k)) {
-                return false; // already present!
-            }
-            this.push(k, t);
-            return true;
-        };
-        LinkedMap.prototype.delete = function (k) {
-            var value = this.get(k);
-            if (value) {
-                this.pop(k);
-                return value;
-            }
-            return null;
-        };
-        LinkedMap.prototype.has = function (k) {
-            return !!this.get(k);
-        };
-        LinkedMap.prototype.clear = function () {
-            this.map = Object.create(null);
-            this._size = 0;
-        };
-        LinkedMap.prototype.push = function (key, value) {
-            var entry = { key: key, value: value };
-            this.map[key.toString()] = entry;
-            this._size++;
-        };
-        LinkedMap.prototype.pop = function (k) {
-            delete this.map[k.toString()];
-            this._size--;
-        };
-        LinkedMap.prototype.peek = function (k) {
-            var entry = this.map[k.toString()];
-            return entry ? entry.value : null;
-        };
-        return LinkedMap;
-    }());
-    exports.LinkedMap = LinkedMap;
-    /**
-     * A simple Map<T> that optionally allows to set a limit of entries to store. Once the limit is hit,
-     * the cache will remove the entry that was last recently added. Or, if a ratio is provided below 1,
-     * all elements will be removed until the ratio is full filled (e.g. 0.75 to remove 25% of old elements).
-     */
-    var BoundedLinkedMap = (function () {
-        function BoundedLinkedMap(limit, ratio) {
-            if (limit === void 0) { limit = Number.MAX_VALUE; }
-            if (ratio === void 0) { ratio = 1; }
-            this.limit = limit;
-            this.map = Object.create(null);
-            this._size = 0;
-            this.ratio = limit * ratio;
-        }
-        Object.defineProperty(BoundedLinkedMap.prototype, "size", {
-            get: function () {
-                return this._size;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        BoundedLinkedMap.prototype.set = function (key, value) {
-            if (this.map[key]) {
-                return false; // already present!
-            }
-            var entry = { key: key, value: value };
-            this.push(entry);
-            if (this._size > this.limit) {
-                this.trim();
-            }
-            return true;
-        };
-        BoundedLinkedMap.prototype.get = function (key) {
-            var entry = this.map[key];
-            return entry ? entry.value : null;
-        };
-        BoundedLinkedMap.prototype.getOrSet = function (k, t) {
-            var res = this.get(k);
-            if (res) {
-                return res;
-            }
-            this.set(k, t);
-            return t;
-        };
-        BoundedLinkedMap.prototype.delete = function (key) {
-            var entry = this.map[key];
-            if (entry) {
-                this.map[key] = void 0;
-                this._size--;
-                if (entry.next) {
-                    entry.next.prev = entry.prev; // [A]<-[x]<-[C] = [A]<-[C]
-                }
-                else {
-                    this.head = entry.prev; // [A]-[x] = [A]
-                }
-                if (entry.prev) {
-                    entry.prev.next = entry.next; // [A]->[x]->[C] = [A]->[C]
-                }
-                else {
-                    this.tail = entry.next; // [x]-[A] = [A]
-                }
-                return entry.value;
-            }
-            return null;
-        };
-        BoundedLinkedMap.prototype.has = function (key) {
-            return !!this.map[key];
-        };
-        BoundedLinkedMap.prototype.clear = function () {
-            this.map = Object.create(null);
-            this._size = 0;
-            this.head = null;
-            this.tail = null;
-        };
-        BoundedLinkedMap.prototype.push = function (entry) {
-            if (this.head) {
-                // [A]-[B] = [A]-[B]->[X]
-                entry.prev = this.head;
-                this.head.next = entry;
-            }
-            if (!this.tail) {
-                this.tail = entry;
-            }
-            this.head = entry;
-            this.map[entry.key] = entry;
-            this._size++;
-        };
-        BoundedLinkedMap.prototype.trim = function () {
-            if (this.tail) {
-                // Remove all elements until ratio is reached
-                if (this.ratio < this.limit) {
-                    var index = 0;
-                    var current = this.tail;
-                    while (current.next) {
-                        // Remove the entry
-                        this.map[current.key] = void 0;
-                        this._size--;
-                        // if we reached the element that overflows our ratio condition
-                        // make its next element the new tail of the Map and adjust the size
-                        if (index === this.ratio) {
-                            this.tail = current.next;
-                            this.tail.prev = null;
-                            break;
-                        }
-                        // Move on
-                        current = current.next;
-                        index++;
-                    }
-                }
-                else {
-                    this.map[this.tail.key] = void 0;
-                    this._size--;
-                    // [x]-[B] = [B]
-                    this.tail = this.tail.next;
-                    this.tail.prev = null;
-                }
-            }
-        };
-        return BoundedLinkedMap;
-    }());
-    exports.BoundedLinkedMap = BoundedLinkedMap;
-    /**
-     * A subclass of Map<T> that makes an entry the MRU entry as soon
-     * as it is being accessed. In combination with the limit for the
-     * maximum number of elements in the cache, it helps to remove those
-     * entries from the cache that are LRU.
-     */
-    var LRUCache = (function (_super) {
-        __extends(LRUCache, _super);
-        function LRUCache(limit) {
-            return _super.call(this, limit) || this;
-        }
-        LRUCache.prototype.get = function (key) {
-            // Upon access of an entry, make it the head of
-            // the linked map so that it is the MRU element
-            var entry = this.map[key];
-            if (entry) {
-                this.delete(key);
-                this.push(entry);
-                return entry.value;
-            }
-            return null;
-        };
-        return LRUCache;
-    }(BoundedLinkedMap));
-    exports.LRUCache = LRUCache;
-    // --- trie'ish datastructure
-    var Node = (function () {
-        function Node() {
-            this.children = new Map();
-        }
-        return Node;
-    }());
-    /**
-     * A trie map that allows for fast look up when keys are substrings
-     * to the actual search keys (dir/subdir-problem).
-     */
-    var TrieMap = (function () {
-        function TrieMap(splitter) {
-            this._root = new Node();
-            this._splitter = splitter;
-        }
-        TrieMap.prototype.insert = function (path, element) {
-            var parts = this._splitter(path);
-            var i = 0;
-            // find insertion node
-            var node = this._root;
-            for (; i < parts.length; i++) {
-                var child = node.children[parts[i]];
-                if (child) {
-                    node = child;
-                    continue;
-                }
-                break;
-            }
-            // create new nodes
-            var newNode;
-            for (; i < parts.length; i++) {
-                newNode = new Node();
-                node.children[parts[i]] = newNode;
-                node = newNode;
-            }
-            node.element = element;
-        };
-        TrieMap.prototype.lookUp = function (path) {
-            var parts = this._splitter(path);
-            var children = this._root.children;
-            var node;
-            for (var _i = 0, parts_1 = parts; _i < parts_1.length; _i++) {
-                var part = parts_1[_i];
-                node = children[part];
-                if (!node) {
-                    return undefined;
-                }
-                children = node.children;
-            }
-            return node.element;
-        };
-        TrieMap.prototype.findSubstr = function (path) {
-            var parts = this._splitter(path);
-            var lastNode;
-            var children = this._root.children;
-            for (var _i = 0, parts_2 = parts; _i < parts_2.length; _i++) {
-                var part = parts_2[_i];
-                var node = children[part];
-                if (!node) {
-                    break;
-                }
-                if (node.element) {
-                    lastNode = node;
-                }
-                children = node.children;
-            }
-            // return the last matching node
-            // that had an element
-            if (lastNode) {
-                return lastNode.element;
-            }
-            return undefined;
-        };
-        TrieMap.prototype.findSuperstr = function (path) {
-            var parts = this._splitter(path);
-            var children = this._root.children;
-            var node;
-            for (var _i = 0, parts_3 = parts; _i < parts_3.length; _i++) {
-                var part = parts_3[_i];
-                node = children[part];
-                if (!node) {
-                    return undefined;
-                }
-                children = node.children;
-            }
-            var result = new TrieMap(this._splitter);
-            result._root = node;
-            return result;
-        };
-        return TrieMap;
-    }());
-    TrieMap.PathSplitter = function (s) { return s.split(/[\\/]/).filter(function (s) { return !!s; }); };
-    exports.TrieMap = TrieMap;
-});
-
-define(__m[2/*vs/base/common/platform*/], __M([1/*require*/,0/*exports*/]), function (require, exports) {
+define(__m[3/*vs/base/common/platform*/], __M([1/*require*/,0/*exports*/]), function (require, exports) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -901,13 +604,20 @@ define(__m[2/*vs/base/common/platform*/], __M([1/*require*/,0/*exports*/]), func
     exports.clearTimeout = _globals.clearTimeout.bind(_globals);
     exports.setInterval = _globals.setInterval.bind(_globals);
     exports.clearInterval = _globals.clearInterval.bind(_globals);
+    var OperatingSystem;
+    (function (OperatingSystem) {
+        OperatingSystem[OperatingSystem["Windows"] = 1] = "Windows";
+        OperatingSystem[OperatingSystem["Macintosh"] = 2] = "Macintosh";
+        OperatingSystem[OperatingSystem["Linux"] = 3] = "Linux";
+    })(OperatingSystem = exports.OperatingSystem || (exports.OperatingSystem = {}));
+    exports.OS = (_isMacintosh ? 2 /* Macintosh */ : (_isWindows ? 1 /* Windows */ : 3 /* Linux */));
 });
 
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-define(__m[14/*vs/base/common/scorer*/], __M([1/*require*/,0/*exports*/]), function (require, exports) {
+define(__m[15/*vs/base/common/scorer*/], __M([1/*require*/,0/*exports*/]), function (require, exports) {
     'use strict';
     // Based on material from:
     /*!
@@ -1023,1552 +733,7 @@ define(__m[14/*vs/base/common/scorer*/], __M([1/*require*/,0/*exports*/]), funct
 END THIRD PARTY
 */ 
 
-define(__m[3/*vs/base/common/strings*/], __M([1/*require*/,0/*exports*/,16/*vs/base/common/map*/]), function (require, exports, map_1) {
-    /*---------------------------------------------------------------------------------------------
-     *  Copyright (c) Microsoft Corporation. All rights reserved.
-     *  Licensed under the MIT License. See License.txt in the project root for license information.
-     *--------------------------------------------------------------------------------------------*/
-    'use strict';
-    /**
-     * The empty string.
-     */
-    exports.empty = '';
-    function isFalsyOrWhitespace(str) {
-        if (!str || typeof str !== 'string') {
-            return true;
-        }
-        return str.trim().length === 0;
-    }
-    exports.isFalsyOrWhitespace = isFalsyOrWhitespace;
-    /**
-     * @returns the provided number with the given number of preceding zeros.
-     */
-    function pad(n, l, char) {
-        if (char === void 0) { char = '0'; }
-        var str = '' + n;
-        var r = [str];
-        for (var i = str.length; i < l; i++) {
-            r.push(char);
-        }
-        return r.reverse().join('');
-    }
-    exports.pad = pad;
-    var _formatRegexp = /{(\d+)}/g;
-    /**
-     * Helper to produce a string with a variable number of arguments. Insert variable segments
-     * into the string using the {n} notation where N is the index of the argument following the string.
-     * @param value string to which formatting is applied
-     * @param args replacements for {n}-entries
-     */
-    function format(value) {
-        var args = [];
-        for (var _i = 1; _i < arguments.length; _i++) {
-            args[_i - 1] = arguments[_i];
-        }
-        if (args.length === 0) {
-            return value;
-        }
-        return value.replace(_formatRegexp, function (match, group) {
-            var idx = parseInt(group, 10);
-            return isNaN(idx) || idx < 0 || idx >= args.length ?
-                match :
-                args[idx];
-        });
-    }
-    exports.format = format;
-    /**
-     * Converts HTML characters inside the string to use entities instead. Makes the string safe from
-     * being used e.g. in HTMLElement.innerHTML.
-     */
-    function escape(html) {
-        return html.replace(/[<|>|&]/g, function (match) {
-            switch (match) {
-                case '<': return '&lt;';
-                case '>': return '&gt;';
-                case '&': return '&amp;';
-                default: return match;
-            }
-        });
-    }
-    exports.escape = escape;
-    /**
-     * Escapes regular expression characters in a given string
-     */
-    function escapeRegExpCharacters(value) {
-        return value.replace(/[\-\\\{\}\*\+\?\|\^\$\.\,\[\]\(\)\#\s]/g, '\\$&');
-    }
-    exports.escapeRegExpCharacters = escapeRegExpCharacters;
-    /**
-     * Removes all occurrences of needle from the beginning and end of haystack.
-     * @param haystack string to trim
-     * @param needle the thing to trim (default is a blank)
-     */
-    function trim(haystack, needle) {
-        if (needle === void 0) { needle = ' '; }
-        var trimmed = ltrim(haystack, needle);
-        return rtrim(trimmed, needle);
-    }
-    exports.trim = trim;
-    /**
-     * Removes all occurrences of needle from the beginning of haystack.
-     * @param haystack string to trim
-     * @param needle the thing to trim
-     */
-    function ltrim(haystack, needle) {
-        if (!haystack || !needle) {
-            return haystack;
-        }
-        var needleLen = needle.length;
-        if (needleLen === 0 || haystack.length === 0) {
-            return haystack;
-        }
-        var offset = 0, idx = -1;
-        while ((idx = haystack.indexOf(needle, offset)) === offset) {
-            offset = offset + needleLen;
-        }
-        return haystack.substring(offset);
-    }
-    exports.ltrim = ltrim;
-    /**
-     * Removes all occurrences of needle from the end of haystack.
-     * @param haystack string to trim
-     * @param needle the thing to trim
-     */
-    function rtrim(haystack, needle) {
-        if (!haystack || !needle) {
-            return haystack;
-        }
-        var needleLen = needle.length, haystackLen = haystack.length;
-        if (needleLen === 0 || haystackLen === 0) {
-            return haystack;
-        }
-        var offset = haystackLen, idx = -1;
-        while (true) {
-            idx = haystack.lastIndexOf(needle, offset - 1);
-            if (idx === -1 || idx + needleLen !== offset) {
-                break;
-            }
-            if (idx === 0) {
-                return '';
-            }
-            offset = idx;
-        }
-        return haystack.substring(0, offset);
-    }
-    exports.rtrim = rtrim;
-    function convertSimple2RegExpPattern(pattern) {
-        return pattern.replace(/[\-\\\{\}\+\?\|\^\$\.\,\[\]\(\)\#\s]/g, '\\$&').replace(/[\*]/g, '.*');
-    }
-    exports.convertSimple2RegExpPattern = convertSimple2RegExpPattern;
-    function stripWildcards(pattern) {
-        return pattern.replace(/\*/g, '');
-    }
-    exports.stripWildcards = stripWildcards;
-    /**
-     * Determines if haystack starts with needle.
-     */
-    function startsWith(haystack, needle) {
-        if (haystack.length < needle.length) {
-            return false;
-        }
-        for (var i = 0; i < needle.length; i++) {
-            if (haystack[i] !== needle[i]) {
-                return false;
-            }
-        }
-        return true;
-    }
-    exports.startsWith = startsWith;
-    /**
-     * Determines if haystack ends with needle.
-     */
-    function endsWith(haystack, needle) {
-        var diff = haystack.length - needle.length;
-        if (diff > 0) {
-            return haystack.indexOf(needle, diff) === diff;
-        }
-        else if (diff === 0) {
-            return haystack === needle;
-        }
-        else {
-            return false;
-        }
-    }
-    exports.endsWith = endsWith;
-    function indexOfIgnoreCase(haystack, needle, position) {
-        if (position === void 0) { position = 0; }
-        var index = haystack.indexOf(needle, position);
-        if (index < 0) {
-            if (position > 0) {
-                haystack = haystack.substr(position);
-            }
-            needle = escapeRegExpCharacters(needle);
-            index = haystack.search(new RegExp(needle, 'i'));
-        }
-        return index;
-    }
-    exports.indexOfIgnoreCase = indexOfIgnoreCase;
-    function createRegExp(searchString, isRegex, options) {
-        if (options === void 0) { options = {}; }
-        if (searchString === '') {
-            throw new Error('Cannot create regex from empty string');
-        }
-        if (!isRegex) {
-            searchString = searchString.replace(/[\-\\\{\}\*\+\?\|\^\$\.\,\[\]\(\)\#\s]/g, '\\$&');
-        }
-        if (options.wholeWord) {
-            if (!/\B/.test(searchString.charAt(0))) {
-                searchString = '\\b' + searchString;
-            }
-            if (!/\B/.test(searchString.charAt(searchString.length - 1))) {
-                searchString = searchString + '\\b';
-            }
-        }
-        var modifiers = '';
-        if (options.global) {
-            modifiers += 'g';
-        }
-        if (!options.matchCase) {
-            modifiers += 'i';
-        }
-        if (options.multiline) {
-            modifiers += 'm';
-        }
-        return new RegExp(searchString, modifiers);
-    }
-    exports.createRegExp = createRegExp;
-    function regExpLeadsToEndlessLoop(regexp) {
-        // Exit early if it's one of these special cases which are meant to match
-        // against an empty string
-        if (regexp.source === '^' || regexp.source === '^$' || regexp.source === '$') {
-            return false;
-        }
-        // We check against an empty string. If the regular expression doesn't advance
-        // (e.g. ends in an endless loop) it will match an empty string.
-        var match = regexp.exec('');
-        return (match && regexp.lastIndex === 0);
-    }
-    exports.regExpLeadsToEndlessLoop = regExpLeadsToEndlessLoop;
-    /**
-     * The normalize() method returns the Unicode Normalization Form of a given string. The form will be
-     * the Normalization Form Canonical Composition.
-     *
-     * @see {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/normalize}
-     */
-    exports.canNormalize = typeof (''.normalize) === 'function';
-    var nonAsciiCharactersPattern = /[^\u0000-\u0080]/;
-    var normalizedCache = new map_1.BoundedLinkedMap(10000); // bounded to 10000 elements
-    function normalizeNFC(str) {
-        if (!exports.canNormalize || !str) {
-            return str;
-        }
-        var cached = normalizedCache.get(str);
-        if (cached) {
-            return cached;
-        }
-        var res;
-        if (nonAsciiCharactersPattern.test(str)) {
-            res = str.normalize('NFC');
-        }
-        else {
-            res = str;
-        }
-        // Use the cache for fast lookup
-        normalizedCache.set(str, res);
-        return res;
-    }
-    exports.normalizeNFC = normalizeNFC;
-    /**
-     * Returns first index of the string that is not whitespace.
-     * If string is empty or contains only whitespaces, returns -1
-     */
-    function firstNonWhitespaceIndex(str) {
-        for (var i = 0, len = str.length; i < len; i++) {
-            var chCode = str.charCodeAt(i);
-            if (chCode !== 32 /* Space */ && chCode !== 9 /* Tab */) {
-                return i;
-            }
-        }
-        return -1;
-    }
-    exports.firstNonWhitespaceIndex = firstNonWhitespaceIndex;
-    /**
-     * Returns the leading whitespace of the string.
-     * If the string contains only whitespaces, returns entire string
-     */
-    function getLeadingWhitespace(str) {
-        for (var i = 0, len = str.length; i < len; i++) {
-            var chCode = str.charCodeAt(i);
-            if (chCode !== 32 /* Space */ && chCode !== 9 /* Tab */) {
-                return str.substring(0, i);
-            }
-        }
-        return str;
-    }
-    exports.getLeadingWhitespace = getLeadingWhitespace;
-    /**
-     * Returns last index of the string that is not whitespace.
-     * If string is empty or contains only whitespaces, returns -1
-     */
-    function lastNonWhitespaceIndex(str, startIndex) {
-        if (startIndex === void 0) { startIndex = str.length - 1; }
-        for (var i = startIndex; i >= 0; i--) {
-            var chCode = str.charCodeAt(i);
-            if (chCode !== 32 /* Space */ && chCode !== 9 /* Tab */) {
-                return i;
-            }
-        }
-        return -1;
-    }
-    exports.lastNonWhitespaceIndex = lastNonWhitespaceIndex;
-    function compare(a, b) {
-        if (a < b) {
-            return -1;
-        }
-        else if (a > b) {
-            return 1;
-        }
-        else {
-            return 0;
-        }
-    }
-    exports.compare = compare;
-    function compareIgnoreCase(a, b) {
-        var len = Math.min(a.length, b.length);
-        for (var i = 0; i < len; i++) {
-            var codeA = a.charCodeAt(i);
-            var codeB = b.charCodeAt(i);
-            if (codeA === codeB) {
-                // equal
-                continue;
-            }
-            if (isAsciiLetter(codeA) && isAsciiLetter(codeB)) {
-                var diff = codeA - codeB;
-                if (diff === 32 || diff === -32) {
-                    // equal -> ignoreCase
-                    continue;
-                }
-                else {
-                    return diff;
-                }
-            }
-            else {
-                return compare(a.toLowerCase(), b.toLowerCase());
-            }
-        }
-        if (a.length < b.length) {
-            return -1;
-        }
-        else if (a.length > b.length) {
-            return 1;
-        }
-        else {
-            return 0;
-        }
-    }
-    exports.compareIgnoreCase = compareIgnoreCase;
-    function isAsciiLetter(code) {
-        return (code >= 97 /* a */ && code <= 122 /* z */) || (code >= 65 /* A */ && code <= 90 /* Z */);
-    }
-    function equalsIgnoreCase(a, b) {
-        var len1 = a.length, len2 = b.length;
-        if (len1 !== len2) {
-            return false;
-        }
-        for (var i = 0; i < len1; i++) {
-            var codeA = a.charCodeAt(i), codeB = b.charCodeAt(i);
-            if (codeA === codeB) {
-                continue;
-            }
-            else if (isAsciiLetter(codeA) && isAsciiLetter(codeB)) {
-                var diff = Math.abs(codeA - codeB);
-                if (diff !== 0 && diff !== 32) {
-                    return false;
-                }
-            }
-            else {
-                if (String.fromCharCode(codeA).toLocaleLowerCase() !== String.fromCharCode(codeB).toLocaleLowerCase()) {
-                    return false;
-                }
-            }
-        }
-        return true;
-    }
-    exports.equalsIgnoreCase = equalsIgnoreCase;
-    /**
-     * @returns the length of the common prefix of the two strings.
-     */
-    function commonPrefixLength(a, b) {
-        var i, len = Math.min(a.length, b.length);
-        for (i = 0; i < len; i++) {
-            if (a.charCodeAt(i) !== b.charCodeAt(i)) {
-                return i;
-            }
-        }
-        return len;
-    }
-    exports.commonPrefixLength = commonPrefixLength;
-    /**
-     * @returns the length of the common suffix of the two strings.
-     */
-    function commonSuffixLength(a, b) {
-        var i, len = Math.min(a.length, b.length);
-        var aLastIndex = a.length - 1;
-        var bLastIndex = b.length - 1;
-        for (i = 0; i < len; i++) {
-            if (a.charCodeAt(aLastIndex - i) !== b.charCodeAt(bLastIndex - i)) {
-                return i;
-            }
-        }
-        return len;
-    }
-    exports.commonSuffixLength = commonSuffixLength;
-    // --- unicode
-    // http://en.wikipedia.org/wiki/Surrogate_pair
-    // Returns the code point starting at a specified index in a string
-    // Code points U+0000 to U+D7FF and U+E000 to U+FFFF are represented on a single character
-    // Code points U+10000 to U+10FFFF are represented on two consecutive characters
-    //export function getUnicodePoint(str:string, index:number, len:number):number {
-    //	let chrCode = str.charCodeAt(index);
-    //	if (0xD800 <= chrCode && chrCode <= 0xDBFF && index + 1 < len) {
-    //		let nextChrCode = str.charCodeAt(index + 1);
-    //		if (0xDC00 <= nextChrCode && nextChrCode <= 0xDFFF) {
-    //			return (chrCode - 0xD800) << 10 + (nextChrCode - 0xDC00) + 0x10000;
-    //		}
-    //	}
-    //	return chrCode;
-    //}
-    function isHighSurrogate(charCode) {
-        return (0xD800 <= charCode && charCode <= 0xDBFF);
-    }
-    exports.isHighSurrogate = isHighSurrogate;
-    function isLowSurrogate(charCode) {
-        return (0xDC00 <= charCode && charCode <= 0xDFFF);
-    }
-    exports.isLowSurrogate = isLowSurrogate;
-    /**
-     * Generated using https://github.com/alexandrudima/unicode-utils/blob/master/generate-rtl-test.js
-     */
-    var CONTAINS_RTL = /(?:[\u05BE\u05C0\u05C3\u05C6\u05D0-\u05F4\u0608\u060B\u060D\u061B-\u064A\u066D-\u066F\u0671-\u06D5\u06E5\u06E6\u06EE\u06EF\u06FA-\u0710\u0712-\u072F\u074D-\u07A5\u07B1-\u07EA\u07F4\u07F5\u07FA-\u0815\u081A\u0824\u0828\u0830-\u0858\u085E-\u08BD\u200F\uFB1D\uFB1F-\uFB28\uFB2A-\uFD3D\uFD50-\uFDFC\uFE70-\uFEFC]|\uD802[\uDC00-\uDD1B\uDD20-\uDE00\uDE10-\uDE33\uDE40-\uDEE4\uDEEB-\uDF35\uDF40-\uDFFF]|\uD803[\uDC00-\uDCFF]|\uD83A[\uDC00-\uDCCF\uDD00-\uDD43\uDD50-\uDFFF]|\uD83B[\uDC00-\uDEBB])/;
-    /**
-     * Returns true if `str` contains any Unicode character that is classified as "R" or "AL".
-     */
-    function containsRTL(str) {
-        return CONTAINS_RTL.test(str);
-    }
-    exports.containsRTL = containsRTL;
-    var IS_BASIC_ASCII = /^[\t\n\r\x20-\x7E]*$/;
-    /**
-     * Returns true if `str` contains only basic ASCII characters in the range 32 - 126 (including 32 and 126) or \n, \r, \t
-     */
-    function isBasicASCII(str) {
-        return IS_BASIC_ASCII.test(str);
-    }
-    exports.isBasicASCII = isBasicASCII;
-    function isFullWidthCharacter(charCode) {
-        // Do a cheap trick to better support wrapping of wide characters, treat them as 2 columns
-        // http://jrgraphix.net/research/unicode_blocks.php
-        //          2E80 — 2EFF   CJK Radicals Supplement
-        //          2F00 — 2FDF   Kangxi Radicals
-        //          2FF0 — 2FFF   Ideographic Description Characters
-        //          3000 — 303F   CJK Symbols and Punctuation
-        //          3040 — 309F   Hiragana
-        //          30A0 — 30FF   Katakana
-        //          3100 — 312F   Bopomofo
-        //          3130 — 318F   Hangul Compatibility Jamo
-        //          3190 — 319F   Kanbun
-        //          31A0 — 31BF   Bopomofo Extended
-        //          31F0 — 31FF   Katakana Phonetic Extensions
-        //          3200 — 32FF   Enclosed CJK Letters and Months
-        //          3300 — 33FF   CJK Compatibility
-        //          3400 — 4DBF   CJK Unified Ideographs Extension A
-        //          4DC0 — 4DFF   Yijing Hexagram Symbols
-        //          4E00 — 9FFF   CJK Unified Ideographs
-        //          A000 — A48F   Yi Syllables
-        //          A490 — A4CF   Yi Radicals
-        //          AC00 — D7AF   Hangul Syllables
-        // [IGNORE] D800 — DB7F   High Surrogates
-        // [IGNORE] DB80 — DBFF   High Private Use Surrogates
-        // [IGNORE] DC00 — DFFF   Low Surrogates
-        // [IGNORE] E000 — F8FF   Private Use Area
-        //          F900 — FAFF   CJK Compatibility Ideographs
-        // [IGNORE] FB00 — FB4F   Alphabetic Presentation Forms
-        // [IGNORE] FB50 — FDFF   Arabic Presentation Forms-A
-        // [IGNORE] FE00 — FE0F   Variation Selectors
-        // [IGNORE] FE20 — FE2F   Combining Half Marks
-        // [IGNORE] FE30 — FE4F   CJK Compatibility Forms
-        // [IGNORE] FE50 — FE6F   Small Form Variants
-        // [IGNORE] FE70 — FEFF   Arabic Presentation Forms-B
-        //          FF00 — FFEF   Halfwidth and Fullwidth Forms
-        //               [https://en.wikipedia.org/wiki/Halfwidth_and_fullwidth_forms]
-        //               of which FF01 - FF5E fullwidth ASCII of 21 to 7E
-        // [IGNORE]    and FF65 - FFDC halfwidth of Katakana and Hangul
-        // [IGNORE] FFF0 — FFFF   Specials
-        charCode = +charCode; // @perf
-        return ((charCode >= 0x2E80 && charCode <= 0xD7AF)
-            || (charCode >= 0xF900 && charCode <= 0xFAFF)
-            || (charCode >= 0xFF01 && charCode <= 0xFF5E));
-    }
-    exports.isFullWidthCharacter = isFullWidthCharacter;
-    /**
-     * Computes the difference score for two strings. More similar strings have a higher score.
-     * We use largest common subsequence dynamic programming approach but penalize in the end for length differences.
-     * Strings that have a large length difference will get a bad default score 0.
-     * Complexity - both time and space O(first.length * second.length)
-     * Dynamic programming LCS computation http://en.wikipedia.org/wiki/Longest_common_subsequence_problem
-     *
-     * @param first a string
-     * @param second a string
-     */
-    function difference(first, second, maxLenDelta) {
-        if (maxLenDelta === void 0) { maxLenDelta = 4; }
-        var lengthDifference = Math.abs(first.length - second.length);
-        // We only compute score if length of the currentWord and length of entry.name are similar.
-        if (lengthDifference > maxLenDelta) {
-            return 0;
-        }
-        // Initialize LCS (largest common subsequence) matrix.
-        var LCS = [];
-        var zeroArray = [];
-        var i, j;
-        for (i = 0; i < second.length + 1; ++i) {
-            zeroArray.push(0);
-        }
-        for (i = 0; i < first.length + 1; ++i) {
-            LCS.push(zeroArray);
-        }
-        for (i = 1; i < first.length + 1; ++i) {
-            for (j = 1; j < second.length + 1; ++j) {
-                if (first[i - 1] === second[j - 1]) {
-                    LCS[i][j] = LCS[i - 1][j - 1] + 1;
-                }
-                else {
-                    LCS[i][j] = Math.max(LCS[i - 1][j], LCS[i][j - 1]);
-                }
-            }
-        }
-        return LCS[first.length][second.length] - Math.sqrt(lengthDifference);
-    }
-    exports.difference = difference;
-    /**
-     * Returns an array in which every entry is the offset of a
-     * line. There is always one entry which is zero.
-     */
-    function computeLineStarts(text) {
-        var regexp = /\r\n|\r|\n/g, ret = [0], match;
-        while ((match = regexp.exec(text))) {
-            ret.push(regexp.lastIndex);
-        }
-        return ret;
-    }
-    exports.computeLineStarts = computeLineStarts;
-    /**
-     * Given a string and a max length returns a shorted version. Shorting
-     * happens at favorable positions - such as whitespace or punctuation characters.
-     */
-    function lcut(text, n) {
-        if (text.length < n) {
-            return text;
-        }
-        var segments = text.split(/\b/), count = 0;
-        for (var i = segments.length - 1; i >= 0; i--) {
-            count += segments[i].length;
-            if (count > n) {
-                segments.splice(0, i);
-                break;
-            }
-        }
-        return segments.join(exports.empty).replace(/^\s/, exports.empty);
-    }
-    exports.lcut = lcut;
-    // Escape codes
-    // http://en.wikipedia.org/wiki/ANSI_escape_code
-    var EL = /\x1B\x5B[12]?K/g; // Erase in line
-    var COLOR_START = /\x1b\[\d+m/g; // Color
-    var COLOR_END = /\x1b\[0?m/g; // Color
-    function removeAnsiEscapeCodes(str) {
-        if (str) {
-            str = str.replace(EL, '');
-            str = str.replace(COLOR_START, '');
-            str = str.replace(COLOR_END, '');
-        }
-        return str;
-    }
-    exports.removeAnsiEscapeCodes = removeAnsiEscapeCodes;
-    // -- UTF-8 BOM
-    exports.UTF8_BOM_CHARACTER = String.fromCharCode(65279 /* UTF8_BOM */);
-    function startsWithUTF8BOM(str) {
-        return (str && str.length > 0 && str.charCodeAt(0) === 65279 /* UTF8_BOM */);
-    }
-    exports.startsWithUTF8BOM = startsWithUTF8BOM;
-    /**
-     * Appends two strings. If the appended result is longer than maxLength,
-     * trims the start of the result and replaces it with '...'.
-     */
-    function appendWithLimit(first, second, maxLength) {
-        var newLength = first.length + second.length;
-        if (newLength > maxLength) {
-            first = '...' + first.substr(newLength - maxLength);
-        }
-        if (second.length > maxLength) {
-            first += second.substr(second.length - maxLength);
-        }
-        else {
-            first += second;
-        }
-        return first;
-    }
-    exports.appendWithLimit = appendWithLimit;
-    function safeBtoa(str) {
-        return btoa(encodeURIComponent(str)); // we use encodeURIComponent because btoa fails for non Latin 1 values
-    }
-    exports.safeBtoa = safeBtoa;
-    function repeat(s, count) {
-        var result = '';
-        for (var i = 0; i < count; i++) {
-            result += s;
-        }
-        return result;
-    }
-    exports.repeat = repeat;
-});
-
-define(__m[36/*vs/base/common/comparers*/], __M([1/*require*/,0/*exports*/,14/*vs/base/common/scorer*/,3/*vs/base/common/strings*/]), function (require, exports, scorer, strings) {
-    /*---------------------------------------------------------------------------------------------
-     *  Copyright (c) Microsoft Corporation. All rights reserved.
-     *  Licensed under the MIT License. See License.txt in the project root for license information.
-     *--------------------------------------------------------------------------------------------*/
-    'use strict';
-    var intlFileNameComparer;
-    function setFileNameComparer(collator) {
-        intlFileNameComparer = collator;
-    }
-    exports.setFileNameComparer = setFileNameComparer;
-    function compareFileNames(one, other) {
-        if (intlFileNameComparer) {
-            return intlFileNameComparer.compare(one || '', other || '');
-        }
-        return noIntlCompareFileNames(one, other);
-    }
-    exports.compareFileNames = compareFileNames;
-    var FileNameMatch = /^([^.]*)(\.(.*))?$/;
-    function noIntlCompareFileNames(one, other) {
-        var oneMatch = FileNameMatch.exec(one.toLowerCase());
-        var otherMatch = FileNameMatch.exec(other.toLowerCase());
-        var oneName = oneMatch[1] || '';
-        var oneExtension = oneMatch[3] || '';
-        var otherName = otherMatch[1] || '';
-        var otherExtension = otherMatch[3] || '';
-        if (oneName !== otherName) {
-            return oneName < otherName ? -1 : 1;
-        }
-        if (oneExtension === otherExtension) {
-            return 0;
-        }
-        return oneExtension < otherExtension ? -1 : 1;
-    }
-    exports.noIntlCompareFileNames = noIntlCompareFileNames;
-    function compareAnything(one, other, lookFor) {
-        var elementAName = one.toLowerCase();
-        var elementBName = other.toLowerCase();
-        // Sort prefix matches over non prefix matches
-        var prefixCompare = compareByPrefix(one, other, lookFor);
-        if (prefixCompare) {
-            return prefixCompare;
-        }
-        // Sort suffix matches over non suffix matches
-        var elementASuffixMatch = strings.endsWith(elementAName, lookFor);
-        var elementBSuffixMatch = strings.endsWith(elementBName, lookFor);
-        if (elementASuffixMatch !== elementBSuffixMatch) {
-            return elementASuffixMatch ? -1 : 1;
-        }
-        // Understand file names
-        var r = compareFileNames(elementAName, elementBName);
-        if (r !== 0) {
-            return r;
-        }
-        // Compare by name
-        return elementAName.localeCompare(elementBName);
-    }
-    exports.compareAnything = compareAnything;
-    function compareByPrefix(one, other, lookFor) {
-        var elementAName = one.toLowerCase();
-        var elementBName = other.toLowerCase();
-        // Sort prefix matches over non prefix matches
-        var elementAPrefixMatch = strings.startsWith(elementAName, lookFor);
-        var elementBPrefixMatch = strings.startsWith(elementBName, lookFor);
-        if (elementAPrefixMatch !== elementBPrefixMatch) {
-            return elementAPrefixMatch ? -1 : 1;
-        }
-        else if (elementAPrefixMatch && elementBPrefixMatch) {
-            if (elementAName.length < elementBName.length) {
-                return -1;
-            }
-            if (elementAName.length > elementBName.length) {
-                return 1;
-            }
-        }
-        return 0;
-    }
-    exports.compareByPrefix = compareByPrefix;
-    function compareByScore(elementA, elementB, accessor, lookFor, lookForNormalizedLower, scorerCache) {
-        var labelA = accessor.getLabel(elementA);
-        var labelB = accessor.getLabel(elementB);
-        // treat prefix matches highest in any case
-        var prefixCompare = compareByPrefix(labelA, labelB, lookFor);
-        if (prefixCompare) {
-            return prefixCompare;
-        }
-        // Give higher importance to label score
-        var labelAScore = scorer.score(labelA, lookFor, scorerCache);
-        var labelBScore = scorer.score(labelB, lookFor, scorerCache);
-        if (labelAScore !== labelBScore) {
-            return labelAScore > labelBScore ? -1 : 1;
-        }
-        // Score on full resource path comes next (if available)
-        var resourcePathA = accessor.getResourcePath(elementA);
-        var resourcePathB = accessor.getResourcePath(elementB);
-        if (resourcePathA && resourcePathB) {
-            var resourceAScore = scorer.score(resourcePathA, lookFor, scorerCache);
-            var resourceBScore = scorer.score(resourcePathB, lookFor, scorerCache);
-            if (resourceAScore !== resourceBScore) {
-                return resourceAScore > resourceBScore ? -1 : 1;
-            }
-        }
-        // At this place, the scores are identical so we check for string lengths and favor shorter ones
-        if (labelA.length !== labelB.length) {
-            return labelA.length < labelB.length ? -1 : 1;
-        }
-        if (resourcePathA && resourcePathB && resourcePathA.length !== resourcePathB.length) {
-            return resourcePathA.length < resourcePathB.length ? -1 : 1;
-        }
-        // Finally compare by label or resource path
-        if (labelA === labelB && resourcePathA && resourcePathB) {
-            return compareAnything(resourcePathA, resourcePathB, lookForNormalizedLower);
-        }
-        return compareAnything(labelA, labelB, lookForNormalizedLower);
-    }
-    exports.compareByScore = compareByScore;
-});
-
-define(__m[13/*vs/base/common/paths*/], __M([1/*require*/,0/*exports*/,2/*vs/base/common/platform*/,6/*vs/base/common/arrays*/,3/*vs/base/common/strings*/]), function (require, exports, platform_1, arrays_1, strings_1) {
-    /*---------------------------------------------------------------------------------------------
-     *  Copyright (c) Microsoft Corporation. All rights reserved.
-     *  Licensed under the MIT License. See License.txt in the project root for license information.
-     *--------------------------------------------------------------------------------------------*/
-    'use strict';
-    /**
-     * The forward slash path separator.
-     */
-    exports.sep = '/';
-    /**
-     * The native path separator depending on the OS.
-     */
-    exports.nativeSep = platform_1.isWindows ? '\\' : '/';
-    function relative(from, to) {
-        // ignore trailing slashes
-        var originalNormalizedFrom = strings_1.rtrim(normalize(from), exports.sep);
-        var originalNormalizedTo = strings_1.rtrim(normalize(to), exports.sep);
-        // we're assuming here that any non=linux OS is case insensitive
-        // so we must compare each part in its lowercase form
-        var normalizedFrom = platform_1.isLinux ? originalNormalizedFrom : originalNormalizedFrom.toLowerCase();
-        var normalizedTo = platform_1.isLinux ? originalNormalizedTo : originalNormalizedTo.toLowerCase();
-        var fromParts = normalizedFrom.split(exports.sep);
-        var toParts = normalizedTo.split(exports.sep);
-        var i = 0, max = Math.min(fromParts.length, toParts.length);
-        for (; i < max; i++) {
-            if (fromParts[i] !== toParts[i]) {
-                break;
-            }
-        }
-        var result = arrays_1.fill(fromParts.length - i, function () { return '..'; }).concat(originalNormalizedTo.split(exports.sep).slice(i));
-        return result.join(exports.sep);
-    }
-    exports.relative = relative;
-    /**
-     * @returns the directory name of a path.
-     */
-    function dirname(path) {
-        var idx = ~path.lastIndexOf('/') || ~path.lastIndexOf('\\');
-        if (idx === 0) {
-            return '.';
-        }
-        else if (~idx === 0) {
-            return path[0];
-        }
-        else {
-            var res = path.substring(0, ~idx);
-            if (platform_1.isWindows && res[res.length - 1] === ':') {
-                res += exports.nativeSep; // make sure drive letters end with backslash
-            }
-            return res;
-        }
-    }
-    exports.dirname = dirname;
-    /**
-     * @returns the base name of a path.
-     */
-    function basename(path) {
-        var idx = ~path.lastIndexOf('/') || ~path.lastIndexOf('\\');
-        if (idx === 0) {
-            return path;
-        }
-        else if (~idx === path.length - 1) {
-            return basename(path.substring(0, path.length - 1));
-        }
-        else {
-            return path.substr(~idx + 1);
-        }
-    }
-    exports.basename = basename;
-    /**
-     * @returns {{.far}} from boo.far or the empty string.
-     */
-    function extname(path) {
-        path = basename(path);
-        var idx = ~path.lastIndexOf('.');
-        return idx ? path.substring(~idx) : '';
-    }
-    exports.extname = extname;
-    var _posixBadPath = /(\/\.\.?\/)|(\/\.\.?)$|^(\.\.?\/)|(\/\/+)|(\\)/;
-    var _winBadPath = /(\\\.\.?\\)|(\\\.\.?)$|^(\.\.?\\)|(\\\\+)|(\/)/;
-    function _isNormal(path, win) {
-        return win
-            ? !_winBadPath.test(path)
-            : !_posixBadPath.test(path);
-    }
-    function normalize(path, toOSPath) {
-        if (path === null || path === void 0) {
-            return path;
-        }
-        var len = path.length;
-        if (len === 0) {
-            return '.';
-        }
-        var wantsBackslash = platform_1.isWindows && toOSPath;
-        if (_isNormal(path, wantsBackslash)) {
-            return path;
-        }
-        var sep = wantsBackslash ? '\\' : '/';
-        var root = getRoot(path, sep);
-        // skip the root-portion of the path
-        var start = root.length;
-        var skip = false;
-        var res = '';
-        for (var end = root.length; end <= len; end++) {
-            // either at the end or at a path-separator character
-            if (end === len || path.charCodeAt(end) === 47 /* Slash */ || path.charCodeAt(end) === 92 /* Backslash */) {
-                if (streql(path, start, end, '..')) {
-                    // skip current and remove parent (if there is already something)
-                    var prev_start = res.lastIndexOf(sep);
-                    var prev_part = res.slice(prev_start + 1);
-                    if ((root || prev_part.length > 0) && prev_part !== '..') {
-                        res = prev_start === -1 ? '' : res.slice(0, prev_start);
-                        skip = true;
-                    }
-                }
-                else if (streql(path, start, end, '.') && (root || res || end < len - 1)) {
-                    // skip current (if there is already something or if there is more to come)
-                    skip = true;
-                }
-                if (!skip) {
-                    var part = path.slice(start, end);
-                    if (res !== '' && res[res.length - 1] !== sep) {
-                        res += sep;
-                    }
-                    res += part;
-                }
-                start = end + 1;
-                skip = false;
-            }
-        }
-        return root + res;
-    }
-    exports.normalize = normalize;
-    function streql(value, start, end, other) {
-        return start + other.length === end && value.indexOf(other, start) === start;
-    }
-    /**
-     * Computes the _root_ this path, like `getRoot('c:\files') === c:\`,
-     * `getRoot('files:///files/path') === files:///`,
-     * or `getRoot('\\server\shares\path') === \\server\shares\`
-     */
-    function getRoot(path, sep) {
-        if (sep === void 0) { sep = '/'; }
-        if (!path) {
-            return '';
-        }
-        var len = path.length;
-        var code = path.charCodeAt(0);
-        if (code === 47 /* Slash */ || code === 92 /* Backslash */) {
-            code = path.charCodeAt(1);
-            if (code === 47 /* Slash */ || code === 92 /* Backslash */) {
-                // UNC candidate \\localhost\shares\ddd
-                //               ^^^^^^^^^^^^^^^^^^^
-                code = path.charCodeAt(2);
-                if (code !== 47 /* Slash */ && code !== 92 /* Backslash */) {
-                    var pos_1 = 3;
-                    var start = pos_1;
-                    for (; pos_1 < len; pos_1++) {
-                        code = path.charCodeAt(pos_1);
-                        if (code === 47 /* Slash */ || code === 92 /* Backslash */) {
-                            break;
-                        }
-                    }
-                    code = path.charCodeAt(pos_1 + 1);
-                    if (start !== pos_1 && code !== 47 /* Slash */ && code !== 92 /* Backslash */) {
-                        pos_1 += 1;
-                        for (; pos_1 < len; pos_1++) {
-                            code = path.charCodeAt(pos_1);
-                            if (code === 47 /* Slash */ || code === 92 /* Backslash */) {
-                                return path.slice(0, pos_1 + 1) // consume this separator
-                                    .replace(/[\\/]/g, sep);
-                            }
-                        }
-                    }
-                }
-            }
-            // /user/far
-            // ^
-            return sep;
-        }
-        else if ((code >= 65 /* A */ && code <= 90 /* Z */) || (code >= 97 /* a */ && code <= 122 /* z */)) {
-            // check for windows drive letter c:\ or c:
-            if (path.charCodeAt(1) === 58 /* Colon */) {
-                code = path.charCodeAt(2);
-                if (code === 47 /* Slash */ || code === 92 /* Backslash */) {
-                    // C:\fff
-                    // ^^^
-                    return path.slice(0, 2) + sep;
-                }
-                else {
-                    // C:
-                    // ^^
-                    return path.slice(0, 2);
-                }
-            }
-        }
-        // check for URI
-        // scheme://authority/path
-        // ^^^^^^^^^^^^^^^^^^^
-        var pos = path.indexOf('://');
-        if (pos !== -1) {
-            pos += 3; // 3 -> "://".length
-            for (; pos < len; pos++) {
-                code = path.charCodeAt(pos);
-                if (code === 47 /* Slash */ || code === 92 /* Backslash */) {
-                    return path.slice(0, pos + 1); // consume this separator
-                }
-            }
-        }
-        return '';
-    }
-    exports.getRoot = getRoot;
-    exports.join = function () {
-        // Not using a function with var-args because of how TS compiles
-        // them to JS - it would result in 2*n runtime cost instead
-        // of 1*n, where n is parts.length.
-        var value = '';
-        for (var i = 0; i < arguments.length; i++) {
-            var part = arguments[i];
-            if (i > 0) {
-                // add the separater between two parts unless
-                // there already is one
-                var last = value.charCodeAt(value.length - 1);
-                if (last !== 47 /* Slash */ && last !== 92 /* Backslash */) {
-                    var next = part.charCodeAt(0);
-                    if (next !== 47 /* Slash */ && next !== 92 /* Backslash */) {
-                        value += exports.sep;
-                    }
-                }
-            }
-            value += part;
-        }
-        return normalize(value);
-    };
-    /**
-     * Check if the path follows this pattern: `\\hostname\sharename`.
-     *
-     * @see https://msdn.microsoft.com/en-us/library/gg465305.aspx
-     * @return A boolean indication if the path is a UNC path, on none-windows
-     * always false.
-     */
-    function isUNC(path) {
-        if (!platform_1.isWindows) {
-            // UNC is a windows concept
-            return false;
-        }
-        if (!path || path.length < 5) {
-            // at least \\a\b
-            return false;
-        }
-        var code = path.charCodeAt(0);
-        if (code !== 92 /* Backslash */) {
-            return false;
-        }
-        code = path.charCodeAt(1);
-        if (code !== 92 /* Backslash */) {
-            return false;
-        }
-        var pos = 2;
-        var start = pos;
-        for (; pos < path.length; pos++) {
-            code = path.charCodeAt(pos);
-            if (code === 92 /* Backslash */) {
-                break;
-            }
-        }
-        if (start === pos) {
-            return false;
-        }
-        code = path.charCodeAt(pos + 1);
-        if (isNaN(code) || code === 92 /* Backslash */) {
-            return false;
-        }
-        return true;
-    }
-    exports.isUNC = isUNC;
-    function isPosixAbsolute(path) {
-        return path && path[0] === '/';
-    }
-    function makePosixAbsolute(path) {
-        return isPosixAbsolute(normalize(path)) ? path : exports.sep + path;
-    }
-    exports.makePosixAbsolute = makePosixAbsolute;
-    function isEqualOrParent(path, candidate) {
-        if (path === candidate) {
-            return true;
-        }
-        path = normalize(path);
-        candidate = normalize(candidate);
-        var candidateLen = candidate.length;
-        var lastCandidateChar = candidate.charCodeAt(candidateLen - 1);
-        if (lastCandidateChar === 47 /* Slash */) {
-            candidate = candidate.substring(0, candidateLen - 1);
-            candidateLen -= 1;
-        }
-        if (path === candidate) {
-            return true;
-        }
-        if (!platform_1.isLinux) {
-            // case insensitive
-            path = path.toLowerCase();
-            candidate = candidate.toLowerCase();
-        }
-        if (path === candidate) {
-            return true;
-        }
-        if (path.indexOf(candidate) !== 0) {
-            return false;
-        }
-        var char = path.charCodeAt(candidateLen);
-        return char === 47 /* Slash */;
-    }
-    exports.isEqualOrParent = isEqualOrParent;
-    // Reference: https://en.wikipedia.org/wiki/Filename
-    var INVALID_FILE_CHARS = platform_1.isWindows ? /[\\/:\*\?"<>\|]/g : /[\\/]/g;
-    var WINDOWS_FORBIDDEN_NAMES = /^(con|prn|aux|clock\$|nul|lpt[0-9]|com[0-9])$/i;
-    function isValidBasename(name) {
-        if (!name || name.length === 0 || /^\s+$/.test(name)) {
-            return false; // require a name that is not just whitespace
-        }
-        INVALID_FILE_CHARS.lastIndex = 0; // the holy grail of software development
-        if (INVALID_FILE_CHARS.test(name)) {
-            return false; // check for certain invalid file characters
-        }
-        if (platform_1.isWindows && WINDOWS_FORBIDDEN_NAMES.test(name)) {
-            return false; // check for certain invalid file names
-        }
-        if (name === '.' || name === '..') {
-            return false; // check for reserved values
-        }
-        if (platform_1.isWindows && name[name.length - 1] === '.') {
-            return false; // Windows: file cannot end with a "."
-        }
-        if (platform_1.isWindows && name.length !== name.trim().length) {
-            return false; // Windows: file cannot end with a whitespace
-        }
-        return true;
-    }
-    exports.isValidBasename = isValidBasename;
-});
-
-define(__m[34/*vs/base/common/glob*/], __M([1/*require*/,0/*exports*/,6/*vs/base/common/arrays*/,3/*vs/base/common/strings*/,13/*vs/base/common/paths*/,16/*vs/base/common/map*/]), function (require, exports, arrays, strings, paths, map_1) {
-    /*---------------------------------------------------------------------------------------------
-     *  Copyright (c) Microsoft Corporation. All rights reserved.
-     *  Licensed under the MIT License. See License.txt in the project root for license information.
-     *--------------------------------------------------------------------------------------------*/
-    'use strict';
-    var PATH_REGEX = '[/\\\\]'; // any slash or backslash
-    var NO_PATH_REGEX = '[^/\\\\]'; // any non-slash and non-backslash
-    var ALL_FORWARD_SLASHES = /\//g;
-    function starsToRegExp(starCount) {
-        switch (starCount) {
-            case 0:
-                return '';
-            case 1:
-                return NO_PATH_REGEX + "*?"; // 1 star matches any number of characters except path separator (/ and \) - non greedy (?)
-            default:
-                // Matches:  (Path Sep OR Path Val followed by Path Sep OR Path Sep followed by Path Val) 0-many times
-                // Group is non capturing because we don't need to capture at all (?:...)
-                // Overall we use non-greedy matching because it could be that we match too much
-                return "(?:" + PATH_REGEX + "|" + NO_PATH_REGEX + "+" + PATH_REGEX + "|" + PATH_REGEX + NO_PATH_REGEX + "+)*?";
-        }
-    }
-    function splitGlobAware(pattern, splitChar) {
-        if (!pattern) {
-            return [];
-        }
-        var segments = [];
-        var inBraces = false;
-        var inBrackets = false;
-        var char;
-        var curVal = '';
-        for (var i = 0; i < pattern.length; i++) {
-            char = pattern[i];
-            switch (char) {
-                case splitChar:
-                    if (!inBraces && !inBrackets) {
-                        segments.push(curVal);
-                        curVal = '';
-                        continue;
-                    }
-                    break;
-                case '{':
-                    inBraces = true;
-                    break;
-                case '}':
-                    inBraces = false;
-                    break;
-                case '[':
-                    inBrackets = true;
-                    break;
-                case ']':
-                    inBrackets = false;
-                    break;
-            }
-            curVal += char;
-        }
-        // Tail
-        if (curVal) {
-            segments.push(curVal);
-        }
-        return segments;
-    }
-    exports.splitGlobAware = splitGlobAware;
-    function parseRegExp(pattern) {
-        if (!pattern) {
-            return '';
-        }
-        var regEx = '';
-        // Split up into segments for each slash found
-        var segments = splitGlobAware(pattern, '/');
-        // Special case where we only have globstars
-        if (segments.every(function (s) { return s === '**'; })) {
-            regEx = '.*';
-        }
-        else {
-            var previousSegmentWasGlobStar_1 = false;
-            segments.forEach(function (segment, index) {
-                // Globstar is special
-                if (segment === '**') {
-                    // if we have more than one globstar after another, just ignore it
-                    if (!previousSegmentWasGlobStar_1) {
-                        regEx += starsToRegExp(2);
-                        previousSegmentWasGlobStar_1 = true;
-                    }
-                    return;
-                }
-                // States
-                var inBraces = false;
-                var braceVal = '';
-                var inBrackets = false;
-                var bracketVal = '';
-                var char;
-                for (var i = 0; i < segment.length; i++) {
-                    char = segment[i];
-                    // Support brace expansion
-                    if (char !== '}' && inBraces) {
-                        braceVal += char;
-                        continue;
-                    }
-                    // Support brackets
-                    if (char !== ']' && inBrackets) {
-                        var res = void 0;
-                        switch (char) {
-                            case '-':
-                                res = char;
-                                break;
-                            case '^':
-                                res = char;
-                                break;
-                            default:
-                                res = strings.escapeRegExpCharacters(char);
-                        }
-                        bracketVal += res;
-                        continue;
-                    }
-                    switch (char) {
-                        case '{':
-                            inBraces = true;
-                            continue;
-                        case '[':
-                            inBrackets = true;
-                            continue;
-                        case '}':
-                            var choices = splitGlobAware(braceVal, ',');
-                            // Converts {foo,bar} => [foo|bar]
-                            var braceRegExp = "(?:" + choices.map(function (c) { return parseRegExp(c); }).join('|') + ")";
-                            regEx += braceRegExp;
-                            inBraces = false;
-                            braceVal = '';
-                            break;
-                        case ']':
-                            regEx += ('[' + bracketVal + ']');
-                            inBrackets = false;
-                            bracketVal = '';
-                            break;
-                        case '?':
-                            regEx += NO_PATH_REGEX; // 1 ? matches any single character except path separator (/ and \)
-                            continue;
-                        case '*':
-                            regEx += starsToRegExp(1);
-                            continue;
-                        default:
-                            regEx += strings.escapeRegExpCharacters(char);
-                    }
-                }
-                // Tail: Add the slash we had split on if there is more to come and the next one is not a globstar
-                if (index < segments.length - 1 && segments[index + 1] !== '**') {
-                    regEx += PATH_REGEX;
-                }
-                // reset state
-                previousSegmentWasGlobStar_1 = false;
-            });
-        }
-        return regEx;
-    }
-    // regexes to check for trival glob patterns that just check for String#endsWith
-    var T1 = /^\*\*\/\*\.[\w\.-]+$/; // **/*.something
-    var T2 = /^\*\*\/([\w\.-]+)\/?$/; // **/something
-    var T3 = /^{\*\*\/[\*\.]?[\w\.-]+\/?(,\*\*\/[\*\.]?[\w\.-]+\/?)*}$/; // {**/*.something,**/*.else} or {**/package.json,**/project.json}
-    var T3_2 = /^{\*\*\/[\*\.]?[\w\.-]+(\/(\*\*)?)?(,\*\*\/[\*\.]?[\w\.-]+(\/(\*\*)?)?)*}$/; // Like T3, with optional trailing /**
-    var T4 = /^\*\*((\/[\w\.-]+)+)\/?$/; // **/something/else
-    var T5 = /^([\w\.-]+(\/[\w\.-]+)*)\/?$/; // something/else
-    var CACHE = new map_1.BoundedLinkedMap(10000); // bounded to 10000 elements
-    var FALSE = function () {
-        return false;
-    };
-    var NULL = function () {
-        return null;
-    };
-    function parsePattern(pattern, options) {
-        if (!pattern) {
-            return NULL;
-        }
-        // Whitespace trimming
-        pattern = pattern.trim();
-        // Check cache
-        var patternKey = pattern + "_" + !!options.trimForExclusions;
-        var parsedPattern = CACHE.get(patternKey);
-        if (parsedPattern) {
-            return parsedPattern;
-        }
-        // Check for Trivias
-        var match;
-        if (T1.test(pattern)) {
-            var base_1 = pattern.substr(4); // '**/*'.length === 4
-            parsedPattern = function (path, basename) {
-                return path && strings.endsWith(path, base_1) ? pattern : null;
-            };
-        }
-        else if (match = T2.exec(trimForExclusions(pattern, options))) {
-            parsedPattern = trivia2(match[1], pattern);
-        }
-        else if ((options.trimForExclusions ? T3_2 : T3).test(pattern)) {
-            parsedPattern = trivia3(pattern, options);
-        }
-        else if (match = T4.exec(trimForExclusions(pattern, options))) {
-            parsedPattern = trivia4and5(match[1].substr(1), pattern, true);
-        }
-        else if (match = T5.exec(trimForExclusions(pattern, options))) {
-            parsedPattern = trivia4and5(match[1], pattern, false);
-        }
-        else {
-            parsedPattern = toRegExp(pattern);
-        }
-        // Cache
-        CACHE.set(patternKey, parsedPattern);
-        return parsedPattern;
-    }
-    function trimForExclusions(pattern, options) {
-        return options.trimForExclusions && strings.endsWith(pattern, '/**') ? pattern.substr(0, pattern.length - 2) : pattern; // dropping **, tailing / is dropped later
-    }
-    // common pattern: **/some.txt just need basename check
-    function trivia2(base, originalPattern) {
-        var slashBase = "/" + base;
-        var backslashBase = "\\" + base;
-        var parsedPattern = function (path, basename) {
-            if (!path) {
-                return null;
-            }
-            if (basename) {
-                return basename === base ? originalPattern : null;
-            }
-            return path === base || strings.endsWith(path, slashBase) || strings.endsWith(path, backslashBase) ? originalPattern : null;
-        };
-        var basenames = [base];
-        parsedPattern.basenames = basenames;
-        parsedPattern.patterns = [originalPattern];
-        parsedPattern.allBasenames = basenames;
-        return parsedPattern;
-    }
-    // repetition of common patterns (see above) {**/*.txt,**/*.png}
-    function trivia3(pattern, options) {
-        var parsedPatterns = aggregateBasenameMatches(pattern.slice(1, -1).split(',')
-            .map(function (pattern) { return parsePattern(pattern, options); })
-            .filter(function (pattern) { return pattern !== NULL; }), pattern);
-        var n = parsedPatterns.length;
-        if (!n) {
-            return NULL;
-        }
-        if (n === 1) {
-            return parsedPatterns[0];
-        }
-        var parsedPattern = function (path, basename) {
-            for (var i = 0, n_1 = parsedPatterns.length; i < n_1; i++) {
-                if (parsedPatterns[i](path, basename)) {
-                    return pattern;
-                }
-            }
-            return null;
-        };
-        var withBasenames = arrays.first(parsedPatterns, function (pattern) { return !!pattern.allBasenames; });
-        if (withBasenames) {
-            parsedPattern.allBasenames = withBasenames.allBasenames;
-        }
-        var allPaths = parsedPatterns.reduce(function (all, current) { return current.allPaths ? all.concat(current.allPaths) : all; }, []);
-        if (allPaths.length) {
-            parsedPattern.allPaths = allPaths;
-        }
-        return parsedPattern;
-    }
-    // common patterns: **/something/else just need endsWith check, something/else just needs and equals check
-    function trivia4and5(path, pattern, matchPathEnds) {
-        var nativePath = paths.nativeSep !== paths.sep ? path.replace(ALL_FORWARD_SLASHES, paths.nativeSep) : path;
-        var nativePathEnd = paths.nativeSep + nativePath;
-        var parsedPattern = matchPathEnds ? function (path, basename) {
-            return path && (path === nativePath || strings.endsWith(path, nativePathEnd)) ? pattern : null;
-        } : function (path, basename) {
-            return path && path === nativePath ? pattern : null;
-        };
-        parsedPattern.allPaths = [(matchPathEnds ? '*/' : './') + path];
-        return parsedPattern;
-    }
-    function toRegExp(pattern) {
-        try {
-            var regExp_1 = new RegExp("^" + parseRegExp(pattern) + "$");
-            return function (path, basename) {
-                regExp_1.lastIndex = 0; // reset RegExp to its initial state to reuse it!
-                return path && regExp_1.test(path) ? pattern : null;
-            };
-        }
-        catch (error) {
-            return NULL;
-        }
-    }
-    function match(arg1, path, siblingsFn) {
-        if (!arg1 || !path) {
-            return false;
-        }
-        return parse(arg1)(path, undefined, siblingsFn);
-    }
-    exports.match = match;
-    function parse(arg1, options) {
-        if (options === void 0) { options = {}; }
-        if (!arg1) {
-            return FALSE;
-        }
-        // Glob with String
-        if (typeof arg1 === 'string') {
-            var parsedPattern_1 = parsePattern(arg1, options);
-            if (parsedPattern_1 === NULL) {
-                return FALSE;
-            }
-            var resultPattern = function (path, basename) {
-                return !!parsedPattern_1(path, basename);
-            };
-            if (parsedPattern_1.allBasenames) {
-                resultPattern.allBasenames = parsedPattern_1.allBasenames;
-            }
-            if (parsedPattern_1.allPaths) {
-                resultPattern.allPaths = parsedPattern_1.allPaths;
-            }
-            return resultPattern;
-        }
-        // Glob with Expression
-        return parsedExpression(arg1, options);
-    }
-    exports.parse = parse;
-    function getBasenameTerms(patternOrExpression) {
-        return patternOrExpression.allBasenames || [];
-    }
-    exports.getBasenameTerms = getBasenameTerms;
-    function getPathTerms(patternOrExpression) {
-        return patternOrExpression.allPaths || [];
-    }
-    exports.getPathTerms = getPathTerms;
-    function parsedExpression(expression, options) {
-        var parsedPatterns = aggregateBasenameMatches(Object.getOwnPropertyNames(expression)
-            .map(function (pattern) { return parseExpressionPattern(pattern, expression[pattern], options); })
-            .filter(function (pattern) { return pattern !== NULL; }));
-        var n = parsedPatterns.length;
-        if (!n) {
-            return NULL;
-        }
-        if (!parsedPatterns.some(function (parsedPattern) { return parsedPattern.requiresSiblings; })) {
-            if (n === 1) {
-                return parsedPatterns[0];
-            }
-            var resultExpression_1 = function (path, basename, siblingsFn) {
-                for (var i = 0, n_2 = parsedPatterns.length; i < n_2; i++) {
-                    // Pattern matches path
-                    var result = parsedPatterns[i](path, basename);
-                    if (result) {
-                        return result;
-                    }
-                }
-                return null;
-            };
-            var withBasenames_1 = arrays.first(parsedPatterns, function (pattern) { return !!pattern.allBasenames; });
-            if (withBasenames_1) {
-                resultExpression_1.allBasenames = withBasenames_1.allBasenames;
-            }
-            var allPaths_1 = parsedPatterns.reduce(function (all, current) { return current.allPaths ? all.concat(current.allPaths) : all; }, []);
-            if (allPaths_1.length) {
-                resultExpression_1.allPaths = allPaths_1;
-            }
-            return resultExpression_1;
-        }
-        var resultExpression = function (path, basename, siblingsFn) {
-            var siblingsPattern;
-            var siblingsResolved = !siblingsFn;
-            function siblingsPatternFn() {
-                // Resolve siblings only once
-                if (!siblingsResolved) {
-                    siblingsResolved = true;
-                    var siblings = siblingsFn();
-                    if (siblings && siblings.length) {
-                        if (!basename) {
-                            basename = paths.basename(path);
-                        }
-                        var name_1 = basename.substr(0, basename.length - paths.extname(path).length);
-                        siblingsPattern = { siblings: siblings, name: name_1 };
-                    }
-                }
-                return siblingsPattern;
-            }
-            for (var i = 0, n_3 = parsedPatterns.length; i < n_3; i++) {
-                // Pattern matches path
-                var result = parsedPatterns[i](path, basename, siblingsPatternFn);
-                if (result) {
-                    return result;
-                }
-            }
-            return null;
-        };
-        var withBasenames = arrays.first(parsedPatterns, function (pattern) { return !!pattern.allBasenames; });
-        if (withBasenames) {
-            resultExpression.allBasenames = withBasenames.allBasenames;
-        }
-        var allPaths = parsedPatterns.reduce(function (all, current) { return current.allPaths ? all.concat(current.allPaths) : all; }, []);
-        if (allPaths.length) {
-            resultExpression.allPaths = allPaths;
-        }
-        return resultExpression;
-    }
-    function parseExpressionPattern(pattern, value, options) {
-        if (value === false) {
-            return NULL; // pattern is disabled
-        }
-        var parsedPattern = parsePattern(pattern, options);
-        if (parsedPattern === NULL) {
-            return NULL;
-        }
-        // Expression Pattern is <boolean>
-        if (typeof value === 'boolean') {
-            return parsedPattern;
-        }
-        // Expression Pattern is <SiblingClause>
-        if (value) {
-            var when_1 = value.when;
-            if (typeof when_1 === 'string') {
-                var result = function (path, basename, siblingsPatternFn) {
-                    if (!parsedPattern(path, basename)) {
-                        return null;
-                    }
-                    var siblingsPattern = siblingsPatternFn();
-                    if (!siblingsPattern) {
-                        return null; // pattern is malformed or we don't have siblings
-                    }
-                    var clausePattern = when_1.replace('$(basename)', siblingsPattern.name);
-                    if (siblingsPattern.siblings.indexOf(clausePattern) !== -1) {
-                        return pattern;
-                    }
-                    else {
-                        return null; // pattern does not match in the end because the when clause is not satisfied
-                    }
-                };
-                result.requiresSiblings = true;
-                return result;
-            }
-        }
-        // Expression is Anything
-        return parsedPattern;
-    }
-    function aggregateBasenameMatches(parsedPatterns, result) {
-        var basenamePatterns = parsedPatterns.filter(function (parsedPattern) { return !!parsedPattern.basenames; });
-        if (basenamePatterns.length < 2) {
-            return parsedPatterns;
-        }
-        var basenames = basenamePatterns.reduce(function (all, current) { return all.concat(current.basenames); }, []);
-        var patterns;
-        if (result) {
-            patterns = [];
-            for (var i = 0, n = basenames.length; i < n; i++) {
-                patterns.push(result);
-            }
-        }
-        else {
-            patterns = basenamePatterns.reduce(function (all, current) { return all.concat(current.patterns); }, []);
-        }
-        var aggregate = function (path, basename) {
-            if (!path) {
-                return null;
-            }
-            if (!basename) {
-                var i = void 0;
-                for (i = path.length; i > 0; i--) {
-                    var ch = path.charCodeAt(i - 1);
-                    if (ch === 47 /* Slash */ || ch === 92 /* Backslash */) {
-                        break;
-                    }
-                }
-                basename = path.substr(i);
-            }
-            var index = basenames.indexOf(basename);
-            return index !== -1 ? patterns[index] : null;
-        };
-        aggregate.basenames = basenames;
-        aggregate.patterns = patterns;
-        aggregate.allBasenames = basenames;
-        var aggregatedPatterns = parsedPatterns.filter(function (parsedPattern) { return !parsedPattern.basenames; });
-        aggregatedPatterns.push(aggregate);
-        return aggregatedPatterns;
-    }
-});
-
-define(__m[4/*vs/base/common/types*/], __M([1/*require*/,0/*exports*/]), function (require, exports) {
+define(__m[5/*vs/base/common/types*/], __M([1/*require*/,0/*exports*/]), function (require, exports) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -2736,7 +901,7 @@ define(__m[4/*vs/base/common/types*/], __M([1/*require*/,0/*exports*/]), functio
     exports.create = create;
 });
 
-define(__m[10/*vs/base/common/errors*/], __M([1/*require*/,0/*exports*/,2/*vs/base/common/platform*/,4/*vs/base/common/types*/]), function (require, exports, platform, types) {
+define(__m[12/*vs/base/common/errors*/], __M([1/*require*/,0/*exports*/,3/*vs/base/common/platform*/,5/*vs/base/common/types*/]), function (require, exports, platform, types) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -2900,7 +1065,7 @@ define(__m[10/*vs/base/common/errors*/], __M([1/*require*/,0/*exports*/,2/*vs/ba
     exports.getErrorMessage = getErrorMessage;
 });
 
-define(__m[33/*vs/base/common/callbackList*/], __M([1/*require*/,0/*exports*/,10/*vs/base/common/errors*/]), function (require, exports, errors_1) {
+define(__m[45/*vs/base/common/callbackList*/], __M([1/*require*/,0/*exports*/,12/*vs/base/common/errors*/]), function (require, exports, errors_1) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -2984,7 +1149,7 @@ define(__m[33/*vs/base/common/callbackList*/], __M([1/*require*/,0/*exports*/,10
     exports.default = CallbackList;
 });
 
-define(__m[9/*vs/base/common/event*/], __M([1/*require*/,0/*exports*/,11/*vs/base/common/lifecycle*/,33/*vs/base/common/callbackList*/,23/*vs/base/common/functional*/]), function (require, exports, lifecycle_1, callbackList_1, functional_1) {
+define(__m[9/*vs/base/common/event*/], __M([1/*require*/,0/*exports*/,14/*vs/base/common/lifecycle*/,45/*vs/base/common/callbackList*/,20/*vs/base/common/functional*/]), function (require, exports, lifecycle_1, callbackList_1, functional_1) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -3433,13 +1598,20 @@ define(__m[9/*vs/base/common/event*/], __M([1/*require*/,0/*exports*/,11/*vs/bas
         return emitter.event;
     }
     exports.buffer = buffer;
+    function createEmptyEvent() {
+        return function (listener, thisArgs, disposables) {
+            if (thisArgs === void 0) { thisArgs = null; }
+            return ({ dispose: function () { return null; } });
+        };
+    }
+    exports.createEmptyEvent = createEmptyEvent;
 });
 
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-define(__m[30/*vs/base/common/cancellation*/], __M([1/*require*/,0/*exports*/,9/*vs/base/common/event*/]), function (require, exports, event_1) {
+define(__m[38/*vs/base/common/cancellation*/], __M([1/*require*/,0/*exports*/,9/*vs/base/common/event*/]), function (require, exports, event_1) {
     'use strict';
     var shortcutEvent = Object.freeze(function (callback, context) {
         var handle = setTimeout(callback.bind(context), 0);
@@ -3525,7 +1697,7 @@ define(__m[30/*vs/base/common/cancellation*/], __M([1/*require*/,0/*exports*/,9/
     exports.CancellationTokenSource = CancellationTokenSource;
 });
 
-define(__m[7/*vs/base/common/objects*/], __M([1/*require*/,0/*exports*/,4/*vs/base/common/types*/]), function (require, exports, Types) {
+define(__m[7/*vs/base/common/objects*/], __M([1/*require*/,0/*exports*/,5/*vs/base/common/types*/]), function (require, exports, Types) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -3673,10 +1845,9 @@ define(__m[7/*vs/base/common/objects*/], __M([1/*require*/,0/*exports*/,4/*vs/ba
         return destination;
     }
     exports.assign = assign;
-    function toObject(arr, keyMap, valueMap) {
-        if (valueMap === void 0) { valueMap = function (x) { return x; }; }
+    function toObject(arr, keyMap) {
         return arr.reduce(function (o, d) {
-            return assign(o, (_a = {}, _a[keyMap(d)] = valueMap(d), _a));
+            return assign(o, (_a = {}, _a[keyMap(d)] = d, _a));
             var _a;
         }, Object.create(null));
     }
@@ -3818,9 +1989,25 @@ define(__m[7/*vs/base/common/objects*/], __M([1/*require*/,0/*exports*/,4/*vs/ba
         return typeof result === 'undefined' ? defaultValue : result;
     }
     exports.getOrDefault = getOrDefault;
+    function distinct(base, target) {
+        var result = Object.create(null);
+        if (!base || !target) {
+            return result;
+        }
+        var targetKeys = Object.keys(target);
+        targetKeys.forEach(function (k) {
+            var baseValue = base[k];
+            var targetValue = target[k];
+            if (!equals(baseValue, targetValue)) {
+                result[k] = targetValue;
+            }
+        });
+        return result;
+    }
+    exports.distinct = distinct;
 });
 
-define(__m[29/*vs/base/common/parsers*/], __M([1/*require*/,0/*exports*/,4/*vs/base/common/types*/]), function (require, exports, Types) {
+define(__m[37/*vs/base/common/parsers*/], __M([1/*require*/,0/*exports*/,5/*vs/base/common/types*/]), function (require, exports, Types) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -3860,44 +2047,47 @@ define(__m[29/*vs/base/common/parsers*/], __M([1/*require*/,0/*exports*/,4/*vs/b
     }());
     exports.ValidationStatus = ValidationStatus;
     var Parser = (function () {
-        function Parser(logger, validationStatus) {
-            if (validationStatus === void 0) { validationStatus = new ValidationStatus(); }
-            this._logger = logger;
-            this.validationStatus = validationStatus;
+        function Parser(problemReporter) {
+            this._problemReporter = problemReporter;
         }
-        Object.defineProperty(Parser.prototype, "logger", {
+        Parser.prototype.reset = function () {
+            this._problemReporter.status.state = ValidationState.OK;
+        };
+        Object.defineProperty(Parser.prototype, "problemReporter", {
             get: function () {
-                return this._logger;
+                return this._problemReporter;
             },
             enumerable: true,
             configurable: true
         });
-        Object.defineProperty(Parser.prototype, "status", {
-            get: function () {
-                return this.validationStatus;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Parser.prototype.log = function (message) {
-            this._logger.log(message);
+        Parser.prototype.info = function (message) {
+            this._problemReporter.info(message);
+        };
+        Parser.prototype.warn = function (message) {
+            this._problemReporter.warn(message);
+        };
+        Parser.prototype.error = function (message) {
+            this._problemReporter.error(message);
+        };
+        Parser.prototype.fatal = function (message) {
+            this._problemReporter.fatal(message);
         };
         Parser.prototype.is = function (value, func, wrongTypeState, wrongTypeMessage, undefinedState, undefinedMessage) {
             if (Types.isUndefined(value)) {
                 if (undefinedState) {
-                    this.validationStatus.state = undefinedState;
+                    this._problemReporter.status.state = undefinedState;
                 }
                 if (undefinedMessage) {
-                    this.log(undefinedMessage);
+                    this._problemReporter.info(undefinedMessage);
                 }
                 return false;
             }
             if (!func(value)) {
                 if (wrongTypeState) {
-                    this.validationStatus.state = wrongTypeState;
+                    this._problemReporter.status.state = wrongTypeState;
                 }
                 if (wrongTypeMessage) {
-                    this.log(wrongTypeMessage);
+                    this.info(wrongTypeMessage);
                 }
                 return false;
             }
@@ -4000,7 +2190,7 @@ define(__m[29/*vs/base/common/parsers*/], __M([1/*require*/,0/*exports*/,4/*vs/b
     exports.AbstractSystemVariables = AbstractSystemVariables;
 });
 
-define(__m[12/*vs/base/common/uri*/], __M([1/*require*/,0/*exports*/,2/*vs/base/common/platform*/]), function (require, exports, platform) {
+define(__m[13/*vs/base/common/uri*/], __M([1/*require*/,0/*exports*/,3/*vs/base/common/platform*/]), function (require, exports, platform) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -4207,8 +2397,12 @@ define(__m[12/*vs/base/common/uri*/], __M([1/*require*/,0/*exports*/,2/*vs/base/
         URI.file = function (path) {
             var ret = new URI();
             ret._scheme = 'file';
-            // normalize to fwd-slashes
-            path = path.replace(/\\/g, URI._slash);
+            // normalize to fwd-slashes on windows,
+            // on other systems bwd-slaches are valid
+            // filename character, eg /f\oo/ba\r.txt
+            if (platform.isWindows) {
+                path = path.replace(/\\/g, URI._slash);
+            }
             // check for authority as used in UNC shares
             // or use the path as given
             if (path[0] === URI._slash && path[0] === path[1]) {
@@ -4406,7 +2600,7 @@ define(__m[12/*vs/base/common/uri*/], __M([1/*require*/,0/*exports*/,2/*vs/base/
 
 
 
-define(__m[27/*vs/base/common/uuid*/], __M([1/*require*/,0/*exports*/]), function (require, exports) {
+define(__m[42/*vs/base/common/uuid*/], __M([1/*require*/,0/*exports*/]), function (require, exports) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -6579,7 +4773,7 @@ if (typeof process !== 'undefined' && typeof process.nextTick === 'function') {
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-define(__m[5/*vs/base/common/winjs.base*/], __M([53/*vs/base/common/winjs.base.raw*/,10/*vs/base/common/errors*/]), function (winjs, __Errors__) {
+define(__m[2/*vs/base/common/winjs.base*/], __M([63/*vs/base/common/winjs.base.raw*/,12/*vs/base/common/errors*/]), function (winjs, __Errors__) {
 	'use strict';
 
 	var outstandingPromiseErrors = {};
@@ -6645,7 +4839,7 @@ define(__m[5/*vs/base/common/winjs.base*/], __M([53/*vs/base/common/winjs.base.r
 
 
 
-define(__m[26/*vs/base/common/async*/], __M([1/*require*/,0/*exports*/,10/*vs/base/common/errors*/,2/*vs/base/common/platform*/,5/*vs/base/common/winjs.base*/,30/*vs/base/common/cancellation*/,11/*vs/base/common/lifecycle*/,9/*vs/base/common/event*/]), function (require, exports, errors, platform, winjs_base_1, cancellation_1, lifecycle_1, event_1) {
+define(__m[31/*vs/base/common/async*/], __M([1/*require*/,0/*exports*/,12/*vs/base/common/errors*/,3/*vs/base/common/platform*/,2/*vs/base/common/winjs.base*/,38/*vs/base/common/cancellation*/,14/*vs/base/common/lifecycle*/,9/*vs/base/common/event*/]), function (require, exports, errors, platform, winjs_base_1, cancellation_1, lifecycle_1, event_1) {
     'use strict';
     function isThenable(obj) {
         return obj && typeof obj.then === 'function';
@@ -7230,11 +5424,2057 @@ define(__m[26/*vs/base/common/async*/], __M([1/*require*/,0/*exports*/,10/*vs/ba
     exports.ninvoke = ninvoke;
 });
 
+define(__m[32/*vs/base/common/network*/], __M([1/*require*/,0/*exports*/,2/*vs/base/common/winjs.base*/]), function (require, exports, winjs_base_1) {
+    /*---------------------------------------------------------------------------------------------
+     *  Copyright (c) Microsoft Corporation. All rights reserved.
+     *  Licensed under the MIT License. See License.txt in the project root for license information.
+     *--------------------------------------------------------------------------------------------*/
+    'use strict';
+    var Schemas;
+    (function (Schemas) {
+        /**
+         * A schema that is used for models that exist in memory
+         * only and that have no correspondence on a server or such.
+         */
+        Schemas.inMemory = 'inmemory';
+        /**
+         * A schema that is used for setting files
+         */
+        Schemas.vscode = 'vscode';
+        /**
+         * A schema that is used for internal private files
+         */
+        Schemas.internal = 'private';
+        /**
+         * A walk-through document.
+         */
+        Schemas.walkThrough = 'walkThrough';
+        /**
+         * An embedded code snippet.
+         */
+        Schemas.walkThroughSnippet = 'walkThroughSnippet';
+        Schemas.http = 'http';
+        Schemas.https = 'https';
+        Schemas.file = 'file';
+        Schemas.untitled = 'untitled';
+    })(Schemas = exports.Schemas || (exports.Schemas = {}));
+    function xhr(options) {
+        var req = null;
+        var canceled = false;
+        return new winjs_base_1.TPromise(function (c, e, p) {
+            req = new XMLHttpRequest();
+            req.onreadystatechange = function () {
+                if (canceled) {
+                    return;
+                }
+                if (req.readyState === 4) {
+                    // Handle 1223: http://bugs.jquery.com/ticket/1450
+                    if ((req.status >= 200 && req.status < 300) || req.status === 1223) {
+                        c(req);
+                    }
+                    else {
+                        e(req);
+                    }
+                    req.onreadystatechange = function () { };
+                }
+                else {
+                    p(req);
+                }
+            };
+            req.open(options.type || 'GET', options.url, 
+            // Promise based XHR does not support sync.
+            //
+            true, options.user, options.password);
+            req.responseType = options.responseType || '';
+            Object.keys(options.headers || {}).forEach(function (k) {
+                req.setRequestHeader(k, options.headers[k]);
+            });
+            if (options.customRequestInitializer) {
+                options.customRequestInitializer(req);
+            }
+            req.send(options.data);
+        }, function () {
+            canceled = true;
+            req.abort();
+        });
+    }
+    exports.xhr = xhr;
+});
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-define(__m[24/*vs/base/node/decoder*/], __M([1/*require*/,0/*exports*/,37/*string_decoder*/]), function (require, exports, sd) {
+
+
+
+
+
+define(__m[18/*vs/base/common/map*/], __M([1/*require*/,0/*exports*/,32/*vs/base/common/network*/]), function (require, exports, network_1) {
+    'use strict';
+    /**
+     * A simple map to store value by a key object. Key can be any object that has toString() function to get
+     * string value of the key.
+     */
+    var LinkedMap = (function () {
+        function LinkedMap() {
+            this.map = Object.create(null);
+            this._size = 0;
+        }
+        Object.defineProperty(LinkedMap.prototype, "size", {
+            get: function () {
+                return this._size;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        LinkedMap.prototype.get = function (k) {
+            var value = this.peek(k);
+            return value ? value : null;
+        };
+        LinkedMap.prototype.getOrSet = function (k, t) {
+            var res = this.get(k);
+            if (res) {
+                return res;
+            }
+            this.set(k, t);
+            return t;
+        };
+        LinkedMap.prototype.keys = function () {
+            var keys = [];
+            for (var key in this.map) {
+                keys.push(this.map[key].key);
+            }
+            return keys;
+        };
+        LinkedMap.prototype.values = function () {
+            var values = [];
+            for (var key in this.map) {
+                values.push(this.map[key].value);
+            }
+            return values;
+        };
+        LinkedMap.prototype.entries = function () {
+            var entries = [];
+            for (var key in this.map) {
+                entries.push(this.map[key]);
+            }
+            return entries;
+        };
+        LinkedMap.prototype.set = function (k, t) {
+            if (this.get(k)) {
+                return false; // already present!
+            }
+            this.push(k, t);
+            return true;
+        };
+        LinkedMap.prototype.delete = function (k) {
+            var value = this.get(k);
+            if (value) {
+                this.pop(k);
+                return value;
+            }
+            return null;
+        };
+        LinkedMap.prototype.has = function (k) {
+            return !!this.get(k);
+        };
+        LinkedMap.prototype.clear = function () {
+            this.map = Object.create(null);
+            this._size = 0;
+        };
+        LinkedMap.prototype.push = function (key, value) {
+            var entry = { key: key, value: value };
+            this.map[key.toString()] = entry;
+            this._size++;
+        };
+        LinkedMap.prototype.pop = function (k) {
+            delete this.map[k.toString()];
+            this._size--;
+        };
+        LinkedMap.prototype.peek = function (k) {
+            var entry = this.map[k.toString()];
+            return entry ? entry.value : null;
+        };
+        return LinkedMap;
+    }());
+    exports.LinkedMap = LinkedMap;
+    /**
+     * A simple Map<T> that optionally allows to set a limit of entries to store. Once the limit is hit,
+     * the cache will remove the entry that was last recently added. Or, if a ratio is provided below 1,
+     * all elements will be removed until the ratio is full filled (e.g. 0.75 to remove 25% of old elements).
+     */
+    var BoundedLinkedMap = (function () {
+        function BoundedLinkedMap(limit, ratio) {
+            if (limit === void 0) { limit = Number.MAX_VALUE; }
+            if (ratio === void 0) { ratio = 1; }
+            this.limit = limit;
+            this.map = Object.create(null);
+            this._size = 0;
+            this.ratio = limit * ratio;
+        }
+        Object.defineProperty(BoundedLinkedMap.prototype, "size", {
+            get: function () {
+                return this._size;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        BoundedLinkedMap.prototype.set = function (key, value) {
+            if (this.map[key]) {
+                return false; // already present!
+            }
+            var entry = { key: key, value: value };
+            this.push(entry);
+            if (this._size > this.limit) {
+                this.trim();
+            }
+            return true;
+        };
+        BoundedLinkedMap.prototype.get = function (key) {
+            var entry = this.map[key];
+            return entry ? entry.value : null;
+        };
+        BoundedLinkedMap.prototype.getOrSet = function (k, t) {
+            var res = this.get(k);
+            if (res) {
+                return res;
+            }
+            this.set(k, t);
+            return t;
+        };
+        BoundedLinkedMap.prototype.delete = function (key) {
+            var entry = this.map[key];
+            if (entry) {
+                this.map[key] = void 0;
+                this._size--;
+                if (entry.next) {
+                    entry.next.prev = entry.prev; // [A]<-[x]<-[C] = [A]<-[C]
+                }
+                else {
+                    this.head = entry.prev; // [A]-[x] = [A]
+                }
+                if (entry.prev) {
+                    entry.prev.next = entry.next; // [A]->[x]->[C] = [A]->[C]
+                }
+                else {
+                    this.tail = entry.next; // [x]-[A] = [A]
+                }
+                return entry.value;
+            }
+            return null;
+        };
+        BoundedLinkedMap.prototype.has = function (key) {
+            return !!this.map[key];
+        };
+        BoundedLinkedMap.prototype.clear = function () {
+            this.map = Object.create(null);
+            this._size = 0;
+            this.head = null;
+            this.tail = null;
+        };
+        BoundedLinkedMap.prototype.push = function (entry) {
+            if (this.head) {
+                // [A]-[B] = [A]-[B]->[X]
+                entry.prev = this.head;
+                this.head.next = entry;
+            }
+            if (!this.tail) {
+                this.tail = entry;
+            }
+            this.head = entry;
+            this.map[entry.key] = entry;
+            this._size++;
+        };
+        BoundedLinkedMap.prototype.trim = function () {
+            if (this.tail) {
+                // Remove all elements until ratio is reached
+                if (this.ratio < this.limit) {
+                    var index = 0;
+                    var current = this.tail;
+                    while (current.next) {
+                        // Remove the entry
+                        this.map[current.key] = void 0;
+                        this._size--;
+                        // if we reached the element that overflows our ratio condition
+                        // make its next element the new tail of the Map and adjust the size
+                        if (index === this.ratio) {
+                            this.tail = current.next;
+                            this.tail.prev = null;
+                            break;
+                        }
+                        // Move on
+                        current = current.next;
+                        index++;
+                    }
+                }
+                else {
+                    this.map[this.tail.key] = void 0;
+                    this._size--;
+                    // [x]-[B] = [B]
+                    this.tail = this.tail.next;
+                    this.tail.prev = null;
+                }
+            }
+        };
+        return BoundedLinkedMap;
+    }());
+    exports.BoundedLinkedMap = BoundedLinkedMap;
+    /**
+     * A subclass of Map<T> that makes an entry the MRU entry as soon
+     * as it is being accessed. In combination with the limit for the
+     * maximum number of elements in the cache, it helps to remove those
+     * entries from the cache that are LRU.
+     */
+    var LRUCache = (function (_super) {
+        __extends(LRUCache, _super);
+        function LRUCache(limit) {
+            return _super.call(this, limit) || this;
+        }
+        LRUCache.prototype.get = function (key) {
+            // Upon access of an entry, make it the head of
+            // the linked map so that it is the MRU element
+            var entry = this.map[key];
+            if (entry) {
+                this.delete(key);
+                this.push(entry);
+                return entry.value;
+            }
+            return null;
+        };
+        return LRUCache;
+    }(BoundedLinkedMap));
+    exports.LRUCache = LRUCache;
+    // --- trie'ish datastructure
+    var Node = (function () {
+        function Node() {
+            this.children = new Map();
+        }
+        return Node;
+    }());
+    /**
+     * A trie map that allows for fast look up when keys are substrings
+     * to the actual search keys (dir/subdir-problem).
+     */
+    var TrieMap = (function () {
+        function TrieMap(splitter) {
+            this._root = new Node();
+            this._splitter = splitter;
+        }
+        TrieMap.prototype.insert = function (path, element) {
+            var parts = this._splitter(path);
+            var i = 0;
+            // find insertion node
+            var node = this._root;
+            for (; i < parts.length; i++) {
+                var child = node.children.get(parts[i]);
+                if (child) {
+                    node = child;
+                    continue;
+                }
+                break;
+            }
+            // create new nodes
+            var newNode;
+            for (; i < parts.length; i++) {
+                newNode = new Node();
+                node.children.set(parts[i], newNode);
+                node = newNode;
+            }
+            node.element = element;
+        };
+        TrieMap.prototype.lookUp = function (path) {
+            var parts = this._splitter(path);
+            var children = this._root.children;
+            var node;
+            for (var _i = 0, parts_1 = parts; _i < parts_1.length; _i++) {
+                var part = parts_1[_i];
+                node = children.get(part);
+                if (!node) {
+                    return undefined;
+                }
+                children = node.children;
+            }
+            return node.element;
+        };
+        TrieMap.prototype.findSubstr = function (path) {
+            var parts = this._splitter(path);
+            var lastNode;
+            var children = this._root.children;
+            for (var _i = 0, parts_2 = parts; _i < parts_2.length; _i++) {
+                var part = parts_2[_i];
+                var node = children.get(part);
+                if (!node) {
+                    break;
+                }
+                if (node.element) {
+                    lastNode = node;
+                }
+                children = node.children;
+            }
+            // return the last matching node
+            // that had an element
+            if (lastNode) {
+                return lastNode.element;
+            }
+            return undefined;
+        };
+        TrieMap.prototype.findSuperstr = function (path) {
+            var parts = this._splitter(path);
+            var children = this._root.children;
+            var node;
+            for (var _i = 0, parts_3 = parts; _i < parts_3.length; _i++) {
+                var part = parts_3[_i];
+                node = children.get(part);
+                if (!node) {
+                    return undefined;
+                }
+                children = node.children;
+            }
+            var result = new TrieMap(this._splitter);
+            result._root = node;
+            return result;
+        };
+        return TrieMap;
+    }());
+    TrieMap.PathSplitter = function (s) { return s.split(/[\\/]/).filter(function (s) { return !!s; }); };
+    exports.TrieMap = TrieMap;
+    var ResourceMap = (function () {
+        function ResourceMap(ignoreCase) {
+            this.ignoreCase = ignoreCase;
+            this.map = new Map();
+        }
+        ResourceMap.prototype.set = function (resource, value) {
+            this.map.set(this.toKey(resource), value);
+        };
+        ResourceMap.prototype.get = function (resource) {
+            return this.map.get(this.toKey(resource));
+        };
+        ResourceMap.prototype.has = function (resource) {
+            return this.map.has(this.toKey(resource));
+        };
+        Object.defineProperty(ResourceMap.prototype, "size", {
+            get: function () {
+                return this.map.size;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        ResourceMap.prototype.clear = function () {
+            this.map.clear();
+        };
+        ResourceMap.prototype.delete = function (resource) {
+            return this.map.delete(this.toKey(resource));
+        };
+        ResourceMap.prototype.forEach = function (clb) {
+            this.map.forEach(clb);
+        };
+        ResourceMap.prototype.values = function () {
+            var values = [];
+            this.map.forEach(function (value) { return values.push(value); });
+            return values;
+        };
+        ResourceMap.prototype.toKey = function (resource) {
+            var key;
+            if (resource.scheme === network_1.Schemas.file) {
+                key = resource.fsPath;
+            }
+            else {
+                key = resource.toString();
+            }
+            if (this.ignoreCase) {
+                key = key.toLowerCase();
+            }
+            return key;
+        };
+        return ResourceMap;
+    }());
+    exports.ResourceMap = ResourceMap;
+});
+
+define(__m[4/*vs/base/common/strings*/], __M([1/*require*/,0/*exports*/,18/*vs/base/common/map*/]), function (require, exports, map_1) {
+    /*---------------------------------------------------------------------------------------------
+     *  Copyright (c) Microsoft Corporation. All rights reserved.
+     *  Licensed under the MIT License. See License.txt in the project root for license information.
+     *--------------------------------------------------------------------------------------------*/
+    'use strict';
+    /**
+     * The empty string.
+     */
+    exports.empty = '';
+    function isFalsyOrWhitespace(str) {
+        if (!str || typeof str !== 'string') {
+            return true;
+        }
+        return str.trim().length === 0;
+    }
+    exports.isFalsyOrWhitespace = isFalsyOrWhitespace;
+    /**
+     * @returns the provided number with the given number of preceding zeros.
+     */
+    function pad(n, l, char) {
+        if (char === void 0) { char = '0'; }
+        var str = '' + n;
+        var r = [str];
+        for (var i = str.length; i < l; i++) {
+            r.push(char);
+        }
+        return r.reverse().join('');
+    }
+    exports.pad = pad;
+    var _formatRegexp = /{(\d+)}/g;
+    /**
+     * Helper to produce a string with a variable number of arguments. Insert variable segments
+     * into the string using the {n} notation where N is the index of the argument following the string.
+     * @param value string to which formatting is applied
+     * @param args replacements for {n}-entries
+     */
+    function format(value) {
+        var args = [];
+        for (var _i = 1; _i < arguments.length; _i++) {
+            args[_i - 1] = arguments[_i];
+        }
+        if (args.length === 0) {
+            return value;
+        }
+        return value.replace(_formatRegexp, function (match, group) {
+            var idx = parseInt(group, 10);
+            return isNaN(idx) || idx < 0 || idx >= args.length ?
+                match :
+                args[idx];
+        });
+    }
+    exports.format = format;
+    /**
+     * Converts HTML characters inside the string to use entities instead. Makes the string safe from
+     * being used e.g. in HTMLElement.innerHTML.
+     */
+    function escape(html) {
+        return html.replace(/[<|>|&]/g, function (match) {
+            switch (match) {
+                case '<': return '&lt;';
+                case '>': return '&gt;';
+                case '&': return '&amp;';
+                default: return match;
+            }
+        });
+    }
+    exports.escape = escape;
+    /**
+     * Escapes regular expression characters in a given string
+     */
+    function escapeRegExpCharacters(value) {
+        return value.replace(/[\-\\\{\}\*\+\?\|\^\$\.\,\[\]\(\)\#\s]/g, '\\$&');
+    }
+    exports.escapeRegExpCharacters = escapeRegExpCharacters;
+    /**
+     * Removes all occurrences of needle from the beginning and end of haystack.
+     * @param haystack string to trim
+     * @param needle the thing to trim (default is a blank)
+     */
+    function trim(haystack, needle) {
+        if (needle === void 0) { needle = ' '; }
+        var trimmed = ltrim(haystack, needle);
+        return rtrim(trimmed, needle);
+    }
+    exports.trim = trim;
+    /**
+     * Removes all occurrences of needle from the beginning of haystack.
+     * @param haystack string to trim
+     * @param needle the thing to trim
+     */
+    function ltrim(haystack, needle) {
+        if (!haystack || !needle) {
+            return haystack;
+        }
+        var needleLen = needle.length;
+        if (needleLen === 0 || haystack.length === 0) {
+            return haystack;
+        }
+        var offset = 0, idx = -1;
+        while ((idx = haystack.indexOf(needle, offset)) === offset) {
+            offset = offset + needleLen;
+        }
+        return haystack.substring(offset);
+    }
+    exports.ltrim = ltrim;
+    /**
+     * Removes all occurrences of needle from the end of haystack.
+     * @param haystack string to trim
+     * @param needle the thing to trim
+     */
+    function rtrim(haystack, needle) {
+        if (!haystack || !needle) {
+            return haystack;
+        }
+        var needleLen = needle.length, haystackLen = haystack.length;
+        if (needleLen === 0 || haystackLen === 0) {
+            return haystack;
+        }
+        var offset = haystackLen, idx = -1;
+        while (true) {
+            idx = haystack.lastIndexOf(needle, offset - 1);
+            if (idx === -1 || idx + needleLen !== offset) {
+                break;
+            }
+            if (idx === 0) {
+                return '';
+            }
+            offset = idx;
+        }
+        return haystack.substring(0, offset);
+    }
+    exports.rtrim = rtrim;
+    function convertSimple2RegExpPattern(pattern) {
+        return pattern.replace(/[\-\\\{\}\+\?\|\^\$\.\,\[\]\(\)\#\s]/g, '\\$&').replace(/[\*]/g, '.*');
+    }
+    exports.convertSimple2RegExpPattern = convertSimple2RegExpPattern;
+    function stripWildcards(pattern) {
+        return pattern.replace(/\*/g, '');
+    }
+    exports.stripWildcards = stripWildcards;
+    /**
+     * Determines if haystack starts with needle.
+     */
+    function startsWith(haystack, needle) {
+        if (haystack.length < needle.length) {
+            return false;
+        }
+        for (var i = 0; i < needle.length; i++) {
+            if (haystack[i] !== needle[i]) {
+                return false;
+            }
+        }
+        return true;
+    }
+    exports.startsWith = startsWith;
+    /**
+     * Determines if haystack ends with needle.
+     */
+    function endsWith(haystack, needle) {
+        var diff = haystack.length - needle.length;
+        if (diff > 0) {
+            return haystack.indexOf(needle, diff) === diff;
+        }
+        else if (diff === 0) {
+            return haystack === needle;
+        }
+        else {
+            return false;
+        }
+    }
+    exports.endsWith = endsWith;
+    function indexOfIgnoreCase(haystack, needle, position) {
+        if (position === void 0) { position = 0; }
+        var index = haystack.indexOf(needle, position);
+        if (index < 0) {
+            if (position > 0) {
+                haystack = haystack.substr(position);
+            }
+            needle = escapeRegExpCharacters(needle);
+            index = haystack.search(new RegExp(needle, 'i'));
+        }
+        return index;
+    }
+    exports.indexOfIgnoreCase = indexOfIgnoreCase;
+    function createRegExp(searchString, isRegex, options) {
+        if (options === void 0) { options = {}; }
+        if (searchString === '') {
+            throw new Error('Cannot create regex from empty string');
+        }
+        if (!isRegex) {
+            searchString = searchString.replace(/[\-\\\{\}\*\+\?\|\^\$\.\,\[\]\(\)\#\s]/g, '\\$&');
+        }
+        if (options.wholeWord) {
+            if (!/\B/.test(searchString.charAt(0))) {
+                searchString = '\\b' + searchString;
+            }
+            if (!/\B/.test(searchString.charAt(searchString.length - 1))) {
+                searchString = searchString + '\\b';
+            }
+        }
+        var modifiers = '';
+        if (options.global) {
+            modifiers += 'g';
+        }
+        if (!options.matchCase) {
+            modifiers += 'i';
+        }
+        if (options.multiline) {
+            modifiers += 'm';
+        }
+        return new RegExp(searchString, modifiers);
+    }
+    exports.createRegExp = createRegExp;
+    function regExpLeadsToEndlessLoop(regexp) {
+        // Exit early if it's one of these special cases which are meant to match
+        // against an empty string
+        if (regexp.source === '^' || regexp.source === '^$' || regexp.source === '$') {
+            return false;
+        }
+        // We check against an empty string. If the regular expression doesn't advance
+        // (e.g. ends in an endless loop) it will match an empty string.
+        var match = regexp.exec('');
+        return (match && regexp.lastIndex === 0);
+    }
+    exports.regExpLeadsToEndlessLoop = regExpLeadsToEndlessLoop;
+    /**
+     * The normalize() method returns the Unicode Normalization Form of a given string. The form will be
+     * the Normalization Form Canonical Composition.
+     *
+     * @see {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/normalize}
+     */
+    exports.canNormalize = typeof (''.normalize) === 'function';
+    var nonAsciiCharactersPattern = /[^\u0000-\u0080]/;
+    var normalizedCache = new map_1.BoundedLinkedMap(10000); // bounded to 10000 elements
+    function normalizeNFC(str) {
+        if (!exports.canNormalize || !str) {
+            return str;
+        }
+        var cached = normalizedCache.get(str);
+        if (cached) {
+            return cached;
+        }
+        var res;
+        if (nonAsciiCharactersPattern.test(str)) {
+            res = str.normalize('NFC');
+        }
+        else {
+            res = str;
+        }
+        // Use the cache for fast lookup
+        normalizedCache.set(str, res);
+        return res;
+    }
+    exports.normalizeNFC = normalizeNFC;
+    /**
+     * Returns first index of the string that is not whitespace.
+     * If string is empty or contains only whitespaces, returns -1
+     */
+    function firstNonWhitespaceIndex(str) {
+        for (var i = 0, len = str.length; i < len; i++) {
+            var chCode = str.charCodeAt(i);
+            if (chCode !== 32 /* Space */ && chCode !== 9 /* Tab */) {
+                return i;
+            }
+        }
+        return -1;
+    }
+    exports.firstNonWhitespaceIndex = firstNonWhitespaceIndex;
+    /**
+     * Returns the leading whitespace of the string.
+     * If the string contains only whitespaces, returns entire string
+     */
+    function getLeadingWhitespace(str) {
+        for (var i = 0, len = str.length; i < len; i++) {
+            var chCode = str.charCodeAt(i);
+            if (chCode !== 32 /* Space */ && chCode !== 9 /* Tab */) {
+                return str.substring(0, i);
+            }
+        }
+        return str;
+    }
+    exports.getLeadingWhitespace = getLeadingWhitespace;
+    /**
+     * Returns last index of the string that is not whitespace.
+     * If string is empty or contains only whitespaces, returns -1
+     */
+    function lastNonWhitespaceIndex(str, startIndex) {
+        if (startIndex === void 0) { startIndex = str.length - 1; }
+        for (var i = startIndex; i >= 0; i--) {
+            var chCode = str.charCodeAt(i);
+            if (chCode !== 32 /* Space */ && chCode !== 9 /* Tab */) {
+                return i;
+            }
+        }
+        return -1;
+    }
+    exports.lastNonWhitespaceIndex = lastNonWhitespaceIndex;
+    function compare(a, b) {
+        if (a < b) {
+            return -1;
+        }
+        else if (a > b) {
+            return 1;
+        }
+        else {
+            return 0;
+        }
+    }
+    exports.compare = compare;
+    function compareIgnoreCase(a, b) {
+        var len = Math.min(a.length, b.length);
+        for (var i = 0; i < len; i++) {
+            var codeA = a.charCodeAt(i);
+            var codeB = b.charCodeAt(i);
+            if (codeA === codeB) {
+                // equal
+                continue;
+            }
+            if (isAsciiLetter(codeA) && isAsciiLetter(codeB)) {
+                var diff = codeA - codeB;
+                if (diff === 32 || diff === -32) {
+                    // equal -> ignoreCase
+                    continue;
+                }
+                else {
+                    return diff;
+                }
+            }
+            else {
+                return compare(a.toLowerCase(), b.toLowerCase());
+            }
+        }
+        if (a.length < b.length) {
+            return -1;
+        }
+        else if (a.length > b.length) {
+            return 1;
+        }
+        else {
+            return 0;
+        }
+    }
+    exports.compareIgnoreCase = compareIgnoreCase;
+    function isAsciiLetter(code) {
+        return (code >= 97 /* a */ && code <= 122 /* z */) || (code >= 65 /* A */ && code <= 90 /* Z */);
+    }
+    function equalsIgnoreCase(a, b) {
+        var len1 = a.length, len2 = b.length;
+        if (len1 !== len2) {
+            return false;
+        }
+        return doEqualsIgnoreCase(a, b);
+    }
+    exports.equalsIgnoreCase = equalsIgnoreCase;
+    function doEqualsIgnoreCase(a, b, stopAt) {
+        if (stopAt === void 0) { stopAt = a.length; }
+        for (var i = 0; i < stopAt; i++) {
+            var codeA = a.charCodeAt(i);
+            var codeB = b.charCodeAt(i);
+            if (codeA === codeB) {
+                continue;
+            }
+            // a-z A-Z
+            if (isAsciiLetter(codeA) && isAsciiLetter(codeB)) {
+                var diff = Math.abs(codeA - codeB);
+                if (diff !== 0 && diff !== 32) {
+                    return false;
+                }
+            }
+            else {
+                if (String.fromCharCode(codeA).toLowerCase() !== String.fromCharCode(codeB).toLowerCase()) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+    exports.doEqualsIgnoreCase = doEqualsIgnoreCase;
+    function beginsWithIgnoreCase(str, candidate) {
+        var candidateLength = candidate.length;
+        if (candidate.length > str.length) {
+            return false;
+        }
+        return doEqualsIgnoreCase(str, candidate, candidateLength);
+    }
+    exports.beginsWithIgnoreCase = beginsWithIgnoreCase;
+    /**
+     * @returns the length of the common prefix of the two strings.
+     */
+    function commonPrefixLength(a, b) {
+        var i, len = Math.min(a.length, b.length);
+        for (i = 0; i < len; i++) {
+            if (a.charCodeAt(i) !== b.charCodeAt(i)) {
+                return i;
+            }
+        }
+        return len;
+    }
+    exports.commonPrefixLength = commonPrefixLength;
+    /**
+     * @returns the length of the common suffix of the two strings.
+     */
+    function commonSuffixLength(a, b) {
+        var i, len = Math.min(a.length, b.length);
+        var aLastIndex = a.length - 1;
+        var bLastIndex = b.length - 1;
+        for (i = 0; i < len; i++) {
+            if (a.charCodeAt(aLastIndex - i) !== b.charCodeAt(bLastIndex - i)) {
+                return i;
+            }
+        }
+        return len;
+    }
+    exports.commonSuffixLength = commonSuffixLength;
+    // --- unicode
+    // http://en.wikipedia.org/wiki/Surrogate_pair
+    // Returns the code point starting at a specified index in a string
+    // Code points U+0000 to U+D7FF and U+E000 to U+FFFF are represented on a single character
+    // Code points U+10000 to U+10FFFF are represented on two consecutive characters
+    //export function getUnicodePoint(str:string, index:number, len:number):number {
+    //	let chrCode = str.charCodeAt(index);
+    //	if (0xD800 <= chrCode && chrCode <= 0xDBFF && index + 1 < len) {
+    //		let nextChrCode = str.charCodeAt(index + 1);
+    //		if (0xDC00 <= nextChrCode && nextChrCode <= 0xDFFF) {
+    //			return (chrCode - 0xD800) << 10 + (nextChrCode - 0xDC00) + 0x10000;
+    //		}
+    //	}
+    //	return chrCode;
+    //}
+    function isHighSurrogate(charCode) {
+        return (0xD800 <= charCode && charCode <= 0xDBFF);
+    }
+    exports.isHighSurrogate = isHighSurrogate;
+    function isLowSurrogate(charCode) {
+        return (0xDC00 <= charCode && charCode <= 0xDFFF);
+    }
+    exports.isLowSurrogate = isLowSurrogate;
+    /**
+     * Generated using https://github.com/alexandrudima/unicode-utils/blob/master/generate-rtl-test.js
+     */
+    var CONTAINS_RTL = /(?:[\u05BE\u05C0\u05C3\u05C6\u05D0-\u05F4\u0608\u060B\u060D\u061B-\u064A\u066D-\u066F\u0671-\u06D5\u06E5\u06E6\u06EE\u06EF\u06FA-\u0710\u0712-\u072F\u074D-\u07A5\u07B1-\u07EA\u07F4\u07F5\u07FA-\u0815\u081A\u0824\u0828\u0830-\u0858\u085E-\u08BD\u200F\uFB1D\uFB1F-\uFB28\uFB2A-\uFD3D\uFD50-\uFDFC\uFE70-\uFEFC]|\uD802[\uDC00-\uDD1B\uDD20-\uDE00\uDE10-\uDE33\uDE40-\uDEE4\uDEEB-\uDF35\uDF40-\uDFFF]|\uD803[\uDC00-\uDCFF]|\uD83A[\uDC00-\uDCCF\uDD00-\uDD43\uDD50-\uDFFF]|\uD83B[\uDC00-\uDEBB])/;
+    /**
+     * Returns true if `str` contains any Unicode character that is classified as "R" or "AL".
+     */
+    function containsRTL(str) {
+        return CONTAINS_RTL.test(str);
+    }
+    exports.containsRTL = containsRTL;
+    var IS_BASIC_ASCII = /^[\t\n\r\x20-\x7E]*$/;
+    /**
+     * Returns true if `str` contains only basic ASCII characters in the range 32 - 126 (including 32 and 126) or \n, \r, \t
+     */
+    function isBasicASCII(str) {
+        return IS_BASIC_ASCII.test(str);
+    }
+    exports.isBasicASCII = isBasicASCII;
+    function isFullWidthCharacter(charCode) {
+        // Do a cheap trick to better support wrapping of wide characters, treat them as 2 columns
+        // http://jrgraphix.net/research/unicode_blocks.php
+        //          2E80 — 2EFF   CJK Radicals Supplement
+        //          2F00 — 2FDF   Kangxi Radicals
+        //          2FF0 — 2FFF   Ideographic Description Characters
+        //          3000 — 303F   CJK Symbols and Punctuation
+        //          3040 — 309F   Hiragana
+        //          30A0 — 30FF   Katakana
+        //          3100 — 312F   Bopomofo
+        //          3130 — 318F   Hangul Compatibility Jamo
+        //          3190 — 319F   Kanbun
+        //          31A0 — 31BF   Bopomofo Extended
+        //          31F0 — 31FF   Katakana Phonetic Extensions
+        //          3200 — 32FF   Enclosed CJK Letters and Months
+        //          3300 — 33FF   CJK Compatibility
+        //          3400 — 4DBF   CJK Unified Ideographs Extension A
+        //          4DC0 — 4DFF   Yijing Hexagram Symbols
+        //          4E00 — 9FFF   CJK Unified Ideographs
+        //          A000 — A48F   Yi Syllables
+        //          A490 — A4CF   Yi Radicals
+        //          AC00 — D7AF   Hangul Syllables
+        // [IGNORE] D800 — DB7F   High Surrogates
+        // [IGNORE] DB80 — DBFF   High Private Use Surrogates
+        // [IGNORE] DC00 — DFFF   Low Surrogates
+        // [IGNORE] E000 — F8FF   Private Use Area
+        //          F900 — FAFF   CJK Compatibility Ideographs
+        // [IGNORE] FB00 — FB4F   Alphabetic Presentation Forms
+        // [IGNORE] FB50 — FDFF   Arabic Presentation Forms-A
+        // [IGNORE] FE00 — FE0F   Variation Selectors
+        // [IGNORE] FE20 — FE2F   Combining Half Marks
+        // [IGNORE] FE30 — FE4F   CJK Compatibility Forms
+        // [IGNORE] FE50 — FE6F   Small Form Variants
+        // [IGNORE] FE70 — FEFF   Arabic Presentation Forms-B
+        //          FF00 — FFEF   Halfwidth and Fullwidth Forms
+        //               [https://en.wikipedia.org/wiki/Halfwidth_and_fullwidth_forms]
+        //               of which FF01 - FF5E fullwidth ASCII of 21 to 7E
+        // [IGNORE]    and FF65 - FFDC halfwidth of Katakana and Hangul
+        // [IGNORE] FFF0 — FFFF   Specials
+        charCode = +charCode; // @perf
+        return ((charCode >= 0x2E80 && charCode <= 0xD7AF)
+            || (charCode >= 0xF900 && charCode <= 0xFAFF)
+            || (charCode >= 0xFF01 && charCode <= 0xFF5E));
+    }
+    exports.isFullWidthCharacter = isFullWidthCharacter;
+    /**
+     * Computes the difference score for two strings. More similar strings have a higher score.
+     * We use largest common subsequence dynamic programming approach but penalize in the end for length differences.
+     * Strings that have a large length difference will get a bad default score 0.
+     * Complexity - both time and space O(first.length * second.length)
+     * Dynamic programming LCS computation http://en.wikipedia.org/wiki/Longest_common_subsequence_problem
+     *
+     * @param first a string
+     * @param second a string
+     */
+    function difference(first, second, maxLenDelta) {
+        if (maxLenDelta === void 0) { maxLenDelta = 4; }
+        var lengthDifference = Math.abs(first.length - second.length);
+        // We only compute score if length of the currentWord and length of entry.name are similar.
+        if (lengthDifference > maxLenDelta) {
+            return 0;
+        }
+        // Initialize LCS (largest common subsequence) matrix.
+        var LCS = [];
+        var zeroArray = [];
+        var i, j;
+        for (i = 0; i < second.length + 1; ++i) {
+            zeroArray.push(0);
+        }
+        for (i = 0; i < first.length + 1; ++i) {
+            LCS.push(zeroArray);
+        }
+        for (i = 1; i < first.length + 1; ++i) {
+            for (j = 1; j < second.length + 1; ++j) {
+                if (first[i - 1] === second[j - 1]) {
+                    LCS[i][j] = LCS[i - 1][j - 1] + 1;
+                }
+                else {
+                    LCS[i][j] = Math.max(LCS[i - 1][j], LCS[i][j - 1]);
+                }
+            }
+        }
+        return LCS[first.length][second.length] - Math.sqrt(lengthDifference);
+    }
+    exports.difference = difference;
+    /**
+     * Returns an array in which every entry is the offset of a
+     * line. There is always one entry which is zero.
+     */
+    function computeLineStarts(text) {
+        var regexp = /\r\n|\r|\n/g, ret = [0], match;
+        while ((match = regexp.exec(text))) {
+            ret.push(regexp.lastIndex);
+        }
+        return ret;
+    }
+    exports.computeLineStarts = computeLineStarts;
+    /**
+     * Given a string and a max length returns a shorted version. Shorting
+     * happens at favorable positions - such as whitespace or punctuation characters.
+     */
+    function lcut(text, n) {
+        if (text.length < n) {
+            return text;
+        }
+        var segments = text.split(/\b/), count = 0;
+        for (var i = segments.length - 1; i >= 0; i--) {
+            count += segments[i].length;
+            if (count > n) {
+                segments.splice(0, i);
+                break;
+            }
+        }
+        return segments.join(exports.empty).replace(/^\s/, exports.empty);
+    }
+    exports.lcut = lcut;
+    // Escape codes
+    // http://en.wikipedia.org/wiki/ANSI_escape_code
+    var EL = /\x1B\x5B[12]?K/g; // Erase in line
+    var COLOR_START = /\x1b\[\d+m/g; // Color
+    var COLOR_END = /\x1b\[0?m/g; // Color
+    function removeAnsiEscapeCodes(str) {
+        if (str) {
+            str = str.replace(EL, '');
+            str = str.replace(COLOR_START, '');
+            str = str.replace(COLOR_END, '');
+        }
+        return str;
+    }
+    exports.removeAnsiEscapeCodes = removeAnsiEscapeCodes;
+    // -- UTF-8 BOM
+    exports.UTF8_BOM_CHARACTER = String.fromCharCode(65279 /* UTF8_BOM */);
+    function startsWithUTF8BOM(str) {
+        return (str && str.length > 0 && str.charCodeAt(0) === 65279 /* UTF8_BOM */);
+    }
+    exports.startsWithUTF8BOM = startsWithUTF8BOM;
+    /**
+     * Appends two strings. If the appended result is longer than maxLength,
+     * trims the start of the result and replaces it with '...'.
+     */
+    function appendWithLimit(first, second, maxLength) {
+        var newLength = first.length + second.length;
+        if (newLength > maxLength) {
+            first = '...' + first.substr(newLength - maxLength);
+        }
+        if (second.length > maxLength) {
+            first += second.substr(second.length - maxLength);
+        }
+        else {
+            first += second;
+        }
+        return first;
+    }
+    exports.appendWithLimit = appendWithLimit;
+    function safeBtoa(str) {
+        return btoa(encodeURIComponent(str)); // we use encodeURIComponent because btoa fails for non Latin 1 values
+    }
+    exports.safeBtoa = safeBtoa;
+    function repeat(s, count) {
+        var result = '';
+        for (var i = 0; i < count; i++) {
+            result += s;
+        }
+        return result;
+    }
+    exports.repeat = repeat;
+});
+
+define(__m[10/*vs/base/common/paths*/], __M([1/*require*/,0/*exports*/,3/*vs/base/common/platform*/,8/*vs/base/common/arrays*/,4/*vs/base/common/strings*/]), function (require, exports, platform_1, arrays_1, strings_1) {
+    /*---------------------------------------------------------------------------------------------
+     *  Copyright (c) Microsoft Corporation. All rights reserved.
+     *  Licensed under the MIT License. See License.txt in the project root for license information.
+     *--------------------------------------------------------------------------------------------*/
+    'use strict';
+    /**
+     * The forward slash path separator.
+     */
+    exports.sep = '/';
+    /**
+     * The native path separator depending on the OS.
+     */
+    exports.nativeSep = platform_1.isWindows ? '\\' : '/';
+    function relative(from, to) {
+        // ignore trailing slashes
+        var originalNormalizedFrom = strings_1.rtrim(normalize(from), exports.sep);
+        var originalNormalizedTo = strings_1.rtrim(normalize(to), exports.sep);
+        // we're assuming here that any non=linux OS is case insensitive
+        // so we must compare each part in its lowercase form
+        var normalizedFrom = platform_1.isLinux ? originalNormalizedFrom : originalNormalizedFrom.toLowerCase();
+        var normalizedTo = platform_1.isLinux ? originalNormalizedTo : originalNormalizedTo.toLowerCase();
+        var fromParts = normalizedFrom.split(exports.sep);
+        var toParts = normalizedTo.split(exports.sep);
+        var i = 0, max = Math.min(fromParts.length, toParts.length);
+        for (; i < max; i++) {
+            if (fromParts[i] !== toParts[i]) {
+                break;
+            }
+        }
+        var result = arrays_1.fill(fromParts.length - i, function () { return '..'; }).concat(originalNormalizedTo.split(exports.sep).slice(i));
+        return result.join(exports.sep);
+    }
+    exports.relative = relative;
+    /**
+     * @returns the directory name of a path.
+     */
+    function dirname(path) {
+        var idx = ~path.lastIndexOf('/') || ~path.lastIndexOf('\\');
+        if (idx === 0) {
+            return '.';
+        }
+        else if (~idx === 0) {
+            return path[0];
+        }
+        else {
+            var res = path.substring(0, ~idx);
+            if (platform_1.isWindows && res[res.length - 1] === ':') {
+                res += exports.nativeSep; // make sure drive letters end with backslash
+            }
+            return res;
+        }
+    }
+    exports.dirname = dirname;
+    /**
+     * @returns the base name of a path.
+     */
+    function basename(path) {
+        var idx = ~path.lastIndexOf('/') || ~path.lastIndexOf('\\');
+        if (idx === 0) {
+            return path;
+        }
+        else if (~idx === path.length - 1) {
+            return basename(path.substring(0, path.length - 1));
+        }
+        else {
+            return path.substr(~idx + 1);
+        }
+    }
+    exports.basename = basename;
+    /**
+     * @returns {{.far}} from boo.far or the empty string.
+     */
+    function extname(path) {
+        path = basename(path);
+        var idx = ~path.lastIndexOf('.');
+        return idx ? path.substring(~idx) : '';
+    }
+    exports.extname = extname;
+    var _posixBadPath = /(\/\.\.?\/)|(\/\.\.?)$|^(\.\.?\/)|(\/\/+)|(\\)/;
+    var _winBadPath = /(\\\.\.?\\)|(\\\.\.?)$|^(\.\.?\\)|(\\\\+)|(\/)/;
+    function _isNormal(path, win) {
+        return win
+            ? !_winBadPath.test(path)
+            : !_posixBadPath.test(path);
+    }
+    function normalize(path, toOSPath) {
+        if (path === null || path === void 0) {
+            return path;
+        }
+        var len = path.length;
+        if (len === 0) {
+            return '.';
+        }
+        var wantsBackslash = platform_1.isWindows && toOSPath;
+        if (_isNormal(path, wantsBackslash)) {
+            return path;
+        }
+        var sep = wantsBackslash ? '\\' : '/';
+        var root = getRoot(path, sep);
+        // skip the root-portion of the path
+        var start = root.length;
+        var skip = false;
+        var res = '';
+        for (var end = root.length; end <= len; end++) {
+            // either at the end or at a path-separator character
+            if (end === len || path.charCodeAt(end) === 47 /* Slash */ || path.charCodeAt(end) === 92 /* Backslash */) {
+                if (streql(path, start, end, '..')) {
+                    // skip current and remove parent (if there is already something)
+                    var prev_start = res.lastIndexOf(sep);
+                    var prev_part = res.slice(prev_start + 1);
+                    if ((root || prev_part.length > 0) && prev_part !== '..') {
+                        res = prev_start === -1 ? '' : res.slice(0, prev_start);
+                        skip = true;
+                    }
+                }
+                else if (streql(path, start, end, '.') && (root || res || end < len - 1)) {
+                    // skip current (if there is already something or if there is more to come)
+                    skip = true;
+                }
+                if (!skip) {
+                    var part = path.slice(start, end);
+                    if (res !== '' && res[res.length - 1] !== sep) {
+                        res += sep;
+                    }
+                    res += part;
+                }
+                start = end + 1;
+                skip = false;
+            }
+        }
+        return root + res;
+    }
+    exports.normalize = normalize;
+    function streql(value, start, end, other) {
+        return start + other.length === end && value.indexOf(other, start) === start;
+    }
+    /**
+     * Computes the _root_ this path, like `getRoot('c:\files') === c:\`,
+     * `getRoot('files:///files/path') === files:///`,
+     * or `getRoot('\\server\shares\path') === \\server\shares\`
+     */
+    function getRoot(path, sep) {
+        if (sep === void 0) { sep = '/'; }
+        if (!path) {
+            return '';
+        }
+        var len = path.length;
+        var code = path.charCodeAt(0);
+        if (code === 47 /* Slash */ || code === 92 /* Backslash */) {
+            code = path.charCodeAt(1);
+            if (code === 47 /* Slash */ || code === 92 /* Backslash */) {
+                // UNC candidate \\localhost\shares\ddd
+                //               ^^^^^^^^^^^^^^^^^^^
+                code = path.charCodeAt(2);
+                if (code !== 47 /* Slash */ && code !== 92 /* Backslash */) {
+                    var pos_1 = 3;
+                    var start = pos_1;
+                    for (; pos_1 < len; pos_1++) {
+                        code = path.charCodeAt(pos_1);
+                        if (code === 47 /* Slash */ || code === 92 /* Backslash */) {
+                            break;
+                        }
+                    }
+                    code = path.charCodeAt(pos_1 + 1);
+                    if (start !== pos_1 && code !== 47 /* Slash */ && code !== 92 /* Backslash */) {
+                        pos_1 += 1;
+                        for (; pos_1 < len; pos_1++) {
+                            code = path.charCodeAt(pos_1);
+                            if (code === 47 /* Slash */ || code === 92 /* Backslash */) {
+                                return path.slice(0, pos_1 + 1) // consume this separator
+                                    .replace(/[\\/]/g, sep);
+                            }
+                        }
+                    }
+                }
+            }
+            // /user/far
+            // ^
+            return sep;
+        }
+        else if ((code >= 65 /* A */ && code <= 90 /* Z */) || (code >= 97 /* a */ && code <= 122 /* z */)) {
+            // check for windows drive letter c:\ or c:
+            if (path.charCodeAt(1) === 58 /* Colon */) {
+                code = path.charCodeAt(2);
+                if (code === 47 /* Slash */ || code === 92 /* Backslash */) {
+                    // C:\fff
+                    // ^^^
+                    return path.slice(0, 2) + sep;
+                }
+                else {
+                    // C:
+                    // ^^
+                    return path.slice(0, 2);
+                }
+            }
+        }
+        // check for URI
+        // scheme://authority/path
+        // ^^^^^^^^^^^^^^^^^^^
+        var pos = path.indexOf('://');
+        if (pos !== -1) {
+            pos += 3; // 3 -> "://".length
+            for (; pos < len; pos++) {
+                code = path.charCodeAt(pos);
+                if (code === 47 /* Slash */ || code === 92 /* Backslash */) {
+                    return path.slice(0, pos + 1); // consume this separator
+                }
+            }
+        }
+        return '';
+    }
+    exports.getRoot = getRoot;
+    exports.join = function () {
+        // Not using a function with var-args because of how TS compiles
+        // them to JS - it would result in 2*n runtime cost instead
+        // of 1*n, where n is parts.length.
+        var value = '';
+        for (var i = 0; i < arguments.length; i++) {
+            var part = arguments[i];
+            if (i > 0) {
+                // add the separater between two parts unless
+                // there already is one
+                var last = value.charCodeAt(value.length - 1);
+                if (last !== 47 /* Slash */ && last !== 92 /* Backslash */) {
+                    var next = part.charCodeAt(0);
+                    if (next !== 47 /* Slash */ && next !== 92 /* Backslash */) {
+                        value += exports.sep;
+                    }
+                }
+            }
+            value += part;
+        }
+        return normalize(value);
+    };
+    /**
+     * Check if the path follows this pattern: `\\hostname\sharename`.
+     *
+     * @see https://msdn.microsoft.com/en-us/library/gg465305.aspx
+     * @return A boolean indication if the path is a UNC path, on none-windows
+     * always false.
+     */
+    function isUNC(path) {
+        if (!platform_1.isWindows) {
+            // UNC is a windows concept
+            return false;
+        }
+        if (!path || path.length < 5) {
+            // at least \\a\b
+            return false;
+        }
+        var code = path.charCodeAt(0);
+        if (code !== 92 /* Backslash */) {
+            return false;
+        }
+        code = path.charCodeAt(1);
+        if (code !== 92 /* Backslash */) {
+            return false;
+        }
+        var pos = 2;
+        var start = pos;
+        for (; pos < path.length; pos++) {
+            code = path.charCodeAt(pos);
+            if (code === 92 /* Backslash */) {
+                break;
+            }
+        }
+        if (start === pos) {
+            return false;
+        }
+        code = path.charCodeAt(pos + 1);
+        if (isNaN(code) || code === 92 /* Backslash */) {
+            return false;
+        }
+        return true;
+    }
+    exports.isUNC = isUNC;
+    // Reference: https://en.wikipedia.org/wiki/Filename
+    var INVALID_FILE_CHARS = platform_1.isWindows ? /[\\/:\*\?"<>\|]/g : /[\\/]/g;
+    var WINDOWS_FORBIDDEN_NAMES = /^(con|prn|aux|clock\$|nul|lpt[0-9]|com[0-9])$/i;
+    function isValidBasename(name) {
+        if (!name || name.length === 0 || /^\s+$/.test(name)) {
+            return false; // require a name that is not just whitespace
+        }
+        INVALID_FILE_CHARS.lastIndex = 0; // the holy grail of software development
+        if (INVALID_FILE_CHARS.test(name)) {
+            return false; // check for certain invalid file characters
+        }
+        if (platform_1.isWindows && WINDOWS_FORBIDDEN_NAMES.test(name)) {
+            return false; // check for certain invalid file names
+        }
+        if (name === '.' || name === '..') {
+            return false; // check for reserved values
+        }
+        if (platform_1.isWindows && name[name.length - 1] === '.') {
+            return false; // Windows: file cannot end with a "."
+        }
+        if (platform_1.isWindows && name.length !== name.trim().length) {
+            return false; // Windows: file cannot end with a whitespace
+        }
+        return true;
+    }
+    exports.isValidBasename = isValidBasename;
+});
+
+define(__m[44/*vs/base/common/comparers*/], __M([1/*require*/,0/*exports*/,15/*vs/base/common/scorer*/,4/*vs/base/common/strings*/,10/*vs/base/common/paths*/]), function (require, exports, scorer, strings, paths) {
+    /*---------------------------------------------------------------------------------------------
+     *  Copyright (c) Microsoft Corporation. All rights reserved.
+     *  Licensed under the MIT License. See License.txt in the project root for license information.
+     *--------------------------------------------------------------------------------------------*/
+    'use strict';
+    var intlFileNameCollator;
+    var intlFileNameCollatorIsNumeric;
+    function setFileNameComparer(collator) {
+        intlFileNameCollator = collator;
+        intlFileNameCollatorIsNumeric = collator.resolvedOptions().numeric;
+    }
+    exports.setFileNameComparer = setFileNameComparer;
+    function compareFileNames(one, other) {
+        if (intlFileNameCollator) {
+            var a = one || '';
+            var b = other || '';
+            var result = intlFileNameCollator.compare(a, b);
+            // Using the numeric option in the collator will
+            // make compare(`foo1`, `foo01`) === 0. We must disambiguate.
+            if (intlFileNameCollatorIsNumeric && result === 0 && a !== b) {
+                return a < b ? -1 : 1;
+            }
+            return result;
+        }
+        return noIntlCompareFileNames(one, other);
+    }
+    exports.compareFileNames = compareFileNames;
+    var FileNameMatch = /^([^.]*)(\.(.*))?$/;
+    function noIntlCompareFileNames(one, other) {
+        var oneMatch = FileNameMatch.exec(one.toLowerCase());
+        var otherMatch = FileNameMatch.exec(other.toLowerCase());
+        var oneName = oneMatch[1] || '';
+        var oneExtension = oneMatch[3] || '';
+        var otherName = otherMatch[1] || '';
+        var otherExtension = otherMatch[3] || '';
+        if (oneName !== otherName) {
+            return oneName < otherName ? -1 : 1;
+        }
+        if (oneExtension === otherExtension) {
+            return 0;
+        }
+        return oneExtension < otherExtension ? -1 : 1;
+    }
+    exports.noIntlCompareFileNames = noIntlCompareFileNames;
+    function comparePaths(one, other) {
+        var oneParts = one.split(paths.nativeSep);
+        var otherParts = other.split(paths.nativeSep);
+        var lastOne = oneParts.length - 1;
+        var lastOther = otherParts.length - 1;
+        var endOne, endOther, onePart, otherPart;
+        for (var i = 0;; i++) {
+            endOne = lastOne === i;
+            endOther = lastOther === i;
+            if (endOne && endOther) {
+                return compareFileNames(oneParts[i], otherParts[i]);
+            }
+            else if (endOne) {
+                return -1;
+            }
+            else if (endOther) {
+                return 1;
+            }
+            else if ((onePart = oneParts[i].toLowerCase()) !== (otherPart = otherParts[i].toLowerCase())) {
+                return onePart < otherPart ? -1 : 1;
+            }
+        }
+    }
+    exports.comparePaths = comparePaths;
+    function compareAnything(one, other, lookFor) {
+        var elementAName = one.toLowerCase();
+        var elementBName = other.toLowerCase();
+        // Sort prefix matches over non prefix matches
+        var prefixCompare = compareByPrefix(one, other, lookFor);
+        if (prefixCompare) {
+            return prefixCompare;
+        }
+        // Sort suffix matches over non suffix matches
+        var elementASuffixMatch = strings.endsWith(elementAName, lookFor);
+        var elementBSuffixMatch = strings.endsWith(elementBName, lookFor);
+        if (elementASuffixMatch !== elementBSuffixMatch) {
+            return elementASuffixMatch ? -1 : 1;
+        }
+        // Understand file names
+        var r = compareFileNames(elementAName, elementBName);
+        if (r !== 0) {
+            return r;
+        }
+        // Compare by name
+        return elementAName.localeCompare(elementBName);
+    }
+    exports.compareAnything = compareAnything;
+    function compareByPrefix(one, other, lookFor) {
+        var elementAName = one.toLowerCase();
+        var elementBName = other.toLowerCase();
+        // Sort prefix matches over non prefix matches
+        var elementAPrefixMatch = strings.startsWith(elementAName, lookFor);
+        var elementBPrefixMatch = strings.startsWith(elementBName, lookFor);
+        if (elementAPrefixMatch !== elementBPrefixMatch) {
+            return elementAPrefixMatch ? -1 : 1;
+        }
+        else if (elementAPrefixMatch && elementBPrefixMatch) {
+            if (elementAName.length < elementBName.length) {
+                return -1;
+            }
+            if (elementAName.length > elementBName.length) {
+                return 1;
+            }
+        }
+        return 0;
+    }
+    exports.compareByPrefix = compareByPrefix;
+    function compareByScore(elementA, elementB, accessor, lookFor, lookForNormalizedLower, scorerCache) {
+        var labelA = accessor.getLabel(elementA);
+        var labelB = accessor.getLabel(elementB);
+        // treat prefix matches highest in any case
+        var prefixCompare = compareByPrefix(labelA, labelB, lookFor);
+        if (prefixCompare) {
+            return prefixCompare;
+        }
+        // Give higher importance to label score
+        var labelAScore = scorer.score(labelA, lookFor, scorerCache);
+        var labelBScore = scorer.score(labelB, lookFor, scorerCache);
+        if (labelAScore !== labelBScore) {
+            return labelAScore > labelBScore ? -1 : 1;
+        }
+        // Score on full resource path comes next (if available)
+        var resourcePathA = accessor.getResourcePath(elementA);
+        var resourcePathB = accessor.getResourcePath(elementB);
+        if (resourcePathA && resourcePathB) {
+            var resourceAScore = scorer.score(resourcePathA, lookFor, scorerCache);
+            var resourceBScore = scorer.score(resourcePathB, lookFor, scorerCache);
+            if (resourceAScore !== resourceBScore) {
+                return resourceAScore > resourceBScore ? -1 : 1;
+            }
+        }
+        // At this place, the scores are identical so we check for string lengths and favor shorter ones
+        if (labelA.length !== labelB.length) {
+            return labelA.length < labelB.length ? -1 : 1;
+        }
+        if (resourcePathA && resourcePathB && resourcePathA.length !== resourcePathB.length) {
+            return resourcePathA.length < resourcePathB.length ? -1 : 1;
+        }
+        // Finally compare by label or resource path
+        if (labelA === labelB && resourcePathA && resourcePathB) {
+            return compareAnything(resourcePathA, resourcePathB, lookForNormalizedLower);
+        }
+        return compareAnything(labelA, labelB, lookForNormalizedLower);
+    }
+    exports.compareByScore = compareByScore;
+});
+
+define(__m[22/*vs/base/common/glob*/], __M([1/*require*/,0/*exports*/,8/*vs/base/common/arrays*/,4/*vs/base/common/strings*/,10/*vs/base/common/paths*/,18/*vs/base/common/map*/,2/*vs/base/common/winjs.base*/]), function (require, exports, arrays, strings, paths, map_1, winjs_base_1) {
+    /*---------------------------------------------------------------------------------------------
+     *  Copyright (c) Microsoft Corporation. All rights reserved.
+     *  Licensed under the MIT License. See License.txt in the project root for license information.
+     *--------------------------------------------------------------------------------------------*/
+    'use strict';
+    var PATH_REGEX = '[/\\\\]'; // any slash or backslash
+    var NO_PATH_REGEX = '[^/\\\\]'; // any non-slash and non-backslash
+    var ALL_FORWARD_SLASHES = /\//g;
+    function starsToRegExp(starCount) {
+        switch (starCount) {
+            case 0:
+                return '';
+            case 1:
+                return NO_PATH_REGEX + "*?"; // 1 star matches any number of characters except path separator (/ and \) - non greedy (?)
+            default:
+                // Matches:  (Path Sep OR Path Val followed by Path Sep OR Path Sep followed by Path Val) 0-many times
+                // Group is non capturing because we don't need to capture at all (?:...)
+                // Overall we use non-greedy matching because it could be that we match too much
+                return "(?:" + PATH_REGEX + "|" + NO_PATH_REGEX + "+" + PATH_REGEX + "|" + PATH_REGEX + NO_PATH_REGEX + "+)*?";
+        }
+    }
+    function splitGlobAware(pattern, splitChar) {
+        if (!pattern) {
+            return [];
+        }
+        var segments = [];
+        var inBraces = false;
+        var inBrackets = false;
+        var char;
+        var curVal = '';
+        for (var i = 0; i < pattern.length; i++) {
+            char = pattern[i];
+            switch (char) {
+                case splitChar:
+                    if (!inBraces && !inBrackets) {
+                        segments.push(curVal);
+                        curVal = '';
+                        continue;
+                    }
+                    break;
+                case '{':
+                    inBraces = true;
+                    break;
+                case '}':
+                    inBraces = false;
+                    break;
+                case '[':
+                    inBrackets = true;
+                    break;
+                case ']':
+                    inBrackets = false;
+                    break;
+            }
+            curVal += char;
+        }
+        // Tail
+        if (curVal) {
+            segments.push(curVal);
+        }
+        return segments;
+    }
+    exports.splitGlobAware = splitGlobAware;
+    function parseRegExp(pattern) {
+        if (!pattern) {
+            return '';
+        }
+        var regEx = '';
+        // Split up into segments for each slash found
+        var segments = splitGlobAware(pattern, '/');
+        // Special case where we only have globstars
+        if (segments.every(function (s) { return s === '**'; })) {
+            regEx = '.*';
+        }
+        else {
+            var previousSegmentWasGlobStar_1 = false;
+            segments.forEach(function (segment, index) {
+                // Globstar is special
+                if (segment === '**') {
+                    // if we have more than one globstar after another, just ignore it
+                    if (!previousSegmentWasGlobStar_1) {
+                        regEx += starsToRegExp(2);
+                        previousSegmentWasGlobStar_1 = true;
+                    }
+                    return;
+                }
+                // States
+                var inBraces = false;
+                var braceVal = '';
+                var inBrackets = false;
+                var bracketVal = '';
+                var char;
+                for (var i = 0; i < segment.length; i++) {
+                    char = segment[i];
+                    // Support brace expansion
+                    if (char !== '}' && inBraces) {
+                        braceVal += char;
+                        continue;
+                    }
+                    // Support brackets
+                    if (char !== ']' && inBrackets) {
+                        var res = void 0;
+                        switch (char) {
+                            case '-':
+                                res = char;
+                                break;
+                            case '^':
+                                res = char;
+                                break;
+                            default:
+                                res = strings.escapeRegExpCharacters(char);
+                        }
+                        bracketVal += res;
+                        continue;
+                    }
+                    switch (char) {
+                        case '{':
+                            inBraces = true;
+                            continue;
+                        case '[':
+                            inBrackets = true;
+                            continue;
+                        case '}':
+                            var choices = splitGlobAware(braceVal, ',');
+                            // Converts {foo,bar} => [foo|bar]
+                            var braceRegExp = "(?:" + choices.map(function (c) { return parseRegExp(c); }).join('|') + ")";
+                            regEx += braceRegExp;
+                            inBraces = false;
+                            braceVal = '';
+                            break;
+                        case ']':
+                            regEx += ('[' + bracketVal + ']');
+                            inBrackets = false;
+                            bracketVal = '';
+                            break;
+                        case '?':
+                            regEx += NO_PATH_REGEX; // 1 ? matches any single character except path separator (/ and \)
+                            continue;
+                        case '*':
+                            regEx += starsToRegExp(1);
+                            continue;
+                        default:
+                            regEx += strings.escapeRegExpCharacters(char);
+                    }
+                }
+                // Tail: Add the slash we had split on if there is more to come and the next one is not a globstar
+                if (index < segments.length - 1 && segments[index + 1] !== '**') {
+                    regEx += PATH_REGEX;
+                }
+                // reset state
+                previousSegmentWasGlobStar_1 = false;
+            });
+        }
+        return regEx;
+    }
+    // regexes to check for trival glob patterns that just check for String#endsWith
+    var T1 = /^\*\*\/\*\.[\w\.-]+$/; // **/*.something
+    var T2 = /^\*\*\/([\w\.-]+)\/?$/; // **/something
+    var T3 = /^{\*\*\/[\*\.]?[\w\.-]+\/?(,\*\*\/[\*\.]?[\w\.-]+\/?)*}$/; // {**/*.something,**/*.else} or {**/package.json,**/project.json}
+    var T3_2 = /^{\*\*\/[\*\.]?[\w\.-]+(\/(\*\*)?)?(,\*\*\/[\*\.]?[\w\.-]+(\/(\*\*)?)?)*}$/; // Like T3, with optional trailing /**
+    var T4 = /^\*\*((\/[\w\.-]+)+)\/?$/; // **/something/else
+    var T5 = /^([\w\.-]+(\/[\w\.-]+)*)\/?$/; // something/else
+    var CACHE = new map_1.BoundedLinkedMap(10000); // bounded to 10000 elements
+    var FALSE = function () {
+        return false;
+    };
+    var NULL = function () {
+        return null;
+    };
+    function parsePattern(pattern, options) {
+        if (!pattern) {
+            return NULL;
+        }
+        // Whitespace trimming
+        pattern = pattern.trim();
+        // Check cache
+        var patternKey = pattern + "_" + !!options.trimForExclusions;
+        var parsedPattern = CACHE.get(patternKey);
+        if (parsedPattern) {
+            return parsedPattern;
+        }
+        // Check for Trivias
+        var match;
+        if (T1.test(pattern)) {
+            var base_1 = pattern.substr(4); // '**/*'.length === 4
+            parsedPattern = function (path, basename) {
+                return path && strings.endsWith(path, base_1) ? pattern : null;
+            };
+        }
+        else if (match = T2.exec(trimForExclusions(pattern, options))) {
+            parsedPattern = trivia2(match[1], pattern);
+        }
+        else if ((options.trimForExclusions ? T3_2 : T3).test(pattern)) {
+            parsedPattern = trivia3(pattern, options);
+        }
+        else if (match = T4.exec(trimForExclusions(pattern, options))) {
+            parsedPattern = trivia4and5(match[1].substr(1), pattern, true);
+        }
+        else if (match = T5.exec(trimForExclusions(pattern, options))) {
+            parsedPattern = trivia4and5(match[1], pattern, false);
+        }
+        else {
+            parsedPattern = toRegExp(pattern);
+        }
+        // Cache
+        CACHE.set(patternKey, parsedPattern);
+        return parsedPattern;
+    }
+    function trimForExclusions(pattern, options) {
+        return options.trimForExclusions && strings.endsWith(pattern, '/**') ? pattern.substr(0, pattern.length - 2) : pattern; // dropping **, tailing / is dropped later
+    }
+    // common pattern: **/some.txt just need basename check
+    function trivia2(base, originalPattern) {
+        var slashBase = "/" + base;
+        var backslashBase = "\\" + base;
+        var parsedPattern = function (path, basename) {
+            if (!path) {
+                return null;
+            }
+            if (basename) {
+                return basename === base ? originalPattern : null;
+            }
+            return path === base || strings.endsWith(path, slashBase) || strings.endsWith(path, backslashBase) ? originalPattern : null;
+        };
+        var basenames = [base];
+        parsedPattern.basenames = basenames;
+        parsedPattern.patterns = [originalPattern];
+        parsedPattern.allBasenames = basenames;
+        return parsedPattern;
+    }
+    // repetition of common patterns (see above) {**/*.txt,**/*.png}
+    function trivia3(pattern, options) {
+        var parsedPatterns = aggregateBasenameMatches(pattern.slice(1, -1).split(',')
+            .map(function (pattern) { return parsePattern(pattern, options); })
+            .filter(function (pattern) { return pattern !== NULL; }), pattern);
+        var n = parsedPatterns.length;
+        if (!n) {
+            return NULL;
+        }
+        if (n === 1) {
+            return parsedPatterns[0];
+        }
+        var parsedPattern = function (path, basename) {
+            for (var i = 0, n_1 = parsedPatterns.length; i < n_1; i++) {
+                if (parsedPatterns[i](path, basename)) {
+                    return pattern;
+                }
+            }
+            return null;
+        };
+        var withBasenames = arrays.first(parsedPatterns, function (pattern) { return !!pattern.allBasenames; });
+        if (withBasenames) {
+            parsedPattern.allBasenames = withBasenames.allBasenames;
+        }
+        var allPaths = parsedPatterns.reduce(function (all, current) { return current.allPaths ? all.concat(current.allPaths) : all; }, []);
+        if (allPaths.length) {
+            parsedPattern.allPaths = allPaths;
+        }
+        return parsedPattern;
+    }
+    // common patterns: **/something/else just need endsWith check, something/else just needs and equals check
+    function trivia4and5(path, pattern, matchPathEnds) {
+        var nativePath = paths.nativeSep !== paths.sep ? path.replace(ALL_FORWARD_SLASHES, paths.nativeSep) : path;
+        var nativePathEnd = paths.nativeSep + nativePath;
+        var parsedPattern = matchPathEnds ? function (path, basename) {
+            return path && (path === nativePath || strings.endsWith(path, nativePathEnd)) ? pattern : null;
+        } : function (path, basename) {
+            return path && path === nativePath ? pattern : null;
+        };
+        parsedPattern.allPaths = [(matchPathEnds ? '*/' : './') + path];
+        return parsedPattern;
+    }
+    function toRegExp(pattern) {
+        try {
+            var regExp_1 = new RegExp("^" + parseRegExp(pattern) + "$");
+            return function (path, basename) {
+                regExp_1.lastIndex = 0; // reset RegExp to its initial state to reuse it!
+                return path && regExp_1.test(path) ? pattern : null;
+            };
+        }
+        catch (error) {
+            return NULL;
+        }
+    }
+    function match(arg1, path, siblingsFn) {
+        if (!arg1 || !path) {
+            return false;
+        }
+        return parse(arg1)(path, undefined, siblingsFn);
+    }
+    exports.match = match;
+    function parse(arg1, options) {
+        if (options === void 0) { options = {}; }
+        if (!arg1) {
+            return FALSE;
+        }
+        // Glob with String
+        if (typeof arg1 === 'string') {
+            var parsedPattern_1 = parsePattern(arg1, options);
+            if (parsedPattern_1 === NULL) {
+                return FALSE;
+            }
+            var resultPattern = function (path, basename) {
+                return !!parsedPattern_1(path, basename);
+            };
+            if (parsedPattern_1.allBasenames) {
+                resultPattern.allBasenames = parsedPattern_1.allBasenames;
+            }
+            if (parsedPattern_1.allPaths) {
+                resultPattern.allPaths = parsedPattern_1.allPaths;
+            }
+            return resultPattern;
+        }
+        // Glob with Expression
+        return parsedExpression(arg1, options);
+    }
+    exports.parse = parse;
+    /**
+     * Same as `parse`, but the ParsedExpression is guaranteed to return a Promise
+     */
+    function parseToAsync(expression, options) {
+        var parsedExpression = parse(expression, options);
+        return function (path, basename, siblingsFn) {
+            return winjs_base_1.TPromise.as(parsedExpression(path, basename, siblingsFn));
+        };
+    }
+    exports.parseToAsync = parseToAsync;
+    function getBasenameTerms(patternOrExpression) {
+        return patternOrExpression.allBasenames || [];
+    }
+    exports.getBasenameTerms = getBasenameTerms;
+    function getPathTerms(patternOrExpression) {
+        return patternOrExpression.allPaths || [];
+    }
+    exports.getPathTerms = getPathTerms;
+    function parsedExpression(expression, options) {
+        var parsedPatterns = aggregateBasenameMatches(Object.getOwnPropertyNames(expression)
+            .map(function (pattern) { return parseExpressionPattern(pattern, expression[pattern], options); })
+            .filter(function (pattern) { return pattern !== NULL; }));
+        var n = parsedPatterns.length;
+        if (!n) {
+            return NULL;
+        }
+        if (!parsedPatterns.some(function (parsedPattern) { return parsedPattern.requiresSiblings; })) {
+            if (n === 1) {
+                return parsedPatterns[0];
+            }
+            var resultExpression_1 = function (path, basename, siblingsFn) {
+                for (var i = 0, n_2 = parsedPatterns.length; i < n_2; i++) {
+                    // Pattern matches path
+                    var result = parsedPatterns[i](path, basename);
+                    if (result) {
+                        return result;
+                    }
+                }
+                return null;
+            };
+            var withBasenames_1 = arrays.first(parsedPatterns, function (pattern) { return !!pattern.allBasenames; });
+            if (withBasenames_1) {
+                resultExpression_1.allBasenames = withBasenames_1.allBasenames;
+            }
+            var allPaths_1 = parsedPatterns.reduce(function (all, current) { return current.allPaths ? all.concat(current.allPaths) : all; }, []);
+            if (allPaths_1.length) {
+                resultExpression_1.allPaths = allPaths_1;
+            }
+            return resultExpression_1;
+        }
+        var resultExpression = function (path, basename, siblingsFn) {
+            var siblingsPattern;
+            var siblingsResolved = !siblingsFn;
+            function siblingsToSiblingsPattern(siblings) {
+                if (siblings && siblings.length) {
+                    if (!basename) {
+                        basename = paths.basename(path);
+                    }
+                    var name_1 = basename.substr(0, basename.length - paths.extname(path).length);
+                    return { siblings: siblings, name: name_1 };
+                }
+                return undefined;
+            }
+            function siblingsPatternFn() {
+                // Resolve siblings only once
+                if (!siblingsResolved) {
+                    siblingsResolved = true;
+                    var siblings = siblingsFn();
+                    siblingsPattern = winjs_base_1.TPromise.is(siblings) ?
+                        siblings.then(siblingsToSiblingsPattern) :
+                        siblingsToSiblingsPattern(siblings);
+                }
+                return siblingsPattern;
+            }
+            for (var i = 0, n_3 = parsedPatterns.length; i < n_3; i++) {
+                // Pattern matches path
+                var result = parsedPatterns[i](path, basename, siblingsPatternFn);
+                if (result) {
+                    return result;
+                }
+            }
+            return null;
+        };
+        var withBasenames = arrays.first(parsedPatterns, function (pattern) { return !!pattern.allBasenames; });
+        if (withBasenames) {
+            resultExpression.allBasenames = withBasenames.allBasenames;
+        }
+        var allPaths = parsedPatterns.reduce(function (all, current) { return current.allPaths ? all.concat(current.allPaths) : all; }, []);
+        if (allPaths.length) {
+            resultExpression.allPaths = allPaths;
+        }
+        return resultExpression;
+    }
+    function parseExpressionPattern(pattern, value, options) {
+        if (value === false) {
+            return NULL; // pattern is disabled
+        }
+        var parsedPattern = parsePattern(pattern, options);
+        if (parsedPattern === NULL) {
+            return NULL;
+        }
+        // Expression Pattern is <boolean>
+        if (typeof value === 'boolean') {
+            return parsedPattern;
+        }
+        // Expression Pattern is <SiblingClause>
+        if (value) {
+            var when_1 = value.when;
+            if (typeof when_1 === 'string') {
+                var siblingsPatternToMatchingPattern_1 = function (siblingsPattern) {
+                    var clausePattern = when_1.replace('$(basename)', siblingsPattern.name);
+                    if (siblingsPattern.siblings.indexOf(clausePattern) !== -1) {
+                        return pattern;
+                    }
+                    else {
+                        return null; // pattern does not match in the end because the when clause is not satisfied
+                    }
+                };
+                var result = function (path, basename, siblingsPatternFn) {
+                    if (!parsedPattern(path, basename)) {
+                        return null;
+                    }
+                    var siblingsPattern = siblingsPatternFn();
+                    if (!siblingsPattern) {
+                        return null; // pattern is malformed or we don't have siblings
+                    }
+                    return winjs_base_1.TPromise.is(siblingsPattern) ?
+                        siblingsPattern.then(siblingsPatternToMatchingPattern_1) :
+                        siblingsPatternToMatchingPattern_1(siblingsPattern);
+                };
+                result.requiresSiblings = true;
+                return result;
+            }
+        }
+        // Expression is Anything
+        return parsedPattern;
+    }
+    function aggregateBasenameMatches(parsedPatterns, result) {
+        var basenamePatterns = parsedPatterns.filter(function (parsedPattern) { return !!parsedPattern.basenames; });
+        if (basenamePatterns.length < 2) {
+            return parsedPatterns;
+        }
+        var basenames = basenamePatterns.reduce(function (all, current) { return all.concat(current.basenames); }, []);
+        var patterns;
+        if (result) {
+            patterns = [];
+            for (var i = 0, n = basenames.length; i < n; i++) {
+                patterns.push(result);
+            }
+        }
+        else {
+            patterns = basenamePatterns.reduce(function (all, current) { return all.concat(current.patterns); }, []);
+        }
+        var aggregate = function (path, basename) {
+            if (!path) {
+                return null;
+            }
+            if (!basename) {
+                var i = void 0;
+                for (i = path.length; i > 0; i--) {
+                    var ch = path.charCodeAt(i - 1);
+                    if (ch === 47 /* Slash */ || ch === 92 /* Backslash */) {
+                        break;
+                    }
+                }
+                basename = path.substr(i);
+            }
+            var index = basenames.indexOf(basename);
+            return index !== -1 ? patterns[index] : null;
+        };
+        aggregate.basenames = basenames;
+        aggregate.patterns = patterns;
+        aggregate.allBasenames = basenames;
+        var aggregatedPatterns = parsedPatterns.filter(function (parsedPattern) { return !parsedPattern.basenames; });
+        aggregatedPatterns.push(aggregate);
+        return aggregatedPatterns;
+    }
+});
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+define(__m[52/*vs/base/node/decoder*/], __M([1/*require*/,0/*exports*/,27/*string_decoder*/]), function (require, exports, sd) {
     'use strict';
     /**
      * Convenient way to iterate over output line by line. This helper accommodates for the fact that
@@ -7293,7 +7533,7 @@ define(__m[24/*vs/base/node/decoder*/], __M([1/*require*/,0/*exports*/,37/*strin
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-define(__m[25/*vs/base/node/event*/], __M([1/*require*/,0/*exports*/,9/*vs/base/common/event*/]), function (require, exports, event_1) {
+define(__m[28/*vs/base/node/event*/], __M([1/*require*/,0/*exports*/,9/*vs/base/common/event*/]), function (require, exports, event_1) {
     'use strict';
     function fromEventEmitter(emitter, eventName, map) {
         if (map === void 0) { map = function (id) { return id; }; }
@@ -7317,7 +7557,7 @@ define(__m[25/*vs/base/node/event*/], __M([1/*require*/,0/*exports*/,9/*vs/base/
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-define(__m[21/*vs/base/node/flow*/], __M([1/*require*/,0/*exports*/,57/*assert*/]), function (require, exports, assert) {
+define(__m[17/*vs/base/node/flow*/], __M([1/*require*/,0/*exports*/,60/*assert*/]), function (require, exports, assert) {
     'use strict';
     /**
      * Executes the given function (fn) over the given array of items (list) in parallel and returns the resulting errors and results as
@@ -7460,7 +7700,7 @@ define(__m[21/*vs/base/node/flow*/], __M([1/*require*/,0/*exports*/,57/*assert*/
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-define(__m[28/*vs/base/node/extfs*/], __M([1/*require*/,0/*exports*/,27/*vs/base/common/uuid*/,3/*vs/base/common/strings*/,2/*vs/base/common/platform*/,21/*vs/base/node/flow*/,18/*fs*/,8/*path*/]), function (require, exports, uuid, strings, platform, flow, fs, paths) {
+define(__m[19/*vs/base/node/extfs*/], __M([1/*require*/,0/*exports*/,42/*vs/base/common/uuid*/,4/*vs/base/common/strings*/,3/*vs/base/common/platform*/,17/*vs/base/node/flow*/,16/*fs*/,6/*path*/]), function (require, exports, uuid, strings, platform, flow, fs, paths) {
     'use strict';
     var loop = flow.loop;
     function readdirSync(path) {
@@ -7842,7 +8082,7 @@ define(__m[28/*vs/base/node/extfs*/], __M([1/*require*/,0/*exports*/,27/*vs/base
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-define(__m[31/*vs/base/node/stdFork*/], __M([1/*require*/,0/*exports*/,8/*path*/,32/*os*/,52/*net*/,15/*child_process*/,12/*vs/base/common/uri*/]), function (require, exports, path, os, net, cp, uri_1) {
+define(__m[34/*vs/base/node/stdFork*/], __M([1/*require*/,0/*exports*/,6/*path*/,35/*os*/,59/*net*/,11/*child_process*/,13/*vs/base/common/uri*/]), function (require, exports, path, os, net, cp, uri_1) {
     'use strict';
     function makeRandomHexString(length) {
         var chars = ['0', '1', '2', '3', '4', '5', '6', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'];
@@ -7950,7 +8190,298 @@ define(__m[31/*vs/base/node/stdFork*/], __M([1/*require*/,0/*exports*/,8/*path*/
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-define(__m[17/*vs/base/parts/ipc/common/ipc*/], __M([1/*require*/,0/*exports*/,5/*vs/base/common/winjs.base*/,11/*vs/base/common/lifecycle*/,9/*vs/base/common/event*/]), function (require, exports, winjs_base_1, lifecycle_1, event_1) {
+define(__m[26/*vs/base/node/stream*/], __M([1/*require*/,0/*exports*/,16/*fs*/,2/*vs/base/common/winjs.base*/]), function (require, exports, fs, winjs_base_1) {
+    'use strict';
+    /**
+     * Reads up to total bytes from the provided stream.
+     */
+    function readExactlyByStream(stream, totalBytes) {
+        return new winjs_base_1.TPromise(function (complete, error) {
+            var done = false;
+            var buffer = new Buffer(totalBytes);
+            var bytesRead = 0;
+            stream.on('data', function (data) {
+                var bytesToRead = Math.min(totalBytes - bytesRead, data.length);
+                data.copy(buffer, bytesRead, 0, bytesToRead);
+                bytesRead += bytesToRead;
+                if (bytesRead === totalBytes) {
+                    stream.destroy(); // Will trigger the close event eventually
+                }
+            });
+            stream.on('error', function (e) {
+                if (!done) {
+                    done = true;
+                    error(e);
+                }
+            });
+            var onSuccess = function () {
+                if (!done) {
+                    done = true;
+                    complete({ buffer: buffer, bytesRead: bytesRead });
+                }
+            };
+            stream.on('close', onSuccess);
+        });
+    }
+    exports.readExactlyByStream = readExactlyByStream;
+    /**
+     * Reads totalBytes from the provided file.
+     */
+    function readExactlyByFile(file, totalBytes) {
+        return new winjs_base_1.TPromise(function (complete, error) {
+            fs.open(file, 'r', null, function (err, fd) {
+                if (err) {
+                    return error(err);
+                }
+                function end(err, resultBuffer, bytesRead) {
+                    fs.close(fd, function (closeError) {
+                        if (closeError) {
+                            return error(closeError);
+                        }
+                        if (err && err.code === 'EISDIR') {
+                            return error(err); // we want to bubble this error up (file is actually a folder)
+                        }
+                        return complete({ buffer: resultBuffer, bytesRead: bytesRead });
+                    });
+                }
+                var buffer = new Buffer(totalBytes);
+                var bytesRead = 0;
+                var zeroAttempts = 0;
+                function loop() {
+                    fs.read(fd, buffer, bytesRead, totalBytes - bytesRead, null, function (err, moreBytesRead) {
+                        if (err) {
+                            return end(err, null, 0);
+                        }
+                        // Retry up to N times in case 0 bytes where read
+                        if (moreBytesRead === 0) {
+                            if (++zeroAttempts === 10) {
+                                return end(null, buffer, bytesRead);
+                            }
+                            return loop();
+                        }
+                        bytesRead += moreBytesRead;
+                        if (bytesRead === totalBytes) {
+                            return end(null, buffer, bytesRead);
+                        }
+                        return loop();
+                    });
+                }
+                loop();
+            });
+        });
+    }
+    exports.readExactlyByFile = readExactlyByFile;
+    /**
+     * Reads a file until a matching string is found.
+     *
+     * @param file The file to read.
+     * @param matchingString The string to search for.
+     * @param chunkBytes The number of bytes to read each iteration.
+     * @param maximumBytesToRead The maximum number of bytes to read before giving up.
+     * @param callback The finished callback.
+     */
+    function readToMatchingString(file, matchingString, chunkBytes, maximumBytesToRead) {
+        return new winjs_base_1.TPromise(function (complete, error) {
+            return fs.open(file, 'r', null, function (err, fd) {
+                if (err) {
+                    return error(err);
+                }
+                function end(err, result) {
+                    fs.close(fd, function (closeError) {
+                        if (closeError) {
+                            return error(closeError);
+                        }
+                        if (err && err.code === 'EISDIR') {
+                            return error(err); // we want to bubble this error up (file is actually a folder)
+                        }
+                        return complete(result);
+                    });
+                }
+                var buffer = new Buffer(maximumBytesToRead);
+                var bytesRead = 0;
+                var zeroAttempts = 0;
+                function loop() {
+                    fs.read(fd, buffer, bytesRead, chunkBytes, null, function (err, moreBytesRead) {
+                        if (err) {
+                            return end(err, null);
+                        }
+                        // Retry up to N times in case 0 bytes where read
+                        if (moreBytesRead === 0) {
+                            if (++zeroAttempts === 10) {
+                                return end(null, null);
+                            }
+                            return loop();
+                        }
+                        bytesRead += moreBytesRead;
+                        var newLineIndex = buffer.indexOf(matchingString);
+                        if (newLineIndex >= 0) {
+                            return end(null, buffer.toString('utf8').substr(0, newLineIndex));
+                        }
+                        if (bytesRead >= maximumBytesToRead) {
+                            return end(new Error("Could not find " + matchingString + " in first " + maximumBytesToRead + " bytes of " + file), null);
+                        }
+                        return loop();
+                    });
+                }
+                loop();
+            });
+        });
+    }
+    exports.readToMatchingString = readToMatchingString;
+});
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+define(__m[39/*vs/base/node/encoding*/], __M([1/*require*/,0/*exports*/,26/*vs/base/node/stream*/,58/*iconv-lite*/,57/*jschardet*/]), function (require, exports, stream, iconv, jschardet) {
+    'use strict';
+    exports.UTF8 = 'utf8';
+    exports.UTF8_with_bom = 'utf8bom';
+    exports.UTF16be = 'utf16be';
+    exports.UTF16le = 'utf16le';
+    function bomLength(encoding) {
+        switch (encoding) {
+            case exports.UTF8:
+                return 3;
+            case exports.UTF16be:
+            case exports.UTF16le:
+                return 2;
+        }
+        return 0;
+    }
+    exports.bomLength = bomLength;
+    function decode(buffer, encoding, options) {
+        return iconv.decode(buffer, toNodeEncoding(encoding), options);
+    }
+    exports.decode = decode;
+    function encode(content, encoding, options) {
+        return iconv.encode(content, toNodeEncoding(encoding), options);
+    }
+    exports.encode = encode;
+    function encodingExists(encoding) {
+        return iconv.encodingExists(toNodeEncoding(encoding));
+    }
+    exports.encodingExists = encodingExists;
+    function decodeStream(encoding) {
+        return iconv.decodeStream(toNodeEncoding(encoding));
+    }
+    exports.decodeStream = decodeStream;
+    function encodeStream(encoding) {
+        return iconv.encodeStream(toNodeEncoding(encoding));
+    }
+    exports.encodeStream = encodeStream;
+    function toNodeEncoding(enc) {
+        if (enc === exports.UTF8_with_bom) {
+            return exports.UTF8; // iconv does not distinguish UTF 8 with or without BOM, so we need to help it
+        }
+        return enc;
+    }
+    function detectEncodingByBOMFromBuffer(buffer, bytesRead) {
+        if (!buffer || bytesRead < 2) {
+            return null;
+        }
+        var b0 = buffer.readUInt8(0);
+        var b1 = buffer.readUInt8(1);
+        // UTF-16 BE
+        if (b0 === 0xFE && b1 === 0xFF) {
+            return exports.UTF16be;
+        }
+        // UTF-16 LE
+        if (b0 === 0xFF && b1 === 0xFE) {
+            return exports.UTF16le;
+        }
+        if (bytesRead < 3) {
+            return null;
+        }
+        var b2 = buffer.readUInt8(2);
+        // UTF-8
+        if (b0 === 0xEF && b1 === 0xBB && b2 === 0xBF) {
+            return exports.UTF8;
+        }
+        return null;
+    }
+    exports.detectEncodingByBOMFromBuffer = detectEncodingByBOMFromBuffer;
+    /**
+     * Detects the Byte Order Mark in a given file.
+     * If no BOM is detected, null will be passed to callback.
+     */
+    function detectEncodingByBOM(file) {
+        return stream.readExactlyByFile(file, 3).then(function (_a) {
+            var buffer = _a.buffer, bytesRead = _a.bytesRead;
+            return detectEncodingByBOMFromBuffer(buffer, bytesRead);
+        });
+    }
+    exports.detectEncodingByBOM = detectEncodingByBOM;
+    var MINIMUM_THRESHOLD = 0.2; // TODO@Ben Decide how much this should be.
+    jschardet.Constants.MINIMUM_THRESHOLD = MINIMUM_THRESHOLD;
+    var IGNORE_ENCODINGS = ['ascii', 'utf-8', 'utf-16', 'utf-32'];
+    var MAPPED_ENCODINGS = {
+        'ibm866': 'cp866'
+    };
+    /**
+     * Guesses the encoding from buffer.
+     */
+    function guessEncodingByBuffer(buffer) {
+        var guessed = jschardet.detect(buffer);
+        if (!guessed || !guessed.encoding) {
+            return null;
+        }
+        var enc = guessed.encoding.toLowerCase();
+        // Ignore encodings that cannot guess correctly
+        // (http://chardet.readthedocs.io/en/latest/supported-encodings.html)
+        if (0 <= IGNORE_ENCODINGS.indexOf(enc)) {
+            return null;
+        }
+        return toIconvLiteEncoding(guessed.encoding);
+    }
+    exports.guessEncodingByBuffer = guessEncodingByBuffer;
+    function toIconvLiteEncoding(encodingName) {
+        var normalizedEncodingName = encodingName.replace(/[^a-zA-Z0-9]/g, '').toLowerCase();
+        var mapped = MAPPED_ENCODINGS[normalizedEncodingName];
+        return mapped || normalizedEncodingName;
+    }
+    /**
+     * The encodings that are allowed in a settings file don't match the canonical encoding labels specified by WHATWG.
+     * See https://encoding.spec.whatwg.org/#names-and-labels
+     * Iconv-lite strips all non-alphanumeric characters, but ripgrep doesn't. For backcompat, allow these labels.
+     */
+    function toCanonicalName(enc) {
+        switch (enc) {
+            case 'shiftjis':
+                return 'shift-jis';
+            case 'utf16le':
+                return 'utf-16le';
+            case 'utf16be':
+                return 'utf-16be';
+            case 'big5hkcs':
+                return 'big5-hkcs';
+            case 'eucjp':
+                return 'euc-jp';
+            case 'euckr':
+                return 'euc-kr';
+            case 'koi8r':
+                return 'koi8-r';
+            case 'koi8u':
+                return 'koi8-u';
+            case 'macroman':
+                return 'x-mac-roman';
+            default:
+                var m = enc.match(/windows(\d+)/);
+                if (m) {
+                    return 'windows-' + m[1];
+                }
+                return enc;
+        }
+    }
+    exports.toCanonicalName = toCanonicalName;
+});
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+define(__m[23/*vs/base/parts/ipc/common/ipc*/], __M([1/*require*/,0/*exports*/,2/*vs/base/common/winjs.base*/,14/*vs/base/common/lifecycle*/,9/*vs/base/common/event*/]), function (require, exports, winjs_base_1, lifecycle_1, event_1) {
     'use strict';
     var MessageType;
     (function (MessageType) {
@@ -8301,8 +8832,8 @@ define(__m[17/*vs/base/parts/ipc/common/ipc*/], __M([1/*require*/,0/*exports*/,5
     exports.eventFromCall = eventFromCall;
 });
 
-define(__m[35/*vs/nls!vs/base/common/errorMessage*/], __M([22/*vs/nls*/,20/*vs/nls!vs/workbench/services/search/node/searchApp*/]), function(nls, data) { return nls.create("vs/base/common/errorMessage", data); });
-define(__m[38/*vs/base/common/errorMessage*/], __M([1/*require*/,0/*exports*/,35/*vs/nls!vs/base/common/errorMessage*/,7/*vs/base/common/objects*/,4/*vs/base/common/types*/,6/*vs/base/common/arrays*/,3/*vs/base/common/strings*/]), function (require, exports, nls, objects, types, arrays, strings) {
+define(__m[43/*vs/nls!vs/base/common/errorMessage*/], __M([24/*vs/nls*/,25/*vs/nls!vs/workbench/services/search/node/searchApp*/]), function(nls, data) { return nls.create("vs/base/common/errorMessage", data); });
+define(__m[46/*vs/base/common/errorMessage*/], __M([1/*require*/,0/*exports*/,43/*vs/nls!vs/base/common/errorMessage*/,7/*vs/base/common/objects*/,5/*vs/base/common/types*/,8/*vs/base/common/arrays*/,4/*vs/base/common/strings*/]), function (require, exports, nls, objects, types, arrays, strings) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -8491,13 +9022,13 @@ define(__m[38/*vs/base/common/errorMessage*/], __M([1/*require*/,0/*exports*/,35
     exports.toErrorMessage = toErrorMessage;
 });
 
-define(__m[39/*vs/nls!vs/base/common/processes*/], __M([22/*vs/nls*/,20/*vs/nls!vs/workbench/services/search/node/searchApp*/]), function(nls, data) { return nls.create("vs/base/common/processes", data); });
+define(__m[47/*vs/nls!vs/base/common/processes*/], __M([24/*vs/nls*/,25/*vs/nls!vs/workbench/services/search/node/searchApp*/]), function(nls, data) { return nls.create("vs/base/common/processes", data); });
 
 
 
 
 
-define(__m[40/*vs/base/common/processes*/], __M([1/*require*/,0/*exports*/,39/*vs/nls!vs/base/common/processes*/,7/*vs/base/common/objects*/,2/*vs/base/common/platform*/,4/*vs/base/common/types*/,29/*vs/base/common/parsers*/]), function (require, exports, NLS, Objects, Platform, Types, parsers_1) {
+define(__m[48/*vs/base/common/processes*/], __M([1/*require*/,0/*exports*/,47/*vs/nls!vs/base/common/processes*/,7/*vs/base/common/objects*/,3/*vs/base/common/platform*/,5/*vs/base/common/types*/,37/*vs/base/common/parsers*/]), function (require, exports, NLS, Objects, Platform, Types, parsers_1) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -8517,14 +9048,13 @@ define(__m[40/*vs/base/common/processes*/], __M([1/*require*/,0/*exports*/,39/*v
     })(TerminateResponseCode = exports.TerminateResponseCode || (exports.TerminateResponseCode = {}));
     var ExecutableParser = (function (_super) {
         __extends(ExecutableParser, _super);
-        function ExecutableParser(logger, validationStatus) {
-            if (validationStatus === void 0) { validationStatus = new parsers_1.ValidationStatus(); }
-            return _super.call(this, logger, validationStatus) || this;
+        function ExecutableParser(logger) {
+            return _super.call(this, logger) || this;
         }
         ExecutableParser.prototype.parse = function (json, parserOptions) {
             if (parserOptions === void 0) { parserOptions = { globals: null, emptyCommand: false, noDefaults: false }; }
             var result = this.parseExecutable(json, parserOptions.globals);
-            if (this.status.isFatal()) {
+            if (this.problemReporter.status.isFatal()) {
                 return result;
             }
             var osExecutable;
@@ -8541,8 +9071,7 @@ define(__m[40/*vs/base/common/processes*/], __M([1/*require*/,0/*exports*/,39/*v
                 result = ExecutableParser.mergeExecutable(result, osExecutable);
             }
             if ((!result || !result.command) && !parserOptions.emptyCommand) {
-                this.status.state = parsers_1.ValidationState.Fatal;
-                this.log(NLS.localize(0, null));
+                this.fatal(NLS.localize(0, null));
                 return null;
             }
             if (!parserOptions.noDefaults) {
@@ -8599,13 +9128,13 @@ define(__m[40/*vs/base/common/processes*/], __M([1/*require*/,0/*exports*/,39/*v
     exports.ExecutableParser = ExecutableParser;
 });
 
-define(__m[41/*vs/nls!vs/base/node/processes*/], __M([22/*vs/nls*/,20/*vs/nls!vs/workbench/services/search/node/searchApp*/]), function(nls, data) { return nls.create("vs/base/node/processes", data); });
+define(__m[49/*vs/nls!vs/base/node/processes*/], __M([24/*vs/nls*/,25/*vs/nls!vs/workbench/services/search/node/searchApp*/]), function(nls, data) { return nls.create("vs/base/node/processes", data); });
 
 
 
 
 
-define(__m[42/*vs/base/node/processes*/], __M([1/*require*/,0/*exports*/,8/*path*/,15/*child_process*/,54/*stream*/,31/*vs/base/node/stdFork*/,41/*vs/nls!vs/base/node/processes*/,5/*vs/base/common/winjs.base*/,4/*vs/base/common/types*/,12/*vs/base/common/uri*/,7/*vs/base/common/objects*/,13/*vs/base/common/paths*/,2/*vs/base/common/platform*/,24/*vs/base/node/decoder*/,40/*vs/base/common/processes*/]), function (require, exports, path, cp, stream_1, stdFork_1, nls, winjs_base_1, Types, uri_1, Objects, TPath, Platform, decoder_1, processes_1) {
+define(__m[50/*vs/base/node/processes*/], __M([1/*require*/,0/*exports*/,6/*path*/,11/*child_process*/,56/*stream*/,34/*vs/base/node/stdFork*/,49/*vs/nls!vs/base/node/processes*/,2/*vs/base/common/winjs.base*/,5/*vs/base/common/types*/,13/*vs/base/common/uri*/,7/*vs/base/common/objects*/,10/*vs/base/common/paths*/,3/*vs/base/common/platform*/,52/*vs/base/node/decoder*/,48/*vs/base/common/processes*/]), function (require, exports, path, cp, stream_1, stdFork_1, nls, winjs_base_1, Types, uri_1, Objects, TPath, Platform, decoder_1, processes_1) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -9044,7 +9573,7 @@ define(__m[42/*vs/base/node/processes*/], __M([1/*require*/,0/*exports*/,8/*path
 
 
 
-define(__m[19/*vs/base/parts/ipc/node/ipc.cp*/], __M([1/*require*/,0/*exports*/,15/*child_process*/,5/*vs/base/common/winjs.base*/,26/*vs/base/common/async*/,7/*vs/base/common/objects*/,9/*vs/base/common/event*/,25/*vs/base/node/event*/,42/*vs/base/node/processes*/,17/*vs/base/parts/ipc/common/ipc*/]), function (require, exports, child_process_1, winjs_base_1, async_1, objects_1, event_1, event_2, processes_1, ipc_1) {
+define(__m[21/*vs/base/parts/ipc/node/ipc.cp*/], __M([1/*require*/,0/*exports*/,11/*child_process*/,2/*vs/base/common/winjs.base*/,31/*vs/base/common/async*/,7/*vs/base/common/objects*/,9/*vs/base/common/event*/,28/*vs/base/node/event*/,50/*vs/base/node/processes*/,23/*vs/base/parts/ipc/common/ipc*/]), function (require, exports, child_process_1, winjs_base_1, async_1, objects_1, event_1, event_2, processes_1, ipc_1) {
     "use strict";
     var Server = (function (_super) {
         __extends(Server, _super);
@@ -9183,7 +9712,7 @@ define(__m[19/*vs/base/parts/ipc/node/ipc.cp*/], __M([1/*require*/,0/*exports*/,
     exports.Client = Client;
 });
 
-define(__m[44/*vs/platform/instantiation/common/instantiation*/], __M([1/*require*/,0/*exports*/]), function (require, exports) {
+define(__m[53/*vs/platform/instantiation/common/instantiation*/], __M([1/*require*/,0/*exports*/]), function (require, exports) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -9247,7 +9776,7 @@ define(__m[44/*vs/platform/instantiation/common/instantiation*/], __M([1/*requir
 
 
 
-define(__m[45/*vs/platform/files/common/files*/], __M([1/*require*/,0/*exports*/,13/*vs/base/common/paths*/,43/*vs/base/common/events*/,2/*vs/base/common/platform*/,44/*vs/platform/instantiation/common/instantiation*/]), function (require, exports, paths, events, platform_1, instantiation_1) {
+define(__m[54/*vs/platform/files/common/files*/], __M([1/*require*/,0/*exports*/,10/*vs/base/common/paths*/,33/*vs/base/common/events*/,3/*vs/base/common/platform*/,53/*vs/platform/instantiation/common/instantiation*/,4/*vs/base/common/strings*/]), function (require, exports, paths, events, platform_1, instantiation_1, strings_1) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -9330,9 +9859,9 @@ define(__m[45/*vs/platform/files/common/files*/], __M([1/*require*/,0/*exports*/
                 }
                 // For deleted also return true when deleted folder is parent of target path
                 if (type === FileChangeType.DELETED) {
-                    return isEqual(resource.fsPath, change.resource.fsPath) || isParent(resource.fsPath, change.resource.fsPath);
+                    return isEqualOrParent(resource.fsPath, change.resource.fsPath, !platform_1.isLinux /* ignorecase */);
                 }
-                return isEqual(resource.fsPath, change.resource.fsPath);
+                return isEqual(resource.fsPath, change.resource.fsPath, !platform_1.isLinux /* ignorecase */);
             });
         };
         /**
@@ -9382,22 +9911,77 @@ define(__m[45/*vs/platform/files/common/files*/], __M([1/*require*/,0/*exports*/
         return FileChangesEvent;
     }(events.Event));
     exports.FileChangesEvent = FileChangesEvent;
-    function isEqual(path1, path2) {
-        var identityEquals = (path1 === path2);
-        if (platform_1.isLinux || identityEquals) {
+    function isEqual(pathA, pathB, ignoreCase) {
+        var identityEquals = (pathA === pathB);
+        if (!ignoreCase || identityEquals) {
             return identityEquals;
         }
-        return path1.toLowerCase() === path2.toLowerCase();
+        if (!pathA || !pathB) {
+            return false;
+        }
+        return strings_1.equalsIgnoreCase(pathA, pathB);
     }
     exports.isEqual = isEqual;
-    function isParent(path, candidate) {
-        if (!platform_1.isLinux) {
+    function isParent(path, candidate, ignoreCase) {
+        if (!path || !candidate || path === candidate) {
+            return false;
+        }
+        if (candidate.length > path.length) {
+            return false;
+        }
+        if (candidate.charAt(candidate.length - 1) !== paths.nativeSep) {
+            candidate += paths.nativeSep;
+        }
+        if (ignoreCase) {
+            return strings_1.beginsWithIgnoreCase(path, candidate);
+        }
+        return path.indexOf(candidate) === 0;
+    }
+    exports.isParent = isParent;
+    function isEqualOrParent(path, candidate, ignoreCase) {
+        if (path === candidate) {
+            return true;
+        }
+        if (!path || !candidate) {
+            return false;
+        }
+        if (candidate.length > path.length) {
+            return false;
+        }
+        if (ignoreCase) {
+            var beginsWith = strings_1.beginsWithIgnoreCase(path, candidate);
+            if (!beginsWith) {
+                return false;
+            }
+            if (candidate.length === path.length) {
+                return true; // same path, different casing
+            }
+            var sepOffset = candidate.length;
+            if (candidate.charAt(candidate.length - 1) === paths.nativeSep) {
+                sepOffset--; // adjust the expected sep offset in case our candidate already ends in separator character
+            }
+            return path.charAt(sepOffset) === paths.nativeSep;
+        }
+        if (candidate.charAt(candidate.length - 1) !== paths.nativeSep) {
+            candidate += paths.nativeSep;
+        }
+        return path.indexOf(candidate) === 0;
+    }
+    exports.isEqualOrParent = isEqualOrParent;
+    function indexOf(path, candidate, ignoreCase) {
+        if (candidate.length > path.length) {
+            return -1;
+        }
+        if (path === candidate) {
+            return 0;
+        }
+        if (ignoreCase) {
             path = path.toLowerCase();
             candidate = candidate.toLowerCase();
         }
-        return path.indexOf(candidate + paths.nativeSep) === 0;
+        return path.indexOf(candidate);
     }
-    exports.isParent = isParent;
+    exports.indexOf = indexOf;
     var FileOperationResult;
     (function (FileOperationResult) {
         FileOperationResult[FileOperationResult["FILE_IS_BINARY"] = 0] = "FILE_IS_BINARY";
@@ -9637,17 +10221,17 @@ define(__m[45/*vs/platform/files/common/files*/], __M([1/*require*/,0/*exports*/
             labelShort: 'ISO 8859-11',
             order: 42
         },
-        'koi8-ru': {
+        koi8ru: {
             labelLong: 'Cyrillic (KOI8-RU)',
             labelShort: 'KOI8-RU',
             order: 43
         },
-        'koi8-t': {
+        koi8t: {
             labelLong: 'Tajik (KOI8-T)',
             labelShort: 'KOI8-T',
             order: 44
         },
-        GB2312: {
+        gb2312: {
             labelLong: 'Simplified Chinese (GB 2312)',
             labelShort: 'GB 2312',
             order: 45
@@ -9659,7 +10243,7 @@ define(__m[45/*vs/platform/files/common/files*/], __M([1/*require*/,0/*exports*/
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-define(__m[46/*vs/workbench/services/search/node/fileSearch*/], __M([1/*require*/,0/*exports*/,15/*child_process*/,37/*string_decoder*/,38/*vs/base/common/errorMessage*/,18/*fs*/,8/*path*/,14/*vs/base/common/scorer*/,6/*vs/base/common/arrays*/,2/*vs/base/common/platform*/,3/*vs/base/common/strings*/,4/*vs/base/common/types*/,34/*vs/base/common/glob*/,28/*vs/base/node/extfs*/,21/*vs/base/node/flow*/]), function (require, exports, childProcess, string_decoder_1, errorMessage_1, fs, paths, scorer, arrays, platform, strings, types, glob, extfs, flow) {
+define(__m[55/*vs/workbench/services/search/node/fileSearch*/], __M([1/*require*/,0/*exports*/,11/*child_process*/,27/*string_decoder*/,46/*vs/base/common/errorMessage*/,16/*fs*/,6/*path*/,15/*vs/base/common/scorer*/,8/*vs/base/common/arrays*/,3/*vs/base/common/platform*/,4/*vs/base/common/strings*/,5/*vs/base/common/types*/,22/*vs/base/common/glob*/,19/*vs/base/node/extfs*/,17/*vs/base/node/flow*/]), function (require, exports, childProcess, string_decoder_1, errorMessage_1, fs, paths, scorer, arrays, platform, strings, types, glob, extfs, flow) {
     'use strict';
     var Traversal;
     (function (Traversal) {
@@ -10193,7 +10777,7 @@ define(__m[46/*vs/workbench/services/search/node/fileSearch*/], __M([1/*require*
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-define(__m[47/*vs/workbench/services/search/node/searchIpc*/], __M([1/*require*/,0/*exports*/]), function (require, exports) {
+define(__m[51/*vs/workbench/services/search/node/searchIpc*/], __M([1/*require*/,0/*exports*/]), function (require, exports) {
     'use strict';
     var SearchChannel = (function () {
         function SearchChannel(service) {
@@ -10232,7 +10816,7 @@ define(__m[47/*vs/workbench/services/search/node/searchIpc*/], __M([1/*require*/
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-define(__m[48/*vs/workbench/services/search/node/textSearch*/], __M([1/*require*/,0/*exports*/,8/*path*/,10/*vs/base/common/errors*/]), function (require, exports, path, errors_1) {
+define(__m[41/*vs/workbench/services/search/node/textSearch*/], __M([1/*require*/,0/*exports*/,6/*path*/,12/*vs/base/common/errors*/]), function (require, exports, path, errors_1) {
     'use strict';
     var Engine = (function () {
         function Engine(config, walker, workerProvider) {
@@ -10359,7 +10943,7 @@ define(__m[48/*vs/workbench/services/search/node/textSearch*/], __M([1/*require*
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-define(__m[49/*vs/workbench/services/search/node/worker/searchWorkerIpc*/], __M([1/*require*/,0/*exports*/]), function (require, exports) {
+define(__m[40/*vs/workbench/services/search/node/worker/searchWorkerIpc*/], __M([1/*require*/,0/*exports*/]), function (require, exports) {
     'use strict';
     var SearchWorkerChannel = (function () {
         function SearchWorkerChannel(worker) {
@@ -10398,7 +10982,7 @@ define(__m[49/*vs/workbench/services/search/node/worker/searchWorkerIpc*/], __M(
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-define(__m[50/*vs/workbench/services/search/node/textSearchWorkerProvider*/], __M([1/*require*/,0/*exports*/,32/*os*/,12/*vs/base/common/uri*/,17/*vs/base/parts/ipc/common/ipc*/,19/*vs/base/parts/ipc/node/ipc.cp*/,49/*vs/workbench/services/search/node/worker/searchWorkerIpc*/]), function (require, exports, os, uri_1, ipc, ipc_cp_1, searchWorkerIpc_1) {
+define(__m[36/*vs/workbench/services/search/node/textSearchWorkerProvider*/], __M([1/*require*/,0/*exports*/,35/*os*/,13/*vs/base/common/uri*/,23/*vs/base/parts/ipc/common/ipc*/,21/*vs/base/parts/ipc/node/ipc.cp*/,40/*vs/workbench/services/search/node/worker/searchWorkerIpc*/]), function (require, exports, os, uri_1, ipc, ipc_cp_1, searchWorkerIpc_1) {
     'use strict';
     var TextSearchWorkerProvider = (function () {
         function TextSearchWorkerProvider() {
@@ -10432,11 +11016,349 @@ define(__m[50/*vs/workbench/services/search/node/textSearchWorkerProvider*/], __
     exports.TextSearchWorkerProvider = TextSearchWorkerProvider;
 });
 
+
+
+
+
+
+define(__m[30/*vs/workbench/services/search/node/ripgrepTextSearch*/], __M([1/*require*/,0/*exports*/,61/*events*/,6/*path*/,11/*child_process*/,62/*vscode-ripgrep*/,19/*vs/base/node/extfs*/,39/*vs/base/node/encoding*/,22/*vs/base/common/glob*/,2/*vs/base/common/winjs.base*/]), function (require, exports, events_1, path, cp, vscode_ripgrep_1, extfs, encoding, glob, winjs_base_1) {
+    /*---------------------------------------------------------------------------------------------
+     *  Copyright (c) Microsoft Corporation. All rights reserved.
+     *  Licensed under the MIT License. See License.txt in the project root for license information.
+     *--------------------------------------------------------------------------------------------*/
+    'use strict';
+    var RipgrepEngine = (function () {
+        function RipgrepEngine(config) {
+            this.config = config;
+            this.isDone = false;
+            this.handleResultP = winjs_base_1.TPromise.wrap(null);
+        }
+        RipgrepEngine.prototype.cancel = function () {
+            this.isDone = true;
+            this.ripgrepParser.cancel();
+            this.rgProc.kill();
+        };
+        // TODO@Rob - make promise-based once the old search is gone, and I don't need them to have matching interfaces anymore
+        RipgrepEngine.prototype.search = function (onResult, onProgress, done) {
+            if (this.config.rootFolders.length) {
+                this.searchFolder(this.config.rootFolders[0], onResult, onProgress, done);
+            }
+            else {
+                done(null, {
+                    limitHit: false,
+                    stats: null
+                });
+            }
+        };
+        RipgrepEngine.prototype.searchFolder = function (rootFolder, onResult, onProgress, done) {
+            var _this = this;
+            var rgArgs = getRgArgs(this.config);
+            if (rgArgs.siblingClauses) {
+                this.postProcessExclusions = glob.parseToAsync(rgArgs.siblingClauses, { trimForExclusions: true });
+            }
+            // console.log(`rg ${rgArgs.args.join(' ')}, cwd: ${rootFolder}`);
+            this.rgProc = cp.spawn(vscode_ripgrep_1.rgPath, rgArgs.args, { cwd: rootFolder });
+            this.ripgrepParser = new RipgrepParser(this.config.maxResults, rootFolder);
+            this.ripgrepParser.on('result', function (match) {
+                if (_this.postProcessExclusions) {
+                    var relativePath_1 = path.relative(rootFolder, match.path);
+                    _this.handleResultP = _this.handleResultP
+                        .then(function () { return _this.postProcessExclusions(relativePath_1, undefined, function () { return getSiblings(match.path); }); })
+                        .then(function (globMatch) {
+                        if (!globMatch) {
+                            onResult(match);
+                        }
+                    });
+                }
+                else {
+                    onResult(match);
+                }
+            });
+            this.ripgrepParser.on('hitLimit', function () {
+                _this.cancel();
+                done(null, {
+                    limitHit: true,
+                    stats: null
+                });
+            });
+            this.rgProc.stdout.on('data', function (data) {
+                _this.ripgrepParser.handleData(data);
+            });
+            this.rgProc.stderr.on('data', function (data) {
+                // TODO@rob remove console.logs
+                console.log('stderr:');
+                console.log(data.toString());
+            });
+            this.rgProc.on('close', function (code) {
+                // Trigger last result, then wait on async result handling
+                _this.ripgrepParser.flush();
+                _this.handleResultP.then(function () {
+                    _this.rgProc = null;
+                    // console.log(`closed with ${code}`);
+                    if (!_this.isDone) {
+                        _this.isDone = true;
+                        done(null, {
+                            limitHit: false,
+                            stats: null
+                        });
+                    }
+                });
+            });
+        };
+        return RipgrepEngine;
+    }());
+    exports.RipgrepEngine = RipgrepEngine;
+    var RipgrepParser = (function (_super) {
+        __extends(RipgrepParser, _super);
+        function RipgrepParser(maxResults, rootFolder) {
+            var _this = _super.call(this) || this;
+            _this.maxResults = maxResults;
+            _this.rootFolder = rootFolder;
+            _this.numResults = 0;
+            return _this;
+        }
+        RipgrepParser.prototype.cancel = function () {
+            this.isDone = true;
+        };
+        RipgrepParser.prototype.flush = function () {
+            if (this.fileMatch) {
+                this.onResult();
+            }
+        };
+        RipgrepParser.prototype.handleData = function (data) {
+            // If the previous data chunk didn't end in a newline, prepend it to this chunk
+            var dataStr = this.remainder ?
+                this.remainder + data.toString() :
+                data.toString();
+            var dataLines = dataStr.split(/\r\n|\n/);
+            this.remainder = dataLines[dataLines.length - 1] ? dataLines.pop() : null;
+            for (var l = 0; l < dataLines.length; l++) {
+                var outputLine = dataLines[l].trim();
+                if (this.isDone) {
+                    break;
+                }
+                var r = void 0;
+                if (r = outputLine.match(RipgrepParser.RESULT_REGEX)) {
+                    // Line is a result - add to collected results for the current file path
+                    this.handleMatchLine(outputLine, parseInt(r[1]) - 1, r[2]);
+                }
+                else if (r = outputLine.match(RipgrepParser.FILE_REGEX)) {
+                    // Line is a file path - send all collected results for the previous file path
+                    if (this.fileMatch) {
+                        this.onResult();
+                    }
+                    this.fileMatch = new FileMatch(path.join(this.rootFolder, r[1]));
+                }
+                else {
+                }
+            }
+        };
+        RipgrepParser.prototype.handleMatchLine = function (outputLine, lineNum, text) {
+            var lineMatch = new LineMatch(text, lineNum);
+            this.fileMatch.addMatch(lineMatch);
+            var lastMatchEndPos = 0;
+            var matchTextStartPos = -1;
+            // Track positions with color codes subtracted - offsets in the final text preview result
+            var matchTextStartRealIdx = -1;
+            var textRealIdx = 0;
+            var hitLimit = false;
+            var realTextParts = [];
+            // todo@Rob Consider just rewriting with a regex. I think perf will be fine.
+            for (var i = 0; i < text.length - (RipgrepParser.MATCH_END_MARKER.length - 1);) {
+                if (text.substr(i, RipgrepParser.MATCH_START_MARKER.length) === RipgrepParser.MATCH_START_MARKER) {
+                    // Match start
+                    var chunk_1 = text.slice(lastMatchEndPos, i);
+                    realTextParts.push(chunk_1);
+                    i += RipgrepParser.MATCH_START_MARKER.length;
+                    matchTextStartPos = i;
+                    matchTextStartRealIdx = textRealIdx;
+                }
+                else if (text.substr(i, RipgrepParser.MATCH_END_MARKER.length) === RipgrepParser.MATCH_END_MARKER) {
+                    // Match end
+                    var chunk_2 = text.slice(matchTextStartPos, i);
+                    realTextParts.push(chunk_2);
+                    if (!hitLimit) {
+                        lineMatch.addMatch(matchTextStartRealIdx, textRealIdx - matchTextStartRealIdx);
+                    }
+                    matchTextStartPos = -1;
+                    matchTextStartRealIdx = -1;
+                    i += RipgrepParser.MATCH_END_MARKER.length;
+                    lastMatchEndPos = i;
+                    this.numResults++;
+                    // Check hit maxResults limit
+                    if (this.numResults >= this.maxResults) {
+                        // Finish the line, then report the result below
+                        hitLimit = true;
+                    }
+                }
+                else {
+                    i++;
+                    textRealIdx++;
+                }
+            }
+            var chunk = text.slice(lastMatchEndPos);
+            realTextParts.push(chunk);
+            // Replace preview with version without color codes
+            var preview = realTextParts.join('');
+            lineMatch.preview = preview;
+            if (hitLimit) {
+                this.cancel();
+                this.onResult();
+                this.emit('hitLimit');
+            }
+        };
+        RipgrepParser.prototype.onResult = function () {
+            this.emit('result', this.fileMatch.serialize());
+            this.fileMatch = null;
+        };
+        return RipgrepParser;
+    }(events_1.EventEmitter));
+    RipgrepParser.RESULT_REGEX = /^\u001b\[m(\d+)\u001b\[m:(.*)$/;
+    RipgrepParser.FILE_REGEX = /^\u001b\[m(.+)\u001b\[m$/;
+    RipgrepParser.MATCH_START_MARKER = '\u001b[m\u001b[31m';
+    RipgrepParser.MATCH_END_MARKER = '\u001b[m';
+    exports.RipgrepParser = RipgrepParser;
+    var FileMatch = (function () {
+        function FileMatch(path) {
+            this.path = path;
+            this.lineMatches = [];
+        }
+        FileMatch.prototype.addMatch = function (lineMatch) {
+            this.lineMatches.push(lineMatch);
+        };
+        FileMatch.prototype.isEmpty = function () {
+            return this.lineMatches.length === 0;
+        };
+        FileMatch.prototype.serialize = function () {
+            var lineMatches = [];
+            var numMatches = 0;
+            for (var i = 0; i < this.lineMatches.length; i++) {
+                numMatches += this.lineMatches[i].offsetAndLengths.length;
+                lineMatches.push(this.lineMatches[i].serialize());
+            }
+            return {
+                path: this.path,
+                lineMatches: lineMatches,
+                numMatches: numMatches
+            };
+        };
+        return FileMatch;
+    }());
+    exports.FileMatch = FileMatch;
+    var LineMatch = (function () {
+        function LineMatch(preview, lineNumber) {
+            this.preview = preview.replace(/(\r|\n)*$/, '');
+            this.lineNumber = lineNumber;
+            this.offsetAndLengths = [];
+        }
+        LineMatch.prototype.getText = function () {
+            return this.preview;
+        };
+        LineMatch.prototype.getLineNumber = function () {
+            return this.lineNumber;
+        };
+        LineMatch.prototype.addMatch = function (offset, length) {
+            this.offsetAndLengths.push([offset, length]);
+        };
+        LineMatch.prototype.serialize = function () {
+            var result = {
+                preview: this.preview,
+                lineNumber: this.lineNumber,
+                offsetAndLengths: this.offsetAndLengths
+            };
+            return result;
+        };
+        return LineMatch;
+    }());
+    exports.LineMatch = LineMatch;
+    function globExprsToRgGlobs(patterns) {
+        var globArgs = [];
+        var siblingClauses = null;
+        Object.keys(patterns)
+            .forEach(function (key) {
+            var value = patterns[key];
+            if (typeof value === 'boolean' && value) {
+                // globs added to ripgrep don't match from the root by default, so add a /
+                if (key.charAt(0) !== '*') {
+                    key = '/' + key;
+                }
+                globArgs.push(key);
+            }
+            else if (value && value.when) {
+                if (!siblingClauses) {
+                    siblingClauses = {};
+                }
+                siblingClauses[key] = value;
+            }
+        });
+        return { globArgs: globArgs, siblingClauses: siblingClauses };
+    }
+    function getRgArgs(config) {
+        var args = ['--hidden', '--heading', '--line-number', '--color', 'ansi', '--colors', 'path:none', '--colors', 'line:none', '--colors', 'match:fg:red', '--colors', 'match:style:nobold'];
+        args.push(config.contentPattern.isCaseSensitive ? '--case-sensitive' : '--ignore-case');
+        if (config.includePattern) {
+            // I don't think includePattern can have siblingClauses
+            globExprsToRgGlobs(config.includePattern).globArgs.forEach(function (globArg) {
+                args.push('-g', globArg);
+            });
+        }
+        var siblingClauses;
+        if (config.excludePattern) {
+            var rgGlobs = globExprsToRgGlobs(config.excludePattern);
+            rgGlobs.globArgs
+                .forEach(function (rgGlob) { return args.push('-g', "!" + rgGlob); });
+            siblingClauses = rgGlobs.siblingClauses;
+        }
+        if (config.maxFilesize) {
+            args.push('--max-filesize', config.maxFilesize + '');
+        }
+        if (config.disregardIgnoreFiles) {
+            // Don't use .gitignore or .ignore
+            args.push('--no-ignore');
+        }
+        // Follow symlinks
+        args.push('--follow');
+        // Set default encoding
+        if (config.fileEncoding && config.fileEncoding !== 'utf8') {
+            args.push('--encoding', encoding.toCanonicalName(config.fileEncoding));
+        }
+        if (config.contentPattern.isWordMatch) {
+            args.push('--word-regexp');
+        }
+        var searchPatternAfterDoubleDashes;
+        if (config.contentPattern.isRegExp) {
+            args.push('--regexp', config.contentPattern.pattern);
+        }
+        else {
+            searchPatternAfterDoubleDashes = config.contentPattern.pattern;
+            args.push('--fixed-strings');
+        }
+        // Folder to search
+        args.push('--');
+        if (searchPatternAfterDoubleDashes) {
+            // Put the query after --, in case the query starts with a dash
+            args.push(searchPatternAfterDoubleDashes);
+        }
+        args.push('./');
+        return { args: args, siblingClauses: siblingClauses };
+    }
+    function getSiblings(file) {
+        return new winjs_base_1.TPromise(function (resolve, reject) {
+            extfs.readdir(path.dirname(file), function (error, files) {
+                if (error) {
+                    reject(error);
+                }
+                resolve(files);
+            });
+        });
+    }
+});
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-define(__m[51/*vs/workbench/services/search/node/rawSearchService*/], __M([1/*require*/,0/*exports*/,18/*fs*/,8/*path*/,56/*graceful-fs*/,6/*vs/base/common/arrays*/,36/*vs/base/common/comparers*/,7/*vs/base/common/objects*/,14/*vs/base/common/scorer*/,3/*vs/base/common/strings*/,5/*vs/base/common/winjs.base*/,45/*vs/platform/files/common/files*/,46/*vs/workbench/services/search/node/fileSearch*/,48/*vs/workbench/services/search/node/textSearch*/,50/*vs/workbench/services/search/node/textSearchWorkerProvider*/]), function (require, exports, fs, path_1, gracefulFs, arrays, comparers_1, objects, scorer, strings, winjs_base_1, files_1, fileSearch_1, textSearch_1, textSearchWorkerProvider_1) {
+define(__m[29/*vs/workbench/services/search/node/rawSearchService*/], __M([1/*require*/,0/*exports*/,16/*fs*/,6/*path*/,64/*graceful-fs*/,8/*vs/base/common/arrays*/,44/*vs/base/common/comparers*/,7/*vs/base/common/objects*/,15/*vs/base/common/scorer*/,4/*vs/base/common/strings*/,2/*vs/base/common/winjs.base*/,55/*vs/workbench/services/search/node/fileSearch*/,54/*vs/platform/files/common/files*/,30/*vs/workbench/services/search/node/ripgrepTextSearch*/,41/*vs/workbench/services/search/node/textSearch*/,36/*vs/workbench/services/search/node/textSearchWorkerProvider*/]), function (require, exports, fs, path_1, gracefulFs, arrays, comparers_1, objects, scorer, strings, winjs_base_1, fileSearch_1, files_1, ripgrepTextSearch_1, textSearch_1, textSearchWorkerProvider_1) {
     'use strict';
     gracefulFs.gracefulify(fs);
     var SearchService = (function () {
@@ -10447,6 +11369,34 @@ define(__m[51/*vs/workbench/services/search/node/rawSearchService*/], __M([1/*re
             return this.doFileSearch(fileSearch_1.Engine, config, SearchService.BATCH_SIZE);
         };
         SearchService.prototype.textSearch = function (config) {
+            return config.useRipgrep ?
+                this.ripgrepTextSearch(config) :
+                this.legacyTextSearch(config);
+        };
+        SearchService.prototype.ripgrepTextSearch = function (config) {
+            config.maxFilesize = files_1.MAX_FILE_SIZE;
+            var engine = new ripgrepTextSearch_1.RipgrepEngine(config);
+            return new winjs_base_1.PPromise(function (c, e, p) {
+                // Use BatchedCollector to get new results to the frontend every 2s at least, until 50 results have been returned
+                var collector = new BatchedCollector(SearchService.BATCH_SIZE, p);
+                engine.search(function (match) {
+                    collector.addItem(match, match.numMatches);
+                }, function (progress) {
+                    p(progress);
+                }, function (error, stats) {
+                    collector.flush();
+                    if (error) {
+                        e(error);
+                    }
+                    else {
+                        c(stats);
+                    }
+                });
+            }, function () {
+                engine.cancel();
+            });
+        };
+        SearchService.prototype.legacyTextSearch = function (config) {
             if (!this.textSearchWorkerProvider) {
                 this.textSearchWorkerProvider = new textSearchWorkerProvider_1.TextSearchWorkerProvider();
             }
@@ -10772,6 +11722,17 @@ define(__m[51/*vs/workbench/services/search/node/rawSearchService*/], __M([1/*re
             this.batch = [];
             this.batchSize = 0;
         }
+        BatchedCollector.prototype.addItem = function (item, size) {
+            if (!item) {
+                return;
+            }
+            if (this.maxBatchSize > 0) {
+                this.addItemToBatch(item, size);
+            }
+            else {
+                this.cb(item);
+            }
+        };
         BatchedCollector.prototype.addItems = function (items, size) {
             if (!items) {
                 return;
@@ -10783,10 +11744,18 @@ define(__m[51/*vs/workbench/services/search/node/rawSearchService*/], __M([1/*re
                 this.cb(items);
             }
         };
-        BatchedCollector.prototype.addItemsToBatch = function (items, size) {
-            var _this = this;
-            this.batch = this.batch.concat(items);
+        BatchedCollector.prototype.addItemToBatch = function (item, size) {
+            this.batch.push(item);
             this.batchSize += size;
+            this.onUpdate();
+        };
+        BatchedCollector.prototype.addItemsToBatch = function (item, size) {
+            this.batch = this.batch.concat(item);
+            this.batchSize += size;
+            this.onUpdate();
+        };
+        BatchedCollector.prototype.onUpdate = function () {
+            var _this = this;
             if (this.totalNumberCompleted < BatchedCollector.START_BATCH_AFTER_COUNT) {
                 // Flush because we aren't batching yet
                 this.flush();
@@ -10825,7 +11794,7 @@ define(__m[51/*vs/workbench/services/search/node/rawSearchService*/], __M([1/*re
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-define(__m[55/*vs/workbench/services/search/node/searchApp*/], __M([1/*require*/,0/*exports*/,19/*vs/base/parts/ipc/node/ipc.cp*/,47/*vs/workbench/services/search/node/searchIpc*/,51/*vs/workbench/services/search/node/rawSearchService*/]), function (require, exports, ipc_cp_1, searchIpc_1, rawSearchService_1) {
+define(__m[65/*vs/workbench/services/search/node/searchApp*/], __M([1/*require*/,0/*exports*/,21/*vs/base/parts/ipc/node/ipc.cp*/,51/*vs/workbench/services/search/node/searchIpc*/,29/*vs/workbench/services/search/node/rawSearchService*/]), function (require, exports, ipc_cp_1, searchIpc_1, rawSearchService_1) {
     'use strict';
     var server = new ipc_cp_1.Server();
     var service = new rawSearchService_1.SearchService();

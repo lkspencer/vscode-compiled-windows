@@ -26,6 +26,9 @@ define("vs/workbench/electron-browser/workbench.main.nls", {
 	],
 	"vs/base/browser/ui/resourceviewer/resourceViewer": [
 		"{0}x{1} {2}",
+		"The image is too large to display in the editor. ",
+		"Open image",
+		" using external program?",
 		"The file will not be displayed in the editor because it is either binary, very large or uses an unsupported text encoding.",
 		"{0}B",
 		"{0}KB",
@@ -61,19 +64,6 @@ define("vs/workbench/electron-browser/workbench.main.nls", {
 		"Closing brace expected",
 		"Closing bracket expected",
 		"End of file expected"
-	],
-	"vs/base/common/keybinding": [
-		"Windows",
-		"Control",
-		"Shift",
-		"Alt",
-		"Command",
-		"Windows",
-		"Ctrl",
-		"Shift",
-		"Alt",
-		"Command",
-		"Windows"
 	],
 	"vs/base/common/processes": [
 		"Error: executable info must define a command of type string.",
@@ -127,7 +117,10 @@ define("vs/workbench/electron-browser/workbench.main.nls", {
 		"Controls the wrapping column of the editor when `editor.wordWrap` is 'wordWrapColumn' or 'bounded'.",
 		"Controls the indentation of wrapped lines. Can be one of 'none', 'same' or 'indent'.",
 		"A multiplier to be used on the `deltaX` and `deltaY` of mouse wheel scroll events",
-		"Controls if quick suggestions should show up or not while typing",
+		"Enable quick suggestions inside strings.",
+		"Enable quick suggestions inside comments.",
+		"Enable quick suggestions outside of strings and comments.",
+		"Controls if suggestions should automatically show up while typing",
 		"Controls the delay in ms after which quick suggestions will show up",
 		"Enables parameter hints",
 		"Controls if the editor should automatically close brackets after opening them",
@@ -138,11 +131,13 @@ define("vs/workbench/electron-browser/workbench.main.nls", {
 		"Controls if suggestions should be accepted on commit characters. For instance in JavaScript the semi-colon (';') can be a commit character that accepts a suggestion and types that character.",
 		"Controls whether snippets are shown with other suggestions and how they are sorted.",
 		"Controls whether copying without a selection copies the current line.",
-		"Enable word based suggestions.",
+		"Controls whether completions should be computed based on words in the document.",
 		"Font size for the suggest widget",
 		"Line height for the suggest widget",
 		"Controls whether the editor should highlight similar matches to the selection",
+		"Controls whether the editor should highlight semantic symbol occurrences",
 		"Controls the number of decorations that can show up at the same position in the overview ruler",
+		"Controls if a border should be drawn around the overview ruler.",
 		"Control the cursor animation style, possible values are 'blink', 'smooth', 'phase', 'expand' and 'solid'",
 		"Zoom the font of the editor when using mouse wheel and holding Ctrl",
 		"Controls the cursor style, accepted values are 'block', 'block-outline', 'line', 'line-thin', 'underline' and 'underline-thin'",
@@ -195,6 +190,15 @@ define("vs/workbench/electron-browser/workbench.main.nls", {
 		"[{0}]\n{1}",
 		"[{0}] {1}"
 	],
+	"vs/editor/common/view/editorColorRegistry": [
+		"Background color for the highlight of line at the cursor position.",
+		"Background color for the border around the line at the cursor position.",
+		"Background color of highlighted ranges, like by quick open and find features.",
+		"Color of the editor cursor.",
+		"Color of whitespace characters in the editor.",
+		"Color of the editor indentation guides.",
+		"Color of editor line numbers."
+	],
 	"vs/editor/contrib/accessibility/browser/accessibility": [
 		"Thank you for trying out VS Code's accessibility options.",
 		"Status:",
@@ -229,13 +233,6 @@ define("vs/workbench/electron-browser/workbench.main.nls", {
 	],
 	"vs/editor/contrib/contextmenu/browser/contextmenu": [
 		"Show Editor Context Menu"
-	],
-	"vs/editor/contrib/defineKeybinding/browser/defineKeybinding": [
-		"Define Keybinding",
-		"Press desired key combination and ENTER",
-		"For your current keyboard layout press ",
-		"You won't be able to produce this key combination under your current keyboard layout.",
-		"Define Keybinding"
 	],
 	"vs/editor/contrib/find/browser/findWidget": [
 		"Find",
@@ -276,7 +273,11 @@ define("vs/workbench/electron-browser/workbench.main.nls", {
 		"Unfold All",
 		"Fold Level {0}"
 	],
-	"vs/editor/contrib/format/common/formatActions": [
+	"vs/editor/contrib/format/browser/formatActions": [
+		"Made 1 formatting edit on line {0}",
+		"Made {0} formatting edits on line {1}",
+		"Made 1 formatting edit between lines {0} and {1}",
+		"Made {0} formatting edits between lines {1} and {2}",
 		"Format Document",
 		"Format Selection"
 	],
@@ -287,8 +288,12 @@ define("vs/workbench/electron-browser/workbench.main.nls", {
 		"Go to Definition",
 		"Open Definition to the Side",
 		"Peek Definition",
+		"No implementation found for '{0}'",
+		"No implementation found",
 		"Go to Implementation",
 		"Peek Implementation",
+		"No type definition found for '{0}'",
+		"No type definition found",
 		"Go to Type Definition",
 		"Peek Type Definition",
 		"Click to show {0} definitions."
@@ -296,10 +301,16 @@ define("vs/workbench/electron-browser/workbench.main.nls", {
 	"vs/editor/contrib/gotoError/browser/gotoError": [
 		"({0}/{1})",
 		"Go to Next Error or Warning",
-		"Go to Previous Error or Warning"
+		"Go to Previous Error or Warning",
+		"Editor marker navigation widget error color.",
+		"Editor marker navigation widget warning color.",
+		"Editor marker navigation widget background."
 	],
 	"vs/editor/contrib/hover/browser/hover": [
-		"Show Hover"
+		"Show Hover",
+		"Highlight below the word for which a hover is shown.",
+		"Background color of the editor hover.",
+		"Border color of the editor hover."
 	],
 	"vs/editor/contrib/hover/browser/modesContentHover": [
 		"Loading..."
@@ -379,7 +390,19 @@ define("vs/workbench/electron-browser/workbench.main.nls", {
 		"no preview available",
 		"References",
 		"No results",
-		"References"
+		"References",
+		"Background color of the peek view title area.",
+		"Color of the peek view title.",
+		"Color of the peek view title info.",
+		"Color of the peek view borders and arrow.",
+		"Background color of the peek view result list.",
+		"Match entry foreground in the peek view result list.",
+		"File entry foreground in the peek view result list.",
+		"Background color of the selected entry in the peek view result list.",
+		"Foreground color of the selected entry in the peek view result list.",
+		"Background color of the peek view editor.",
+		"Match highlight color in the peek view result list.",
+		"Match highlight color in the peek view editor."
 	],
 	"vs/editor/contrib/rename/browser/rename": [
 		"Sorry, rename failed to execute.",
@@ -411,6 +434,10 @@ define("vs/workbench/electron-browser/workbench.main.nls", {
 	],
 	"vs/editor/contrib/toggleTabFocusMode/common/toggleTabFocusMode": [
 		"Toggle Tab Key Moves Focus"
+	],
+	"vs/editor/contrib/wordHighlighter/common/wordHighlighter": [
+		"Background color of a symbol during read-access, like reading a variable.",
+		"Background color of a symbol during write-access, like writing to a variable."
 	],
 	"vs/editor/contrib/zoneWidget/browser/peekViewWidget": [
 		"Close"
@@ -463,13 +490,18 @@ define("vs/workbench/electron-browser/workbench.main.nls", {
 		"The Command Palette",
 		"The editor title menu",
 		"The editor context menu",
-		"The editor tabs context menu",
 		"The file explorer context menu",
+		"The editor tabs context menu",
+		"The debug callstack context menu",
+		"The Source Control title menu",
+		"The Source Control resource group context menu",
+		"The Source Control resource state context menu",
 		"expected non-empty value.",
 		"property `{0}` is mandatory and must be of type `string`",
-		"property `{0}` is mandatory and must be of type `string`",
-		"property `{0}` can be omitted or must be of type `string`",
 		"property `icon` can be omitted or must be either a string or a literal like `{dark, light}`",
+		"property `{0}` is mandatory and must be of type `string` or `object`",
+		"property `{0}` is mandatory and must be of type `string`",
+		"properties `{0}` and `{1}` are mandatory and must be of type `string`",
 		"Identifier of the command to execute",
 		"Title by which the command is represented in the UI",
 		"(Optional) Category string by the command is grouped in the UI",
@@ -570,19 +602,74 @@ define("vs/workbench/electron-browser/workbench.main.nls", {
 		"'configuration.jsonValidation.url' must start with 'http:', 'https:' or './' to reference schemas located in the extension"
 	],
 	"vs/platform/keybinding/common/abstractKeybindingService": [
-		"Here are other available commands: ",
 		"({0}) was pressed. Waiting for second key of chord...",
 		"The key combination ({0}, {1}) is not a command."
 	],
+	"vs/platform/keybinding/common/keybindingLabels": [
+		"Ctrl",
+		"Shift",
+		"Alt",
+		"Windows",
+		"Control",
+		"Shift",
+		"Alt",
+		"Command",
+		"Control",
+		"Shift",
+		"Alt",
+		"Windows"
+	],
 	"vs/platform/markers/common/problemMatcher": [
-		"Error: Invalid problemMatcher description. A matcher must at least define a pattern, owner and a file location. The problematic matcher is:\n{0}\n",
-		"Info: unknown severity {0}. Valid values are error, warning and info.\n",
 		"The loop property is only supported on the last line matcher.",
-		"The loop property is only supported on multi line matchers.",
 		"The problem pattern is missing a regular expression.",
 		"The problem pattern is invalid. It must have at least a file, message and line or location match group.",
+		"Error: The string {0} is not a valid regular expression.\n",
+		"The regular expression to find an error, warning or info in the output.",
+		"The match group index of the filename. If omitted 1 is used.",
+		"The match group index of the problem's location. Valid location patterns are: (line), (line,column) and (startLine,startColumn,endLine,endColumn). If omitted (line,column) is assumed.",
+		"The match group index of the problem's line. Defaults to 2",
+		"The match group index of the problem's line character. Defaults to 3",
+		"The match group index of the problem's end line. Defaults to undefined",
+		"The match group index of the problem's end line character. Defaults to undefined",
+		"The match group index of the problem's severity. Defaults to undefined",
+		"The match group index of the problem's code. Defaults to undefined",
+		"The match group index of the message. If omitted it defaults to 4 if location is specified. Otherwise it defaults to 5.",
+		"In a multi line matcher loop indicated whether this pattern is executed in a loop as long as it matches. Can only specified on a last pattern in a multi line pattern.",
+		"The name of the problem pattern.",
+		"The name of the problem multi line problem pattern.",
+		"The actual patterns.",
+		"Contributes problem patterns",
+		"Invalid problem pattern. The pattern will be ignored.",
+		"Invalid problem pattern. The pattern will be ignored.",
+		"Error: the description can't be converted into a problem matcher:\n{0}\n",
+		"Error: the description doesn't define a valid problem pattern:\n{0}\n",
+		"Error: the description doesn't define an owner:\n{0}\n",
+		"Error: the description doesn't define a file location:\n{0}\n",
+		"Info: unknown severity {0}. Valid values are error, warning and info.\n",
+		"Error: the pattern with the identifier {0} doesn't exist.",
+		"Error: the pattern property refers to an empty identifier.",
+		"Error: the pattern property {0} is not a valid pattern variable name.",
 		"A problem matcher must define both a begin pattern and an end pattern for watching.",
-		"Error: The string {0} is not a valid regular expression.\n"
+		"Error: The string {0} is not a valid regular expression.\n",
+		"The regular expression to detect the begin or end of a watching task.",
+		"The match group index of the filename. Can be omitted.",
+		"The name of a contributed or predefined pattern",
+		"A problem pattern or the name of a contributed or predefined problem pattern. Can be omitted if base is specified.",
+		"The name of a base problem matcher to use.",
+		"The owner of the problem inside Code. Can be omitted if base is specified. Defaults to 'external' if omitted and base is not specified.",
+		"The default severity for captures problems. Is used if the pattern doesn't define a match group for severity.",
+		"Controls if a problem reported on a text document is applied only to open, closed or all documents.",
+		"Defines how file names reported in a problem pattern should be interpreted.",
+		"If set to true the watcher is in active mode when the task starts. This is equals of issuing a line that matches the beginPattern",
+		"If matched in the output the start of a watching task is signaled.",
+		"If matched in the output the end of a watching task is signaled.",
+		"Patterns to track the begin and end of a watching pattern.",
+		"This property is deprecated. Use the watching property instead.",
+		"A regular expression signaling that a watched tasks begins executing triggered through file watching.",
+		"This property is deprecated. Use the watching property instead.",
+		"A regular expression signaling that a watched tasks ends executing.",
+		"The name of the problem matcher.",
+		"Contributes problem matchers"
 	],
 	"vs/platform/message/common/message": [
 		"Close",
@@ -598,6 +685,32 @@ define("vs/workbench/electron-browser/workbench.main.nls", {
 	"vs/platform/telemetry/common/telemetryService": [
 		"Telemetry",
 		"Enable usage data and errors to be sent to Microsoft."
+	],
+	"vs/platform/theme/common/colorRegistry": [
+		"Invalid color format. Use #RRGGBB or #RRGGBBAA",
+		"Colors used in the workbench.",
+		"Overall foreground color. This color is only used if not overridden by a component.",
+		"Overall outline/border color for focused elements. This color is only used if not overridden by a component.",
+		"Border color to separate components when high contrast theme is enabled.",
+		"Outline color for active components when high contrast theme is enabled.",
+		"Input box background.",
+		"Input box foreground.",
+		"Input box border.",
+		"Border color of activated options in input fields.",
+		"Dropdown background.",
+		"Dropdown foreground.",
+		"Dropdown border.",
+		"Editor background color.",
+		"Editor default foreground color.",
+		"Color of the editor selection.",
+		"Color of the selection in an inactive editor.",
+		"Color for regions with the same content as the selection.",
+		"Color of the current search match.",
+		"Color of the other search matches.",
+		"Color the range limiting the search.",
+		"Color of active links.",
+		"Color of links.",
+		"Find widget background."
 	],
 	"vs/workbench/api/node/mainThreadExtensionService": [
 		"Overwriting extension {0} with {1}.",
@@ -665,8 +778,6 @@ define("vs/workbench/electron-browser/workbench.main.nls", {
 		"{0} ({1})"
 	],
 	"vs/workbench/browser/parts/editor/binaryDiffEditor": [
-		"Binary Diff Viewer",
-		"Comparing binary files to non binary files is currently not supported",
 		"{0} ↔ {1}"
 	],
 	"vs/workbench/browser/parts/editor/binaryEditor": [
@@ -685,6 +796,7 @@ define("vs/workbench/electron-browser/workbench.main.nls", {
 	],
 	"vs/workbench/browser/parts/editor/editorActions": [
 		"Split Editor",
+		"Join Editors of Two Groups",
 		"Navigate Between Editor Groups",
 		"Focus Active Editor Group",
 		"Focus First Editor Group",
@@ -694,6 +806,7 @@ define("vs/workbench/electron-browser/workbench.main.nls", {
 		"Focus Next Group",
 		"Open to the Side",
 		"Close Editor",
+		"Revert and Close Editor",
 		"Close Editors to the Left",
 		"Close Editors to the Right",
 		"Close All Editors",
@@ -713,6 +826,7 @@ define("vs/workbench/electron-browser/workbench.main.nls", {
 		"Go Forward",
 		"Go Back",
 		"Reopen Closed Editor",
+		"Clear Recent Files",
 		"Show Editors in First Group",
 		"Show Editors in Second Group",
 		"Show Editors in Third Group",
@@ -799,6 +913,7 @@ define("vs/workbench/electron-browser/workbench.main.nls", {
 		"Save with Encoding",
 		"Reopen with Encoding",
 		"Select Action",
+		"Guessed from content",
 		"Select File Encoding to Reopen File",
 		"Select File Encoding to Save with"
 	],
@@ -841,6 +956,8 @@ define("vs/workbench/electron-browser/workbench.main.nls", {
 		"Toggle Panel",
 		"Focus into Panel",
 		"Toggle Maximized Panel",
+		"Maximize Panel Size",
+		"Restore Panel Size",
 		"View",
 		"View",
 		"View",
@@ -892,6 +1009,43 @@ define("vs/workbench/electron-browser/workbench.main.nls", {
 		"{0} actions",
 		"{0} actions"
 	],
+	"vs/workbench/common/theme": [
+		"Background color of the tabs container. Tabs are the containers for editors in the editor area. Multiple tabs can be opened in one editor group. There can be multiple editor groups.",
+		"Active tab background color. Tabs are the containers for editors in the editor area. Multiple tabs can be opened in one editor group. There can be multiple editor groups.",
+		"Inactive tab background color. Tabs are the containers for editors in the editor area. Multiple tabs can be opened in one editor group. There can be multiple editor groups.",
+		"Active tab foreground color in an active group. Tabs are the containers for editors in the editor area. Multiple tabs can be opened in one editor group. There can be multiple editor groups.",
+		"Active tab foreground color in an inactive group. Tabs are the containers for editors in the editor area. Multiple tabs can be opened in one editor group. There can be multiple editor groups.",
+		"Inactive tab foreground color in an active group. Tabs are the containers for editors in the editor area. Multiple tabs can be opened in one editor group. There can be multiple editor groups.",
+		"Inactive tab foreground color in an inactive group. Tabs are the containers for editors in the editor area. Multiple tabs can be opened in one editor group. There can be multiple editor groups.",
+		"Border to separate tabs from each other. Tabs are the containers for editors in the editor area. Multiple tabs can be opened in one editor group. There can be multiple editor groups.",
+		"Background color of the editor title header when no tabs are enabled.",
+		"Color to separate multiple editor groups from each other. Editor groups are the containers of editors.",
+		"Background color of an editor group. Editor groups are the containers of editors.",
+		"Background color when dragging editors around.",
+		"Border color to separate the details from the master side for side by side editors.",
+		"Panel background color. Panels are shown below the editor area and contain views like output and integrated terminal.",
+		"Panel border color on the top separating to the editor. Panels are shown below the editor area and contain views like output and integrated terminal.",
+		"Title color for the active panel. Panels are shown below the editor area and contain views like output and integrated terminal.",
+		"Title color for the inactive panel. Panels are shown below the editor area and contain views like output and integrated terminal.",
+		"Border color for the active panel title. Panels are shown below the editor area and contain views like output and integrated terminal.",
+		"Status bar foreground color. The status bar is shown in the bottom of the window.",
+		"Standard status bar background color. The status bar is shown in the bottom of the window.",
+		"Status bar background color when no folder is opened. The status bar is shown in the bottom of the window.",
+		"Status bar item background color when clicking. The status bar is shown in the bottom of the window.",
+		"Status bar item background color when hovering. The status bar is shown in the bottom of the window.",
+		"Status bar info item background color. The status bar is shown in the bottom of the window.",
+		"Status bar info item background color when hovering. The status bar is shown in the bottom of the window.",
+		"Activity bar background color. The activity bar is showing on the far left or right and allows to switch between views of the side bar.",
+		"Drag and drop feedback color for the activity bar items. The activity bar is showing on the far left or right and allows to switch between views of the side bar.",
+		"Activity notification badge background color. The activity bar is showing on the far left or right and allows to switch between views of the side bar.",
+		"Activity notification badge foreground color. The activity bar is showing on the far left or right and allows to switch between views of the side bar.",
+		"Side bar background color. The side bar is the container for views like explorer and search.",
+		"Side bar title foreground color. The side bar is the container for views like explorer and search.",
+		"Title bar foreground when the window is active. Note that this color is currently only supported on macOS.",
+		"Title bar foreground when the window is inactive. Note that this color is currently only supported on macOS.",
+		"Title bar background when the window is active. Note that this color is currently only supported on macOS.",
+		"Title bar background when the window is inactive. Note that this color is currently only supported on macOS."
+	],
 	"vs/workbench/electron-browser/actions": [
 		"Close Editor",
 		"Close Window",
@@ -919,7 +1073,14 @@ define("vs/workbench/electron-browser/workbench.main.nls", {
 		"Report Performance Issue",
 		"Keyboard Shortcuts Reference",
 		"Documentation",
-		"Introductory Videos"
+		"Introductory Videos",
+		"Toggle Shared Process",
+		"Move to the View on the Left",
+		"Move to the View on the Right",
+		"Move to the View Above",
+		"Move to the View Below",
+		"Increase Current View Size",
+		"Decrease Current View Size"
 	],
 	"vs/workbench/electron-browser/commands": [
 		"{0} ⟷ {1}"
@@ -949,11 +1110,13 @@ define("vs/workbench/electron-browser/workbench.main.nls", {
 		"Controls if opened editors show as preview. Preview editors are reused until they are kept (e.g. via double click or editing).",
 		"Controls if opened editors from Quick Open show as preview. Preview editors are reused until they are kept (e.g. via double click or editing).",
 		"Controls where editors open. Select 'left' or 'right' to open editors to the left or right of the current active one. Select 'first' or 'last' to open editors independently from the currently active one.",
+		"Controls if an editor is revealed in any of the visible groups if opened. If disabled, an editor will prefer to open in the currently active editor group. If enabled, an already opened editor will be revealed instead of opened again in the currently active editor group. Note that there are some cases where this setting is ignored, e.g. when forcing an editor to open in a specific group or to the side of the currently active group.",
 		"Controls if Quick Open should close automatically once it loses focus.",
 		"Controls if opening settings also opens an editor showing all default settings.",
 		"Controls the location of the sidebar. It can either show on the left or right of the workbench.",
 		"Controls the visibility of the status bar at the bottom of the workbench.",
 		"Controls the visibility of the activity bar in the workbench.",
+		"Controls if editors showing a file should close automatically when the file is deleted or renamed by some other process. Disabling this will keep the editor open as dirty on such an event. Note that deleting from within the application will always close the editor and that dirty files will never close to preserve your data.",
 		"Files will open in a new window",
 		"Files will open in the window with the files' folder open or the last active window",
 		"Files will open in the window with the files' folder open or the last active window unless opened via the dock or from finder (macOS only)",
@@ -990,7 +1153,10 @@ define("vs/workbench/electron-browser/workbench.main.nls", {
 	],
 	"vs/workbench/electron-browser/shell": [
 		"It is recommended not to run Code as 'root'.",
-		"The shared process terminated unexpectedly. Please reload the window to recover."
+		"Successfully created profiles.",
+		"Please create an issue and manually attach the following files:\n{0}",
+		"Create Issue and Restart",
+		"Restart"
 	],
 	"vs/workbench/electron-browser/window": [
 		"Undo",
@@ -1007,18 +1173,13 @@ define("vs/workbench/electron-browser/workbench.main.nls", {
 	"vs/workbench/node/extensionPoints": [
 		"Failed to parse {0}: {1}.",
 		"Cannot read file {0}: {1}.",
-		"Failed to parse {0}: {1}.",
+		"Failed to parse {0} or {1}: {2}.",
 		"Cannot read file {0}: {1}.",
 		"Couldn't find message for key {0}."
 	],
 	"vs/workbench/parts/cli/electron-browser/cli.contribution": [
 		"Install '{0}' command in PATH",
 		"This command is not available",
-		"Please remove the alias referencing '{0}' in '{1}' (line {2}) and retry this action.",
-		"Edit '{0}'",
-		"Please remove the '{0}' alias from '{1}' before continuing.",
-		"Continue",
-		"Cancel",
 		"Shell command '{0}' successfully installed in PATH.",
 		"Code will now prompt with 'osascript' for Administrator privileges to install the shell command.",
 		"OK",
@@ -1028,11 +1189,10 @@ define("vs/workbench/electron-browser/workbench.main.nls", {
 		"Uninstall '{0}' command from PATH",
 		"This command is not available",
 		"Shell command '{0}' successfully uninstalled from PATH.",
-		"Code needs to change the '{0}' shell command. Would you like to do this now?",
-		"Change Now",
-		"Later",
-		"Remember you can always run the '{0}' action from the Command Palette.",
 		"Shell Command"
+	],
+	"vs/workbench/parts/codeEditor/electron-browser/inspectKeybindings": [
+		"Developer: Inspect Key Mapppings"
 	],
 	"vs/workbench/parts/codeEditor/electron-browser/toggleRenderControlCharacter": [
 		"Toggle Control Characters"
@@ -1041,7 +1201,10 @@ define("vs/workbench/electron-browser/workbench.main.nls", {
 		"Toggle Render Whitespace"
 	],
 	"vs/workbench/parts/codeEditor/electron-browser/toggleWordWrap": [
-		"View: Toggle Word Wrap"
+		"View: Toggle Word Wrap",
+		"Cannot toggle word wrap in a diff editor.",
+		"Disable wrapping for this file",
+		"Enable wrapping for this file"
 	],
 	"vs/workbench/parts/codeEditor/electron-browser/wordWrapMigration": [
 		"OK",
@@ -1103,6 +1266,9 @@ define("vs/workbench/electron-browser/workbench.main.nls", {
 		"Step Back",
 		"Reverse"
 	],
+	"vs/workbench/parts/debug/browser/debugContentProvider": [
+		"Unable to resolve the resource without a debug session"
+	],
 	"vs/workbench/parts/debug/browser/debugEditorActions": [
 		"Debug: Toggle Breakpoint",
 		"Debug: Column Breakpoint",
@@ -1126,7 +1292,14 @@ define("vs/workbench/electron-browser/workbench.main.nls", {
 		"No debug configurations found. Please create a 'launch.json' file."
 	],
 	"vs/workbench/parts/debug/browser/exceptionWidget": [
-		"Exception occured"
+		"Exception widget border color.",
+		"Exception widget background color.",
+		"User-handled exception has occurred: {0}",
+		"Always-breaking exception has occurred: {0}",
+		"Unhandled exception has occurred: {0}",
+		"User-unhandled exception has occurred: {0}",
+		"Exception has occurred: {0}",
+		"Exception has occurred."
 	],
 	"vs/workbench/parts/debug/common/debugModel": [
 		"Unknown Source",
@@ -1146,7 +1319,8 @@ define("vs/workbench/electron-browser/workbench.main.nls", {
 		"Debug",
 		"Allows setting breakpoint in any file",
 		"Automatically open explorer view on the end of a debug session",
-		"Show variable values inline in editor while debugging"
+		"Show variable values inline in editor while debugging",
+		"Controls if the floating debug action bar should be hidden"
 	],
 	"vs/workbench/parts/debug/electron-browser/debugConfigurationManager": [
 		"Contributes debug adapters.",
@@ -1182,6 +1356,17 @@ define("vs/workbench/electron-browser/workbench.main.nls", {
 		"Select Environment"
 	],
 	"vs/workbench/parts/debug/electron-browser/debugEditorContribution": [
+		"Remove Breakpoints",
+		"Remove Breakpoint on Column {0}",
+		"Remove Line Breakpoint",
+		"Edit Breakpoints",
+		"Edit Breakpoint on Column {0}",
+		"Edit Line Breakpoint",
+		"Enable/Disable Breakpoints",
+		"Disable Breakpoint on Column {0}",
+		"Disable Line Breakpoint",
+		"Enable Breakpoint on Column {0}",
+		"Enable Line Breakpoint",
 		"Add Breakpoint",
 		"Add Configuration..."
 	],
@@ -1273,6 +1458,9 @@ define("vs/workbench/electron-browser/workbench.main.nls", {
 		"Expression {0} has value {1}, read eval print loop, debug",
 		"{0}, read eval print loop, debug",
 		"Output variable {0} has value {1}, read eval print loop, debug"
+	],
+	"vs/workbench/parts/debug/electron-browser/statusbarColorProvider": [
+		"Status bar background color when a program is being debugged. The status bar is shown in the bottom of the window"
 	],
 	"vs/workbench/parts/debug/electron-browser/terminalSupport": [
 		"debuggee",
@@ -1645,10 +1833,8 @@ define("vs/workbench/electron-browser/workbench.main.nls", {
 		"Reveal Active File in Windows Explorer",
 		"Reveal Active File in Finder",
 		"Open Containing Folder of Active File",
-		"Open a file first to reveal",
 		"Copy Path",
 		"Copy Path of Active File",
-		"Open a file first to copy its path",
 		"A file or folder name must be provided.",
 		"A file or folder **{0}** already exists at this location. Please choose a different name.",
 		"The name **{0}** is not valid as a file or folder name. Please choose a different name.",
@@ -1657,6 +1843,10 @@ define("vs/workbench/electron-browser/workbench.main.nls", {
 	"vs/workbench/parts/files/browser/fileActions.contribution": [
 		"Files",
 		"Reveal in Side Bar"
+	],
+	"vs/workbench/parts/files/browser/fileCommands": [
+		"Open a file first to copy its path",
+		"Open a file first to reveal"
 	],
 	"vs/workbench/parts/files/browser/files.contribution": [
 		"Show Explorer",
@@ -1668,8 +1858,9 @@ define("vs/workbench/electron-browser/workbench.main.nls", {
 		"Configure glob patterns for excluding files and folders.",
 		"The glob pattern to match file paths against. Set to true or false to enable or disable the pattern.",
 		"Additional check on the siblings of a matching file. Use $(basename) as variable for the matching file name.",
-		"Configure file associations to languages (e.g. '*.extension': 'html'). These have precedence over the default associations of the languages installed.",
+		"Configure file associations to languages (e.g. \"*.extension\": \"html\"). These have precedence over the default associations of the languages installed.",
 		"The default character set encoding to use when reading and writing files.",
+		"When enabled, will attempt to guess the character set encoding when opening files",
 		"The default end of line character.",
 		"When enabled, will trim trailing whitespace when saving a file.",
 		"When enabled, insert a final new line at the end of the file when saving it.",
@@ -1684,6 +1875,7 @@ define("vs/workbench/electron-browser/workbench.main.nls", {
 		"Hot exit will be triggered when the application is closed, that is when the last window is closed on Windows/Linux or when the workbench.action.quit command is triggered (command pallete, keybinding, menu). All windows with backups will be restored upon next launch.",
 		"Hot exit will be triggered when the application is closed, that is when the last window is closed on Windows/Linux or when the workbench.action.quit command is triggered (command pallete, keybinding, menu), and also for any window with a folder opened regardless of whether it's the last window. All windows without folders opened will be restored upon next launch. To restore folder windows as they were before shutdown set \"window.reopenFolders\" to \"all\".",
 		"Controls whether unsaved files are remembered between sessions, allowing the save prompt when exiting the editor to be skipped.",
+		"The default language mode that is assigned to new files.",
 		"Editor",
 		"Format a file on save. A formatter must be available, the file must not be auto-saved, and editor must not be shutting down.",
 		"File Explorer",
@@ -1739,6 +1931,9 @@ define("vs/workbench/electron-browser/workbench.main.nls", {
 	],
 	"vs/workbench/parts/files/common/dirtyFilesTracker": [
 		"{0} unsaved files"
+	],
+	"vs/workbench/parts/files/common/editors/fileEditorInput": [
+		"{0} (deleted from disk)"
 	],
 	"vs/workbench/parts/git/browser/gitActions": [
 		"Open Change",
@@ -2029,10 +2224,52 @@ define("vs/workbench/electron-browser/workbench.main.nls", {
 		"Output",
 		"for '{0}'"
 	],
+	"vs/workbench/parts/performance/electron-browser/performance.contribution": [
+		"Slow startup detected",
+		"Sorry that you just had a slow startup. Please restart '{0}' with profiling enabled, share the profiles with us, and we will work hard to make startup great again."
+	],
+	"vs/workbench/parts/preferences/browser/keybindingWidgets": [
+		"Press desired key combination and ENTER. ESCAPE to cancel.",
+		"chord to"
+	],
+	"vs/workbench/parts/preferences/browser/keybindingsEditor": [
+		"Keyboard Shortcuts",
+		"Search keybindings",
+		"Search keybindings",
+		"For advanced customizations open and edit",
+		"keybindings.json",
+		"Keybindings",
+		"Change Keybinding",
+		"Add Keybinding",
+		"Remove Keybinding",
+		"Reset Keybinding",
+		"Copy",
+		"Error '{0}' while editing keybinding. Please open 'keybindings.json' file and check.",
+		"Command",
+		"Keybinding",
+		"Source",
+		"When",
+		"Change Keybinding {0}",
+		"Change Keybinding",
+		"Add Keybinding {0}",
+		"Add Keybinding",
+		"Command is {0}.",
+		"Keybinding is {0}.",
+		"No Keybinding assigned.",
+		"Source is {0}.",
+		"When is {0}.",
+		"No when context."
+	],
+	"vs/workbench/parts/preferences/browser/keybindingsEditorContribution": [
+		"Define Keybinding",
+		"For your current keyboard layout press ",
+		"You won't be able to produce this key combination under your current keyboard layout.",
+		"Define Keybinding"
+	],
 	"vs/workbench/parts/preferences/browser/preferences.contribution": [
 		"Default Preferences Editor",
-		"Preferences",
-		"Collapse All"
+		"Keybindings Editor",
+		"Preferences"
 	],
 	"vs/workbench/parts/preferences/browser/preferencesActions": [
 		"Open User Settings",
@@ -2044,6 +2281,8 @@ define("vs/workbench/electron-browser/workbench.main.nls", {
 	],
 	"vs/workbench/parts/preferences/browser/preferencesEditor": [
 		"Default Settings",
+		"Search settings",
+		"Search Settings",
 		"Total {0} Settings",
 		"No Results",
 		"1 Setting matched",
@@ -2068,9 +2307,11 @@ define("vs/workbench/electron-browser/workbench.main.nls", {
 	"vs/workbench/parts/preferences/browser/preferencesWidgets": [
 		"Settings Switcher",
 		"User Settings",
-		"Workspace Settings",
-		"Search settings",
-		"Search Settings"
+		"Workspace Settings"
+	],
+	"vs/workbench/parts/preferences/common/keybindingsEditorModel": [
+		"Default",
+		"User"
 	],
 	"vs/workbench/parts/preferences/common/preferencesModels": [
 		"Commonly Used",
@@ -2151,12 +2392,20 @@ define("vs/workbench/electron-browser/workbench.main.nls", {
 	],
 	"vs/workbench/parts/scm/electron-browser/scm.contribution": [
 		"Show Git",
-		"SCM",
+		"Source Control",
 		"Show SCM",
 		"View"
 	],
 	"vs/workbench/parts/scm/electron-browser/scmActivity": [
 		"{0} pending changes"
+	],
+	"vs/workbench/parts/scm/electron-browser/scmMenus": [
+		"Switch SCM Provider..."
+	],
+	"vs/workbench/parts/scm/electron-browser/scmViewlet": [
+		"Message (press {0} to commit)",
+		"Source Control",
+		"{0}: {1}"
 	],
 	"vs/workbench/parts/search/browser/openAnythingHandler": [
 		"file and symbol results",
@@ -2175,7 +2424,9 @@ define("vs/workbench/electron-browser/workbench.main.nls", {
 	"vs/workbench/parts/search/browser/patternInputWidget": [
 		"input",
 		"Use Glob Patterns",
-		"The pattern to match. e.g. **\\*\\*/*.js** to match all JavaScript files or **myFolder/\\*\\*** to match that folder with all children.\n\n**Reference**:\n**\\*** matches 0 or more characters\n**?** matches 1 character\n**\\*\\*** matches zero or more directories\n**[a-z]** matches a range of characters\n**{a,b}** matches any of the patterns)"
+		"The pattern to match. e.g. **\\*\\*/*.js** to match all JavaScript files or **myFolder/\\*\\*** to match that folder with all children.\n\n**Reference**:\n**\\*** matches 0 or more characters\n**?** matches 1 character\n**\\*\\*** matches zero or more directories\n**[a-z]** matches a range of characters\n**{a,b}** matches any of the patterns)",
+		"Use Ignore Files",
+		"Use Exclude Settings"
 	],
 	"vs/workbench/parts/search/browser/replaceService": [
 		"{0} ↔ {1} (Replace Preview)"
@@ -2192,6 +2443,8 @@ define("vs/workbench/electron-browser/workbench.main.nls", {
 		"Configure glob patterns for excluding files and folders in searches. Inherits all glob patterns from the files.exclude setting.",
 		"The glob pattern to match file paths against. Set to true or false to enable or disable the pattern.",
 		"Additional check on the siblings of a matching file. Use $(basename) as variable for the matching file name.",
+		"Controls whether to use ripgrep in text search",
+		"Controls whether to use .gitignore and .ignore files by default when searching in a new workspace.",
 		"Configure to include results from a global symbol search in the file results for Quick Open."
 	],
 	"vs/workbench/parts/search/browser/searchActions": [
@@ -2295,19 +2548,31 @@ define("vs/workbench/electron-browser/workbench.main.nls", {
 		"The snippet description."
 	],
 	"vs/workbench/parts/snippets/electron-browser/snippetsService": [
+		"User Snippet",
 		"{0}, {1}"
-	],
-	"vs/workbench/parts/snippets/electron-browser/snippetsTracker": [
-		"User Snippet"
 	],
 	"vs/workbench/parts/snippets/electron-browser/tabCompletion": [
 		"Insert snippets when their prefix matches. Works best when 'quickSuggestions' aren't enabled."
+	],
+	"vs/workbench/parts/tasks/browser/quickOpen": [
+		"{0}, tasks"
+	],
+	"vs/workbench/parts/tasks/browser/restartQuickOpen": [
+		"{0}, tasks",
+		"Type the name of a task to restart",
+		"No tasks matching",
+		"No tasks to restart found"
 	],
 	"vs/workbench/parts/tasks/browser/taskQuickOpen": [
 		"{0}, tasks",
 		"Type the name of a task to run",
 		"No tasks matching",
 		"No tasks found"
+	],
+	"vs/workbench/parts/tasks/browser/terminateQuickOpen": [
+		"Type the name of a task to terminate",
+		"No tasks matching",
+		"No tasks to terminate found"
 	],
 	"vs/workbench/parts/tasks/common/taskConfiguration": [
 		"Warning: options.cwd must be of type string. Ignoring value {0}\n",
@@ -2316,7 +2581,6 @@ define("vs/workbench/electron-browser/workbench.main.nls", {
 		"Error: Problem Matcher in declare scope must have a name:\n{0}\n",
 		"Warning: the defined problem matcher is unknown. Supported types are string | ProblemMatcher | (string | ProblemMatcher)[].\n{0}\n",
 		"Error: Invalid problemMatcher reference: {0}\n",
-		"Warning: a command binding must defined an identifier. Ignoring binding.",
 		"Error: tasks must provide a taskName property. The task will be ignored.\n{0}\n",
 		"Warning: the task '{0}' is a shell command and either the command name or one of its arguments has unescaped spaces. To ensure correct command line quoting please merge args into the command.",
 		"Error: the task '{0}' neither specifies a command or a dependsOn property. The task will be ignored. Its definition is:\n{1}",
@@ -2334,30 +2598,6 @@ define("vs/workbench/electron-browser/workbench.main.nls", {
 		"Additional command options",
 		"The current working directory of the executed program or script. If omitted Code's current workspace root is used.",
 		"The environment of the executed program or shell. If omitted the parent process' environment is used.",
-		"The regular expression to find an error, warning or info in the output.",
-		"The match group index of the filename. If omitted 1 is used.",
-		"The match group index of the problem's location. Valid location patterns are: (line), (line,column) and (startLine,startColumn,endLine,endColumn). If omitted (line,column) is assumed.",
-		"The match group index of the problem's line. Defaults to 2",
-		"The match group index of the problem's line character. Defaults to 3",
-		"The match group index of the problem's end line. Defaults to undefined",
-		"The match group index of the problem's end line character. Defaults to undefined",
-		"The match group index of the problem's severity. Defaults to undefined",
-		"The match group index of the problem's code. Defaults to undefined",
-		"The match group index of the message. If omitted it defaults to 4 if location is specified. Otherwise it defaults to 5.",
-		"In a multi line matcher loop indicated whether this pattern is executed in a loop as long as it matches. Can only specified on a last pattern in a multi line pattern.",
-		"The regular expression to detect the begin or end of a watching task.",
-		"The match group index of the filename. Can be omitted.",
-		"The name of a base problem matcher to use.",
-		"The owner of the problem inside Code. Can be omitted if base is specified. Defaults to 'external' if omitted and base is not specified.",
-		"The default severity for captures problems. Is used if the pattern doesn't define a match group for severity.",
-		"Controls if a problem reported on a text document is applied only to open, closed or all documents.",
-		"A problem pattern or the name of a predefined problem pattern. Can be omitted if base is specified.",
-		"Defines how file names reported in a problem pattern should be interpreted.",
-		"If set to true the watcher is in active mode when the task starts. This is equals of issuing a line that matches the beginPattern",
-		"If matched in the output the start of a watching task is signaled.",
-		"If matched in the output the end of a watching task is signaled.",
-		"A regular expression signaling that a watched tasks begins executing triggered through file watching.",
-		"A regular expression signaling that a watched tasks ends executing.",
 		"The shell to be used.",
 		"The shell arguments.",
 		"The command to be executed. Can be an external program or a shell command.",
@@ -2422,14 +2662,14 @@ define("vs/workbench/electron-browser/workbench.main.nls", {
 		"99+",
 		"Tasks",
 		"Changing the task execution engine requires to restart VS Code. The change is ignored.",
-		"Error: The content of the tasks.json file has syntax errors. Please correct them before executing a task.\n",
-		"No task runner configured.",
-		"The provided task configuration has validation errors. See tasks output log for details.",
-		"No valid task runner configured. Supported task runners are 'service' and 'program'.",
-		"Error: The content of the tasks.json file has syntax errors. Please correct them before executing a task.\n",
-		"Error: the provided task configuration has validation errors and can't not be used. Please correct the errors first.",
+		"No build task defined. Mark a task with 'isBuildCommand' in the tasks.json file.",
+		"No test task defined. Mark a task with 'isTestCommand' in the tasks.json file.",
+		"Requested task {0} to execute not found.",
 		"The task is already active and in watch mode. To terminate the task use `F1 > terminate task`",
-		"There is an active running task right now. Terminate it first before executing another task.",
+		"There is already a task running. Terminate it first before executing another task.",
+		"Failed to terminate and restart task {0}",
+		"Error: the provided task configuration has validation errors and can't not be used. Please correct the errors first.",
+		"Error: The content of the tasks.json file has syntax errors. Please correct them before executing a task.\n",
 		"There is a task running. Do you want to terminate it?",
 		"&&Terminate Task",
 		"The launched task doesn't exist anymore. If the task spawned background processes exiting VS Code might result in orphaned processes. To avoid this start the last background process with a wait flag.",
@@ -2437,20 +2677,19 @@ define("vs/workbench/electron-browser/workbench.main.nls", {
 		"Terminate Running Task",
 		"An error has occurred while running a task. See task log for details.",
 		"Tasks are only available on a workspace folder.",
-		"The tasks are executed in the integrated terminal. Use the terminal to manage the tasks.",
 		"The launched process doesn't exist anymore. If the task spawned background tasks exiting VS Code might result in orphaned processes.",
 		"Failed to terminate running task",
 		"Show Task Log",
 		"Run Task",
+		"Restart Task",
 		"Terminate Running Task",
 		"Run Build Task",
 		"Run Test Task",
-		"Run Task"
+		"Run Task",
+		"Terminate Task",
+		"Restart Task"
 	],
 	"vs/workbench/parts/tasks/electron-browser/terminalTaskSystem": [
-		"No build task defined in tasks.json",
-		"No test task defined in tasks.json",
-		"Task '{0}' not found",
 		"A unknown error has occurred while executing a task. See task output log for details.",
 		"Task - {0}",
 		"Can't execute a shell command on an UNC drive."
@@ -2465,10 +2704,7 @@ define("vs/workbench/electron-browser/workbench.main.nls", {
 		"Build task named '{0}' detected.",
 		"Test task named '{0}' detected."
 	],
-	"vs/workbench/parts/tasks/node/processRunnerSystem": [
-		"No task is marked as a build task in the tasks.json. Mark a task with 'isBuildCommand'.",
-		"No test task configured.",
-		"No task to execute found.",
+	"vs/workbench/parts/tasks/node/processTaskSystem": [
 		"A unknown error has occurred while executing a task. See task output log for details.",
 		"\nWatching build tasks has finished.",
 		"Failed to launch external program {0} {1}.",
@@ -2487,11 +2723,13 @@ define("vs/workbench/electron-browser/workbench.main.nls", {
 		"Controls whether font ligatures are enabled in the terminal.",
 		"Controls the font size in pixels of the terminal.",
 		"Controls the line height of the terminal, this number is multipled by the terminal font size to get the actual line-height in pixels.",
+		"Whether to enable bold text within the terminal.",
 		"Controls whether the terminal cursor blinks.",
 		"Controls the style of terminal cursor.",
 		"Controls the maximum amount of lines the terminal keeps in its buffer.",
 		"Controls whether locale variables are set at startup of the terminal, this defaults to true on OS X, false on other platforms.",
 		"An explicit start path where the terminal will be launched, this is used as the current working directory (cwd) for the shell process. This may be particularly useful in workspace settings if the root directory is not a convenient cwd.",
+		"Whether to confirm on exit if there are active terminal sessions.",
 		"A set of command IDs whose keybindings will not be sent to the shell and instead always be handled by Code. This allows the use of keybindings that would normally be consumed by the shell to act the same as when the terminal is not focused, for example ctrl+p to launch Quick Open.",
 		"Terminal",
 		"Terminal",
@@ -2509,6 +2747,7 @@ define("vs/workbench/electron-browser/workbench.main.nls", {
 		"Focus Terminal {0}",
 		"Focus Previous Terminal",
 		"Paste into Active Terminal",
+		"Select Default Shell",
 		"Run Selected Text In Active Terminal",
 		"Run Active File In Active Terminal",
 		"Only files on disk can be run in the terminal",
@@ -2521,11 +2760,24 @@ define("vs/workbench/electron-browser/workbench.main.nls", {
 		"Scroll to Top",
 		"Clear"
 	],
+	"vs/workbench/parts/terminal/electron-browser/terminalColorRegistry": [
+		"'{0}' ansi color in the terminal."
+	],
+	"vs/workbench/parts/terminal/electron-browser/terminalConfigHelper": [
+		"This workspace wants to customize the terminal shell, do you want to allow it? ({0})",
+		"Allow",
+		"Cancel",
+		"Disallow"
+	],
 	"vs/workbench/parts/terminal/electron-browser/terminalInstance": [
 		"Cannot copy terminal selection when terminal does not have focus",
 		"The terminal process terminated with exit code: {0}",
 		"Press any key to close the terminal",
 		"The terminal process command `{0}{1}` failed to launch (exit code: {2})"
+	],
+	"vs/workbench/parts/terminal/electron-browser/terminalLinkHandler": [
+		"Cmd + click to follow link",
+		"Ctrl + click to follow link"
 	],
 	"vs/workbench/parts/terminal/electron-browser/terminalPanel": [
 		"New Terminal",
@@ -2533,16 +2785,28 @@ define("vs/workbench/electron-browser/workbench.main.nls", {
 		"Paste",
 		"Clear"
 	],
+	"vs/workbench/parts/terminal/electron-browser/terminalService": [
+		"You can change the default terminal shell by selecting the customize button.",
+		"Customize",
+		"Cancel",
+		"OK, Never Show Again",
+		"Select your preferred terminal shell, you can change this later in your settings",
+		"There is an active terminal session, do you want to kill it?",
+		"There are {0} active terminal sessions, do you want to kill them?",
+		"Yes",
+		"Cancel"
+	],
 	"vs/workbench/parts/themes/electron-browser/themes.contribution": [
 		"Color Theme",
+		"Install Additional Color Themes...",
 		"Problem setting theme: {0}",
 		"Select Color Theme",
 		"File Icon Theme",
+		"Install Additional File Icon Themes...",
 		"None",
 		"Disable file icons",
 		"Problem setting icon theme: {0}",
 		"Select File Icon Theme",
-		"Find more in the Marketplace...",
 		"Preferences"
 	],
 	"vs/workbench/parts/trust/electron-browser/unsupportedWorkspaceSettings.contribution": [
@@ -2589,7 +2853,9 @@ define("vs/workbench/electron-browser/workbench.main.nls", {
 		"Change Keymap",
 		"Keyboard Reference",
 		"Keyboard Shortcuts",
-		"unbound"
+		"unbound",
+		"Workbench",
+		"When enabled, will show the watermark tips when no editor is open."
 	],
 	"vs/workbench/parts/welcome/overlay/browser/welcomeOverlay": [
 		"File explorer",
@@ -2611,6 +2877,7 @@ define("vs/workbench/electron-browser/workbench.main.nls", {
 		"New file",
 		"Open folder...",
 		"Open folder...",
+		"Clone Git repository...",
 		"Clone Git repository...",
 		"Recent",
 		"No recent folders",
@@ -2702,12 +2969,18 @@ define("vs/workbench/electron-browser/workbench.main.nls", {
 	],
 	"vs/workbench/services/files/node/fileService": [
 		"Invalid file resource ({0})",
+		"File is directory ({0})",
 		"File seems to be binary and cannot be opened as text",
 		"File not found ({0})",
-		"File is directory ({0})",
 		"Unable to move/copy. File would replace folder it is contained in.",
 		"Folders cannot be copied into the workspace. Please select individual files to copy them.",
 		"File is Read Only"
+	],
+	"vs/workbench/services/keybinding/common/keybindingEditing": [
+		"Unable to write because the file is dirty. Please save the **Keybindings** file and try again.",
+		"Unable to write keybindings. Please open **Keybindings file** to correct errors/warnings in the file and try again.",
+		"Unable to write keybindings. **Keybindings file** has an object which is not of type Array. Please open the file to clean up and try again.",
+		"Place your key bindings in this file to overwrite the defaults"
 	],
 	"vs/workbench/services/keybinding/electron-browser/keybindingService": [
 		"expected non-empty value.",
@@ -2724,12 +2997,18 @@ define("vs/workbench/electron-browser/workbench.main.nls", {
 		"Windows specific key or key sequence.",
 		"Condition when the key is active.",
 		"Contributes keybindings.",
+		"Learn More",
+		"OK",
+		"Some keyboard shortcuts have changed for your keyboard layout.",
 		"Invalid `contributes.{0}`: {1}",
+		"Here are other available commands: ",
 		"Keybindings configuration",
 		"Key or key sequence (separated by space)",
 		"Name of the command to execute",
 		"Condition when the key is active.",
-		"Arguments to pass to the command to execute."
+		"Arguments to pass to the command to execute.",
+		"Keyboard",
+		"Controls the dispatching logic for key presses to use either `keydown.code` (recommended) or `keydown.keyCode`."
 	],
 	"vs/workbench/services/message/browser/messageList": [
 		"Error: {0}",
@@ -2778,31 +3057,12 @@ define("vs/workbench/electron-browser/workbench.main.nls", {
 		"All Files",
 		"No Extension"
 	],
-	"vs/workbench/services/themes/electron-browser/themeService": [
-		"Contributes textmate color themes.",
-		"Id of the icon theme as used in the user settings.",
-		"Label of the color theme as shown in the UI.",
-		"Base theme defining the colors around the editor: 'vs' is the light color theme, 'vs-dark' is the dark color theme. 'hc-black' is the dark high contrast theme.",
-		"Path of the tmTheme file. The path is relative to the extension folder and is typically './themes/themeFile.tmTheme'.",
-		"Contributes file icon themes.",
-		"Id of the icon theme as used in the user settings.",
-		"Label of the icon theme as shown in the UI.",
-		"Path of the icon theme definition file. The path is relative to the extension folder and is typically './icons/awesome-icon-theme.json'.",
-		"New theme settings have been added to the user settings. Backup available at {0}.",
-		"Extension point `{0}` must be an array.",
-		"Expected string in `contributes.{0}.path`. Provided value: {1}",
-		"Expected `contributes.{0}.path` ({1}) to be included inside extension's folder ({2}). This might make the extension non-portable.",
-		"Extension point `{0}` must be an array.",
-		"Expected string in `contributes.{0}.path`. Provided value: {1}",
-		"Expected string in `contributes.{0}.id`. Provided value: {1}",
-		"Expected `contributes.{0}.path` ({1}) to be included inside extension's folder ({2}). This might make the extension non-portable.",
-		"Unable to load {0}",
-		"Problems parsing file icons file: {0}",
-		"Unable to load {0}",
-		"Problems parsing JSON theme file: {0}",
-		"Problem parsing JSON theme file: {0}. 'settings' is not array.",
-		"Problem parsing theme file: {0}. 'settings' is not array.",
-		"Problems parsing theme file: {0}",
+	"vs/workbench/services/themes/common/colorThemeSchema": [
+		"Colors for syntax highlighting",
+		"Description of the rule",
+		"Font style of the rule: One or a combination of 'italic', 'bold' and 'underline'"
+	],
+	"vs/workbench/services/themes/common/fileIconThemeSchema": [
 		"The folder icon for expanded folders. The expanded folder icon is optional. If not set, the icon defined for folder will be shown.",
 		"The folder icon for collapsed folders, and if folderExpanded is not set, also for expanded folders.",
 		"The default file icon, shown for all files that don't match any extension, filename or language id.",
@@ -2832,11 +3092,41 @@ define("vs/workbench/electron-browser/workbench.main.nls", {
 		"When using a font: The font size in percentage to the text font. If not set, defaults to the size in the font definition.",
 		"When using a font: The id of the font. If not set, defaults to the first font definition.",
 		"Optional associations for file icons in light color themes.",
-		"Optional associations for file icons in high contrast color themes.",
+		"Optional associations for file icons in high contrast color themes."
+	],
+	"vs/workbench/services/themes/electron-browser/colorThemeData": [
+		"Problems parsing JSON theme file: {0}",
+		"Problem parsing JSON theme file: {0}. Expecting 'tokenColors' and 'colors'.",
+		"Problem parsing theme file: {0}. 'settings' is not array.",
+		"Problems parsing theme file: {0}",
+		"Problems loading theme file {0}: {1}"
+	],
+	"vs/workbench/services/themes/electron-browser/workbenchThemeService": [
+		"Contributes textmate color themes.",
+		"Id of the icon theme as used in the user settings.",
+		"Label of the color theme as shown in the UI.",
+		"Base theme defining the colors around the editor: 'vs' is the light color theme, 'vs-dark' is the dark color theme. 'hc-black' is the dark high contrast theme.",
+		"Path of the tmTheme file. The path is relative to the extension folder and is typically './themes/themeFile.tmTheme'.",
+		"Contributes file icon themes.",
+		"Id of the icon theme as used in the user settings.",
+		"Label of the icon theme as shown in the UI.",
+		"Path of the icon theme definition file. The path is relative to the extension folder and is typically './icons/awesome-icon-theme.json'.",
+		"New theme settings have been added to the user settings. Backup available at {0}.",
+		"Unable to load {0}: {1}",
+		"Extension point `{0}` must be an array.",
+		"Expected string in `contributes.{0}.path`. Provided value: {1}",
+		"Expected `contributes.{0}.path` ({1}) to be included inside extension's folder ({2}). This might make the extension non-portable.",
+		"Extension point `{0}` must be an array.",
+		"Expected string in `contributes.{0}.path`. Provided value: {1}",
+		"Expected string in `contributes.{0}.id`. Provided value: {1}",
+		"Expected `contributes.{0}.path` ({1}) to be included inside extension's folder ({2}). This might make the extension non-portable.",
+		"Unable to load {0}",
+		"Problems parsing file icons file: {0}",
 		"Specifies the color theme used in the workbench.",
 		"Theme is unknown or not installed.",
 		"Specifies the icon theme used in the workbench.",
 		"No file icons",
-		"File icon theme is unknown or not installed."
+		"File icon theme is unknown or not installed.",
+		"Overrides colors from the currently selected color theme. This setting is experimental as the names of the colors will change in the next release."
 	]
 });

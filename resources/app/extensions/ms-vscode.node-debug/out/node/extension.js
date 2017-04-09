@@ -3,7 +3,7 @@
  *--------------------------------------------------------*/
 'use strict';
 Object.defineProperty(exports, "__esModule", { value: true });
-var http = require("http");
+var net = require("net");
 var vscode = require("vscode");
 var child_process_1 = require("child_process");
 var path_1 = require("path");
@@ -11,6 +11,7 @@ var nls = require("vscode-nls");
 var fs = require("fs");
 var localize = nls.config(process.env.VSCODE_NLS_CONFIG)(__filename);
 function activate(context) {
+    context.subscriptions.push(vscode.commands.registerCommand('extension.node-debug.pickLoadedScript', function () { return pickLoadedScript(); }));
     context.subscriptions.push(vscode.commands.registerCommand('extension.pickNodeProcess', function () { return pickProcess(); }));
     context.subscriptions.push(vscode.commands.registerCommand('extension.node-debug.provideInitialConfigurations', function () { return createInitialConfigurations(); }));
     context.subscriptions.push(vscode.commands.registerCommand('extension.node-debug.startSession', function (config) { return startSession(config); }));
@@ -19,10 +20,38 @@ exports.activate = activate;
 function deactivate() {
 }
 exports.deactivate = deactivate;
+function pickLoadedScript() {
+    return listLoadedScripts().then(function (items) {
+        var options = {
+            placeHolder: localize(0, null),
+            matchOnDescription: true,
+            matchOnDetail: true
+        };
+        if (items === undefined) {
+            items = [{ label: localize(1, null), description: '' }];
+        }
+        vscode.window.showQuickPick(items, options).then(function (item) {
+            if (item && item.source) {
+                var uri = vscode.Uri.parse("debug:" + item.source.path);
+                vscode.workspace.openTextDocument(uri).then(function (doc) { return vscode.window.showTextDocument(doc); });
+            }
+        });
+    });
+}
+function listLoadedScripts() {
+    return vscode.commands.executeCommand('workbench.customDebugRequest', 'getLoadedScripts', {}).then(function (reply) {
+        if (reply && reply.success) {
+            return reply.body.loadedScripts;
+        }
+        else {
+            return undefined;
+        }
+    });
+}
 function pickProcess() {
     return listProcesses().then(function (items) {
         var options = {
-            placeHolder: localize(0, null),
+            placeHolder: localize(2, null),
             matchOnDescription: true,
             matchOnDetail: true
         };
@@ -151,13 +180,13 @@ var initialConfigurations = [
     {
         type: 'node',
         request: 'launch',
-        name: localize(1, null),
+        name: localize(3, null),
         program: '${file}'
     },
     {
         type: 'node',
         request: 'attach',
-        name: localize(2, null),
+        name: localize(4, null),
         address: 'localhost',
         port: 5858
     }
@@ -222,8 +251,8 @@ function guessProgramFromPackage(folderPath) {
     return program;
 }
 //---- extension.node-debug.startSession
-// For launch, use inspector protocol starting with v6.9 because it's stable after that version.
-var InspectorMinNodeVersionLaunch = 60900;
+// For launch, use inspector protocol starting with v8 because it's stable after that version.
+var InspectorMinNodeVersionLaunch = 80000;
 /**
  * The result type of the startSession command.
  */
@@ -268,11 +297,15 @@ function startSession(config) {
     // determine what protocol to use
     var fixConfig = Promise.resolve();
     switch (config.protocol) {
+        case 'legacy':
+            config.type = 'node';
+            break;
         case 'inspector':
             config.type = 'node2';
             break;
         case 'auto':
-            config.type = 'node'; // default
+        default:
+            config.type = 'node';
             switch (config.request) {
                 case 'attach':
                     fixConfig = getProtocolForAttach(config).then(function (protocol) {
@@ -283,7 +316,7 @@ function startSession(config) {
                     break;
                 case 'launch':
                     if (config.runtimeExecutable) {
-                        log(localize(3, null));
+                        log(localize(5, null));
                     }
                     else {
                         // only determine version if no runtimeExecutable is set (and 'node' on PATH is used)
@@ -292,14 +325,14 @@ function startSession(config) {
                         if (semVerString) {
                             if (semVerStringToInt(semVerString) >= InspectorMinNodeVersionLaunch) {
                                 config.type = 'node2';
-                                log(localize(4, null, semVerString.trim()));
+                                log(localize(6, null, semVerString.trim()));
                             }
                             else {
-                                log(localize(5, null, semVerString.trim()));
+                                log(localize(7, null, semVerString.trim()));
                             }
                         }
                         else {
-                            log(localize(6, null));
+                            log(localize(8, null));
                         }
                     }
                     break;
@@ -307,10 +340,6 @@ function startSession(config) {
                     // should not happen
                     break;
             }
-            break;
-        case 'legacy':
-        default:
-            config.type = 'node';
             break;
     }
     fixConfig.then(function () {
@@ -321,37 +350,65 @@ function startSession(config) {
     };
 }
 function log(message) {
-    vscode.commands.executeCommand('debug.logToDebugConsole', message);
+    vscode.commands.executeCommand('debug.logToDebugConsole', message + '\n');
 }
+/**
+ * Detect which debug protocol is being used for a running node process.
+ */
 function getProtocolForAttach(config) {
     var address = config.address || '127.0.0.1';
     var port = config.port;
     if (config.processId) {
         // this is only supported for legacy protocol
-        log(localize(7, null));
+        log(localize(9, null));
         return Promise.resolve('legacy');
     }
-    return getURL("http://" + address + ":" + port + "/json/version").then(function (response) {
+    var socket = new net.Socket();
+    var cleanup = function () {
         try {
-            var versionObject = JSON.parse(response);
-            var semVerString = versionObject &&
-                (versionObject.Browser ||
-                    (versionObject[0] && versionObject[0].Browser)); // Node v6-7
-            if (semVerString) {
-                var version = semVerString.match(/v\d+\.\d+\.\d+/);
-                if (version) {
-                    log(localize(8, null, version[0]));
-                    return 'inspector';
-                }
-            }
+            socket.write("\"Content-Length: 50\r\n\r\n{\"command\":\"disconnect\",\"type\":\"request\",\"seq\":2}\"");
+            socket.end();
         }
         catch (e) {
-            // Not JSON
+            // ignore failure
         }
-        log(localize(9, null));
-    }, function (e) {
-        // Not inspector
-        log(localize(10, null));
+    };
+    return new Promise(function (resolve, reject) {
+        socket.once('data', function (data) {
+            var reason;
+            var protocol;
+            var dataStr = data.toString();
+            if (dataStr.indexOf('WebSockets request was expected') >= 0) {
+                reason = localize(10, null);
+                protocol = 'inspector';
+            }
+            else {
+                reason = localize(11, null);
+                protocol = 'legacy';
+            }
+            resolve({ reason: reason, protocol: protocol });
+        });
+        socket.once('error', function (err) {
+            reject(err);
+        });
+        socket.connect(port, address);
+        socket.on('connect', function () {
+            // Send a safe request to trigger a response from the inspector protocol
+            socket.write("Content-Length: 102\r\n\r\n{\"command\":\"evaluate\",\"arguments\":{\"expression\":\"process.pid\",\"global\":true},\"type\":\"request\",\"seq\":1}");
+        });
+        setTimeout(function () {
+            // No data or error received? Bail and let the debug adapter handle it.
+            reject(new Error('timeout'));
+        }, 2000);
+    }).catch(function (err) {
+        return {
+            reason: localize(12, null, err.toString()),
+            protocol: 'legacy'
+        };
+    }).then(function (result) {
+        cleanup();
+        log(result.reason);
+        return result.protocol;
     });
 }
 /**
@@ -363,28 +420,6 @@ function semVerStringToInt(vString) {
         return (parseInt(match[1]) * 100 + parseInt(match[2])) * 100 + parseInt(match[3]);
     }
     return -1;
-}
-/**
- * Helper function to GET the contents of a url
- */
-function getURL(url) {
-    return new Promise(function (resolve, reject) {
-        http.get(url, function (response) {
-            var responseData = '';
-            response.on('data', function (chunk) { return responseData += chunk; });
-            response.on('end', function () {
-                // Sometimes the 'error' event is not fired. Double check here.
-                if (response.statusCode === 200) {
-                    resolve(responseData);
-                }
-                else {
-                    reject(responseData);
-                }
-            });
-        }).on('error', function (e) {
-            reject(e);
-        });
-    });
 }
 
 //# sourceMappingURL=../../out/node/extension.js.map

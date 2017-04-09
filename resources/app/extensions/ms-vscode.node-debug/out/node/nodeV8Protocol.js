@@ -108,6 +108,10 @@ var NodeV8Protocol = (function (_super) {
             });
         });
     };
+    NodeV8Protocol.prototype.backtrace = function (args, timeout) {
+        if (timeout === void 0) { timeout = NodeV8Protocol.TIMEOUT; }
+        return this.command2('backtrace', args);
+    };
     NodeV8Protocol.prototype.restartFrame = function (args, timeout) {
         if (timeout === void 0) { timeout = NodeV8Protocol.TIMEOUT; }
         return this.command2('restartframe', args);
@@ -266,7 +270,7 @@ var NodeV8Protocol = (function (_super) {
                                     this.embeddedHostVersion = (parseInt(match[1]) * 100 + parseInt(match[2])) * 100 + parseInt(match[3]);
                                 }
                                 else if (pair[1] === 'Electron') {
-                                    this.embeddedHostVersion = 60300; // TODO this needs to be detected in a smarter way by looking at the V8 version in Electron
+                                    this.embeddedHostVersion = 60500; // TODO this needs to be detected in a smarter way by looking at the V8 version in Electron
                                 }
                                 var match1 = pair[1].match(/node\s(v\d+\.\d+\.\d+)/);
                                 if (match1 && match1.length === 2) {

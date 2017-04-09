@@ -2,7 +2,7 @@
  * Copyright (C) Microsoft Corporation. All rights reserved.
  *--------------------------------------------------------*/
 (function() {
-var __m = ["require","exports","vs/workbench/api/node/extHost.protocol","vs/base/common/winjs.base","vs/base/common/event","vs/base/common/errors","vs/workbench/api/node/extHostTypes","vs/base/common/uri","vs/base/common/strings","vs/base/common/async","vs/base/common/platform","vs/platform/instantiation/common/instantiation","vs/nls!vs/workbench/node/extensionHostProcess","vs/nls","vs/base/common/paths","vs/workbench/api/node/extHostTypeConverters","vs/base/common/types","vs/base/common/severity","path","vs/base/common/objects","vs/base/common/arrays","vs/editor/common/core/position","vs/base/common/lifecycle","vs/editor/common/editorCommon","vs/platform/platform","vs/base/common/cancellation","vs/base/common/map","vs/base/common/callbackList","vs/editor/common/viewModel/prefixSumComputer","vs/base/common/glob","vs/base/common/eventEmitter","fs","vs/base/common/marshalling","vs/base/node/pfs","vs/base/common/uuid","vs/editor/common/core/range","vs/platform/jsonschemas/common/jsonContributionRegistry","vs/base/common/idGenerator","vs/editor/common/model/tokensBinaryEncoding","vs/editor/common/model/wordHelper","vs/editor/common/core/uint","vs/editor/common/diff/diffComputer","vs/editor/common/model/indentRanges","vs/editor/common/model/indentationGuesser","vs/base/common/diff/diff","vs/editor/common/core/viewLineToken","vs/editor/common/core/lineTokens","vs/editor/common/model/modelLine","vs/base/node/event","vs/editor/common/modes/languageConfiguration","vs/editor/common/modes/languageSelector","vs/base/node/flow","vs/editor/common/model/mirrorModel2","vs/nls!vs/base/common/json","vs/workbench/api/node/extHostExtensionService","vs/base/node/extfs","vs/base/common/json","vs/nls!vs/base/common/severity","vs/base/common/functional","vs/nls!vs/editor/common/config/defaultConfig","vs/editor/common/config/defaultConfig","vs/nls!vs/platform/configuration/common/configurationRegistry","vs/nls!vs/platform/extensions/common/abstractExtensionService","vs/nls!vs/platform/extensions/common/extensionsRegistry","vs/nls!vs/workbench/api/node/extHostDiagnostics","vs/nls!vs/workbench/api/node/extHostTreeExplorers","vs/nls!vs/workbench/node/extensionHostMain","vs/platform/extensions/common/ipcRemoteCom","vs/base/common/assert","vs/platform/contextkey/common/contextkey","os","vs/editor/common/model/textModelSearch","vs/editor/common/model/textModel","vs/platform/editor/common/editor","vs/platform/extensions/common/extensions","vs/platform/extensions/common/abstractExtensionService","vs/platform/node/package","vs/platform/node/product","vs/base/parts/ipc/common/ipc","vs/base/parts/ipc/node/ipc.net","vs/platform/extensions/common/extensionsRegistry","vs/platform/configuration/common/configurationRegistry","vs/platform/configuration/common/model","vs/platform/statusbar/common/statusbar","vs/platform/workspace/common/workspace","vs/workbench/api/node/extHostFunctions","vs/workbench/api/node/extHostProgress","net","vs/workbench/services/configuration/common/configurationEditing","vs/workbench/services/textfile/common/textfiles","vs/base/common/diff/diffChange","vs/workbench/api/node/extHostApiCommands","vs/workbench/services/thread/common/abstractThreadService","vs/workbench/services/thread/common/extHostThreadService","vs/workbench/services/thread/common/threadService","vs/workbench/node/extensionHostMain","vs/workbench/api/node/extHostCommands","vs/workbench/api/node/extHostConfiguration","vs/workbench/api/node/extHostDiagnostics","vs/workbench/api/node/extHostDocumentSaveParticipant","vs/workbench/api/node/extHostDocuments","vs/workbench/api/node/extHostEditors","vs/workbench/api/node/extHostFileSystemEventService","vs/workbench/api/node/extHostHeapService","vs/workbench/api/node/extHostLanguageFeatures","vs/workbench/api/node/extHostLanguages","vs/workbench/api/node/extHostMessageService","vs/workbench/api/node/extHostOutputService","vs/workbench/api/node/extHostQuickOpen","vs/workbench/api/node/extHostSCM","vs/workbench/api/node/extHostStatusBar","vs/workbench/api/node/extHostStorage","vs/workbench/api/node/extHostTelemetry","vs/workbench/api/node/extHostTerminalService","vs/workbench/api/node/extHostTreeExplorers","vs/workbench/api/node/extHostWorkspace","vs/workbench/api/node/extHost.api.impl","assert","crypto","vs/base/common/winjs.base.raw","vs/workbench/node/extensionHostProcess"];
+var __m = ["exports","require","vs/base/common/winjs.base","vs/workbench/api/node/extHost.protocol","vs/base/common/event","vs/workbench/api/node/extHostTypes","vs/base/common/errors","vs/base/common/uri","vs/workbench/api/node/extHostTypeConverters","vs/base/common/strings","vs/base/common/types","vs/platform/instantiation/common/instantiation","vs/base/common/async","vs/base/common/platform","vs/nls","vs/nls!vs/workbench/node/extensionHostProcess","vs/base/common/objects","path","vs/base/common/severity","vs/base/common/lifecycle","vs/base/common/paths","vs/editor/common/editorCommon","vs/base/common/arrays","vs/base/common/assert","vs/platform/platform","vs/base/common/uuid","vs/base/common/cancellation","vs/base/common/map","vs/platform/jsonschemas/common/jsonContributionRegistry","vs/base/common/callbackList","vs/base/common/idGenerator","fs","vs/base/node/pfs","vs/base/common/marshalling","vs/platform/extensions/common/extensionsRegistry","vs/base/common/functional","vs/workbench/api/node/extHostDocumentData","vs/editor/common/modes/languageSelector","vs/workbench/api/node/extHostTextEditor","vs/workbench/services/thread/common/threadService","vs/base/common/glob","vs/editor/common/modes/languageConfiguration","vs/base/common/events","vs/editor/common/modes/languageFeatureRegistry","vs/editor/common/modes/tokenizationRegistry","vs/editor/common/modes","vs/editor/common/viewModel/prefixSumComputer","vs/editor/common/model/mirrorModel2","vs/nls!vs/base/common/json","vs/base/common/parsers","vs/workbench/node/extensionHostMain","vs/base/common/json","vs/nls!vs/base/common/severity","vs/base/node/event","vs/nls!vs/platform/configuration/common/configurationRegistry","vs/nls!vs/platform/extensions/common/abstractExtensionService","vs/nls!vs/platform/extensions/common/extensionsRegistry","vs/nls!vs/platform/markers/common/problemMatcher","vs/nls!vs/workbench/api/node/extHostDiagnostics","vs/nls!vs/workbench/api/node/extHostTreeExplorers","vs/base/node/flow","vs/platform/extensions/common/ipcRemoteCom","assert","vs/platform/contextkey/common/contextkey","vs/base/node/extfs","vs/editor/common/model/textSource","vs/platform/editor/common/editor","vs/platform/extensions/common/extensions","vs/platform/extensions/common/abstractExtensionService","vs/platform/files/common/files","vs/platform/node/package","vs/platform/node/product","vs/nls!vs/workbench/node/extensionHostMain","vs/base/common/network","vs/base/common/eventEmitter","vs/platform/configuration/common/configurationRegistry","vs/platform/configuration/common/model","vs/platform/markers/common/problemMatcher","vs/platform/statusbar/common/statusbar","vs/platform/workspace/common/workspace","vs/workbench/api/node/extHostProgress","os","vs/base/parts/ipc/common/ipc","vs/workbench/parts/tasks/common/tasks","vs/workbench/services/configuration/common/configurationEditing","vs/workbench/services/textfile/common/textfiles","vs/base/parts/ipc/node/ipc.net","vs/workbench/api/node/extHostApiCommands","net","vs/workbench/services/thread/common/abstractThreadService","vs/workbench/services/thread/common/extHostThreadService","vs/editor/common/core/uint","vs/editor/common/model/wordHelper","vs/workbench/api/node/extHostCommands","vs/workbench/api/node/extHostConfiguration","vs/workbench/api/node/extHostDiagnostics","vs/workbench/api/node/extHostDocumentSaveParticipant","vs/workbench/api/node/extHostDocuments","vs/workbench/api/node/extHostDocumentsAndEditors","vs/workbench/api/node/extHostFileSystemEventService","vs/workbench/api/node/extHostHeapService","vs/workbench/api/node/extHostLanguageFeatures","vs/workbench/api/node/extHostLanguages","vs/workbench/api/node/extHostMessageService","vs/workbench/api/node/extHostOutputService","vs/workbench/api/node/extHostQuickOpen","vs/workbench/api/node/extHostSCM","vs/workbench/api/node/extHostStatusBar","vs/workbench/api/node/extHostStorage","vs/workbench/api/node/extHostTask","vs/workbench/api/node/extHostTelemetry","vs/workbench/api/node/extHostTerminalService","vs/workbench/api/node/extHostTextEditors","vs/workbench/api/node/extHostTreeExplorers","vs/workbench/api/node/extHostWorkspace","vs/workbench/api/node/extHost.api.impl","vs/workbench/api/node/extHostExtensionService","crypto","vs/base/common/winjs.base.raw","vs/workbench/node/extensionHostProcess"];
 var __M = function(deps) {
   var result = [];
   for (var i = 0, len = deps.length; i < len; i++) {
@@ -10,7 +10,7 @@ var __M = function(deps) {
   }
   return result;
 };
-define(__m[20/*vs/base/common/arrays*/], __M([0/*require*/,1/*exports*/]), function (require, exports) {
+define(__m[22/*vs/base/common/arrays*/], __M([1/*require*/,0/*exports*/]), function (require, exports) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -19,7 +19,7 @@ define(__m[20/*vs/base/common/arrays*/], __M([0/*require*/,1/*exports*/]), funct
     /**
      * Returns the last element of an array.
      * @param array The array.
-     * @param n Which element from the end (default ist zero).
+     * @param n Which element from the end (default is zero).
      */
     function tail(array, n) {
         if (n === void 0) { n = 0; }
@@ -79,6 +79,49 @@ define(__m[20/*vs/base/common/arrays*/], __M([0/*require*/,1/*exports*/]), funct
         return low;
     }
     exports.findFirst = findFirst;
+    /**
+     * Takes two *sorted* arrays and computes their delta (removed, added elements).
+     * Finishes in `Math.min(before.length, after.length)` steps.
+     * @param before
+     * @param after
+     * @param compare
+     */
+    function delta(before, after, compare) {
+        var removed = [];
+        var added = [];
+        var beforeIdx = 0;
+        var afterIdx = 0;
+        while (true) {
+            if (beforeIdx === before.length) {
+                added.push.apply(added, after.slice(afterIdx));
+                break;
+            }
+            if (afterIdx === after.length) {
+                removed.push.apply(removed, before.slice(beforeIdx));
+                break;
+            }
+            var beforeElement = before[beforeIdx];
+            var afterElement = after[afterIdx];
+            var n = compare(beforeElement, afterElement);
+            if (n === 0) {
+                // equal
+                beforeIdx += 1;
+                afterIdx += 1;
+            }
+            else if (n < 0) {
+                // beforeElement is smaller -> before element removed
+                removed.push(beforeElement);
+                beforeIdx += 1;
+            }
+            else if (n > 0) {
+                // beforeElement is greater -> after element added
+                added.push(afterElement);
+                afterIdx += 1;
+            }
+        }
+        return { removed: removed, added: added };
+    }
+    exports.delta = delta;
     /**
      * Returns the top N elements from the array.
      *
@@ -237,7 +280,7 @@ define(__m[20/*vs/base/common/arrays*/], __M([0/*require*/,1/*exports*/]), funct
     exports.insert = insert;
 });
 
-define(__m[68/*vs/base/common/assert*/], __M([0/*require*/,1/*exports*/]), function (require, exports) {
+define(__m[23/*vs/base/common/assert*/], __M([1/*require*/,0/*exports*/]), function (require, exports) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -254,773 +297,72 @@ define(__m[68/*vs/base/common/assert*/], __M([0/*require*/,1/*exports*/]), funct
     exports.ok = ok;
 });
 
-define(__m[90/*vs/base/common/diff/diffChange*/], __M([0/*require*/,1/*exports*/]), function (require, exports) {
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
+define(__m[42/*vs/base/common/events*/], __M([1/*require*/,0/*exports*/]), function (require, exports) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
      *--------------------------------------------------------------------------------------------*/
     'use strict';
-    exports.DifferenceType = {
-        Add: 0,
-        Remove: 1,
-        Change: 2
+    var Event = (function () {
+        function Event(originalEvent) {
+            this.time = (new Date()).getTime();
+            this.originalEvent = originalEvent;
+            this.source = null;
+        }
+        return Event;
+    }());
+    exports.Event = Event;
+    var PropertyChangeEvent = (function (_super) {
+        __extends(PropertyChangeEvent, _super);
+        function PropertyChangeEvent(key, oldValue, newValue, originalEvent) {
+            var _this = _super.call(this, originalEvent) || this;
+            _this.key = key;
+            _this.oldValue = oldValue;
+            _this.newValue = newValue;
+            return _this;
+        }
+        return PropertyChangeEvent;
+    }(Event));
+    exports.PropertyChangeEvent = PropertyChangeEvent;
+    var ViewerEvent = (function (_super) {
+        __extends(ViewerEvent, _super);
+        function ViewerEvent(element, originalEvent) {
+            var _this = _super.call(this, originalEvent) || this;
+            _this.element = element;
+            return _this;
+        }
+        return ViewerEvent;
+    }(Event));
+    exports.ViewerEvent = ViewerEvent;
+    exports.EventType = {
+        PROPERTY_CHANGED: 'propertyChanged',
+        SELECTION: 'selection',
+        FOCUS: 'focus',
+        BLUR: 'blur',
+        HIGHLIGHT: 'highlight',
+        EXPAND: 'expand',
+        COLLAPSE: 'collapse',
+        TOGGLE: 'toggle',
+        BEFORE_RUN: 'beforeRun',
+        RUN: 'run',
+        EDIT: 'edit',
+        SAVE: 'save',
+        CANCEL: 'cancel',
+        CHANGE: 'change',
+        DISPOSE: 'dispose',
     };
-    /**
-     * Represents information about a specific difference between two sequences.
-     */
-    var DiffChange = (function () {
-        /**
-         * Constructs a new DiffChange with the given sequence information
-         * and content.
-         */
-        function DiffChange(originalStart, originalLength, modifiedStart, modifiedLength) {
-            //Debug.Assert(originalLength > 0 || modifiedLength > 0, "originalLength and modifiedLength cannot both be <= 0");
-            this.originalStart = originalStart;
-            this.originalLength = originalLength;
-            this.modifiedStart = modifiedStart;
-            this.modifiedLength = modifiedLength;
-        }
-        /**
-         * The type of difference.
-         */
-        DiffChange.prototype.getChangeType = function () {
-            if (this.originalLength === 0) {
-                return exports.DifferenceType.Add;
-            }
-            else if (this.modifiedLength === 0) {
-                return exports.DifferenceType.Remove;
-            }
-            else {
-                return exports.DifferenceType.Change;
-            }
-        };
-        /**
-         * The end point (exclusive) of the change in the original sequence.
-         */
-        DiffChange.prototype.getOriginalEnd = function () {
-            return this.originalStart + this.originalLength;
-        };
-        /**
-         * The end point (exclusive) of the change in the modified sequence.
-         */
-        DiffChange.prototype.getModifiedEnd = function () {
-            return this.modifiedStart + this.modifiedLength;
-        };
-        return DiffChange;
-    }());
-    exports.DiffChange = DiffChange;
-});
-
-define(__m[44/*vs/base/common/diff/diff*/], __M([0/*require*/,1/*exports*/,90/*vs/base/common/diff/diffChange*/]), function (require, exports, diffChange_1) {
-    /*---------------------------------------------------------------------------------------------
-     *  Copyright (c) Microsoft Corporation. All rights reserved.
-     *  Licensed under the MIT License. See License.txt in the project root for license information.
-     *--------------------------------------------------------------------------------------------*/
-    'use strict';
-    function createStringSequence(a) {
-        return {
-            getLength: function () { return a.length; },
-            getElementHash: function (pos) { return a[pos]; }
-        };
-    }
-    function stringDiff(original, modified) {
-        return new LcsDiff(createStringSequence(original), createStringSequence(modified)).ComputeDiff();
-    }
-    exports.stringDiff = stringDiff;
-    //
-    // The code below has been ported from a C# implementation in VS
-    //
-    var Debug = (function () {
-        function Debug() {
-        }
-        Debug.Assert = function (condition, message) {
-            if (!condition) {
-                throw new Error(message);
-            }
-        };
-        return Debug;
-    }());
-    exports.Debug = Debug;
-    var MyArray = (function () {
-        function MyArray() {
-        }
-        /**
-         * Copies a range of elements from an Array starting at the specified source index and pastes
-         * them to another Array starting at the specified destination index. The length and the indexes
-         * are specified as 64-bit integers.
-         * sourceArray:
-         *		The Array that contains the data to copy.
-         * sourceIndex:
-         *		A 64-bit integer that represents the index in the sourceArray at which copying begins.
-         * destinationArray:
-         *		The Array that receives the data.
-         * destinationIndex:
-         *		A 64-bit integer that represents the index in the destinationArray at which storing begins.
-         * length:
-         *		A 64-bit integer that represents the number of elements to copy.
-         */
-        MyArray.Copy = function (sourceArray, sourceIndex, destinationArray, destinationIndex, length) {
-            for (var i = 0; i < length; i++) {
-                destinationArray[destinationIndex + i] = sourceArray[sourceIndex + i];
-            }
-        };
-        return MyArray;
-    }());
-    exports.MyArray = MyArray;
-    //*****************************************************************************
-    // LcsDiff.cs
-    //
-    // An implementation of the difference algorithm described in
-    // "An O(ND) Difference Algorithm and its letiations" by Eugene W. Myers
-    //
-    // Copyright (C) 2008 Microsoft Corporation @minifier_do_not_preserve
-    //*****************************************************************************
-    // Our total memory usage for storing history is (worst-case):
-    // 2 * [(MaxDifferencesHistory + 1) * (MaxDifferencesHistory + 1) - 1] * sizeof(int)
-    // 2 * [1448*1448 - 1] * 4 = 16773624 = 16MB
-    var MaxDifferencesHistory = 1447;
-    //let MaxDifferencesHistory = 100;
-    /**
-     * A utility class which helps to create the set of DiffChanges from
-     * a difference operation. This class accepts original DiffElements and
-     * modified DiffElements that are involved in a particular change. The
-     * MarktNextChange() method can be called to mark the separation between
-     * distinct changes. At the end, the Changes property can be called to retrieve
-     * the constructed changes.
-     */
-    var DiffChangeHelper = (function () {
-        /**
-         * Constructs a new DiffChangeHelper for the given DiffSequences.
-         */
-        function DiffChangeHelper() {
-            this.m_changes = [];
-            this.m_originalStart = Number.MAX_VALUE;
-            this.m_modifiedStart = Number.MAX_VALUE;
-            this.m_originalCount = 0;
-            this.m_modifiedCount = 0;
-        }
-        /**
-         * Marks the beginning of the next change in the set of differences.
-         */
-        DiffChangeHelper.prototype.MarkNextChange = function () {
-            // Only add to the list if there is something to add
-            if (this.m_originalCount > 0 || this.m_modifiedCount > 0) {
-                // Add the new change to our list
-                this.m_changes.push(new diffChange_1.DiffChange(this.m_originalStart, this.m_originalCount, this.m_modifiedStart, this.m_modifiedCount));
-            }
-            // Reset for the next change
-            this.m_originalCount = 0;
-            this.m_modifiedCount = 0;
-            this.m_originalStart = Number.MAX_VALUE;
-            this.m_modifiedStart = Number.MAX_VALUE;
-        };
-        /**
-         * Adds the original element at the given position to the elements
-         * affected by the current change. The modified index gives context
-         * to the change position with respect to the original sequence.
-         * @param originalIndex The index of the original element to add.
-         * @param modifiedIndex The index of the modified element that provides corresponding position in the modified sequence.
-         */
-        DiffChangeHelper.prototype.AddOriginalElement = function (originalIndex, modifiedIndex) {
-            // The 'true' start index is the smallest of the ones we've seen
-            this.m_originalStart = Math.min(this.m_originalStart, originalIndex);
-            this.m_modifiedStart = Math.min(this.m_modifiedStart, modifiedIndex);
-            this.m_originalCount++;
-        };
-        /**
-         * Adds the modified element at the given position to the elements
-         * affected by the current change. The original index gives context
-         * to the change position with respect to the modified sequence.
-         * @param originalIndex The index of the original element that provides corresponding position in the original sequence.
-         * @param modifiedIndex The index of the modified element to add.
-         */
-        DiffChangeHelper.prototype.AddModifiedElement = function (originalIndex, modifiedIndex) {
-            // The 'true' start index is the smallest of the ones we've seen
-            this.m_originalStart = Math.min(this.m_originalStart, originalIndex);
-            this.m_modifiedStart = Math.min(this.m_modifiedStart, modifiedIndex);
-            this.m_modifiedCount++;
-        };
-        /**
-         * Retrieves all of the changes marked by the class.
-         */
-        DiffChangeHelper.prototype.getChanges = function () {
-            if (this.m_originalCount > 0 || this.m_modifiedCount > 0) {
-                // Finish up on whatever is left
-                this.MarkNextChange();
-            }
-            return this.m_changes;
-        };
-        /**
-         * Retrieves all of the changes marked by the class in the reverse order
-         */
-        DiffChangeHelper.prototype.getReverseChanges = function () {
-            if (this.m_originalCount > 0 || this.m_modifiedCount > 0) {
-                // Finish up on whatever is left
-                this.MarkNextChange();
-            }
-            this.m_changes.reverse();
-            return this.m_changes;
-        };
-        return DiffChangeHelper;
-    }());
-    var hasOwnProperty = Object.prototype.hasOwnProperty;
-    /**
-     * An implementation of the difference algorithm described in
-     * "An O(ND) Difference Algorithm and its letiations" by Eugene W. Myers
-     */
-    var LcsDiff = (function () {
-        /**
-         * Constructs the DiffFinder
-         */
-        function LcsDiff(originalSequence, newSequence, continueProcessingPredicate) {
-            if (continueProcessingPredicate === void 0) { continueProcessingPredicate = null; }
-            this.OriginalSequence = originalSequence;
-            this.ModifiedSequence = newSequence;
-            this.ContinueProcessingPredicate = continueProcessingPredicate;
-            this.m_originalIds = [];
-            this.m_modifiedIds = [];
-            this.m_forwardHistory = [];
-            this.m_reverseHistory = [];
-            this.ComputeUniqueIdentifiers();
-        }
-        LcsDiff.prototype.ComputeUniqueIdentifiers = function () {
-            var originalSequenceLength = this.OriginalSequence.getLength();
-            var modifiedSequenceLength = this.ModifiedSequence.getLength();
-            this.m_originalIds = new Array(originalSequenceLength);
-            this.m_modifiedIds = new Array(modifiedSequenceLength);
-            // Create a new hash table for unique elements from the original
-            // sequence.
-            var hashTable = {};
-            var currentUniqueId = 1;
-            var i;
-            // Fill up the hash table for unique elements
-            for (i = 0; i < originalSequenceLength; i++) {
-                var originalElementHash = this.OriginalSequence.getElementHash(i);
-                if (!hasOwnProperty.call(hashTable, originalElementHash)) {
-                    // No entry in the hashtable so this is a new unique element.
-                    // Assign the element a new unique identifier and add it to the
-                    // hash table
-                    this.m_originalIds[i] = currentUniqueId++;
-                    hashTable[originalElementHash] = this.m_originalIds[i];
-                }
-                else {
-                    this.m_originalIds[i] = hashTable[originalElementHash];
-                }
-            }
-            // Now match up modified elements
-            for (i = 0; i < modifiedSequenceLength; i++) {
-                var modifiedElementHash = this.ModifiedSequence.getElementHash(i);
-                if (!hasOwnProperty.call(hashTable, modifiedElementHash)) {
-                    this.m_modifiedIds[i] = currentUniqueId++;
-                    hashTable[modifiedElementHash] = this.m_modifiedIds[i];
-                }
-                else {
-                    this.m_modifiedIds[i] = hashTable[modifiedElementHash];
-                }
-            }
-        };
-        LcsDiff.prototype.ElementsAreEqual = function (originalIndex, newIndex) {
-            return this.m_originalIds[originalIndex] === this.m_modifiedIds[newIndex];
-        };
-        LcsDiff.prototype.ComputeDiff = function () {
-            return this._ComputeDiff(0, this.OriginalSequence.getLength() - 1, 0, this.ModifiedSequence.getLength() - 1);
-        };
-        /**
-         * Computes the differences between the original and modified input
-         * sequences on the bounded range.
-         * @returns An array of the differences between the two input sequences.
-         */
-        LcsDiff.prototype._ComputeDiff = function (originalStart, originalEnd, modifiedStart, modifiedEnd) {
-            var quitEarlyArr = [false];
-            return this.ComputeDiffRecursive(originalStart, originalEnd, modifiedStart, modifiedEnd, quitEarlyArr);
-        };
-        /**
-         * Private helper method which computes the differences on the bounded range
-         * recursively.
-         * @returns An array of the differences between the two input sequences.
-         */
-        LcsDiff.prototype.ComputeDiffRecursive = function (originalStart, originalEnd, modifiedStart, modifiedEnd, quitEarlyArr) {
-            quitEarlyArr[0] = false;
-            // Find the start of the differences
-            while (originalStart <= originalEnd && modifiedStart <= modifiedEnd && this.ElementsAreEqual(originalStart, modifiedStart)) {
-                originalStart++;
-                modifiedStart++;
-            }
-            // Find the end of the differences
-            while (originalEnd >= originalStart && modifiedEnd >= modifiedStart && this.ElementsAreEqual(originalEnd, modifiedEnd)) {
-                originalEnd--;
-                modifiedEnd--;
-            }
-            // In the special case where we either have all insertions or all deletions or the sequences are identical
-            if (originalStart > originalEnd || modifiedStart > modifiedEnd) {
-                var changes = void 0;
-                if (modifiedStart <= modifiedEnd) {
-                    Debug.Assert(originalStart === originalEnd + 1, 'originalStart should only be one more than originalEnd');
-                    // All insertions
-                    changes = [
-                        new diffChange_1.DiffChange(originalStart, 0, modifiedStart, modifiedEnd - modifiedStart + 1)
-                    ];
-                }
-                else if (originalStart <= originalEnd) {
-                    Debug.Assert(modifiedStart === modifiedEnd + 1, 'modifiedStart should only be one more than modifiedEnd');
-                    // All deletions
-                    changes = [
-                        new diffChange_1.DiffChange(originalStart, originalEnd - originalStart + 1, modifiedStart, 0)
-                    ];
-                }
-                else {
-                    Debug.Assert(originalStart === originalEnd + 1, 'originalStart should only be one more than originalEnd');
-                    Debug.Assert(modifiedStart === modifiedEnd + 1, 'modifiedStart should only be one more than modifiedEnd');
-                    // Identical sequences - No differences
-                    changes = [];
-                }
-                return changes;
-            }
-            // This problem can be solved using the Divide-And-Conquer technique.
-            var midOriginalArr = [0], midModifiedArr = [0];
-            var result = this.ComputeRecursionPoint(originalStart, originalEnd, modifiedStart, modifiedEnd, midOriginalArr, midModifiedArr, quitEarlyArr);
-            var midOriginal = midOriginalArr[0];
-            var midModified = midModifiedArr[0];
-            if (result !== null) {
-                // Result is not-null when there was enough memory to compute the changes while
-                // searching for the recursion point
-                return result;
-            }
-            else if (!quitEarlyArr[0]) {
-                // We can break the problem down recursively by finding the changes in the
-                // First Half:   (originalStart, modifiedStart) to (midOriginal, midModified)
-                // Second Half:  (midOriginal + 1, minModified + 1) to (originalEnd, modifiedEnd)
-                // NOTE: ComputeDiff() is inclusive, therefore the second range starts on the next point
-                var leftChanges = this.ComputeDiffRecursive(originalStart, midOriginal, modifiedStart, midModified, quitEarlyArr);
-                var rightChanges = [];
-                if (!quitEarlyArr[0]) {
-                    rightChanges = this.ComputeDiffRecursive(midOriginal + 1, originalEnd, midModified + 1, modifiedEnd, quitEarlyArr);
-                }
-                else {
-                    // We did't have time to finish the first half, so we don't have time to compute this half.
-                    // Consider the entire rest of the sequence different.
-                    rightChanges = [
-                        new diffChange_1.DiffChange(midOriginal + 1, originalEnd - (midOriginal + 1) + 1, midModified + 1, modifiedEnd - (midModified + 1) + 1)
-                    ];
-                }
-                return this.ConcatenateChanges(leftChanges, rightChanges);
-            }
-            // If we hit here, we quit early, and so can't return anything meaningful
-            return [
-                new diffChange_1.DiffChange(originalStart, originalEnd - originalStart + 1, modifiedStart, modifiedEnd - modifiedStart + 1)
-            ];
-        };
-        LcsDiff.prototype.WALKTRACE = function (diagonalForwardBase, diagonalForwardStart, diagonalForwardEnd, diagonalForwardOffset, diagonalReverseBase, diagonalReverseStart, diagonalReverseEnd, diagonalReverseOffset, forwardPoints, reversePoints, originalIndex, originalEnd, midOriginalArr, modifiedIndex, modifiedEnd, midModifiedArr, deltaIsEven, quitEarlyArr) {
-            var forwardChanges = null, reverseChanges = null;
-            // First, walk backward through the forward diagonals history
-            var changeHelper = new DiffChangeHelper();
-            var diagonalMin = diagonalForwardStart;
-            var diagonalMax = diagonalForwardEnd;
-            var diagonalRelative = (midOriginalArr[0] - midModifiedArr[0]) - diagonalForwardOffset;
-            var lastOriginalIndex = Number.MIN_VALUE;
-            var historyIndex = this.m_forwardHistory.length - 1;
-            var diagonal;
-            do {
-                // Get the diagonal index from the relative diagonal number
-                diagonal = diagonalRelative + diagonalForwardBase;
-                // Figure out where we came from
-                if (diagonal === diagonalMin || (diagonal < diagonalMax && forwardPoints[diagonal - 1] < forwardPoints[diagonal + 1])) {
-                    // Vertical line (the element is an insert)
-                    originalIndex = forwardPoints[diagonal + 1];
-                    modifiedIndex = originalIndex - diagonalRelative - diagonalForwardOffset;
-                    if (originalIndex < lastOriginalIndex) {
-                        changeHelper.MarkNextChange();
-                    }
-                    lastOriginalIndex = originalIndex;
-                    changeHelper.AddModifiedElement(originalIndex + 1, modifiedIndex);
-                    diagonalRelative = (diagonal + 1) - diagonalForwardBase; //Setup for the next iteration
-                }
-                else {
-                    // Horizontal line (the element is a deletion)
-                    originalIndex = forwardPoints[diagonal - 1] + 1;
-                    modifiedIndex = originalIndex - diagonalRelative - diagonalForwardOffset;
-                    if (originalIndex < lastOriginalIndex) {
-                        changeHelper.MarkNextChange();
-                    }
-                    lastOriginalIndex = originalIndex - 1;
-                    changeHelper.AddOriginalElement(originalIndex, modifiedIndex + 1);
-                    diagonalRelative = (diagonal - 1) - diagonalForwardBase; //Setup for the next iteration
-                }
-                if (historyIndex >= 0) {
-                    forwardPoints = this.m_forwardHistory[historyIndex];
-                    diagonalForwardBase = forwardPoints[0]; //We stored this in the first spot
-                    diagonalMin = 1;
-                    diagonalMax = forwardPoints.length - 1;
-                }
-            } while (--historyIndex >= -1);
-            // Ironically, we get the forward changes as the reverse of the
-            // order we added them since we technically added them backwards
-            forwardChanges = changeHelper.getReverseChanges();
-            if (quitEarlyArr[0]) {
-                // TODO: Calculate a partial from the reverse diagonals.
-                //       For now, just assume everything after the midOriginal/midModified point is a diff
-                var originalStartPoint = midOriginalArr[0] + 1;
-                var modifiedStartPoint = midModifiedArr[0] + 1;
-                if (forwardChanges !== null && forwardChanges.length > 0) {
-                    var lastForwardChange = forwardChanges[forwardChanges.length - 1];
-                    originalStartPoint = Math.max(originalStartPoint, lastForwardChange.getOriginalEnd());
-                    modifiedStartPoint = Math.max(modifiedStartPoint, lastForwardChange.getModifiedEnd());
-                }
-                reverseChanges = [
-                    new diffChange_1.DiffChange(originalStartPoint, originalEnd - originalStartPoint + 1, modifiedStartPoint, modifiedEnd - modifiedStartPoint + 1)
-                ];
-            }
-            else {
-                // Now walk backward through the reverse diagonals history
-                changeHelper = new DiffChangeHelper();
-                diagonalMin = diagonalReverseStart;
-                diagonalMax = diagonalReverseEnd;
-                diagonalRelative = (midOriginalArr[0] - midModifiedArr[0]) - diagonalReverseOffset;
-                lastOriginalIndex = Number.MAX_VALUE;
-                historyIndex = (deltaIsEven) ? this.m_reverseHistory.length - 1 : this.m_reverseHistory.length - 2;
-                do {
-                    // Get the diagonal index from the relative diagonal number
-                    diagonal = diagonalRelative + diagonalReverseBase;
-                    // Figure out where we came from
-                    if (diagonal === diagonalMin || (diagonal < diagonalMax && reversePoints[diagonal - 1] >= reversePoints[diagonal + 1])) {
-                        // Horizontal line (the element is a deletion))
-                        originalIndex = reversePoints[diagonal + 1] - 1;
-                        modifiedIndex = originalIndex - diagonalRelative - diagonalReverseOffset;
-                        if (originalIndex > lastOriginalIndex) {
-                            changeHelper.MarkNextChange();
-                        }
-                        lastOriginalIndex = originalIndex + 1;
-                        changeHelper.AddOriginalElement(originalIndex + 1, modifiedIndex + 1);
-                        diagonalRelative = (diagonal + 1) - diagonalReverseBase; //Setup for the next iteration
-                    }
-                    else {
-                        // Vertical line (the element is an insertion)
-                        originalIndex = reversePoints[diagonal - 1];
-                        modifiedIndex = originalIndex - diagonalRelative - diagonalReverseOffset;
-                        if (originalIndex > lastOriginalIndex) {
-                            changeHelper.MarkNextChange();
-                        }
-                        lastOriginalIndex = originalIndex;
-                        changeHelper.AddModifiedElement(originalIndex + 1, modifiedIndex + 1);
-                        diagonalRelative = (diagonal - 1) - diagonalReverseBase; //Setup for the next iteration
-                    }
-                    if (historyIndex >= 0) {
-                        reversePoints = this.m_reverseHistory[historyIndex];
-                        diagonalReverseBase = reversePoints[0]; //We stored this in the first spot
-                        diagonalMin = 1;
-                        diagonalMax = reversePoints.length - 1;
-                    }
-                } while (--historyIndex >= -1);
-                // There are cases where the reverse history will find diffs that
-                // are correct, but not intuitive, so we need shift them.
-                reverseChanges = changeHelper.getChanges();
-            }
-            return this.ConcatenateChanges(forwardChanges, reverseChanges);
-        };
-        /**
-         * Given the range to compute the diff on, this method finds the point:
-         * (midOriginal, midModified)
-         * that exists in the middle of the LCS of the two sequences and
-         * is the point at which the LCS problem may be broken down recursively.
-         * This method will try to keep the LCS trace in memory. If the LCS recursion
-         * point is calculated and the full trace is available in memory, then this method
-         * will return the change list.
-         * @param originalStart The start bound of the original sequence range
-         * @param originalEnd The end bound of the original sequence range
-         * @param modifiedStart The start bound of the modified sequence range
-         * @param modifiedEnd The end bound of the modified sequence range
-         * @param midOriginal The middle point of the original sequence range
-         * @param midModified The middle point of the modified sequence range
-         * @returns The diff changes, if available, otherwise null
-         */
-        LcsDiff.prototype.ComputeRecursionPoint = function (originalStart, originalEnd, modifiedStart, modifiedEnd, midOriginalArr, midModifiedArr, quitEarlyArr) {
-            var originalIndex, modifiedIndex;
-            var diagonalForwardStart = 0, diagonalForwardEnd = 0;
-            var diagonalReverseStart = 0, diagonalReverseEnd = 0;
-            var numDifferences;
-            // To traverse the edit graph and produce the proper LCS, our actual
-            // start position is just outside the given boundary
-            originalStart--;
-            modifiedStart--;
-            // We set these up to make the compiler happy, but they will
-            // be replaced before we return with the actual recursion point
-            midOriginalArr[0] = 0;
-            midModifiedArr[0] = 0;
-            // Clear out the history
-            this.m_forwardHistory = [];
-            this.m_reverseHistory = [];
-            // Each cell in the two arrays corresponds to a diagonal in the edit graph.
-            // The integer value in the cell represents the originalIndex of the furthest
-            // reaching point found so far that ends in that diagonal.
-            // The modifiedIndex can be computed mathematically from the originalIndex and the diagonal number.
-            var maxDifferences = (originalEnd - originalStart) + (modifiedEnd - modifiedStart);
-            var numDiagonals = maxDifferences + 1;
-            var forwardPoints = new Array(numDiagonals);
-            var reversePoints = new Array(numDiagonals);
-            // diagonalForwardBase: Index into forwardPoints of the diagonal which passes through (originalStart, modifiedStart)
-            // diagonalReverseBase: Index into reversePoints of the diagonal which passes through (originalEnd, modifiedEnd)
-            var diagonalForwardBase = (modifiedEnd - modifiedStart);
-            var diagonalReverseBase = (originalEnd - originalStart);
-            // diagonalForwardOffset: Geometric offset which allows modifiedIndex to be computed from originalIndex and the
-            //    diagonal number (relative to diagonalForwardBase)
-            // diagonalReverseOffset: Geometric offset which allows modifiedIndex to be computed from originalIndex and the
-            //    diagonal number (relative to diagonalReverseBase)
-            var diagonalForwardOffset = (originalStart - modifiedStart);
-            var diagonalReverseOffset = (originalEnd - modifiedEnd);
-            // delta: The difference between the end diagonal and the start diagonal. This is used to relate diagonal numbers
-            //   relative to the start diagonal with diagonal numbers relative to the end diagonal.
-            // The Even/Oddn-ness of this delta is important for determining when we should check for overlap
-            var delta = diagonalReverseBase - diagonalForwardBase;
-            var deltaIsEven = (delta % 2 === 0);
-            // Here we set up the start and end points as the furthest points found so far
-            // in both the forward and reverse directions, respectively
-            forwardPoints[diagonalForwardBase] = originalStart;
-            reversePoints[diagonalReverseBase] = originalEnd;
-            // Remember if we quit early, and thus need to do a best-effort result instead of a real result.
-            quitEarlyArr[0] = false;
-            // A couple of points:
-            // --With this method, we iterate on the number of differences between the two sequences.
-            //   The more differences there actually are, the longer this will take.
-            // --Also, as the number of differences increases, we have to search on diagonals further
-            //   away from the reference diagonal (which is diagonalForwardBase for forward, diagonalReverseBase for reverse).
-            // --We extend on even diagonals (relative to the reference diagonal) only when numDifferences
-            //   is even and odd diagonals only when numDifferences is odd.
-            var diagonal, tempOriginalIndex;
-            for (numDifferences = 1; numDifferences <= (maxDifferences / 2) + 1; numDifferences++) {
-                var furthestOriginalIndex = 0;
-                var furthestModifiedIndex = 0;
-                // Run the algorithm in the forward direction
-                diagonalForwardStart = this.ClipDiagonalBound(diagonalForwardBase - numDifferences, numDifferences, diagonalForwardBase, numDiagonals);
-                diagonalForwardEnd = this.ClipDiagonalBound(diagonalForwardBase + numDifferences, numDifferences, diagonalForwardBase, numDiagonals);
-                for (diagonal = diagonalForwardStart; diagonal <= diagonalForwardEnd; diagonal += 2) {
-                    // STEP 1: We extend the furthest reaching point in the present diagonal
-                    // by looking at the diagonals above and below and picking the one whose point
-                    // is further away from the start point (originalStart, modifiedStart)
-                    if (diagonal === diagonalForwardStart || (diagonal < diagonalForwardEnd && forwardPoints[diagonal - 1] < forwardPoints[diagonal + 1])) {
-                        originalIndex = forwardPoints[diagonal + 1];
-                    }
-                    else {
-                        originalIndex = forwardPoints[diagonal - 1] + 1;
-                    }
-                    modifiedIndex = originalIndex - (diagonal - diagonalForwardBase) - diagonalForwardOffset;
-                    // Save the current originalIndex so we can test for false overlap in step 3
-                    tempOriginalIndex = originalIndex;
-                    // STEP 2: We can continue to extend the furthest reaching point in the present diagonal
-                    // so long as the elements are equal.
-                    while (originalIndex < originalEnd && modifiedIndex < modifiedEnd && this.ElementsAreEqual(originalIndex + 1, modifiedIndex + 1)) {
-                        originalIndex++;
-                        modifiedIndex++;
-                    }
-                    forwardPoints[diagonal] = originalIndex;
-                    if (originalIndex + modifiedIndex > furthestOriginalIndex + furthestModifiedIndex) {
-                        furthestOriginalIndex = originalIndex;
-                        furthestModifiedIndex = modifiedIndex;
-                    }
-                    // STEP 3: If delta is odd (overlap first happens on forward when delta is odd)
-                    // and diagonal is in the range of reverse diagonals computed for numDifferences-1
-                    // (the previous iteration; we haven't computed reverse diagonals for numDifferences yet)
-                    // then check for overlap.
-                    if (!deltaIsEven && Math.abs(diagonal - diagonalReverseBase) <= (numDifferences - 1)) {
-                        if (originalIndex >= reversePoints[diagonal]) {
-                            midOriginalArr[0] = originalIndex;
-                            midModifiedArr[0] = modifiedIndex;
-                            if (tempOriginalIndex <= reversePoints[diagonal] && MaxDifferencesHistory > 0 && numDifferences <= (MaxDifferencesHistory + 1)) {
-                                // BINGO! We overlapped, and we have the full trace in memory!
-                                return this.WALKTRACE(diagonalForwardBase, diagonalForwardStart, diagonalForwardEnd, diagonalForwardOffset, diagonalReverseBase, diagonalReverseStart, diagonalReverseEnd, diagonalReverseOffset, forwardPoints, reversePoints, originalIndex, originalEnd, midOriginalArr, modifiedIndex, modifiedEnd, midModifiedArr, deltaIsEven, quitEarlyArr);
-                            }
-                            else {
-                                // Either false overlap, or we didn't have enough memory for the full trace
-                                // Just return the recursion point
-                                return null;
-                            }
-                        }
-                    }
-                }
-                // Check to see if we should be quitting early, before moving on to the next iteration.
-                var matchLengthOfLongest = ((furthestOriginalIndex - originalStart) + (furthestModifiedIndex - modifiedStart) - numDifferences) / 2;
-                if (this.ContinueProcessingPredicate !== null && !this.ContinueProcessingPredicate(furthestOriginalIndex, this.OriginalSequence, matchLengthOfLongest)) {
-                    // We can't finish, so skip ahead to generating a result from what we have.
-                    quitEarlyArr[0] = true;
-                    // Use the furthest distance we got in the forward direction.
-                    midOriginalArr[0] = furthestOriginalIndex;
-                    midModifiedArr[0] = furthestModifiedIndex;
-                    if (matchLengthOfLongest > 0 && MaxDifferencesHistory > 0 && numDifferences <= (MaxDifferencesHistory + 1)) {
-                        // Enough of the history is in memory to walk it backwards
-                        return this.WALKTRACE(diagonalForwardBase, diagonalForwardStart, diagonalForwardEnd, diagonalForwardOffset, diagonalReverseBase, diagonalReverseStart, diagonalReverseEnd, diagonalReverseOffset, forwardPoints, reversePoints, originalIndex, originalEnd, midOriginalArr, modifiedIndex, modifiedEnd, midModifiedArr, deltaIsEven, quitEarlyArr);
-                    }
-                    else {
-                        // We didn't actually remember enough of the history.
-                        //Since we are quiting the diff early, we need to shift back the originalStart and modified start
-                        //back into the boundary limits since we decremented their value above beyond the boundary limit.
-                        originalStart++;
-                        modifiedStart++;
-                        return [
-                            new diffChange_1.DiffChange(originalStart, originalEnd - originalStart + 1, modifiedStart, modifiedEnd - modifiedStart + 1)
-                        ];
-                    }
-                }
-                // Run the algorithm in the reverse direction
-                diagonalReverseStart = this.ClipDiagonalBound(diagonalReverseBase - numDifferences, numDifferences, diagonalReverseBase, numDiagonals);
-                diagonalReverseEnd = this.ClipDiagonalBound(diagonalReverseBase + numDifferences, numDifferences, diagonalReverseBase, numDiagonals);
-                for (diagonal = diagonalReverseStart; diagonal <= diagonalReverseEnd; diagonal += 2) {
-                    // STEP 1: We extend the furthest reaching point in the present diagonal
-                    // by looking at the diagonals above and below and picking the one whose point
-                    // is further away from the start point (originalEnd, modifiedEnd)
-                    if (diagonal === diagonalReverseStart || (diagonal < diagonalReverseEnd && reversePoints[diagonal - 1] >= reversePoints[diagonal + 1])) {
-                        originalIndex = reversePoints[diagonal + 1] - 1;
-                    }
-                    else {
-                        originalIndex = reversePoints[diagonal - 1];
-                    }
-                    modifiedIndex = originalIndex - (diagonal - diagonalReverseBase) - diagonalReverseOffset;
-                    // Save the current originalIndex so we can test for false overlap
-                    tempOriginalIndex = originalIndex;
-                    // STEP 2: We can continue to extend the furthest reaching point in the present diagonal
-                    // as long as the elements are equal.
-                    while (originalIndex > originalStart && modifiedIndex > modifiedStart && this.ElementsAreEqual(originalIndex, modifiedIndex)) {
-                        originalIndex--;
-                        modifiedIndex--;
-                    }
-                    reversePoints[diagonal] = originalIndex;
-                    // STEP 4: If delta is even (overlap first happens on reverse when delta is even)
-                    // and diagonal is in the range of forward diagonals computed for numDifferences
-                    // then check for overlap.
-                    if (deltaIsEven && Math.abs(diagonal - diagonalForwardBase) <= numDifferences) {
-                        if (originalIndex <= forwardPoints[diagonal]) {
-                            midOriginalArr[0] = originalIndex;
-                            midModifiedArr[0] = modifiedIndex;
-                            if (tempOriginalIndex >= forwardPoints[diagonal] && MaxDifferencesHistory > 0 && numDifferences <= (MaxDifferencesHistory + 1)) {
-                                // BINGO! We overlapped, and we have the full trace in memory!
-                                return this.WALKTRACE(diagonalForwardBase, diagonalForwardStart, diagonalForwardEnd, diagonalForwardOffset, diagonalReverseBase, diagonalReverseStart, diagonalReverseEnd, diagonalReverseOffset, forwardPoints, reversePoints, originalIndex, originalEnd, midOriginalArr, modifiedIndex, modifiedEnd, midModifiedArr, deltaIsEven, quitEarlyArr);
-                            }
-                            else {
-                                // Either false overlap, or we didn't have enough memory for the full trace
-                                // Just return the recursion point
-                                return null;
-                            }
-                        }
-                    }
-                }
-                // Save current vectors to history before the next iteration
-                if (numDifferences <= MaxDifferencesHistory) {
-                    // We are allocating space for one extra int, which we fill with
-                    // the index of the diagonal base index
-                    var temp = new Array(diagonalForwardEnd - diagonalForwardStart + 2);
-                    temp[0] = diagonalForwardBase - diagonalForwardStart + 1;
-                    MyArray.Copy(forwardPoints, diagonalForwardStart, temp, 1, diagonalForwardEnd - diagonalForwardStart + 1);
-                    this.m_forwardHistory.push(temp);
-                    temp = new Array(diagonalReverseEnd - diagonalReverseStart + 2);
-                    temp[0] = diagonalReverseBase - diagonalReverseStart + 1;
-                    MyArray.Copy(reversePoints, diagonalReverseStart, temp, 1, diagonalReverseEnd - diagonalReverseStart + 1);
-                    this.m_reverseHistory.push(temp);
-                }
-            }
-            // If we got here, then we have the full trace in history. We just have to convert it to a change list
-            // NOTE: This part is a bit messy
-            return this.WALKTRACE(diagonalForwardBase, diagonalForwardStart, diagonalForwardEnd, diagonalForwardOffset, diagonalReverseBase, diagonalReverseStart, diagonalReverseEnd, diagonalReverseOffset, forwardPoints, reversePoints, originalIndex, originalEnd, midOriginalArr, modifiedIndex, modifiedEnd, midModifiedArr, deltaIsEven, quitEarlyArr);
-        };
-        /**
-         * Concatenates the two input DiffChange lists and returns the resulting
-         * list.
-         * @param The left changes
-         * @param The right changes
-         * @returns The concatenated list
-         */
-        LcsDiff.prototype.ConcatenateChanges = function (left, right) {
-            var mergedChangeArr = [];
-            var result = null;
-            if (left.length === 0 || right.length === 0) {
-                return (right.length > 0) ? right : left;
-            }
-            else if (this.ChangesOverlap(left[left.length - 1], right[0], mergedChangeArr)) {
-                // Since we break the problem down recursively, it is possible that we
-                // might recurse in the middle of a change thereby splitting it into
-                // two changes. Here in the combining stage, we detect and fuse those
-                // changes back together
-                result = new Array(left.length + right.length - 1);
-                MyArray.Copy(left, 0, result, 0, left.length - 1);
-                result[left.length - 1] = mergedChangeArr[0];
-                MyArray.Copy(right, 1, result, left.length, right.length - 1);
-                return result;
-            }
-            else {
-                result = new Array(left.length + right.length);
-                MyArray.Copy(left, 0, result, 0, left.length);
-                MyArray.Copy(right, 0, result, left.length, right.length);
-                return result;
-            }
-        };
-        /**
-         * Returns true if the two changes overlap and can be merged into a single
-         * change
-         * @param left The left change
-         * @param right The right change
-         * @param mergedChange The merged change if the two overlap, null otherwise
-         * @returns True if the two changes overlap
-         */
-        LcsDiff.prototype.ChangesOverlap = function (left, right, mergedChangeArr) {
-            Debug.Assert(left.originalStart <= right.originalStart, 'Left change is not less than or equal to right change');
-            Debug.Assert(left.modifiedStart <= right.modifiedStart, 'Left change is not less than or equal to right change');
-            if (left.originalStart + left.originalLength >= right.originalStart || left.modifiedStart + left.modifiedLength >= right.modifiedStart) {
-                var originalStart = left.originalStart;
-                var originalLength = left.originalLength;
-                var modifiedStart = left.modifiedStart;
-                var modifiedLength = left.modifiedLength;
-                if (left.originalStart + left.originalLength >= right.originalStart) {
-                    originalLength = right.originalStart + right.originalLength - left.originalStart;
-                }
-                if (left.modifiedStart + left.modifiedLength >= right.modifiedStart) {
-                    modifiedLength = right.modifiedStart + right.modifiedLength - left.modifiedStart;
-                }
-                mergedChangeArr[0] = new diffChange_1.DiffChange(originalStart, originalLength, modifiedStart, modifiedLength);
-                return true;
-            }
-            else {
-                mergedChangeArr[0] = null;
-                return false;
-            }
-        };
-        /**
-         * Helper method used to clip a diagonal index to the range of valid
-         * diagonals. This also decides whether or not the diagonal index,
-         * if it exceeds the boundary, should be clipped to the boundary or clipped
-         * one inside the boundary depending on the Even/Odd status of the boundary
-         * and numDifferences.
-         * @param diagonal The index of the diagonal to clip.
-         * @param numDifferences The current number of differences being iterated upon.
-         * @param diagonalBaseIndex The base reference diagonal.
-         * @param numDiagonals The total number of diagonals.
-         * @returns The clipped diagonal index.
-         */
-        LcsDiff.prototype.ClipDiagonalBound = function (diagonal, numDifferences, diagonalBaseIndex, numDiagonals) {
-            if (diagonal >= 0 && diagonal < numDiagonals) {
-                // Nothing to clip, its in range
-                return diagonal;
-            }
-            // diagonalsBelow: The number of diagonals below the reference diagonal
-            // diagonalsAbove: The number of diagonals above the reference diagonal
-            var diagonalsBelow = diagonalBaseIndex;
-            var diagonalsAbove = numDiagonals - diagonalBaseIndex - 1;
-            var diffEven = (numDifferences % 2 === 0);
-            if (diagonal < 0) {
-                var lowerBoundEven = (diagonalsBelow % 2 === 0);
-                return (diffEven === lowerBoundEven) ? 0 : 1;
-            }
-            else {
-                var upperBoundEven = (diagonalsAbove % 2 === 0);
-                return (diffEven === upperBoundEven) ? numDiagonals - 1 : numDiagonals - 2;
-            }
-        };
-        return LcsDiff;
-    }());
-    exports.LcsDiff = LcsDiff;
 });
 
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-define(__m[58/*vs/base/common/functional*/], __M([0/*require*/,1/*exports*/]), function (require, exports) {
+define(__m[35/*vs/base/common/functional*/], __M([1/*require*/,0/*exports*/]), function (require, exports) {
     'use strict';
     function not(fn) {
         return function () {
@@ -1048,7 +390,7 @@ define(__m[58/*vs/base/common/functional*/], __M([0/*require*/,1/*exports*/]), f
     exports.once = once;
 });
 
-define(__m[37/*vs/base/common/idGenerator*/], __M([0/*require*/,1/*exports*/]), function (require, exports) {
+define(__m[30/*vs/base/common/idGenerator*/], __M([1/*require*/,0/*exports*/]), function (require, exports) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -1068,16 +410,16 @@ define(__m[37/*vs/base/common/idGenerator*/], __M([0/*require*/,1/*exports*/]), 
     exports.defaultGenerator = new IdGenerator('id#');
 });
 
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
-define(__m[22/*vs/base/common/lifecycle*/], __M([0/*require*/,1/*exports*/]), function (require, exports) {
-    /*---------------------------------------------------------------------------------------------
-     *  Copyright (c) Microsoft Corporation. All rights reserved.
-     *  Licensed under the MIT License. See License.txt in the project root for license information.
-     *--------------------------------------------------------------------------------------------*/
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+
+
+
+
+define(__m[19/*vs/base/common/lifecycle*/], __M([1/*require*/,0/*exports*/,35/*vs/base/common/functional*/]), function (require, exports, functional_1) {
     'use strict';
     exports.empty = Object.freeze({
         dispose: function () { }
@@ -1181,12 +523,12 @@ define(__m[22/*vs/base/common/lifecycle*/], __M([0/*require*/,1/*exports*/]), fu
                 reference = this.references[key] = { counter: 0, object: this.createReferencedObject(key) };
             }
             var object = reference.object;
-            var dispose = function () {
+            var dispose = functional_1.once(function () {
                 if (--reference.counter === 0) {
                     _this.destroyReferencedObject(reference.object);
                     delete _this.references[key];
                 }
-            };
+            });
             reference.counter++;
             return { object: object, dispose: dispose };
         };
@@ -1203,347 +545,7 @@ define(__m[22/*vs/base/common/lifecycle*/], __M([0/*require*/,1/*exports*/]), fu
     exports.ImmortalReference = ImmortalReference;
 });
 
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
-
-
-
-
-
-define(__m[26/*vs/base/common/map*/], __M([0/*require*/,1/*exports*/]), function (require, exports) {
-    'use strict';
-    /**
-     * A simple map to store value by a key object. Key can be any object that has toString() function to get
-     * string value of the key.
-     */
-    var LinkedMap = (function () {
-        function LinkedMap() {
-            this.map = Object.create(null);
-            this._size = 0;
-        }
-        Object.defineProperty(LinkedMap.prototype, "size", {
-            get: function () {
-                return this._size;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        LinkedMap.prototype.get = function (k) {
-            var value = this.peek(k);
-            return value ? value : null;
-        };
-        LinkedMap.prototype.getOrSet = function (k, t) {
-            var res = this.get(k);
-            if (res) {
-                return res;
-            }
-            this.set(k, t);
-            return t;
-        };
-        LinkedMap.prototype.keys = function () {
-            var keys = [];
-            for (var key in this.map) {
-                keys.push(this.map[key].key);
-            }
-            return keys;
-        };
-        LinkedMap.prototype.values = function () {
-            var values = [];
-            for (var key in this.map) {
-                values.push(this.map[key].value);
-            }
-            return values;
-        };
-        LinkedMap.prototype.entries = function () {
-            var entries = [];
-            for (var key in this.map) {
-                entries.push(this.map[key]);
-            }
-            return entries;
-        };
-        LinkedMap.prototype.set = function (k, t) {
-            if (this.get(k)) {
-                return false; // already present!
-            }
-            this.push(k, t);
-            return true;
-        };
-        LinkedMap.prototype.delete = function (k) {
-            var value = this.get(k);
-            if (value) {
-                this.pop(k);
-                return value;
-            }
-            return null;
-        };
-        LinkedMap.prototype.has = function (k) {
-            return !!this.get(k);
-        };
-        LinkedMap.prototype.clear = function () {
-            this.map = Object.create(null);
-            this._size = 0;
-        };
-        LinkedMap.prototype.push = function (key, value) {
-            var entry = { key: key, value: value };
-            this.map[key.toString()] = entry;
-            this._size++;
-        };
-        LinkedMap.prototype.pop = function (k) {
-            delete this.map[k.toString()];
-            this._size--;
-        };
-        LinkedMap.prototype.peek = function (k) {
-            var entry = this.map[k.toString()];
-            return entry ? entry.value : null;
-        };
-        return LinkedMap;
-    }());
-    exports.LinkedMap = LinkedMap;
-    /**
-     * A simple Map<T> that optionally allows to set a limit of entries to store. Once the limit is hit,
-     * the cache will remove the entry that was last recently added. Or, if a ratio is provided below 1,
-     * all elements will be removed until the ratio is full filled (e.g. 0.75 to remove 25% of old elements).
-     */
-    var BoundedLinkedMap = (function () {
-        function BoundedLinkedMap(limit, ratio) {
-            if (limit === void 0) { limit = Number.MAX_VALUE; }
-            if (ratio === void 0) { ratio = 1; }
-            this.limit = limit;
-            this.map = Object.create(null);
-            this._size = 0;
-            this.ratio = limit * ratio;
-        }
-        Object.defineProperty(BoundedLinkedMap.prototype, "size", {
-            get: function () {
-                return this._size;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        BoundedLinkedMap.prototype.set = function (key, value) {
-            if (this.map[key]) {
-                return false; // already present!
-            }
-            var entry = { key: key, value: value };
-            this.push(entry);
-            if (this._size > this.limit) {
-                this.trim();
-            }
-            return true;
-        };
-        BoundedLinkedMap.prototype.get = function (key) {
-            var entry = this.map[key];
-            return entry ? entry.value : null;
-        };
-        BoundedLinkedMap.prototype.getOrSet = function (k, t) {
-            var res = this.get(k);
-            if (res) {
-                return res;
-            }
-            this.set(k, t);
-            return t;
-        };
-        BoundedLinkedMap.prototype.delete = function (key) {
-            var entry = this.map[key];
-            if (entry) {
-                this.map[key] = void 0;
-                this._size--;
-                if (entry.next) {
-                    entry.next.prev = entry.prev; // [A]<-[x]<-[C] = [A]<-[C]
-                }
-                else {
-                    this.head = entry.prev; // [A]-[x] = [A]
-                }
-                if (entry.prev) {
-                    entry.prev.next = entry.next; // [A]->[x]->[C] = [A]->[C]
-                }
-                else {
-                    this.tail = entry.next; // [x]-[A] = [A]
-                }
-                return entry.value;
-            }
-            return null;
-        };
-        BoundedLinkedMap.prototype.has = function (key) {
-            return !!this.map[key];
-        };
-        BoundedLinkedMap.prototype.clear = function () {
-            this.map = Object.create(null);
-            this._size = 0;
-            this.head = null;
-            this.tail = null;
-        };
-        BoundedLinkedMap.prototype.push = function (entry) {
-            if (this.head) {
-                // [A]-[B] = [A]-[B]->[X]
-                entry.prev = this.head;
-                this.head.next = entry;
-            }
-            if (!this.tail) {
-                this.tail = entry;
-            }
-            this.head = entry;
-            this.map[entry.key] = entry;
-            this._size++;
-        };
-        BoundedLinkedMap.prototype.trim = function () {
-            if (this.tail) {
-                // Remove all elements until ratio is reached
-                if (this.ratio < this.limit) {
-                    var index = 0;
-                    var current = this.tail;
-                    while (current.next) {
-                        // Remove the entry
-                        this.map[current.key] = void 0;
-                        this._size--;
-                        // if we reached the element that overflows our ratio condition
-                        // make its next element the new tail of the Map and adjust the size
-                        if (index === this.ratio) {
-                            this.tail = current.next;
-                            this.tail.prev = null;
-                            break;
-                        }
-                        // Move on
-                        current = current.next;
-                        index++;
-                    }
-                }
-                else {
-                    this.map[this.tail.key] = void 0;
-                    this._size--;
-                    // [x]-[B] = [B]
-                    this.tail = this.tail.next;
-                    this.tail.prev = null;
-                }
-            }
-        };
-        return BoundedLinkedMap;
-    }());
-    exports.BoundedLinkedMap = BoundedLinkedMap;
-    /**
-     * A subclass of Map<T> that makes an entry the MRU entry as soon
-     * as it is being accessed. In combination with the limit for the
-     * maximum number of elements in the cache, it helps to remove those
-     * entries from the cache that are LRU.
-     */
-    var LRUCache = (function (_super) {
-        __extends(LRUCache, _super);
-        function LRUCache(limit) {
-            return _super.call(this, limit) || this;
-        }
-        LRUCache.prototype.get = function (key) {
-            // Upon access of an entry, make it the head of
-            // the linked map so that it is the MRU element
-            var entry = this.map[key];
-            if (entry) {
-                this.delete(key);
-                this.push(entry);
-                return entry.value;
-            }
-            return null;
-        };
-        return LRUCache;
-    }(BoundedLinkedMap));
-    exports.LRUCache = LRUCache;
-    // --- trie'ish datastructure
-    var Node = (function () {
-        function Node() {
-            this.children = new Map();
-        }
-        return Node;
-    }());
-    /**
-     * A trie map that allows for fast look up when keys are substrings
-     * to the actual search keys (dir/subdir-problem).
-     */
-    var TrieMap = (function () {
-        function TrieMap(splitter) {
-            this._root = new Node();
-            this._splitter = splitter;
-        }
-        TrieMap.prototype.insert = function (path, element) {
-            var parts = this._splitter(path);
-            var i = 0;
-            // find insertion node
-            var node = this._root;
-            for (; i < parts.length; i++) {
-                var child = node.children[parts[i]];
-                if (child) {
-                    node = child;
-                    continue;
-                }
-                break;
-            }
-            // create new nodes
-            var newNode;
-            for (; i < parts.length; i++) {
-                newNode = new Node();
-                node.children[parts[i]] = newNode;
-                node = newNode;
-            }
-            node.element = element;
-        };
-        TrieMap.prototype.lookUp = function (path) {
-            var parts = this._splitter(path);
-            var children = this._root.children;
-            var node;
-            for (var _i = 0, parts_1 = parts; _i < parts_1.length; _i++) {
-                var part = parts_1[_i];
-                node = children[part];
-                if (!node) {
-                    return undefined;
-                }
-                children = node.children;
-            }
-            return node.element;
-        };
-        TrieMap.prototype.findSubstr = function (path) {
-            var parts = this._splitter(path);
-            var lastNode;
-            var children = this._root.children;
-            for (var _i = 0, parts_2 = parts; _i < parts_2.length; _i++) {
-                var part = parts_2[_i];
-                var node = children[part];
-                if (!node) {
-                    break;
-                }
-                if (node.element) {
-                    lastNode = node;
-                }
-                children = node.children;
-            }
-            // return the last matching node
-            // that had an element
-            if (lastNode) {
-                return lastNode.element;
-            }
-            return undefined;
-        };
-        TrieMap.prototype.findSuperstr = function (path) {
-            var parts = this._splitter(path);
-            var children = this._root.children;
-            var node;
-            for (var _i = 0, parts_3 = parts; _i < parts_3.length; _i++) {
-                var part = parts_3[_i];
-                node = children[part];
-                if (!node) {
-                    return undefined;
-                }
-                children = node.children;
-            }
-            var result = new TrieMap(this._splitter);
-            result._root = node;
-            return result;
-        };
-        return TrieMap;
-    }());
-    TrieMap.PathSplitter = function (s) { return s.split(/[\\/]/).filter(function (s) { return !!s; }); };
-    exports.TrieMap = TrieMap;
-});
-
-define(__m[10/*vs/base/common/platform*/], __M([0/*require*/,1/*exports*/]), function (require, exports) {
+define(__m[13/*vs/base/common/platform*/], __M([1/*require*/,0/*exports*/]), function (require, exports) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -1639,1436 +641,16 @@ define(__m[10/*vs/base/common/platform*/], __M([0/*require*/,1/*exports*/]), fun
     exports.clearTimeout = _globals.clearTimeout.bind(_globals);
     exports.setInterval = _globals.setInterval.bind(_globals);
     exports.clearInterval = _globals.clearInterval.bind(_globals);
+    var OperatingSystem;
+    (function (OperatingSystem) {
+        OperatingSystem[OperatingSystem["Windows"] = 1] = "Windows";
+        OperatingSystem[OperatingSystem["Macintosh"] = 2] = "Macintosh";
+        OperatingSystem[OperatingSystem["Linux"] = 3] = "Linux";
+    })(OperatingSystem = exports.OperatingSystem || (exports.OperatingSystem = {}));
+    exports.OS = (_isMacintosh ? 2 /* Macintosh */ : (_isWindows ? 1 /* Windows */ : 3 /* Linux */));
 });
 
-define(__m[8/*vs/base/common/strings*/], __M([0/*require*/,1/*exports*/,26/*vs/base/common/map*/]), function (require, exports, map_1) {
-    /*---------------------------------------------------------------------------------------------
-     *  Copyright (c) Microsoft Corporation. All rights reserved.
-     *  Licensed under the MIT License. See License.txt in the project root for license information.
-     *--------------------------------------------------------------------------------------------*/
-    'use strict';
-    /**
-     * The empty string.
-     */
-    exports.empty = '';
-    function isFalsyOrWhitespace(str) {
-        if (!str || typeof str !== 'string') {
-            return true;
-        }
-        return str.trim().length === 0;
-    }
-    exports.isFalsyOrWhitespace = isFalsyOrWhitespace;
-    /**
-     * @returns the provided number with the given number of preceding zeros.
-     */
-    function pad(n, l, char) {
-        if (char === void 0) { char = '0'; }
-        var str = '' + n;
-        var r = [str];
-        for (var i = str.length; i < l; i++) {
-            r.push(char);
-        }
-        return r.reverse().join('');
-    }
-    exports.pad = pad;
-    var _formatRegexp = /{(\d+)}/g;
-    /**
-     * Helper to produce a string with a variable number of arguments. Insert variable segments
-     * into the string using the {n} notation where N is the index of the argument following the string.
-     * @param value string to which formatting is applied
-     * @param args replacements for {n}-entries
-     */
-    function format(value) {
-        var args = [];
-        for (var _i = 1; _i < arguments.length; _i++) {
-            args[_i - 1] = arguments[_i];
-        }
-        if (args.length === 0) {
-            return value;
-        }
-        return value.replace(_formatRegexp, function (match, group) {
-            var idx = parseInt(group, 10);
-            return isNaN(idx) || idx < 0 || idx >= args.length ?
-                match :
-                args[idx];
-        });
-    }
-    exports.format = format;
-    /**
-     * Converts HTML characters inside the string to use entities instead. Makes the string safe from
-     * being used e.g. in HTMLElement.innerHTML.
-     */
-    function escape(html) {
-        return html.replace(/[<|>|&]/g, function (match) {
-            switch (match) {
-                case '<': return '&lt;';
-                case '>': return '&gt;';
-                case '&': return '&amp;';
-                default: return match;
-            }
-        });
-    }
-    exports.escape = escape;
-    /**
-     * Escapes regular expression characters in a given string
-     */
-    function escapeRegExpCharacters(value) {
-        return value.replace(/[\-\\\{\}\*\+\?\|\^\$\.\,\[\]\(\)\#\s]/g, '\\$&');
-    }
-    exports.escapeRegExpCharacters = escapeRegExpCharacters;
-    /**
-     * Removes all occurrences of needle from the beginning and end of haystack.
-     * @param haystack string to trim
-     * @param needle the thing to trim (default is a blank)
-     */
-    function trim(haystack, needle) {
-        if (needle === void 0) { needle = ' '; }
-        var trimmed = ltrim(haystack, needle);
-        return rtrim(trimmed, needle);
-    }
-    exports.trim = trim;
-    /**
-     * Removes all occurrences of needle from the beginning of haystack.
-     * @param haystack string to trim
-     * @param needle the thing to trim
-     */
-    function ltrim(haystack, needle) {
-        if (!haystack || !needle) {
-            return haystack;
-        }
-        var needleLen = needle.length;
-        if (needleLen === 0 || haystack.length === 0) {
-            return haystack;
-        }
-        var offset = 0, idx = -1;
-        while ((idx = haystack.indexOf(needle, offset)) === offset) {
-            offset = offset + needleLen;
-        }
-        return haystack.substring(offset);
-    }
-    exports.ltrim = ltrim;
-    /**
-     * Removes all occurrences of needle from the end of haystack.
-     * @param haystack string to trim
-     * @param needle the thing to trim
-     */
-    function rtrim(haystack, needle) {
-        if (!haystack || !needle) {
-            return haystack;
-        }
-        var needleLen = needle.length, haystackLen = haystack.length;
-        if (needleLen === 0 || haystackLen === 0) {
-            return haystack;
-        }
-        var offset = haystackLen, idx = -1;
-        while (true) {
-            idx = haystack.lastIndexOf(needle, offset - 1);
-            if (idx === -1 || idx + needleLen !== offset) {
-                break;
-            }
-            if (idx === 0) {
-                return '';
-            }
-            offset = idx;
-        }
-        return haystack.substring(0, offset);
-    }
-    exports.rtrim = rtrim;
-    function convertSimple2RegExpPattern(pattern) {
-        return pattern.replace(/[\-\\\{\}\+\?\|\^\$\.\,\[\]\(\)\#\s]/g, '\\$&').replace(/[\*]/g, '.*');
-    }
-    exports.convertSimple2RegExpPattern = convertSimple2RegExpPattern;
-    function stripWildcards(pattern) {
-        return pattern.replace(/\*/g, '');
-    }
-    exports.stripWildcards = stripWildcards;
-    /**
-     * Determines if haystack starts with needle.
-     */
-    function startsWith(haystack, needle) {
-        if (haystack.length < needle.length) {
-            return false;
-        }
-        for (var i = 0; i < needle.length; i++) {
-            if (haystack[i] !== needle[i]) {
-                return false;
-            }
-        }
-        return true;
-    }
-    exports.startsWith = startsWith;
-    /**
-     * Determines if haystack ends with needle.
-     */
-    function endsWith(haystack, needle) {
-        var diff = haystack.length - needle.length;
-        if (diff > 0) {
-            return haystack.indexOf(needle, diff) === diff;
-        }
-        else if (diff === 0) {
-            return haystack === needle;
-        }
-        else {
-            return false;
-        }
-    }
-    exports.endsWith = endsWith;
-    function indexOfIgnoreCase(haystack, needle, position) {
-        if (position === void 0) { position = 0; }
-        var index = haystack.indexOf(needle, position);
-        if (index < 0) {
-            if (position > 0) {
-                haystack = haystack.substr(position);
-            }
-            needle = escapeRegExpCharacters(needle);
-            index = haystack.search(new RegExp(needle, 'i'));
-        }
-        return index;
-    }
-    exports.indexOfIgnoreCase = indexOfIgnoreCase;
-    function createRegExp(searchString, isRegex, options) {
-        if (options === void 0) { options = {}; }
-        if (searchString === '') {
-            throw new Error('Cannot create regex from empty string');
-        }
-        if (!isRegex) {
-            searchString = searchString.replace(/[\-\\\{\}\*\+\?\|\^\$\.\,\[\]\(\)\#\s]/g, '\\$&');
-        }
-        if (options.wholeWord) {
-            if (!/\B/.test(searchString.charAt(0))) {
-                searchString = '\\b' + searchString;
-            }
-            if (!/\B/.test(searchString.charAt(searchString.length - 1))) {
-                searchString = searchString + '\\b';
-            }
-        }
-        var modifiers = '';
-        if (options.global) {
-            modifiers += 'g';
-        }
-        if (!options.matchCase) {
-            modifiers += 'i';
-        }
-        if (options.multiline) {
-            modifiers += 'm';
-        }
-        return new RegExp(searchString, modifiers);
-    }
-    exports.createRegExp = createRegExp;
-    function regExpLeadsToEndlessLoop(regexp) {
-        // Exit early if it's one of these special cases which are meant to match
-        // against an empty string
-        if (regexp.source === '^' || regexp.source === '^$' || regexp.source === '$') {
-            return false;
-        }
-        // We check against an empty string. If the regular expression doesn't advance
-        // (e.g. ends in an endless loop) it will match an empty string.
-        var match = regexp.exec('');
-        return (match && regexp.lastIndex === 0);
-    }
-    exports.regExpLeadsToEndlessLoop = regExpLeadsToEndlessLoop;
-    /**
-     * The normalize() method returns the Unicode Normalization Form of a given string. The form will be
-     * the Normalization Form Canonical Composition.
-     *
-     * @see {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/normalize}
-     */
-    exports.canNormalize = typeof (''.normalize) === 'function';
-    var nonAsciiCharactersPattern = /[^\u0000-\u0080]/;
-    var normalizedCache = new map_1.BoundedLinkedMap(10000); // bounded to 10000 elements
-    function normalizeNFC(str) {
-        if (!exports.canNormalize || !str) {
-            return str;
-        }
-        var cached = normalizedCache.get(str);
-        if (cached) {
-            return cached;
-        }
-        var res;
-        if (nonAsciiCharactersPattern.test(str)) {
-            res = str.normalize('NFC');
-        }
-        else {
-            res = str;
-        }
-        // Use the cache for fast lookup
-        normalizedCache.set(str, res);
-        return res;
-    }
-    exports.normalizeNFC = normalizeNFC;
-    /**
-     * Returns first index of the string that is not whitespace.
-     * If string is empty or contains only whitespaces, returns -1
-     */
-    function firstNonWhitespaceIndex(str) {
-        for (var i = 0, len = str.length; i < len; i++) {
-            var chCode = str.charCodeAt(i);
-            if (chCode !== 32 /* Space */ && chCode !== 9 /* Tab */) {
-                return i;
-            }
-        }
-        return -1;
-    }
-    exports.firstNonWhitespaceIndex = firstNonWhitespaceIndex;
-    /**
-     * Returns the leading whitespace of the string.
-     * If the string contains only whitespaces, returns entire string
-     */
-    function getLeadingWhitespace(str) {
-        for (var i = 0, len = str.length; i < len; i++) {
-            var chCode = str.charCodeAt(i);
-            if (chCode !== 32 /* Space */ && chCode !== 9 /* Tab */) {
-                return str.substring(0, i);
-            }
-        }
-        return str;
-    }
-    exports.getLeadingWhitespace = getLeadingWhitespace;
-    /**
-     * Returns last index of the string that is not whitespace.
-     * If string is empty or contains only whitespaces, returns -1
-     */
-    function lastNonWhitespaceIndex(str, startIndex) {
-        if (startIndex === void 0) { startIndex = str.length - 1; }
-        for (var i = startIndex; i >= 0; i--) {
-            var chCode = str.charCodeAt(i);
-            if (chCode !== 32 /* Space */ && chCode !== 9 /* Tab */) {
-                return i;
-            }
-        }
-        return -1;
-    }
-    exports.lastNonWhitespaceIndex = lastNonWhitespaceIndex;
-    function compare(a, b) {
-        if (a < b) {
-            return -1;
-        }
-        else if (a > b) {
-            return 1;
-        }
-        else {
-            return 0;
-        }
-    }
-    exports.compare = compare;
-    function compareIgnoreCase(a, b) {
-        var len = Math.min(a.length, b.length);
-        for (var i = 0; i < len; i++) {
-            var codeA = a.charCodeAt(i);
-            var codeB = b.charCodeAt(i);
-            if (codeA === codeB) {
-                // equal
-                continue;
-            }
-            if (isAsciiLetter(codeA) && isAsciiLetter(codeB)) {
-                var diff = codeA - codeB;
-                if (diff === 32 || diff === -32) {
-                    // equal -> ignoreCase
-                    continue;
-                }
-                else {
-                    return diff;
-                }
-            }
-            else {
-                return compare(a.toLowerCase(), b.toLowerCase());
-            }
-        }
-        if (a.length < b.length) {
-            return -1;
-        }
-        else if (a.length > b.length) {
-            return 1;
-        }
-        else {
-            return 0;
-        }
-    }
-    exports.compareIgnoreCase = compareIgnoreCase;
-    function isAsciiLetter(code) {
-        return (code >= 97 /* a */ && code <= 122 /* z */) || (code >= 65 /* A */ && code <= 90 /* Z */);
-    }
-    function equalsIgnoreCase(a, b) {
-        var len1 = a.length, len2 = b.length;
-        if (len1 !== len2) {
-            return false;
-        }
-        for (var i = 0; i < len1; i++) {
-            var codeA = a.charCodeAt(i), codeB = b.charCodeAt(i);
-            if (codeA === codeB) {
-                continue;
-            }
-            else if (isAsciiLetter(codeA) && isAsciiLetter(codeB)) {
-                var diff = Math.abs(codeA - codeB);
-                if (diff !== 0 && diff !== 32) {
-                    return false;
-                }
-            }
-            else {
-                if (String.fromCharCode(codeA).toLocaleLowerCase() !== String.fromCharCode(codeB).toLocaleLowerCase()) {
-                    return false;
-                }
-            }
-        }
-        return true;
-    }
-    exports.equalsIgnoreCase = equalsIgnoreCase;
-    /**
-     * @returns the length of the common prefix of the two strings.
-     */
-    function commonPrefixLength(a, b) {
-        var i, len = Math.min(a.length, b.length);
-        for (i = 0; i < len; i++) {
-            if (a.charCodeAt(i) !== b.charCodeAt(i)) {
-                return i;
-            }
-        }
-        return len;
-    }
-    exports.commonPrefixLength = commonPrefixLength;
-    /**
-     * @returns the length of the common suffix of the two strings.
-     */
-    function commonSuffixLength(a, b) {
-        var i, len = Math.min(a.length, b.length);
-        var aLastIndex = a.length - 1;
-        var bLastIndex = b.length - 1;
-        for (i = 0; i < len; i++) {
-            if (a.charCodeAt(aLastIndex - i) !== b.charCodeAt(bLastIndex - i)) {
-                return i;
-            }
-        }
-        return len;
-    }
-    exports.commonSuffixLength = commonSuffixLength;
-    // --- unicode
-    // http://en.wikipedia.org/wiki/Surrogate_pair
-    // Returns the code point starting at a specified index in a string
-    // Code points U+0000 to U+D7FF and U+E000 to U+FFFF are represented on a single character
-    // Code points U+10000 to U+10FFFF are represented on two consecutive characters
-    //export function getUnicodePoint(str:string, index:number, len:number):number {
-    //	let chrCode = str.charCodeAt(index);
-    //	if (0xD800 <= chrCode && chrCode <= 0xDBFF && index + 1 < len) {
-    //		let nextChrCode = str.charCodeAt(index + 1);
-    //		if (0xDC00 <= nextChrCode && nextChrCode <= 0xDFFF) {
-    //			return (chrCode - 0xD800) << 10 + (nextChrCode - 0xDC00) + 0x10000;
-    //		}
-    //	}
-    //	return chrCode;
-    //}
-    function isHighSurrogate(charCode) {
-        return (0xD800 <= charCode && charCode <= 0xDBFF);
-    }
-    exports.isHighSurrogate = isHighSurrogate;
-    function isLowSurrogate(charCode) {
-        return (0xDC00 <= charCode && charCode <= 0xDFFF);
-    }
-    exports.isLowSurrogate = isLowSurrogate;
-    /**
-     * Generated using https://github.com/alexandrudima/unicode-utils/blob/master/generate-rtl-test.js
-     */
-    var CONTAINS_RTL = /(?:[\u05BE\u05C0\u05C3\u05C6\u05D0-\u05F4\u0608\u060B\u060D\u061B-\u064A\u066D-\u066F\u0671-\u06D5\u06E5\u06E6\u06EE\u06EF\u06FA-\u0710\u0712-\u072F\u074D-\u07A5\u07B1-\u07EA\u07F4\u07F5\u07FA-\u0815\u081A\u0824\u0828\u0830-\u0858\u085E-\u08BD\u200F\uFB1D\uFB1F-\uFB28\uFB2A-\uFD3D\uFD50-\uFDFC\uFE70-\uFEFC]|\uD802[\uDC00-\uDD1B\uDD20-\uDE00\uDE10-\uDE33\uDE40-\uDEE4\uDEEB-\uDF35\uDF40-\uDFFF]|\uD803[\uDC00-\uDCFF]|\uD83A[\uDC00-\uDCCF\uDD00-\uDD43\uDD50-\uDFFF]|\uD83B[\uDC00-\uDEBB])/;
-    /**
-     * Returns true if `str` contains any Unicode character that is classified as "R" or "AL".
-     */
-    function containsRTL(str) {
-        return CONTAINS_RTL.test(str);
-    }
-    exports.containsRTL = containsRTL;
-    var IS_BASIC_ASCII = /^[\t\n\r\x20-\x7E]*$/;
-    /**
-     * Returns true if `str` contains only basic ASCII characters in the range 32 - 126 (including 32 and 126) or \n, \r, \t
-     */
-    function isBasicASCII(str) {
-        return IS_BASIC_ASCII.test(str);
-    }
-    exports.isBasicASCII = isBasicASCII;
-    function isFullWidthCharacter(charCode) {
-        // Do a cheap trick to better support wrapping of wide characters, treat them as 2 columns
-        // http://jrgraphix.net/research/unicode_blocks.php
-        //          2E80 — 2EFF   CJK Radicals Supplement
-        //          2F00 — 2FDF   Kangxi Radicals
-        //          2FF0 — 2FFF   Ideographic Description Characters
-        //          3000 — 303F   CJK Symbols and Punctuation
-        //          3040 — 309F   Hiragana
-        //          30A0 — 30FF   Katakana
-        //          3100 — 312F   Bopomofo
-        //          3130 — 318F   Hangul Compatibility Jamo
-        //          3190 — 319F   Kanbun
-        //          31A0 — 31BF   Bopomofo Extended
-        //          31F0 — 31FF   Katakana Phonetic Extensions
-        //          3200 — 32FF   Enclosed CJK Letters and Months
-        //          3300 — 33FF   CJK Compatibility
-        //          3400 — 4DBF   CJK Unified Ideographs Extension A
-        //          4DC0 — 4DFF   Yijing Hexagram Symbols
-        //          4E00 — 9FFF   CJK Unified Ideographs
-        //          A000 — A48F   Yi Syllables
-        //          A490 — A4CF   Yi Radicals
-        //          AC00 — D7AF   Hangul Syllables
-        // [IGNORE] D800 — DB7F   High Surrogates
-        // [IGNORE] DB80 — DBFF   High Private Use Surrogates
-        // [IGNORE] DC00 — DFFF   Low Surrogates
-        // [IGNORE] E000 — F8FF   Private Use Area
-        //          F900 — FAFF   CJK Compatibility Ideographs
-        // [IGNORE] FB00 — FB4F   Alphabetic Presentation Forms
-        // [IGNORE] FB50 — FDFF   Arabic Presentation Forms-A
-        // [IGNORE] FE00 — FE0F   Variation Selectors
-        // [IGNORE] FE20 — FE2F   Combining Half Marks
-        // [IGNORE] FE30 — FE4F   CJK Compatibility Forms
-        // [IGNORE] FE50 — FE6F   Small Form Variants
-        // [IGNORE] FE70 — FEFF   Arabic Presentation Forms-B
-        //          FF00 — FFEF   Halfwidth and Fullwidth Forms
-        //               [https://en.wikipedia.org/wiki/Halfwidth_and_fullwidth_forms]
-        //               of which FF01 - FF5E fullwidth ASCII of 21 to 7E
-        // [IGNORE]    and FF65 - FFDC halfwidth of Katakana and Hangul
-        // [IGNORE] FFF0 — FFFF   Specials
-        charCode = +charCode; // @perf
-        return ((charCode >= 0x2E80 && charCode <= 0xD7AF)
-            || (charCode >= 0xF900 && charCode <= 0xFAFF)
-            || (charCode >= 0xFF01 && charCode <= 0xFF5E));
-    }
-    exports.isFullWidthCharacter = isFullWidthCharacter;
-    /**
-     * Computes the difference score for two strings. More similar strings have a higher score.
-     * We use largest common subsequence dynamic programming approach but penalize in the end for length differences.
-     * Strings that have a large length difference will get a bad default score 0.
-     * Complexity - both time and space O(first.length * second.length)
-     * Dynamic programming LCS computation http://en.wikipedia.org/wiki/Longest_common_subsequence_problem
-     *
-     * @param first a string
-     * @param second a string
-     */
-    function difference(first, second, maxLenDelta) {
-        if (maxLenDelta === void 0) { maxLenDelta = 4; }
-        var lengthDifference = Math.abs(first.length - second.length);
-        // We only compute score if length of the currentWord and length of entry.name are similar.
-        if (lengthDifference > maxLenDelta) {
-            return 0;
-        }
-        // Initialize LCS (largest common subsequence) matrix.
-        var LCS = [];
-        var zeroArray = [];
-        var i, j;
-        for (i = 0; i < second.length + 1; ++i) {
-            zeroArray.push(0);
-        }
-        for (i = 0; i < first.length + 1; ++i) {
-            LCS.push(zeroArray);
-        }
-        for (i = 1; i < first.length + 1; ++i) {
-            for (j = 1; j < second.length + 1; ++j) {
-                if (first[i - 1] === second[j - 1]) {
-                    LCS[i][j] = LCS[i - 1][j - 1] + 1;
-                }
-                else {
-                    LCS[i][j] = Math.max(LCS[i - 1][j], LCS[i][j - 1]);
-                }
-            }
-        }
-        return LCS[first.length][second.length] - Math.sqrt(lengthDifference);
-    }
-    exports.difference = difference;
-    /**
-     * Returns an array in which every entry is the offset of a
-     * line. There is always one entry which is zero.
-     */
-    function computeLineStarts(text) {
-        var regexp = /\r\n|\r|\n/g, ret = [0], match;
-        while ((match = regexp.exec(text))) {
-            ret.push(regexp.lastIndex);
-        }
-        return ret;
-    }
-    exports.computeLineStarts = computeLineStarts;
-    /**
-     * Given a string and a max length returns a shorted version. Shorting
-     * happens at favorable positions - such as whitespace or punctuation characters.
-     */
-    function lcut(text, n) {
-        if (text.length < n) {
-            return text;
-        }
-        var segments = text.split(/\b/), count = 0;
-        for (var i = segments.length - 1; i >= 0; i--) {
-            count += segments[i].length;
-            if (count > n) {
-                segments.splice(0, i);
-                break;
-            }
-        }
-        return segments.join(exports.empty).replace(/^\s/, exports.empty);
-    }
-    exports.lcut = lcut;
-    // Escape codes
-    // http://en.wikipedia.org/wiki/ANSI_escape_code
-    var EL = /\x1B\x5B[12]?K/g; // Erase in line
-    var COLOR_START = /\x1b\[\d+m/g; // Color
-    var COLOR_END = /\x1b\[0?m/g; // Color
-    function removeAnsiEscapeCodes(str) {
-        if (str) {
-            str = str.replace(EL, '');
-            str = str.replace(COLOR_START, '');
-            str = str.replace(COLOR_END, '');
-        }
-        return str;
-    }
-    exports.removeAnsiEscapeCodes = removeAnsiEscapeCodes;
-    // -- UTF-8 BOM
-    exports.UTF8_BOM_CHARACTER = String.fromCharCode(65279 /* UTF8_BOM */);
-    function startsWithUTF8BOM(str) {
-        return (str && str.length > 0 && str.charCodeAt(0) === 65279 /* UTF8_BOM */);
-    }
-    exports.startsWithUTF8BOM = startsWithUTF8BOM;
-    /**
-     * Appends two strings. If the appended result is longer than maxLength,
-     * trims the start of the result and replaces it with '...'.
-     */
-    function appendWithLimit(first, second, maxLength) {
-        var newLength = first.length + second.length;
-        if (newLength > maxLength) {
-            first = '...' + first.substr(newLength - maxLength);
-        }
-        if (second.length > maxLength) {
-            first += second.substr(second.length - maxLength);
-        }
-        else {
-            first += second;
-        }
-        return first;
-    }
-    exports.appendWithLimit = appendWithLimit;
-    function safeBtoa(str) {
-        return btoa(encodeURIComponent(str)); // we use encodeURIComponent because btoa fails for non Latin 1 values
-    }
-    exports.safeBtoa = safeBtoa;
-    function repeat(s, count) {
-        var result = '';
-        for (var i = 0; i < count; i++) {
-            result += s;
-        }
-        return result;
-    }
-    exports.repeat = repeat;
-});
-
-define(__m[14/*vs/base/common/paths*/], __M([0/*require*/,1/*exports*/,10/*vs/base/common/platform*/,20/*vs/base/common/arrays*/,8/*vs/base/common/strings*/]), function (require, exports, platform_1, arrays_1, strings_1) {
-    /*---------------------------------------------------------------------------------------------
-     *  Copyright (c) Microsoft Corporation. All rights reserved.
-     *  Licensed under the MIT License. See License.txt in the project root for license information.
-     *--------------------------------------------------------------------------------------------*/
-    'use strict';
-    /**
-     * The forward slash path separator.
-     */
-    exports.sep = '/';
-    /**
-     * The native path separator depending on the OS.
-     */
-    exports.nativeSep = platform_1.isWindows ? '\\' : '/';
-    function relative(from, to) {
-        // ignore trailing slashes
-        var originalNormalizedFrom = strings_1.rtrim(normalize(from), exports.sep);
-        var originalNormalizedTo = strings_1.rtrim(normalize(to), exports.sep);
-        // we're assuming here that any non=linux OS is case insensitive
-        // so we must compare each part in its lowercase form
-        var normalizedFrom = platform_1.isLinux ? originalNormalizedFrom : originalNormalizedFrom.toLowerCase();
-        var normalizedTo = platform_1.isLinux ? originalNormalizedTo : originalNormalizedTo.toLowerCase();
-        var fromParts = normalizedFrom.split(exports.sep);
-        var toParts = normalizedTo.split(exports.sep);
-        var i = 0, max = Math.min(fromParts.length, toParts.length);
-        for (; i < max; i++) {
-            if (fromParts[i] !== toParts[i]) {
-                break;
-            }
-        }
-        var result = arrays_1.fill(fromParts.length - i, function () { return '..'; }).concat(originalNormalizedTo.split(exports.sep).slice(i));
-        return result.join(exports.sep);
-    }
-    exports.relative = relative;
-    /**
-     * @returns the directory name of a path.
-     */
-    function dirname(path) {
-        var idx = ~path.lastIndexOf('/') || ~path.lastIndexOf('\\');
-        if (idx === 0) {
-            return '.';
-        }
-        else if (~idx === 0) {
-            return path[0];
-        }
-        else {
-            var res = path.substring(0, ~idx);
-            if (platform_1.isWindows && res[res.length - 1] === ':') {
-                res += exports.nativeSep; // make sure drive letters end with backslash
-            }
-            return res;
-        }
-    }
-    exports.dirname = dirname;
-    /**
-     * @returns the base name of a path.
-     */
-    function basename(path) {
-        var idx = ~path.lastIndexOf('/') || ~path.lastIndexOf('\\');
-        if (idx === 0) {
-            return path;
-        }
-        else if (~idx === path.length - 1) {
-            return basename(path.substring(0, path.length - 1));
-        }
-        else {
-            return path.substr(~idx + 1);
-        }
-    }
-    exports.basename = basename;
-    /**
-     * @returns {{.far}} from boo.far or the empty string.
-     */
-    function extname(path) {
-        path = basename(path);
-        var idx = ~path.lastIndexOf('.');
-        return idx ? path.substring(~idx) : '';
-    }
-    exports.extname = extname;
-    var _posixBadPath = /(\/\.\.?\/)|(\/\.\.?)$|^(\.\.?\/)|(\/\/+)|(\\)/;
-    var _winBadPath = /(\\\.\.?\\)|(\\\.\.?)$|^(\.\.?\\)|(\\\\+)|(\/)/;
-    function _isNormal(path, win) {
-        return win
-            ? !_winBadPath.test(path)
-            : !_posixBadPath.test(path);
-    }
-    function normalize(path, toOSPath) {
-        if (path === null || path === void 0) {
-            return path;
-        }
-        var len = path.length;
-        if (len === 0) {
-            return '.';
-        }
-        var wantsBackslash = platform_1.isWindows && toOSPath;
-        if (_isNormal(path, wantsBackslash)) {
-            return path;
-        }
-        var sep = wantsBackslash ? '\\' : '/';
-        var root = getRoot(path, sep);
-        // skip the root-portion of the path
-        var start = root.length;
-        var skip = false;
-        var res = '';
-        for (var end = root.length; end <= len; end++) {
-            // either at the end or at a path-separator character
-            if (end === len || path.charCodeAt(end) === 47 /* Slash */ || path.charCodeAt(end) === 92 /* Backslash */) {
-                if (streql(path, start, end, '..')) {
-                    // skip current and remove parent (if there is already something)
-                    var prev_start = res.lastIndexOf(sep);
-                    var prev_part = res.slice(prev_start + 1);
-                    if ((root || prev_part.length > 0) && prev_part !== '..') {
-                        res = prev_start === -1 ? '' : res.slice(0, prev_start);
-                        skip = true;
-                    }
-                }
-                else if (streql(path, start, end, '.') && (root || res || end < len - 1)) {
-                    // skip current (if there is already something or if there is more to come)
-                    skip = true;
-                }
-                if (!skip) {
-                    var part = path.slice(start, end);
-                    if (res !== '' && res[res.length - 1] !== sep) {
-                        res += sep;
-                    }
-                    res += part;
-                }
-                start = end + 1;
-                skip = false;
-            }
-        }
-        return root + res;
-    }
-    exports.normalize = normalize;
-    function streql(value, start, end, other) {
-        return start + other.length === end && value.indexOf(other, start) === start;
-    }
-    /**
-     * Computes the _root_ this path, like `getRoot('c:\files') === c:\`,
-     * `getRoot('files:///files/path') === files:///`,
-     * or `getRoot('\\server\shares\path') === \\server\shares\`
-     */
-    function getRoot(path, sep) {
-        if (sep === void 0) { sep = '/'; }
-        if (!path) {
-            return '';
-        }
-        var len = path.length;
-        var code = path.charCodeAt(0);
-        if (code === 47 /* Slash */ || code === 92 /* Backslash */) {
-            code = path.charCodeAt(1);
-            if (code === 47 /* Slash */ || code === 92 /* Backslash */) {
-                // UNC candidate \\localhost\shares\ddd
-                //               ^^^^^^^^^^^^^^^^^^^
-                code = path.charCodeAt(2);
-                if (code !== 47 /* Slash */ && code !== 92 /* Backslash */) {
-                    var pos_1 = 3;
-                    var start = pos_1;
-                    for (; pos_1 < len; pos_1++) {
-                        code = path.charCodeAt(pos_1);
-                        if (code === 47 /* Slash */ || code === 92 /* Backslash */) {
-                            break;
-                        }
-                    }
-                    code = path.charCodeAt(pos_1 + 1);
-                    if (start !== pos_1 && code !== 47 /* Slash */ && code !== 92 /* Backslash */) {
-                        pos_1 += 1;
-                        for (; pos_1 < len; pos_1++) {
-                            code = path.charCodeAt(pos_1);
-                            if (code === 47 /* Slash */ || code === 92 /* Backslash */) {
-                                return path.slice(0, pos_1 + 1) // consume this separator
-                                    .replace(/[\\/]/g, sep);
-                            }
-                        }
-                    }
-                }
-            }
-            // /user/far
-            // ^
-            return sep;
-        }
-        else if ((code >= 65 /* A */ && code <= 90 /* Z */) || (code >= 97 /* a */ && code <= 122 /* z */)) {
-            // check for windows drive letter c:\ or c:
-            if (path.charCodeAt(1) === 58 /* Colon */) {
-                code = path.charCodeAt(2);
-                if (code === 47 /* Slash */ || code === 92 /* Backslash */) {
-                    // C:\fff
-                    // ^^^
-                    return path.slice(0, 2) + sep;
-                }
-                else {
-                    // C:
-                    // ^^
-                    return path.slice(0, 2);
-                }
-            }
-        }
-        // check for URI
-        // scheme://authority/path
-        // ^^^^^^^^^^^^^^^^^^^
-        var pos = path.indexOf('://');
-        if (pos !== -1) {
-            pos += 3; // 3 -> "://".length
-            for (; pos < len; pos++) {
-                code = path.charCodeAt(pos);
-                if (code === 47 /* Slash */ || code === 92 /* Backslash */) {
-                    return path.slice(0, pos + 1); // consume this separator
-                }
-            }
-        }
-        return '';
-    }
-    exports.getRoot = getRoot;
-    exports.join = function () {
-        // Not using a function with var-args because of how TS compiles
-        // them to JS - it would result in 2*n runtime cost instead
-        // of 1*n, where n is parts.length.
-        var value = '';
-        for (var i = 0; i < arguments.length; i++) {
-            var part = arguments[i];
-            if (i > 0) {
-                // add the separater between two parts unless
-                // there already is one
-                var last = value.charCodeAt(value.length - 1);
-                if (last !== 47 /* Slash */ && last !== 92 /* Backslash */) {
-                    var next = part.charCodeAt(0);
-                    if (next !== 47 /* Slash */ && next !== 92 /* Backslash */) {
-                        value += exports.sep;
-                    }
-                }
-            }
-            value += part;
-        }
-        return normalize(value);
-    };
-    /**
-     * Check if the path follows this pattern: `\\hostname\sharename`.
-     *
-     * @see https://msdn.microsoft.com/en-us/library/gg465305.aspx
-     * @return A boolean indication if the path is a UNC path, on none-windows
-     * always false.
-     */
-    function isUNC(path) {
-        if (!platform_1.isWindows) {
-            // UNC is a windows concept
-            return false;
-        }
-        if (!path || path.length < 5) {
-            // at least \\a\b
-            return false;
-        }
-        var code = path.charCodeAt(0);
-        if (code !== 92 /* Backslash */) {
-            return false;
-        }
-        code = path.charCodeAt(1);
-        if (code !== 92 /* Backslash */) {
-            return false;
-        }
-        var pos = 2;
-        var start = pos;
-        for (; pos < path.length; pos++) {
-            code = path.charCodeAt(pos);
-            if (code === 92 /* Backslash */) {
-                break;
-            }
-        }
-        if (start === pos) {
-            return false;
-        }
-        code = path.charCodeAt(pos + 1);
-        if (isNaN(code) || code === 92 /* Backslash */) {
-            return false;
-        }
-        return true;
-    }
-    exports.isUNC = isUNC;
-    function isPosixAbsolute(path) {
-        return path && path[0] === '/';
-    }
-    function makePosixAbsolute(path) {
-        return isPosixAbsolute(normalize(path)) ? path : exports.sep + path;
-    }
-    exports.makePosixAbsolute = makePosixAbsolute;
-    function isEqualOrParent(path, candidate) {
-        if (path === candidate) {
-            return true;
-        }
-        path = normalize(path);
-        candidate = normalize(candidate);
-        var candidateLen = candidate.length;
-        var lastCandidateChar = candidate.charCodeAt(candidateLen - 1);
-        if (lastCandidateChar === 47 /* Slash */) {
-            candidate = candidate.substring(0, candidateLen - 1);
-            candidateLen -= 1;
-        }
-        if (path === candidate) {
-            return true;
-        }
-        if (!platform_1.isLinux) {
-            // case insensitive
-            path = path.toLowerCase();
-            candidate = candidate.toLowerCase();
-        }
-        if (path === candidate) {
-            return true;
-        }
-        if (path.indexOf(candidate) !== 0) {
-            return false;
-        }
-        var char = path.charCodeAt(candidateLen);
-        return char === 47 /* Slash */;
-    }
-    exports.isEqualOrParent = isEqualOrParent;
-    // Reference: https://en.wikipedia.org/wiki/Filename
-    var INVALID_FILE_CHARS = platform_1.isWindows ? /[\\/:\*\?"<>\|]/g : /[\\/]/g;
-    var WINDOWS_FORBIDDEN_NAMES = /^(con|prn|aux|clock\$|nul|lpt[0-9]|com[0-9])$/i;
-    function isValidBasename(name) {
-        if (!name || name.length === 0 || /^\s+$/.test(name)) {
-            return false; // require a name that is not just whitespace
-        }
-        INVALID_FILE_CHARS.lastIndex = 0; // the holy grail of software development
-        if (INVALID_FILE_CHARS.test(name)) {
-            return false; // check for certain invalid file characters
-        }
-        if (platform_1.isWindows && WINDOWS_FORBIDDEN_NAMES.test(name)) {
-            return false; // check for certain invalid file names
-        }
-        if (name === '.' || name === '..') {
-            return false; // check for reserved values
-        }
-        if (platform_1.isWindows && name[name.length - 1] === '.') {
-            return false; // Windows: file cannot end with a "."
-        }
-        if (platform_1.isWindows && name.length !== name.trim().length) {
-            return false; // Windows: file cannot end with a whitespace
-        }
-        return true;
-    }
-    exports.isValidBasename = isValidBasename;
-});
-
-define(__m[29/*vs/base/common/glob*/], __M([0/*require*/,1/*exports*/,20/*vs/base/common/arrays*/,8/*vs/base/common/strings*/,14/*vs/base/common/paths*/,26/*vs/base/common/map*/]), function (require, exports, arrays, strings, paths, map_1) {
-    /*---------------------------------------------------------------------------------------------
-     *  Copyright (c) Microsoft Corporation. All rights reserved.
-     *  Licensed under the MIT License. See License.txt in the project root for license information.
-     *--------------------------------------------------------------------------------------------*/
-    'use strict';
-    var PATH_REGEX = '[/\\\\]'; // any slash or backslash
-    var NO_PATH_REGEX = '[^/\\\\]'; // any non-slash and non-backslash
-    var ALL_FORWARD_SLASHES = /\//g;
-    function starsToRegExp(starCount) {
-        switch (starCount) {
-            case 0:
-                return '';
-            case 1:
-                return NO_PATH_REGEX + "*?"; // 1 star matches any number of characters except path separator (/ and \) - non greedy (?)
-            default:
-                // Matches:  (Path Sep OR Path Val followed by Path Sep OR Path Sep followed by Path Val) 0-many times
-                // Group is non capturing because we don't need to capture at all (?:...)
-                // Overall we use non-greedy matching because it could be that we match too much
-                return "(?:" + PATH_REGEX + "|" + NO_PATH_REGEX + "+" + PATH_REGEX + "|" + PATH_REGEX + NO_PATH_REGEX + "+)*?";
-        }
-    }
-    function splitGlobAware(pattern, splitChar) {
-        if (!pattern) {
-            return [];
-        }
-        var segments = [];
-        var inBraces = false;
-        var inBrackets = false;
-        var char;
-        var curVal = '';
-        for (var i = 0; i < pattern.length; i++) {
-            char = pattern[i];
-            switch (char) {
-                case splitChar:
-                    if (!inBraces && !inBrackets) {
-                        segments.push(curVal);
-                        curVal = '';
-                        continue;
-                    }
-                    break;
-                case '{':
-                    inBraces = true;
-                    break;
-                case '}':
-                    inBraces = false;
-                    break;
-                case '[':
-                    inBrackets = true;
-                    break;
-                case ']':
-                    inBrackets = false;
-                    break;
-            }
-            curVal += char;
-        }
-        // Tail
-        if (curVal) {
-            segments.push(curVal);
-        }
-        return segments;
-    }
-    exports.splitGlobAware = splitGlobAware;
-    function parseRegExp(pattern) {
-        if (!pattern) {
-            return '';
-        }
-        var regEx = '';
-        // Split up into segments for each slash found
-        var segments = splitGlobAware(pattern, '/');
-        // Special case where we only have globstars
-        if (segments.every(function (s) { return s === '**'; })) {
-            regEx = '.*';
-        }
-        else {
-            var previousSegmentWasGlobStar_1 = false;
-            segments.forEach(function (segment, index) {
-                // Globstar is special
-                if (segment === '**') {
-                    // if we have more than one globstar after another, just ignore it
-                    if (!previousSegmentWasGlobStar_1) {
-                        regEx += starsToRegExp(2);
-                        previousSegmentWasGlobStar_1 = true;
-                    }
-                    return;
-                }
-                // States
-                var inBraces = false;
-                var braceVal = '';
-                var inBrackets = false;
-                var bracketVal = '';
-                var char;
-                for (var i = 0; i < segment.length; i++) {
-                    char = segment[i];
-                    // Support brace expansion
-                    if (char !== '}' && inBraces) {
-                        braceVal += char;
-                        continue;
-                    }
-                    // Support brackets
-                    if (char !== ']' && inBrackets) {
-                        var res = void 0;
-                        switch (char) {
-                            case '-':
-                                res = char;
-                                break;
-                            case '^':
-                                res = char;
-                                break;
-                            default:
-                                res = strings.escapeRegExpCharacters(char);
-                        }
-                        bracketVal += res;
-                        continue;
-                    }
-                    switch (char) {
-                        case '{':
-                            inBraces = true;
-                            continue;
-                        case '[':
-                            inBrackets = true;
-                            continue;
-                        case '}':
-                            var choices = splitGlobAware(braceVal, ',');
-                            // Converts {foo,bar} => [foo|bar]
-                            var braceRegExp = "(?:" + choices.map(function (c) { return parseRegExp(c); }).join('|') + ")";
-                            regEx += braceRegExp;
-                            inBraces = false;
-                            braceVal = '';
-                            break;
-                        case ']':
-                            regEx += ('[' + bracketVal + ']');
-                            inBrackets = false;
-                            bracketVal = '';
-                            break;
-                        case '?':
-                            regEx += NO_PATH_REGEX; // 1 ? matches any single character except path separator (/ and \)
-                            continue;
-                        case '*':
-                            regEx += starsToRegExp(1);
-                            continue;
-                        default:
-                            regEx += strings.escapeRegExpCharacters(char);
-                    }
-                }
-                // Tail: Add the slash we had split on if there is more to come and the next one is not a globstar
-                if (index < segments.length - 1 && segments[index + 1] !== '**') {
-                    regEx += PATH_REGEX;
-                }
-                // reset state
-                previousSegmentWasGlobStar_1 = false;
-            });
-        }
-        return regEx;
-    }
-    // regexes to check for trival glob patterns that just check for String#endsWith
-    var T1 = /^\*\*\/\*\.[\w\.-]+$/; // **/*.something
-    var T2 = /^\*\*\/([\w\.-]+)\/?$/; // **/something
-    var T3 = /^{\*\*\/[\*\.]?[\w\.-]+\/?(,\*\*\/[\*\.]?[\w\.-]+\/?)*}$/; // {**/*.something,**/*.else} or {**/package.json,**/project.json}
-    var T3_2 = /^{\*\*\/[\*\.]?[\w\.-]+(\/(\*\*)?)?(,\*\*\/[\*\.]?[\w\.-]+(\/(\*\*)?)?)*}$/; // Like T3, with optional trailing /**
-    var T4 = /^\*\*((\/[\w\.-]+)+)\/?$/; // **/something/else
-    var T5 = /^([\w\.-]+(\/[\w\.-]+)*)\/?$/; // something/else
-    var CACHE = new map_1.BoundedLinkedMap(10000); // bounded to 10000 elements
-    var FALSE = function () {
-        return false;
-    };
-    var NULL = function () {
-        return null;
-    };
-    function parsePattern(pattern, options) {
-        if (!pattern) {
-            return NULL;
-        }
-        // Whitespace trimming
-        pattern = pattern.trim();
-        // Check cache
-        var patternKey = pattern + "_" + !!options.trimForExclusions;
-        var parsedPattern = CACHE.get(patternKey);
-        if (parsedPattern) {
-            return parsedPattern;
-        }
-        // Check for Trivias
-        var match;
-        if (T1.test(pattern)) {
-            var base_1 = pattern.substr(4); // '**/*'.length === 4
-            parsedPattern = function (path, basename) {
-                return path && strings.endsWith(path, base_1) ? pattern : null;
-            };
-        }
-        else if (match = T2.exec(trimForExclusions(pattern, options))) {
-            parsedPattern = trivia2(match[1], pattern);
-        }
-        else if ((options.trimForExclusions ? T3_2 : T3).test(pattern)) {
-            parsedPattern = trivia3(pattern, options);
-        }
-        else if (match = T4.exec(trimForExclusions(pattern, options))) {
-            parsedPattern = trivia4and5(match[1].substr(1), pattern, true);
-        }
-        else if (match = T5.exec(trimForExclusions(pattern, options))) {
-            parsedPattern = trivia4and5(match[1], pattern, false);
-        }
-        else {
-            parsedPattern = toRegExp(pattern);
-        }
-        // Cache
-        CACHE.set(patternKey, parsedPattern);
-        return parsedPattern;
-    }
-    function trimForExclusions(pattern, options) {
-        return options.trimForExclusions && strings.endsWith(pattern, '/**') ? pattern.substr(0, pattern.length - 2) : pattern; // dropping **, tailing / is dropped later
-    }
-    // common pattern: **/some.txt just need basename check
-    function trivia2(base, originalPattern) {
-        var slashBase = "/" + base;
-        var backslashBase = "\\" + base;
-        var parsedPattern = function (path, basename) {
-            if (!path) {
-                return null;
-            }
-            if (basename) {
-                return basename === base ? originalPattern : null;
-            }
-            return path === base || strings.endsWith(path, slashBase) || strings.endsWith(path, backslashBase) ? originalPattern : null;
-        };
-        var basenames = [base];
-        parsedPattern.basenames = basenames;
-        parsedPattern.patterns = [originalPattern];
-        parsedPattern.allBasenames = basenames;
-        return parsedPattern;
-    }
-    // repetition of common patterns (see above) {**/*.txt,**/*.png}
-    function trivia3(pattern, options) {
-        var parsedPatterns = aggregateBasenameMatches(pattern.slice(1, -1).split(',')
-            .map(function (pattern) { return parsePattern(pattern, options); })
-            .filter(function (pattern) { return pattern !== NULL; }), pattern);
-        var n = parsedPatterns.length;
-        if (!n) {
-            return NULL;
-        }
-        if (n === 1) {
-            return parsedPatterns[0];
-        }
-        var parsedPattern = function (path, basename) {
-            for (var i = 0, n_1 = parsedPatterns.length; i < n_1; i++) {
-                if (parsedPatterns[i](path, basename)) {
-                    return pattern;
-                }
-            }
-            return null;
-        };
-        var withBasenames = arrays.first(parsedPatterns, function (pattern) { return !!pattern.allBasenames; });
-        if (withBasenames) {
-            parsedPattern.allBasenames = withBasenames.allBasenames;
-        }
-        var allPaths = parsedPatterns.reduce(function (all, current) { return current.allPaths ? all.concat(current.allPaths) : all; }, []);
-        if (allPaths.length) {
-            parsedPattern.allPaths = allPaths;
-        }
-        return parsedPattern;
-    }
-    // common patterns: **/something/else just need endsWith check, something/else just needs and equals check
-    function trivia4and5(path, pattern, matchPathEnds) {
-        var nativePath = paths.nativeSep !== paths.sep ? path.replace(ALL_FORWARD_SLASHES, paths.nativeSep) : path;
-        var nativePathEnd = paths.nativeSep + nativePath;
-        var parsedPattern = matchPathEnds ? function (path, basename) {
-            return path && (path === nativePath || strings.endsWith(path, nativePathEnd)) ? pattern : null;
-        } : function (path, basename) {
-            return path && path === nativePath ? pattern : null;
-        };
-        parsedPattern.allPaths = [(matchPathEnds ? '*/' : './') + path];
-        return parsedPattern;
-    }
-    function toRegExp(pattern) {
-        try {
-            var regExp_1 = new RegExp("^" + parseRegExp(pattern) + "$");
-            return function (path, basename) {
-                regExp_1.lastIndex = 0; // reset RegExp to its initial state to reuse it!
-                return path && regExp_1.test(path) ? pattern : null;
-            };
-        }
-        catch (error) {
-            return NULL;
-        }
-    }
-    function match(arg1, path, siblingsFn) {
-        if (!arg1 || !path) {
-            return false;
-        }
-        return parse(arg1)(path, undefined, siblingsFn);
-    }
-    exports.match = match;
-    function parse(arg1, options) {
-        if (options === void 0) { options = {}; }
-        if (!arg1) {
-            return FALSE;
-        }
-        // Glob with String
-        if (typeof arg1 === 'string') {
-            var parsedPattern_1 = parsePattern(arg1, options);
-            if (parsedPattern_1 === NULL) {
-                return FALSE;
-            }
-            var resultPattern = function (path, basename) {
-                return !!parsedPattern_1(path, basename);
-            };
-            if (parsedPattern_1.allBasenames) {
-                resultPattern.allBasenames = parsedPattern_1.allBasenames;
-            }
-            if (parsedPattern_1.allPaths) {
-                resultPattern.allPaths = parsedPattern_1.allPaths;
-            }
-            return resultPattern;
-        }
-        // Glob with Expression
-        return parsedExpression(arg1, options);
-    }
-    exports.parse = parse;
-    function getBasenameTerms(patternOrExpression) {
-        return patternOrExpression.allBasenames || [];
-    }
-    exports.getBasenameTerms = getBasenameTerms;
-    function getPathTerms(patternOrExpression) {
-        return patternOrExpression.allPaths || [];
-    }
-    exports.getPathTerms = getPathTerms;
-    function parsedExpression(expression, options) {
-        var parsedPatterns = aggregateBasenameMatches(Object.getOwnPropertyNames(expression)
-            .map(function (pattern) { return parseExpressionPattern(pattern, expression[pattern], options); })
-            .filter(function (pattern) { return pattern !== NULL; }));
-        var n = parsedPatterns.length;
-        if (!n) {
-            return NULL;
-        }
-        if (!parsedPatterns.some(function (parsedPattern) { return parsedPattern.requiresSiblings; })) {
-            if (n === 1) {
-                return parsedPatterns[0];
-            }
-            var resultExpression_1 = function (path, basename, siblingsFn) {
-                for (var i = 0, n_2 = parsedPatterns.length; i < n_2; i++) {
-                    // Pattern matches path
-                    var result = parsedPatterns[i](path, basename);
-                    if (result) {
-                        return result;
-                    }
-                }
-                return null;
-            };
-            var withBasenames_1 = arrays.first(parsedPatterns, function (pattern) { return !!pattern.allBasenames; });
-            if (withBasenames_1) {
-                resultExpression_1.allBasenames = withBasenames_1.allBasenames;
-            }
-            var allPaths_1 = parsedPatterns.reduce(function (all, current) { return current.allPaths ? all.concat(current.allPaths) : all; }, []);
-            if (allPaths_1.length) {
-                resultExpression_1.allPaths = allPaths_1;
-            }
-            return resultExpression_1;
-        }
-        var resultExpression = function (path, basename, siblingsFn) {
-            var siblingsPattern;
-            var siblingsResolved = !siblingsFn;
-            function siblingsPatternFn() {
-                // Resolve siblings only once
-                if (!siblingsResolved) {
-                    siblingsResolved = true;
-                    var siblings = siblingsFn();
-                    if (siblings && siblings.length) {
-                        if (!basename) {
-                            basename = paths.basename(path);
-                        }
-                        var name_1 = basename.substr(0, basename.length - paths.extname(path).length);
-                        siblingsPattern = { siblings: siblings, name: name_1 };
-                    }
-                }
-                return siblingsPattern;
-            }
-            for (var i = 0, n_3 = parsedPatterns.length; i < n_3; i++) {
-                // Pattern matches path
-                var result = parsedPatterns[i](path, basename, siblingsPatternFn);
-                if (result) {
-                    return result;
-                }
-            }
-            return null;
-        };
-        var withBasenames = arrays.first(parsedPatterns, function (pattern) { return !!pattern.allBasenames; });
-        if (withBasenames) {
-            resultExpression.allBasenames = withBasenames.allBasenames;
-        }
-        var allPaths = parsedPatterns.reduce(function (all, current) { return current.allPaths ? all.concat(current.allPaths) : all; }, []);
-        if (allPaths.length) {
-            resultExpression.allPaths = allPaths;
-        }
-        return resultExpression;
-    }
-    function parseExpressionPattern(pattern, value, options) {
-        if (value === false) {
-            return NULL; // pattern is disabled
-        }
-        var parsedPattern = parsePattern(pattern, options);
-        if (parsedPattern === NULL) {
-            return NULL;
-        }
-        // Expression Pattern is <boolean>
-        if (typeof value === 'boolean') {
-            return parsedPattern;
-        }
-        // Expression Pattern is <SiblingClause>
-        if (value) {
-            var when_1 = value.when;
-            if (typeof when_1 === 'string') {
-                var result = function (path, basename, siblingsPatternFn) {
-                    if (!parsedPattern(path, basename)) {
-                        return null;
-                    }
-                    var siblingsPattern = siblingsPatternFn();
-                    if (!siblingsPattern) {
-                        return null; // pattern is malformed or we don't have siblings
-                    }
-                    var clausePattern = when_1.replace('$(basename)', siblingsPattern.name);
-                    if (siblingsPattern.siblings.indexOf(clausePattern) !== -1) {
-                        return pattern;
-                    }
-                    else {
-                        return null; // pattern does not match in the end because the when clause is not satisfied
-                    }
-                };
-                result.requiresSiblings = true;
-                return result;
-            }
-        }
-        // Expression is Anything
-        return parsedPattern;
-    }
-    function aggregateBasenameMatches(parsedPatterns, result) {
-        var basenamePatterns = parsedPatterns.filter(function (parsedPattern) { return !!parsedPattern.basenames; });
-        if (basenamePatterns.length < 2) {
-            return parsedPatterns;
-        }
-        var basenames = basenamePatterns.reduce(function (all, current) { return all.concat(current.basenames); }, []);
-        var patterns;
-        if (result) {
-            patterns = [];
-            for (var i = 0, n = basenames.length; i < n; i++) {
-                patterns.push(result);
-            }
-        }
-        else {
-            patterns = basenamePatterns.reduce(function (all, current) { return all.concat(current.patterns); }, []);
-        }
-        var aggregate = function (path, basename) {
-            if (!path) {
-                return null;
-            }
-            if (!basename) {
-                var i = void 0;
-                for (i = path.length; i > 0; i--) {
-                    var ch = path.charCodeAt(i - 1);
-                    if (ch === 47 /* Slash */ || ch === 92 /* Backslash */) {
-                        break;
-                    }
-                }
-                basename = path.substr(i);
-            }
-            var index = basenames.indexOf(basename);
-            return index !== -1 ? patterns[index] : null;
-        };
-        aggregate.basenames = basenames;
-        aggregate.patterns = patterns;
-        aggregate.allBasenames = basenames;
-        var aggregatedPatterns = parsedPatterns.filter(function (parsedPattern) { return !parsedPattern.basenames; });
-        aggregatedPatterns.push(aggregate);
-        return aggregatedPatterns;
-    }
-});
-
-define(__m[16/*vs/base/common/types*/], __M([0/*require*/,1/*exports*/]), function (require, exports) {
+define(__m[10/*vs/base/common/types*/], __M([1/*require*/,0/*exports*/]), function (require, exports) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -3236,7 +818,7 @@ define(__m[16/*vs/base/common/types*/], __M([0/*require*/,1/*exports*/]), functi
     exports.create = create;
 });
 
-define(__m[5/*vs/base/common/errors*/], __M([0/*require*/,1/*exports*/,10/*vs/base/common/platform*/,16/*vs/base/common/types*/]), function (require, exports, platform, types) {
+define(__m[6/*vs/base/common/errors*/], __M([1/*require*/,0/*exports*/,13/*vs/base/common/platform*/,10/*vs/base/common/types*/]), function (require, exports, platform, types) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -3400,7 +982,7 @@ define(__m[5/*vs/base/common/errors*/], __M([0/*require*/,1/*exports*/,10/*vs/ba
     exports.getErrorMessage = getErrorMessage;
 });
 
-define(__m[27/*vs/base/common/callbackList*/], __M([0/*require*/,1/*exports*/,5/*vs/base/common/errors*/]), function (require, exports, errors_1) {
+define(__m[29/*vs/base/common/callbackList*/], __M([1/*require*/,0/*exports*/,6/*vs/base/common/errors*/]), function (require, exports, errors_1) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -3484,7 +1066,7 @@ define(__m[27/*vs/base/common/callbackList*/], __M([0/*require*/,1/*exports*/,5/
     exports.default = CallbackList;
 });
 
-define(__m[4/*vs/base/common/event*/], __M([0/*require*/,1/*exports*/,22/*vs/base/common/lifecycle*/,27/*vs/base/common/callbackList*/,58/*vs/base/common/functional*/]), function (require, exports, lifecycle_1, callbackList_1, functional_1) {
+define(__m[4/*vs/base/common/event*/], __M([1/*require*/,0/*exports*/,19/*vs/base/common/lifecycle*/,29/*vs/base/common/callbackList*/,35/*vs/base/common/functional*/]), function (require, exports, lifecycle_1, callbackList_1, functional_1) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -3933,13 +1515,20 @@ define(__m[4/*vs/base/common/event*/], __M([0/*require*/,1/*exports*/,22/*vs/bas
         return emitter.event;
     }
     exports.buffer = buffer;
+    function createEmptyEvent() {
+        return function (listener, thisArgs, disposables) {
+            if (thisArgs === void 0) { thisArgs = null; }
+            return ({ dispose: function () { return null; } });
+        };
+    }
+    exports.createEmptyEvent = createEmptyEvent;
 });
 
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-define(__m[25/*vs/base/common/cancellation*/], __M([0/*require*/,1/*exports*/,4/*vs/base/common/event*/]), function (require, exports, event_1) {
+define(__m[26/*vs/base/common/cancellation*/], __M([1/*require*/,0/*exports*/,4/*vs/base/common/event*/]), function (require, exports, event_1) {
     'use strict';
     var shortcutEvent = Object.freeze(function (callback, context) {
         var handle = setTimeout(callback.bind(context), 0);
@@ -4030,7 +1619,7 @@ define(__m[25/*vs/base/common/cancellation*/], __M([0/*require*/,1/*exports*/,4/
 
 
 
-define(__m[30/*vs/base/common/eventEmitter*/], __M([0/*require*/,1/*exports*/,5/*vs/base/common/errors*/]), function (require, exports, Errors) {
+define(__m[74/*vs/base/common/eventEmitter*/], __M([1/*require*/,0/*exports*/,6/*vs/base/common/errors*/]), function (require, exports, Errors) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -4288,7 +1877,7 @@ define(__m[30/*vs/base/common/eventEmitter*/], __M([0/*require*/,1/*exports*/,5/
     }
 });
 
-define(__m[19/*vs/base/common/objects*/], __M([0/*require*/,1/*exports*/,16/*vs/base/common/types*/]), function (require, exports, Types) {
+define(__m[16/*vs/base/common/objects*/], __M([1/*require*/,0/*exports*/,10/*vs/base/common/types*/]), function (require, exports, Types) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -4436,10 +2025,9 @@ define(__m[19/*vs/base/common/objects*/], __M([0/*require*/,1/*exports*/,16/*vs/
         return destination;
     }
     exports.assign = assign;
-    function toObject(arr, keyMap, valueMap) {
-        if (valueMap === void 0) { valueMap = function (x) { return x; }; }
+    function toObject(arr, keyMap) {
         return arr.reduce(function (o, d) {
-            return assign(o, (_a = {}, _a[keyMap(d)] = valueMap(d), _a));
+            return assign(o, (_a = {}, _a[keyMap(d)] = d, _a));
             var _a;
         }, Object.create(null));
     }
@@ -4581,9 +2169,208 @@ define(__m[19/*vs/base/common/objects*/], __M([0/*require*/,1/*exports*/,16/*vs/
         return typeof result === 'undefined' ? defaultValue : result;
     }
     exports.getOrDefault = getOrDefault;
+    function distinct(base, target) {
+        var result = Object.create(null);
+        if (!base || !target) {
+            return result;
+        }
+        var targetKeys = Object.keys(target);
+        targetKeys.forEach(function (k) {
+            var baseValue = base[k];
+            var targetValue = target[k];
+            if (!equals(baseValue, targetValue)) {
+                result[k] = targetValue;
+            }
+        });
+        return result;
+    }
+    exports.distinct = distinct;
 });
 
-define(__m[7/*vs/base/common/uri*/], __M([0/*require*/,1/*exports*/,10/*vs/base/common/platform*/]), function (require, exports, platform) {
+define(__m[49/*vs/base/common/parsers*/], __M([1/*require*/,0/*exports*/,10/*vs/base/common/types*/]), function (require, exports, Types) {
+    /*---------------------------------------------------------------------------------------------
+     *  Copyright (c) Microsoft Corporation. All rights reserved.
+     *  Licensed under the MIT License. See License.txt in the project root for license information.
+     *--------------------------------------------------------------------------------------------*/
+    'use strict';
+    var ValidationState;
+    (function (ValidationState) {
+        ValidationState[ValidationState["OK"] = 0] = "OK";
+        ValidationState[ValidationState["Info"] = 1] = "Info";
+        ValidationState[ValidationState["Warning"] = 2] = "Warning";
+        ValidationState[ValidationState["Error"] = 3] = "Error";
+        ValidationState[ValidationState["Fatal"] = 4] = "Fatal";
+    })(ValidationState = exports.ValidationState || (exports.ValidationState = {}));
+    var ValidationStatus = (function () {
+        function ValidationStatus() {
+            this._state = ValidationState.OK;
+        }
+        Object.defineProperty(ValidationStatus.prototype, "state", {
+            get: function () {
+                return this._state;
+            },
+            set: function (value) {
+                if (value > this._state) {
+                    this._state = value;
+                }
+            },
+            enumerable: true,
+            configurable: true
+        });
+        ValidationStatus.prototype.isOK = function () {
+            return this._state === ValidationState.OK;
+        };
+        ValidationStatus.prototype.isFatal = function () {
+            return this._state === ValidationState.Fatal;
+        };
+        return ValidationStatus;
+    }());
+    exports.ValidationStatus = ValidationStatus;
+    var Parser = (function () {
+        function Parser(problemReporter) {
+            this._problemReporter = problemReporter;
+        }
+        Parser.prototype.reset = function () {
+            this._problemReporter.status.state = ValidationState.OK;
+        };
+        Object.defineProperty(Parser.prototype, "problemReporter", {
+            get: function () {
+                return this._problemReporter;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Parser.prototype.info = function (message) {
+            this._problemReporter.info(message);
+        };
+        Parser.prototype.warn = function (message) {
+            this._problemReporter.warn(message);
+        };
+        Parser.prototype.error = function (message) {
+            this._problemReporter.error(message);
+        };
+        Parser.prototype.fatal = function (message) {
+            this._problemReporter.fatal(message);
+        };
+        Parser.prototype.is = function (value, func, wrongTypeState, wrongTypeMessage, undefinedState, undefinedMessage) {
+            if (Types.isUndefined(value)) {
+                if (undefinedState) {
+                    this._problemReporter.status.state = undefinedState;
+                }
+                if (undefinedMessage) {
+                    this._problemReporter.info(undefinedMessage);
+                }
+                return false;
+            }
+            if (!func(value)) {
+                if (wrongTypeState) {
+                    this._problemReporter.status.state = wrongTypeState;
+                }
+                if (wrongTypeMessage) {
+                    this.info(wrongTypeMessage);
+                }
+                return false;
+            }
+            return true;
+        };
+        Parser.merge = function (destination, source, overwrite) {
+            var _this = this;
+            Object.keys(source).forEach(function (key) {
+                var destValue = destination[key];
+                var sourceValue = source[key];
+                if (Types.isUndefined(sourceValue)) {
+                    return;
+                }
+                if (Types.isUndefined(destValue)) {
+                    destination[key] = sourceValue;
+                }
+                else {
+                    if (overwrite) {
+                        if (Types.isObject(destValue) && Types.isObject(sourceValue)) {
+                            _this.merge(destValue, sourceValue, overwrite);
+                        }
+                        else {
+                            destination[key] = sourceValue;
+                        }
+                    }
+                }
+            });
+        };
+        return Parser;
+    }());
+    exports.Parser = Parser;
+    var AbstractSystemVariables = (function () {
+        function AbstractSystemVariables() {
+        }
+        AbstractSystemVariables.prototype.resolve = function (value) {
+            if (Types.isString(value)) {
+                return this.resolveString(value);
+            }
+            else if (Types.isArray(value)) {
+                return this.__resolveArray(value);
+            }
+            else if (Types.isObject(value)) {
+                return this.__resolveLiteral(value);
+            }
+            return value;
+        };
+        AbstractSystemVariables.prototype.resolveAny = function (value) {
+            if (Types.isString(value)) {
+                return this.resolveString(value);
+            }
+            else if (Types.isArray(value)) {
+                return this.__resolveAnyArray(value);
+            }
+            else if (Types.isObject(value)) {
+                return this.__resolveAnyLiteral(value);
+            }
+            return value;
+        };
+        AbstractSystemVariables.prototype.resolveString = function (value) {
+            var _this = this;
+            var regexp = /\$\{(.*?)\}/g;
+            return value.replace(regexp, function (match, name) {
+                var newValue = _this[name];
+                if (Types.isString(newValue)) {
+                    return newValue;
+                }
+                else {
+                    return match && match.indexOf('env.') > 0 ? '' : match;
+                }
+            });
+        };
+        AbstractSystemVariables.prototype.__resolveLiteral = function (values) {
+            var _this = this;
+            var result = Object.create(null);
+            Object.keys(values).forEach(function (key) {
+                var value = values[key];
+                result[key] = _this.resolve(value);
+            });
+            return result;
+        };
+        AbstractSystemVariables.prototype.__resolveAnyLiteral = function (values) {
+            var _this = this;
+            var result = Object.create(null);
+            Object.keys(values).forEach(function (key) {
+                var value = values[key];
+                result[key] = _this.resolveAny(value);
+            });
+            return result;
+        };
+        AbstractSystemVariables.prototype.__resolveArray = function (value) {
+            var _this = this;
+            return value.map(function (s) { return _this.resolveString(s); });
+        };
+        AbstractSystemVariables.prototype.__resolveAnyArray = function (value) {
+            var _this = this;
+            return value.map(function (s) { return _this.resolveAny(s); });
+        };
+        return AbstractSystemVariables;
+    }());
+    exports.AbstractSystemVariables = AbstractSystemVariables;
+});
+
+define(__m[7/*vs/base/common/uri*/], __M([1/*require*/,0/*exports*/,13/*vs/base/common/platform*/]), function (require, exports, platform) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -4790,8 +2577,12 @@ define(__m[7/*vs/base/common/uri*/], __M([0/*require*/,1/*exports*/,10/*vs/base/
         URI.file = function (path) {
             var ret = new URI();
             ret._scheme = 'file';
-            // normalize to fwd-slashes
-            path = path.replace(/\\/g, URI._slash);
+            // normalize to fwd-slashes on windows,
+            // on other systems bwd-slaches are valid
+            // filename character, eg /f\oo/ba\r.txt
+            if (platform.isWindows) {
+                path = path.replace(/\\/g, URI._slash);
+            }
             // check for authority as used in UNC shares
             // or use the path as given
             if (path[0] === URI._slash && path[0] === path[1]) {
@@ -4984,7 +2775,7 @@ define(__m[7/*vs/base/common/uri*/], __M([0/*require*/,1/*exports*/,10/*vs/base/
     exports.default = URI;
 });
 
-define(__m[32/*vs/base/common/marshalling*/], __M([0/*require*/,1/*exports*/,7/*vs/base/common/uri*/]), function (require, exports, uri_1) {
+define(__m[33/*vs/base/common/marshalling*/], __M([1/*require*/,0/*exports*/,7/*vs/base/common/uri*/]), function (require, exports, uri_1) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -5014,14 +2805,10 @@ define(__m[32/*vs/base/common/marshalling*/], __M([0/*require*/,1/*exports*/,7/*
         if (value !== void 0 && value !== null) {
             marshallingConst = value.$mid;
         }
-        if (marshallingConst === 1) {
-            return uri_1.default.revive(value);
-        }
-        else if (marshallingConst === 2) {
-            return new RegExp(value.source, value.flags);
-        }
-        else {
-            return value;
+        switch (marshallingConst) {
+            case 1: return uri_1.default.revive(value);
+            case 2: return new RegExp(value.source, value.flags);
+            default: return value;
         }
     }
 });
@@ -5031,7 +2818,7 @@ define(__m[32/*vs/base/common/marshalling*/], __M([0/*require*/,1/*exports*/,7/*
 
 
 
-define(__m[34/*vs/base/common/uuid*/], __M([0/*require*/,1/*exports*/]), function (require, exports) {
+define(__m[25/*vs/base/common/uuid*/], __M([1/*require*/,0/*exports*/]), function (require, exports) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -7204,7 +4991,7 @@ if (typeof process !== 'undefined' && typeof process.nextTick === 'function') {
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-define(__m[3/*vs/base/common/winjs.base*/], __M([119/*vs/base/common/winjs.base.raw*/,5/*vs/base/common/errors*/]), function (winjs, __Errors__) {
+define(__m[2/*vs/base/common/winjs.base*/], __M([118/*vs/base/common/winjs.base.raw*/,6/*vs/base/common/errors*/]), function (winjs, __Errors__) {
 	'use strict';
 
 	var outstandingPromiseErrors = {};
@@ -7270,7 +5057,7 @@ define(__m[3/*vs/base/common/winjs.base*/], __M([119/*vs/base/common/winjs.base.
 
 
 
-define(__m[9/*vs/base/common/async*/], __M([0/*require*/,1/*exports*/,5/*vs/base/common/errors*/,10/*vs/base/common/platform*/,3/*vs/base/common/winjs.base*/,25/*vs/base/common/cancellation*/,22/*vs/base/common/lifecycle*/,4/*vs/base/common/event*/]), function (require, exports, errors, platform, winjs_base_1, cancellation_1, lifecycle_1, event_1) {
+define(__m[12/*vs/base/common/async*/], __M([1/*require*/,0/*exports*/,6/*vs/base/common/errors*/,13/*vs/base/common/platform*/,2/*vs/base/common/winjs.base*/,26/*vs/base/common/cancellation*/,19/*vs/base/common/lifecycle*/,4/*vs/base/common/event*/]), function (require, exports, errors, platform, winjs_base_1, cancellation_1, lifecycle_1, event_1) {
     'use strict';
     function isThenable(obj) {
         return obj && typeof obj.then === 'function';
@@ -7855,11 +5642,1905 @@ define(__m[9/*vs/base/common/async*/], __M([0/*require*/,1/*exports*/,5/*vs/base
     exports.ninvoke = ninvoke;
 });
 
+define(__m[73/*vs/base/common/network*/], __M([1/*require*/,0/*exports*/,2/*vs/base/common/winjs.base*/]), function (require, exports, winjs_base_1) {
+    /*---------------------------------------------------------------------------------------------
+     *  Copyright (c) Microsoft Corporation. All rights reserved.
+     *  Licensed under the MIT License. See License.txt in the project root for license information.
+     *--------------------------------------------------------------------------------------------*/
+    'use strict';
+    var Schemas;
+    (function (Schemas) {
+        /**
+         * A schema that is used for models that exist in memory
+         * only and that have no correspondence on a server or such.
+         */
+        Schemas.inMemory = 'inmemory';
+        /**
+         * A schema that is used for setting files
+         */
+        Schemas.vscode = 'vscode';
+        /**
+         * A schema that is used for internal private files
+         */
+        Schemas.internal = 'private';
+        /**
+         * A walk-through document.
+         */
+        Schemas.walkThrough = 'walkThrough';
+        /**
+         * An embedded code snippet.
+         */
+        Schemas.walkThroughSnippet = 'walkThroughSnippet';
+        Schemas.http = 'http';
+        Schemas.https = 'https';
+        Schemas.file = 'file';
+        Schemas.untitled = 'untitled';
+    })(Schemas = exports.Schemas || (exports.Schemas = {}));
+    function xhr(options) {
+        var req = null;
+        var canceled = false;
+        return new winjs_base_1.TPromise(function (c, e, p) {
+            req = new XMLHttpRequest();
+            req.onreadystatechange = function () {
+                if (canceled) {
+                    return;
+                }
+                if (req.readyState === 4) {
+                    // Handle 1223: http://bugs.jquery.com/ticket/1450
+                    if ((req.status >= 200 && req.status < 300) || req.status === 1223) {
+                        c(req);
+                    }
+                    else {
+                        e(req);
+                    }
+                    req.onreadystatechange = function () { };
+                }
+                else {
+                    p(req);
+                }
+            };
+            req.open(options.type || 'GET', options.url, 
+            // Promise based XHR does not support sync.
+            //
+            true, options.user, options.password);
+            req.responseType = options.responseType || '';
+            Object.keys(options.headers || {}).forEach(function (k) {
+                req.setRequestHeader(k, options.headers[k]);
+            });
+            if (options.customRequestInitializer) {
+                options.customRequestInitializer(req);
+            }
+            req.send(options.data);
+        }, function () {
+            canceled = true;
+            req.abort();
+        });
+    }
+    exports.xhr = xhr;
+});
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-define(__m[48/*vs/base/node/event*/], __M([0/*require*/,1/*exports*/,4/*vs/base/common/event*/]), function (require, exports, event_1) {
+
+
+
+
+
+define(__m[27/*vs/base/common/map*/], __M([1/*require*/,0/*exports*/,73/*vs/base/common/network*/]), function (require, exports, network_1) {
+    'use strict';
+    /**
+     * A simple map to store value by a key object. Key can be any object that has toString() function to get
+     * string value of the key.
+     */
+    var LinkedMap = (function () {
+        function LinkedMap() {
+            this.map = Object.create(null);
+            this._size = 0;
+        }
+        Object.defineProperty(LinkedMap.prototype, "size", {
+            get: function () {
+                return this._size;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        LinkedMap.prototype.get = function (k) {
+            var value = this.peek(k);
+            return value ? value : null;
+        };
+        LinkedMap.prototype.getOrSet = function (k, t) {
+            var res = this.get(k);
+            if (res) {
+                return res;
+            }
+            this.set(k, t);
+            return t;
+        };
+        LinkedMap.prototype.keys = function () {
+            var keys = [];
+            for (var key in this.map) {
+                keys.push(this.map[key].key);
+            }
+            return keys;
+        };
+        LinkedMap.prototype.values = function () {
+            var values = [];
+            for (var key in this.map) {
+                values.push(this.map[key].value);
+            }
+            return values;
+        };
+        LinkedMap.prototype.entries = function () {
+            var entries = [];
+            for (var key in this.map) {
+                entries.push(this.map[key]);
+            }
+            return entries;
+        };
+        LinkedMap.prototype.set = function (k, t) {
+            if (this.get(k)) {
+                return false; // already present!
+            }
+            this.push(k, t);
+            return true;
+        };
+        LinkedMap.prototype.delete = function (k) {
+            var value = this.get(k);
+            if (value) {
+                this.pop(k);
+                return value;
+            }
+            return null;
+        };
+        LinkedMap.prototype.has = function (k) {
+            return !!this.get(k);
+        };
+        LinkedMap.prototype.clear = function () {
+            this.map = Object.create(null);
+            this._size = 0;
+        };
+        LinkedMap.prototype.push = function (key, value) {
+            var entry = { key: key, value: value };
+            this.map[key.toString()] = entry;
+            this._size++;
+        };
+        LinkedMap.prototype.pop = function (k) {
+            delete this.map[k.toString()];
+            this._size--;
+        };
+        LinkedMap.prototype.peek = function (k) {
+            var entry = this.map[k.toString()];
+            return entry ? entry.value : null;
+        };
+        return LinkedMap;
+    }());
+    exports.LinkedMap = LinkedMap;
+    /**
+     * A simple Map<T> that optionally allows to set a limit of entries to store. Once the limit is hit,
+     * the cache will remove the entry that was last recently added. Or, if a ratio is provided below 1,
+     * all elements will be removed until the ratio is full filled (e.g. 0.75 to remove 25% of old elements).
+     */
+    var BoundedLinkedMap = (function () {
+        function BoundedLinkedMap(limit, ratio) {
+            if (limit === void 0) { limit = Number.MAX_VALUE; }
+            if (ratio === void 0) { ratio = 1; }
+            this.limit = limit;
+            this.map = Object.create(null);
+            this._size = 0;
+            this.ratio = limit * ratio;
+        }
+        Object.defineProperty(BoundedLinkedMap.prototype, "size", {
+            get: function () {
+                return this._size;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        BoundedLinkedMap.prototype.set = function (key, value) {
+            if (this.map[key]) {
+                return false; // already present!
+            }
+            var entry = { key: key, value: value };
+            this.push(entry);
+            if (this._size > this.limit) {
+                this.trim();
+            }
+            return true;
+        };
+        BoundedLinkedMap.prototype.get = function (key) {
+            var entry = this.map[key];
+            return entry ? entry.value : null;
+        };
+        BoundedLinkedMap.prototype.getOrSet = function (k, t) {
+            var res = this.get(k);
+            if (res) {
+                return res;
+            }
+            this.set(k, t);
+            return t;
+        };
+        BoundedLinkedMap.prototype.delete = function (key) {
+            var entry = this.map[key];
+            if (entry) {
+                this.map[key] = void 0;
+                this._size--;
+                if (entry.next) {
+                    entry.next.prev = entry.prev; // [A]<-[x]<-[C] = [A]<-[C]
+                }
+                else {
+                    this.head = entry.prev; // [A]-[x] = [A]
+                }
+                if (entry.prev) {
+                    entry.prev.next = entry.next; // [A]->[x]->[C] = [A]->[C]
+                }
+                else {
+                    this.tail = entry.next; // [x]-[A] = [A]
+                }
+                return entry.value;
+            }
+            return null;
+        };
+        BoundedLinkedMap.prototype.has = function (key) {
+            return !!this.map[key];
+        };
+        BoundedLinkedMap.prototype.clear = function () {
+            this.map = Object.create(null);
+            this._size = 0;
+            this.head = null;
+            this.tail = null;
+        };
+        BoundedLinkedMap.prototype.push = function (entry) {
+            if (this.head) {
+                // [A]-[B] = [A]-[B]->[X]
+                entry.prev = this.head;
+                this.head.next = entry;
+            }
+            if (!this.tail) {
+                this.tail = entry;
+            }
+            this.head = entry;
+            this.map[entry.key] = entry;
+            this._size++;
+        };
+        BoundedLinkedMap.prototype.trim = function () {
+            if (this.tail) {
+                // Remove all elements until ratio is reached
+                if (this.ratio < this.limit) {
+                    var index = 0;
+                    var current = this.tail;
+                    while (current.next) {
+                        // Remove the entry
+                        this.map[current.key] = void 0;
+                        this._size--;
+                        // if we reached the element that overflows our ratio condition
+                        // make its next element the new tail of the Map and adjust the size
+                        if (index === this.ratio) {
+                            this.tail = current.next;
+                            this.tail.prev = null;
+                            break;
+                        }
+                        // Move on
+                        current = current.next;
+                        index++;
+                    }
+                }
+                else {
+                    this.map[this.tail.key] = void 0;
+                    this._size--;
+                    // [x]-[B] = [B]
+                    this.tail = this.tail.next;
+                    this.tail.prev = null;
+                }
+            }
+        };
+        return BoundedLinkedMap;
+    }());
+    exports.BoundedLinkedMap = BoundedLinkedMap;
+    /**
+     * A subclass of Map<T> that makes an entry the MRU entry as soon
+     * as it is being accessed. In combination with the limit for the
+     * maximum number of elements in the cache, it helps to remove those
+     * entries from the cache that are LRU.
+     */
+    var LRUCache = (function (_super) {
+        __extends(LRUCache, _super);
+        function LRUCache(limit) {
+            return _super.call(this, limit) || this;
+        }
+        LRUCache.prototype.get = function (key) {
+            // Upon access of an entry, make it the head of
+            // the linked map so that it is the MRU element
+            var entry = this.map[key];
+            if (entry) {
+                this.delete(key);
+                this.push(entry);
+                return entry.value;
+            }
+            return null;
+        };
+        return LRUCache;
+    }(BoundedLinkedMap));
+    exports.LRUCache = LRUCache;
+    // --- trie'ish datastructure
+    var Node = (function () {
+        function Node() {
+            this.children = new Map();
+        }
+        return Node;
+    }());
+    /**
+     * A trie map that allows for fast look up when keys are substrings
+     * to the actual search keys (dir/subdir-problem).
+     */
+    var TrieMap = (function () {
+        function TrieMap(splitter) {
+            this._root = new Node();
+            this._splitter = splitter;
+        }
+        TrieMap.prototype.insert = function (path, element) {
+            var parts = this._splitter(path);
+            var i = 0;
+            // find insertion node
+            var node = this._root;
+            for (; i < parts.length; i++) {
+                var child = node.children.get(parts[i]);
+                if (child) {
+                    node = child;
+                    continue;
+                }
+                break;
+            }
+            // create new nodes
+            var newNode;
+            for (; i < parts.length; i++) {
+                newNode = new Node();
+                node.children.set(parts[i], newNode);
+                node = newNode;
+            }
+            node.element = element;
+        };
+        TrieMap.prototype.lookUp = function (path) {
+            var parts = this._splitter(path);
+            var children = this._root.children;
+            var node;
+            for (var _i = 0, parts_1 = parts; _i < parts_1.length; _i++) {
+                var part = parts_1[_i];
+                node = children.get(part);
+                if (!node) {
+                    return undefined;
+                }
+                children = node.children;
+            }
+            return node.element;
+        };
+        TrieMap.prototype.findSubstr = function (path) {
+            var parts = this._splitter(path);
+            var lastNode;
+            var children = this._root.children;
+            for (var _i = 0, parts_2 = parts; _i < parts_2.length; _i++) {
+                var part = parts_2[_i];
+                var node = children.get(part);
+                if (!node) {
+                    break;
+                }
+                if (node.element) {
+                    lastNode = node;
+                }
+                children = node.children;
+            }
+            // return the last matching node
+            // that had an element
+            if (lastNode) {
+                return lastNode.element;
+            }
+            return undefined;
+        };
+        TrieMap.prototype.findSuperstr = function (path) {
+            var parts = this._splitter(path);
+            var children = this._root.children;
+            var node;
+            for (var _i = 0, parts_3 = parts; _i < parts_3.length; _i++) {
+                var part = parts_3[_i];
+                node = children.get(part);
+                if (!node) {
+                    return undefined;
+                }
+                children = node.children;
+            }
+            var result = new TrieMap(this._splitter);
+            result._root = node;
+            return result;
+        };
+        return TrieMap;
+    }());
+    TrieMap.PathSplitter = function (s) { return s.split(/[\\/]/).filter(function (s) { return !!s; }); };
+    exports.TrieMap = TrieMap;
+    var ResourceMap = (function () {
+        function ResourceMap(ignoreCase) {
+            this.ignoreCase = ignoreCase;
+            this.map = new Map();
+        }
+        ResourceMap.prototype.set = function (resource, value) {
+            this.map.set(this.toKey(resource), value);
+        };
+        ResourceMap.prototype.get = function (resource) {
+            return this.map.get(this.toKey(resource));
+        };
+        ResourceMap.prototype.has = function (resource) {
+            return this.map.has(this.toKey(resource));
+        };
+        Object.defineProperty(ResourceMap.prototype, "size", {
+            get: function () {
+                return this.map.size;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        ResourceMap.prototype.clear = function () {
+            this.map.clear();
+        };
+        ResourceMap.prototype.delete = function (resource) {
+            return this.map.delete(this.toKey(resource));
+        };
+        ResourceMap.prototype.forEach = function (clb) {
+            this.map.forEach(clb);
+        };
+        ResourceMap.prototype.values = function () {
+            var values = [];
+            this.map.forEach(function (value) { return values.push(value); });
+            return values;
+        };
+        ResourceMap.prototype.toKey = function (resource) {
+            var key;
+            if (resource.scheme === network_1.Schemas.file) {
+                key = resource.fsPath;
+            }
+            else {
+                key = resource.toString();
+            }
+            if (this.ignoreCase) {
+                key = key.toLowerCase();
+            }
+            return key;
+        };
+        return ResourceMap;
+    }());
+    exports.ResourceMap = ResourceMap;
+});
+
+define(__m[9/*vs/base/common/strings*/], __M([1/*require*/,0/*exports*/,27/*vs/base/common/map*/]), function (require, exports, map_1) {
+    /*---------------------------------------------------------------------------------------------
+     *  Copyright (c) Microsoft Corporation. All rights reserved.
+     *  Licensed under the MIT License. See License.txt in the project root for license information.
+     *--------------------------------------------------------------------------------------------*/
+    'use strict';
+    /**
+     * The empty string.
+     */
+    exports.empty = '';
+    function isFalsyOrWhitespace(str) {
+        if (!str || typeof str !== 'string') {
+            return true;
+        }
+        return str.trim().length === 0;
+    }
+    exports.isFalsyOrWhitespace = isFalsyOrWhitespace;
+    /**
+     * @returns the provided number with the given number of preceding zeros.
+     */
+    function pad(n, l, char) {
+        if (char === void 0) { char = '0'; }
+        var str = '' + n;
+        var r = [str];
+        for (var i = str.length; i < l; i++) {
+            r.push(char);
+        }
+        return r.reverse().join('');
+    }
+    exports.pad = pad;
+    var _formatRegexp = /{(\d+)}/g;
+    /**
+     * Helper to produce a string with a variable number of arguments. Insert variable segments
+     * into the string using the {n} notation where N is the index of the argument following the string.
+     * @param value string to which formatting is applied
+     * @param args replacements for {n}-entries
+     */
+    function format(value) {
+        var args = [];
+        for (var _i = 1; _i < arguments.length; _i++) {
+            args[_i - 1] = arguments[_i];
+        }
+        if (args.length === 0) {
+            return value;
+        }
+        return value.replace(_formatRegexp, function (match, group) {
+            var idx = parseInt(group, 10);
+            return isNaN(idx) || idx < 0 || idx >= args.length ?
+                match :
+                args[idx];
+        });
+    }
+    exports.format = format;
+    /**
+     * Converts HTML characters inside the string to use entities instead. Makes the string safe from
+     * being used e.g. in HTMLElement.innerHTML.
+     */
+    function escape(html) {
+        return html.replace(/[<|>|&]/g, function (match) {
+            switch (match) {
+                case '<': return '&lt;';
+                case '>': return '&gt;';
+                case '&': return '&amp;';
+                default: return match;
+            }
+        });
+    }
+    exports.escape = escape;
+    /**
+     * Escapes regular expression characters in a given string
+     */
+    function escapeRegExpCharacters(value) {
+        return value.replace(/[\-\\\{\}\*\+\?\|\^\$\.\,\[\]\(\)\#\s]/g, '\\$&');
+    }
+    exports.escapeRegExpCharacters = escapeRegExpCharacters;
+    /**
+     * Removes all occurrences of needle from the beginning and end of haystack.
+     * @param haystack string to trim
+     * @param needle the thing to trim (default is a blank)
+     */
+    function trim(haystack, needle) {
+        if (needle === void 0) { needle = ' '; }
+        var trimmed = ltrim(haystack, needle);
+        return rtrim(trimmed, needle);
+    }
+    exports.trim = trim;
+    /**
+     * Removes all occurrences of needle from the beginning of haystack.
+     * @param haystack string to trim
+     * @param needle the thing to trim
+     */
+    function ltrim(haystack, needle) {
+        if (!haystack || !needle) {
+            return haystack;
+        }
+        var needleLen = needle.length;
+        if (needleLen === 0 || haystack.length === 0) {
+            return haystack;
+        }
+        var offset = 0, idx = -1;
+        while ((idx = haystack.indexOf(needle, offset)) === offset) {
+            offset = offset + needleLen;
+        }
+        return haystack.substring(offset);
+    }
+    exports.ltrim = ltrim;
+    /**
+     * Removes all occurrences of needle from the end of haystack.
+     * @param haystack string to trim
+     * @param needle the thing to trim
+     */
+    function rtrim(haystack, needle) {
+        if (!haystack || !needle) {
+            return haystack;
+        }
+        var needleLen = needle.length, haystackLen = haystack.length;
+        if (needleLen === 0 || haystackLen === 0) {
+            return haystack;
+        }
+        var offset = haystackLen, idx = -1;
+        while (true) {
+            idx = haystack.lastIndexOf(needle, offset - 1);
+            if (idx === -1 || idx + needleLen !== offset) {
+                break;
+            }
+            if (idx === 0) {
+                return '';
+            }
+            offset = idx;
+        }
+        return haystack.substring(0, offset);
+    }
+    exports.rtrim = rtrim;
+    function convertSimple2RegExpPattern(pattern) {
+        return pattern.replace(/[\-\\\{\}\+\?\|\^\$\.\,\[\]\(\)\#\s]/g, '\\$&').replace(/[\*]/g, '.*');
+    }
+    exports.convertSimple2RegExpPattern = convertSimple2RegExpPattern;
+    function stripWildcards(pattern) {
+        return pattern.replace(/\*/g, '');
+    }
+    exports.stripWildcards = stripWildcards;
+    /**
+     * Determines if haystack starts with needle.
+     */
+    function startsWith(haystack, needle) {
+        if (haystack.length < needle.length) {
+            return false;
+        }
+        for (var i = 0; i < needle.length; i++) {
+            if (haystack[i] !== needle[i]) {
+                return false;
+            }
+        }
+        return true;
+    }
+    exports.startsWith = startsWith;
+    /**
+     * Determines if haystack ends with needle.
+     */
+    function endsWith(haystack, needle) {
+        var diff = haystack.length - needle.length;
+        if (diff > 0) {
+            return haystack.indexOf(needle, diff) === diff;
+        }
+        else if (diff === 0) {
+            return haystack === needle;
+        }
+        else {
+            return false;
+        }
+    }
+    exports.endsWith = endsWith;
+    function indexOfIgnoreCase(haystack, needle, position) {
+        if (position === void 0) { position = 0; }
+        var index = haystack.indexOf(needle, position);
+        if (index < 0) {
+            if (position > 0) {
+                haystack = haystack.substr(position);
+            }
+            needle = escapeRegExpCharacters(needle);
+            index = haystack.search(new RegExp(needle, 'i'));
+        }
+        return index;
+    }
+    exports.indexOfIgnoreCase = indexOfIgnoreCase;
+    function createRegExp(searchString, isRegex, options) {
+        if (options === void 0) { options = {}; }
+        if (searchString === '') {
+            throw new Error('Cannot create regex from empty string');
+        }
+        if (!isRegex) {
+            searchString = searchString.replace(/[\-\\\{\}\*\+\?\|\^\$\.\,\[\]\(\)\#\s]/g, '\\$&');
+        }
+        if (options.wholeWord) {
+            if (!/\B/.test(searchString.charAt(0))) {
+                searchString = '\\b' + searchString;
+            }
+            if (!/\B/.test(searchString.charAt(searchString.length - 1))) {
+                searchString = searchString + '\\b';
+            }
+        }
+        var modifiers = '';
+        if (options.global) {
+            modifiers += 'g';
+        }
+        if (!options.matchCase) {
+            modifiers += 'i';
+        }
+        if (options.multiline) {
+            modifiers += 'm';
+        }
+        return new RegExp(searchString, modifiers);
+    }
+    exports.createRegExp = createRegExp;
+    function regExpLeadsToEndlessLoop(regexp) {
+        // Exit early if it's one of these special cases which are meant to match
+        // against an empty string
+        if (regexp.source === '^' || regexp.source === '^$' || regexp.source === '$') {
+            return false;
+        }
+        // We check against an empty string. If the regular expression doesn't advance
+        // (e.g. ends in an endless loop) it will match an empty string.
+        var match = regexp.exec('');
+        return (match && regexp.lastIndex === 0);
+    }
+    exports.regExpLeadsToEndlessLoop = regExpLeadsToEndlessLoop;
+    /**
+     * The normalize() method returns the Unicode Normalization Form of a given string. The form will be
+     * the Normalization Form Canonical Composition.
+     *
+     * @see {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/normalize}
+     */
+    exports.canNormalize = typeof (''.normalize) === 'function';
+    var nonAsciiCharactersPattern = /[^\u0000-\u0080]/;
+    var normalizedCache = new map_1.BoundedLinkedMap(10000); // bounded to 10000 elements
+    function normalizeNFC(str) {
+        if (!exports.canNormalize || !str) {
+            return str;
+        }
+        var cached = normalizedCache.get(str);
+        if (cached) {
+            return cached;
+        }
+        var res;
+        if (nonAsciiCharactersPattern.test(str)) {
+            res = str.normalize('NFC');
+        }
+        else {
+            res = str;
+        }
+        // Use the cache for fast lookup
+        normalizedCache.set(str, res);
+        return res;
+    }
+    exports.normalizeNFC = normalizeNFC;
+    /**
+     * Returns first index of the string that is not whitespace.
+     * If string is empty or contains only whitespaces, returns -1
+     */
+    function firstNonWhitespaceIndex(str) {
+        for (var i = 0, len = str.length; i < len; i++) {
+            var chCode = str.charCodeAt(i);
+            if (chCode !== 32 /* Space */ && chCode !== 9 /* Tab */) {
+                return i;
+            }
+        }
+        return -1;
+    }
+    exports.firstNonWhitespaceIndex = firstNonWhitespaceIndex;
+    /**
+     * Returns the leading whitespace of the string.
+     * If the string contains only whitespaces, returns entire string
+     */
+    function getLeadingWhitespace(str) {
+        for (var i = 0, len = str.length; i < len; i++) {
+            var chCode = str.charCodeAt(i);
+            if (chCode !== 32 /* Space */ && chCode !== 9 /* Tab */) {
+                return str.substring(0, i);
+            }
+        }
+        return str;
+    }
+    exports.getLeadingWhitespace = getLeadingWhitespace;
+    /**
+     * Returns last index of the string that is not whitespace.
+     * If string is empty or contains only whitespaces, returns -1
+     */
+    function lastNonWhitespaceIndex(str, startIndex) {
+        if (startIndex === void 0) { startIndex = str.length - 1; }
+        for (var i = startIndex; i >= 0; i--) {
+            var chCode = str.charCodeAt(i);
+            if (chCode !== 32 /* Space */ && chCode !== 9 /* Tab */) {
+                return i;
+            }
+        }
+        return -1;
+    }
+    exports.lastNonWhitespaceIndex = lastNonWhitespaceIndex;
+    function compare(a, b) {
+        if (a < b) {
+            return -1;
+        }
+        else if (a > b) {
+            return 1;
+        }
+        else {
+            return 0;
+        }
+    }
+    exports.compare = compare;
+    function compareIgnoreCase(a, b) {
+        var len = Math.min(a.length, b.length);
+        for (var i = 0; i < len; i++) {
+            var codeA = a.charCodeAt(i);
+            var codeB = b.charCodeAt(i);
+            if (codeA === codeB) {
+                // equal
+                continue;
+            }
+            if (isAsciiLetter(codeA) && isAsciiLetter(codeB)) {
+                var diff = codeA - codeB;
+                if (diff === 32 || diff === -32) {
+                    // equal -> ignoreCase
+                    continue;
+                }
+                else {
+                    return diff;
+                }
+            }
+            else {
+                return compare(a.toLowerCase(), b.toLowerCase());
+            }
+        }
+        if (a.length < b.length) {
+            return -1;
+        }
+        else if (a.length > b.length) {
+            return 1;
+        }
+        else {
+            return 0;
+        }
+    }
+    exports.compareIgnoreCase = compareIgnoreCase;
+    function isAsciiLetter(code) {
+        return (code >= 97 /* a */ && code <= 122 /* z */) || (code >= 65 /* A */ && code <= 90 /* Z */);
+    }
+    function equalsIgnoreCase(a, b) {
+        var len1 = a.length, len2 = b.length;
+        if (len1 !== len2) {
+            return false;
+        }
+        return doEqualsIgnoreCase(a, b);
+    }
+    exports.equalsIgnoreCase = equalsIgnoreCase;
+    function doEqualsIgnoreCase(a, b, stopAt) {
+        if (stopAt === void 0) { stopAt = a.length; }
+        for (var i = 0; i < stopAt; i++) {
+            var codeA = a.charCodeAt(i);
+            var codeB = b.charCodeAt(i);
+            if (codeA === codeB) {
+                continue;
+            }
+            // a-z A-Z
+            if (isAsciiLetter(codeA) && isAsciiLetter(codeB)) {
+                var diff = Math.abs(codeA - codeB);
+                if (diff !== 0 && diff !== 32) {
+                    return false;
+                }
+            }
+            else {
+                if (String.fromCharCode(codeA).toLowerCase() !== String.fromCharCode(codeB).toLowerCase()) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+    exports.doEqualsIgnoreCase = doEqualsIgnoreCase;
+    function beginsWithIgnoreCase(str, candidate) {
+        var candidateLength = candidate.length;
+        if (candidate.length > str.length) {
+            return false;
+        }
+        return doEqualsIgnoreCase(str, candidate, candidateLength);
+    }
+    exports.beginsWithIgnoreCase = beginsWithIgnoreCase;
+    /**
+     * @returns the length of the common prefix of the two strings.
+     */
+    function commonPrefixLength(a, b) {
+        var i, len = Math.min(a.length, b.length);
+        for (i = 0; i < len; i++) {
+            if (a.charCodeAt(i) !== b.charCodeAt(i)) {
+                return i;
+            }
+        }
+        return len;
+    }
+    exports.commonPrefixLength = commonPrefixLength;
+    /**
+     * @returns the length of the common suffix of the two strings.
+     */
+    function commonSuffixLength(a, b) {
+        var i, len = Math.min(a.length, b.length);
+        var aLastIndex = a.length - 1;
+        var bLastIndex = b.length - 1;
+        for (i = 0; i < len; i++) {
+            if (a.charCodeAt(aLastIndex - i) !== b.charCodeAt(bLastIndex - i)) {
+                return i;
+            }
+        }
+        return len;
+    }
+    exports.commonSuffixLength = commonSuffixLength;
+    // --- unicode
+    // http://en.wikipedia.org/wiki/Surrogate_pair
+    // Returns the code point starting at a specified index in a string
+    // Code points U+0000 to U+D7FF and U+E000 to U+FFFF are represented on a single character
+    // Code points U+10000 to U+10FFFF are represented on two consecutive characters
+    //export function getUnicodePoint(str:string, index:number, len:number):number {
+    //	let chrCode = str.charCodeAt(index);
+    //	if (0xD800 <= chrCode && chrCode <= 0xDBFF && index + 1 < len) {
+    //		let nextChrCode = str.charCodeAt(index + 1);
+    //		if (0xDC00 <= nextChrCode && nextChrCode <= 0xDFFF) {
+    //			return (chrCode - 0xD800) << 10 + (nextChrCode - 0xDC00) + 0x10000;
+    //		}
+    //	}
+    //	return chrCode;
+    //}
+    function isHighSurrogate(charCode) {
+        return (0xD800 <= charCode && charCode <= 0xDBFF);
+    }
+    exports.isHighSurrogate = isHighSurrogate;
+    function isLowSurrogate(charCode) {
+        return (0xDC00 <= charCode && charCode <= 0xDFFF);
+    }
+    exports.isLowSurrogate = isLowSurrogate;
+    /**
+     * Generated using https://github.com/alexandrudima/unicode-utils/blob/master/generate-rtl-test.js
+     */
+    var CONTAINS_RTL = /(?:[\u05BE\u05C0\u05C3\u05C6\u05D0-\u05F4\u0608\u060B\u060D\u061B-\u064A\u066D-\u066F\u0671-\u06D5\u06E5\u06E6\u06EE\u06EF\u06FA-\u0710\u0712-\u072F\u074D-\u07A5\u07B1-\u07EA\u07F4\u07F5\u07FA-\u0815\u081A\u0824\u0828\u0830-\u0858\u085E-\u08BD\u200F\uFB1D\uFB1F-\uFB28\uFB2A-\uFD3D\uFD50-\uFDFC\uFE70-\uFEFC]|\uD802[\uDC00-\uDD1B\uDD20-\uDE00\uDE10-\uDE33\uDE40-\uDEE4\uDEEB-\uDF35\uDF40-\uDFFF]|\uD803[\uDC00-\uDCFF]|\uD83A[\uDC00-\uDCCF\uDD00-\uDD43\uDD50-\uDFFF]|\uD83B[\uDC00-\uDEBB])/;
+    /**
+     * Returns true if `str` contains any Unicode character that is classified as "R" or "AL".
+     */
+    function containsRTL(str) {
+        return CONTAINS_RTL.test(str);
+    }
+    exports.containsRTL = containsRTL;
+    var IS_BASIC_ASCII = /^[\t\n\r\x20-\x7E]*$/;
+    /**
+     * Returns true if `str` contains only basic ASCII characters in the range 32 - 126 (including 32 and 126) or \n, \r, \t
+     */
+    function isBasicASCII(str) {
+        return IS_BASIC_ASCII.test(str);
+    }
+    exports.isBasicASCII = isBasicASCII;
+    function isFullWidthCharacter(charCode) {
+        // Do a cheap trick to better support wrapping of wide characters, treat them as 2 columns
+        // http://jrgraphix.net/research/unicode_blocks.php
+        //          2E80 — 2EFF   CJK Radicals Supplement
+        //          2F00 — 2FDF   Kangxi Radicals
+        //          2FF0 — 2FFF   Ideographic Description Characters
+        //          3000 — 303F   CJK Symbols and Punctuation
+        //          3040 — 309F   Hiragana
+        //          30A0 — 30FF   Katakana
+        //          3100 — 312F   Bopomofo
+        //          3130 — 318F   Hangul Compatibility Jamo
+        //          3190 — 319F   Kanbun
+        //          31A0 — 31BF   Bopomofo Extended
+        //          31F0 — 31FF   Katakana Phonetic Extensions
+        //          3200 — 32FF   Enclosed CJK Letters and Months
+        //          3300 — 33FF   CJK Compatibility
+        //          3400 — 4DBF   CJK Unified Ideographs Extension A
+        //          4DC0 — 4DFF   Yijing Hexagram Symbols
+        //          4E00 — 9FFF   CJK Unified Ideographs
+        //          A000 — A48F   Yi Syllables
+        //          A490 — A4CF   Yi Radicals
+        //          AC00 — D7AF   Hangul Syllables
+        // [IGNORE] D800 — DB7F   High Surrogates
+        // [IGNORE] DB80 — DBFF   High Private Use Surrogates
+        // [IGNORE] DC00 — DFFF   Low Surrogates
+        // [IGNORE] E000 — F8FF   Private Use Area
+        //          F900 — FAFF   CJK Compatibility Ideographs
+        // [IGNORE] FB00 — FB4F   Alphabetic Presentation Forms
+        // [IGNORE] FB50 — FDFF   Arabic Presentation Forms-A
+        // [IGNORE] FE00 — FE0F   Variation Selectors
+        // [IGNORE] FE20 — FE2F   Combining Half Marks
+        // [IGNORE] FE30 — FE4F   CJK Compatibility Forms
+        // [IGNORE] FE50 — FE6F   Small Form Variants
+        // [IGNORE] FE70 — FEFF   Arabic Presentation Forms-B
+        //          FF00 — FFEF   Halfwidth and Fullwidth Forms
+        //               [https://en.wikipedia.org/wiki/Halfwidth_and_fullwidth_forms]
+        //               of which FF01 - FF5E fullwidth ASCII of 21 to 7E
+        // [IGNORE]    and FF65 - FFDC halfwidth of Katakana and Hangul
+        // [IGNORE] FFF0 — FFFF   Specials
+        charCode = +charCode; // @perf
+        return ((charCode >= 0x2E80 && charCode <= 0xD7AF)
+            || (charCode >= 0xF900 && charCode <= 0xFAFF)
+            || (charCode >= 0xFF01 && charCode <= 0xFF5E));
+    }
+    exports.isFullWidthCharacter = isFullWidthCharacter;
+    /**
+     * Computes the difference score for two strings. More similar strings have a higher score.
+     * We use largest common subsequence dynamic programming approach but penalize in the end for length differences.
+     * Strings that have a large length difference will get a bad default score 0.
+     * Complexity - both time and space O(first.length * second.length)
+     * Dynamic programming LCS computation http://en.wikipedia.org/wiki/Longest_common_subsequence_problem
+     *
+     * @param first a string
+     * @param second a string
+     */
+    function difference(first, second, maxLenDelta) {
+        if (maxLenDelta === void 0) { maxLenDelta = 4; }
+        var lengthDifference = Math.abs(first.length - second.length);
+        // We only compute score if length of the currentWord and length of entry.name are similar.
+        if (lengthDifference > maxLenDelta) {
+            return 0;
+        }
+        // Initialize LCS (largest common subsequence) matrix.
+        var LCS = [];
+        var zeroArray = [];
+        var i, j;
+        for (i = 0; i < second.length + 1; ++i) {
+            zeroArray.push(0);
+        }
+        for (i = 0; i < first.length + 1; ++i) {
+            LCS.push(zeroArray);
+        }
+        for (i = 1; i < first.length + 1; ++i) {
+            for (j = 1; j < second.length + 1; ++j) {
+                if (first[i - 1] === second[j - 1]) {
+                    LCS[i][j] = LCS[i - 1][j - 1] + 1;
+                }
+                else {
+                    LCS[i][j] = Math.max(LCS[i - 1][j], LCS[i][j - 1]);
+                }
+            }
+        }
+        return LCS[first.length][second.length] - Math.sqrt(lengthDifference);
+    }
+    exports.difference = difference;
+    /**
+     * Returns an array in which every entry is the offset of a
+     * line. There is always one entry which is zero.
+     */
+    function computeLineStarts(text) {
+        var regexp = /\r\n|\r|\n/g, ret = [0], match;
+        while ((match = regexp.exec(text))) {
+            ret.push(regexp.lastIndex);
+        }
+        return ret;
+    }
+    exports.computeLineStarts = computeLineStarts;
+    /**
+     * Given a string and a max length returns a shorted version. Shorting
+     * happens at favorable positions - such as whitespace or punctuation characters.
+     */
+    function lcut(text, n) {
+        if (text.length < n) {
+            return text;
+        }
+        var segments = text.split(/\b/), count = 0;
+        for (var i = segments.length - 1; i >= 0; i--) {
+            count += segments[i].length;
+            if (count > n) {
+                segments.splice(0, i);
+                break;
+            }
+        }
+        return segments.join(exports.empty).replace(/^\s/, exports.empty);
+    }
+    exports.lcut = lcut;
+    // Escape codes
+    // http://en.wikipedia.org/wiki/ANSI_escape_code
+    var EL = /\x1B\x5B[12]?K/g; // Erase in line
+    var COLOR_START = /\x1b\[\d+m/g; // Color
+    var COLOR_END = /\x1b\[0?m/g; // Color
+    function removeAnsiEscapeCodes(str) {
+        if (str) {
+            str = str.replace(EL, '');
+            str = str.replace(COLOR_START, '');
+            str = str.replace(COLOR_END, '');
+        }
+        return str;
+    }
+    exports.removeAnsiEscapeCodes = removeAnsiEscapeCodes;
+    // -- UTF-8 BOM
+    exports.UTF8_BOM_CHARACTER = String.fromCharCode(65279 /* UTF8_BOM */);
+    function startsWithUTF8BOM(str) {
+        return (str && str.length > 0 && str.charCodeAt(0) === 65279 /* UTF8_BOM */);
+    }
+    exports.startsWithUTF8BOM = startsWithUTF8BOM;
+    /**
+     * Appends two strings. If the appended result is longer than maxLength,
+     * trims the start of the result and replaces it with '...'.
+     */
+    function appendWithLimit(first, second, maxLength) {
+        var newLength = first.length + second.length;
+        if (newLength > maxLength) {
+            first = '...' + first.substr(newLength - maxLength);
+        }
+        if (second.length > maxLength) {
+            first += second.substr(second.length - maxLength);
+        }
+        else {
+            first += second;
+        }
+        return first;
+    }
+    exports.appendWithLimit = appendWithLimit;
+    function safeBtoa(str) {
+        return btoa(encodeURIComponent(str)); // we use encodeURIComponent because btoa fails for non Latin 1 values
+    }
+    exports.safeBtoa = safeBtoa;
+    function repeat(s, count) {
+        var result = '';
+        for (var i = 0; i < count; i++) {
+            result += s;
+        }
+        return result;
+    }
+    exports.repeat = repeat;
+});
+
+define(__m[20/*vs/base/common/paths*/], __M([1/*require*/,0/*exports*/,13/*vs/base/common/platform*/,22/*vs/base/common/arrays*/,9/*vs/base/common/strings*/]), function (require, exports, platform_1, arrays_1, strings_1) {
+    /*---------------------------------------------------------------------------------------------
+     *  Copyright (c) Microsoft Corporation. All rights reserved.
+     *  Licensed under the MIT License. See License.txt in the project root for license information.
+     *--------------------------------------------------------------------------------------------*/
+    'use strict';
+    /**
+     * The forward slash path separator.
+     */
+    exports.sep = '/';
+    /**
+     * The native path separator depending on the OS.
+     */
+    exports.nativeSep = platform_1.isWindows ? '\\' : '/';
+    function relative(from, to) {
+        // ignore trailing slashes
+        var originalNormalizedFrom = strings_1.rtrim(normalize(from), exports.sep);
+        var originalNormalizedTo = strings_1.rtrim(normalize(to), exports.sep);
+        // we're assuming here that any non=linux OS is case insensitive
+        // so we must compare each part in its lowercase form
+        var normalizedFrom = platform_1.isLinux ? originalNormalizedFrom : originalNormalizedFrom.toLowerCase();
+        var normalizedTo = platform_1.isLinux ? originalNormalizedTo : originalNormalizedTo.toLowerCase();
+        var fromParts = normalizedFrom.split(exports.sep);
+        var toParts = normalizedTo.split(exports.sep);
+        var i = 0, max = Math.min(fromParts.length, toParts.length);
+        for (; i < max; i++) {
+            if (fromParts[i] !== toParts[i]) {
+                break;
+            }
+        }
+        var result = arrays_1.fill(fromParts.length - i, function () { return '..'; }).concat(originalNormalizedTo.split(exports.sep).slice(i));
+        return result.join(exports.sep);
+    }
+    exports.relative = relative;
+    /**
+     * @returns the directory name of a path.
+     */
+    function dirname(path) {
+        var idx = ~path.lastIndexOf('/') || ~path.lastIndexOf('\\');
+        if (idx === 0) {
+            return '.';
+        }
+        else if (~idx === 0) {
+            return path[0];
+        }
+        else {
+            var res = path.substring(0, ~idx);
+            if (platform_1.isWindows && res[res.length - 1] === ':') {
+                res += exports.nativeSep; // make sure drive letters end with backslash
+            }
+            return res;
+        }
+    }
+    exports.dirname = dirname;
+    /**
+     * @returns the base name of a path.
+     */
+    function basename(path) {
+        var idx = ~path.lastIndexOf('/') || ~path.lastIndexOf('\\');
+        if (idx === 0) {
+            return path;
+        }
+        else if (~idx === path.length - 1) {
+            return basename(path.substring(0, path.length - 1));
+        }
+        else {
+            return path.substr(~idx + 1);
+        }
+    }
+    exports.basename = basename;
+    /**
+     * @returns {{.far}} from boo.far or the empty string.
+     */
+    function extname(path) {
+        path = basename(path);
+        var idx = ~path.lastIndexOf('.');
+        return idx ? path.substring(~idx) : '';
+    }
+    exports.extname = extname;
+    var _posixBadPath = /(\/\.\.?\/)|(\/\.\.?)$|^(\.\.?\/)|(\/\/+)|(\\)/;
+    var _winBadPath = /(\\\.\.?\\)|(\\\.\.?)$|^(\.\.?\\)|(\\\\+)|(\/)/;
+    function _isNormal(path, win) {
+        return win
+            ? !_winBadPath.test(path)
+            : !_posixBadPath.test(path);
+    }
+    function normalize(path, toOSPath) {
+        if (path === null || path === void 0) {
+            return path;
+        }
+        var len = path.length;
+        if (len === 0) {
+            return '.';
+        }
+        var wantsBackslash = platform_1.isWindows && toOSPath;
+        if (_isNormal(path, wantsBackslash)) {
+            return path;
+        }
+        var sep = wantsBackslash ? '\\' : '/';
+        var root = getRoot(path, sep);
+        // skip the root-portion of the path
+        var start = root.length;
+        var skip = false;
+        var res = '';
+        for (var end = root.length; end <= len; end++) {
+            // either at the end or at a path-separator character
+            if (end === len || path.charCodeAt(end) === 47 /* Slash */ || path.charCodeAt(end) === 92 /* Backslash */) {
+                if (streql(path, start, end, '..')) {
+                    // skip current and remove parent (if there is already something)
+                    var prev_start = res.lastIndexOf(sep);
+                    var prev_part = res.slice(prev_start + 1);
+                    if ((root || prev_part.length > 0) && prev_part !== '..') {
+                        res = prev_start === -1 ? '' : res.slice(0, prev_start);
+                        skip = true;
+                    }
+                }
+                else if (streql(path, start, end, '.') && (root || res || end < len - 1)) {
+                    // skip current (if there is already something or if there is more to come)
+                    skip = true;
+                }
+                if (!skip) {
+                    var part = path.slice(start, end);
+                    if (res !== '' && res[res.length - 1] !== sep) {
+                        res += sep;
+                    }
+                    res += part;
+                }
+                start = end + 1;
+                skip = false;
+            }
+        }
+        return root + res;
+    }
+    exports.normalize = normalize;
+    function streql(value, start, end, other) {
+        return start + other.length === end && value.indexOf(other, start) === start;
+    }
+    /**
+     * Computes the _root_ this path, like `getRoot('c:\files') === c:\`,
+     * `getRoot('files:///files/path') === files:///`,
+     * or `getRoot('\\server\shares\path') === \\server\shares\`
+     */
+    function getRoot(path, sep) {
+        if (sep === void 0) { sep = '/'; }
+        if (!path) {
+            return '';
+        }
+        var len = path.length;
+        var code = path.charCodeAt(0);
+        if (code === 47 /* Slash */ || code === 92 /* Backslash */) {
+            code = path.charCodeAt(1);
+            if (code === 47 /* Slash */ || code === 92 /* Backslash */) {
+                // UNC candidate \\localhost\shares\ddd
+                //               ^^^^^^^^^^^^^^^^^^^
+                code = path.charCodeAt(2);
+                if (code !== 47 /* Slash */ && code !== 92 /* Backslash */) {
+                    var pos_1 = 3;
+                    var start = pos_1;
+                    for (; pos_1 < len; pos_1++) {
+                        code = path.charCodeAt(pos_1);
+                        if (code === 47 /* Slash */ || code === 92 /* Backslash */) {
+                            break;
+                        }
+                    }
+                    code = path.charCodeAt(pos_1 + 1);
+                    if (start !== pos_1 && code !== 47 /* Slash */ && code !== 92 /* Backslash */) {
+                        pos_1 += 1;
+                        for (; pos_1 < len; pos_1++) {
+                            code = path.charCodeAt(pos_1);
+                            if (code === 47 /* Slash */ || code === 92 /* Backslash */) {
+                                return path.slice(0, pos_1 + 1) // consume this separator
+                                    .replace(/[\\/]/g, sep);
+                            }
+                        }
+                    }
+                }
+            }
+            // /user/far
+            // ^
+            return sep;
+        }
+        else if ((code >= 65 /* A */ && code <= 90 /* Z */) || (code >= 97 /* a */ && code <= 122 /* z */)) {
+            // check for windows drive letter c:\ or c:
+            if (path.charCodeAt(1) === 58 /* Colon */) {
+                code = path.charCodeAt(2);
+                if (code === 47 /* Slash */ || code === 92 /* Backslash */) {
+                    // C:\fff
+                    // ^^^
+                    return path.slice(0, 2) + sep;
+                }
+                else {
+                    // C:
+                    // ^^
+                    return path.slice(0, 2);
+                }
+            }
+        }
+        // check for URI
+        // scheme://authority/path
+        // ^^^^^^^^^^^^^^^^^^^
+        var pos = path.indexOf('://');
+        if (pos !== -1) {
+            pos += 3; // 3 -> "://".length
+            for (; pos < len; pos++) {
+                code = path.charCodeAt(pos);
+                if (code === 47 /* Slash */ || code === 92 /* Backslash */) {
+                    return path.slice(0, pos + 1); // consume this separator
+                }
+            }
+        }
+        return '';
+    }
+    exports.getRoot = getRoot;
+    exports.join = function () {
+        // Not using a function with var-args because of how TS compiles
+        // them to JS - it would result in 2*n runtime cost instead
+        // of 1*n, where n is parts.length.
+        var value = '';
+        for (var i = 0; i < arguments.length; i++) {
+            var part = arguments[i];
+            if (i > 0) {
+                // add the separater between two parts unless
+                // there already is one
+                var last = value.charCodeAt(value.length - 1);
+                if (last !== 47 /* Slash */ && last !== 92 /* Backslash */) {
+                    var next = part.charCodeAt(0);
+                    if (next !== 47 /* Slash */ && next !== 92 /* Backslash */) {
+                        value += exports.sep;
+                    }
+                }
+            }
+            value += part;
+        }
+        return normalize(value);
+    };
+    /**
+     * Check if the path follows this pattern: `\\hostname\sharename`.
+     *
+     * @see https://msdn.microsoft.com/en-us/library/gg465305.aspx
+     * @return A boolean indication if the path is a UNC path, on none-windows
+     * always false.
+     */
+    function isUNC(path) {
+        if (!platform_1.isWindows) {
+            // UNC is a windows concept
+            return false;
+        }
+        if (!path || path.length < 5) {
+            // at least \\a\b
+            return false;
+        }
+        var code = path.charCodeAt(0);
+        if (code !== 92 /* Backslash */) {
+            return false;
+        }
+        code = path.charCodeAt(1);
+        if (code !== 92 /* Backslash */) {
+            return false;
+        }
+        var pos = 2;
+        var start = pos;
+        for (; pos < path.length; pos++) {
+            code = path.charCodeAt(pos);
+            if (code === 92 /* Backslash */) {
+                break;
+            }
+        }
+        if (start === pos) {
+            return false;
+        }
+        code = path.charCodeAt(pos + 1);
+        if (isNaN(code) || code === 92 /* Backslash */) {
+            return false;
+        }
+        return true;
+    }
+    exports.isUNC = isUNC;
+    // Reference: https://en.wikipedia.org/wiki/Filename
+    var INVALID_FILE_CHARS = platform_1.isWindows ? /[\\/:\*\?"<>\|]/g : /[\\/]/g;
+    var WINDOWS_FORBIDDEN_NAMES = /^(con|prn|aux|clock\$|nul|lpt[0-9]|com[0-9])$/i;
+    function isValidBasename(name) {
+        if (!name || name.length === 0 || /^\s+$/.test(name)) {
+            return false; // require a name that is not just whitespace
+        }
+        INVALID_FILE_CHARS.lastIndex = 0; // the holy grail of software development
+        if (INVALID_FILE_CHARS.test(name)) {
+            return false; // check for certain invalid file characters
+        }
+        if (platform_1.isWindows && WINDOWS_FORBIDDEN_NAMES.test(name)) {
+            return false; // check for certain invalid file names
+        }
+        if (name === '.' || name === '..') {
+            return false; // check for reserved values
+        }
+        if (platform_1.isWindows && name[name.length - 1] === '.') {
+            return false; // Windows: file cannot end with a "."
+        }
+        if (platform_1.isWindows && name.length !== name.trim().length) {
+            return false; // Windows: file cannot end with a whitespace
+        }
+        return true;
+    }
+    exports.isValidBasename = isValidBasename;
+});
+
+define(__m[40/*vs/base/common/glob*/], __M([1/*require*/,0/*exports*/,22/*vs/base/common/arrays*/,9/*vs/base/common/strings*/,20/*vs/base/common/paths*/,27/*vs/base/common/map*/,2/*vs/base/common/winjs.base*/]), function (require, exports, arrays, strings, paths, map_1, winjs_base_1) {
+    /*---------------------------------------------------------------------------------------------
+     *  Copyright (c) Microsoft Corporation. All rights reserved.
+     *  Licensed under the MIT License. See License.txt in the project root for license information.
+     *--------------------------------------------------------------------------------------------*/
+    'use strict';
+    var PATH_REGEX = '[/\\\\]'; // any slash or backslash
+    var NO_PATH_REGEX = '[^/\\\\]'; // any non-slash and non-backslash
+    var ALL_FORWARD_SLASHES = /\//g;
+    function starsToRegExp(starCount) {
+        switch (starCount) {
+            case 0:
+                return '';
+            case 1:
+                return NO_PATH_REGEX + "*?"; // 1 star matches any number of characters except path separator (/ and \) - non greedy (?)
+            default:
+                // Matches:  (Path Sep OR Path Val followed by Path Sep OR Path Sep followed by Path Val) 0-many times
+                // Group is non capturing because we don't need to capture at all (?:...)
+                // Overall we use non-greedy matching because it could be that we match too much
+                return "(?:" + PATH_REGEX + "|" + NO_PATH_REGEX + "+" + PATH_REGEX + "|" + PATH_REGEX + NO_PATH_REGEX + "+)*?";
+        }
+    }
+    function splitGlobAware(pattern, splitChar) {
+        if (!pattern) {
+            return [];
+        }
+        var segments = [];
+        var inBraces = false;
+        var inBrackets = false;
+        var char;
+        var curVal = '';
+        for (var i = 0; i < pattern.length; i++) {
+            char = pattern[i];
+            switch (char) {
+                case splitChar:
+                    if (!inBraces && !inBrackets) {
+                        segments.push(curVal);
+                        curVal = '';
+                        continue;
+                    }
+                    break;
+                case '{':
+                    inBraces = true;
+                    break;
+                case '}':
+                    inBraces = false;
+                    break;
+                case '[':
+                    inBrackets = true;
+                    break;
+                case ']':
+                    inBrackets = false;
+                    break;
+            }
+            curVal += char;
+        }
+        // Tail
+        if (curVal) {
+            segments.push(curVal);
+        }
+        return segments;
+    }
+    exports.splitGlobAware = splitGlobAware;
+    function parseRegExp(pattern) {
+        if (!pattern) {
+            return '';
+        }
+        var regEx = '';
+        // Split up into segments for each slash found
+        var segments = splitGlobAware(pattern, '/');
+        // Special case where we only have globstars
+        if (segments.every(function (s) { return s === '**'; })) {
+            regEx = '.*';
+        }
+        else {
+            var previousSegmentWasGlobStar_1 = false;
+            segments.forEach(function (segment, index) {
+                // Globstar is special
+                if (segment === '**') {
+                    // if we have more than one globstar after another, just ignore it
+                    if (!previousSegmentWasGlobStar_1) {
+                        regEx += starsToRegExp(2);
+                        previousSegmentWasGlobStar_1 = true;
+                    }
+                    return;
+                }
+                // States
+                var inBraces = false;
+                var braceVal = '';
+                var inBrackets = false;
+                var bracketVal = '';
+                var char;
+                for (var i = 0; i < segment.length; i++) {
+                    char = segment[i];
+                    // Support brace expansion
+                    if (char !== '}' && inBraces) {
+                        braceVal += char;
+                        continue;
+                    }
+                    // Support brackets
+                    if (char !== ']' && inBrackets) {
+                        var res = void 0;
+                        switch (char) {
+                            case '-':
+                                res = char;
+                                break;
+                            case '^':
+                                res = char;
+                                break;
+                            default:
+                                res = strings.escapeRegExpCharacters(char);
+                        }
+                        bracketVal += res;
+                        continue;
+                    }
+                    switch (char) {
+                        case '{':
+                            inBraces = true;
+                            continue;
+                        case '[':
+                            inBrackets = true;
+                            continue;
+                        case '}':
+                            var choices = splitGlobAware(braceVal, ',');
+                            // Converts {foo,bar} => [foo|bar]
+                            var braceRegExp = "(?:" + choices.map(function (c) { return parseRegExp(c); }).join('|') + ")";
+                            regEx += braceRegExp;
+                            inBraces = false;
+                            braceVal = '';
+                            break;
+                        case ']':
+                            regEx += ('[' + bracketVal + ']');
+                            inBrackets = false;
+                            bracketVal = '';
+                            break;
+                        case '?':
+                            regEx += NO_PATH_REGEX; // 1 ? matches any single character except path separator (/ and \)
+                            continue;
+                        case '*':
+                            regEx += starsToRegExp(1);
+                            continue;
+                        default:
+                            regEx += strings.escapeRegExpCharacters(char);
+                    }
+                }
+                // Tail: Add the slash we had split on if there is more to come and the next one is not a globstar
+                if (index < segments.length - 1 && segments[index + 1] !== '**') {
+                    regEx += PATH_REGEX;
+                }
+                // reset state
+                previousSegmentWasGlobStar_1 = false;
+            });
+        }
+        return regEx;
+    }
+    // regexes to check for trival glob patterns that just check for String#endsWith
+    var T1 = /^\*\*\/\*\.[\w\.-]+$/; // **/*.something
+    var T2 = /^\*\*\/([\w\.-]+)\/?$/; // **/something
+    var T3 = /^{\*\*\/[\*\.]?[\w\.-]+\/?(,\*\*\/[\*\.]?[\w\.-]+\/?)*}$/; // {**/*.something,**/*.else} or {**/package.json,**/project.json}
+    var T3_2 = /^{\*\*\/[\*\.]?[\w\.-]+(\/(\*\*)?)?(,\*\*\/[\*\.]?[\w\.-]+(\/(\*\*)?)?)*}$/; // Like T3, with optional trailing /**
+    var T4 = /^\*\*((\/[\w\.-]+)+)\/?$/; // **/something/else
+    var T5 = /^([\w\.-]+(\/[\w\.-]+)*)\/?$/; // something/else
+    var CACHE = new map_1.BoundedLinkedMap(10000); // bounded to 10000 elements
+    var FALSE = function () {
+        return false;
+    };
+    var NULL = function () {
+        return null;
+    };
+    function parsePattern(pattern, options) {
+        if (!pattern) {
+            return NULL;
+        }
+        // Whitespace trimming
+        pattern = pattern.trim();
+        // Check cache
+        var patternKey = pattern + "_" + !!options.trimForExclusions;
+        var parsedPattern = CACHE.get(patternKey);
+        if (parsedPattern) {
+            return parsedPattern;
+        }
+        // Check for Trivias
+        var match;
+        if (T1.test(pattern)) {
+            var base_1 = pattern.substr(4); // '**/*'.length === 4
+            parsedPattern = function (path, basename) {
+                return path && strings.endsWith(path, base_1) ? pattern : null;
+            };
+        }
+        else if (match = T2.exec(trimForExclusions(pattern, options))) {
+            parsedPattern = trivia2(match[1], pattern);
+        }
+        else if ((options.trimForExclusions ? T3_2 : T3).test(pattern)) {
+            parsedPattern = trivia3(pattern, options);
+        }
+        else if (match = T4.exec(trimForExclusions(pattern, options))) {
+            parsedPattern = trivia4and5(match[1].substr(1), pattern, true);
+        }
+        else if (match = T5.exec(trimForExclusions(pattern, options))) {
+            parsedPattern = trivia4and5(match[1], pattern, false);
+        }
+        else {
+            parsedPattern = toRegExp(pattern);
+        }
+        // Cache
+        CACHE.set(patternKey, parsedPattern);
+        return parsedPattern;
+    }
+    function trimForExclusions(pattern, options) {
+        return options.trimForExclusions && strings.endsWith(pattern, '/**') ? pattern.substr(0, pattern.length - 2) : pattern; // dropping **, tailing / is dropped later
+    }
+    // common pattern: **/some.txt just need basename check
+    function trivia2(base, originalPattern) {
+        var slashBase = "/" + base;
+        var backslashBase = "\\" + base;
+        var parsedPattern = function (path, basename) {
+            if (!path) {
+                return null;
+            }
+            if (basename) {
+                return basename === base ? originalPattern : null;
+            }
+            return path === base || strings.endsWith(path, slashBase) || strings.endsWith(path, backslashBase) ? originalPattern : null;
+        };
+        var basenames = [base];
+        parsedPattern.basenames = basenames;
+        parsedPattern.patterns = [originalPattern];
+        parsedPattern.allBasenames = basenames;
+        return parsedPattern;
+    }
+    // repetition of common patterns (see above) {**/*.txt,**/*.png}
+    function trivia3(pattern, options) {
+        var parsedPatterns = aggregateBasenameMatches(pattern.slice(1, -1).split(',')
+            .map(function (pattern) { return parsePattern(pattern, options); })
+            .filter(function (pattern) { return pattern !== NULL; }), pattern);
+        var n = parsedPatterns.length;
+        if (!n) {
+            return NULL;
+        }
+        if (n === 1) {
+            return parsedPatterns[0];
+        }
+        var parsedPattern = function (path, basename) {
+            for (var i = 0, n_1 = parsedPatterns.length; i < n_1; i++) {
+                if (parsedPatterns[i](path, basename)) {
+                    return pattern;
+                }
+            }
+            return null;
+        };
+        var withBasenames = arrays.first(parsedPatterns, function (pattern) { return !!pattern.allBasenames; });
+        if (withBasenames) {
+            parsedPattern.allBasenames = withBasenames.allBasenames;
+        }
+        var allPaths = parsedPatterns.reduce(function (all, current) { return current.allPaths ? all.concat(current.allPaths) : all; }, []);
+        if (allPaths.length) {
+            parsedPattern.allPaths = allPaths;
+        }
+        return parsedPattern;
+    }
+    // common patterns: **/something/else just need endsWith check, something/else just needs and equals check
+    function trivia4and5(path, pattern, matchPathEnds) {
+        var nativePath = paths.nativeSep !== paths.sep ? path.replace(ALL_FORWARD_SLASHES, paths.nativeSep) : path;
+        var nativePathEnd = paths.nativeSep + nativePath;
+        var parsedPattern = matchPathEnds ? function (path, basename) {
+            return path && (path === nativePath || strings.endsWith(path, nativePathEnd)) ? pattern : null;
+        } : function (path, basename) {
+            return path && path === nativePath ? pattern : null;
+        };
+        parsedPattern.allPaths = [(matchPathEnds ? '*/' : './') + path];
+        return parsedPattern;
+    }
+    function toRegExp(pattern) {
+        try {
+            var regExp_1 = new RegExp("^" + parseRegExp(pattern) + "$");
+            return function (path, basename) {
+                regExp_1.lastIndex = 0; // reset RegExp to its initial state to reuse it!
+                return path && regExp_1.test(path) ? pattern : null;
+            };
+        }
+        catch (error) {
+            return NULL;
+        }
+    }
+    function match(arg1, path, siblingsFn) {
+        if (!arg1 || !path) {
+            return false;
+        }
+        return parse(arg1)(path, undefined, siblingsFn);
+    }
+    exports.match = match;
+    function parse(arg1, options) {
+        if (options === void 0) { options = {}; }
+        if (!arg1) {
+            return FALSE;
+        }
+        // Glob with String
+        if (typeof arg1 === 'string') {
+            var parsedPattern_1 = parsePattern(arg1, options);
+            if (parsedPattern_1 === NULL) {
+                return FALSE;
+            }
+            var resultPattern = function (path, basename) {
+                return !!parsedPattern_1(path, basename);
+            };
+            if (parsedPattern_1.allBasenames) {
+                resultPattern.allBasenames = parsedPattern_1.allBasenames;
+            }
+            if (parsedPattern_1.allPaths) {
+                resultPattern.allPaths = parsedPattern_1.allPaths;
+            }
+            return resultPattern;
+        }
+        // Glob with Expression
+        return parsedExpression(arg1, options);
+    }
+    exports.parse = parse;
+    /**
+     * Same as `parse`, but the ParsedExpression is guaranteed to return a Promise
+     */
+    function parseToAsync(expression, options) {
+        var parsedExpression = parse(expression, options);
+        return function (path, basename, siblingsFn) {
+            return winjs_base_1.TPromise.as(parsedExpression(path, basename, siblingsFn));
+        };
+    }
+    exports.parseToAsync = parseToAsync;
+    function getBasenameTerms(patternOrExpression) {
+        return patternOrExpression.allBasenames || [];
+    }
+    exports.getBasenameTerms = getBasenameTerms;
+    function getPathTerms(patternOrExpression) {
+        return patternOrExpression.allPaths || [];
+    }
+    exports.getPathTerms = getPathTerms;
+    function parsedExpression(expression, options) {
+        var parsedPatterns = aggregateBasenameMatches(Object.getOwnPropertyNames(expression)
+            .map(function (pattern) { return parseExpressionPattern(pattern, expression[pattern], options); })
+            .filter(function (pattern) { return pattern !== NULL; }));
+        var n = parsedPatterns.length;
+        if (!n) {
+            return NULL;
+        }
+        if (!parsedPatterns.some(function (parsedPattern) { return parsedPattern.requiresSiblings; })) {
+            if (n === 1) {
+                return parsedPatterns[0];
+            }
+            var resultExpression_1 = function (path, basename, siblingsFn) {
+                for (var i = 0, n_2 = parsedPatterns.length; i < n_2; i++) {
+                    // Pattern matches path
+                    var result = parsedPatterns[i](path, basename);
+                    if (result) {
+                        return result;
+                    }
+                }
+                return null;
+            };
+            var withBasenames_1 = arrays.first(parsedPatterns, function (pattern) { return !!pattern.allBasenames; });
+            if (withBasenames_1) {
+                resultExpression_1.allBasenames = withBasenames_1.allBasenames;
+            }
+            var allPaths_1 = parsedPatterns.reduce(function (all, current) { return current.allPaths ? all.concat(current.allPaths) : all; }, []);
+            if (allPaths_1.length) {
+                resultExpression_1.allPaths = allPaths_1;
+            }
+            return resultExpression_1;
+        }
+        var resultExpression = function (path, basename, siblingsFn) {
+            var siblingsPattern;
+            var siblingsResolved = !siblingsFn;
+            function siblingsToSiblingsPattern(siblings) {
+                if (siblings && siblings.length) {
+                    if (!basename) {
+                        basename = paths.basename(path);
+                    }
+                    var name_1 = basename.substr(0, basename.length - paths.extname(path).length);
+                    return { siblings: siblings, name: name_1 };
+                }
+                return undefined;
+            }
+            function siblingsPatternFn() {
+                // Resolve siblings only once
+                if (!siblingsResolved) {
+                    siblingsResolved = true;
+                    var siblings = siblingsFn();
+                    siblingsPattern = winjs_base_1.TPromise.is(siblings) ?
+                        siblings.then(siblingsToSiblingsPattern) :
+                        siblingsToSiblingsPattern(siblings);
+                }
+                return siblingsPattern;
+            }
+            for (var i = 0, n_3 = parsedPatterns.length; i < n_3; i++) {
+                // Pattern matches path
+                var result = parsedPatterns[i](path, basename, siblingsPatternFn);
+                if (result) {
+                    return result;
+                }
+            }
+            return null;
+        };
+        var withBasenames = arrays.first(parsedPatterns, function (pattern) { return !!pattern.allBasenames; });
+        if (withBasenames) {
+            resultExpression.allBasenames = withBasenames.allBasenames;
+        }
+        var allPaths = parsedPatterns.reduce(function (all, current) { return current.allPaths ? all.concat(current.allPaths) : all; }, []);
+        if (allPaths.length) {
+            resultExpression.allPaths = allPaths;
+        }
+        return resultExpression;
+    }
+    function parseExpressionPattern(pattern, value, options) {
+        if (value === false) {
+            return NULL; // pattern is disabled
+        }
+        var parsedPattern = parsePattern(pattern, options);
+        if (parsedPattern === NULL) {
+            return NULL;
+        }
+        // Expression Pattern is <boolean>
+        if (typeof value === 'boolean') {
+            return parsedPattern;
+        }
+        // Expression Pattern is <SiblingClause>
+        if (value) {
+            var when_1 = value.when;
+            if (typeof when_1 === 'string') {
+                var siblingsPatternToMatchingPattern_1 = function (siblingsPattern) {
+                    var clausePattern = when_1.replace('$(basename)', siblingsPattern.name);
+                    if (siblingsPattern.siblings.indexOf(clausePattern) !== -1) {
+                        return pattern;
+                    }
+                    else {
+                        return null; // pattern does not match in the end because the when clause is not satisfied
+                    }
+                };
+                var result = function (path, basename, siblingsPatternFn) {
+                    if (!parsedPattern(path, basename)) {
+                        return null;
+                    }
+                    var siblingsPattern = siblingsPatternFn();
+                    if (!siblingsPattern) {
+                        return null; // pattern is malformed or we don't have siblings
+                    }
+                    return winjs_base_1.TPromise.is(siblingsPattern) ?
+                        siblingsPattern.then(siblingsPatternToMatchingPattern_1) :
+                        siblingsPatternToMatchingPattern_1(siblingsPattern);
+                };
+                result.requiresSiblings = true;
+                return result;
+            }
+        }
+        // Expression is Anything
+        return parsedPattern;
+    }
+    function aggregateBasenameMatches(parsedPatterns, result) {
+        var basenamePatterns = parsedPatterns.filter(function (parsedPattern) { return !!parsedPattern.basenames; });
+        if (basenamePatterns.length < 2) {
+            return parsedPatterns;
+        }
+        var basenames = basenamePatterns.reduce(function (all, current) { return all.concat(current.basenames); }, []);
+        var patterns;
+        if (result) {
+            patterns = [];
+            for (var i = 0, n = basenames.length; i < n; i++) {
+                patterns.push(result);
+            }
+        }
+        else {
+            patterns = basenamePatterns.reduce(function (all, current) { return all.concat(current.patterns); }, []);
+        }
+        var aggregate = function (path, basename) {
+            if (!path) {
+                return null;
+            }
+            if (!basename) {
+                var i = void 0;
+                for (i = path.length; i > 0; i--) {
+                    var ch = path.charCodeAt(i - 1);
+                    if (ch === 47 /* Slash */ || ch === 92 /* Backslash */) {
+                        break;
+                    }
+                }
+                basename = path.substr(i);
+            }
+            var index = basenames.indexOf(basename);
+            return index !== -1 ? patterns[index] : null;
+        };
+        aggregate.basenames = basenames;
+        aggregate.patterns = patterns;
+        aggregate.allBasenames = basenames;
+        var aggregatedPatterns = parsedPatterns.filter(function (parsedPattern) { return !parsedPattern.basenames; });
+        aggregatedPatterns.push(aggregate);
+        return aggregatedPatterns;
+    }
+});
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+define(__m[53/*vs/base/node/event*/], __M([1/*require*/,0/*exports*/,4/*vs/base/common/event*/]), function (require, exports, event_1) {
     'use strict';
     function fromEventEmitter(emitter, eventName, map) {
         if (map === void 0) { map = function (id) { return id; }; }
@@ -7883,7 +7564,7 @@ define(__m[48/*vs/base/node/event*/], __M([0/*require*/,1/*exports*/,4/*vs/base/
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-define(__m[51/*vs/base/node/flow*/], __M([0/*require*/,1/*exports*/,117/*assert*/]), function (require, exports, assert) {
+define(__m[60/*vs/base/node/flow*/], __M([1/*require*/,0/*exports*/,62/*assert*/]), function (require, exports, assert) {
     'use strict';
     /**
      * Executes the given function (fn) over the given array of items (list) in parallel and returns the resulting errors and results as
@@ -8026,7 +7707,7 @@ define(__m[51/*vs/base/node/flow*/], __M([0/*require*/,1/*exports*/,117/*assert*
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-define(__m[55/*vs/base/node/extfs*/], __M([0/*require*/,1/*exports*/,34/*vs/base/common/uuid*/,8/*vs/base/common/strings*/,10/*vs/base/common/platform*/,51/*vs/base/node/flow*/,31/*fs*/,18/*path*/]), function (require, exports, uuid, strings, platform, flow, fs, paths) {
+define(__m[64/*vs/base/node/extfs*/], __M([1/*require*/,0/*exports*/,25/*vs/base/common/uuid*/,9/*vs/base/common/strings*/,13/*vs/base/common/platform*/,60/*vs/base/node/flow*/,31/*fs*/,17/*path*/]), function (require, exports, uuid, strings, platform, flow, fs, paths) {
     'use strict';
     var loop = flow.loop;
     function readdirSync(path) {
@@ -8408,7 +8089,7 @@ define(__m[55/*vs/base/node/extfs*/], __M([0/*require*/,1/*exports*/,34/*vs/base
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-define(__m[33/*vs/base/node/pfs*/], __M([0/*require*/,1/*exports*/,3/*vs/base/common/winjs.base*/,55/*vs/base/node/extfs*/,14/*vs/base/common/paths*/,18/*path*/,9/*vs/base/common/async*/,31/*fs*/,70/*os*/,10/*vs/base/common/platform*/,4/*vs/base/common/event*/]), function (require, exports, winjs_base_1, extfs, paths, path_1, async_1, fs, os, platform, event_1) {
+define(__m[32/*vs/base/node/pfs*/], __M([1/*require*/,0/*exports*/,2/*vs/base/common/winjs.base*/,64/*vs/base/node/extfs*/,17/*path*/,12/*vs/base/common/async*/,31/*fs*/,81/*os*/,13/*vs/base/common/platform*/,4/*vs/base/common/event*/]), function (require, exports, winjs_base_1, extfs, path_1, async_1, fs, os, platform, event_1) {
     'use strict';
     function readdir(path) {
         return async_1.nfcall(extfs.readdir, path);
@@ -8539,7 +8220,7 @@ define(__m[33/*vs/base/node/pfs*/], __M([0/*require*/,1/*exports*/,3/*vs/base/co
     */
     function readDirsInDir(dirPath) {
         return readdir(dirPath).then(function (children) {
-            return winjs_base_1.TPromise.join(children.map(function (c) { return dirExists(paths.join(dirPath, c)); })).then(function (exists) {
+            return winjs_base_1.TPromise.join(children.map(function (c) { return dirExists(path_1.join(dirPath, c)); })).then(function (exists) {
                 return children.filter(function (_, i) { return exists[i]; });
             });
         });
@@ -8574,7 +8255,7 @@ define(__m[33/*vs/base/node/pfs*/], __M([0/*require*/,1/*exports*/,3/*vs/base/co
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-define(__m[78/*vs/base/parts/ipc/common/ipc*/], __M([0/*require*/,1/*exports*/,3/*vs/base/common/winjs.base*/,22/*vs/base/common/lifecycle*/,4/*vs/base/common/event*/]), function (require, exports, winjs_base_1, lifecycle_1, event_1) {
+define(__m[82/*vs/base/parts/ipc/common/ipc*/], __M([1/*require*/,0/*exports*/,2/*vs/base/common/winjs.base*/,19/*vs/base/common/lifecycle*/,4/*vs/base/common/event*/]), function (require, exports, winjs_base_1, lifecycle_1, event_1) {
     'use strict';
     var MessageType;
     (function (MessageType) {
@@ -8934,7 +8615,7 @@ define(__m[78/*vs/base/parts/ipc/common/ipc*/], __M([0/*require*/,1/*exports*/,3
 
 
 
-define(__m[79/*vs/base/parts/ipc/node/ipc.net*/], __M([0/*require*/,1/*exports*/,87/*net*/,3/*vs/base/common/winjs.base*/,4/*vs/base/common/event*/,48/*vs/base/node/event*/,78/*vs/base/parts/ipc/common/ipc*/,18/*path*/,70/*os*/,34/*vs/base/common/uuid*/]), function (require, exports, net_1, winjs_base_1, event_1, event_2, ipc_1, path_1, os_1, uuid_1) {
+define(__m[86/*vs/base/parts/ipc/node/ipc.net*/], __M([1/*require*/,0/*exports*/,88/*net*/,2/*vs/base/common/winjs.base*/,4/*vs/base/common/event*/,53/*vs/base/node/event*/,82/*vs/base/parts/ipc/common/ipc*/,17/*path*/,81/*os*/,25/*vs/base/common/uuid*/]), function (require, exports, net_1, winjs_base_1, event_1, event_2, ipc_1, path_1, os_1, uuid_1) {
     'use strict';
     function generateRandomPipeName() {
         var randomSuffix = uuid_1.generateUuid();
@@ -9124,429 +8805,7 @@ define(__m[79/*vs/base/parts/ipc/node/ipc.net*/], __M([0/*require*/,1/*exports*/
     exports.connect = connect;
 });
 
-define(__m[21/*vs/editor/common/core/position*/], __M([0/*require*/,1/*exports*/]), function (require, exports) {
-    /*---------------------------------------------------------------------------------------------
-     *  Copyright (c) Microsoft Corporation. All rights reserved.
-     *  Licensed under the MIT License. See License.txt in the project root for license information.
-     *--------------------------------------------------------------------------------------------*/
-    'use strict';
-    /**
-     * A position in the editor.
-     */
-    var Position = (function () {
-        function Position(lineNumber, column) {
-            this.lineNumber = lineNumber;
-            this.column = column;
-        }
-        /**
-         * Test if this position equals other position
-         */
-        Position.prototype.equals = function (other) {
-            return Position.equals(this, other);
-        };
-        /**
-         * Test if position `a` equals position `b`
-         */
-        Position.equals = function (a, b) {
-            if (!a && !b) {
-                return true;
-            }
-            return (!!a &&
-                !!b &&
-                a.lineNumber === b.lineNumber &&
-                a.column === b.column);
-        };
-        /**
-         * Test if this position is before other position.
-         * If the two positions are equal, the result will be false.
-         */
-        Position.prototype.isBefore = function (other) {
-            return Position.isBefore(this, other);
-        };
-        /**
-         * Test if position `a` is before position `b`.
-         * If the two positions are equal, the result will be false.
-         */
-        Position.isBefore = function (a, b) {
-            if (a.lineNumber < b.lineNumber) {
-                return true;
-            }
-            if (b.lineNumber < a.lineNumber) {
-                return false;
-            }
-            return a.column < b.column;
-        };
-        /**
-         * Test if this position is before other position.
-         * If the two positions are equal, the result will be true.
-         */
-        Position.prototype.isBeforeOrEqual = function (other) {
-            return Position.isBeforeOrEqual(this, other);
-        };
-        /**
-         * Test if position `a` is before position `b`.
-         * If the two positions are equal, the result will be true.
-         */
-        Position.isBeforeOrEqual = function (a, b) {
-            if (a.lineNumber < b.lineNumber) {
-                return true;
-            }
-            if (b.lineNumber < a.lineNumber) {
-                return false;
-            }
-            return a.column <= b.column;
-        };
-        /**
-         * A function that compares positions, useful for sorting
-         */
-        Position.compare = function (a, b) {
-            var aLineNumber = a.lineNumber | 0;
-            var bLineNumber = b.lineNumber | 0;
-            if (aLineNumber === bLineNumber) {
-                var aColumn = a.column | 0;
-                var bColumn = b.column | 0;
-                return aColumn - bColumn;
-            }
-            return aLineNumber - bLineNumber;
-        };
-        /**
-         * Clone this position.
-         */
-        Position.prototype.clone = function () {
-            return new Position(this.lineNumber, this.column);
-        };
-        /**
-         * Convert to a human-readable representation.
-         */
-        Position.prototype.toString = function () {
-            return '(' + this.lineNumber + ',' + this.column + ')';
-        };
-        // ---
-        /**
-         * Create a `Position` from an `IPosition`.
-         */
-        Position.lift = function (pos) {
-            return new Position(pos.lineNumber, pos.column);
-        };
-        /**
-         * Test if `obj` is an `IPosition`.
-         */
-        Position.isIPosition = function (obj) {
-            return (obj
-                && (typeof obj.lineNumber === 'number')
-                && (typeof obj.column === 'number'));
-        };
-        return Position;
-    }());
-    exports.Position = Position;
-});
-
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
-define(__m[35/*vs/editor/common/core/range*/], __M([0/*require*/,1/*exports*/,21/*vs/editor/common/core/position*/]), function (require, exports, position_1) {
-    'use strict';
-    /**
-     * A range in the editor. (startLineNumber,startColumn) is <= (endLineNumber,endColumn)
-     */
-    var Range = (function () {
-        function Range(startLineNumber, startColumn, endLineNumber, endColumn) {
-            if ((startLineNumber > endLineNumber) || (startLineNumber === endLineNumber && startColumn > endColumn)) {
-                this.startLineNumber = endLineNumber;
-                this.startColumn = endColumn;
-                this.endLineNumber = startLineNumber;
-                this.endColumn = startColumn;
-            }
-            else {
-                this.startLineNumber = startLineNumber;
-                this.startColumn = startColumn;
-                this.endLineNumber = endLineNumber;
-                this.endColumn = endColumn;
-            }
-        }
-        /**
-         * Test if this range is empty.
-         */
-        Range.prototype.isEmpty = function () {
-            return Range.isEmpty(this);
-        };
-        /**
-         * Test if `range` is empty.
-         */
-        Range.isEmpty = function (range) {
-            return (range.startLineNumber === range.endLineNumber && range.startColumn === range.endColumn);
-        };
-        /**
-         * Test if position is in this range. If the position is at the edges, will return true.
-         */
-        Range.prototype.containsPosition = function (position) {
-            return Range.containsPosition(this, position);
-        };
-        /**
-         * Test if `position` is in `range`. If the position is at the edges, will return true.
-         */
-        Range.containsPosition = function (range, position) {
-            if (position.lineNumber < range.startLineNumber || position.lineNumber > range.endLineNumber) {
-                return false;
-            }
-            if (position.lineNumber === range.startLineNumber && position.column < range.startColumn) {
-                return false;
-            }
-            if (position.lineNumber === range.endLineNumber && position.column > range.endColumn) {
-                return false;
-            }
-            return true;
-        };
-        /**
-         * Test if range is in this range. If the range is equal to this range, will return true.
-         */
-        Range.prototype.containsRange = function (range) {
-            return Range.containsRange(this, range);
-        };
-        /**
-         * Test if `otherRange` is in `range`. If the ranges are equal, will return true.
-         */
-        Range.containsRange = function (range, otherRange) {
-            if (otherRange.startLineNumber < range.startLineNumber || otherRange.endLineNumber < range.startLineNumber) {
-                return false;
-            }
-            if (otherRange.startLineNumber > range.endLineNumber || otherRange.endLineNumber > range.endLineNumber) {
-                return false;
-            }
-            if (otherRange.startLineNumber === range.startLineNumber && otherRange.startColumn < range.startColumn) {
-                return false;
-            }
-            if (otherRange.endLineNumber === range.endLineNumber && otherRange.endColumn > range.endColumn) {
-                return false;
-            }
-            return true;
-        };
-        /**
-         * A reunion of the two ranges.
-         * The smallest position will be used as the start point, and the largest one as the end point.
-         */
-        Range.prototype.plusRange = function (range) {
-            return Range.plusRange(this, range);
-        };
-        /**
-         * A reunion of the two ranges.
-         * The smallest position will be used as the start point, and the largest one as the end point.
-         */
-        Range.plusRange = function (a, b) {
-            var startLineNumber, startColumn, endLineNumber, endColumn;
-            if (b.startLineNumber < a.startLineNumber) {
-                startLineNumber = b.startLineNumber;
-                startColumn = b.startColumn;
-            }
-            else if (b.startLineNumber === a.startLineNumber) {
-                startLineNumber = b.startLineNumber;
-                startColumn = Math.min(b.startColumn, a.startColumn);
-            }
-            else {
-                startLineNumber = a.startLineNumber;
-                startColumn = a.startColumn;
-            }
-            if (b.endLineNumber > a.endLineNumber) {
-                endLineNumber = b.endLineNumber;
-                endColumn = b.endColumn;
-            }
-            else if (b.endLineNumber === a.endLineNumber) {
-                endLineNumber = b.endLineNumber;
-                endColumn = Math.max(b.endColumn, a.endColumn);
-            }
-            else {
-                endLineNumber = a.endLineNumber;
-                endColumn = a.endColumn;
-            }
-            return new Range(startLineNumber, startColumn, endLineNumber, endColumn);
-        };
-        /**
-         * A intersection of the two ranges.
-         */
-        Range.prototype.intersectRanges = function (range) {
-            return Range.intersectRanges(this, range);
-        };
-        /**
-         * A intersection of the two ranges.
-         */
-        Range.intersectRanges = function (a, b) {
-            var resultStartLineNumber = a.startLineNumber, resultStartColumn = a.startColumn, resultEndLineNumber = a.endLineNumber, resultEndColumn = a.endColumn, otherStartLineNumber = b.startLineNumber, otherStartColumn = b.startColumn, otherEndLineNumber = b.endLineNumber, otherEndColumn = b.endColumn;
-            if (resultStartLineNumber < otherStartLineNumber) {
-                resultStartLineNumber = otherStartLineNumber;
-                resultStartColumn = otherStartColumn;
-            }
-            else if (resultStartLineNumber === otherStartLineNumber) {
-                resultStartColumn = Math.max(resultStartColumn, otherStartColumn);
-            }
-            if (resultEndLineNumber > otherEndLineNumber) {
-                resultEndLineNumber = otherEndLineNumber;
-                resultEndColumn = otherEndColumn;
-            }
-            else if (resultEndLineNumber === otherEndLineNumber) {
-                resultEndColumn = Math.min(resultEndColumn, otherEndColumn);
-            }
-            // Check if selection is now empty
-            if (resultStartLineNumber > resultEndLineNumber) {
-                return null;
-            }
-            if (resultStartLineNumber === resultEndLineNumber && resultStartColumn > resultEndColumn) {
-                return null;
-            }
-            return new Range(resultStartLineNumber, resultStartColumn, resultEndLineNumber, resultEndColumn);
-        };
-        /**
-         * Test if this range equals other.
-         */
-        Range.prototype.equalsRange = function (other) {
-            return Range.equalsRange(this, other);
-        };
-        /**
-         * Test if range `a` equals `b`.
-         */
-        Range.equalsRange = function (a, b) {
-            return (!!a &&
-                !!b &&
-                a.startLineNumber === b.startLineNumber &&
-                a.startColumn === b.startColumn &&
-                a.endLineNumber === b.endLineNumber &&
-                a.endColumn === b.endColumn);
-        };
-        /**
-         * Return the end position (which will be after or equal to the start position)
-         */
-        Range.prototype.getEndPosition = function () {
-            return new position_1.Position(this.endLineNumber, this.endColumn);
-        };
-        /**
-         * Return the start position (which will be before or equal to the end position)
-         */
-        Range.prototype.getStartPosition = function () {
-            return new position_1.Position(this.startLineNumber, this.startColumn);
-        };
-        /**
-         * Clone this range.
-         */
-        Range.prototype.cloneRange = function () {
-            return new Range(this.startLineNumber, this.startColumn, this.endLineNumber, this.endColumn);
-        };
-        /**
-         * Transform to a user presentable string representation.
-         */
-        Range.prototype.toString = function () {
-            return '[' + this.startLineNumber + ',' + this.startColumn + ' -> ' + this.endLineNumber + ',' + this.endColumn + ']';
-        };
-        /**
-         * Create a new range using this range's start position, and using endLineNumber and endColumn as the end position.
-         */
-        Range.prototype.setEndPosition = function (endLineNumber, endColumn) {
-            return new Range(this.startLineNumber, this.startColumn, endLineNumber, endColumn);
-        };
-        /**
-         * Create a new range using this range's end position, and using startLineNumber and startColumn as the start position.
-         */
-        Range.prototype.setStartPosition = function (startLineNumber, startColumn) {
-            return new Range(startLineNumber, startColumn, this.endLineNumber, this.endColumn);
-        };
-        /**
-         * Create a new empty range using this range's start position.
-         */
-        Range.prototype.collapseToStart = function () {
-            return Range.collapseToStart(this);
-        };
-        /**
-         * Create a new empty range using this range's start position.
-         */
-        Range.collapseToStart = function (range) {
-            return new Range(range.startLineNumber, range.startColumn, range.startLineNumber, range.startColumn);
-        };
-        // ---
-        /**
-         * Create a `Range` from an `IRange`.
-         */
-        Range.lift = function (range) {
-            if (!range) {
-                return null;
-            }
-            return new Range(range.startLineNumber, range.startColumn, range.endLineNumber, range.endColumn);
-        };
-        /**
-         * Test if `obj` is an `IRange`.
-         */
-        Range.isIRange = function (obj) {
-            return (obj
-                && (typeof obj.startLineNumber === 'number')
-                && (typeof obj.startColumn === 'number')
-                && (typeof obj.endLineNumber === 'number')
-                && (typeof obj.endColumn === 'number'));
-        };
-        /**
-         * Test if the two ranges are touching in any way.
-         */
-        Range.areIntersectingOrTouching = function (a, b) {
-            // Check if `a` is before `b`
-            if (a.endLineNumber < b.startLineNumber || (a.endLineNumber === b.startLineNumber && a.endColumn < b.startColumn)) {
-                return false;
-            }
-            // Check if `b` is before `a`
-            if (b.endLineNumber < a.startLineNumber || (b.endLineNumber === a.startLineNumber && b.endColumn < a.startColumn)) {
-                return false;
-            }
-            // These ranges must intersect
-            return true;
-        };
-        /**
-         * A function that compares ranges, useful for sorting ranges
-         * It will first compare ranges on the startPosition and then on the endPosition
-         */
-        Range.compareRangesUsingStarts = function (a, b) {
-            var aStartLineNumber = a.startLineNumber | 0;
-            var bStartLineNumber = b.startLineNumber | 0;
-            if (aStartLineNumber === bStartLineNumber) {
-                var aStartColumn = a.startColumn | 0;
-                var bStartColumn = b.startColumn | 0;
-                if (aStartColumn === bStartColumn) {
-                    var aEndLineNumber = a.endLineNumber | 0;
-                    var bEndLineNumber = b.endLineNumber | 0;
-                    if (aEndLineNumber === bEndLineNumber) {
-                        var aEndColumn = a.endColumn | 0;
-                        var bEndColumn = b.endColumn | 0;
-                        return aEndColumn - bEndColumn;
-                    }
-                    return aEndLineNumber - bEndLineNumber;
-                }
-                return aStartColumn - bStartColumn;
-            }
-            return aStartLineNumber - bStartLineNumber;
-        };
-        /**
-         * A function that compares ranges, useful for sorting ranges
-         * It will first compare ranges on the endPosition and then on the startPosition
-         */
-        Range.compareRangesUsingEnds = function (a, b) {
-            if (a.endLineNumber === b.endLineNumber) {
-                if (a.endColumn === b.endColumn) {
-                    if (a.startLineNumber === b.startLineNumber) {
-                        return a.startColumn - b.startColumn;
-                    }
-                    return a.startLineNumber - b.startLineNumber;
-                }
-                return a.endColumn - b.endColumn;
-            }
-            return a.endLineNumber - b.endLineNumber;
-        };
-        /**
-         * Test if the range spans multiple lines.
-         */
-        Range.spansMultipleLines = function (range) {
-            return range.endLineNumber > range.startLineNumber;
-        };
-        return Range;
-    }());
-    exports.Range = Range;
-});
-
-define(__m[40/*vs/editor/common/core/uint*/], __M([0/*require*/,1/*exports*/]), function (require, exports) {
+define(__m[91/*vs/editor/common/core/uint*/], __M([1/*require*/,0/*exports*/]), function (require, exports) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -9631,1365 +8890,7 @@ define(__m[40/*vs/editor/common/core/uint*/], __M([0/*require*/,1/*exports*/]), 
     exports.toUint32Array = toUint32Array;
 });
 
-
-
-
-
-
-define(__m[41/*vs/editor/common/diff/diffComputer*/], __M([0/*require*/,1/*exports*/,44/*vs/base/common/diff/diff*/,8/*vs/base/common/strings*/]), function (require, exports, diff_1, strings) {
-    /*---------------------------------------------------------------------------------------------
-     *  Copyright (c) Microsoft Corporation. All rights reserved.
-     *  Licensed under the MIT License. See License.txt in the project root for license information.
-     *--------------------------------------------------------------------------------------------*/
-    'use strict';
-    var MAXIMUM_RUN_TIME = 5000; // 5 seconds
-    var MINIMUM_MATCHING_CHARACTER_LENGTH = 3;
-    function computeDiff(originalSequence, modifiedSequence, continueProcessingPredicate) {
-        var diffAlgo = new diff_1.LcsDiff(originalSequence, modifiedSequence, continueProcessingPredicate);
-        return diffAlgo.ComputeDiff();
-    }
-    var MarkerSequence = (function () {
-        function MarkerSequence(buffer, startMarkers, endMarkers) {
-            this.buffer = buffer;
-            this.startMarkers = startMarkers;
-            this.endMarkers = endMarkers;
-        }
-        MarkerSequence.prototype.equals = function (other) {
-            if (!(other instanceof MarkerSequence)) {
-                return false;
-            }
-            var otherMarkerSequence = other;
-            if (this.getLength() !== otherMarkerSequence.getLength()) {
-                return false;
-            }
-            for (var i = 0, len = this.getLength(); i < len; i++) {
-                var myElement = this.getElementHash(i);
-                var otherElement = otherMarkerSequence.getElementHash(i);
-                if (myElement !== otherElement) {
-                    return false;
-                }
-            }
-            return true;
-        };
-        MarkerSequence.prototype.getLength = function () {
-            return this.startMarkers.length;
-        };
-        MarkerSequence.prototype.getElementHash = function (i) {
-            return this.buffer.substring(this.startMarkers[i].offset, this.endMarkers[i].offset);
-        };
-        MarkerSequence.prototype.getStartLineNumber = function (i) {
-            if (i === this.startMarkers.length) {
-                // This is the special case where a change happened after the last marker
-                return this.startMarkers[i - 1].lineNumber + 1;
-            }
-            return this.startMarkers[i].lineNumber;
-        };
-        MarkerSequence.prototype.getStartColumn = function (i) {
-            return this.startMarkers[i].column;
-        };
-        MarkerSequence.prototype.getEndLineNumber = function (i) {
-            return this.endMarkers[i].lineNumber;
-        };
-        MarkerSequence.prototype.getEndColumn = function (i) {
-            return this.endMarkers[i].column;
-        };
-        return MarkerSequence;
-    }());
-    var LineMarkerSequence = (function (_super) {
-        __extends(LineMarkerSequence, _super);
-        function LineMarkerSequence(lines, shouldIgnoreTrimWhitespace) {
-            var _this = this;
-            var i, length, pos;
-            var buffer = '';
-            var startMarkers = [], endMarkers = [], startColumn, endColumn;
-            for (pos = 0, i = 0, length = lines.length; i < length; i++) {
-                buffer += lines[i];
-                startColumn = 1;
-                endColumn = lines[i].length + 1;
-                if (shouldIgnoreTrimWhitespace) {
-                    startColumn = LineMarkerSequence._getFirstNonBlankColumn(lines[i], 1);
-                    endColumn = LineMarkerSequence._getLastNonBlankColumn(lines[i], 1);
-                }
-                startMarkers.push({
-                    offset: pos + startColumn - 1,
-                    lineNumber: i + 1,
-                    column: startColumn
-                });
-                endMarkers.push({
-                    offset: pos + endColumn - 1,
-                    lineNumber: i + 1,
-                    column: endColumn
-                });
-                pos += lines[i].length;
-            }
-            _this = _super.call(this, buffer, startMarkers, endMarkers) || this;
-            return _this;
-        }
-        LineMarkerSequence._getFirstNonBlankColumn = function (txt, defaultValue) {
-            var r = strings.firstNonWhitespaceIndex(txt);
-            if (r === -1) {
-                return defaultValue;
-            }
-            return r + 1;
-        };
-        LineMarkerSequence._getLastNonBlankColumn = function (txt, defaultValue) {
-            var r = strings.lastNonWhitespaceIndex(txt);
-            if (r === -1) {
-                return defaultValue;
-            }
-            return r + 2;
-        };
-        LineMarkerSequence.prototype.getCharSequence = function (startIndex, endIndex) {
-            var startMarkers = [], endMarkers = [], index, i, startMarker, endMarker;
-            for (index = startIndex; index <= endIndex; index++) {
-                startMarker = this.startMarkers[index];
-                endMarker = this.endMarkers[index];
-                for (i = startMarker.offset; i < endMarker.offset; i++) {
-                    startMarkers.push({
-                        offset: i,
-                        lineNumber: startMarker.lineNumber,
-                        column: startMarker.column + (i - startMarker.offset)
-                    });
-                    endMarkers.push({
-                        offset: i + 1,
-                        lineNumber: startMarker.lineNumber,
-                        column: startMarker.column + (i - startMarker.offset) + 1
-                    });
-                }
-            }
-            return new MarkerSequence(this.buffer, startMarkers, endMarkers);
-        };
-        return LineMarkerSequence;
-    }(MarkerSequence));
-    var CharChange = (function () {
-        function CharChange(diffChange, originalCharSequence, modifiedCharSequence) {
-            if (diffChange.originalLength === 0) {
-                this.originalStartLineNumber = 0;
-                this.originalStartColumn = 0;
-                this.originalEndLineNumber = 0;
-                this.originalEndColumn = 0;
-            }
-            else {
-                this.originalStartLineNumber = originalCharSequence.getStartLineNumber(diffChange.originalStart);
-                this.originalStartColumn = originalCharSequence.getStartColumn(diffChange.originalStart);
-                this.originalEndLineNumber = originalCharSequence.getEndLineNumber(diffChange.originalStart + diffChange.originalLength - 1);
-                this.originalEndColumn = originalCharSequence.getEndColumn(diffChange.originalStart + diffChange.originalLength - 1);
-            }
-            if (diffChange.modifiedLength === 0) {
-                this.modifiedStartLineNumber = 0;
-                this.modifiedStartColumn = 0;
-                this.modifiedEndLineNumber = 0;
-                this.modifiedEndColumn = 0;
-            }
-            else {
-                this.modifiedStartLineNumber = modifiedCharSequence.getStartLineNumber(diffChange.modifiedStart);
-                this.modifiedStartColumn = modifiedCharSequence.getStartColumn(diffChange.modifiedStart);
-                this.modifiedEndLineNumber = modifiedCharSequence.getEndLineNumber(diffChange.modifiedStart + diffChange.modifiedLength - 1);
-                this.modifiedEndColumn = modifiedCharSequence.getEndColumn(diffChange.modifiedStart + diffChange.modifiedLength - 1);
-            }
-        }
-        return CharChange;
-    }());
-    function postProcessCharChanges(rawChanges) {
-        if (rawChanges.length <= 1) {
-            return rawChanges;
-        }
-        var result = [rawChanges[0]];
-        var i, len, originalMatchingLength, modifiedMatchingLength, matchingLength, prevChange = result[0], currChange;
-        for (i = 1, len = rawChanges.length; i < len; i++) {
-            currChange = rawChanges[i];
-            originalMatchingLength = currChange.originalStart - (prevChange.originalStart + prevChange.originalLength);
-            modifiedMatchingLength = currChange.modifiedStart - (prevChange.modifiedStart + prevChange.modifiedLength);
-            // Both of the above should be equal, but the continueProcessingPredicate may prevent this from being true
-            matchingLength = Math.min(originalMatchingLength, modifiedMatchingLength);
-            if (matchingLength < MINIMUM_MATCHING_CHARACTER_LENGTH) {
-                // Merge the current change into the previous one
-                prevChange.originalLength = (currChange.originalStart + currChange.originalLength) - prevChange.originalStart;
-                prevChange.modifiedLength = (currChange.modifiedStart + currChange.modifiedLength) - prevChange.modifiedStart;
-            }
-            else {
-                // Add the current change
-                result.push(currChange);
-                prevChange = currChange;
-            }
-        }
-        return result;
-    }
-    var LineChange = (function () {
-        function LineChange(diffChange, originalLineSequence, modifiedLineSequence, continueProcessingPredicate, shouldPostProcessCharChanges) {
-            if (diffChange.originalLength === 0) {
-                this.originalStartLineNumber = originalLineSequence.getStartLineNumber(diffChange.originalStart) - 1;
-                this.originalEndLineNumber = 0;
-            }
-            else {
-                this.originalStartLineNumber = originalLineSequence.getStartLineNumber(diffChange.originalStart);
-                this.originalEndLineNumber = originalLineSequence.getEndLineNumber(diffChange.originalStart + diffChange.originalLength - 1);
-            }
-            if (diffChange.modifiedLength === 0) {
-                this.modifiedStartLineNumber = modifiedLineSequence.getStartLineNumber(diffChange.modifiedStart) - 1;
-                this.modifiedEndLineNumber = 0;
-            }
-            else {
-                this.modifiedStartLineNumber = modifiedLineSequence.getStartLineNumber(diffChange.modifiedStart);
-                this.modifiedEndLineNumber = modifiedLineSequence.getEndLineNumber(diffChange.modifiedStart + diffChange.modifiedLength - 1);
-            }
-            if (diffChange.originalLength !== 0 && diffChange.modifiedLength !== 0 && continueProcessingPredicate()) {
-                var originalCharSequence = originalLineSequence.getCharSequence(diffChange.originalStart, diffChange.originalStart + diffChange.originalLength - 1);
-                var modifiedCharSequence = modifiedLineSequence.getCharSequence(diffChange.modifiedStart, diffChange.modifiedStart + diffChange.modifiedLength - 1);
-                var rawChanges = computeDiff(originalCharSequence, modifiedCharSequence, continueProcessingPredicate);
-                if (shouldPostProcessCharChanges) {
-                    rawChanges = postProcessCharChanges(rawChanges);
-                }
-                this.charChanges = [];
-                for (var i = 0, length = rawChanges.length; i < length; i++) {
-                    this.charChanges.push(new CharChange(rawChanges[i], originalCharSequence, modifiedCharSequence));
-                }
-            }
-        }
-        return LineChange;
-    }());
-    var DiffComputer = (function () {
-        function DiffComputer(originalLines, modifiedLines, opts) {
-            this.shouldPostProcessCharChanges = opts.shouldPostProcessCharChanges;
-            this.shouldIgnoreTrimWhitespace = opts.shouldIgnoreTrimWhitespace;
-            this.maximumRunTimeMs = MAXIMUM_RUN_TIME;
-            this.original = new LineMarkerSequence(originalLines, this.shouldIgnoreTrimWhitespace);
-            this.modified = new LineMarkerSequence(modifiedLines, this.shouldIgnoreTrimWhitespace);
-            if (opts.shouldConsiderTrimWhitespaceInEmptyCase && this.shouldIgnoreTrimWhitespace && this.original.equals(this.modified)) {
-                // Diff would be empty with `shouldIgnoreTrimWhitespace`
-                this.shouldIgnoreTrimWhitespace = false;
-                this.original = new LineMarkerSequence(originalLines, this.shouldIgnoreTrimWhitespace);
-                this.modified = new LineMarkerSequence(modifiedLines, this.shouldIgnoreTrimWhitespace);
-            }
-        }
-        DiffComputer.prototype.computeDiff = function () {
-            this.computationStartTime = (new Date()).getTime();
-            var rawChanges = computeDiff(this.original, this.modified, this._continueProcessingPredicate.bind(this));
-            var lineChanges = [];
-            for (var i = 0, length = rawChanges.length; i < length; i++) {
-                lineChanges.push(new LineChange(rawChanges[i], this.original, this.modified, this._continueProcessingPredicate.bind(this), this.shouldPostProcessCharChanges));
-            }
-            return lineChanges;
-        };
-        DiffComputer.prototype._continueProcessingPredicate = function () {
-            if (this.maximumRunTimeMs === 0) {
-                return true;
-            }
-            var now = (new Date()).getTime();
-            return now - this.computationStartTime < this.maximumRunTimeMs;
-        };
-        return DiffComputer;
-    }());
-    exports.DiffComputer = DiffComputer;
-});
-
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
-define(__m[42/*vs/editor/common/model/indentRanges*/], __M([0/*require*/,1/*exports*/]), function (require, exports) {
-    'use strict';
-    var IndentRange = (function () {
-        function IndentRange(startLineNumber, endLineNumber, indent) {
-            this.startLineNumber = startLineNumber;
-            this.endLineNumber = endLineNumber;
-            this.indent = indent;
-        }
-        IndentRange.deepCloneArr = function (indentRanges) {
-            var result = [];
-            for (var i = 0, len = indentRanges.length; i < len; i++) {
-                var r = indentRanges[i];
-                result[i] = new IndentRange(r.startLineNumber, r.endLineNumber, r.indent);
-            }
-            return result;
-        };
-        return IndentRange;
-    }());
-    exports.IndentRange = IndentRange;
-    function computeRanges(model, minimumRangeSize) {
-        if (minimumRangeSize === void 0) { minimumRangeSize = 1; }
-        var result = [];
-        var previousRegions = [];
-        previousRegions.push({ indent: -1, line: model.getLineCount() + 1 }); // sentinel, to make sure there's at least one entry
-        for (var line = model.getLineCount(); line > 0; line--) {
-            var indent = model.getIndentLevel(line);
-            if (indent === -1) {
-                continue; // only whitespace
-            }
-            var previous = previousRegions[previousRegions.length - 1];
-            if (previous.indent > indent) {
-                // discard all regions with larger indent
-                do {
-                    previousRegions.pop();
-                    previous = previousRegions[previousRegions.length - 1];
-                } while (previous.indent > indent);
-                // new folding range
-                var endLineNumber = previous.line - 1;
-                if (endLineNumber - line >= minimumRangeSize) {
-                    result.push(new IndentRange(line, endLineNumber, indent));
-                }
-            }
-            if (previous.indent === indent) {
-                previous.line = line;
-            }
-            else {
-                // new region with a bigger indent
-                previousRegions.push({ indent: indent, line: line });
-            }
-        }
-        return result.reverse();
-    }
-    exports.computeRanges = computeRanges;
-});
-
-define(__m[43/*vs/editor/common/model/indentationGuesser*/], __M([0/*require*/,1/*exports*/]), function (require, exports) {
-    /*---------------------------------------------------------------------------------------------
-     *  Copyright (c) Microsoft Corporation. All rights reserved.
-     *  Licensed under the MIT License. See License.txt in the project root for license information.
-     *--------------------------------------------------------------------------------------------*/
-    'use strict';
-    /**
-     * Compute the diff in spaces between two line's indentation.
-     */
-    function spacesDiff(a, aLength, b, bLength) {
-        // This can go both ways (e.g.):
-        //  - a: "\t"
-        //  - b: "\t    "
-        //  => This should count 1 tab and 4 spaces
-        var i;
-        for (i = 0; i < aLength && i < bLength; i++) {
-            var aCharCode = a.charCodeAt(i);
-            var bCharCode = b.charCodeAt(i);
-            if (aCharCode !== bCharCode) {
-                break;
-            }
-        }
-        var aSpacesCnt = 0, aTabsCount = 0;
-        for (var j = i; j < aLength; j++) {
-            var aCharCode = a.charCodeAt(j);
-            if (aCharCode === 32 /* Space */) {
-                aSpacesCnt++;
-            }
-            else {
-                aTabsCount++;
-            }
-        }
-        var bSpacesCnt = 0, bTabsCount = 0;
-        for (var j = i; j < bLength; j++) {
-            var bCharCode = b.charCodeAt(j);
-            if (bCharCode === 32 /* Space */) {
-                bSpacesCnt++;
-            }
-            else {
-                bTabsCount++;
-            }
-        }
-        if (aSpacesCnt > 0 && aTabsCount > 0) {
-            return 0;
-        }
-        if (bSpacesCnt > 0 && bTabsCount > 0) {
-            return 0;
-        }
-        var tabsDiff = Math.abs(aTabsCount - bTabsCount);
-        var spacesDiff = Math.abs(aSpacesCnt - bSpacesCnt);
-        if (tabsDiff === 0) {
-            return spacesDiff;
-        }
-        if (spacesDiff % tabsDiff === 0) {
-            return spacesDiff / tabsDiff;
-        }
-        return 0;
-    }
-    function guessIndentation(lines, defaultTabSize, defaultInsertSpaces) {
-        var linesIndentedWithTabsCount = 0; // number of lines that contain at least one tab in indentation
-        var linesIndentedWithSpacesCount = 0; // number of lines that contain only spaces in indentation
-        var previousLineText = ''; // content of latest line that contained non-whitespace chars
-        var previousLineIndentation = 0; // index at which latest line contained the first non-whitespace char
-        var ALLOWED_TAB_SIZE_GUESSES = [2, 4, 6, 8]; // limit guesses for `tabSize` to 2, 4, 6 or 8.
-        var MAX_ALLOWED_TAB_SIZE_GUESS = 8; // max(2,4,6,8) = 8
-        var spacesDiffCount = [0, 0, 0, 0, 0, 0, 0, 0, 0]; // `tabSize` scores
-        for (var i = 0, len = lines.length; i < len; i++) {
-            var currentLineText = lines[i];
-            var currentLineHasContent = false; // does `currentLineText` contain non-whitespace chars
-            var currentLineIndentation = 0; // index at which `currentLineText` contains the first non-whitespace char
-            var currentLineSpacesCount = 0; // count of spaces found in `currentLineText` indentation
-            var currentLineTabsCount = 0; // count of tabs found in `currentLineText` indentation
-            for (var j = 0, lenJ = currentLineText.length; j < lenJ; j++) {
-                var charCode = currentLineText.charCodeAt(j);
-                if (charCode === 9 /* Tab */) {
-                    currentLineTabsCount++;
-                }
-                else if (charCode === 32 /* Space */) {
-                    currentLineSpacesCount++;
-                }
-                else {
-                    // Hit non whitespace character on this line
-                    currentLineHasContent = true;
-                    currentLineIndentation = j;
-                    break;
-                }
-            }
-            // Ignore empty or only whitespace lines
-            if (!currentLineHasContent) {
-                continue;
-            }
-            if (currentLineTabsCount > 0) {
-                linesIndentedWithTabsCount++;
-            }
-            else if (currentLineSpacesCount > 1) {
-                linesIndentedWithSpacesCount++;
-            }
-            var currentSpacesDiff = spacesDiff(previousLineText, previousLineIndentation, currentLineText, currentLineIndentation);
-            if (currentSpacesDiff <= MAX_ALLOWED_TAB_SIZE_GUESS) {
-                spacesDiffCount[currentSpacesDiff]++;
-            }
-            previousLineText = currentLineText;
-            previousLineIndentation = currentLineIndentation;
-        }
-        // Take into account the last line as well
-        var deltaSpacesCount = spacesDiff(previousLineText, previousLineIndentation, '', 0);
-        if (deltaSpacesCount <= MAX_ALLOWED_TAB_SIZE_GUESS) {
-            spacesDiffCount[deltaSpacesCount]++;
-        }
-        var insertSpaces = defaultInsertSpaces;
-        if (linesIndentedWithTabsCount !== linesIndentedWithSpacesCount) {
-            insertSpaces = (linesIndentedWithTabsCount < linesIndentedWithSpacesCount);
-        }
-        var tabSize = defaultTabSize;
-        var tabSizeScore = (insertSpaces ? 0 : 0.1 * lines.length);
-        // console.log("score threshold: " + tabSizeScore);
-        ALLOWED_TAB_SIZE_GUESSES.forEach(function (possibleTabSize) {
-            var possibleTabSizeScore = spacesDiffCount[possibleTabSize];
-            if (possibleTabSizeScore > tabSizeScore) {
-                tabSizeScore = possibleTabSizeScore;
-                tabSize = possibleTabSize;
-            }
-        });
-        // console.log('--------------------------');
-        // console.log('linesIndentedWithTabsCount: ' + linesIndentedWithTabsCount + ', linesIndentedWithSpacesCount: ' + linesIndentedWithSpacesCount);
-        // console.log('spacesDiffCount: ' + spacesDiffCount);
-        // console.log('tabSize: ' + tabSize + ', tabSizeScore: ' + tabSizeScore);
-        return {
-            insertSpaces: insertSpaces,
-            tabSize: tabSize
-        };
-    }
-    exports.guessIndentation = guessIndentation;
-});
-
-define(__m[38/*vs/editor/common/model/tokensBinaryEncoding*/], __M([0/*require*/,1/*exports*/]), function (require, exports) {
-    /*---------------------------------------------------------------------------------------------
-     *  Copyright (c) Microsoft Corporation. All rights reserved.
-     *  Licensed under the MIT License. See License.txt in the project root for license information.
-     *--------------------------------------------------------------------------------------------*/
-    'use strict';
-    var TokenMetadata = (function () {
-        function TokenMetadata() {
-        }
-        TokenMetadata.getLanguageId = function (metadata) {
-            return (metadata & 255 /* LANGUAGEID_MASK */) >>> 0 /* LANGUAGEID_OFFSET */;
-        };
-        TokenMetadata.getTokenType = function (metadata) {
-            return (metadata & 1792 /* TOKEN_TYPE_MASK */) >>> 8 /* TOKEN_TYPE_OFFSET */;
-        };
-        TokenMetadata.getFontStyle = function (metadata) {
-            return (metadata & 14336 /* FONT_STYLE_MASK */) >>> 11 /* FONT_STYLE_OFFSET */;
-        };
-        TokenMetadata.getForeground = function (metadata) {
-            return (metadata & 8372224 /* FOREGROUND_MASK */) >>> 14 /* FOREGROUND_OFFSET */;
-        };
-        TokenMetadata.getBackground = function (metadata) {
-            return (metadata & 4286578688 /* BACKGROUND_MASK */) >>> 23 /* BACKGROUND_OFFSET */;
-        };
-        TokenMetadata.getClassNameFromMetadata = function (metadata) {
-            var foreground = this.getForeground(metadata);
-            var className = 'mtk' + foreground;
-            var fontStyle = this.getFontStyle(metadata);
-            if (fontStyle & 1 /* Italic */) {
-                className += ' mtki';
-            }
-            if (fontStyle & 2 /* Bold */) {
-                className += ' mtkb';
-            }
-            if (fontStyle & 4 /* Underline */) {
-                className += ' mtku';
-            }
-            return className;
-        };
-        TokenMetadata.getInlineStyleFromMetadata = function (metadata, colorMap) {
-            var foreground = this.getForeground(metadata);
-            var fontStyle = this.getFontStyle(metadata);
-            var result = "color: " + colorMap[foreground] + ";";
-            if (fontStyle & 1 /* Italic */) {
-                result += 'font-style: italic;';
-            }
-            if (fontStyle & 2 /* Bold */) {
-                result += 'font-weight: bold;';
-            }
-            if (fontStyle & 4 /* Underline */) {
-                result += 'text-decoration: underline;';
-            }
-            return result;
-        };
-        return TokenMetadata;
-    }());
-    exports.TokenMetadata = TokenMetadata;
-});
-
-define(__m[45/*vs/editor/common/core/viewLineToken*/], __M([0/*require*/,1/*exports*/,38/*vs/editor/common/model/tokensBinaryEncoding*/]), function (require, exports, tokensBinaryEncoding_1) {
-    /*---------------------------------------------------------------------------------------------
-     *  Copyright (c) Microsoft Corporation. All rights reserved.
-     *  Licensed under the MIT License. See License.txt in the project root for license information.
-     *--------------------------------------------------------------------------------------------*/
-    'use strict';
-    /**
-     * A token on a line.
-     */
-    var ViewLineToken = (function () {
-        function ViewLineToken(endIndex, metadata) {
-            this.endIndex = endIndex;
-            this._metadata = metadata;
-        }
-        ViewLineToken.prototype.getForeground = function () {
-            return tokensBinaryEncoding_1.TokenMetadata.getForeground(this._metadata);
-        };
-        ViewLineToken.prototype.getType = function () {
-            return tokensBinaryEncoding_1.TokenMetadata.getClassNameFromMetadata(this._metadata);
-        };
-        ViewLineToken.prototype.getInlineStyle = function (colorMap) {
-            return tokensBinaryEncoding_1.TokenMetadata.getInlineStyleFromMetadata(this._metadata, colorMap);
-        };
-        ViewLineToken._equals = function (a, b) {
-            return (a.endIndex === b.endIndex
-                && a._metadata === b._metadata);
-        };
-        ViewLineToken.equalsArr = function (a, b) {
-            var aLen = a.length;
-            var bLen = b.length;
-            if (aLen !== bLen) {
-                return false;
-            }
-            for (var i = 0; i < aLen; i++) {
-                if (!this._equals(a[i], b[i])) {
-                    return false;
-                }
-            }
-            return true;
-        };
-        return ViewLineToken;
-    }());
-    exports.ViewLineToken = ViewLineToken;
-    var ViewLineTokenFactory = (function () {
-        function ViewLineTokenFactory() {
-        }
-        ViewLineTokenFactory.inflateArr = function (tokens, lineLength) {
-            var result = [];
-            for (var i = 0, len = (tokens.length >>> 1); i < len; i++) {
-                var endOffset = (i + 1 < len ? tokens[((i + 1) << 1)] : lineLength);
-                var metadata = tokens[(i << 1) + 1];
-                result[i] = new ViewLineToken(endOffset, metadata);
-            }
-            return result;
-        };
-        ViewLineTokenFactory.sliceAndInflate = function (tokens, startOffset, endOffset, deltaOffset, lineLength) {
-            var tokenIndex = this.findIndexInSegmentsArray(tokens, startOffset);
-            var maxEndOffset = (endOffset - startOffset + deltaOffset);
-            var result = [], resultLen = 0;
-            for (var i = tokenIndex, len = (tokens.length >>> 1); i < len; i++) {
-                var tokenStartOffset = tokens[(i << 1)];
-                if (tokenStartOffset >= endOffset) {
-                    break;
-                }
-                var tokenEndOffset = (i + 1 < len ? tokens[((i + 1) << 1)] : lineLength);
-                var newEndOffset = Math.min(maxEndOffset, tokenEndOffset - startOffset + deltaOffset);
-                var metadata = tokens[(i << 1) + 1];
-                result[resultLen++] = new ViewLineToken(newEndOffset, metadata);
-            }
-            return result;
-        };
-        ViewLineTokenFactory.findIndexInSegmentsArray = function (tokens, desiredIndex) {
-            var low = 0;
-            var high = (tokens.length >>> 1) - 1;
-            while (low < high) {
-                var mid = low + Math.ceil((high - low) / 2);
-                var value = tokens[(mid << 1)];
-                if (value > desiredIndex) {
-                    high = mid - 1;
-                }
-                else {
-                    low = mid;
-                }
-            }
-            return low;
-        };
-        return ViewLineTokenFactory;
-    }());
-    exports.ViewLineTokenFactory = ViewLineTokenFactory;
-});
-
-define(__m[46/*vs/editor/common/core/lineTokens*/], __M([0/*require*/,1/*exports*/,38/*vs/editor/common/model/tokensBinaryEncoding*/,45/*vs/editor/common/core/viewLineToken*/]), function (require, exports, tokensBinaryEncoding_1, viewLineToken_1) {
-    /*---------------------------------------------------------------------------------------------
-     *  Copyright (c) Microsoft Corporation. All rights reserved.
-     *  Licensed under the MIT License. See License.txt in the project root for license information.
-     *--------------------------------------------------------------------------------------------*/
-    'use strict';
-    var LineToken = (function () {
-        function LineToken(source, tokenIndex, tokenCount, startOffset, endOffset, metadata) {
-            this._source = source;
-            this._tokenIndex = tokenIndex;
-            this._metadata = metadata;
-            this.startOffset = startOffset;
-            this.endOffset = endOffset;
-            this.hasPrev = (this._tokenIndex > 0);
-            this.hasNext = (this._tokenIndex + 1 < tokenCount);
-        }
-        Object.defineProperty(LineToken.prototype, "languageId", {
-            get: function () {
-                return tokensBinaryEncoding_1.TokenMetadata.getLanguageId(this._metadata);
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(LineToken.prototype, "tokenType", {
-            get: function () {
-                return tokensBinaryEncoding_1.TokenMetadata.getTokenType(this._metadata);
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(LineToken.prototype, "fontStyle", {
-            get: function () {
-                return tokensBinaryEncoding_1.TokenMetadata.getFontStyle(this._metadata);
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(LineToken.prototype, "foregroundId", {
-            get: function () {
-                return tokensBinaryEncoding_1.TokenMetadata.getForeground(this._metadata);
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(LineToken.prototype, "backgroundId", {
-            get: function () {
-                return tokensBinaryEncoding_1.TokenMetadata.getBackground(this._metadata);
-            },
-            enumerable: true,
-            configurable: true
-        });
-        LineToken.prototype.prev = function () {
-            if (!this.hasPrev) {
-                return null;
-            }
-            return this._source.tokenAt(this._tokenIndex - 1);
-        };
-        LineToken.prototype.next = function () {
-            if (!this.hasNext) {
-                return null;
-            }
-            return this._source.tokenAt(this._tokenIndex + 1);
-        };
-        return LineToken;
-    }());
-    exports.LineToken = LineToken;
-    var LineTokens = (function () {
-        function LineTokens(tokens, text) {
-            this._tokens = tokens;
-            this._tokensCount = (this._tokens.length >>> 1);
-            this._text = text;
-            this._textLength = this._text.length;
-        }
-        LineTokens.prototype.getTokenCount = function () {
-            return this._tokensCount;
-        };
-        LineTokens.prototype.getLineContent = function () {
-            return this._text;
-        };
-        LineTokens.prototype.getLineLength = function () {
-            return this._textLength;
-        };
-        LineTokens.prototype.getTokenStartOffset = function (tokenIndex) {
-            return this._tokens[(tokenIndex << 1)];
-        };
-        LineTokens.prototype.getLanguageId = function (tokenIndex) {
-            var metadata = this._tokens[(tokenIndex << 1) + 1];
-            return tokensBinaryEncoding_1.TokenMetadata.getLanguageId(metadata);
-        };
-        LineTokens.prototype.getStandardTokenType = function (tokenIndex) {
-            var metadata = this._tokens[(tokenIndex << 1) + 1];
-            return tokensBinaryEncoding_1.TokenMetadata.getTokenType(metadata);
-        };
-        LineTokens.prototype.getTokenEndOffset = function (tokenIndex) {
-            if (tokenIndex + 1 < this._tokensCount) {
-                return this._tokens[(tokenIndex + 1) << 1];
-            }
-            return this._textLength;
-        };
-        /**
-         * Find the token containing offset `offset`.
-         * ```
-         *   For example, with the following tokens [0, 5), [5, 9), [9, infinity)
-         *   Searching for 0, 1, 2, 3 or 4 will return 0.
-         *   Searching for 5, 6, 7 or 8 will return 1.
-         *   Searching for 9, 10, 11, ... will return 2.
-         * ```
-         * @param offset The search offset
-         * @return The index of the token containing the offset.
-         */
-        LineTokens.prototype.findTokenIndexAtOffset = function (offset) {
-            return viewLineToken_1.ViewLineTokenFactory.findIndexInSegmentsArray(this._tokens, offset);
-        };
-        LineTokens.prototype.findTokenAtOffset = function (offset) {
-            var tokenIndex = this.findTokenIndexAtOffset(offset);
-            return this.tokenAt(tokenIndex);
-        };
-        LineTokens.prototype.tokenAt = function (tokenIndex) {
-            var startOffset = this._tokens[(tokenIndex << 1)];
-            var endOffset;
-            if (tokenIndex + 1 < this._tokensCount) {
-                endOffset = this._tokens[(tokenIndex + 1) << 1];
-            }
-            else {
-                endOffset = this._textLength;
-            }
-            var metadata = this._tokens[(tokenIndex << 1) + 1];
-            return new LineToken(this, tokenIndex, this._tokensCount, startOffset, endOffset, metadata);
-        };
-        LineTokens.prototype.firstToken = function () {
-            if (this._textLength === 0) {
-                return null;
-            }
-            return this.tokenAt(0);
-        };
-        LineTokens.prototype.lastToken = function () {
-            if (this._textLength === 0) {
-                return null;
-            }
-            return this.tokenAt(this._tokensCount - 1);
-        };
-        LineTokens.prototype.inflate = function () {
-            return viewLineToken_1.ViewLineTokenFactory.inflateArr(this._tokens, this._textLength);
-        };
-        LineTokens.prototype.sliceAndInflate = function (startOffset, endOffset, deltaOffset) {
-            return viewLineToken_1.ViewLineTokenFactory.sliceAndInflate(this._tokens, startOffset, endOffset, deltaOffset, this._textLength);
-        };
-        return LineTokens;
-    }());
-    exports.LineTokens = LineTokens;
-});
-
-define(__m[47/*vs/editor/common/model/modelLine*/], __M([0/*require*/,1/*exports*/,46/*vs/editor/common/core/lineTokens*/,21/*vs/editor/common/core/position*/]), function (require, exports, lineTokens_1, position_1) {
-    /*---------------------------------------------------------------------------------------------
-     *  Copyright (c) Microsoft Corporation. All rights reserved.
-     *  Licensed under the MIT License. See License.txt in the project root for license information.
-     *--------------------------------------------------------------------------------------------*/
-    'use strict';
-    var LineMarker = (function () {
-        function LineMarker(id, internalDecorationId, position, stickToPreviousCharacter) {
-            this.id = id;
-            this.internalDecorationId = internalDecorationId;
-            this.position = position;
-            this.stickToPreviousCharacter = stickToPreviousCharacter;
-        }
-        LineMarker.prototype.toString = function () {
-            return '{\'' + this.id + '\';' + this.position.toString() + ',' + this.stickToPreviousCharacter + '}';
-        };
-        LineMarker.prototype.updateLineNumber = function (markersTracker, lineNumber) {
-            if (this.position.lineNumber === lineNumber) {
-                return;
-            }
-            markersTracker.addChangedMarker(this);
-            this.position = new position_1.Position(lineNumber, this.position.column);
-        };
-        LineMarker.prototype.updateColumn = function (markersTracker, column) {
-            if (this.position.column === column) {
-                return;
-            }
-            markersTracker.addChangedMarker(this);
-            this.position = new position_1.Position(this.position.lineNumber, column);
-        };
-        LineMarker.prototype.updatePosition = function (markersTracker, position) {
-            if (this.position.lineNumber === position.lineNumber && this.position.column === position.column) {
-                return;
-            }
-            markersTracker.addChangedMarker(this);
-            this.position = position;
-        };
-        LineMarker.prototype.setPosition = function (position) {
-            this.position = position;
-        };
-        LineMarker.compareMarkers = function (a, b) {
-            if (a.position.column === b.position.column) {
-                return (a.stickToPreviousCharacter ? 0 : 1) - (b.stickToPreviousCharacter ? 0 : 1);
-            }
-            return a.position.column - b.position.column;
-        };
-        return LineMarker;
-    }());
-    exports.LineMarker = LineMarker;
-    var MarkersTracker = (function () {
-        function MarkersTracker() {
-            this._changedDecorations = [];
-            this._changedDecorationsLen = 0;
-        }
-        MarkersTracker.prototype.addChangedMarker = function (marker) {
-            var internalDecorationId = marker.internalDecorationId;
-            if (internalDecorationId !== 0) {
-                this._changedDecorations[this._changedDecorationsLen++] = internalDecorationId;
-            }
-        };
-        MarkersTracker.prototype.getDecorationIds = function () {
-            return this._changedDecorations;
-        };
-        return MarkersTracker;
-    }());
-    exports.MarkersTracker = MarkersTracker;
-    var NO_OP_TOKENS_ADJUSTER = {
-        adjust: function () { },
-        finish: function () { }
-    };
-    var NO_OP_MARKERS_ADJUSTER = {
-        adjustDelta: function () { },
-        adjustSet: function () { },
-        finish: function () { }
-    };
-    var MarkerMoveSemantics;
-    (function (MarkerMoveSemantics) {
-        MarkerMoveSemantics[MarkerMoveSemantics["MarkerDefined"] = 0] = "MarkerDefined";
-        MarkerMoveSemantics[MarkerMoveSemantics["ForceMove"] = 1] = "ForceMove";
-        MarkerMoveSemantics[MarkerMoveSemantics["ForceStay"] = 2] = "ForceStay";
-    })(MarkerMoveSemantics || (MarkerMoveSemantics = {}));
-    /**
-     * Returns:
-     *  - 0 => the line consists of whitespace
-     *  - otherwise => the indent level is returned value - 1
-     */
-    function computePlusOneIndentLevel(line, tabSize) {
-        var indent = 0;
-        var i = 0;
-        var len = line.length;
-        while (i < len) {
-            var chCode = line.charCodeAt(i);
-            if (chCode === 32 /* Space */) {
-                indent++;
-            }
-            else if (chCode === 9 /* Tab */) {
-                indent = indent - indent % tabSize + tabSize;
-            }
-            else {
-                break;
-            }
-            i++;
-        }
-        if (i === len) {
-            return 0; // line only consists of whitespace
-        }
-        return indent + 1;
-    }
-    var ModelLine = (function () {
-        function ModelLine(lineNumber, text, tabSize) {
-            this._lineNumber = lineNumber | 0;
-            this._metadata = 0;
-            this._setText(text, tabSize);
-            this._state = null;
-            this._lineTokens = null;
-            this._markers = null;
-        }
-        Object.defineProperty(ModelLine.prototype, "lineNumber", {
-            get: function () { return this._lineNumber; },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(ModelLine.prototype, "text", {
-            get: function () { return this._text; },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(ModelLine.prototype, "isInvalid", {
-            get: function () {
-                return (this._metadata & 0x00000001) ? true : false;
-            },
-            set: function (value) {
-                this._metadata = (this._metadata & 0xfffffffe) | (value ? 1 : 0);
-            },
-            enumerable: true,
-            configurable: true
-        });
-        /**
-         * Returns:
-         *  - -1 => the line consists of whitespace
-         *  - otherwise => the indent level is returned value
-         */
-        ModelLine.prototype.getIndentLevel = function () {
-            return ((this._metadata & 0xfffffffe) >> 1) - 1;
-        };
-        ModelLine.prototype._setPlusOneIndentLevel = function (value) {
-            this._metadata = (this._metadata & 0x00000001) | ((value & 0xefffffff) << 1);
-        };
-        ModelLine.prototype.updateTabSize = function (tabSize) {
-            if (tabSize === 0) {
-                // don't care mark
-                this._metadata = this._metadata & 0x00000001;
-            }
-            else {
-                this._setPlusOneIndentLevel(computePlusOneIndentLevel(this._text, tabSize));
-            }
-        };
-        // --- BEGIN STATE
-        ModelLine.prototype.resetTokenizationState = function () {
-            this._state = null;
-            this._lineTokens = null;
-        };
-        ModelLine.prototype.setState = function (state) {
-            this._state = state;
-        };
-        ModelLine.prototype.getState = function () {
-            return this._state || null;
-        };
-        // --- END STATE
-        // --- BEGIN TOKENS
-        ModelLine._getDefaultMetadata = function (topLevelLanguageId) {
-            return ((topLevelLanguageId << 0 /* LANGUAGEID_OFFSET */)
-                | (0 /* Other */ << 8 /* TOKEN_TYPE_OFFSET */)
-                | (0 /* None */ << 11 /* FONT_STYLE_OFFSET */)
-                | (1 /* DefaultForeground */ << 14 /* FOREGROUND_OFFSET */)
-                | (2 /* DefaultBackground */ << 23 /* BACKGROUND_OFFSET */)) >>> 0;
-        };
-        ModelLine.prototype.setTokens = function (topLevelLanguageId, tokens) {
-            if (!tokens || tokens.length === 0) {
-                this._lineTokens = null;
-                return;
-            }
-            if (tokens.length === 2) {
-                // there is one token
-                if (tokens[0] === 0 && tokens[1] === ModelLine._getDefaultMetadata(topLevelLanguageId)) {
-                    this._lineTokens = null;
-                    return;
-                }
-            }
-            this._lineTokens = tokens.buffer;
-        };
-        ModelLine.prototype.getTokens = function (topLevelLanguageId) {
-            var rawLineTokens = this._lineTokens;
-            if (rawLineTokens) {
-                return new lineTokens_1.LineTokens(new Uint32Array(rawLineTokens), this._text);
-            }
-            var lineTokens = new Uint32Array(2);
-            lineTokens[0] = 0;
-            lineTokens[1] = ModelLine._getDefaultMetadata(topLevelLanguageId);
-            return new lineTokens_1.LineTokens(lineTokens, this._text);
-        };
-        // --- END TOKENS
-        ModelLine.prototype._createTokensAdjuster = function () {
-            var _this = this;
-            if (!this._lineTokens) {
-                // This line does not have real tokens, so there is nothing to adjust
-                return NO_OP_TOKENS_ADJUSTER;
-            }
-            var lineTokens = new Uint32Array(this._lineTokens);
-            var tokensLength = (lineTokens.length >>> 1);
-            var tokenIndex = 0;
-            var tokenStartOffset = 0;
-            var removeTokensCount = 0;
-            var adjust = function (toColumn, delta, minimumAllowedColumn) {
-                // console.log(`------------------------------------------------------------------`);
-                // console.log(`before call: tokenIndex: ${tokenIndex}: ${lineTokens}`);
-                // console.log(`adjustTokens: ${toColumn} with delta: ${delta} and [${minimumAllowedColumn}]`);
-                // console.log(`tokenStartOffset: ${tokenStartOffset}`);
-                var minimumAllowedIndex = minimumAllowedColumn - 1;
-                while (tokenStartOffset < toColumn && tokenIndex < tokensLength) {
-                    if (tokenStartOffset > 0 && delta !== 0) {
-                        // adjust token's `startIndex` by `delta`
-                        var newTokenStartOffset = Math.max(minimumAllowedIndex, tokenStartOffset + delta);
-                        lineTokens[(tokenIndex << 1)] = newTokenStartOffset;
-                        // console.log(` * adjusted token start offset for token at ${tokenIndex}: ${newTokenStartOffset}`);
-                        if (delta < 0) {
-                            var tmpTokenIndex = tokenIndex;
-                            while (tmpTokenIndex > 0) {
-                                var prevTokenStartOffset = lineTokens[((tmpTokenIndex - 1) << 1)];
-                                if (prevTokenStartOffset >= newTokenStartOffset) {
-                                    if (prevTokenStartOffset !== 4294967295 /* MAX_UINT_32 */) {
-                                        // console.log(` * marking for deletion token at ${tmpTokenIndex - 1}`);
-                                        lineTokens[((tmpTokenIndex - 1) << 1)] = 4294967295 /* MAX_UINT_32 */;
-                                        removeTokensCount++;
-                                    }
-                                    tmpTokenIndex--;
-                                }
-                                else {
-                                    break;
-                                }
-                            }
-                        }
-                    }
-                    tokenIndex++;
-                    if (tokenIndex < tokensLength) {
-                        tokenStartOffset = lineTokens[(tokenIndex << 1)];
-                    }
-                }
-                // console.log(`after call: tokenIndex: ${tokenIndex}: ${lineTokens}`);
-            };
-            var finish = function (delta, lineTextLength) {
-                adjust(1073741824 /* MAX_SAFE_SMALL_INTEGER */, delta, 1);
-                // Mark overflowing tokens for deletion & delete marked tokens
-                _this._deleteMarkedTokens(_this._markOverflowingTokensForDeletion(removeTokensCount, lineTextLength));
-            };
-            return {
-                adjust: adjust,
-                finish: finish
-            };
-        };
-        ModelLine.prototype._markOverflowingTokensForDeletion = function (removeTokensCount, lineTextLength) {
-            if (!this._lineTokens) {
-                return removeTokensCount;
-            }
-            var lineTokens = new Uint32Array(this._lineTokens);
-            var tokensLength = (lineTokens.length >>> 1);
-            if (removeTokensCount + 1 === tokensLength) {
-                // no more removing, cannot end up without any tokens for mode transition reasons
-                return removeTokensCount;
-            }
-            for (var tokenIndex = tokensLength - 1; tokenIndex > 0; tokenIndex--) {
-                var tokenStartOffset = lineTokens[(tokenIndex << 1)];
-                if (tokenStartOffset < lineTextLength) {
-                    // valid token => stop iterating
-                    return removeTokensCount;
-                }
-                // this token now overflows the text => mark it for removal
-                if (tokenStartOffset !== 4294967295 /* MAX_UINT_32 */) {
-                    // console.log(` * marking for deletion token at ${tokenIndex}`);
-                    lineTokens[(tokenIndex << 1)] = 4294967295 /* MAX_UINT_32 */;
-                    removeTokensCount++;
-                    if (removeTokensCount + 1 === tokensLength) {
-                        // no more removing, cannot end up without any tokens for mode transition reasons
-                        return removeTokensCount;
-                    }
-                }
-            }
-            return removeTokensCount;
-        };
-        ModelLine.prototype._deleteMarkedTokens = function (removeTokensCount) {
-            if (removeTokensCount === 0) {
-                return;
-            }
-            var lineTokens = new Uint32Array(this._lineTokens);
-            var tokensLength = (lineTokens.length >>> 1);
-            var newTokens = new Uint32Array(((tokensLength - removeTokensCount) << 1)), newTokenIdx = 0;
-            for (var i = 0; i < tokensLength; i++) {
-                var startOffset = lineTokens[(i << 1)];
-                if (startOffset === 4294967295 /* MAX_UINT_32 */) {
-                    // marked for deletion
-                    continue;
-                }
-                var metadata = lineTokens[(i << 1) + 1];
-                newTokens[newTokenIdx++] = startOffset;
-                newTokens[newTokenIdx++] = metadata;
-            }
-            this._lineTokens = newTokens.buffer;
-        };
-        ModelLine.prototype._setText = function (text, tabSize) {
-            this._text = text;
-            if (tabSize === 0) {
-                // don't care mark
-                this._metadata = this._metadata & 0x00000001;
-            }
-            else {
-                this._setPlusOneIndentLevel(computePlusOneIndentLevel(text, tabSize));
-            }
-        };
-        // private _printMarkers(): string {
-        // 	if (!this._markers) {
-        // 		return '[]';
-        // 	}
-        // 	if (this._markers.length === 0) {
-        // 		return '[]';
-        // 	}
-        // 	var markers = this._markers;
-        // 	var printMarker = (m:ILineMarker) => {
-        // 		if (m.stickToPreviousCharacter) {
-        // 			return '|' + m.column;
-        // 		}
-        // 		return m.column + '|';
-        // 	};
-        // 	return '[' + markers.map(printMarker).join(', ') + ']';
-        // }
-        ModelLine.prototype._createMarkersAdjuster = function (markersTracker) {
-            if (!this._markers) {
-                return NO_OP_MARKERS_ADJUSTER;
-            }
-            if (this._markers.length === 0) {
-                return NO_OP_MARKERS_ADJUSTER;
-            }
-            this._markers.sort(LineMarker.compareMarkers);
-            var markers = this._markers;
-            var markersLength = markers.length;
-            var markersIndex = 0;
-            var marker = markers[markersIndex];
-            // console.log('------------- INITIAL MARKERS: ' + this._printMarkers());
-            var adjustMarkerBeforeColumn = function (toColumn, moveSemantics) {
-                if (marker.position.column < toColumn) {
-                    return true;
-                }
-                if (marker.position.column > toColumn) {
-                    return false;
-                }
-                if (moveSemantics === 1 /* ForceMove */) {
-                    return false;
-                }
-                if (moveSemantics === 2 /* ForceStay */) {
-                    return true;
-                }
-                return marker.stickToPreviousCharacter;
-            };
-            var adjustDelta = function (toColumn, delta, minimumAllowedColumn, moveSemantics) {
-                // console.log('------------------------------');
-                // console.log('adjustDelta called: toColumn: ' + toColumn + ', delta: ' + delta + ', minimumAllowedColumn: ' + minimumAllowedColumn + ', moveSemantics: ' + MarkerMoveSemantics[moveSemantics]);
-                // console.log('BEFORE::: markersIndex: ' + markersIndex + ' : ' + this._printMarkers());
-                while (markersIndex < markersLength && adjustMarkerBeforeColumn(toColumn, moveSemantics)) {
-                    if (delta !== 0) {
-                        var newColumn = Math.max(minimumAllowedColumn, marker.position.column + delta);
-                        marker.updateColumn(markersTracker, newColumn);
-                    }
-                    markersIndex++;
-                    if (markersIndex < markersLength) {
-                        marker = markers[markersIndex];
-                    }
-                }
-                // console.log('AFTER::: markersIndex: ' + markersIndex + ' : ' + this._printMarkers());
-            };
-            var adjustSet = function (toColumn, newColumn, moveSemantics) {
-                // console.log('------------------------------');
-                // console.log('adjustSet called: toColumn: ' + toColumn + ', newColumn: ' + newColumn + ', moveSemantics: ' + MarkerMoveSemantics[moveSemantics]);
-                // console.log('BEFORE::: markersIndex: ' + markersIndex + ' : ' + this._printMarkers());
-                while (markersIndex < markersLength && adjustMarkerBeforeColumn(toColumn, moveSemantics)) {
-                    marker.updateColumn(markersTracker, newColumn);
-                    markersIndex++;
-                    if (markersIndex < markersLength) {
-                        marker = markers[markersIndex];
-                    }
-                }
-                // console.log('AFTER::: markersIndex: ' + markersIndex + ' : ' + this._printMarkers());
-            };
-            var finish = function (delta, lineTextLength) {
-                adjustDelta(1073741824 /* MAX_SAFE_SMALL_INTEGER */, delta, 1, 0 /* MarkerDefined */);
-                // console.log('------------- FINAL MARKERS: ' + this._printMarkers());
-            };
-            return {
-                adjustDelta: adjustDelta,
-                adjustSet: adjustSet,
-                finish: finish
-            };
-        };
-        ModelLine.prototype.applyEdits = function (markersTracker, edits, tabSize) {
-            var deltaColumn = 0;
-            var resultText = this._text;
-            var tokensAdjuster = this._createTokensAdjuster();
-            var markersAdjuster = this._createMarkersAdjuster(markersTracker);
-            for (var i = 0, len = edits.length; i < len; i++) {
-                var edit = edits[i];
-                // console.log();
-                // console.log('=============================');
-                // console.log('EDIT #' + i + ' [ ' + edit.startColumn + ' -> ' + edit.endColumn + ' ] : <<<' + edit.text + '>>>, forceMoveMarkers: ' + edit.forceMoveMarkers);
-                // console.log('deltaColumn: ' + deltaColumn);
-                var startColumn = deltaColumn + edit.startColumn;
-                var endColumn = deltaColumn + edit.endColumn;
-                var deletingCnt = endColumn - startColumn;
-                var insertingCnt = edit.text.length;
-                // Adjust tokens & markers before this edit
-                // console.log('Adjust tokens & markers before this edit');
-                tokensAdjuster.adjust(edit.startColumn - 1, deltaColumn, 1);
-                markersAdjuster.adjustDelta(edit.startColumn, deltaColumn, 1, edit.forceMoveMarkers ? 1 /* ForceMove */ : (deletingCnt > 0 ? 2 /* ForceStay */ : 0 /* MarkerDefined */));
-                // Adjust tokens & markers for the common part of this edit
-                var commonLength = Math.min(deletingCnt, insertingCnt);
-                if (commonLength > 0) {
-                    // console.log('Adjust tokens & markers for the common part of this edit');
-                    tokensAdjuster.adjust(edit.startColumn - 1 + commonLength, deltaColumn, startColumn);
-                    if (!edit.forceMoveMarkers) {
-                        markersAdjuster.adjustDelta(edit.startColumn + commonLength, deltaColumn, startColumn, edit.forceMoveMarkers ? 1 /* ForceMove */ : (deletingCnt > insertingCnt ? 2 /* ForceStay */ : 0 /* MarkerDefined */));
-                    }
-                }
-                // Perform the edit & update `deltaColumn`
-                resultText = resultText.substring(0, startColumn - 1) + edit.text + resultText.substring(endColumn - 1);
-                deltaColumn += insertingCnt - deletingCnt;
-                // Adjust tokens & markers inside this edit
-                // console.log('Adjust tokens & markers inside this edit');
-                tokensAdjuster.adjust(edit.endColumn, deltaColumn, startColumn);
-                markersAdjuster.adjustSet(edit.endColumn, startColumn + insertingCnt, edit.forceMoveMarkers ? 1 /* ForceMove */ : 0 /* MarkerDefined */);
-            }
-            // Wrap up tokens & markers; adjust remaining if needed
-            tokensAdjuster.finish(deltaColumn, resultText.length);
-            markersAdjuster.finish(deltaColumn, resultText.length);
-            // Save the resulting text
-            this._setText(resultText, tabSize);
-            return deltaColumn;
-        };
-        ModelLine.prototype.split = function (markersTracker, splitColumn, forceMoveMarkers, tabSize) {
-            // console.log('--> split @ ' + splitColumn + '::: ' + this._printMarkers());
-            var myText = this._text.substring(0, splitColumn - 1);
-            var otherText = this._text.substring(splitColumn - 1);
-            var otherMarkers = null;
-            if (this._markers) {
-                this._markers.sort(LineMarker.compareMarkers);
-                for (var i = 0, len = this._markers.length; i < len; i++) {
-                    var marker = this._markers[i];
-                    if (marker.position.column > splitColumn
-                        || (marker.position.column === splitColumn
-                            && (forceMoveMarkers
-                                || !marker.stickToPreviousCharacter))) {
-                        var myMarkers = this._markers.slice(0, i);
-                        otherMarkers = this._markers.slice(i);
-                        this._markers = myMarkers;
-                        break;
-                    }
-                }
-                if (otherMarkers) {
-                    for (var i = 0, len = otherMarkers.length; i < len; i++) {
-                        var marker = otherMarkers[i];
-                        marker.updateColumn(markersTracker, marker.position.column - (splitColumn - 1));
-                    }
-                }
-            }
-            this._setText(myText, tabSize);
-            // Mark overflowing tokens for deletion & delete marked tokens
-            this._deleteMarkedTokens(this._markOverflowingTokensForDeletion(0, this._text.length));
-            var otherLine = new ModelLine(this._lineNumber + 1, otherText, tabSize);
-            if (otherMarkers) {
-                otherLine.addMarkers(otherMarkers);
-            }
-            return otherLine;
-        };
-        ModelLine.prototype.append = function (markersTracker, other, tabSize) {
-            // console.log('--> append: THIS :: ' + this._printMarkers());
-            // console.log('--> append: OTHER :: ' + this._printMarkers());
-            var thisTextLength = this._text.length;
-            this._setText(this._text + other._text, tabSize);
-            var otherRawTokens = other._lineTokens;
-            if (otherRawTokens) {
-                // Other has real tokens
-                var otherTokens = new Uint32Array(otherRawTokens);
-                // Adjust other tokens
-                if (thisTextLength > 0) {
-                    for (var i = 0, len = (otherTokens.length >>> 1); i < len; i++) {
-                        otherTokens[(i << 1)] = otherTokens[(i << 1)] + thisTextLength;
-                    }
-                }
-                // Append other tokens
-                var myRawTokens = this._lineTokens;
-                if (myRawTokens) {
-                    // I have real tokens
-                    var myTokens = new Uint32Array(myRawTokens);
-                    var result = new Uint32Array(myTokens.length + otherTokens.length);
-                    result.set(myTokens, 0);
-                    result.set(otherTokens, myTokens.length);
-                    this._lineTokens = result.buffer;
-                }
-                else {
-                    // I don't have real tokens
-                    this._lineTokens = otherTokens.buffer;
-                }
-            }
-            if (other._markers) {
-                // Other has markers
-                var otherMarkers = other._markers;
-                // Adjust other markers
-                for (var i = 0, len = otherMarkers.length; i < len; i++) {
-                    var marker = otherMarkers[i];
-                    marker.updatePosition(markersTracker, new position_1.Position(this._lineNumber, marker.position.column + thisTextLength));
-                }
-                this.addMarkers(otherMarkers);
-            }
-        };
-        ModelLine.prototype.addMarker = function (marker) {
-            if (!this._markers) {
-                this._markers = [marker];
-            }
-            else {
-                this._markers.push(marker);
-            }
-        };
-        ModelLine.prototype.addMarkers = function (markers) {
-            if (markers.length === 0) {
-                return;
-            }
-            if (!this._markers) {
-                this._markers = markers.slice(0);
-            }
-            else {
-                this._markers = this._markers.concat(markers);
-            }
-        };
-        ModelLine.prototype.removeMarker = function (marker) {
-            if (!this._markers) {
-                return;
-            }
-            var index = this._indexOfMarkerId(marker.id);
-            if (index < 0) {
-                return;
-            }
-            if (this._markers.length === 1) {
-                // was last marker on line
-                this._markers = null;
-            }
-            else {
-                this._markers.splice(index, 1);
-            }
-        };
-        ModelLine.prototype.removeMarkers = function (deleteMarkers) {
-            if (!this._markers) {
-                return;
-            }
-            for (var i = 0, len = this._markers.length; i < len; i++) {
-                var marker = this._markers[i];
-                if (deleteMarkers[marker.id]) {
-                    this._markers.splice(i, 1);
-                    len--;
-                    i--;
-                }
-            }
-            if (this._markers.length === 0) {
-                this._markers = null;
-            }
-        };
-        ModelLine.prototype.getMarkers = function () {
-            if (!this._markers) {
-                return null;
-            }
-            return this._markers;
-        };
-        ModelLine.prototype.updateLineNumber = function (markersTracker, newLineNumber) {
-            if (this._lineNumber === newLineNumber) {
-                return;
-            }
-            if (this._markers) {
-                var markers = this._markers;
-                for (var i = 0, len = markers.length; i < len; i++) {
-                    var marker = markers[i];
-                    marker.updateLineNumber(markersTracker, newLineNumber);
-                }
-            }
-            this._lineNumber = newLineNumber;
-        };
-        ModelLine.prototype.deleteLine = function () {
-            if (!this._markers) {
-                return [];
-            }
-            return this._markers;
-        };
-        ModelLine.prototype._indexOfMarkerId = function (markerId) {
-            var markers = this._markers;
-            for (var i = 0, len = markers.length; i < len; i++) {
-                if (markers[i].id === markerId) {
-                    return i;
-                }
-            }
-            return undefined;
-        };
-        return ModelLine;
-    }());
-    exports.ModelLine = ModelLine;
-});
-
-define(__m[39/*vs/editor/common/model/wordHelper*/], __M([0/*require*/,1/*exports*/]), function (require, exports) {
+define(__m[92/*vs/editor/common/model/wordHelper*/], __M([1/*require*/,0/*exports*/]), function (require, exports) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -11097,7 +8998,7 @@ define(__m[39/*vs/editor/common/model/wordHelper*/], __M([0/*require*/,1/*export
     exports.getWordAtText = getWordAtText;
 });
 
-define(__m[49/*vs/editor/common/modes/languageConfiguration*/], __M([0/*require*/,1/*exports*/]), function (require, exports) {
+define(__m[41/*vs/editor/common/modes/languageConfiguration*/], __M([1/*require*/,0/*exports*/]), function (require, exports) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -11165,78 +9066,527 @@ define(__m[49/*vs/editor/common/modes/languageConfiguration*/], __M([0/*require*
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-define(__m[50/*vs/editor/common/modes/languageSelector*/], __M([0/*require*/,1/*exports*/,29/*vs/base/common/glob*/]), function (require, exports, glob_1) {
+define(__m[37/*vs/editor/common/modes/languageSelector*/], __M([1/*require*/,0/*exports*/,40/*vs/base/common/glob*/]), function (require, exports, glob_1) {
     'use strict';
     function matches(selection, uri, language) {
         return score(selection, uri, language) > 0;
     }
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = matches;
-    function score(selector, uri, language) {
+    function score(selector, candidateUri, candidateLanguage) {
         if (Array.isArray(selector)) {
-            // for each
-            var values = selector.map(function (item) { return score(item, uri, language); });
-            return Math.max.apply(Math, values);
+            // array -> take max individual value
+            var ret = 0;
+            for (var _i = 0, selector_1 = selector; _i < selector_1.length; _i++) {
+                var filter = selector_1[_i];
+                var value = score(filter, candidateUri, candidateLanguage);
+                if (value === 10) {
+                    return value; // already at the highest
+                }
+                if (value > ret) {
+                    ret = value;
+                }
+            }
+            return ret;
         }
         else if (typeof selector === 'string') {
-            // compare language id
-            if (selector === language) {
-                return 10;
-            }
-            else if (selector === '*') {
+            // short-hand notion, desugars to
+            // 'fooLang' -> [{ language: 'fooLang', scheme: 'file' }, { language: 'fooLang', scheme: 'untitled' }]
+            // '*' -> { language: '*', scheme: '*' }
+            if (selector === '*') {
                 return 5;
+            }
+            else if (selector === candidateLanguage) {
+                return 10;
             }
             else {
                 return 0;
             }
         }
         else if (selector) {
-            // all must match but only highest score counts
-            var filter = selector;
-            var valueLanguage = 0;
-            var valueScheme = 0;
-            var valuePattern = 0;
-            // language id
-            if (filter.language) {
-                if (filter.language === language) {
-                    valueLanguage = 10;
+            // filter -> select accordingly, use defaults for scheme
+            var language = selector.language, pattern = selector.pattern, scheme = selector.scheme;
+            var ret = 0;
+            if (scheme) {
+                if (scheme === candidateUri.scheme) {
+                    ret = 10;
                 }
-                else if (filter.language === '*') {
-                    valueLanguage = 5;
+                else if (scheme === '*') {
+                    ret = 5;
                 }
                 else {
                     return 0;
                 }
             }
-            // scheme
-            if (filter.scheme) {
-                if (filter.scheme === uri.scheme) {
-                    valueScheme = 10;
+            if (language) {
+                if (language === candidateLanguage) {
+                    ret = 10;
+                }
+                else if (language === '*') {
+                    ret = Math.max(ret, 5);
                 }
                 else {
                     return 0;
                 }
             }
-            // match fsPath with pattern
-            if (filter.pattern) {
-                if (filter.pattern === uri.fsPath) {
-                    valuePattern = 10;
-                }
-                else if (glob_1.match(filter.pattern, uri.fsPath)) {
-                    valuePattern = 5;
+            if (pattern) {
+                if (pattern === candidateUri.fsPath || glob_1.match(pattern, candidateUri.fsPath)) {
+                    ret = 10;
                 }
                 else {
                     return 0;
                 }
             }
-            return Math.max(valueLanguage, valueScheme, valuePattern);
+            return ret;
         }
-        return undefined;
+        else {
+            return 0;
+        }
     }
     exports.score = score;
 });
 
-define(__m[28/*vs/editor/common/viewModel/prefixSumComputer*/], __M([0/*require*/,1/*exports*/,40/*vs/editor/common/core/uint*/]), function (require, exports, uint_1) {
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+define(__m[43/*vs/editor/common/modes/languageFeatureRegistry*/], __M([1/*require*/,0/*exports*/,4/*vs/base/common/event*/,37/*vs/editor/common/modes/languageSelector*/]), function (require, exports, event_1, languageSelector_1) {
+    'use strict';
+    var LanguageFeatureRegistry = (function () {
+        function LanguageFeatureRegistry() {
+            this._clock = 0;
+            this._entries = [];
+            this._onDidChange = new event_1.Emitter();
+        }
+        Object.defineProperty(LanguageFeatureRegistry.prototype, "onDidChange", {
+            get: function () {
+                return this._onDidChange.event;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        LanguageFeatureRegistry.prototype.register = function (selector, provider) {
+            var _this = this;
+            var entry = {
+                selector: selector,
+                provider: provider,
+                _score: -1,
+                _time: this._clock++
+            };
+            this._entries.push(entry);
+            this._lastCandidate = undefined;
+            this._onDidChange.fire(this._entries.length);
+            return {
+                dispose: function () {
+                    if (entry) {
+                        var idx = _this._entries.indexOf(entry);
+                        if (idx >= 0) {
+                            _this._entries.splice(idx, 1);
+                            _this._lastCandidate = undefined;
+                            _this._onDidChange.fire(_this._entries.length);
+                            entry = undefined;
+                        }
+                    }
+                }
+            };
+        };
+        LanguageFeatureRegistry.prototype.has = function (model) {
+            return this.all(model).length > 0;
+        };
+        LanguageFeatureRegistry.prototype.all = function (model) {
+            if (!model || model.isTooLargeForHavingARichMode()) {
+                return [];
+            }
+            this._updateScores(model);
+            var result = [];
+            // from registry
+            for (var _i = 0, _a = this._entries; _i < _a.length; _i++) {
+                var entry = _a[_i];
+                if (entry._score > 0) {
+                    result.push(entry.provider);
+                }
+            }
+            return result;
+        };
+        LanguageFeatureRegistry.prototype.ordered = function (model) {
+            var result = [];
+            this._orderedForEach(model, function (entry) { return result.push(entry.provider); });
+            return result;
+        };
+        LanguageFeatureRegistry.prototype.orderedGroups = function (model) {
+            var result = [];
+            var lastBucket;
+            var lastBucketScore;
+            this._orderedForEach(model, function (entry) {
+                if (lastBucket && lastBucketScore === entry._score) {
+                    lastBucket.push(entry.provider);
+                }
+                else {
+                    lastBucketScore = entry._score;
+                    lastBucket = [entry.provider];
+                    result.push(lastBucket);
+                }
+            });
+            return result;
+        };
+        LanguageFeatureRegistry.prototype._orderedForEach = function (model, callback) {
+            if (!model || model.isTooLargeForHavingARichMode()) {
+                return;
+            }
+            this._updateScores(model);
+            for (var from = 0; from < this._entries.length; from++) {
+                var entry = this._entries[from];
+                if (entry._score > 0) {
+                    callback(entry);
+                }
+            }
+        };
+        LanguageFeatureRegistry.prototype._updateScores = function (model) {
+            var candidate = {
+                uri: model.uri.toString(),
+                language: model.getLanguageIdentifier().language
+            };
+            if (this._lastCandidate
+                && this._lastCandidate.language === candidate.language
+                && this._lastCandidate.uri === candidate.uri) {
+                // nothing has changed
+                return;
+            }
+            this._lastCandidate = candidate;
+            for (var _i = 0, _a = this._entries; _i < _a.length; _i++) {
+                var entry = _a[_i];
+                entry._score = languageSelector_1.score(entry.selector, model.uri, model.getLanguageIdentifier().language);
+            }
+            // needs sorting
+            this._entries.sort(LanguageFeatureRegistry._compareByScoreAndTime);
+        };
+        LanguageFeatureRegistry._compareByScoreAndTime = function (a, b) {
+            if (a._score < b._score) {
+                return 1;
+            }
+            else if (a._score > b._score) {
+                return -1;
+            }
+            else if (a._time < b._time) {
+                return 1;
+            }
+            else if (a._time > b._time) {
+                return -1;
+            }
+            else {
+                return 0;
+            }
+        };
+        return LanguageFeatureRegistry;
+    }());
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.default = LanguageFeatureRegistry;
+});
+
+define(__m[44/*vs/editor/common/modes/tokenizationRegistry*/], __M([1/*require*/,0/*exports*/,4/*vs/base/common/event*/,16/*vs/base/common/objects*/]), function (require, exports, event_1, objects) {
+    /*---------------------------------------------------------------------------------------------
+     *  Copyright (c) Microsoft Corporation. All rights reserved.
+     *  Licensed under the MIT License. See License.txt in the project root for license information.
+     *--------------------------------------------------------------------------------------------*/
+    'use strict';
+    var TokenizationRegistryImpl = (function () {
+        function TokenizationRegistryImpl() {
+            this._onDidChange = new event_1.Emitter();
+            this.onDidChange = this._onDidChange.event;
+            this._map = Object.create(null);
+            this._colorMap = null;
+        }
+        TokenizationRegistryImpl.prototype.fire = function (languages) {
+            this._onDidChange.fire({
+                changedLanguages: languages,
+                changedColorMap: false
+            });
+        };
+        TokenizationRegistryImpl.prototype.register = function (language, support) {
+            var _this = this;
+            this._map[language] = support;
+            this.fire([language]);
+            return {
+                dispose: function () {
+                    if (_this._map[language] !== support) {
+                        return;
+                    }
+                    delete _this._map[language];
+                    _this.fire([language]);
+                }
+            };
+        };
+        TokenizationRegistryImpl.prototype.get = function (language) {
+            return (this._map[language] || null);
+        };
+        TokenizationRegistryImpl.prototype.setColorMap = function (colorMap) {
+            if (!objects.equals(colorMap, this._colorMap)) {
+                this._colorMap = colorMap;
+                this._onDidChange.fire({
+                    changedLanguages: Object.keys(this._map),
+                    changedColorMap: true
+                });
+            }
+        };
+        TokenizationRegistryImpl.prototype.getColorMap = function () {
+            return this._colorMap;
+        };
+        TokenizationRegistryImpl.prototype.getDefaultForeground = function () {
+            return this._colorMap[1 /* DefaultForeground */];
+        };
+        TokenizationRegistryImpl.prototype.getDefaultBackground = function () {
+            return this._colorMap[2 /* DefaultBackground */];
+        };
+        return TokenizationRegistryImpl;
+    }());
+    exports.TokenizationRegistryImpl = TokenizationRegistryImpl;
+});
+
+define(__m[45/*vs/editor/common/modes*/], __M([1/*require*/,0/*exports*/,43/*vs/editor/common/modes/languageFeatureRegistry*/,44/*vs/editor/common/modes/tokenizationRegistry*/]), function (require, exports, languageFeatureRegistry_1, tokenizationRegistry_1) {
+    /*---------------------------------------------------------------------------------------------
+     *  Copyright (c) Microsoft Corporation. All rights reserved.
+     *  Licensed under the MIT License. See License.txt in the project root for license information.
+     *--------------------------------------------------------------------------------------------*/
+    'use strict';
+    /**
+     * Open ended enum at runtime
+     * @internal
+     */
+    var LanguageId;
+    (function (LanguageId) {
+        LanguageId[LanguageId["Null"] = 0] = "Null";
+        LanguageId[LanguageId["PlainText"] = 1] = "PlainText";
+    })(LanguageId = exports.LanguageId || (exports.LanguageId = {}));
+    /**
+     * @internal
+     */
+    var LanguageIdentifier = (function () {
+        function LanguageIdentifier(sid, iid) {
+            this.language = sid;
+            this.id = iid;
+        }
+        return LanguageIdentifier;
+    }());
+    exports.LanguageIdentifier = LanguageIdentifier;
+    /**
+     * A font style. Values are 2^x such that a bit mask can be used.
+     * @internal
+     */
+    var FontStyle;
+    (function (FontStyle) {
+        FontStyle[FontStyle["NotSet"] = -1] = "NotSet";
+        FontStyle[FontStyle["None"] = 0] = "None";
+        FontStyle[FontStyle["Italic"] = 1] = "Italic";
+        FontStyle[FontStyle["Bold"] = 2] = "Bold";
+        FontStyle[FontStyle["Underline"] = 4] = "Underline";
+    })(FontStyle = exports.FontStyle || (exports.FontStyle = {}));
+    /**
+     * Open ended enum at runtime
+     * @internal
+     */
+    var ColorId;
+    (function (ColorId) {
+        ColorId[ColorId["None"] = 0] = "None";
+        ColorId[ColorId["DefaultForeground"] = 1] = "DefaultForeground";
+        ColorId[ColorId["DefaultBackground"] = 2] = "DefaultBackground";
+    })(ColorId = exports.ColorId || (exports.ColorId = {}));
+    /**
+     * A standard token type. Values are 2^x such that a bit mask can be used.
+     * @internal
+     */
+    var StandardTokenType;
+    (function (StandardTokenType) {
+        StandardTokenType[StandardTokenType["Other"] = 0] = "Other";
+        StandardTokenType[StandardTokenType["Comment"] = 1] = "Comment";
+        StandardTokenType[StandardTokenType["String"] = 2] = "String";
+        StandardTokenType[StandardTokenType["RegEx"] = 4] = "RegEx";
+    })(StandardTokenType = exports.StandardTokenType || (exports.StandardTokenType = {}));
+    /**
+     * Helpers to manage the "collapsed" metadata of an entire StackElement stack.
+     * The following assumptions have been made:
+     *  - languageId < 256 => needs 8 bits
+     *  - unique color count < 512 => needs 9 bits
+     *
+     * The binary format is:
+     * - -------------------------------------------
+     *     3322 2222 2222 1111 1111 1100 0000 0000
+     *     1098 7654 3210 9876 5432 1098 7654 3210
+     * - -------------------------------------------
+     *     xxxx xxxx xxxx xxxx xxxx xxxx xxxx xxxx
+     *     bbbb bbbb bfff ffff ffFF FTTT LLLL LLLL
+     * - -------------------------------------------
+     *  - L = LanguageId (8 bits)
+     *  - T = StandardTokenType (3 bits)
+     *  - F = FontStyle (3 bits)
+     *  - f = foreground color (9 bits)
+     *  - b = background color (9 bits)
+     *
+     * @internal
+     */
+    var MetadataConsts;
+    (function (MetadataConsts) {
+        MetadataConsts[MetadataConsts["LANGUAGEID_MASK"] = 255] = "LANGUAGEID_MASK";
+        MetadataConsts[MetadataConsts["TOKEN_TYPE_MASK"] = 1792] = "TOKEN_TYPE_MASK";
+        MetadataConsts[MetadataConsts["FONT_STYLE_MASK"] = 14336] = "FONT_STYLE_MASK";
+        MetadataConsts[MetadataConsts["FOREGROUND_MASK"] = 8372224] = "FOREGROUND_MASK";
+        MetadataConsts[MetadataConsts["BACKGROUND_MASK"] = 4286578688] = "BACKGROUND_MASK";
+        MetadataConsts[MetadataConsts["LANGUAGEID_OFFSET"] = 0] = "LANGUAGEID_OFFSET";
+        MetadataConsts[MetadataConsts["TOKEN_TYPE_OFFSET"] = 8] = "TOKEN_TYPE_OFFSET";
+        MetadataConsts[MetadataConsts["FONT_STYLE_OFFSET"] = 11] = "FONT_STYLE_OFFSET";
+        MetadataConsts[MetadataConsts["FOREGROUND_OFFSET"] = 14] = "FOREGROUND_OFFSET";
+        MetadataConsts[MetadataConsts["BACKGROUND_OFFSET"] = 23] = "BACKGROUND_OFFSET";
+    })(MetadataConsts = exports.MetadataConsts || (exports.MetadataConsts = {}));
+    /**
+     * A document highlight kind.
+     */
+    var DocumentHighlightKind;
+    (function (DocumentHighlightKind) {
+        /**
+         * A textual occurrence.
+         */
+        DocumentHighlightKind[DocumentHighlightKind["Text"] = 0] = "Text";
+        /**
+         * Read-access of a symbol, like reading a variable.
+         */
+        DocumentHighlightKind[DocumentHighlightKind["Read"] = 1] = "Read";
+        /**
+         * Write-access of a symbol, like writing to a variable.
+         */
+        DocumentHighlightKind[DocumentHighlightKind["Write"] = 2] = "Write";
+    })(DocumentHighlightKind = exports.DocumentHighlightKind || (exports.DocumentHighlightKind = {}));
+    /**
+     * A symbol kind.
+     */
+    var SymbolKind;
+    (function (SymbolKind) {
+        SymbolKind[SymbolKind["File"] = 0] = "File";
+        SymbolKind[SymbolKind["Module"] = 1] = "Module";
+        SymbolKind[SymbolKind["Namespace"] = 2] = "Namespace";
+        SymbolKind[SymbolKind["Package"] = 3] = "Package";
+        SymbolKind[SymbolKind["Class"] = 4] = "Class";
+        SymbolKind[SymbolKind["Method"] = 5] = "Method";
+        SymbolKind[SymbolKind["Property"] = 6] = "Property";
+        SymbolKind[SymbolKind["Field"] = 7] = "Field";
+        SymbolKind[SymbolKind["Constructor"] = 8] = "Constructor";
+        SymbolKind[SymbolKind["Enum"] = 9] = "Enum";
+        SymbolKind[SymbolKind["Interface"] = 10] = "Interface";
+        SymbolKind[SymbolKind["Function"] = 11] = "Function";
+        SymbolKind[SymbolKind["Variable"] = 12] = "Variable";
+        SymbolKind[SymbolKind["Constant"] = 13] = "Constant";
+        SymbolKind[SymbolKind["String"] = 14] = "String";
+        SymbolKind[SymbolKind["Number"] = 15] = "Number";
+        SymbolKind[SymbolKind["Boolean"] = 16] = "Boolean";
+        SymbolKind[SymbolKind["Array"] = 17] = "Array";
+        SymbolKind[SymbolKind["Object"] = 18] = "Object";
+        SymbolKind[SymbolKind["Key"] = 19] = "Key";
+        SymbolKind[SymbolKind["Null"] = 20] = "Null";
+        SymbolKind[SymbolKind["EnumMember"] = 21] = "EnumMember";
+        SymbolKind[SymbolKind["Struct"] = 22] = "Struct";
+    })(SymbolKind = exports.SymbolKind || (exports.SymbolKind = {}));
+    /**
+     * @internal
+     */
+    exports.symbolKindToCssClass = (function () {
+        var _fromMapping = Object.create(null);
+        _fromMapping[SymbolKind.File] = 'file';
+        _fromMapping[SymbolKind.Module] = 'module';
+        _fromMapping[SymbolKind.Namespace] = 'namespace';
+        _fromMapping[SymbolKind.Package] = 'package';
+        _fromMapping[SymbolKind.Class] = 'class';
+        _fromMapping[SymbolKind.Method] = 'method';
+        _fromMapping[SymbolKind.Property] = 'property';
+        _fromMapping[SymbolKind.Field] = 'field';
+        _fromMapping[SymbolKind.Constructor] = 'constructor';
+        _fromMapping[SymbolKind.Enum] = 'enum';
+        _fromMapping[SymbolKind.Interface] = 'interface';
+        _fromMapping[SymbolKind.Function] = 'function';
+        _fromMapping[SymbolKind.Variable] = 'variable';
+        _fromMapping[SymbolKind.Constant] = 'constant';
+        _fromMapping[SymbolKind.String] = 'string';
+        _fromMapping[SymbolKind.Number] = 'number';
+        _fromMapping[SymbolKind.Boolean] = 'boolean';
+        _fromMapping[SymbolKind.Array] = 'array';
+        _fromMapping[SymbolKind.Object] = 'object';
+        _fromMapping[SymbolKind.Key] = 'key';
+        _fromMapping[SymbolKind.Null] = 'null';
+        _fromMapping[SymbolKind.EnumMember] = 'enum-member';
+        _fromMapping[SymbolKind.Struct] = 'struct';
+        return function toCssClassName(kind) {
+            return _fromMapping[kind] || 'property';
+        };
+    })();
+    // --- feature registries ------
+    /**
+     * @internal
+     */
+    exports.ReferenceProviderRegistry = new languageFeatureRegistry_1.default();
+    /**
+     * @internal
+     */
+    exports.RenameProviderRegistry = new languageFeatureRegistry_1.default();
+    /**
+     * @internal
+     */
+    exports.SuggestRegistry = new languageFeatureRegistry_1.default();
+    /**
+     * @internal
+     */
+    exports.SignatureHelpProviderRegistry = new languageFeatureRegistry_1.default();
+    /**
+     * @internal
+     */
+    exports.HoverProviderRegistry = new languageFeatureRegistry_1.default();
+    /**
+     * @internal
+     */
+    exports.DocumentSymbolProviderRegistry = new languageFeatureRegistry_1.default();
+    /**
+     * @internal
+     */
+    exports.DocumentHighlightProviderRegistry = new languageFeatureRegistry_1.default();
+    /**
+     * @internal
+     */
+    exports.DefinitionProviderRegistry = new languageFeatureRegistry_1.default();
+    /**
+     * @internal
+     */
+    exports.ImplementationProviderRegistry = new languageFeatureRegistry_1.default();
+    /**
+     * @internal
+     */
+    exports.TypeDefinitionProviderRegistry = new languageFeatureRegistry_1.default();
+    /**
+     * @internal
+     */
+    exports.CodeLensProviderRegistry = new languageFeatureRegistry_1.default();
+    /**
+     * @internal
+     */
+    exports.CodeActionProviderRegistry = new languageFeatureRegistry_1.default();
+    /**
+     * @internal
+     */
+    exports.DocumentFormattingEditProviderRegistry = new languageFeatureRegistry_1.default();
+    /**
+     * @internal
+     */
+    exports.DocumentRangeFormattingEditProviderRegistry = new languageFeatureRegistry_1.default();
+    /**
+     * @internal
+     */
+    exports.OnTypeFormattingEditProviderRegistry = new languageFeatureRegistry_1.default();
+    /**
+     * @internal
+     */
+    exports.LinkProviderRegistry = new languageFeatureRegistry_1.default();
+    /**
+     * @internal
+     */
+    exports.TokenizationRegistry = new tokenizationRegistry_1.TokenizationRegistryImpl();
+});
+
+define(__m[46/*vs/editor/common/viewModel/prefixSumComputer*/], __M([1/*require*/,0/*exports*/,91/*vs/editor/common/core/uint*/]), function (require, exports, uint_1) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -11442,7 +9792,7 @@ define(__m[28/*vs/editor/common/viewModel/prefixSumComputer*/], __M([0/*require*
     exports.PrefixSumComputerWithCache = PrefixSumComputerWithCache;
 });
 
-define(__m[52/*vs/editor/common/model/mirrorModel2*/], __M([0/*require*/,1/*exports*/,28/*vs/editor/common/viewModel/prefixSumComputer*/]), function (require, exports, prefixSumComputer_1) {
+define(__m[47/*vs/editor/common/model/mirrorModel2*/], __M([1/*require*/,0/*exports*/,46/*vs/editor/common/viewModel/prefixSumComputer*/]), function (require, exports, prefixSumComputer_1) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -11571,8 +9921,8 @@ define(__m[52/*vs/editor/common/model/mirrorModel2*/], __M([0/*require*/,1/*expo
     exports.MirrorModel2 = MirrorModel2;
 });
 
-define(__m[53/*vs/nls!vs/base/common/json*/], __M([13/*vs/nls*/,12/*vs/nls!vs/workbench/node/extensionHostProcess*/]), function(nls, data) { return nls.create("vs/base/common/json", data); });
-define(__m[56/*vs/base/common/json*/], __M([0/*require*/,1/*exports*/,53/*vs/nls!vs/base/common/json*/]), function (require, exports, nls_1) {
+define(__m[48/*vs/nls!vs/base/common/json*/], __M([14/*vs/nls*/,15/*vs/nls!vs/workbench/node/extensionHostProcess*/]), function(nls, data) { return nls.create("vs/base/common/json", data); });
+define(__m[51/*vs/base/common/json*/], __M([1/*require*/,0/*exports*/,48/*vs/nls!vs/base/common/json*/]), function (require, exports, nls_1) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -12623,8 +10973,8 @@ define(__m[56/*vs/base/common/json*/], __M([0/*require*/,1/*exports*/,53/*vs/nls
     exports.visit = visit;
 });
 
-define(__m[57/*vs/nls!vs/base/common/severity*/], __M([13/*vs/nls*/,12/*vs/nls!vs/workbench/node/extensionHostProcess*/]), function(nls, data) { return nls.create("vs/base/common/severity", data); });
-define(__m[17/*vs/base/common/severity*/], __M([0/*require*/,1/*exports*/,57/*vs/nls!vs/base/common/severity*/,8/*vs/base/common/strings*/]), function (require, exports, nls, strings) {
+define(__m[52/*vs/nls!vs/base/common/severity*/], __M([14/*vs/nls*/,15/*vs/nls!vs/workbench/node/extensionHostProcess*/]), function(nls, data) { return nls.create("vs/base/common/severity", data); });
+define(__m[18/*vs/base/common/severity*/], __M([1/*require*/,0/*exports*/,52/*vs/nls!vs/base/common/severity*/,9/*vs/base/common/strings*/]), function (require, exports, nls, strings) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -12676,125 +11026,20 @@ define(__m[17/*vs/base/common/severity*/], __M([0/*require*/,1/*exports*/,57/*vs
     exports.default = Severity;
 });
 
-define(__m[59/*vs/nls!vs/editor/common/config/defaultConfig*/], __M([13/*vs/nls*/,12/*vs/nls!vs/workbench/node/extensionHostProcess*/]), function(nls, data) { return nls.create("vs/editor/common/config/defaultConfig", data); });
-define(__m[60/*vs/editor/common/config/defaultConfig*/], __M([0/*require*/,1/*exports*/,59/*vs/nls!vs/editor/common/config/defaultConfig*/,10/*vs/base/common/platform*/,39/*vs/editor/common/model/wordHelper*/]), function (require, exports, nls, platform, wordHelper_1) {
+define(__m[54/*vs/nls!vs/platform/configuration/common/configurationRegistry*/], __M([14/*vs/nls*/,15/*vs/nls!vs/workbench/node/extensionHostProcess*/]), function(nls, data) { return nls.create("vs/platform/configuration/common/configurationRegistry", data); });
+define(__m[55/*vs/nls!vs/platform/extensions/common/abstractExtensionService*/], __M([14/*vs/nls*/,15/*vs/nls!vs/workbench/node/extensionHostProcess*/]), function(nls, data) { return nls.create("vs/platform/extensions/common/abstractExtensionService", data); });
+define(__m[56/*vs/nls!vs/platform/extensions/common/extensionsRegistry*/], __M([14/*vs/nls*/,15/*vs/nls!vs/workbench/node/extensionHostProcess*/]), function(nls, data) { return nls.create("vs/platform/extensions/common/extensionsRegistry", data); });
+define(__m[57/*vs/nls!vs/platform/markers/common/problemMatcher*/], __M([14/*vs/nls*/,15/*vs/nls!vs/workbench/node/extensionHostProcess*/]), function(nls, data) { return nls.create("vs/platform/markers/common/problemMatcher", data); });
+define(__m[58/*vs/nls!vs/workbench/api/node/extHostDiagnostics*/], __M([14/*vs/nls*/,15/*vs/nls!vs/workbench/node/extensionHostProcess*/]), function(nls, data) { return nls.create("vs/workbench/api/node/extHostDiagnostics", data); });
+define(__m[59/*vs/nls!vs/workbench/api/node/extHostTreeExplorers*/], __M([14/*vs/nls*/,15/*vs/nls!vs/workbench/node/extensionHostProcess*/]), function(nls, data) { return nls.create("vs/workbench/api/node/extHostTreeExplorers", data); });
+define(__m[72/*vs/nls!vs/workbench/node/extensionHostMain*/], __M([14/*vs/nls*/,15/*vs/nls!vs/workbench/node/extensionHostProcess*/]), function(nls, data) { return nls.create("vs/workbench/node/extensionHostMain", data); });
+define(__m[61/*vs/platform/extensions/common/ipcRemoteCom*/], __M([1/*require*/,0/*exports*/,2/*vs/base/common/winjs.base*/,33/*vs/base/common/marshalling*/,6/*vs/base/common/errors*/]), function (require, exports, winjs, marshalling, errors) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
      *--------------------------------------------------------------------------------------------*/
     'use strict';
-    exports.DEFAULT_INDENTATION = {
-        tabSize: 4,
-        insertSpaces: true,
-        detectIndentation: true
-    };
-    exports.DEFAULT_TRIM_AUTO_WHITESPACE = true;
-    var DEFAULT_WINDOWS_FONT_FAMILY = 'Consolas, \'Courier New\', monospace';
-    var DEFAULT_MAC_FONT_FAMILY = 'Menlo, Monaco, \'Courier New\', monospace';
-    var DEFAULT_LINUX_FONT_FAMILY = '\'Droid Sans Mono\', \'Courier New\', monospace, \'Droid Sans Fallback\'';
-    /**
-     * Determined from empirical observations.
-     */
-    exports.GOLDEN_LINE_HEIGHT_RATIO = platform.isMacintosh ? 1.5 : 1.35;
-    var ConfigClass = (function () {
-        function ConfigClass() {
-            this.editor = {
-                experimentalScreenReader: true,
-                rulers: [],
-                wordSeparators: wordHelper_1.USUAL_WORD_SEPARATORS,
-                selectionClipboard: true,
-                ariaLabel: nls.localize(0, null),
-                lineNumbers: 'on',
-                selectOnLineNumbers: true,
-                lineNumbersMinChars: 5,
-                glyphMargin: true,
-                lineDecorationsWidth: 10,
-                revealHorizontalRightPadding: 30,
-                roundedSelection: true,
-                theme: 'vs',
-                readOnly: false,
-                scrollbar: {
-                    verticalScrollbarSize: 14,
-                    horizontal: 'auto',
-                    useShadows: true,
-                    verticalHasArrows: false,
-                    horizontalHasArrows: false
-                },
-                minimap: {
-                    enabled: false,
-                    renderCharacters: true,
-                    maxColumn: 120
-                },
-                fixedOverflowWidgets: false,
-                overviewRulerLanes: 2,
-                cursorBlinking: 'blink',
-                mouseWheelZoom: false,
-                cursorStyle: 'line',
-                fontLigatures: false,
-                disableTranslate3d: false,
-                disableMonospaceOptimizations: false,
-                hideCursorInOverviewRuler: false,
-                scrollBeyondLastLine: true,
-                automaticLayout: false,
-                wordWrap: 'off',
-                wordWrapColumn: 80,
-                wrappingIndent: 'same',
-                wordWrapBreakBeforeCharacters: '([{‘“〈《「『【〔（［｛｢£¥＄￡￥+＋',
-                wordWrapBreakAfterCharacters: ' \t})]?|&,;¢°′″‰℃、。｡､￠，．：；？！％・･ゝゞヽヾーァィゥェォッャュョヮヵヶぁぃぅぇぉっゃゅょゎゕゖㇰㇱㇲㇳㇴㇵㇶㇷㇸㇹㇺㇻㇼㇽㇾㇿ々〻ｧｨｩｪｫｬｭｮｯｰ’”〉》」』】〕）］｝｣',
-                wordWrapBreakObtrusiveCharacters: '.',
-                // Features
-                hover: true,
-                contextmenu: true,
-                mouseWheelScrollSensitivity: 1,
-                quickSuggestions: true,
-                quickSuggestionsDelay: 10,
-                parameterHints: true,
-                iconsInSuggestions: true,
-                autoClosingBrackets: true,
-                formatOnType: false,
-                formatOnPaste: false,
-                suggestOnTriggerCharacters: true,
-                acceptSuggestionOnEnter: true,
-                acceptSuggestionOnCommitCharacter: true,
-                snippetSuggestions: 'bottom',
-                emptySelectionClipboard: true,
-                wordBasedSuggestions: true,
-                suggestFontSize: 0,
-                suggestLineHeight: 0,
-                selectionHighlight: true,
-                codeLens: true,
-                referenceInfos: true,
-                folding: true,
-                renderWhitespace: 'none',
-                renderControlCharacters: false,
-                renderIndentGuides: false,
-                renderLineHighlight: 'line',
-                useTabStops: true,
-                matchBrackets: true,
-                dragAndDrop: false,
-                fontFamily: (platform.isMacintosh ? DEFAULT_MAC_FONT_FAMILY : (platform.isLinux ? DEFAULT_LINUX_FONT_FAMILY : DEFAULT_WINDOWS_FONT_FAMILY)),
-                fontWeight: 'normal',
-                fontSize: (platform.isMacintosh ? 12 : 14),
-                lineHeight: 0
-            };
-        }
-        return ConfigClass;
-    }());
-    exports.DefaultConfig = new ConfigClass();
-});
-
-define(__m[61/*vs/nls!vs/platform/configuration/common/configurationRegistry*/], __M([13/*vs/nls*/,12/*vs/nls!vs/workbench/node/extensionHostProcess*/]), function(nls, data) { return nls.create("vs/platform/configuration/common/configurationRegistry", data); });
-define(__m[62/*vs/nls!vs/platform/extensions/common/abstractExtensionService*/], __M([13/*vs/nls*/,12/*vs/nls!vs/workbench/node/extensionHostProcess*/]), function(nls, data) { return nls.create("vs/platform/extensions/common/abstractExtensionService", data); });
-define(__m[63/*vs/nls!vs/platform/extensions/common/extensionsRegistry*/], __M([13/*vs/nls*/,12/*vs/nls!vs/workbench/node/extensionHostProcess*/]), function(nls, data) { return nls.create("vs/platform/extensions/common/extensionsRegistry", data); });
-define(__m[64/*vs/nls!vs/workbench/api/node/extHostDiagnostics*/], __M([13/*vs/nls*/,12/*vs/nls!vs/workbench/node/extensionHostProcess*/]), function(nls, data) { return nls.create("vs/workbench/api/node/extHostDiagnostics", data); });
-define(__m[65/*vs/nls!vs/workbench/api/node/extHostTreeExplorers*/], __M([13/*vs/nls*/,12/*vs/nls!vs/workbench/node/extensionHostProcess*/]), function(nls, data) { return nls.create("vs/workbench/api/node/extHostTreeExplorers", data); });
-define(__m[66/*vs/nls!vs/workbench/node/extensionHostMain*/], __M([13/*vs/nls*/,12/*vs/nls!vs/workbench/node/extensionHostProcess*/]), function(nls, data) { return nls.create("vs/workbench/node/extensionHostMain", data); });
-define(__m[67/*vs/platform/extensions/common/ipcRemoteCom*/], __M([0/*require*/,1/*exports*/,3/*vs/base/common/winjs.base*/,32/*vs/base/common/marshalling*/,5/*vs/base/common/errors*/]), function (require, exports, winjs, marshalling, errors) {
-    /*---------------------------------------------------------------------------------------------
-     *  Copyright (c) Microsoft Corporation. All rights reserved.
-     *  Licensed under the MIT License. See License.txt in the project root for license information.
-     *--------------------------------------------------------------------------------------------*/
-    'use strict';
+    var lastMessageId = 0;
     var pendingRPCReplies = {};
     var MessageFactory = (function () {
         function MessageFactory() {
@@ -12894,7 +11139,6 @@ define(__m[67/*vs/platform/extensions/common/ipcRemoteCom*/], __M([0/*require*/,
         return LazyPromise;
     }());
     function createRPC(serializeAndSend) {
-        var lastMessageId = 0;
         return function rpc(rpcId, method, args) {
             var req = String(++lastMessageId);
             var result = new LazyPromise(function () {
@@ -13000,7 +11244,7 @@ define(__m[67/*vs/platform/extensions/common/ipcRemoteCom*/], __M([0/*require*/,
     exports.createProxyProtocol = createProxyProtocol;
 });
 
-define(__m[11/*vs/platform/instantiation/common/instantiation*/], __M([0/*require*/,1/*exports*/]), function (require, exports) {
+define(__m[11/*vs/platform/instantiation/common/instantiation*/], __M([1/*require*/,0/*exports*/]), function (require, exports) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -13064,7 +11308,7 @@ define(__m[11/*vs/platform/instantiation/common/instantiation*/], __M([0/*requir
 
 
 
-define(__m[69/*vs/platform/contextkey/common/contextkey*/], __M([0/*require*/,1/*exports*/,11/*vs/platform/instantiation/common/instantiation*/]), function (require, exports, instantiation_1) {
+define(__m[63/*vs/platform/contextkey/common/contextkey*/], __M([1/*require*/,0/*exports*/,11/*vs/platform/instantiation/common/instantiation*/]), function (require, exports, instantiation_1) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -13183,7 +11427,7 @@ define(__m[69/*vs/platform/contextkey/common/contextkey*/], __M([0/*require*/,1/
             return false;
         };
         ContextKeyDefinedExpr.prototype.evaluate = function (context) {
-            return (!!context[this.key]);
+            return (!!context.getValue(this.key));
         };
         ContextKeyDefinedExpr.prototype.normalize = function () {
             return this;
@@ -13229,7 +11473,7 @@ define(__m[69/*vs/platform/contextkey/common/contextkey*/], __M([0/*require*/,1/
         ContextKeyEqualsExpr.prototype.evaluate = function (context) {
             /* tslint:disable:triple-equals */
             // Intentional ==
-            return (context[this.key] == this.value);
+            return (context.getValue(this.key) == this.value);
             /* tslint:enable:triple-equals */
         };
         ContextKeyEqualsExpr.prototype.normalize = function () {
@@ -13285,7 +11529,7 @@ define(__m[69/*vs/platform/contextkey/common/contextkey*/], __M([0/*require*/,1/
         ContextKeyNotEqualsExpr.prototype.evaluate = function (context) {
             /* tslint:disable:triple-equals */
             // Intentional !=
-            return (context[this.key] != this.value);
+            return (context.getValue(this.key) != this.value);
             /* tslint:enable:triple-equals */
         };
         ContextKeyNotEqualsExpr.prototype.normalize = function () {
@@ -13332,7 +11576,7 @@ define(__m[69/*vs/platform/contextkey/common/contextkey*/], __M([0/*require*/,1/
             return false;
         };
         ContextKeyNotExpr.prototype.evaluate = function (context) {
-            return (!context[this.key]);
+            return (!context.getValue(this.key));
         };
         ContextKeyNotExpr.prototype.normalize = function () {
             return this;
@@ -13452,7 +11696,7 @@ define(__m[69/*vs/platform/contextkey/common/contextkey*/], __M([0/*require*/,1/
     exports.SET_CONTEXT_COMMAND_ID = 'setContext';
 });
 
-define(__m[23/*vs/editor/common/editorCommon*/], __M([0/*require*/,1/*exports*/,16/*vs/base/common/types*/,69/*vs/platform/contextkey/common/contextkey*/]), function (require, exports, types, contextkey_1) {
+define(__m[21/*vs/editor/common/editorCommon*/], __M([1/*require*/,0/*exports*/,10/*vs/base/common/types*/,16/*vs/base/common/objects*/,63/*vs/platform/contextkey/common/contextkey*/]), function (require, exports, types, objects, contextkey_1) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -13551,6 +11795,9 @@ define(__m[23/*vs/editor/common/editorCommon*/], __M([0/*require*/,1/*exports*/,
          * @internal
          */
         function EditorWrappingInfo(source) {
+            this.inDiffEditor = Boolean(source.inDiffEditor);
+            this.isDominatedByLongLines = Boolean(source.isDominatedByLongLines);
+            this.isWordWrapMinified = Boolean(source.isWordWrapMinified);
             this.isViewportWrapping = Boolean(source.isViewportWrapping);
             this.wrappingColumn = source.wrappingColumn | 0;
             this.wrappingIndent = source.wrappingIndent | 0;
@@ -13562,7 +11809,10 @@ define(__m[23/*vs/editor/common/editorCommon*/], __M([0/*require*/,1/*exports*/,
          * @internal
          */
         EditorWrappingInfo.prototype.equals = function (other) {
-            return (this.isViewportWrapping === other.isViewportWrapping
+            return (this.inDiffEditor === other.inDiffEditor
+                && this.isDominatedByLongLines === other.isDominatedByLongLines
+                && this.isWordWrapMinified === other.isWordWrapMinified
+                && this.isViewportWrapping === other.isViewportWrapping
                 && this.wrappingColumn === other.wrappingColumn
                 && this.wrappingIndent === other.wrappingIndent
                 && this.wordWrapBreakBeforeCharacters === other.wordWrapBreakBeforeCharacters
@@ -13597,6 +11847,7 @@ define(__m[23/*vs/editor/common/editorCommon*/], __M([0/*require*/,1/*exports*/,
             this.revealHorizontalRightPadding = source.revealHorizontalRightPadding | 0;
             this.roundedSelection = Boolean(source.roundedSelection);
             this.overviewRulerLanes = source.overviewRulerLanes | 0;
+            this.overviewRulerBorder = Boolean(source.overviewRulerBorder);
             this.cursorBlinking = source.cursorBlinking | 0;
             this.mouseWheelZoom = Boolean(source.mouseWheelZoom);
             this.cursorStyle = source.cursorStyle | 0;
@@ -13606,6 +11857,7 @@ define(__m[23/*vs/editor/common/editorCommon*/], __M([0/*require*/,1/*exports*/,
             this.stopRenderingLineAfter = source.stopRenderingLineAfter | 0;
             this.renderWhitespace = source.renderWhitespace;
             this.renderControlCharacters = Boolean(source.renderControlCharacters);
+            this.fontLigatures = Boolean(source.fontLigatures);
             this.renderIndentGuides = Boolean(source.renderIndentGuides);
             this.renderLineHighlight = source.renderLineHighlight;
             this.scrollbar = source.scrollbar.clone();
@@ -13656,6 +11908,7 @@ define(__m[23/*vs/editor/common/editorCommon*/], __M([0/*require*/,1/*exports*/,
                 && this.revealHorizontalRightPadding === other.revealHorizontalRightPadding
                 && this.roundedSelection === other.roundedSelection
                 && this.overviewRulerLanes === other.overviewRulerLanes
+                && this.overviewRulerBorder === other.overviewRulerBorder
                 && this.cursorBlinking === other.cursorBlinking
                 && this.mouseWheelZoom === other.mouseWheelZoom
                 && this.cursorStyle === other.cursorStyle
@@ -13665,6 +11918,7 @@ define(__m[23/*vs/editor/common/editorCommon*/], __M([0/*require*/,1/*exports*/,
                 && this.stopRenderingLineAfter === other.stopRenderingLineAfter
                 && this.renderWhitespace === other.renderWhitespace
                 && this.renderControlCharacters === other.renderControlCharacters
+                && this.fontLigatures === other.fontLigatures
                 && this.renderIndentGuides === other.renderIndentGuides
                 && this.renderLineHighlight === other.renderLineHighlight
                 && this.scrollbar.equals(other.scrollbar)
@@ -13690,6 +11944,7 @@ define(__m[23/*vs/editor/common/editorCommon*/], __M([0/*require*/,1/*exports*/,
                 revealHorizontalRightPadding: this.revealHorizontalRightPadding !== newOpts.revealHorizontalRightPadding,
                 roundedSelection: this.roundedSelection !== newOpts.roundedSelection,
                 overviewRulerLanes: this.overviewRulerLanes !== newOpts.overviewRulerLanes,
+                overviewRulerBorder: this.overviewRulerBorder !== newOpts.overviewRulerBorder,
                 cursorBlinking: this.cursorBlinking !== newOpts.cursorBlinking,
                 mouseWheelZoom: this.mouseWheelZoom !== newOpts.mouseWheelZoom,
                 cursorStyle: this.cursorStyle !== newOpts.cursorStyle,
@@ -13699,6 +11954,7 @@ define(__m[23/*vs/editor/common/editorCommon*/], __M([0/*require*/,1/*exports*/,
                 stopRenderingLineAfter: this.stopRenderingLineAfter !== newOpts.stopRenderingLineAfter,
                 renderWhitespace: this.renderWhitespace !== newOpts.renderWhitespace,
                 renderControlCharacters: this.renderControlCharacters !== newOpts.renderControlCharacters,
+                fontLigatures: this.fontLigatures !== newOpts.fontLigatures,
                 renderIndentGuides: this.renderIndentGuides !== newOpts.renderIndentGuides,
                 renderLineHighlight: this.renderLineHighlight !== newOpts.renderLineHighlight,
                 scrollbar: (!this.scrollbar.equals(newOpts.scrollbar)),
@@ -13723,7 +11979,7 @@ define(__m[23/*vs/editor/common/editorCommon*/], __M([0/*require*/,1/*exports*/,
             this.selectionClipboard = Boolean(source.selectionClipboard);
             this.hover = Boolean(source.hover);
             this.contextmenu = Boolean(source.contextmenu);
-            this.quickSuggestions = Boolean(source.quickSuggestions);
+            this.quickSuggestions = source.quickSuggestions;
             this.quickSuggestionsDelay = source.quickSuggestionsDelay || 0;
             this.parameterHints = Boolean(source.parameterHints);
             this.iconsInSuggestions = Boolean(source.iconsInSuggestions);
@@ -13738,6 +11994,7 @@ define(__m[23/*vs/editor/common/editorCommon*/], __M([0/*require*/,1/*exports*/,
             this.suggestFontSize = source.suggestFontSize;
             this.suggestLineHeight = source.suggestLineHeight;
             this.selectionHighlight = Boolean(source.selectionHighlight);
+            this.occurrencesHighlight = Boolean(source.occurrencesHighlight);
             this.codeLens = Boolean(source.codeLens);
             this.folding = Boolean(source.folding);
             this.matchBrackets = Boolean(source.matchBrackets);
@@ -13749,7 +12006,7 @@ define(__m[23/*vs/editor/common/editorCommon*/], __M([0/*require*/,1/*exports*/,
             return (this.selectionClipboard === other.selectionClipboard
                 && this.hover === other.hover
                 && this.contextmenu === other.contextmenu
-                && this.quickSuggestions === other.quickSuggestions
+                && objects.equals(this.quickSuggestions, other.quickSuggestions)
                 && this.quickSuggestionsDelay === other.quickSuggestionsDelay
                 && this.parameterHints === other.parameterHints
                 && this.iconsInSuggestions === other.iconsInSuggestions
@@ -13760,10 +12017,11 @@ define(__m[23/*vs/editor/common/editorCommon*/], __M([0/*require*/,1/*exports*/,
                 && this.acceptSuggestionOnCommitCharacter === other.acceptSuggestionOnCommitCharacter
                 && this.snippetSuggestions === other.snippetSuggestions
                 && this.emptySelectionClipboard === other.emptySelectionClipboard
-                && this.wordBasedSuggestions === other.wordBasedSuggestions
+                && objects.equals(this.wordBasedSuggestions, other.wordBasedSuggestions)
                 && this.suggestFontSize === other.suggestFontSize
                 && this.suggestLineHeight === other.suggestLineHeight
                 && this.selectionHighlight === other.selectionHighlight
+                && this.occurrencesHighlight === other.occurrencesHighlight
                 && this.codeLens === other.codeLens
                 && this.folding === other.folding
                 && this.matchBrackets === other.matchBrackets);
@@ -14546,20 +12804,8 @@ define(__m[23/*vs/editor/common/editorCommon*/], __M([0/*require*/,1/*exports*/,
         ExecuteCommands: 'executeCommands',
         CursorLeft: 'cursorLeft',
         CursorLeftSelect: 'cursorLeftSelect',
-        CursorWordLeft: 'cursorWordLeft',
-        CursorWordStartLeft: 'cursorWordStartLeft',
-        CursorWordEndLeft: 'cursorWordEndLeft',
-        CursorWordLeftSelect: 'cursorWordLeftSelect',
-        CursorWordStartLeftSelect: 'cursorWordStartLeftSelect',
-        CursorWordEndLeftSelect: 'cursorWordEndLeftSelect',
         CursorRight: 'cursorRight',
         CursorRightSelect: 'cursorRightSelect',
-        CursorWordRight: 'cursorWordRight',
-        CursorWordStartRight: 'cursorWordStartRight',
-        CursorWordEndRight: 'cursorWordEndRight',
-        CursorWordRightSelect: 'cursorWordRightSelect',
-        CursorWordStartRightSelect: 'cursorWordStartRightSelect',
-        CursorWordEndRightSelect: 'cursorWordEndRightSelect',
         CursorUp: 'cursorUp',
         CursorUpSelect: 'cursorUpSelect',
         CursorDown: 'cursorDown',
@@ -14602,12 +12848,6 @@ define(__m[23/*vs/editor/common/editorCommon*/], __M([0/*require*/,1/*exports*/,
         Outdent: 'outdent',
         DeleteLeft: 'deleteLeft',
         DeleteRight: 'deleteRight',
-        DeleteWordLeft: 'deleteWordLeft',
-        DeleteWordStartLeft: 'deleteWordStartLeft',
-        DeleteWordEndLeft: 'deleteWordEndLeft',
-        DeleteWordRight: 'deleteWordRight',
-        DeleteWordStartRight: 'deleteWordStartRight',
-        DeleteWordEndRight: 'deleteWordEndRight',
         RemoveSecondaryCursors: 'removeSecondaryCursors',
         CancelSelection: 'cancelSelection',
         Cut: 'cut',
@@ -14791,917 +13031,16 @@ define(__m[23/*vs/editor/common/editorCommon*/], __M([0/*require*/,1/*exports*/,
     exports.OverviewRulerZone = OverviewRulerZone;
 });
 
-define(__m[71/*vs/editor/common/model/textModelSearch*/], __M([0/*require*/,1/*exports*/,8/*vs/base/common/strings*/,21/*vs/editor/common/core/position*/,35/*vs/editor/common/core/range*/,23/*vs/editor/common/editorCommon*/]), function (require, exports, strings, position_1, range_1, editorCommon_1) {
+define(__m[65/*vs/editor/common/model/textSource*/], __M([1/*require*/,0/*exports*/,9/*vs/base/common/strings*/,21/*vs/editor/common/editorCommon*/]), function (require, exports, strings, editorCommon_1) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
      *--------------------------------------------------------------------------------------------*/
     'use strict';
-    var LIMIT_FIND_COUNT = 999;
-    var SearchParams = (function () {
-        function SearchParams(searchString, isRegex, matchCase, wholeWord) {
-            this.searchString = searchString;
-            this.isRegex = isRegex;
-            this.matchCase = matchCase;
-            this.wholeWord = wholeWord;
+    var RawTextSource = (function () {
+        function RawTextSource() {
         }
-        SearchParams._isMultilineRegexSource = function (searchString) {
-            if (!searchString || searchString.length === 0) {
-                return false;
-            }
-            for (var i = 0, len = searchString.length; i < len; i++) {
-                var chCode = searchString.charCodeAt(i);
-                if (chCode === 92 /* Backslash */) {
-                    // move to next char
-                    i++;
-                    if (i >= len) {
-                        // string ends with a \
-                        break;
-                    }
-                    var nextChCode = searchString.charCodeAt(i);
-                    if (nextChCode === 110 /* n */ || nextChCode === 114 /* r */) {
-                        return true;
-                    }
-                }
-            }
-            return false;
-        };
-        SearchParams.prototype.parseSearchRequest = function () {
-            if (this.searchString === '') {
-                return null;
-            }
-            // Try to create a RegExp out of the params
-            var multiline;
-            if (this.isRegex) {
-                multiline = SearchParams._isMultilineRegexSource(this.searchString);
-            }
-            else {
-                multiline = (this.searchString.indexOf('\n') >= 0);
-            }
-            var regex = null;
-            try {
-                regex = strings.createRegExp(this.searchString, this.isRegex, {
-                    matchCase: this.matchCase,
-                    wholeWord: this.wholeWord,
-                    multiline: multiline,
-                    global: true
-                });
-            }
-            catch (err) {
-                return null;
-            }
-            if (!regex) {
-                return null;
-            }
-            return regex;
-        };
-        return SearchParams;
-    }());
-    exports.SearchParams = SearchParams;
-    function createFindMatch(range, rawMatches, captureMatches) {
-        if (!captureMatches) {
-            return new editorCommon_1.FindMatch(range, null);
-        }
-        var matches = [];
-        for (var i = 0, len = rawMatches.length; i < len; i++) {
-            matches[i] = rawMatches[i];
-        }
-        return new editorCommon_1.FindMatch(range, matches);
-    }
-    var TextModelSearch = (function () {
-        function TextModelSearch() {
-        }
-        TextModelSearch.findMatches = function (model, searchParams, searchRange, captureMatches, limitResultCount) {
-            var regex = searchParams.parseSearchRequest();
-            if (!regex) {
-                return [];
-            }
-            if (regex.multiline) {
-                return this._doFindMatchesMultiline(model, searchRange, regex, captureMatches, limitResultCount);
-            }
-            return this._doFindMatchesLineByLine(model, searchRange, regex, captureMatches, limitResultCount);
-        };
-        /**
-         * Multiline search always executes on the lines concatenated with \n.
-         * We must therefore compensate for the count of \n in case the model is CRLF
-         */
-        TextModelSearch._getMultilineMatchRange = function (model, deltaOffset, text, matchIndex, match0) {
-            var startOffset;
-            if (model.getEOL() === '\r\n') {
-                var lineFeedCountBeforeMatch = 0;
-                for (var i = 0; i < matchIndex; i++) {
-                    var chCode = text.charCodeAt(i);
-                    if (chCode === 10 /* LineFeed */) {
-                        lineFeedCountBeforeMatch++;
-                    }
-                }
-                startOffset = deltaOffset + matchIndex + lineFeedCountBeforeMatch /* add as many \r as there were \n */;
-            }
-            else {
-                startOffset = deltaOffset + matchIndex;
-            }
-            var endOffset;
-            if (model.getEOL() === '\r\n') {
-                var lineFeedCountInMatch = 0;
-                for (var i = 0, len = match0.length; i < len; i++) {
-                    var chCode = text.charCodeAt(i + matchIndex);
-                    if (chCode === 10 /* LineFeed */) {
-                        lineFeedCountInMatch++;
-                    }
-                }
-                endOffset = startOffset + match0.length + lineFeedCountInMatch /* add as many \r as there were \n */;
-            }
-            else {
-                endOffset = startOffset + match0.length;
-            }
-            var startPosition = model.getPositionAt(startOffset);
-            var endPosition = model.getPositionAt(endOffset);
-            return new range_1.Range(startPosition.lineNumber, startPosition.column, endPosition.lineNumber, endPosition.column);
-        };
-        TextModelSearch._doFindMatchesMultiline = function (model, searchRange, searchRegex, captureMatches, limitResultCount) {
-            var deltaOffset = model.getOffsetAt(searchRange.getStartPosition());
-            // We always execute multiline search over the lines joined with \n
-            // This makes it that \n will match the EOL for both CRLF and LF models
-            // We compensate for offset errors in `_getMultilineMatchRange`
-            var text = model.getValueInRange(searchRange, editorCommon_1.EndOfLinePreference.LF);
-            var result = [];
-            var prevStartOffset = 0;
-            var prevEndOffset = 0;
-            var counter = 0;
-            var m;
-            while ((m = searchRegex.exec(text))) {
-                var startOffset = deltaOffset + m.index;
-                var endOffset = startOffset + m[0].length;
-                if (prevStartOffset === startOffset && prevEndOffset === endOffset) {
-                    // Exit early if the regex matches the same range
-                    return result;
-                }
-                result[counter++] = createFindMatch(this._getMultilineMatchRange(model, deltaOffset, text, m.index, m[0]), m, captureMatches);
-                if (counter >= limitResultCount) {
-                    return result;
-                }
-                prevStartOffset = startOffset;
-                prevEndOffset = endOffset;
-            }
-            return result;
-        };
-        TextModelSearch._doFindMatchesLineByLine = function (model, searchRange, searchRegex, captureMatches, limitResultCount) {
-            var result = [];
-            var counter = 0;
-            // Early case for a search range that starts & stops on the same line number
-            if (searchRange.startLineNumber === searchRange.endLineNumber) {
-                var text_1 = model.getLineContent(searchRange.startLineNumber).substring(searchRange.startColumn - 1, searchRange.endColumn - 1);
-                counter = this._findMatchesInLine(searchRegex, text_1, searchRange.startLineNumber, searchRange.startColumn - 1, counter, result, captureMatches, limitResultCount);
-                return result;
-            }
-            // Collect results from first line
-            var text = model.getLineContent(searchRange.startLineNumber).substring(searchRange.startColumn - 1);
-            counter = this._findMatchesInLine(searchRegex, text, searchRange.startLineNumber, searchRange.startColumn - 1, counter, result, captureMatches, limitResultCount);
-            // Collect results from middle lines
-            for (var lineNumber = searchRange.startLineNumber + 1; lineNumber < searchRange.endLineNumber && counter < limitResultCount; lineNumber++) {
-                counter = this._findMatchesInLine(searchRegex, model.getLineContent(lineNumber), lineNumber, 0, counter, result, captureMatches, limitResultCount);
-            }
-            // Collect results from last line
-            if (counter < limitResultCount) {
-                var text_2 = model.getLineContent(searchRange.endLineNumber).substring(0, searchRange.endColumn - 1);
-                counter = this._findMatchesInLine(searchRegex, text_2, searchRange.endLineNumber, 0, counter, result, captureMatches, limitResultCount);
-            }
-            return result;
-        };
-        TextModelSearch._findMatchesInLine = function (searchRegex, text, lineNumber, deltaOffset, counter, result, captureMatches, limitResultCount) {
-            var m;
-            // Reset regex to search from the beginning
-            searchRegex.lastIndex = 0;
-            do {
-                m = searchRegex.exec(text);
-                if (m) {
-                    var range = new range_1.Range(lineNumber, m.index + 1 + deltaOffset, lineNumber, m.index + 1 + m[0].length + deltaOffset);
-                    if (result.length > 0 && range.equalsRange(result[result.length - 1].range)) {
-                        // Exit early if the regex matches the same range
-                        return counter;
-                    }
-                    result.push(createFindMatch(range, m, captureMatches));
-                    counter++;
-                    if (counter >= limitResultCount) {
-                        return counter;
-                    }
-                    if (m.index + m[0].length === text.length) {
-                        // Reached the end of the line
-                        return counter;
-                    }
-                }
-            } while (m);
-            return counter;
-        };
-        TextModelSearch.findNextMatch = function (model, searchParams, searchStart, captureMatches) {
-            var regex = searchParams.parseSearchRequest();
-            if (!regex) {
-                return null;
-            }
-            if (regex.multiline) {
-                return this._doFindNextMatchMultiline(model, searchStart, regex, captureMatches);
-            }
-            return this._doFindNextMatchLineByLine(model, searchStart, regex, captureMatches);
-        };
-        TextModelSearch._doFindNextMatchMultiline = function (model, searchStart, searchRegex, captureMatches) {
-            var searchTextStart = new position_1.Position(searchStart.lineNumber, 1);
-            var deltaOffset = model.getOffsetAt(searchTextStart);
-            var lineCount = model.getLineCount();
-            // We always execute multiline search over the lines joined with \n
-            // This makes it that \n will match the EOL for both CRLF and LF models
-            // We compensate for offset errors in `_getMultilineMatchRange`
-            var text = model.getValueInRange(new range_1.Range(searchTextStart.lineNumber, searchTextStart.column, lineCount, model.getLineMaxColumn(lineCount)), editorCommon_1.EndOfLinePreference.LF);
-            searchRegex.lastIndex = searchStart.column - 1;
-            var m = searchRegex.exec(text);
-            if (m) {
-                return createFindMatch(this._getMultilineMatchRange(model, deltaOffset, text, m.index, m[0]), m, captureMatches);
-            }
-            if (searchStart.lineNumber !== 1 || searchStart.column !== 1) {
-                // Try again from the top
-                return this._doFindNextMatchMultiline(model, new position_1.Position(1, 1), searchRegex, captureMatches);
-            }
-            return null;
-        };
-        TextModelSearch._doFindNextMatchLineByLine = function (model, searchStart, searchRegex, captureMatches) {
-            var lineCount = model.getLineCount();
-            var startLineNumber = searchStart.lineNumber;
-            // Look in first line
-            var text = model.getLineContent(startLineNumber);
-            var r = this._findFirstMatchInLine(searchRegex, text, startLineNumber, searchStart.column, captureMatches);
-            if (r) {
-                return r;
-            }
-            for (var i = 1; i <= lineCount; i++) {
-                var lineIndex = (startLineNumber + i - 1) % lineCount;
-                var text_3 = model.getLineContent(lineIndex + 1);
-                var r_1 = this._findFirstMatchInLine(searchRegex, text_3, lineIndex + 1, 1, captureMatches);
-                if (r_1) {
-                    return r_1;
-                }
-            }
-            return null;
-        };
-        TextModelSearch._findFirstMatchInLine = function (searchRegex, text, lineNumber, fromColumn, captureMatches) {
-            // Set regex to search from column
-            searchRegex.lastIndex = fromColumn - 1;
-            var m = searchRegex.exec(text);
-            if (m) {
-                return createFindMatch(new range_1.Range(lineNumber, m.index + 1, lineNumber, m.index + 1 + m[0].length), m, captureMatches);
-            }
-            return null;
-        };
-        TextModelSearch.findPreviousMatch = function (model, searchParams, searchStart, captureMatches) {
-            var regex = searchParams.parseSearchRequest();
-            if (!regex) {
-                return null;
-            }
-            if (regex.multiline) {
-                return this._doFindPreviousMatchMultiline(model, searchStart, regex, captureMatches);
-            }
-            return this._doFindPreviousMatchLineByLine(model, searchStart, regex, captureMatches);
-        };
-        TextModelSearch._doFindPreviousMatchMultiline = function (model, searchStart, searchRegex, captureMatches) {
-            var matches = this._doFindMatchesMultiline(model, new range_1.Range(1, 1, searchStart.lineNumber, searchStart.column), searchRegex, captureMatches, 10 * LIMIT_FIND_COUNT);
-            if (matches.length > 0) {
-                return matches[matches.length - 1];
-            }
-            var lineCount = model.getLineCount();
-            if (searchStart.lineNumber !== lineCount || searchStart.column !== model.getLineMaxColumn(lineCount)) {
-                // Try again with all content
-                return this._doFindPreviousMatchMultiline(model, new position_1.Position(lineCount, model.getLineMaxColumn(lineCount)), searchRegex, captureMatches);
-            }
-            return null;
-        };
-        TextModelSearch._doFindPreviousMatchLineByLine = function (model, searchStart, searchRegex, captureMatches) {
-            var lineCount = model.getLineCount();
-            var startLineNumber = searchStart.lineNumber;
-            // Look in first line
-            var text = model.getLineContent(startLineNumber).substring(0, searchStart.column - 1);
-            var r = this._findLastMatchInLine(searchRegex, text, startLineNumber, captureMatches);
-            if (r) {
-                return r;
-            }
-            for (var i = 1; i <= lineCount; i++) {
-                var lineIndex = (lineCount + startLineNumber - i - 1) % lineCount;
-                var text_4 = model.getLineContent(lineIndex + 1);
-                var r_2 = this._findLastMatchInLine(searchRegex, text_4, lineIndex + 1, captureMatches);
-                if (r_2) {
-                    return r_2;
-                }
-            }
-            return null;
-        };
-        TextModelSearch._findLastMatchInLine = function (searchRegex, text, lineNumber, captureMatches) {
-            var bestResult = null;
-            var m;
-            while ((m = searchRegex.exec(text))) {
-                var result = new range_1.Range(lineNumber, m.index + 1, lineNumber, m.index + 1 + m[0].length);
-                if (bestResult && result.equalsRange(bestResult.range)) {
-                    break;
-                }
-                bestResult = createFindMatch(result, m, captureMatches);
-                if (m.index + m[0].length === text.length) {
-                    // Reached the end of the line
-                    break;
-                }
-            }
-            return bestResult;
-        };
-        return TextModelSearch;
-    }());
-    exports.TextModelSearch = TextModelSearch;
-});
-
-
-
-
-
-
-define(__m[72/*vs/editor/common/model/textModel*/], __M([0/*require*/,1/*exports*/,30/*vs/base/common/eventEmitter*/,8/*vs/base/common/strings*/,21/*vs/editor/common/core/position*/,35/*vs/editor/common/core/range*/,23/*vs/editor/common/editorCommon*/,47/*vs/editor/common/model/modelLine*/,43/*vs/editor/common/model/indentationGuesser*/,60/*vs/editor/common/config/defaultConfig*/,28/*vs/editor/common/viewModel/prefixSumComputer*/,42/*vs/editor/common/model/indentRanges*/,71/*vs/editor/common/model/textModelSearch*/]), function (require, exports, eventEmitter_1, strings, position_1, range_1, editorCommon, modelLine_1, indentationGuesser_1, defaultConfig_1, prefixSumComputer_1, indentRanges_1, textModelSearch_1) {
-    /*---------------------------------------------------------------------------------------------
-     *  Copyright (c) Microsoft Corporation. All rights reserved.
-     *  Licensed under the MIT License. See License.txt in the project root for license information.
-     *--------------------------------------------------------------------------------------------*/
-    'use strict';
-    var LIMIT_FIND_COUNT = 999;
-    exports.LONG_LINE_BOUNDARY = 1000;
-    var TextModel = (function (_super) {
-        __extends(TextModel, _super);
-        function TextModel(allowedEventTypes, rawText) {
-            var _this = this;
-            allowedEventTypes.push(editorCommon.EventType.ModelRawContentChanged, editorCommon.EventType.ModelOptionsChanged, editorCommon.EventType.ModelContentChanged2);
-            _this = _super.call(this, allowedEventTypes) || this;
-            _this._shouldSimplifyMode = (rawText.length > TextModel.MODEL_SYNC_LIMIT);
-            _this._shouldDenyMode = (rawText.length > TextModel.MODEL_TOKENIZATION_LIMIT);
-            _this._options = new editorCommon.TextModelResolvedOptions(rawText.options);
-            _this._constructLines(rawText);
-            _this._setVersionId(1);
-            _this._isDisposed = false;
-            _this._isDisposing = false;
-            return _this;
-        }
-        TextModel.prototype._assertNotDisposed = function () {
-            if (this._isDisposed) {
-                throw new Error('Model is disposed!');
-            }
-        };
-        TextModel.prototype.isTooLargeForHavingAMode = function () {
-            this._assertNotDisposed();
-            return this._shouldDenyMode;
-        };
-        TextModel.prototype.isTooLargeForHavingARichMode = function () {
-            this._assertNotDisposed();
-            return this._shouldSimplifyMode;
-        };
-        TextModel.prototype.getOptions = function () {
-            this._assertNotDisposed();
-            return this._options;
-        };
-        TextModel.prototype.updateOptions = function (_newOpts) {
-            this._assertNotDisposed();
-            var tabSize = (typeof _newOpts.tabSize !== 'undefined') ? _newOpts.tabSize : this._options.tabSize;
-            var insertSpaces = (typeof _newOpts.insertSpaces !== 'undefined') ? _newOpts.insertSpaces : this._options.insertSpaces;
-            var trimAutoWhitespace = (typeof _newOpts.trimAutoWhitespace !== 'undefined') ? _newOpts.trimAutoWhitespace : this._options.trimAutoWhitespace;
-            var newOpts = new editorCommon.TextModelResolvedOptions({
-                tabSize: tabSize,
-                insertSpaces: insertSpaces,
-                defaultEOL: this._options.defaultEOL,
-                trimAutoWhitespace: trimAutoWhitespace
-            });
-            if (this._options.equals(newOpts)) {
-                return;
-            }
-            var e = this._options.createChangeEvent(newOpts);
-            this._options = newOpts;
-            if (e.tabSize) {
-                var newTabSize = this._options.tabSize;
-                for (var i = 0, len = this._lines.length; i < len; i++) {
-                    this._lines[i].updateTabSize(newTabSize);
-                }
-            }
-            this.emit(editorCommon.EventType.ModelOptionsChanged, e);
-        };
-        TextModel.prototype.detectIndentation = function (defaultInsertSpaces, defaultTabSize) {
-            this._assertNotDisposed();
-            var lines = this._lines.map(function (line) { return line.text; });
-            var guessedIndentation = indentationGuesser_1.guessIndentation(lines, defaultTabSize, defaultInsertSpaces);
-            this.updateOptions({
-                insertSpaces: guessedIndentation.insertSpaces,
-                tabSize: guessedIndentation.tabSize
-            });
-        };
-        TextModel._normalizeIndentationFromWhitespace = function (str, tabSize, insertSpaces) {
-            var spacesCnt = 0;
-            for (var i = 0; i < str.length; i++) {
-                if (str.charAt(i) === '\t') {
-                    spacesCnt += tabSize;
-                }
-                else {
-                    spacesCnt++;
-                }
-            }
-            var result = '';
-            if (!insertSpaces) {
-                var tabsCnt = Math.floor(spacesCnt / tabSize);
-                spacesCnt = spacesCnt % tabSize;
-                for (var i = 0; i < tabsCnt; i++) {
-                    result += '\t';
-                }
-            }
-            for (var i = 0; i < spacesCnt; i++) {
-                result += ' ';
-            }
-            return result;
-        };
-        TextModel.normalizeIndentation = function (str, tabSize, insertSpaces) {
-            var firstNonWhitespaceIndex = strings.firstNonWhitespaceIndex(str);
-            if (firstNonWhitespaceIndex === -1) {
-                firstNonWhitespaceIndex = str.length;
-            }
-            return TextModel._normalizeIndentationFromWhitespace(str.substring(0, firstNonWhitespaceIndex), tabSize, insertSpaces) + str.substring(firstNonWhitespaceIndex);
-        };
-        TextModel.prototype.normalizeIndentation = function (str) {
-            this._assertNotDisposed();
-            return TextModel.normalizeIndentation(str, this._options.tabSize, this._options.insertSpaces);
-        };
-        TextModel.prototype.getOneIndent = function () {
-            this._assertNotDisposed();
-            var tabSize = this._options.tabSize;
-            var insertSpaces = this._options.insertSpaces;
-            if (insertSpaces) {
-                var result = '';
-                for (var i = 0; i < tabSize; i++) {
-                    result += ' ';
-                }
-                return result;
-            }
-            else {
-                return '\t';
-            }
-        };
-        TextModel.prototype.getVersionId = function () {
-            this._assertNotDisposed();
-            return this._versionId;
-        };
-        TextModel.prototype.mightContainRTL = function () {
-            return this._mightContainRTL;
-        };
-        TextModel.prototype.mightContainNonBasicASCII = function () {
-            return this._mightContainNonBasicASCII;
-        };
-        TextModel.prototype.getAlternativeVersionId = function () {
-            this._assertNotDisposed();
-            return this._alternativeVersionId;
-        };
-        TextModel.prototype._ensureLineStarts = function () {
-            if (!this._lineStarts) {
-                var eolLength = this._EOL.length;
-                var linesLength = this._lines.length;
-                var lineStartValues = new Uint32Array(linesLength);
-                for (var i = 0; i < linesLength; i++) {
-                    lineStartValues[i] = this._lines[i].text.length + eolLength;
-                }
-                this._lineStarts = new prefixSumComputer_1.PrefixSumComputer(lineStartValues);
-            }
-        };
-        TextModel.prototype.getOffsetAt = function (rawPosition) {
-            this._assertNotDisposed();
-            var position = this._validatePosition(rawPosition.lineNumber, rawPosition.column, false);
-            this._ensureLineStarts();
-            return this._lineStarts.getAccumulatedValue(position.lineNumber - 2) + position.column - 1;
-        };
-        TextModel.prototype.getPositionAt = function (offset) {
-            this._assertNotDisposed();
-            offset = Math.floor(offset);
-            offset = Math.max(0, offset);
-            this._ensureLineStarts();
-            var out = this._lineStarts.getIndexOf(offset);
-            var lineLength = this._lines[out.index].text.length;
-            // Ensure we return a valid position
-            return new position_1.Position(out.index + 1, Math.min(out.remainder + 1, lineLength + 1));
-        };
-        TextModel.prototype._increaseVersionId = function () {
-            this._setVersionId(this._versionId + 1);
-        };
-        TextModel.prototype._setVersionId = function (newVersionId) {
-            this._versionId = newVersionId;
-            this._alternativeVersionId = this._versionId;
-        };
-        TextModel.prototype._overwriteAlternativeVersionId = function (newAlternativeVersionId) {
-            this._alternativeVersionId = newAlternativeVersionId;
-        };
-        TextModel.prototype.isDisposed = function () {
-            return this._isDisposed;
-        };
-        TextModel.prototype.dispose = function () {
-            this._isDisposed = true;
-            // Null out members, such that any use of a disposed model will throw exceptions sooner rather than later
-            this._lines = null;
-            this._EOL = null;
-            this._BOM = null;
-            _super.prototype.dispose.call(this);
-        };
-        TextModel.prototype._createContentChangedFlushEvent = function () {
-            return {
-                changeType: editorCommon.EventType.ModelRawContentChangedFlush,
-                detail: this.toRawText(),
-                versionId: this._versionId,
-                // TODO@Alex -> remove these fields from here
-                isUndoing: false,
-                isRedoing: false
-            };
-        };
-        TextModel.prototype._emitContentChanged2 = function (startLineNumber, startColumn, endLineNumber, endColumn, rangeLength, text, isUndoing, isRedoing) {
-            var e = {
-                range: new range_1.Range(startLineNumber, startColumn, endLineNumber, endColumn),
-                rangeLength: rangeLength,
-                text: text,
-                eol: this._EOL,
-                versionId: this.getVersionId(),
-                isUndoing: isUndoing,
-                isRedoing: isRedoing
-            };
-            if (!this._isDisposing) {
-                this.emit(editorCommon.EventType.ModelContentChanged2, e);
-            }
-        };
-        TextModel.prototype._resetValue = function (newValue) {
-            this._constructLines(newValue);
-            this._increaseVersionId();
-        };
-        TextModel.prototype.toRawText = function () {
-            this._assertNotDisposed();
-            return {
-                BOM: this._BOM,
-                EOL: this._EOL,
-                lines: this.getLinesContent(),
-                length: this.getValueLength(),
-                containsRTL: this._mightContainRTL,
-                isBasicASCII: !this._mightContainNonBasicASCII,
-                options: this._options
-            };
-        };
-        TextModel.prototype.equals = function (other) {
-            this._assertNotDisposed();
-            if (this._BOM !== other.BOM) {
-                return false;
-            }
-            if (this._EOL !== other.EOL) {
-                return false;
-            }
-            if (this._lines.length !== other.lines.length) {
-                return false;
-            }
-            for (var i = 0, len = this._lines.length; i < len; i++) {
-                if (this._lines[i].text !== other.lines[i]) {
-                    return false;
-                }
-            }
-            return true;
-        };
-        TextModel.prototype.setValue = function (value) {
-            this._assertNotDisposed();
-            if (value === null) {
-                // There's nothing to do
-                return;
-            }
-            var rawText = null;
-            rawText = TextModel.toRawText(value, {
-                tabSize: this._options.tabSize,
-                insertSpaces: this._options.insertSpaces,
-                trimAutoWhitespace: this._options.trimAutoWhitespace,
-                detectIndentation: false,
-                defaultEOL: this._options.defaultEOL
-            });
-            this.setValueFromRawText(rawText);
-        };
-        TextModel.prototype.setValueFromRawText = function (newValue) {
-            this._assertNotDisposed();
-            if (newValue === null) {
-                // There's nothing to do
-                return;
-            }
-            var oldFullModelRange = this.getFullModelRange();
-            var oldModelValueLength = this.getValueLengthInRange(oldFullModelRange);
-            var endLineNumber = this.getLineCount();
-            var endColumn = this.getLineMaxColumn(endLineNumber);
-            this._resetValue(newValue);
-            this._emitModelContentChangedFlushEvent(this._createContentChangedFlushEvent());
-            this._emitContentChanged2(1, 1, endLineNumber, endColumn, oldModelValueLength, this.getValue(), false, false);
-        };
-        TextModel.prototype.getValue = function (eol, preserveBOM) {
-            if (preserveBOM === void 0) { preserveBOM = false; }
-            this._assertNotDisposed();
-            var fullModelRange = this.getFullModelRange();
-            var fullModelValue = this.getValueInRange(fullModelRange, eol);
-            if (preserveBOM) {
-                return this._BOM + fullModelValue;
-            }
-            return fullModelValue;
-        };
-        TextModel.prototype.getValueLength = function (eol, preserveBOM) {
-            if (preserveBOM === void 0) { preserveBOM = false; }
-            this._assertNotDisposed();
-            var fullModelRange = this.getFullModelRange();
-            var fullModelValue = this.getValueLengthInRange(fullModelRange, eol);
-            if (preserveBOM) {
-                return this._BOM.length + fullModelValue;
-            }
-            return fullModelValue;
-        };
-        TextModel.prototype.getEmptiedValueInRange = function (rawRange, fillCharacter, eol) {
-            if (fillCharacter === void 0) { fillCharacter = ''; }
-            if (eol === void 0) { eol = editorCommon.EndOfLinePreference.TextDefined; }
-            this._assertNotDisposed();
-            var range = this.validateRange(rawRange);
-            if (range.isEmpty()) {
-                return '';
-            }
-            if (range.startLineNumber === range.endLineNumber) {
-                return this._repeatCharacter(fillCharacter, range.endColumn - range.startColumn);
-            }
-            var lineEnding = this._getEndOfLine(eol), startLineIndex = range.startLineNumber - 1, endLineIndex = range.endLineNumber - 1, resultLines = [];
-            resultLines.push(this._repeatCharacter(fillCharacter, this._lines[startLineIndex].text.length - range.startColumn + 1));
-            for (var i = startLineIndex + 1; i < endLineIndex; i++) {
-                resultLines.push(this._repeatCharacter(fillCharacter, this._lines[i].text.length));
-            }
-            resultLines.push(this._repeatCharacter(fillCharacter, range.endColumn - 1));
-            return resultLines.join(lineEnding);
-        };
-        TextModel.prototype._repeatCharacter = function (fillCharacter, count) {
-            var r = '';
-            for (var i = 0; i < count; i++) {
-                r += fillCharacter;
-            }
-            return r;
-        };
-        TextModel.prototype.getValueInRange = function (rawRange, eol) {
-            if (eol === void 0) { eol = editorCommon.EndOfLinePreference.TextDefined; }
-            this._assertNotDisposed();
-            var range = this.validateRange(rawRange);
-            if (range.isEmpty()) {
-                return '';
-            }
-            if (range.startLineNumber === range.endLineNumber) {
-                return this._lines[range.startLineNumber - 1].text.substring(range.startColumn - 1, range.endColumn - 1);
-            }
-            var lineEnding = this._getEndOfLine(eol), startLineIndex = range.startLineNumber - 1, endLineIndex = range.endLineNumber - 1, resultLines = [];
-            resultLines.push(this._lines[startLineIndex].text.substring(range.startColumn - 1));
-            for (var i = startLineIndex + 1; i < endLineIndex; i++) {
-                resultLines.push(this._lines[i].text);
-            }
-            resultLines.push(this._lines[endLineIndex].text.substring(0, range.endColumn - 1));
-            return resultLines.join(lineEnding);
-        };
-        TextModel.prototype.getValueLengthInRange = function (rawRange, eol) {
-            if (eol === void 0) { eol = editorCommon.EndOfLinePreference.TextDefined; }
-            this._assertNotDisposed();
-            var range = this.validateRange(rawRange);
-            if (range.isEmpty()) {
-                return 0;
-            }
-            if (range.startLineNumber === range.endLineNumber) {
-                return (range.endColumn - range.startColumn);
-            }
-            var startOffset = this.getOffsetAt(new position_1.Position(range.startLineNumber, range.startColumn));
-            var endOffset = this.getOffsetAt(new position_1.Position(range.endLineNumber, range.endColumn));
-            return endOffset - startOffset;
-        };
-        TextModel.prototype.isDominatedByLongLines = function () {
-            this._assertNotDisposed();
-            var smallLineCharCount = 0, longLineCharCount = 0, i, len, lines = this._lines, lineLength;
-            for (i = 0, len = this._lines.length; i < len; i++) {
-                lineLength = lines[i].text.length;
-                if (lineLength >= exports.LONG_LINE_BOUNDARY) {
-                    longLineCharCount += lineLength;
-                }
-                else {
-                    smallLineCharCount += lineLength;
-                }
-            }
-            return (longLineCharCount > smallLineCharCount);
-        };
-        TextModel.prototype.getLineCount = function () {
-            this._assertNotDisposed();
-            return this._lines.length;
-        };
-        TextModel.prototype.getLineContent = function (lineNumber) {
-            this._assertNotDisposed();
-            if (lineNumber < 1 || lineNumber > this.getLineCount()) {
-                throw new Error('Illegal value ' + lineNumber + ' for `lineNumber`');
-            }
-            return this._lines[lineNumber - 1].text;
-        };
-        TextModel.prototype.getIndentLevel = function (lineNumber) {
-            this._assertNotDisposed();
-            if (lineNumber < 1 || lineNumber > this.getLineCount()) {
-                throw new Error('Illegal value ' + lineNumber + ' for `lineNumber`');
-            }
-            return this._lines[lineNumber - 1].getIndentLevel();
-        };
-        TextModel.prototype._resetIndentRanges = function () {
-            this._indentRanges = null;
-        };
-        TextModel.prototype._getIndentRanges = function () {
-            if (!this._indentRanges) {
-                this._indentRanges = indentRanges_1.computeRanges(this);
-            }
-            return this._indentRanges;
-        };
-        TextModel.prototype.getIndentRanges = function () {
-            this._assertNotDisposed();
-            var indentRanges = this._getIndentRanges();
-            return indentRanges_1.IndentRange.deepCloneArr(indentRanges);
-        };
-        TextModel.prototype._toValidLineIndentGuide = function (lineNumber, indentGuide) {
-            var lineIndentLevel = this._lines[lineNumber - 1].getIndentLevel();
-            if (lineIndentLevel === -1) {
-                return indentGuide;
-            }
-            var maxIndentGuide = Math.ceil(lineIndentLevel / this._options.tabSize);
-            return Math.min(maxIndentGuide, indentGuide);
-        };
-        TextModel.prototype.getLineIndentGuide = function (lineNumber) {
-            this._assertNotDisposed();
-            if (lineNumber < 1 || lineNumber > this.getLineCount()) {
-                throw new Error('Illegal value ' + lineNumber + ' for `lineNumber`');
-            }
-            var indentRanges = this._getIndentRanges();
-            for (var i = indentRanges.length - 1; i >= 0; i--) {
-                var rng = indentRanges[i];
-                if (rng.startLineNumber === lineNumber) {
-                    return this._toValidLineIndentGuide(lineNumber, Math.ceil(rng.indent / this._options.tabSize));
-                }
-                if (rng.startLineNumber < lineNumber && lineNumber <= rng.endLineNumber) {
-                    return this._toValidLineIndentGuide(lineNumber, 1 + Math.floor(rng.indent / this._options.tabSize));
-                }
-                if (rng.endLineNumber + 1 === lineNumber) {
-                    var bestIndent = rng.indent;
-                    while (i > 0) {
-                        i--;
-                        rng = indentRanges[i];
-                        if (rng.endLineNumber + 1 === lineNumber) {
-                            bestIndent = rng.indent;
-                        }
-                    }
-                    return this._toValidLineIndentGuide(lineNumber, Math.ceil(bestIndent / this._options.tabSize));
-                }
-            }
-            return 0;
-        };
-        TextModel.prototype.getLinesContent = function () {
-            this._assertNotDisposed();
-            var r = [];
-            for (var i = 0, len = this._lines.length; i < len; i++) {
-                r[i] = this._lines[i].text;
-            }
-            return r;
-        };
-        TextModel.prototype.getEOL = function () {
-            this._assertNotDisposed();
-            return this._EOL;
-        };
-        TextModel.prototype.setEOL = function (eol) {
-            this._assertNotDisposed();
-            var newEOL = (eol === editorCommon.EndOfLineSequence.CRLF ? '\r\n' : '\n');
-            if (this._EOL === newEOL) {
-                // Nothing to do
-                return;
-            }
-            var oldFullModelRange = this.getFullModelRange();
-            var oldModelValueLength = this.getValueLengthInRange(oldFullModelRange);
-            var endLineNumber = this.getLineCount();
-            var endColumn = this.getLineMaxColumn(endLineNumber);
-            this._EOL = newEOL;
-            this._lineStarts = null;
-            this._increaseVersionId();
-            this._emitModelContentChangedFlushEvent(this._createContentChangedFlushEvent());
-            this._emitContentChanged2(1, 1, endLineNumber, endColumn, oldModelValueLength, this.getValue(), false, false);
-        };
-        TextModel.prototype.getLineMinColumn = function (lineNumber) {
-            this._assertNotDisposed();
-            return 1;
-        };
-        TextModel.prototype.getLineMaxColumn = function (lineNumber) {
-            this._assertNotDisposed();
-            if (lineNumber < 1 || lineNumber > this.getLineCount()) {
-                throw new Error('Illegal value ' + lineNumber + ' for `lineNumber`');
-            }
-            return this._lines[lineNumber - 1].text.length + 1;
-        };
-        TextModel.prototype.getLineFirstNonWhitespaceColumn = function (lineNumber) {
-            this._assertNotDisposed();
-            if (lineNumber < 1 || lineNumber > this.getLineCount()) {
-                throw new Error('Illegal value ' + lineNumber + ' for `lineNumber`');
-            }
-            var result = strings.firstNonWhitespaceIndex(this._lines[lineNumber - 1].text);
-            if (result === -1) {
-                return 0;
-            }
-            return result + 1;
-        };
-        TextModel.prototype.getLineLastNonWhitespaceColumn = function (lineNumber) {
-            this._assertNotDisposed();
-            if (lineNumber < 1 || lineNumber > this.getLineCount()) {
-                throw new Error('Illegal value ' + lineNumber + ' for `lineNumber`');
-            }
-            var result = strings.lastNonWhitespaceIndex(this._lines[lineNumber - 1].text);
-            if (result === -1) {
-                return 0;
-            }
-            return result + 2;
-        };
-        TextModel.prototype.validateLineNumber = function (lineNumber) {
-            this._assertNotDisposed();
-            if (lineNumber < 1) {
-                lineNumber = 1;
-            }
-            if (lineNumber > this._lines.length) {
-                lineNumber = this._lines.length;
-            }
-            return lineNumber;
-        };
-        /**
-         * @param strict Do NOT allow a position inside a high-low surrogate pair
-         */
-        TextModel.prototype._validatePosition = function (_lineNumber, _column, strict) {
-            var lineNumber = Math.floor(typeof _lineNumber === 'number' ? _lineNumber : 1);
-            var column = Math.floor(typeof _column === 'number' ? _column : 1);
-            if (lineNumber < 1) {
-                return new position_1.Position(1, 1);
-            }
-            if (lineNumber > this._lines.length) {
-                return new position_1.Position(this._lines.length, this.getLineMaxColumn(this._lines.length));
-            }
-            if (column <= 1) {
-                return new position_1.Position(lineNumber, 1);
-            }
-            var maxColumn = this.getLineMaxColumn(lineNumber);
-            if (column >= maxColumn) {
-                return new position_1.Position(lineNumber, maxColumn);
-            }
-            if (strict) {
-                // If the position would end up in the middle of a high-low surrogate pair,
-                // we move it to before the pair
-                // !!At this point, column > 1
-                var charCodeBefore = this._lines[lineNumber - 1].text.charCodeAt(column - 2);
-                if (strings.isHighSurrogate(charCodeBefore)) {
-                    return new position_1.Position(lineNumber, column - 1);
-                }
-            }
-            return new position_1.Position(lineNumber, column);
-        };
-        TextModel.prototype.validatePosition = function (position) {
-            this._assertNotDisposed();
-            return this._validatePosition(position.lineNumber, position.column, true);
-        };
-        TextModel.prototype.validateRange = function (_range) {
-            this._assertNotDisposed();
-            var start = this._validatePosition(_range.startLineNumber, _range.startColumn, false);
-            var end = this._validatePosition(_range.endLineNumber, _range.endColumn, false);
-            var startLineNumber = start.lineNumber;
-            var startColumn = start.column;
-            var endLineNumber = end.lineNumber;
-            var endColumn = end.column;
-            var startLineText = this._lines[startLineNumber - 1].text;
-            var endLineText = this._lines[endLineNumber - 1].text;
-            var charCodeBeforeStart = (startColumn > 1 ? startLineText.charCodeAt(startColumn - 2) : 0);
-            var charCodeBeforeEnd = (endColumn > 1 && endColumn <= endLineText.length ? endLineText.charCodeAt(endColumn - 2) : 0);
-            var startInsideSurrogatePair = strings.isHighSurrogate(charCodeBeforeStart);
-            var endInsideSurrogatePair = strings.isHighSurrogate(charCodeBeforeEnd);
-            if (!startInsideSurrogatePair && !endInsideSurrogatePair) {
-                return new range_1.Range(startLineNumber, startColumn, endLineNumber, endColumn);
-            }
-            if (startLineNumber === endLineNumber && startColumn === endColumn) {
-                // do not expand a collapsed range, simply move it to a valid location
-                return new range_1.Range(startLineNumber, startColumn - 1, endLineNumber, endColumn - 1);
-            }
-            if (startInsideSurrogatePair && endInsideSurrogatePair) {
-                // expand range at both ends
-                return new range_1.Range(startLineNumber, startColumn - 1, endLineNumber, endColumn + 1);
-            }
-            if (startInsideSurrogatePair) {
-                // only expand range at the start
-                return new range_1.Range(startLineNumber, startColumn - 1, endLineNumber, endColumn);
-            }
-            // only expand range at the end
-            return new range_1.Range(startLineNumber, startColumn, endLineNumber, endColumn + 1);
-        };
-        TextModel.prototype.modifyPosition = function (rawPosition, offset) {
-            this._assertNotDisposed();
-            return this.getPositionAt(this.getOffsetAt(rawPosition) + offset);
-        };
-        TextModel.prototype.getFullModelRange = function () {
-            this._assertNotDisposed();
-            var lineCount = this.getLineCount();
-            return new range_1.Range(1, 1, lineCount, this.getLineMaxColumn(lineCount));
-        };
-        TextModel.prototype._emitModelContentChangedFlushEvent = function (e) {
-            if (!this._isDisposing) {
-                this.emit(editorCommon.EventType.ModelRawContentChanged, e);
-            }
-        };
-        TextModel.toTextSource = function (rawText) {
+        RawTextSource.fromString = function (rawText) {
             // Count the number of lines that end with \r\n
             var carriageReturnCnt = 0;
             var lastCarriageReturnIndex = -1;
@@ -15727,173 +13066,55 @@ define(__m[72/*vs/editor/common/model/textModel*/], __M([0/*require*/,1/*exports
                 totalCRCount: carriageReturnCnt
             };
         };
+        return RawTextSource;
+    }());
+    exports.RawTextSource = RawTextSource;
+    var TextSource = (function () {
+        function TextSource() {
+        }
         /**
          * if text source is empty or with precisely one line, returns null. No end of line is detected.
          * if text source contains more lines ending with '\r\n', returns '\r\n'.
          * Otherwise returns '\n'. More lines end with '\n'.
          */
-        TextModel.getEndOfLine = function (textSource) {
-            var lineFeedCnt = textSource.lines.length - 1;
+        TextSource._getEOL = function (rawTextSource, defaultEOL) {
+            var lineFeedCnt = rawTextSource.lines.length - 1;
             if (lineFeedCnt === 0) {
                 // This is an empty file or a file with precisely one line
-                return null;
+                return (defaultEOL === editorCommon_1.DefaultEndOfLine.LF ? '\n' : '\r\n');
             }
-            if (textSource.totalCRCount > lineFeedCnt / 2) {
+            if (rawTextSource.totalCRCount > lineFeedCnt / 2) {
                 // More than half of the file contains \r\n ending lines
                 return '\r\n';
             }
             // At least one line more ends in \n
             return '\n';
         };
-        TextModel.toRawText = function (rawText, opts) {
-            var textSource = TextModel.toTextSource(rawText);
-            return TextModel.toRawTextFromTextSource(textSource, opts);
-        };
-        TextModel.toRawTextFromTextSource = function (textSource, opts) {
-            var EOL = TextModel.getEndOfLine(textSource);
-            if (!EOL) {
-                // This is an empty file or a file with precisely one line
-                EOL = (opts.defaultEOL === editorCommon.DefaultEndOfLine.LF ? '\n' : '\r\n');
-            }
-            var resolvedOpts;
-            if (opts.detectIndentation) {
-                var guessedIndentation = indentationGuesser_1.guessIndentation(textSource.lines, opts.tabSize, opts.insertSpaces);
-                resolvedOpts = new editorCommon.TextModelResolvedOptions({
-                    tabSize: guessedIndentation.tabSize,
-                    insertSpaces: guessedIndentation.insertSpaces,
-                    trimAutoWhitespace: opts.trimAutoWhitespace,
-                    defaultEOL: opts.defaultEOL
-                });
-            }
-            else {
-                resolvedOpts = new editorCommon.TextModelResolvedOptions({
-                    tabSize: opts.tabSize,
-                    insertSpaces: opts.insertSpaces,
-                    trimAutoWhitespace: opts.trimAutoWhitespace,
-                    defaultEOL: opts.defaultEOL
-                });
-            }
+        TextSource.fromRawTextSource = function (rawTextSource, defaultEOL) {
             return {
-                BOM: textSource.BOM,
-                EOL: EOL,
-                lines: textSource.lines,
-                length: textSource.length,
-                containsRTL: textSource.containsRTL,
-                isBasicASCII: textSource.isBasicASCII,
-                options: resolvedOpts
+                length: rawTextSource.length,
+                lines: rawTextSource.lines,
+                BOM: rawTextSource.BOM,
+                EOL: this._getEOL(rawTextSource, defaultEOL),
+                containsRTL: rawTextSource.containsRTL,
+                isBasicASCII: rawTextSource.isBasicASCII,
             };
         };
-        TextModel.prototype._constructLines = function (rawText) {
-            var tabSize = this._options.tabSize;
-            var rawLines = rawText.lines;
-            var modelLines = [];
-            for (var i = 0, len = rawLines.length; i < len; i++) {
-                modelLines[i] = new modelLine_1.ModelLine(i + 1, rawLines[i], tabSize);
+        TextSource.fromString = function (text, defaultEOL) {
+            return this.fromRawTextSource(RawTextSource.fromString(text), defaultEOL);
+        };
+        TextSource.create = function (source, defaultEOL) {
+            if (typeof source === 'string') {
+                return this.fromString(source, defaultEOL);
             }
-            this._BOM = rawText.BOM;
-            this._mightContainRTL = rawText.containsRTL;
-            this._mightContainNonBasicASCII = !rawText.isBasicASCII;
-            this._EOL = rawText.EOL;
-            this._lines = modelLines;
-            this._lineStarts = null;
-            this._resetIndentRanges();
+            return this.fromRawTextSource(source, defaultEOL);
         };
-        TextModel.prototype._getEndOfLine = function (eol) {
-            switch (eol) {
-                case editorCommon.EndOfLinePreference.LF:
-                    return '\n';
-                case editorCommon.EndOfLinePreference.CRLF:
-                    return '\r\n';
-                case editorCommon.EndOfLinePreference.TextDefined:
-                    return this.getEOL();
-            }
-            throw new Error('Unknown EOL preference');
-        };
-        TextModel.prototype.findMatches = function (searchString, rawSearchScope, isRegex, matchCase, wholeWord, captureMatches, limitResultCount) {
-            if (limitResultCount === void 0) { limitResultCount = LIMIT_FIND_COUNT; }
-            this._assertNotDisposed();
-            var searchRange;
-            if (range_1.Range.isIRange(rawSearchScope)) {
-                searchRange = this.validateRange(rawSearchScope);
-            }
-            else {
-                searchRange = this.getFullModelRange();
-            }
-            return textModelSearch_1.TextModelSearch.findMatches(this, new textModelSearch_1.SearchParams(searchString, isRegex, matchCase, wholeWord), searchRange, captureMatches, limitResultCount);
-        };
-        TextModel.prototype.findNextMatch = function (searchString, rawSearchStart, isRegex, matchCase, wholeWord, captureMatches) {
-            this._assertNotDisposed();
-            var searchStart = this.validatePosition(rawSearchStart);
-            return textModelSearch_1.TextModelSearch.findNextMatch(this, new textModelSearch_1.SearchParams(searchString, isRegex, matchCase, wholeWord), searchStart, captureMatches);
-        };
-        TextModel.prototype.findPreviousMatch = function (searchString, rawSearchStart, isRegex, matchCase, wholeWord, captureMatches) {
-            this._assertNotDisposed();
-            var searchStart = this.validatePosition(rawSearchStart);
-            return textModelSearch_1.TextModelSearch.findPreviousMatch(this, new textModelSearch_1.SearchParams(searchString, isRegex, matchCase, wholeWord), searchStart, captureMatches);
-        };
-        return TextModel;
-    }(eventEmitter_1.OrderGuaranteeEventEmitter));
-    TextModel.MODEL_SYNC_LIMIT = 5 * 1024 * 1024; // 5 MB
-    TextModel.MODEL_TOKENIZATION_LIMIT = 20 * 1024 * 1024; // 20 MB
-    TextModel.DEFAULT_CREATION_OPTIONS = {
-        tabSize: defaultConfig_1.DEFAULT_INDENTATION.tabSize,
-        insertSpaces: defaultConfig_1.DEFAULT_INDENTATION.insertSpaces,
-        detectIndentation: false,
-        defaultEOL: editorCommon.DefaultEndOfLine.LF,
-        trimAutoWhitespace: defaultConfig_1.DEFAULT_TRIM_AUTO_WHITESPACE,
-    };
-    exports.TextModel = TextModel;
-    var RawText = (function () {
-        function RawText() {
-        }
-        RawText.toRawText = function (textSourceOrString, opts) {
-            if (typeof textSourceOrString === 'string') {
-                return RawText.fromString(textSourceOrString, opts);
-            }
-            else {
-                return RawText.fromTextSource(textSourceOrString, opts);
-            }
-        };
-        RawText.toRawTextWithModelOptions = function (textSourceOrString, model) {
-            if (typeof textSourceOrString === 'string') {
-                return RawText.fromStringWithModelOptions(textSourceOrString, model);
-            }
-            else {
-                return RawText.fromTextSourceWithModelOptions(textSourceOrString, model);
-            }
-        };
-        RawText.fromString = function (rawText, opts) {
-            return TextModel.toRawText(rawText, opts);
-        };
-        RawText.fromTextSource = function (textSource, opts) {
-            return TextModel.toRawTextFromTextSource(textSource, opts);
-        };
-        RawText.fromStringWithModelOptions = function (rawText, model) {
-            var opts = model.getOptions();
-            return TextModel.toRawText(rawText, {
-                tabSize: opts.tabSize,
-                insertSpaces: opts.insertSpaces,
-                trimAutoWhitespace: opts.trimAutoWhitespace,
-                detectIndentation: false,
-                defaultEOL: opts.defaultEOL
-            });
-        };
-        RawText.fromTextSourceWithModelOptions = function (textSource, model) {
-            var opts = model.getOptions();
-            return TextModel.toRawTextFromTextSource(textSource, {
-                tabSize: opts.tabSize,
-                insertSpaces: opts.insertSpaces,
-                trimAutoWhitespace: opts.trimAutoWhitespace,
-                detectIndentation: false,
-                defaultEOL: opts.defaultEOL
-            });
-        };
-        return RawText;
+        return TextSource;
     }());
-    exports.RawText = RawText;
+    exports.TextSource = TextSource;
 });
 
-define(__m[73/*vs/platform/editor/common/editor*/], __M([0/*require*/,1/*exports*/,11/*vs/platform/instantiation/common/instantiation*/]), function (require, exports, instantiation_1) {
+define(__m[66/*vs/platform/editor/common/editor*/], __M([1/*require*/,0/*exports*/,11/*vs/platform/instantiation/common/instantiation*/]), function (require, exports, instantiation_1) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -15918,9 +13139,15 @@ define(__m[73/*vs/platform/editor/common/editor*/], __M([0/*require*/,1/*exports
         Direction[Direction["LEFT"] = 0] = "LEFT";
         Direction[Direction["RIGHT"] = 1] = "RIGHT";
     })(Direction = exports.Direction || (exports.Direction = {}));
+    var Verbosity;
+    (function (Verbosity) {
+        Verbosity[Verbosity["SHORT"] = 0] = "SHORT";
+        Verbosity[Verbosity["MEDIUM"] = 1] = "MEDIUM";
+        Verbosity[Verbosity["LONG"] = 2] = "LONG";
+    })(Verbosity = exports.Verbosity || (exports.Verbosity = {}));
 });
 
-define(__m[74/*vs/platform/extensions/common/extensions*/], __M([0/*require*/,1/*exports*/,11/*vs/platform/instantiation/common/instantiation*/]), function (require, exports, instantiation_1) {
+define(__m[67/*vs/platform/extensions/common/extensions*/], __M([1/*require*/,0/*exports*/,11/*vs/platform/instantiation/common/instantiation*/]), function (require, exports, instantiation_1) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -15937,7 +13164,7 @@ define(__m[74/*vs/platform/extensions/common/extensions*/], __M([0/*require*/,1/
     exports.ExtensionPointContribution = ExtensionPointContribution;
 });
 
-define(__m[75/*vs/platform/extensions/common/abstractExtensionService*/], __M([0/*require*/,1/*exports*/,62/*vs/nls!vs/platform/extensions/common/abstractExtensionService*/,17/*vs/base/common/severity*/,3/*vs/base/common/winjs.base*/,74/*vs/platform/extensions/common/extensions*/]), function (require, exports, nls, severity_1, winjs_base_1, extensions_1) {
+define(__m[68/*vs/platform/extensions/common/abstractExtensionService*/], __M([1/*require*/,0/*exports*/,55/*vs/nls!vs/platform/extensions/common/abstractExtensionService*/,18/*vs/base/common/severity*/,2/*vs/base/common/winjs.base*/,67/*vs/platform/extensions/common/extensions*/]), function (require, exports, nls, severity_1, winjs_base_1, extensions_1) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -16173,11 +13400,479 @@ define(__m[75/*vs/platform/extensions/common/abstractExtensionService*/], __M([0
     exports.ExtensionDescriptionRegistry = ExtensionDescriptionRegistry;
 });
 
+
+
+
+
+
+define(__m[69/*vs/platform/files/common/files*/], __M([1/*require*/,0/*exports*/,20/*vs/base/common/paths*/,42/*vs/base/common/events*/,13/*vs/base/common/platform*/,11/*vs/platform/instantiation/common/instantiation*/,9/*vs/base/common/strings*/]), function (require, exports, paths, events, platform_1, instantiation_1, strings_1) {
+    /*---------------------------------------------------------------------------------------------
+     *  Copyright (c) Microsoft Corporation. All rights reserved.
+     *  Licensed under the MIT License. See License.txt in the project root for license information.
+     *--------------------------------------------------------------------------------------------*/
+    'use strict';
+    exports.IFileService = instantiation_1.createDecorator('fileService');
+    var FileOperation;
+    (function (FileOperation) {
+        FileOperation[FileOperation["CREATE"] = 0] = "CREATE";
+        FileOperation[FileOperation["DELETE"] = 1] = "DELETE";
+        FileOperation[FileOperation["MOVE"] = 2] = "MOVE";
+        FileOperation[FileOperation["COPY"] = 3] = "COPY";
+        FileOperation[FileOperation["IMPORT"] = 4] = "IMPORT";
+    })(FileOperation = exports.FileOperation || (exports.FileOperation = {}));
+    var FileOperationEvent = (function () {
+        function FileOperationEvent(_resource, _operation, _target) {
+            this._resource = _resource;
+            this._operation = _operation;
+            this._target = _target;
+        }
+        Object.defineProperty(FileOperationEvent.prototype, "resource", {
+            get: function () {
+                return this._resource;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(FileOperationEvent.prototype, "target", {
+            get: function () {
+                return this._target;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(FileOperationEvent.prototype, "operation", {
+            get: function () {
+                return this._operation;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        return FileOperationEvent;
+    }());
+    exports.FileOperationEvent = FileOperationEvent;
+    /**
+     * Possible changes that can occur to a file.
+     */
+    var FileChangeType;
+    (function (FileChangeType) {
+        FileChangeType[FileChangeType["UPDATED"] = 0] = "UPDATED";
+        FileChangeType[FileChangeType["ADDED"] = 1] = "ADDED";
+        FileChangeType[FileChangeType["DELETED"] = 2] = "DELETED";
+    })(FileChangeType = exports.FileChangeType || (exports.FileChangeType = {}));
+    var FileChangesEvent = (function (_super) {
+        __extends(FileChangesEvent, _super);
+        function FileChangesEvent(changes) {
+            var _this = _super.call(this) || this;
+            _this._changes = changes;
+            return _this;
+        }
+        Object.defineProperty(FileChangesEvent.prototype, "changes", {
+            get: function () {
+                return this._changes;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        /**
+         * Returns true if this change event contains the provided file with the given change type. In case of
+         * type DELETED, this method will also return true if a folder got deleted that is the parent of the
+         * provided file path.
+         */
+        FileChangesEvent.prototype.contains = function (resource, type) {
+            if (!resource) {
+                return false;
+            }
+            return this._changes.some(function (change) {
+                if (change.type !== type) {
+                    return false;
+                }
+                // For deleted also return true when deleted folder is parent of target path
+                if (type === FileChangeType.DELETED) {
+                    return isEqualOrParent(resource.fsPath, change.resource.fsPath, !platform_1.isLinux /* ignorecase */);
+                }
+                return isEqual(resource.fsPath, change.resource.fsPath, !platform_1.isLinux /* ignorecase */);
+            });
+        };
+        /**
+         * Returns the changes that describe added files.
+         */
+        FileChangesEvent.prototype.getAdded = function () {
+            return this.getOfType(FileChangeType.ADDED);
+        };
+        /**
+         * Returns if this event contains added files.
+         */
+        FileChangesEvent.prototype.gotAdded = function () {
+            return this.hasType(FileChangeType.ADDED);
+        };
+        /**
+         * Returns the changes that describe deleted files.
+         */
+        FileChangesEvent.prototype.getDeleted = function () {
+            return this.getOfType(FileChangeType.DELETED);
+        };
+        /**
+         * Returns if this event contains deleted files.
+         */
+        FileChangesEvent.prototype.gotDeleted = function () {
+            return this.hasType(FileChangeType.DELETED);
+        };
+        /**
+         * Returns the changes that describe updated files.
+         */
+        FileChangesEvent.prototype.getUpdated = function () {
+            return this.getOfType(FileChangeType.UPDATED);
+        };
+        /**
+         * Returns if this event contains updated files.
+         */
+        FileChangesEvent.prototype.gotUpdated = function () {
+            return this.hasType(FileChangeType.UPDATED);
+        };
+        FileChangesEvent.prototype.getOfType = function (type) {
+            return this._changes.filter(function (change) { return change.type === type; });
+        };
+        FileChangesEvent.prototype.hasType = function (type) {
+            return this._changes.some(function (change) {
+                return change.type === type;
+            });
+        };
+        return FileChangesEvent;
+    }(events.Event));
+    exports.FileChangesEvent = FileChangesEvent;
+    function isEqual(pathA, pathB, ignoreCase) {
+        var identityEquals = (pathA === pathB);
+        if (!ignoreCase || identityEquals) {
+            return identityEquals;
+        }
+        if (!pathA || !pathB) {
+            return false;
+        }
+        return strings_1.equalsIgnoreCase(pathA, pathB);
+    }
+    exports.isEqual = isEqual;
+    function isParent(path, candidate, ignoreCase) {
+        if (!path || !candidate || path === candidate) {
+            return false;
+        }
+        if (candidate.length > path.length) {
+            return false;
+        }
+        if (candidate.charAt(candidate.length - 1) !== paths.nativeSep) {
+            candidate += paths.nativeSep;
+        }
+        if (ignoreCase) {
+            return strings_1.beginsWithIgnoreCase(path, candidate);
+        }
+        return path.indexOf(candidate) === 0;
+    }
+    exports.isParent = isParent;
+    function isEqualOrParent(path, candidate, ignoreCase) {
+        if (path === candidate) {
+            return true;
+        }
+        if (!path || !candidate) {
+            return false;
+        }
+        if (candidate.length > path.length) {
+            return false;
+        }
+        if (ignoreCase) {
+            var beginsWith = strings_1.beginsWithIgnoreCase(path, candidate);
+            if (!beginsWith) {
+                return false;
+            }
+            if (candidate.length === path.length) {
+                return true; // same path, different casing
+            }
+            var sepOffset = candidate.length;
+            if (candidate.charAt(candidate.length - 1) === paths.nativeSep) {
+                sepOffset--; // adjust the expected sep offset in case our candidate already ends in separator character
+            }
+            return path.charAt(sepOffset) === paths.nativeSep;
+        }
+        if (candidate.charAt(candidate.length - 1) !== paths.nativeSep) {
+            candidate += paths.nativeSep;
+        }
+        return path.indexOf(candidate) === 0;
+    }
+    exports.isEqualOrParent = isEqualOrParent;
+    function indexOf(path, candidate, ignoreCase) {
+        if (candidate.length > path.length) {
+            return -1;
+        }
+        if (path === candidate) {
+            return 0;
+        }
+        if (ignoreCase) {
+            path = path.toLowerCase();
+            candidate = candidate.toLowerCase();
+        }
+        return path.indexOf(candidate);
+    }
+    exports.indexOf = indexOf;
+    var FileOperationResult;
+    (function (FileOperationResult) {
+        FileOperationResult[FileOperationResult["FILE_IS_BINARY"] = 0] = "FILE_IS_BINARY";
+        FileOperationResult[FileOperationResult["FILE_IS_DIRECTORY"] = 1] = "FILE_IS_DIRECTORY";
+        FileOperationResult[FileOperationResult["FILE_NOT_FOUND"] = 2] = "FILE_NOT_FOUND";
+        FileOperationResult[FileOperationResult["FILE_NOT_MODIFIED_SINCE"] = 3] = "FILE_NOT_MODIFIED_SINCE";
+        FileOperationResult[FileOperationResult["FILE_MODIFIED_SINCE"] = 4] = "FILE_MODIFIED_SINCE";
+        FileOperationResult[FileOperationResult["FILE_MOVE_CONFLICT"] = 5] = "FILE_MOVE_CONFLICT";
+        FileOperationResult[FileOperationResult["FILE_READ_ONLY"] = 6] = "FILE_READ_ONLY";
+        FileOperationResult[FileOperationResult["FILE_TOO_LARGE"] = 7] = "FILE_TOO_LARGE";
+        FileOperationResult[FileOperationResult["FILE_INVALID_PATH"] = 8] = "FILE_INVALID_PATH";
+    })(FileOperationResult = exports.FileOperationResult || (exports.FileOperationResult = {}));
+    exports.MAX_FILE_SIZE = 50 * 1024 * 1024;
+    exports.AutoSaveConfiguration = {
+        OFF: 'off',
+        AFTER_DELAY: 'afterDelay',
+        ON_FOCUS_CHANGE: 'onFocusChange',
+        ON_WINDOW_CHANGE: 'onWindowChange'
+    };
+    exports.HotExitConfiguration = {
+        OFF: 'off',
+        ON_EXIT: 'onExit',
+        ON_EXIT_AND_WINDOW_CLOSE: 'onExitAndWindowClose'
+    };
+    exports.CONTENT_CHANGE_EVENT_BUFFER_DELAY = 1000;
+    exports.SUPPORTED_ENCODINGS = {
+        utf8: {
+            labelLong: 'UTF-8',
+            labelShort: 'UTF-8',
+            order: 1,
+            alias: 'utf8bom'
+        },
+        utf8bom: {
+            labelLong: 'UTF-8 with BOM',
+            labelShort: 'UTF-8 with BOM',
+            encodeOnly: true,
+            order: 2,
+            alias: 'utf8'
+        },
+        utf16le: {
+            labelLong: 'UTF-16 LE',
+            labelShort: 'UTF-16 LE',
+            order: 3
+        },
+        utf16be: {
+            labelLong: 'UTF-16 BE',
+            labelShort: 'UTF-16 BE',
+            order: 4
+        },
+        windows1252: {
+            labelLong: 'Western (Windows 1252)',
+            labelShort: 'Windows 1252',
+            order: 5
+        },
+        iso88591: {
+            labelLong: 'Western (ISO 8859-1)',
+            labelShort: 'ISO 8859-1',
+            order: 6
+        },
+        iso88593: {
+            labelLong: 'Western (ISO 8859-3)',
+            labelShort: 'ISO 8859-3',
+            order: 7
+        },
+        iso885915: {
+            labelLong: 'Western (ISO 8859-15)',
+            labelShort: 'ISO 8859-15',
+            order: 8
+        },
+        macroman: {
+            labelLong: 'Western (Mac Roman)',
+            labelShort: 'Mac Roman',
+            order: 9
+        },
+        cp437: {
+            labelLong: 'DOS (CP 437)',
+            labelShort: 'CP437',
+            order: 10
+        },
+        windows1256: {
+            labelLong: 'Arabic (Windows 1256)',
+            labelShort: 'Windows 1256',
+            order: 11
+        },
+        iso88596: {
+            labelLong: 'Arabic (ISO 8859-6)',
+            labelShort: 'ISO 8859-6',
+            order: 12
+        },
+        windows1257: {
+            labelLong: 'Baltic (Windows 1257)',
+            labelShort: 'Windows 1257',
+            order: 13
+        },
+        iso88594: {
+            labelLong: 'Baltic (ISO 8859-4)',
+            labelShort: 'ISO 8859-4',
+            order: 14
+        },
+        iso885914: {
+            labelLong: 'Celtic (ISO 8859-14)',
+            labelShort: 'ISO 8859-14',
+            order: 15
+        },
+        windows1250: {
+            labelLong: 'Central European (Windows 1250)',
+            labelShort: 'Windows 1250',
+            order: 16
+        },
+        iso88592: {
+            labelLong: 'Central European (ISO 8859-2)',
+            labelShort: 'ISO 8859-2',
+            order: 17
+        },
+        cp852: {
+            labelLong: 'Central European (CP 852)',
+            labelShort: 'CP 852',
+            order: 18
+        },
+        windows1251: {
+            labelLong: 'Cyrillic (Windows 1251)',
+            labelShort: 'Windows 1251',
+            order: 19
+        },
+        cp866: {
+            labelLong: 'Cyrillic (CP 866)',
+            labelShort: 'CP 866',
+            order: 20
+        },
+        iso88595: {
+            labelLong: 'Cyrillic (ISO 8859-5)',
+            labelShort: 'ISO 8859-5',
+            order: 21
+        },
+        koi8r: {
+            labelLong: 'Cyrillic (KOI8-R)',
+            labelShort: 'KOI8-R',
+            order: 22
+        },
+        koi8u: {
+            labelLong: 'Cyrillic (KOI8-U)',
+            labelShort: 'KOI8-U',
+            order: 23
+        },
+        iso885913: {
+            labelLong: 'Estonian (ISO 8859-13)',
+            labelShort: 'ISO 8859-13',
+            order: 24
+        },
+        windows1253: {
+            labelLong: 'Greek (Windows 1253)',
+            labelShort: 'Windows 1253',
+            order: 25
+        },
+        iso88597: {
+            labelLong: 'Greek (ISO 8859-7)',
+            labelShort: 'ISO 8859-7',
+            order: 26
+        },
+        windows1255: {
+            labelLong: 'Hebrew (Windows 1255)',
+            labelShort: 'Windows 1255',
+            order: 27
+        },
+        iso88598: {
+            labelLong: 'Hebrew (ISO 8859-8)',
+            labelShort: 'ISO 8859-8',
+            order: 28
+        },
+        iso885910: {
+            labelLong: 'Nordic (ISO 8859-10)',
+            labelShort: 'ISO 8859-10',
+            order: 29
+        },
+        iso885916: {
+            labelLong: 'Romanian (ISO 8859-16)',
+            labelShort: 'ISO 8859-16',
+            order: 30
+        },
+        windows1254: {
+            labelLong: 'Turkish (Windows 1254)',
+            labelShort: 'Windows 1254',
+            order: 31
+        },
+        iso88599: {
+            labelLong: 'Turkish (ISO 8859-9)',
+            labelShort: 'ISO 8859-9',
+            order: 32
+        },
+        windows1258: {
+            labelLong: 'Vietnamese (Windows 1258)',
+            labelShort: 'Windows 1258',
+            order: 33
+        },
+        gbk: {
+            labelLong: 'Chinese (GBK)',
+            labelShort: 'GBK',
+            order: 34
+        },
+        gb18030: {
+            labelLong: 'Chinese (GB18030)',
+            labelShort: 'GB18030',
+            order: 35
+        },
+        cp950: {
+            labelLong: 'Traditional Chinese (Big5)',
+            labelShort: 'Big5',
+            order: 36
+        },
+        big5hkscs: {
+            labelLong: 'Traditional Chinese (Big5-HKSCS)',
+            labelShort: 'Big5-HKSCS',
+            order: 37
+        },
+        shiftjis: {
+            labelLong: 'Japanese (Shift JIS)',
+            labelShort: 'Shift JIS',
+            order: 38
+        },
+        eucjp: {
+            labelLong: 'Japanese (EUC-JP)',
+            labelShort: 'EUC-JP',
+            order: 39
+        },
+        euckr: {
+            labelLong: 'Korean (EUC-KR)',
+            labelShort: 'EUC-KR',
+            order: 40
+        },
+        windows874: {
+            labelLong: 'Thai (Windows 874)',
+            labelShort: 'Windows 874',
+            order: 41
+        },
+        iso885911: {
+            labelLong: 'Latin/Thai (ISO 8859-11)',
+            labelShort: 'ISO 8859-11',
+            order: 42
+        },
+        koi8ru: {
+            labelLong: 'Cyrillic (KOI8-RU)',
+            labelShort: 'KOI8-RU',
+            order: 43
+        },
+        koi8t: {
+            labelLong: 'Tajik (KOI8-T)',
+            labelShort: 'KOI8-T',
+            order: 44
+        },
+        gb2312: {
+            labelLong: 'Simplified Chinese (GB 2312)',
+            labelShort: 'GB 2312',
+            order: 45
+        }
+    };
+});
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-define(__m[76/*vs/platform/node/package*/], __M([0/*require*/,1/*exports*/,18/*path*/,7/*vs/base/common/uri*/]), function (require, exports, path, uri_1) {
+define(__m[70/*vs/platform/node/package*/], __M([1/*require*/,0/*exports*/,17/*path*/,7/*vs/base/common/uri*/]), function (require, exports, path, uri_1) {
     "use strict";
     var rootPath = path.dirname(uri_1.default.parse(require.toUrl('')).fsPath);
     var packageJsonPath = path.join(rootPath, 'package.json');
@@ -16189,7 +13884,7 @@ define(__m[76/*vs/platform/node/package*/], __M([0/*require*/,1/*exports*/,18/*p
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-define(__m[77/*vs/platform/node/product*/], __M([0/*require*/,1/*exports*/,18/*path*/,7/*vs/base/common/uri*/]), function (require, exports, path, uri_1) {
+define(__m[71/*vs/platform/node/product*/], __M([1/*require*/,0/*exports*/,17/*path*/,7/*vs/base/common/uri*/]), function (require, exports, path, uri_1) {
     "use strict";
     var rootPath = path.dirname(uri_1.default.parse(require.toUrl('')).fsPath);
     var productJsonPath = path.join(rootPath, 'product.json');
@@ -16203,7 +13898,7 @@ define(__m[77/*vs/platform/node/product*/], __M([0/*require*/,1/*exports*/,18/*p
     exports.default = product;
 });
 
-define(__m[24/*vs/platform/platform*/], __M([0/*require*/,1/*exports*/,16/*vs/base/common/types*/,68/*vs/base/common/assert*/]), function (require, exports, Types, Assert) {
+define(__m[24/*vs/platform/platform*/], __M([1/*require*/,0/*exports*/,10/*vs/base/common/types*/,23/*vs/base/common/assert*/]), function (require, exports, Types, Assert) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -16266,7 +13961,7 @@ define(__m[24/*vs/platform/platform*/], __M([0/*require*/,1/*exports*/,16/*vs/ba
     exports.BaseRegistry = BaseRegistry;
 });
 
-define(__m[36/*vs/platform/jsonschemas/common/jsonContributionRegistry*/], __M([0/*require*/,1/*exports*/,24/*vs/platform/platform*/,30/*vs/base/common/eventEmitter*/]), function (require, exports, platform, eventEmitter_1) {
+define(__m[28/*vs/platform/jsonschemas/common/jsonContributionRegistry*/], __M([1/*require*/,0/*exports*/,24/*vs/platform/platform*/,74/*vs/base/common/eventEmitter*/]), function (require, exports, platform, eventEmitter_1) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -16304,7 +13999,7 @@ define(__m[36/*vs/platform/jsonschemas/common/jsonContributionRegistry*/], __M([
     platform.Registry.add(exports.Extensions.JSONContribution, jsonContributionRegistry);
 });
 
-define(__m[80/*vs/platform/extensions/common/extensionsRegistry*/], __M([0/*require*/,1/*exports*/,63/*vs/nls!vs/platform/extensions/common/extensionsRegistry*/,5/*vs/base/common/errors*/,17/*vs/base/common/severity*/,36/*vs/platform/jsonschemas/common/jsonContributionRegistry*/,24/*vs/platform/platform*/]), function (require, exports, nls, errors_1, severity_1, jsonContributionRegistry_1, platform_1) {
+define(__m[34/*vs/platform/extensions/common/extensionsRegistry*/], __M([1/*require*/,0/*exports*/,56/*vs/nls!vs/platform/extensions/common/extensionsRegistry*/,6/*vs/base/common/errors*/,18/*vs/base/common/severity*/,28/*vs/platform/jsonschemas/common/jsonContributionRegistry*/,24/*vs/platform/platform*/]), function (require, exports, nls, errors_1, severity_1, jsonContributionRegistry_1, platform_1) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -16513,7 +14208,7 @@ define(__m[80/*vs/platform/extensions/common/extensionsRegistry*/], __M([0/*requ
     schemaRegistry.registerSchema(schemaId, schema);
 });
 
-define(__m[81/*vs/platform/configuration/common/configurationRegistry*/], __M([0/*require*/,1/*exports*/,61/*vs/nls!vs/platform/configuration/common/configurationRegistry*/,4/*vs/base/common/event*/,24/*vs/platform/platform*/,19/*vs/base/common/objects*/,16/*vs/base/common/types*/,80/*vs/platform/extensions/common/extensionsRegistry*/,36/*vs/platform/jsonschemas/common/jsonContributionRegistry*/]), function (require, exports, nls, event_1, platform_1, objects, types, extensionsRegistry_1, jsonContributionRegistry_1) {
+define(__m[75/*vs/platform/configuration/common/configurationRegistry*/], __M([1/*require*/,0/*exports*/,54/*vs/nls!vs/platform/configuration/common/configurationRegistry*/,4/*vs/base/common/event*/,24/*vs/platform/platform*/,16/*vs/base/common/objects*/,10/*vs/base/common/types*/,9/*vs/base/common/strings*/,34/*vs/platform/extensions/common/extensionsRegistry*/,28/*vs/platform/jsonschemas/common/jsonContributionRegistry*/]), function (require, exports, nls, event_1, platform_1, objects, types, strings, extensionsRegistry_1, jsonContributionRegistry_1) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -16687,7 +14382,7 @@ define(__m[81/*vs/platform/configuration/common/configurationRegistry*/], __M([0
             }
         };
         ConfigurationRegistry.prototype.computeOverridePropertyPattern = function () {
-            this.overridePropertyPattern = this.overrideIdentifiers.length ? OVERRIDE_PATTERN_WITH_SUBSTITUTION.replace('${0}', this.overrideIdentifiers.join('|')) : OVERRIDE_PROPERTY;
+            this.overridePropertyPattern = this.overrideIdentifiers.length ? OVERRIDE_PATTERN_WITH_SUBSTITUTION.replace('${0}', this.overrideIdentifiers.map(function (identifier) { return strings.createRegExp(identifier, false).source; }).join('|')) : OVERRIDE_PROPERTY;
         };
         return ConfigurationRegistry;
     }());
@@ -16825,7 +14520,7 @@ define(__m[81/*vs/platform/configuration/common/configurationRegistry*/], __M([0
 
 
 
-define(__m[82/*vs/platform/configuration/common/model*/], __M([0/*require*/,1/*exports*/,24/*vs/platform/platform*/,16/*vs/base/common/types*/,56/*vs/base/common/json*/,19/*vs/base/common/objects*/,20/*vs/base/common/arrays*/,81/*vs/platform/configuration/common/configurationRegistry*/]), function (require, exports, platform_1, types, json, objects, arrays, configurationRegistry_1) {
+define(__m[76/*vs/platform/configuration/common/model*/], __M([1/*require*/,0/*exports*/,24/*vs/platform/platform*/,10/*vs/base/common/types*/,51/*vs/base/common/json*/,16/*vs/base/common/objects*/,22/*vs/base/common/arrays*/,75/*vs/platform/configuration/common/configurationRegistry*/]), function (require, exports, platform_1, types, json, objects, arrays, configurationRegistry_1) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -17110,11 +14805,1193 @@ define(__m[82/*vs/platform/configuration/common/model*/], __M([0/*require*/,1/*e
     exports.keyFromOverrideIdentifier = keyFromOverrideIdentifier;
 });
 
+
+
+
+
+
+define(__m[77/*vs/platform/markers/common/problemMatcher*/], __M([1/*require*/,0/*exports*/,57/*vs/nls!vs/platform/markers/common/problemMatcher*/,16/*vs/base/common/objects*/,9/*vs/base/common/strings*/,23/*vs/base/common/assert*/,20/*vs/base/common/paths*/,10/*vs/base/common/types*/,25/*vs/base/common/uuid*/,18/*vs/base/common/severity*/,7/*vs/base/common/uri*/,2/*vs/base/common/winjs.base*/,49/*vs/base/common/parsers*/,34/*vs/platform/extensions/common/extensionsRegistry*/]), function (require, exports, nls_1, Objects, Strings, Assert, Paths, Types, UUID, severity_1, uri_1, winjs_base_1, parsers_1, extensionsRegistry_1) {
+    /*---------------------------------------------------------------------------------------------
+     *  Copyright (c) Microsoft Corporation. All rights reserved.
+     *  Licensed under the MIT License. See License.txt in the project root for license information.
+     *--------------------------------------------------------------------------------------------*/
+    'use strict';
+    var FileLocationKind;
+    (function (FileLocationKind) {
+        FileLocationKind[FileLocationKind["Auto"] = 0] = "Auto";
+        FileLocationKind[FileLocationKind["Relative"] = 1] = "Relative";
+        FileLocationKind[FileLocationKind["Absolute"] = 2] = "Absolute";
+    })(FileLocationKind = exports.FileLocationKind || (exports.FileLocationKind = {}));
+    (function (FileLocationKind) {
+        function fromString(value) {
+            value = value.toLowerCase();
+            if (value === 'absolute') {
+                return FileLocationKind.Absolute;
+            }
+            else if (value === 'relative') {
+                return FileLocationKind.Relative;
+            }
+            else {
+                return undefined;
+            }
+        }
+        FileLocationKind.fromString = fromString;
+    })(FileLocationKind = exports.FileLocationKind || (exports.FileLocationKind = {}));
+    var ApplyToKind;
+    (function (ApplyToKind) {
+        ApplyToKind[ApplyToKind["allDocuments"] = 0] = "allDocuments";
+        ApplyToKind[ApplyToKind["openDocuments"] = 1] = "openDocuments";
+        ApplyToKind[ApplyToKind["closedDocuments"] = 2] = "closedDocuments";
+    })(ApplyToKind = exports.ApplyToKind || (exports.ApplyToKind = {}));
+    (function (ApplyToKind) {
+        function fromString(value) {
+            value = value.toLowerCase();
+            if (value === 'alldocuments') {
+                return ApplyToKind.allDocuments;
+            }
+            else if (value === 'opendocuments') {
+                return ApplyToKind.openDocuments;
+            }
+            else if (value === 'closeddocuments') {
+                return ApplyToKind.closedDocuments;
+            }
+            else {
+                return undefined;
+            }
+        }
+        ApplyToKind.fromString = fromString;
+    })(ApplyToKind = exports.ApplyToKind || (exports.ApplyToKind = {}));
+    function isNamedProblemMatcher(value) {
+        return value && Types.isString(value.name) ? true : false;
+    }
+    exports.isNamedProblemMatcher = isNamedProblemMatcher;
+    var valueMap = {
+        E: 'error',
+        W: 'warning',
+        I: 'info',
+    };
+    function getResource(filename, matcher) {
+        var kind = matcher.fileLocation;
+        var fullPath;
+        if (kind === FileLocationKind.Absolute) {
+            fullPath = filename;
+        }
+        else if (kind === FileLocationKind.Relative) {
+            fullPath = Paths.join(matcher.filePrefix, filename);
+        }
+        fullPath = fullPath.replace(/\\/g, '/');
+        if (fullPath[0] !== '/') {
+            fullPath = '/' + fullPath;
+        }
+        return uri_1.default.parse('file://' + fullPath);
+    }
+    exports.getResource = getResource;
+    function createLineMatcher(matcher) {
+        var pattern = matcher.pattern;
+        if (Types.isArray(pattern)) {
+            return new MultiLineMatcher(matcher);
+        }
+        else {
+            return new SingleLineMatcher(matcher);
+        }
+    }
+    exports.createLineMatcher = createLineMatcher;
+    var AbstractLineMatcher = (function () {
+        function AbstractLineMatcher(matcher) {
+            this.matcher = matcher;
+        }
+        AbstractLineMatcher.prototype.handle = function (lines, start) {
+            if (start === void 0) { start = 0; }
+            return { match: null, continue: false };
+        };
+        AbstractLineMatcher.prototype.next = function (line) {
+            return null;
+        };
+        Object.defineProperty(AbstractLineMatcher.prototype, "matchLength", {
+            get: function () {
+                throw new Error('Subclass reponsibility');
+            },
+            enumerable: true,
+            configurable: true
+        });
+        AbstractLineMatcher.prototype.fillProblemData = function (data, pattern, matches) {
+            this.fillProperty(data, 'file', pattern, matches, true);
+            this.fillProperty(data, 'message', pattern, matches, true);
+            this.fillProperty(data, 'code', pattern, matches, true);
+            this.fillProperty(data, 'severity', pattern, matches, true);
+            this.fillProperty(data, 'location', pattern, matches, true);
+            this.fillProperty(data, 'line', pattern, matches);
+            this.fillProperty(data, 'character', pattern, matches);
+            this.fillProperty(data, 'endLine', pattern, matches);
+            this.fillProperty(data, 'endCharacter', pattern, matches);
+        };
+        AbstractLineMatcher.prototype.fillProperty = function (data, property, pattern, matches, trim) {
+            if (trim === void 0) { trim = false; }
+            if (Types.isUndefined(data[property]) && !Types.isUndefined(pattern[property]) && pattern[property] < matches.length) {
+                var value = matches[pattern[property]];
+                if (trim) {
+                    value = Strings.trim(value);
+                }
+                data[property] = value;
+            }
+        };
+        AbstractLineMatcher.prototype.getMarkerMatch = function (data) {
+            var location = this.getLocation(data);
+            if (data.file && location && data.message) {
+                var marker = {
+                    severity: this.getSeverity(data),
+                    startLineNumber: location.startLineNumber,
+                    startColumn: location.startCharacter,
+                    endLineNumber: location.startLineNumber,
+                    endColumn: location.endCharacter,
+                    message: data.message
+                };
+                if (!Types.isUndefined(data.code)) {
+                    marker.code = data.code;
+                }
+                return {
+                    description: this.matcher,
+                    resource: this.getResource(data.file),
+                    marker: marker
+                };
+            }
+            return undefined;
+        };
+        AbstractLineMatcher.prototype.getResource = function (filename) {
+            return getResource(filename, this.matcher);
+        };
+        AbstractLineMatcher.prototype.getLocation = function (data) {
+            if (data.location) {
+                return this.parseLocationInfo(data.location);
+            }
+            if (!data.line) {
+                return null;
+            }
+            var startLine = parseInt(data.line);
+            var startColumn = data.character ? parseInt(data.character) : undefined;
+            var endLine = data.endLine ? parseInt(data.endLine) : undefined;
+            var endColumn = data.endCharacter ? parseInt(data.endCharacter) : undefined;
+            return this.createLocation(startLine, startColumn, endLine, endColumn);
+        };
+        AbstractLineMatcher.prototype.parseLocationInfo = function (value) {
+            if (!value || !value.match(/(\d+|\d+,\d+|\d+,\d+,\d+,\d+)/)) {
+                return null;
+            }
+            var parts = value.split(',');
+            var startLine = parseInt(parts[0]);
+            var startColumn = parts.length > 1 ? parseInt(parts[1]) : undefined;
+            if (parts.length > 3) {
+                return this.createLocation(startLine, startColumn, parseInt(parts[2]), parseInt(parts[3]));
+            }
+            else {
+                return this.createLocation(startLine, startColumn, undefined, undefined);
+            }
+        };
+        AbstractLineMatcher.prototype.createLocation = function (startLine, startColumn, endLine, endColumn) {
+            if (startLine && startColumn && endColumn) {
+                return { startLineNumber: startLine, startCharacter: startColumn, endLineNumber: endLine || startLine, endCharacter: endColumn };
+            }
+            if (startLine && startColumn) {
+                return { startLineNumber: startLine, startCharacter: startColumn, endLineNumber: startLine, endCharacter: startColumn };
+            }
+            return { startLineNumber: startLine, startCharacter: 1, endLineNumber: startLine, endCharacter: Number.MAX_VALUE };
+        };
+        AbstractLineMatcher.prototype.getSeverity = function (data) {
+            var result = null;
+            if (data.severity) {
+                var value = data.severity;
+                if (value && value.length > 0) {
+                    if (value.length === 1 && valueMap[value[0]]) {
+                        value = valueMap[value[0]];
+                    }
+                    result = severity_1.default.fromValue(value);
+                }
+            }
+            if (result === null || result === severity_1.default.Ignore) {
+                result = this.matcher.severity || severity_1.default.Error;
+            }
+            return result;
+        };
+        return AbstractLineMatcher;
+    }());
+    var SingleLineMatcher = (function (_super) {
+        __extends(SingleLineMatcher, _super);
+        function SingleLineMatcher(matcher) {
+            var _this = _super.call(this, matcher) || this;
+            _this.pattern = matcher.pattern;
+            return _this;
+        }
+        Object.defineProperty(SingleLineMatcher.prototype, "matchLength", {
+            get: function () {
+                return 1;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        SingleLineMatcher.prototype.handle = function (lines, start) {
+            if (start === void 0) { start = 0; }
+            Assert.ok(lines.length - start === 1);
+            var data = Object.create(null);
+            var matches = this.pattern.regexp.exec(lines[start]);
+            if (matches) {
+                this.fillProblemData(data, this.pattern, matches);
+                var match = this.getMarkerMatch(data);
+                if (match) {
+                    return { match: match, continue: false };
+                }
+            }
+            return { match: null, continue: false };
+        };
+        SingleLineMatcher.prototype.next = function (line) {
+            return null;
+        };
+        return SingleLineMatcher;
+    }(AbstractLineMatcher));
+    var MultiLineMatcher = (function (_super) {
+        __extends(MultiLineMatcher, _super);
+        function MultiLineMatcher(matcher) {
+            var _this = _super.call(this, matcher) || this;
+            _this.patterns = matcher.pattern;
+            return _this;
+        }
+        Object.defineProperty(MultiLineMatcher.prototype, "matchLength", {
+            get: function () {
+                return this.patterns.length;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        MultiLineMatcher.prototype.handle = function (lines, start) {
+            if (start === void 0) { start = 0; }
+            Assert.ok(lines.length - start === this.patterns.length);
+            this.data = Object.create(null);
+            var data = this.data;
+            for (var i = 0; i < this.patterns.length; i++) {
+                var pattern = this.patterns[i];
+                var matches = pattern.regexp.exec(lines[i + start]);
+                if (!matches) {
+                    return { match: null, continue: false };
+                }
+                else {
+                    // Only the last pattern can loop
+                    if (pattern.loop && i === this.patterns.length - 1) {
+                        data = Objects.clone(data);
+                    }
+                    this.fillProblemData(data, pattern, matches);
+                }
+            }
+            var loop = this.patterns[this.patterns.length - 1].loop;
+            if (!loop) {
+                this.data = null;
+            }
+            return { match: this.getMarkerMatch(data), continue: loop };
+        };
+        MultiLineMatcher.prototype.next = function (line) {
+            var pattern = this.patterns[this.patterns.length - 1];
+            Assert.ok(pattern.loop === true && this.data !== null);
+            var matches = pattern.regexp.exec(line);
+            if (!matches) {
+                this.data = null;
+                return null;
+            }
+            var data = Objects.clone(this.data);
+            this.fillProblemData(data, pattern, matches);
+            return this.getMarkerMatch(data);
+        };
+        return MultiLineMatcher;
+    }(AbstractLineMatcher));
+    var Config;
+    (function (Config) {
+        /**
+        * Defines possible problem severity values
+        */
+        var ProblemSeverity;
+        (function (ProblemSeverity) {
+            ProblemSeverity.Error = 'error';
+            ProblemSeverity.Warning = 'warning';
+            ProblemSeverity.Info = 'info';
+        })(ProblemSeverity = Config.ProblemSeverity || (Config.ProblemSeverity = {}));
+        var NamedProblemPattern;
+        (function (NamedProblemPattern) {
+            function is(value) {
+                var candidate = value;
+                return candidate && Types.isString(candidate.name);
+            }
+            NamedProblemPattern.is = is;
+        })(NamedProblemPattern = Config.NamedProblemPattern || (Config.NamedProblemPattern = {}));
+        var MultiLineProblemPattern;
+        (function (MultiLineProblemPattern) {
+            function is(value) {
+                return value && Types.isArray(value);
+            }
+            MultiLineProblemPattern.is = is;
+        })(MultiLineProblemPattern = Config.MultiLineProblemPattern || (Config.MultiLineProblemPattern = {}));
+        var NamedMultiLineProblemPattern;
+        (function (NamedMultiLineProblemPattern) {
+            function is(value) {
+                var candidate = value;
+                return candidate && Types.isString(candidate.name) && Types.isArray(candidate.patterns);
+            }
+            NamedMultiLineProblemPattern.is = is;
+        })(NamedMultiLineProblemPattern = Config.NamedMultiLineProblemPattern || (Config.NamedMultiLineProblemPattern = {}));
+        function isNamedProblemMatcher(value) {
+            return Types.isString(value.name);
+        }
+        Config.isNamedProblemMatcher = isNamedProblemMatcher;
+    })(Config = exports.Config || (exports.Config = {}));
+    var ProblemPatternParser = (function (_super) {
+        __extends(ProblemPatternParser, _super);
+        function ProblemPatternParser(logger) {
+            return _super.call(this, logger) || this;
+        }
+        ProblemPatternParser.prototype.parse = function (value) {
+            if (Config.NamedMultiLineProblemPattern.is(value)) {
+                this.createNamedMultiLineProblemPattern(value);
+            }
+            else if (Config.MultiLineProblemPattern.is(value)) {
+                return this.createMultiLineProblemPattern(value);
+            }
+            else if (Config.NamedProblemPattern.is(value)) {
+                var result = this.createSingleProblemPattern(value);
+                result.name = value.name;
+                return result;
+            }
+            else if (value) {
+                return this.createSingleProblemPattern(value);
+            }
+            else {
+                return null;
+            }
+        };
+        ProblemPatternParser.prototype.createSingleProblemPattern = function (value) {
+            var result = this.doCreateSingleProblemPattern(value, true);
+            return this.validateProblemPattern([result]) ? result : null;
+        };
+        ProblemPatternParser.prototype.createNamedMultiLineProblemPattern = function (value) {
+            var result = {
+                name: value.name,
+                patterns: this.createMultiLineProblemPattern(value.patterns)
+            };
+            return result.patterns ? result : null;
+        };
+        ProblemPatternParser.prototype.createMultiLineProblemPattern = function (values) {
+            var result = [];
+            for (var i = 0; i < values.length; i++) {
+                var pattern = this.doCreateSingleProblemPattern(values[i], false);
+                if (i < values.length - 1) {
+                    if (!Types.isUndefined(pattern.loop) && pattern.loop) {
+                        pattern.loop = false;
+                        this.error(nls_1.localize(0, null));
+                    }
+                }
+                result.push(pattern);
+            }
+            return this.validateProblemPattern(result) ? result : null;
+        };
+        ProblemPatternParser.prototype.doCreateSingleProblemPattern = function (value, setDefaults) {
+            var result = {
+                regexp: this.createRegularExpression(value.regexp)
+            };
+            function copyProperty(result, source, resultKey, sourceKey) {
+                var value = source[sourceKey];
+                if (typeof value === 'number') {
+                    result[resultKey] = value;
+                }
+            }
+            copyProperty(result, value, 'file', 'file');
+            copyProperty(result, value, 'location', 'location');
+            copyProperty(result, value, 'line', 'line');
+            copyProperty(result, value, 'character', 'column');
+            copyProperty(result, value, 'endLine', 'endLine');
+            copyProperty(result, value, 'endCharacter', 'endColumn');
+            copyProperty(result, value, 'severity', 'severity');
+            copyProperty(result, value, 'code', 'code');
+            copyProperty(result, value, 'message', 'message');
+            if (value.loop === true || value.loop === false) {
+                result.loop = value.loop;
+            }
+            if (setDefaults) {
+                if (result.location) {
+                    var defaultValue = {
+                        file: 1,
+                        message: 0
+                    };
+                    result = Objects.mixin(result, defaultValue, false);
+                }
+                else {
+                    var defaultValue = {
+                        file: 1,
+                        line: 2,
+                        character: 3,
+                        message: 0
+                    };
+                    result = Objects.mixin(result, defaultValue, false);
+                }
+            }
+            return result;
+        };
+        ProblemPatternParser.prototype.validateProblemPattern = function (values) {
+            var file, message, location, line;
+            var regexp = 0;
+            values.forEach(function (pattern) {
+                file = file || !Types.isUndefined(pattern.file);
+                message = message || !Types.isUndefined(pattern.message);
+                location = location || !Types.isUndefined(pattern.location);
+                line = line || !Types.isUndefined(pattern.line);
+                if (pattern.regexp) {
+                    regexp++;
+                }
+            });
+            if (regexp !== values.length) {
+                this.error(nls_1.localize(1, null));
+                return false;
+            }
+            if (!(file && message && (location || line))) {
+                this.error(nls_1.localize(2, null));
+                return false;
+            }
+            return true;
+        };
+        ProblemPatternParser.prototype.createRegularExpression = function (value) {
+            var result = null;
+            if (!value) {
+                return result;
+            }
+            try {
+                result = new RegExp(value);
+            }
+            catch (err) {
+                this.error(nls_1.localize(3, null, value));
+            }
+            return result;
+        };
+        return ProblemPatternParser;
+    }(parsers_1.Parser));
+    var ExtensionRegistryReporter = (function () {
+        function ExtensionRegistryReporter(_collector, _validationStatus) {
+            if (_validationStatus === void 0) { _validationStatus = new parsers_1.ValidationStatus(); }
+            this._collector = _collector;
+            this._validationStatus = _validationStatus;
+        }
+        ExtensionRegistryReporter.prototype.info = function (message) {
+            this._validationStatus.state = parsers_1.ValidationState.Info;
+            this._collector.info(message);
+        };
+        ExtensionRegistryReporter.prototype.warn = function (message) {
+            this._validationStatus.state = parsers_1.ValidationState.Warning;
+            this._collector.warn(message);
+        };
+        ExtensionRegistryReporter.prototype.error = function (message) {
+            this._validationStatus.state = parsers_1.ValidationState.Error;
+            this._collector.error(message);
+        };
+        ExtensionRegistryReporter.prototype.fatal = function (message) {
+            this._validationStatus.state = parsers_1.ValidationState.Fatal;
+            this._collector.error(message);
+        };
+        Object.defineProperty(ExtensionRegistryReporter.prototype, "status", {
+            get: function () {
+                return this._validationStatus;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        return ExtensionRegistryReporter;
+    }());
+    exports.ExtensionRegistryReporter = ExtensionRegistryReporter;
+    var Schemas;
+    (function (Schemas) {
+        Schemas.ProblemPattern = {
+            default: {
+                regexp: '^([^\\\\s].*)\\\\((\\\\d+,\\\\d+)\\\\):\\\\s*(.*)$',
+                file: 1,
+                location: 2,
+                message: 3
+            },
+            type: 'object',
+            additionalProperties: false,
+            properties: {
+                regexp: {
+                    type: 'string',
+                    description: nls_1.localize(4, null)
+                },
+                file: {
+                    type: 'integer',
+                    description: nls_1.localize(5, null)
+                },
+                location: {
+                    type: 'integer',
+                    description: nls_1.localize(6, null)
+                },
+                line: {
+                    type: 'integer',
+                    description: nls_1.localize(7, null)
+                },
+                column: {
+                    type: 'integer',
+                    description: nls_1.localize(8, null)
+                },
+                endLine: {
+                    type: 'integer',
+                    description: nls_1.localize(9, null)
+                },
+                endColumn: {
+                    type: 'integer',
+                    description: nls_1.localize(10, null)
+                },
+                severity: {
+                    type: 'integer',
+                    description: nls_1.localize(11, null)
+                },
+                code: {
+                    type: 'integer',
+                    description: nls_1.localize(12, null)
+                },
+                message: {
+                    type: 'integer',
+                    description: nls_1.localize(13, null)
+                },
+                loop: {
+                    type: 'boolean',
+                    description: nls_1.localize(14, null)
+                }
+            }
+        };
+        Schemas.NamedProblemPattern = Objects.clone(Schemas.ProblemPattern);
+        Schemas.NamedProblemPattern.properties = Objects.clone(Schemas.NamedProblemPattern.properties);
+        Schemas.NamedProblemPattern.properties['name'] = {
+            type: 'string',
+            description: nls_1.localize(15, null)
+        };
+        Schemas.MultLileProblemPattern = {
+            type: 'array',
+            items: Schemas.ProblemPattern
+        };
+        Schemas.NamedMultiLineProblemPattern = {
+            type: 'object',
+            additionalProperties: false,
+            properties: {
+                name: {
+                    type: 'string',
+                    description: nls_1.localize(16, null)
+                },
+                patterns: {
+                    type: 'array',
+                    description: nls_1.localize(17, null),
+                    items: Schemas.ProblemPattern
+                }
+            }
+        };
+    })(Schemas = exports.Schemas || (exports.Schemas = {}));
+    var problemPatternExtPoint = extensionsRegistry_1.ExtensionsRegistry.registerExtensionPoint('problemPatterns', [], {
+        description: nls_1.localize(18, null),
+        type: 'array',
+        items: {
+            anyOf: [
+                Schemas.NamedProblemPattern,
+                Schemas.NamedMultiLineProblemPattern
+            ]
+        }
+    });
+    var ProblemPatternRegistryImpl = (function () {
+        function ProblemPatternRegistryImpl() {
+            var _this = this;
+            this.patterns = Object.create(null);
+            this.fillDefaults();
+            this.readyPromise = new winjs_base_1.TPromise(function (resolve, reject) {
+                problemPatternExtPoint.setHandler(function (extensions) {
+                    // We get all statically know extension during startup in one batch
+                    try {
+                        extensions.forEach(function (extension) {
+                            var problemPatterns = extension.value;
+                            var parser = new ProblemPatternParser(new ExtensionRegistryReporter(extension.collector));
+                            for (var _i = 0, problemPatterns_1 = problemPatterns; _i < problemPatterns_1.length; _i++) {
+                                var pattern = problemPatterns_1[_i];
+                                if (Config.NamedMultiLineProblemPattern.is(pattern)) {
+                                    var result = parser.parse(pattern);
+                                    if (parser.problemReporter.status.state < parsers_1.ValidationState.Error) {
+                                        _this.add(result.name, result.patterns);
+                                    }
+                                    else {
+                                        extension.collector.error(nls_1.localize(19, null));
+                                        extension.collector.error(JSON.stringify(pattern, undefined, 4));
+                                    }
+                                }
+                                else if (Config.NamedProblemPattern.is(pattern)) {
+                                    var result = parser.parse(pattern);
+                                    if (parser.problemReporter.status.state < parsers_1.ValidationState.Error) {
+                                        _this.add(pattern.name, result);
+                                    }
+                                    else {
+                                        extension.collector.error(nls_1.localize(20, null));
+                                        extension.collector.error(JSON.stringify(pattern, undefined, 4));
+                                    }
+                                }
+                                parser.reset();
+                            }
+                        });
+                    }
+                    catch (error) {
+                    }
+                    resolve(undefined);
+                });
+            });
+        }
+        ProblemPatternRegistryImpl.prototype.onReady = function () {
+            return this.readyPromise;
+        };
+        ProblemPatternRegistryImpl.prototype.add = function (key, value) {
+            this.patterns[key] = value;
+        };
+        ProblemPatternRegistryImpl.prototype.get = function (key) {
+            return this.patterns[key];
+        };
+        ProblemPatternRegistryImpl.prototype.exists = function (key) {
+            return !!this.patterns[key];
+        };
+        ProblemPatternRegistryImpl.prototype.remove = function (key) {
+            delete this.patterns[key];
+        };
+        ProblemPatternRegistryImpl.prototype.fillDefaults = function () {
+            this.add('msCompile', {
+                regexp: /^([^\s].*)\((\d+|\d+,\d+|\d+,\d+,\d+,\d+)\)\s*:\s+(error|warning|info)\s+(\w{1,2}\d+)\s*:\s*(.*)$/,
+                file: 1,
+                location: 2,
+                severity: 3,
+                code: 4,
+                message: 5
+            });
+            this.add('gulp-tsc', {
+                regexp: /^([^\s].*)\((\d+|\d+,\d+|\d+,\d+,\d+,\d+)\):\s+(\d+)\s+(.*)$/,
+                file: 1,
+                location: 2,
+                code: 3,
+                message: 4
+            });
+            this.add('cpp', {
+                regexp: /^([^\s].*)\((\d+|\d+,\d+|\d+,\d+,\d+,\d+)\):\s+(error|warning|info)\s+(C\d+)\s*:\s*(.*)$/,
+                file: 1,
+                location: 2,
+                severity: 3,
+                code: 4,
+                message: 5
+            });
+            this.add('csc', {
+                regexp: /^([^\s].*)\((\d+|\d+,\d+|\d+,\d+,\d+,\d+)\):\s+(error|warning|info)\s+(CS\d+)\s*:\s*(.*)$/,
+                file: 1,
+                location: 2,
+                severity: 3,
+                code: 4,
+                message: 5
+            });
+            this.add('vb', {
+                regexp: /^([^\s].*)\((\d+|\d+,\d+|\d+,\d+,\d+,\d+)\):\s+(error|warning|info)\s+(BC\d+)\s*:\s*(.*)$/,
+                file: 1,
+                location: 2,
+                severity: 3,
+                code: 4,
+                message: 5
+            });
+            this.add('lessCompile', {
+                regexp: /^\s*(.*) in file (.*) line no. (\d+)$/,
+                message: 1,
+                file: 2,
+                line: 3
+            });
+            this.add('jshint', {
+                regexp: /^(.*):\s+line\s+(\d+),\s+col\s+(\d+),\s(.+?)(?:\s+\((\w)(\d+)\))?$/,
+                file: 1,
+                line: 2,
+                character: 3,
+                message: 4,
+                severity: 5,
+                code: 6
+            });
+            this.add('jshint-stylish', [
+                {
+                    regexp: /^(.+)$/,
+                    file: 1
+                },
+                {
+                    regexp: /^\s+line\s+(\d+)\s+col\s+(\d+)\s+(.+?)(?:\s+\((\w)(\d+)\))?$/,
+                    line: 1,
+                    character: 2,
+                    message: 3,
+                    severity: 4,
+                    code: 5,
+                    loop: true
+                }
+            ]);
+            this.add('eslint-compact', {
+                regexp: /^(.+):\sline\s(\d+),\scol\s(\d+),\s(Error|Warning|Info)\s-\s(.+)\s\((.+)\)$/,
+                file: 1,
+                line: 2,
+                character: 3,
+                severity: 4,
+                message: 5,
+                code: 6
+            });
+            this.add('eslint-stylish', [
+                {
+                    regexp: /^([^\s].*)$/,
+                    file: 1
+                },
+                {
+                    regexp: /^\s+(\d+):(\d+)\s+(error|warning|info)\s+(.+?)\s\s+(.*)$/,
+                    line: 1,
+                    character: 2,
+                    severity: 3,
+                    message: 4,
+                    code: 5,
+                    loop: true
+                }
+            ]);
+            this.add('go', {
+                regexp: /^([^:]*: )?((.:)?[^:]*):(\d+)(:(\d+))?: (.*)$/,
+                file: 2,
+                line: 4,
+                character: 6,
+                message: 7
+            });
+        };
+        return ProblemPatternRegistryImpl;
+    }());
+    exports.ProblemPatternRegistry = new ProblemPatternRegistryImpl();
+    var ProblemMatcherParser = (function (_super) {
+        __extends(ProblemMatcherParser, _super);
+        function ProblemMatcherParser(logger) {
+            return _super.call(this, logger) || this;
+        }
+        ProblemMatcherParser.prototype.parse = function (json) {
+            var result = this.createProblemMatcher(json);
+            if (!this.checkProblemMatcherValid(json, result)) {
+                return null;
+            }
+            this.addWatchingMatcher(json, result);
+            return result;
+        };
+        ProblemMatcherParser.prototype.checkProblemMatcherValid = function (externalProblemMatcher, problemMatcher) {
+            if (!problemMatcher) {
+                this.error(nls_1.localize(21, null, JSON.stringify(externalProblemMatcher, null, 4)));
+                return false;
+            }
+            if (!problemMatcher.pattern) {
+                this.error(nls_1.localize(22, null, JSON.stringify(externalProblemMatcher, null, 4)));
+                return false;
+            }
+            if (!problemMatcher.owner) {
+                this.error(nls_1.localize(23, null, JSON.stringify(externalProblemMatcher, null, 4)));
+                return false;
+            }
+            if (Types.isUndefined(problemMatcher.fileLocation)) {
+                this.error(nls_1.localize(24, null, JSON.stringify(externalProblemMatcher, null, 4)));
+                return false;
+            }
+            return true;
+        };
+        ProblemMatcherParser.prototype.createProblemMatcher = function (description) {
+            var result = null;
+            var owner = description.owner ? description.owner : UUID.generateUuid();
+            var applyTo = Types.isString(description.applyTo) ? ApplyToKind.fromString(description.applyTo) : ApplyToKind.allDocuments;
+            if (!applyTo) {
+                applyTo = ApplyToKind.allDocuments;
+            }
+            var fileLocation = undefined;
+            var filePrefix = undefined;
+            var kind;
+            if (Types.isUndefined(description.fileLocation)) {
+                fileLocation = FileLocationKind.Relative;
+                filePrefix = '${cwd}';
+            }
+            else if (Types.isString(description.fileLocation)) {
+                kind = FileLocationKind.fromString(description.fileLocation);
+                if (kind) {
+                    fileLocation = kind;
+                    if (kind === FileLocationKind.Relative) {
+                        filePrefix = '${cwd}';
+                    }
+                }
+            }
+            else if (Types.isStringArray(description.fileLocation)) {
+                var values = description.fileLocation;
+                if (values.length > 0) {
+                    kind = FileLocationKind.fromString(values[0]);
+                    if (values.length === 1 && kind === FileLocationKind.Absolute) {
+                        fileLocation = kind;
+                    }
+                    else if (values.length === 2 && kind === FileLocationKind.Relative && values[1]) {
+                        fileLocation = kind;
+                        filePrefix = values[1];
+                    }
+                }
+            }
+            var pattern = description.pattern ? this.createProblemPattern(description.pattern) : undefined;
+            var severity = description.severity ? severity_1.default.fromValue(description.severity) : undefined;
+            if (severity === severity_1.default.Ignore) {
+                this.info(nls_1.localize(25, null, description.severity));
+                severity = severity_1.default.Error;
+            }
+            if (Types.isString(description.base)) {
+                var variableName = description.base;
+                if (variableName.length > 1 && variableName[0] === '$') {
+                    var base = exports.ProblemMatcherRegistry.get(variableName.substring(1));
+                    if (base) {
+                        result = Objects.clone(base);
+                        if (description.owner) {
+                            result.owner = owner;
+                        }
+                        if (fileLocation) {
+                            result.fileLocation = fileLocation;
+                        }
+                        if (filePrefix) {
+                            result.filePrefix = filePrefix;
+                        }
+                        if (description.pattern) {
+                            result.pattern = pattern;
+                        }
+                        if (description.severity) {
+                            result.severity = severity;
+                        }
+                    }
+                }
+            }
+            else if (fileLocation) {
+                result = {
+                    owner: owner,
+                    applyTo: applyTo,
+                    fileLocation: fileLocation,
+                    pattern: pattern,
+                };
+                if (filePrefix) {
+                    result.filePrefix = filePrefix;
+                }
+                if (severity) {
+                    result.severity = severity;
+                }
+            }
+            if (Config.isNamedProblemMatcher(description)) {
+                result.name = description.name;
+            }
+            return result;
+        };
+        ProblemMatcherParser.prototype.createProblemPattern = function (value) {
+            if (Types.isString(value)) {
+                var variableName = value;
+                if (variableName.length > 1 && variableName[0] === '$') {
+                    var result = exports.ProblemPatternRegistry.get(variableName.substring(1));
+                    if (!result) {
+                        this.error(nls_1.localize(26, null, variableName));
+                    }
+                    return result;
+                }
+                else {
+                    if (variableName.length === 0) {
+                        this.error(nls_1.localize(27, null));
+                    }
+                    else {
+                        this.error(nls_1.localize(28, null, variableName));
+                    }
+                }
+            }
+            else if (value) {
+                var problemPatternParser = new ProblemPatternParser(this.problemReporter);
+                return problemPatternParser.parse(value);
+            }
+            return null;
+        };
+        ProblemMatcherParser.prototype.addWatchingMatcher = function (external, internal) {
+            var oldBegins = this.createRegularExpression(external.watchedTaskBeginsRegExp);
+            var oldEnds = this.createRegularExpression(external.watchedTaskEndsRegExp);
+            if (oldBegins && oldEnds) {
+                internal.watching = {
+                    activeOnStart: false,
+                    beginsPattern: { regexp: oldBegins },
+                    endsPattern: { regexp: oldEnds }
+                };
+                return;
+            }
+            if (Types.isUndefinedOrNull(external.watching)) {
+                return;
+            }
+            var watching = external.watching;
+            var begins = this.createWatchingPattern(watching.beginsPattern);
+            var ends = this.createWatchingPattern(watching.endsPattern);
+            if (begins && ends) {
+                internal.watching = {
+                    activeOnStart: Types.isBoolean(watching.activeOnStart) ? watching.activeOnStart : false,
+                    beginsPattern: begins,
+                    endsPattern: ends
+                };
+                return;
+            }
+            if (begins || ends) {
+                this.error(nls_1.localize(29, null));
+            }
+        };
+        ProblemMatcherParser.prototype.createWatchingPattern = function (external) {
+            if (Types.isUndefinedOrNull(external)) {
+                return null;
+            }
+            var regexp;
+            var file;
+            if (Types.isString(external)) {
+                regexp = this.createRegularExpression(external);
+            }
+            else {
+                regexp = this.createRegularExpression(external.regexp);
+                if (Types.isNumber(external.file)) {
+                    file = external.file;
+                }
+            }
+            if (!regexp) {
+                return null;
+            }
+            return file ? { regexp: regexp, file: file } : { regexp: regexp, file: 1 };
+        };
+        ProblemMatcherParser.prototype.createRegularExpression = function (value) {
+            var result = null;
+            if (!value) {
+                return result;
+            }
+            try {
+                result = new RegExp(value);
+            }
+            catch (err) {
+                this.error(nls_1.localize(30, null, value));
+            }
+            return result;
+        };
+        return ProblemMatcherParser;
+    }(parsers_1.Parser));
+    exports.ProblemMatcherParser = ProblemMatcherParser;
+    (function (Schemas) {
+        Schemas.WatchingPattern = {
+            type: 'object',
+            additionalProperties: false,
+            properties: {
+                regexp: {
+                    type: 'string',
+                    description: nls_1.localize(31, null)
+                },
+                file: {
+                    type: 'integer',
+                    description: nls_1.localize(32, null)
+                },
+            }
+        };
+        Schemas.PatternType = {
+            anyOf: [
+                {
+                    type: 'string',
+                    description: nls_1.localize(33, null)
+                },
+                Schemas.ProblemPattern,
+                Schemas.MultLileProblemPattern
+            ],
+            description: nls_1.localize(34, null)
+        };
+        Schemas.ProblemMatcher = {
+            type: 'object',
+            additionalProperties: false,
+            properties: {
+                base: {
+                    type: 'string',
+                    description: nls_1.localize(35, null)
+                },
+                owner: {
+                    type: 'string',
+                    description: nls_1.localize(36, null)
+                },
+                severity: {
+                    type: 'string',
+                    enum: ['error', 'warning', 'info'],
+                    description: nls_1.localize(37, null)
+                },
+                applyTo: {
+                    type: 'string',
+                    enum: ['allDocuments', 'openDocuments', 'closedDocuments'],
+                    description: nls_1.localize(38, null)
+                },
+                pattern: Schemas.PatternType,
+                fileLocation: {
+                    oneOf: [
+                        {
+                            type: 'string',
+                            enum: ['absolute', 'relative']
+                        },
+                        {
+                            type: 'array',
+                            items: {
+                                type: 'string'
+                            }
+                        }
+                    ],
+                    description: nls_1.localize(39, null)
+                },
+                watching: {
+                    type: 'object',
+                    additionalProperties: false,
+                    properties: {
+                        activeOnStart: {
+                            type: 'boolean',
+                            description: nls_1.localize(40, null)
+                        },
+                        beginsPattern: {
+                            oneOf: [
+                                {
+                                    type: 'string'
+                                },
+                                Schemas.WatchingPattern
+                            ],
+                            description: nls_1.localize(41, null)
+                        },
+                        endsPattern: {
+                            oneOf: [
+                                {
+                                    type: 'string'
+                                },
+                                Schemas.WatchingPattern
+                            ],
+                            description: nls_1.localize(42, null)
+                        }
+                    },
+                    description: nls_1.localize(43, null)
+                }
+            }
+        };
+        Schemas.LegacyProblemMatcher = Objects.clone(Schemas.ProblemMatcher);
+        Schemas.LegacyProblemMatcher.properties = Objects.clone(Schemas.LegacyProblemMatcher.properties);
+        Schemas.LegacyProblemMatcher.properties['watchedTaskBeginsRegExp'] = {
+            type: 'string',
+            deprecationMessage: nls_1.localize(44, null),
+            description: nls_1.localize(45, null)
+        };
+        Schemas.LegacyProblemMatcher.properties['watchedTaskEndsRegExp'] = {
+            type: 'string',
+            deprecationMessage: nls_1.localize(46, null),
+            description: nls_1.localize(47, null)
+        };
+        Schemas.NamedProblemMatcher = Objects.clone(Schemas.ProblemMatcher);
+        Schemas.NamedProblemMatcher.properties = Objects.clone(Schemas.NamedProblemMatcher.properties);
+        Schemas.NamedProblemMatcher.properties['name'] = {
+            type: 'string',
+            description: nls_1.localize(48, null)
+        };
+    })(Schemas = exports.Schemas || (exports.Schemas = {}));
+    var problemMatchersExtPoint = extensionsRegistry_1.ExtensionsRegistry.registerExtensionPoint('problemMatchers', [problemPatternExtPoint], {
+        description: nls_1.localize(49, null),
+        type: 'array',
+        items: Schemas.NamedProblemMatcher
+    });
+    var ProblemMatcherRegistryImpl = (function () {
+        function ProblemMatcherRegistryImpl() {
+            var _this = this;
+            this.matchers = Object.create(null);
+            this.fillDefaults();
+            this.readyPromise = new winjs_base_1.TPromise(function (resolve, reject) {
+                problemMatchersExtPoint.setHandler(function (extensions) {
+                    try {
+                        extensions.forEach(function (extension) {
+                            var problemMatchers = extension.value;
+                            var parser = new ProblemMatcherParser(new ExtensionRegistryReporter(extension.collector));
+                            for (var _i = 0, problemMatchers_1 = problemMatchers; _i < problemMatchers_1.length; _i++) {
+                                var matcher_1 = problemMatchers_1[_i];
+                                var result = parser.parse(matcher_1);
+                                if (result && isNamedProblemMatcher(result)) {
+                                    _this.add(result.name, result);
+                                }
+                            }
+                        });
+                    }
+                    catch (error) {
+                    }
+                    var matcher = _this.get('tsc-watch');
+                    if (matcher) {
+                        matcher.tscWatch = true;
+                    }
+                    resolve(undefined);
+                });
+            });
+        }
+        ProblemMatcherRegistryImpl.prototype.onReady = function () {
+            return this.readyPromise;
+        };
+        ProblemMatcherRegistryImpl.prototype.add = function (name, matcher) {
+            this.matchers[name] = matcher;
+        };
+        ProblemMatcherRegistryImpl.prototype.get = function (name) {
+            return this.matchers[name];
+        };
+        ProblemMatcherRegistryImpl.prototype.exists = function (name) {
+            return !!this.matchers[name];
+        };
+        ProblemMatcherRegistryImpl.prototype.remove = function (name) {
+            delete this.matchers[name];
+        };
+        ProblemMatcherRegistryImpl.prototype.fillDefaults = function () {
+            this.add('msCompile', {
+                owner: 'msCompile',
+                applyTo: ApplyToKind.allDocuments,
+                fileLocation: FileLocationKind.Absolute,
+                pattern: exports.ProblemPatternRegistry.get('msCompile')
+            });
+            this.add('lessCompile', {
+                owner: 'lessCompile',
+                applyTo: ApplyToKind.allDocuments,
+                fileLocation: FileLocationKind.Absolute,
+                pattern: exports.ProblemPatternRegistry.get('lessCompile'),
+                severity: severity_1.default.Error
+            });
+            this.add('gulp-tsc', {
+                owner: 'typescript',
+                applyTo: ApplyToKind.closedDocuments,
+                fileLocation: FileLocationKind.Relative,
+                filePrefix: '${cwd}',
+                pattern: exports.ProblemPatternRegistry.get('gulp-tsc')
+            });
+            this.add('jshint', {
+                owner: 'jshint',
+                applyTo: ApplyToKind.allDocuments,
+                fileLocation: FileLocationKind.Absolute,
+                pattern: exports.ProblemPatternRegistry.get('jshint')
+            });
+            this.add('jshint-stylish', {
+                owner: 'jshint',
+                applyTo: ApplyToKind.allDocuments,
+                fileLocation: FileLocationKind.Absolute,
+                pattern: exports.ProblemPatternRegistry.get('jshint-stylish')
+            });
+            this.add('eslint-compact', {
+                owner: 'eslint',
+                applyTo: ApplyToKind.allDocuments,
+                fileLocation: FileLocationKind.Relative,
+                filePrefix: '${cwd}',
+                pattern: exports.ProblemPatternRegistry.get('eslint-compact')
+            });
+            this.add('eslint-stylish', {
+                owner: 'eslint',
+                applyTo: ApplyToKind.allDocuments,
+                fileLocation: FileLocationKind.Absolute,
+                pattern: exports.ProblemPatternRegistry.get('eslint-stylish')
+            });
+            this.add('go', {
+                owner: 'go',
+                applyTo: ApplyToKind.allDocuments,
+                fileLocation: FileLocationKind.Relative,
+                filePrefix: '${cwd}',
+                pattern: exports.ProblemPatternRegistry.get('go')
+            });
+        };
+        return ProblemMatcherRegistryImpl;
+    }());
+    exports.ProblemMatcherRegistry = new ProblemMatcherRegistryImpl();
+});
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-define(__m[83/*vs/platform/statusbar/common/statusbar*/], __M([0/*require*/,1/*exports*/,11/*vs/platform/instantiation/common/instantiation*/]), function (require, exports, instantiation_1) {
+define(__m[78/*vs/platform/statusbar/common/statusbar*/], __M([1/*require*/,0/*exports*/,11/*vs/platform/instantiation/common/instantiation*/]), function (require, exports, instantiation_1) {
     'use strict';
     exports.IStatusbarService = instantiation_1.createDecorator('statusbarService');
     var StatusbarAlignment;
@@ -17124,7 +16001,7 @@ define(__m[83/*vs/platform/statusbar/common/statusbar*/], __M([0/*require*/,1/*e
     })(StatusbarAlignment = exports.StatusbarAlignment || (exports.StatusbarAlignment = {}));
 });
 
-define(__m[84/*vs/platform/workspace/common/workspace*/], __M([0/*require*/,1/*exports*/,7/*vs/base/common/uri*/,11/*vs/platform/instantiation/common/instantiation*/,14/*vs/base/common/paths*/]), function (require, exports, uri_1, instantiation_1, paths) {
+define(__m[79/*vs/platform/workspace/common/workspace*/], __M([1/*require*/,0/*exports*/,7/*vs/base/common/uri*/,11/*vs/platform/instantiation/common/instantiation*/,20/*vs/base/common/paths*/,69/*vs/platform/files/common/files*/,13/*vs/base/common/platform*/]), function (require, exports, uri_1, instantiation_1, paths, files_1, platform_1) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -17143,7 +16020,7 @@ define(__m[84/*vs/platform/workspace/common/workspace*/], __M([0/*require*/,1/*e
         };
         WorkspaceContextService.prototype.isInsideWorkspace = function (resource) {
             if (resource && this.workspace) {
-                return paths.isEqualOrParent(resource.fsPath, this.workspace.resource.fsPath);
+                return files_1.isEqualOrParent(resource.fsPath, this.workspace.resource.fsPath, !platform_1.isLinux /* ignorecase */);
             }
             return false;
         };
@@ -17164,33 +16041,7 @@ define(__m[84/*vs/platform/workspace/common/workspace*/], __M([0/*require*/,1/*e
     exports.WorkspaceContextService = WorkspaceContextService;
 });
 
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
-define(__m[85/*vs/workbench/api/node/extHostFunctions*/], __M([0/*require*/,1/*exports*/,9/*vs/base/common/async*/,41/*vs/editor/common/diff/diffComputer*/]), function (require, exports, async_1, diffComputer_1) {
-    'use strict';
-    function getTextDocumentLines(document) {
-        var result = [];
-        for (var i = 0; i < document.lineCount; i++) {
-            result.push(document.lineAt(i).text);
-        }
-        return result;
-    }
-    function computeDiff(oneDocument, otherDocument) {
-        var oneLines = getTextDocumentLines(oneDocument);
-        var otherLines = getTextDocumentLines(otherDocument);
-        var computer = new diffComputer_1.DiffComputer(oneLines, otherLines, {
-            shouldPostProcessCharChanges: false,
-            shouldIgnoreTrimWhitespace: false,
-            shouldConsiderTrimWhitespaceInEmptyCase: false
-        });
-        return async_1.toThenable(computer.computeDiff());
-    }
-    exports.computeDiff = computeDiff;
-});
-
-define(__m[86/*vs/workbench/api/node/extHostProgress*/], __M([0/*require*/,1/*exports*/]), function (require, exports) {
+define(__m[80/*vs/workbench/api/node/extHostProgress*/], __M([1/*require*/,0/*exports*/]), function (require, exports) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -17226,13 +16077,8 @@ define(__m[86/*vs/workbench/api/node/extHostProgress*/], __M([0/*require*/,1/*ex
                 this._proxy.$progressEnd(handle);
                 throw err;
             }
-            return p.then(function (result) {
-                _this._proxy.$progressEnd(handle);
-                return result;
-            }, function (err) {
-                _this._proxy.$progressEnd(handle);
-                throw err;
-            });
+            p.then(function (result) { return _this._proxy.$progressEnd(handle); }, function (err) { return _this._proxy.$progressEnd(handle); });
+            return p;
         };
         return ExtHostProgress;
     }());
@@ -17244,7 +16090,7 @@ define(__m[86/*vs/workbench/api/node/extHostProgress*/], __M([0/*require*/,1/*ex
 
 
 
-define(__m[6/*vs/workbench/api/node/extHostTypes*/], __M([0/*require*/,1/*exports*/,7/*vs/base/common/uri*/,5/*vs/base/common/errors*/]), function (require, exports, uri_1, errors_1) {
+define(__m[5/*vs/workbench/api/node/extHostTypes*/], __M([1/*require*/,0/*exports*/,7/*vs/base/common/uri*/,6/*vs/base/common/errors*/]), function (require, exports, uri_1, errors_1) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -17638,6 +16484,11 @@ define(__m[6/*vs/workbench/api/node/extHostTypes*/], __M([0/*require*/,1/*export
         return Selection;
     }(Range));
     exports.Selection = Selection;
+    var EndOfLine;
+    (function (EndOfLine) {
+        EndOfLine[EndOfLine["LF"] = 1] = "LF";
+        EndOfLine[EndOfLine["CRLF"] = 2] = "CRLF";
+    })(EndOfLine = exports.EndOfLine || (exports.EndOfLine = {}));
     var TextEdit = (function () {
         function TextEdit(range, newText) {
             this.range = range;
@@ -17662,12 +16513,17 @@ define(__m[6/*vs/workbench/api/node/extHostTypes*/], __M([0/*require*/,1/*export
         TextEdit.delete = function (range) {
             return TextEdit.replace(range, '');
         };
+        TextEdit.setEndOfLine = function (eol) {
+            var ret = new TextEdit(undefined, undefined);
+            ret.newEol = eol;
+            return ret;
+        };
         Object.defineProperty(TextEdit.prototype, "range", {
             get: function () {
                 return this._range;
             },
             set: function (value) {
-                if (!value) {
+                if (value && !Range.isRange(value)) {
                     throw errors_1.illegalArgument('range');
                 }
                 this._range = value;
@@ -17680,7 +16536,23 @@ define(__m[6/*vs/workbench/api/node/extHostTypes*/], __M([0/*require*/,1/*export
                 return this._newText || '';
             },
             set: function (value) {
+                if (value && typeof value !== 'string') {
+                    throw errors_1.illegalArgument('newText');
+                }
                 this._newText = value;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(TextEdit.prototype, "newEol", {
+            get: function () {
+                return this._newEol;
+            },
+            set: function (value) {
+                if (value && typeof value !== 'number') {
+                    throw errors_1.illegalArgument('newEol');
+                }
+                this._newEol = value;
             },
             enumerable: true,
             configurable: true
@@ -17688,7 +16560,8 @@ define(__m[6/*vs/workbench/api/node/extHostTypes*/], __M([0/*require*/,1/*export
         TextEdit.prototype.toJSON = function () {
             return {
                 range: this.range,
-                newText: this.newText
+                newText: this.newText,
+                newEol: this._newEol
             };
         };
         return TextEdit;
@@ -17945,6 +16818,8 @@ define(__m[6/*vs/workbench/api/node/extHostTypes*/], __M([0/*require*/,1/*export
         SymbolKind[SymbolKind["Object"] = 18] = "Object";
         SymbolKind[SymbolKind["Key"] = 19] = "Key";
         SymbolKind[SymbolKind["Null"] = 20] = "Null";
+        SymbolKind[SymbolKind["EnumMember"] = 21] = "EnumMember";
+        SymbolKind[SymbolKind["Struct"] = 22] = "Struct";
     })(SymbolKind = exports.SymbolKind || (exports.SymbolKind = {}));
     var SymbolInformation = (function () {
         function SymbolInformation(name, kind, rangeOrContainer, locationOrUri, containerName) {
@@ -18032,6 +16907,9 @@ define(__m[6/*vs/workbench/api/node/extHostTypes*/], __M([0/*require*/,1/*export
         CompletionItemKind[CompletionItemKind["File"] = 16] = "File";
         CompletionItemKind[CompletionItemKind["Reference"] = 17] = "Reference";
         CompletionItemKind[CompletionItemKind["Folder"] = 18] = "Folder";
+        CompletionItemKind[CompletionItemKind["EnumMember"] = 19] = "EnumMember";
+        CompletionItemKind[CompletionItemKind["Constant"] = 20] = "Constant";
+        CompletionItemKind[CompletionItemKind["Struct"] = 21] = "Struct";
     })(CompletionItemKind = exports.CompletionItemKind || (exports.CompletionItemKind = {}));
     var CompletionItem = (function () {
         function CompletionItem(label, kind) {
@@ -18074,11 +16952,6 @@ define(__m[6/*vs/workbench/api/node/extHostTypes*/], __M([0/*require*/,1/*export
         StatusBarAlignment[StatusBarAlignment["Left"] = 1] = "Left";
         StatusBarAlignment[StatusBarAlignment["Right"] = 2] = "Right";
     })(StatusBarAlignment = exports.StatusBarAlignment || (exports.StatusBarAlignment = {}));
-    var EndOfLine;
-    (function (EndOfLine) {
-        EndOfLine[EndOfLine["LF"] = 1] = "LF";
-        EndOfLine[EndOfLine["CRLF"] = 2] = "CRLF";
-    })(EndOfLine = exports.EndOfLine || (exports.EndOfLine = {}));
     var TextEditorLineNumbersStyle;
     (function (TextEditorLineNumbersStyle) {
         TextEditorLineNumbersStyle[TextEditorLineNumbersStyle["Off"] = 0] = "Off";
@@ -18129,9 +17002,506 @@ define(__m[6/*vs/workbench/api/node/extHostTypes*/], __M([0/*require*/,1/*export
         return DocumentLink;
     }());
     exports.DocumentLink = DocumentLink;
+    var FileLocationKind;
+    (function (FileLocationKind) {
+        FileLocationKind[FileLocationKind["Auto"] = 1] = "Auto";
+        FileLocationKind[FileLocationKind["Relative"] = 2] = "Relative";
+        FileLocationKind[FileLocationKind["Absolute"] = 3] = "Absolute";
+    })(FileLocationKind = exports.FileLocationKind || (exports.FileLocationKind = {}));
+    var ApplyToKind;
+    (function (ApplyToKind) {
+        ApplyToKind[ApplyToKind["AllDocuments"] = 1] = "AllDocuments";
+        ApplyToKind[ApplyToKind["OpenDocuments"] = 2] = "OpenDocuments";
+        ApplyToKind[ApplyToKind["ClosedDocuments"] = 3] = "ClosedDocuments";
+    })(ApplyToKind = exports.ApplyToKind || (exports.ApplyToKind = {}));
+    var RevealKind;
+    (function (RevealKind) {
+        RevealKind[RevealKind["Always"] = 1] = "Always";
+        RevealKind[RevealKind["Silent"] = 2] = "Silent";
+        RevealKind[RevealKind["Never"] = 3] = "Never";
+    })(RevealKind = exports.RevealKind || (exports.RevealKind = {}));
+    var BaseTask = (function () {
+        function BaseTask(name, problemMatchers) {
+            if (typeof name !== 'string') {
+                throw errors_1.illegalArgument('name');
+            }
+            this._name = name;
+            this._identifier = name;
+            this._problemMatchers = problemMatchers || [];
+            this._isBackground = false;
+            this._terminal = Object.create(null);
+        }
+        Object.defineProperty(BaseTask.prototype, "identifier", {
+            get: function () {
+                return this._identifier;
+            },
+            set: function (value) {
+                if (typeof name !== 'string') {
+                    throw errors_1.illegalArgument('identifier');
+                }
+                this._identifier = value;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(BaseTask.prototype, "name", {
+            get: function () {
+                return this._name;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(BaseTask.prototype, "isBackground", {
+            get: function () {
+                return this._isBackground;
+            },
+            set: function (value) {
+                if (value !== true && value !== false) {
+                    value = false;
+                }
+                this._isBackground = value;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(BaseTask.prototype, "terminal", {
+            get: function () {
+                return this._terminal;
+            },
+            set: function (value) {
+                if (value === void 0 || value === null) {
+                    value = Object.create(null);
+                }
+                this._terminal = value;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(BaseTask.prototype, "problemMatchers", {
+            get: function () {
+                return this._problemMatchers;
+            },
+            set: function (value) {
+                if (!Array.isArray(value)) {
+                    value = [];
+                }
+                this._problemMatchers = value;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        return BaseTask;
+    }());
+    exports.BaseTask = BaseTask;
+    var ProblemMatcher;
+    (function (ProblemMatcher) {
+        function is(value) {
+            var candidate = value;
+            return candidate && !!candidate.pattern;
+        }
+        ProblemMatcher.is = is;
+    })(ProblemMatcher || (ProblemMatcher = {}));
+    var ProcessTask = (function (_super) {
+        __extends(ProcessTask, _super);
+        function ProcessTask(name, process) {
+            var rest = [];
+            for (var _i = 2; _i < arguments.length; _i++) {
+                rest[_i - 2] = arguments[_i];
+            }
+            var _this = this;
+            if (typeof process !== 'string') {
+                throw errors_1.illegalArgument('process');
+            }
+            var _a = ProcessTask.parseArguments(rest), args = _a.args, options = _a.options, problemMatchers = _a.problemMatchers;
+            _this = _super.call(this, name, problemMatchers) || this;
+            _this._process = process;
+            _this._args = args;
+            _this._options = options || Object.create(null);
+            return _this;
+        }
+        ProcessTask.parseArguments = function (restArgs) {
+            var args = [];
+            var options = undefined;
+            var problemMatchers = [];
+            if (!restArgs || restArgs.length === 0) {
+                return { args: args, options: options, problemMatchers: problemMatchers };
+            }
+            var current = restArgs[0];
+            if (Array.isArray(current)) {
+                args = current;
+                restArgs.shift();
+                current = restArgs[0];
+            }
+            if (ProblemMatcher.is(current)) {
+                problemMatchers = restArgs;
+            }
+            else if (current) {
+                options = current;
+                restArgs.shift();
+                if (restArgs.length > 0) {
+                    problemMatchers = restArgs;
+                }
+            }
+            return { args: args, options: options, problemMatchers: problemMatchers };
+        };
+        Object.defineProperty(ProcessTask.prototype, "process", {
+            get: function () {
+                return this._process;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(ProcessTask.prototype, "args", {
+            get: function () {
+                return this._args;
+            },
+            set: function (value) {
+                if (!Array.isArray(value)) {
+                    value = [];
+                }
+                this._args = value;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(ProcessTask.prototype, "options", {
+            get: function () {
+                return this._options;
+            },
+            set: function (value) {
+                if (value === void 0 || value === null) {
+                    value = Object.create(null);
+                }
+                this._options = value;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        return ProcessTask;
+    }(BaseTask));
+    exports.ProcessTask = ProcessTask;
+    var ShellTask = (function (_super) {
+        __extends(ShellTask, _super);
+        function ShellTask(name, commandLine) {
+            var rest = [];
+            for (var _i = 2; _i < arguments.length; _i++) {
+                rest[_i - 2] = arguments[_i];
+            }
+            var _this = this;
+            if (typeof commandLine !== 'string') {
+                throw errors_1.illegalArgument('commandLine');
+            }
+            var _a = ShellTask.parseArguments(rest), options = _a.options, problemMatchers = _a.problemMatchers;
+            _this = _super.call(this, name, problemMatchers) || this;
+            _this._commandLine = commandLine;
+            _this._options = options || Object.create(null);
+            return _this;
+        }
+        ShellTask.parseArguments = function (restArgs) {
+            var options = undefined;
+            var problemMatchers = [];
+            if (!restArgs || restArgs.length === 0) {
+                return { options: options, problemMatchers: problemMatchers };
+            }
+            var current = restArgs[0];
+            if (current && !ProblemMatcher.is(current)) {
+                options = current;
+                restArgs.shift();
+                current = restArgs[0];
+            }
+            if (ProblemMatcher.is(current)) {
+                problemMatchers = restArgs;
+            }
+            return { options: options, problemMatchers: problemMatchers };
+        };
+        Object.defineProperty(ShellTask.prototype, "commandLine", {
+            get: function () {
+                return this._commandLine;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(ShellTask.prototype, "options", {
+            get: function () {
+                return this._options;
+            },
+            set: function (value) {
+                if (value === void 0 || value === null) {
+                    value = Object.create(null);
+                }
+                this._options = value;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        return ShellTask;
+    }(BaseTask));
+    exports.ShellTask = ShellTask;
 });
 
-define(__m[88/*vs/workbench/services/configuration/common/configurationEditing*/], __M([0/*require*/,1/*exports*/,11/*vs/platform/instantiation/common/instantiation*/]), function (require, exports, instantiation_1) {
+
+
+
+
+
+define(__m[36/*vs/workbench/api/node/extHostDocumentData*/], __M([1/*require*/,0/*exports*/,23/*vs/base/common/assert*/,9/*vs/base/common/strings*/,47/*vs/editor/common/model/mirrorModel2*/,5/*vs/workbench/api/node/extHostTypes*/,92/*vs/editor/common/model/wordHelper*/,2/*vs/base/common/winjs.base*/]), function (require, exports, assert_1, strings_1, mirrorModel2_1, extHostTypes_1, wordHelper_1, winjs_base_1) {
+    /*---------------------------------------------------------------------------------------------
+     *  Copyright (c) Microsoft Corporation. All rights reserved.
+     *  Licensed under the MIT License. See License.txt in the project root for license information.
+     *--------------------------------------------------------------------------------------------*/
+    'use strict';
+    var _modeId2WordDefinition = new Map();
+    function setWordDefinitionFor(modeId, wordDefinition) {
+        _modeId2WordDefinition.set(modeId, wordDefinition);
+    }
+    exports.setWordDefinitionFor = setWordDefinitionFor;
+    function getWordDefinitionFor(modeId) {
+        return _modeId2WordDefinition.get(modeId);
+    }
+    exports.getWordDefinitionFor = getWordDefinitionFor;
+    var ExtHostDocumentData = (function (_super) {
+        __extends(ExtHostDocumentData, _super);
+        function ExtHostDocumentData(proxy, uri, lines, eol, languageId, versionId, isDirty) {
+            var _this = _super.call(this, uri, lines, eol, versionId) || this;
+            _this._textLines = [];
+            _this._isDisposed = false;
+            _this._proxy = proxy;
+            _this._languageId = languageId;
+            _this._isDirty = isDirty;
+            return _this;
+        }
+        ExtHostDocumentData.prototype.dispose = function () {
+            // we don't really dispose documents but let
+            // extensions still read from them. some
+            // operations, live saving, will now error tho
+            assert_1.ok(!this._isDisposed);
+            this._isDisposed = true;
+            this._isDirty = false;
+        };
+        ExtHostDocumentData.prototype.equalLines = function (_a) {
+            var lines = _a.lines;
+            var len = lines.length;
+            if (len !== this._lines.length) {
+                return false;
+            }
+            for (var i = 0; i < len; i++) {
+                if (lines[i] !== this._lines[i]) {
+                    return false;
+                }
+            }
+            return true;
+        };
+        Object.defineProperty(ExtHostDocumentData.prototype, "document", {
+            get: function () {
+                if (!this._document) {
+                    var data_1 = this;
+                    this._document = {
+                        get uri() { return data_1._uri; },
+                        get fileName() { return data_1._uri.fsPath; },
+                        get isUntitled() { return data_1._uri.scheme !== 'file'; },
+                        get languageId() { return data_1._languageId; },
+                        get version() { return data_1._versionId; },
+                        get isClosed() { return data_1._isDisposed; },
+                        get isDirty() { return data_1._isDirty; },
+                        save: function () { return data_1._save(); },
+                        getText: function (range) { return range ? data_1._getTextInRange(range) : data_1.getText(); },
+                        get eol() { return data_1._eol === '\n' ? extHostTypes_1.EndOfLine.LF : extHostTypes_1.EndOfLine.CRLF; },
+                        get lineCount() { return data_1._lines.length; },
+                        lineAt: function (lineOrPos) { return data_1._lineAt(lineOrPos); },
+                        offsetAt: function (pos) { return data_1._offsetAt(pos); },
+                        positionAt: function (offset) { return data_1._positionAt(offset); },
+                        validateRange: function (ran) { return data_1._validateRange(ran); },
+                        validatePosition: function (pos) { return data_1._validatePosition(pos); },
+                        getWordRangeAtPosition: function (pos, regexp) { return data_1._getWordRangeAtPosition(pos, regexp); }
+                    };
+                }
+                return Object.freeze(this._document);
+            },
+            enumerable: true,
+            configurable: true
+        });
+        ExtHostDocumentData.prototype._acceptLanguageId = function (newLanguageId) {
+            assert_1.ok(!this._isDisposed);
+            this._languageId = newLanguageId;
+        };
+        ExtHostDocumentData.prototype._acceptIsDirty = function (isDirty) {
+            assert_1.ok(!this._isDisposed);
+            this._isDirty = isDirty;
+        };
+        ExtHostDocumentData.prototype._save = function () {
+            if (this._isDisposed) {
+                return winjs_base_1.TPromise.wrapError('Document has been closed');
+            }
+            return this._proxy.$trySaveDocument(this._uri);
+        };
+        ExtHostDocumentData.prototype._getTextInRange = function (_range) {
+            var range = this._validateRange(_range);
+            if (range.isEmpty) {
+                return '';
+            }
+            if (range.isSingleLine) {
+                return this._lines[range.start.line].substring(range.start.character, range.end.character);
+            }
+            var lineEnding = this._eol, startLineIndex = range.start.line, endLineIndex = range.end.line, resultLines = [];
+            resultLines.push(this._lines[startLineIndex].substring(range.start.character));
+            for (var i = startLineIndex + 1; i < endLineIndex; i++) {
+                resultLines.push(this._lines[i]);
+            }
+            resultLines.push(this._lines[endLineIndex].substring(0, range.end.character));
+            return resultLines.join(lineEnding);
+        };
+        ExtHostDocumentData.prototype._lineAt = function (lineOrPosition) {
+            var line;
+            if (lineOrPosition instanceof extHostTypes_1.Position) {
+                line = lineOrPosition.line;
+            }
+            else if (typeof lineOrPosition === 'number') {
+                line = lineOrPosition;
+            }
+            if (line < 0 || line >= this._lines.length) {
+                throw new Error('Illegal value for `line`');
+            }
+            var result = this._textLines[line];
+            if (!result || result.lineNumber !== line || result.text !== this._lines[line]) {
+                var text = this._lines[line];
+                var firstNonWhitespaceCharacterIndex = /^(\s*)/.exec(text)[1].length;
+                var range = new extHostTypes_1.Range(line, 0, line, text.length);
+                var rangeIncludingLineBreak = line < this._lines.length - 1
+                    ? new extHostTypes_1.Range(line, 0, line + 1, 0)
+                    : range;
+                result = Object.freeze({
+                    lineNumber: line,
+                    range: range,
+                    rangeIncludingLineBreak: rangeIncludingLineBreak,
+                    text: text,
+                    firstNonWhitespaceCharacterIndex: firstNonWhitespaceCharacterIndex,
+                    isEmptyOrWhitespace: firstNonWhitespaceCharacterIndex === text.length
+                });
+                this._textLines[line] = result;
+            }
+            return result;
+        };
+        ExtHostDocumentData.prototype._offsetAt = function (position) {
+            position = this._validatePosition(position);
+            this._ensureLineStarts();
+            return this._lineStarts.getAccumulatedValue(position.line - 1) + position.character;
+        };
+        ExtHostDocumentData.prototype._positionAt = function (offset) {
+            offset = Math.floor(offset);
+            offset = Math.max(0, offset);
+            this._ensureLineStarts();
+            var out = this._lineStarts.getIndexOf(offset);
+            var lineLength = this._lines[out.index].length;
+            // Ensure we return a valid position
+            return new extHostTypes_1.Position(out.index, Math.min(out.remainder, lineLength));
+        };
+        // ---- range math
+        ExtHostDocumentData.prototype._validateRange = function (range) {
+            if (!(range instanceof extHostTypes_1.Range)) {
+                throw new Error('Invalid argument');
+            }
+            var start = this._validatePosition(range.start);
+            var end = this._validatePosition(range.end);
+            if (start === range.start && end === range.end) {
+                return range;
+            }
+            return new extHostTypes_1.Range(start.line, start.character, end.line, end.character);
+        };
+        ExtHostDocumentData.prototype._validatePosition = function (position) {
+            if (!(position instanceof extHostTypes_1.Position)) {
+                throw new Error('Invalid argument');
+            }
+            var line = position.line, character = position.character;
+            var hasChanged = false;
+            if (line < 0) {
+                line = 0;
+                character = 0;
+                hasChanged = true;
+            }
+            else if (line >= this._lines.length) {
+                line = this._lines.length - 1;
+                character = this._lines[line].length;
+                hasChanged = true;
+            }
+            else {
+                var maxCharacter = this._lines[line].length;
+                if (character < 0) {
+                    character = 0;
+                    hasChanged = true;
+                }
+                else if (character > maxCharacter) {
+                    character = maxCharacter;
+                    hasChanged = true;
+                }
+            }
+            if (!hasChanged) {
+                return position;
+            }
+            return new extHostTypes_1.Position(line, character);
+        };
+        ExtHostDocumentData.prototype._getWordRangeAtPosition = function (_position, regexp) {
+            var position = this._validatePosition(_position);
+            if (!regexp || strings_1.regExpLeadsToEndlessLoop(regexp)) {
+                regexp = getWordDefinitionFor(this._languageId);
+            }
+            var wordAtText = wordHelper_1.getWordAtText(position.character + 1, wordHelper_1.ensureValidWordDefinition(regexp), this._lines[position.line], 0);
+            if (wordAtText) {
+                return new extHostTypes_1.Range(position.line, wordAtText.startColumn - 1, position.line, wordAtText.endColumn - 1);
+            }
+            return undefined;
+        };
+        return ExtHostDocumentData;
+    }(mirrorModel2_1.MirrorModel2));
+    exports.ExtHostDocumentData = ExtHostDocumentData;
+});
+
+define(__m[83/*vs/workbench/parts/tasks/common/tasks*/], __M([1/*require*/,0/*exports*/,10/*vs/base/common/types*/]), function (require, exports, Types) {
+    /*---------------------------------------------------------------------------------------------
+     *  Copyright (c) Microsoft Corporation. All rights reserved.
+     *  Licensed under the MIT License. See License.txt in the project root for license information.
+     *--------------------------------------------------------------------------------------------*/
+    'use strict';
+    var ShellConfiguration;
+    (function (ShellConfiguration) {
+        function is(value) {
+            var candidate = value;
+            return candidate && Types.isString(candidate.executable) && (candidate.args === void 0 || Types.isStringArray(candidate.args));
+        }
+        ShellConfiguration.is = is;
+    })(ShellConfiguration = exports.ShellConfiguration || (exports.ShellConfiguration = {}));
+    var ShowOutput;
+    (function (ShowOutput) {
+        ShowOutput[ShowOutput["Always"] = 1] = "Always";
+        ShowOutput[ShowOutput["Silent"] = 2] = "Silent";
+        ShowOutput[ShowOutput["Never"] = 3] = "Never";
+    })(ShowOutput = exports.ShowOutput || (exports.ShowOutput = {}));
+    (function (ShowOutput) {
+        function fromString(value) {
+            value = value.toLowerCase();
+            if (value === 'always') {
+                return ShowOutput.Always;
+            }
+            else if (value === 'silent') {
+                return ShowOutput.Silent;
+            }
+            else if (value === 'never') {
+                return ShowOutput.Never;
+            }
+            else {
+                return undefined;
+            }
+        }
+        ShowOutput.fromString = fromString;
+    })(ShowOutput = exports.ShowOutput || (exports.ShowOutput = {}));
+    var ExecutionEngine;
+    (function (ExecutionEngine) {
+        ExecutionEngine[ExecutionEngine["Unknown"] = 0] = "Unknown";
+        ExecutionEngine[ExecutionEngine["Terminal"] = 1] = "Terminal";
+        ExecutionEngine[ExecutionEngine["Process"] = 2] = "Process";
+    })(ExecutionEngine = exports.ExecutionEngine || (exports.ExecutionEngine = {}));
+});
+
+define(__m[84/*vs/workbench/services/configuration/common/configurationEditing*/], __M([1/*require*/,0/*exports*/,11/*vs/platform/instantiation/common/instantiation*/]), function (require, exports, instantiation_1) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -18153,7 +17523,7 @@ define(__m[88/*vs/workbench/services/configuration/common/configurationEditing*/
          */
         ConfigurationEditingErrorCode[ConfigurationEditingErrorCode["ERROR_NO_WORKSPACE_OPENED"] = 2] = "ERROR_NO_WORKSPACE_OPENED";
         /**
-         * Error when trying to write to the configuration file while it is dirty in the editor.
+         * Error when trying to write and save to the configuration file while it is dirty in the editor.
          */
         ConfigurationEditingErrorCode[ConfigurationEditingErrorCode["ERROR_CONFIGURATION_FILE_DIRTY"] = 3] = "ERROR_CONFIGURATION_FILE_DIRTY";
         /**
@@ -18174,7 +17544,7 @@ define(__m[88/*vs/workbench/services/configuration/common/configurationEditing*/
     })(ConfigurationTarget = exports.ConfigurationTarget || (exports.ConfigurationTarget = {}));
 });
 
-define(__m[89/*vs/workbench/services/textfile/common/textfiles*/], __M([0/*require*/,1/*exports*/,11/*vs/platform/instantiation/common/instantiation*/]), function (require, exports, instantiation_1) {
+define(__m[85/*vs/workbench/services/textfile/common/textfiles*/], __M([1/*require*/,0/*exports*/,11/*vs/platform/instantiation/common/instantiation*/]), function (require, exports, instantiation_1) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -18188,8 +17558,20 @@ define(__m[89/*vs/workbench/services/textfile/common/textfiles*/], __M([0/*requi
         ModelState[ModelState["SAVED"] = 0] = "SAVED";
         ModelState[ModelState["DIRTY"] = 1] = "DIRTY";
         ModelState[ModelState["PENDING_SAVE"] = 2] = "PENDING_SAVE";
+        /**
+         * A model is in conflict mode when changes cannot be saved because the
+         * underlying file has changed. Models in conflict mode are always dirty.
+         */
         ModelState[ModelState["CONFLICT"] = 3] = "CONFLICT";
-        ModelState[ModelState["ERROR"] = 4] = "ERROR";
+        /**
+         * A model is in orphan state when the underlying file has been deleted.
+         */
+        ModelState[ModelState["ORPHAN"] = 4] = "ORPHAN";
+        /**
+         * Any error that happens during a save that is not causing the CONFLICT state.
+         * Models in error mode are always diry.
+         */
+        ModelState[ModelState["ERROR"] = 5] = "ERROR";
     })(ModelState = exports.ModelState || (exports.ModelState = {}));
     var StateChange;
     (function (StateChange) {
@@ -18200,6 +17582,7 @@ define(__m[89/*vs/workbench/services/textfile/common/textfiles*/], __M([0/*requi
         StateChange[StateChange["REVERTED"] = 4] = "REVERTED";
         StateChange[StateChange["ENCODING"] = 5] = "ENCODING";
         StateChange[StateChange["CONTENT_CHANGE"] = 6] = "CONTENT_CHANGE";
+        StateChange[StateChange["ORPHANED_CHANGE"] = 7] = "ORPHANED_CHANGE";
     })(StateChange = exports.StateChange || (exports.StateChange = {}));
     var TextFileModelChangeEvent = (function () {
         function TextFileModelChangeEvent(model, kind) {
@@ -18242,7 +17625,7 @@ define(__m[89/*vs/workbench/services/textfile/common/textfiles*/], __M([0/*requi
     exports.ITextFileService = instantiation_1.createDecorator(exports.TEXT_FILE_SERVICE_ID);
 });
 
-define(__m[15/*vs/workbench/api/node/extHostTypeConverters*/], __M([0/*require*/,1/*exports*/,17/*vs/base/common/severity*/,6/*vs/workbench/api/node/extHostTypes*/,73/*vs/platform/editor/common/editor*/,7/*vs/base/common/uri*/,89/*vs/workbench/services/textfile/common/textfiles*/]), function (require, exports, severity_1, types, editor_1, uri_1, textfiles_1) {
+define(__m[8/*vs/workbench/api/node/extHostTypeConverters*/], __M([1/*require*/,0/*exports*/,18/*vs/base/common/severity*/,45/*vs/editor/common/modes*/,5/*vs/workbench/api/node/extHostTypes*/,66/*vs/platform/editor/common/editor*/,21/*vs/editor/common/editorCommon*/,7/*vs/base/common/uri*/,85/*vs/workbench/services/textfile/common/textfiles*/]), function (require, exports, severity_1, modes, types, editor_1, editorCommon_1, uri_1, textfiles_1) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -18266,6 +17649,9 @@ define(__m[15/*vs/workbench/api/node/extHostTypeConverters*/], __M([0/*require*/
     }
     exports.fromSelection = fromSelection;
     function fromRange(range) {
+        if (!range) {
+            return undefined;
+        }
         var start = range.start, end = range.end;
         return {
             startLineNumber: start.line + 1,
@@ -18276,6 +17662,9 @@ define(__m[15/*vs/workbench/api/node/extHostTypeConverters*/], __M([0/*require*/
     }
     exports.fromRange = fromRange;
     function toRange(range) {
+        if (!range) {
+            return undefined;
+        }
         var startLineNumber = range.startLineNumber, startColumn = range.startColumn, endLineNumber = range.endLineNumber, endColumn = range.endColumn;
         return new types.Range(startLineNumber - 1, startColumn - 1, endLineNumber - 1, endColumn - 1);
     }
@@ -18377,44 +17766,67 @@ define(__m[15/*vs/workbench/api/node/extHostTypeConverters*/], __M([0/*require*/
         from: function (edit) {
             return {
                 text: edit.newText,
+                eol: EndOfLine.from(edit.newEol),
                 range: fromRange(edit.range)
             };
         },
         to: function (edit) {
-            return new types.TextEdit(toRange(edit.range), edit.text);
+            var result = new types.TextEdit(toRange(edit.range), edit.text);
+            result.newEol = EndOfLine.to(edit.eol);
+            return result;
         }
     };
-    var SymbolInformation;
-    (function (SymbolInformation) {
-        function fromOutlineEntry(entry) {
-            return new types.SymbolInformation(entry.name, entry.kind, toRange(entry.location.range), entry.location.uri, entry.containerName);
+    var SymbolKind;
+    (function (SymbolKind) {
+        var _fromMapping = Object.create(null);
+        _fromMapping[types.SymbolKind.File] = modes.SymbolKind.File;
+        _fromMapping[types.SymbolKind.Module] = modes.SymbolKind.Module;
+        _fromMapping[types.SymbolKind.Namespace] = modes.SymbolKind.Namespace;
+        _fromMapping[types.SymbolKind.Package] = modes.SymbolKind.Package;
+        _fromMapping[types.SymbolKind.Class] = modes.SymbolKind.Class;
+        _fromMapping[types.SymbolKind.Method] = modes.SymbolKind.Method;
+        _fromMapping[types.SymbolKind.Property] = modes.SymbolKind.Property;
+        _fromMapping[types.SymbolKind.Field] = modes.SymbolKind.Field;
+        _fromMapping[types.SymbolKind.Constructor] = modes.SymbolKind.Constructor;
+        _fromMapping[types.SymbolKind.Enum] = modes.SymbolKind.Enum;
+        _fromMapping[types.SymbolKind.Interface] = modes.SymbolKind.Interface;
+        _fromMapping[types.SymbolKind.Function] = modes.SymbolKind.Function;
+        _fromMapping[types.SymbolKind.Variable] = modes.SymbolKind.Variable;
+        _fromMapping[types.SymbolKind.Constant] = modes.SymbolKind.Constant;
+        _fromMapping[types.SymbolKind.String] = modes.SymbolKind.String;
+        _fromMapping[types.SymbolKind.Number] = modes.SymbolKind.Number;
+        _fromMapping[types.SymbolKind.Boolean] = modes.SymbolKind.Boolean;
+        _fromMapping[types.SymbolKind.Array] = modes.SymbolKind.Array;
+        _fromMapping[types.SymbolKind.Object] = modes.SymbolKind.Object;
+        _fromMapping[types.SymbolKind.Key] = modes.SymbolKind.Key;
+        _fromMapping[types.SymbolKind.Null] = modes.SymbolKind.Null;
+        _fromMapping[types.SymbolKind.EnumMember] = modes.SymbolKind.EnumMember;
+        _fromMapping[types.SymbolKind.Struct] = modes.SymbolKind.Struct;
+        function from(kind) {
+            return _fromMapping[kind] || modes.SymbolKind.Property;
         }
-        SymbolInformation.fromOutlineEntry = fromOutlineEntry;
-        function toOutlineEntry(symbol) {
-            return {
-                name: symbol.name,
-                kind: symbol.kind,
-                containerName: symbol.containerName,
-                location: {
-                    uri: symbol.location.uri,
-                    range: fromRange(symbol.location.range)
+        SymbolKind.from = from;
+        function to(kind) {
+            for (var k in _fromMapping) {
+                if (_fromMapping[k] === kind) {
+                    return Number(k);
                 }
-            };
+            }
+            return types.SymbolKind.Property;
         }
-        SymbolInformation.toOutlineEntry = toOutlineEntry;
-    })(SymbolInformation = exports.SymbolInformation || (exports.SymbolInformation = {}));
+        SymbolKind.to = to;
+    })(SymbolKind = exports.SymbolKind || (exports.SymbolKind = {}));
     function fromSymbolInformation(info) {
         return {
             name: info.name,
-            type: types.SymbolKind[info.kind || types.SymbolKind.Property].toLowerCase(),
+            kind: SymbolKind.from(info.kind),
             containerName: info.containerName,
-            range: info.location && fromRange(info.location.range),
-            resource: info.location && info.location.uri,
+            location: exports.location.from(info.location)
         };
     }
     exports.fromSymbolInformation = fromSymbolInformation;
     function toSymbolInformation(bearing) {
-        return new types.SymbolInformation(bearing.name, types.SymbolKind[bearing.type.charAt(0).toUpperCase() + bearing.type.substr(1)], bearing.containerName, new types.Location(bearing.resource, toRange(bearing.range)));
+        return new types.SymbolInformation(bearing.name, SymbolKind.to(bearing.kind), bearing.containerName, exports.location.to(bearing.location));
     }
     exports.toSymbolInformation = toSymbolInformation;
     exports.location = {
@@ -18453,11 +17865,14 @@ define(__m[15/*vs/workbench/api/node/extHostTypeConverters*/], __M([0/*require*/
                 case types.CompletionItemKind.Variable: return 'variable';
                 case types.CompletionItemKind.Class: return 'class';
                 case types.CompletionItemKind.Interface: return 'interface';
+                case types.CompletionItemKind.Struct: return 'struct';
                 case types.CompletionItemKind.Module: return 'module';
                 case types.CompletionItemKind.Property: return 'property';
                 case types.CompletionItemKind.Unit: return 'unit';
                 case types.CompletionItemKind.Value: return 'value';
+                case types.CompletionItemKind.Constant: return 'constant';
                 case types.CompletionItemKind.Enum: return 'enum';
+                case types.CompletionItemKind.EnumMember: return 'enum-member';
                 case types.CompletionItemKind.Keyword: return 'keyword';
                 case types.CompletionItemKind.Snippet: return 'snippet';
                 case types.CompletionItemKind.Text: return 'text';
@@ -18549,9 +17964,32 @@ define(__m[15/*vs/workbench/api/node/extHostTypeConverters*/], __M([0/*require*/
         }
         TextDocumentSaveReason.to = to;
     })(TextDocumentSaveReason = exports.TextDocumentSaveReason || (exports.TextDocumentSaveReason = {}));
+    var EndOfLine;
+    (function (EndOfLine) {
+        function from(eol) {
+            if (eol === types.EndOfLine.CRLF) {
+                return editorCommon_1.EndOfLineSequence.CRLF;
+            }
+            else if (eol === types.EndOfLine.LF) {
+                return editorCommon_1.EndOfLineSequence.LF;
+            }
+            return undefined;
+        }
+        EndOfLine.from = from;
+        function to(eol) {
+            if (eol === editorCommon_1.EndOfLineSequence.CRLF) {
+                return types.EndOfLine.CRLF;
+            }
+            else if (eol === editorCommon_1.EndOfLineSequence.LF) {
+                return types.EndOfLine.LF;
+            }
+            return undefined;
+        }
+        EndOfLine.to = to;
+    })(EndOfLine = exports.EndOfLine || (exports.EndOfLine = {}));
 });
 
-define(__m[91/*vs/workbench/api/node/extHostApiCommands*/], __M([0/*require*/,1/*exports*/,7/*vs/base/common/uri*/,3/*vs/base/common/winjs.base*/,15/*vs/workbench/api/node/extHostTypeConverters*/,6/*vs/workbench/api/node/extHostTypes*/]), function (require, exports, uri_1, winjs_base_1, typeConverters, types) {
+define(__m[87/*vs/workbench/api/node/extHostApiCommands*/], __M([1/*require*/,0/*exports*/,7/*vs/base/common/uri*/,2/*vs/base/common/winjs.base*/,8/*vs/workbench/api/node/extHostTypeConverters*/,5/*vs/workbench/api/node/extHostTypes*/]), function (require, exports, uri_1, winjs_base_1, typeConverters, types) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -18698,7 +18136,7 @@ define(__m[91/*vs/workbench/api/node/extHostApiCommands*/], __M([0/*require*/,1/
             this._register('vscode.previewHtml', function (uri, position, label) {
                 return _this._commands.executeCommand('_workbench.previewHtml', uri, typeof position === 'number' && typeConverters.fromViewColumn(position), label);
             }, {
-                description: "\n\t\t\t\t\tRender the html of the resource in an editor view.\n\n\t\t\t\t\tLinks contained in the document will be handled by VS Code whereby it supports `file`-resources and\n\t\t\t\t\t[virtual](https://github.com/Microsoft/vscode/blob/master/src/vs/vscode.d.ts#L3295)-resources\n\t\t\t\t\tas well as triggering commands using the `command`-scheme. Use the query part of a command-uri to pass along JSON-encoded\n\t\t\t\t\targuments - note that URL-encoding must be applied. The snippet below defines a command-link that calls the _previewHtml_\n\t\t\t\t\tcommand and passes along an uri:\n\t\t\t\t\t```\n\t\t\t\t\tlet href = encodeURI('command:vscode.previewHtml?' + JSON.stringify(someUri));\n\t\t\t\t\tlet html = '<a href=\"' + href + '\">Show Resource...</a>.';\n\t\t\t\t\t```\n\n\t\t\t\t\tThe body element of the displayed html is dynamically annotated with one of the following css classes in order to\n\t\t\t\t\tcommunicate the kind of color theme vscode is currently using: `vscode-light`, `vscode-dark`, or `vscode-high-contrast'.\n\t\t\t\t",
+                description: "\n\t\t\t\t\tRender the html of the resource in an editor view.\n\n\t\t\t\t\tSee [working with the html preview](https://code.visualstudio.com/docs/extensionAPI/vscode-api-commands#working-with-the-html-preview) for more information about the html preview's intergration with the editor and for best practices for extension authors.\n\t\t\t\t",
                 args: [
                     { name: 'uri', description: 'Uri of the resource to preview.', constraint: function (value) { return value instanceof uri_1.default || typeof value === 'string'; } },
                     { name: 'column', description: '(optional) Column in which to preview.', constraint: function (value) { return typeof value === 'undefined' || (typeof value === 'number' && typeof types.ViewColumn[value] === 'string'); } },
@@ -18882,7 +18320,7 @@ define(__m[91/*vs/workbench/api/node/extHostApiCommands*/], __M([0/*require*/,1/
             };
             return this._commands.executeCommand('_executeDocumentSymbolProvider', args).then(function (value) {
                 if (value && Array.isArray(value.entries)) {
-                    return value.entries.map(typeConverters.SymbolInformation.fromOutlineEntry);
+                    return value.entries.map(typeConverters.toSymbolInformation);
                 }
                 return undefined;
             });
@@ -18964,1760 +18402,18 @@ define(__m[91/*vs/workbench/api/node/extHostApiCommands*/], __M([0/*require*/,1/
     exports.ExtHostApiCommands = ExtHostApiCommands;
 });
 
-define(__m[92/*vs/workbench/services/thread/common/abstractThreadService*/], __M([0/*require*/,1/*exports*/]), function (require, exports) {
-    /*---------------------------------------------------------------------------------------------
-     *  Copyright (c) Microsoft Corporation. All rights reserved.
-     *  Licensed under the MIT License. See License.txt in the project root for license information.
-     *--------------------------------------------------------------------------------------------*/
-    'use strict';
-    // declare var Proxy:any; // TODO@TypeScript
-    var AbstractThreadService = (function () {
-        function AbstractThreadService(isMain) {
-            this._proxies = Object.create(null);
-            this._isMain = isMain;
-            this._locals = Object.create(null);
-            this._proxies = Object.create(null);
-        }
-        AbstractThreadService.prototype.handle = function (rpcId, methodName, args) {
-            if (!this._locals[rpcId]) {
-                throw new Error('Unknown actor ' + rpcId);
-            }
-            var actor = this._locals[rpcId];
-            var method = actor[methodName];
-            if (typeof method !== 'function') {
-                throw new Error('Unknown method ' + methodName + ' on actor ' + rpcId);
-            }
-            return method.apply(actor, args);
-        };
-        AbstractThreadService.prototype.get = function (identifier) {
-            if (!this._proxies[identifier.id]) {
-                this._proxies[identifier.id] = this._createProxy(identifier.id, identifier.methodNames);
-            }
-            return this._proxies[identifier.id];
-        };
-        AbstractThreadService.prototype._createProxy = function (id, methodNames) {
-            // Check below how to switch to native proxies
-            var result = {};
-            for (var i = 0; i < methodNames.length; i++) {
-                var methodName = methodNames[i];
-                result[methodName] = this.createMethodProxy(id, methodName);
-            }
-            return result;
-            // let handler = {
-            // 	get: (target, name) => {
-            // 		return (...myArgs: any[]) => {
-            // 			return this._callOnRemote(id, name, myArgs);
-            // 		};
-            // 	}
-            // };
-            // return new Proxy({}, handler);
-        };
-        AbstractThreadService.prototype.createMethodProxy = function (id, methodName) {
-            var _this = this;
-            return function () {
-                var myArgs = [];
-                for (var _i = 0; _i < arguments.length; _i++) {
-                    myArgs[_i] = arguments[_i];
-                }
-                return _this._callOnRemote(id, methodName, myArgs);
-            };
-        };
-        AbstractThreadService.prototype.set = function (identifier, value) {
-            if (identifier.isMain !== this._isMain) {
-                throw new Error('Mismatch in object registration!');
-            }
-            this._locals[identifier.id] = value;
-        };
-        return AbstractThreadService;
-    }());
-    exports.AbstractThreadService = AbstractThreadService;
-});
-
-
-
-
-
-
-define(__m[93/*vs/workbench/services/thread/common/extHostThreadService*/], __M([0/*require*/,1/*exports*/,92/*vs/workbench/services/thread/common/abstractThreadService*/]), function (require, exports, abstractThreadService_1) {
-    /*---------------------------------------------------------------------------------------------
-     *  Copyright (c) Microsoft Corporation. All rights reserved.
-     *  Licensed under the MIT License. See License.txt in the project root for license information.
-     *--------------------------------------------------------------------------------------------*/
-    'use strict';
-    var ExtHostThreadService = (function (_super) {
-        __extends(ExtHostThreadService, _super);
-        function ExtHostThreadService(remoteCom) {
-            var _this = _super.call(this, false) || this;
-            _this._remoteCom = remoteCom;
-            _this._remoteCom.setManyHandler(_this);
-            return _this;
-        }
-        ExtHostThreadService.prototype._callOnRemote = function (proxyId, path, args) {
-            return this._remoteCom.callOnRemote(proxyId, path, args);
-        };
-        return ExtHostThreadService;
-    }(abstractThreadService_1.AbstractThreadService));
-    exports.ExtHostThreadService = ExtHostThreadService;
-});
-
-define(__m[94/*vs/workbench/services/thread/common/threadService*/], __M([0/*require*/,1/*exports*/,11/*vs/platform/instantiation/common/instantiation*/]), function (require, exports, instantiation_1) {
-    /*---------------------------------------------------------------------------------------------
-     *  Copyright (c) Microsoft Corporation. All rights reserved.
-     *  Licensed under the MIT License. See License.txt in the project root for license information.
-     *--------------------------------------------------------------------------------------------*/
-    'use strict';
-    exports.IThreadService = instantiation_1.createDecorator('threadService');
-    var ProxyIdentifier = (function () {
-        function ProxyIdentifier(isMain, id, ctor) {
-            this.isMain = isMain;
-            this.id = id;
-            this.methodNames = [];
-            for (var prop in ctor.prototype) {
-                if (typeof ctor.prototype[prop] === 'function') {
-                    this.methodNames.push(prop);
-                }
-            }
-        }
-        return ProxyIdentifier;
-    }());
-    exports.ProxyIdentifier = ProxyIdentifier;
-    function createMainContextProxyIdentifier(identifier, ctor) {
-        return new ProxyIdentifier(true, 'm' + identifier, ctor);
-    }
-    exports.createMainContextProxyIdentifier = createMainContextProxyIdentifier;
-    function createExtHostContextProxyIdentifier(identifier, ctor) {
-        return new ProxyIdentifier(false, 'e' + identifier, ctor);
-    }
-    exports.createExtHostContextProxyIdentifier = createExtHostContextProxyIdentifier;
-});
-
-define(__m[2/*vs/workbench/api/node/extHost.protocol*/], __M([0/*require*/,1/*exports*/,94/*vs/workbench/services/thread/common/threadService*/]), function (require, exports, threadService_1) {
-    /*---------------------------------------------------------------------------------------------
-     *  Copyright (c) Microsoft Corporation. All rights reserved.
-     *  Licensed under the MIT License. See License.txt in the project root for license information.
-     *--------------------------------------------------------------------------------------------*/
-    'use strict';
-    var InstanceCollection = (function () {
-        function InstanceCollection() {
-            this._items = Object.create(null);
-        }
-        InstanceCollection.prototype.define = function (id) {
-            var that = this;
-            return new (function () {
-                function class_1() {
-                }
-                class_1.prototype.set = function (value) {
-                    that._set(id, value);
-                    return value;
-                };
-                return class_1;
-            }());
-        };
-        InstanceCollection.prototype._set = function (id, value) {
-            this._items[id.id] = value;
-        };
-        InstanceCollection.prototype.finish = function (isMain, threadService) {
-            var _this = this;
-            var expected = (isMain ? exports.MainContext : exports.ExtHostContext);
-            Object.keys(expected).forEach(function (key) {
-                var id = expected[key];
-                var value = _this._items[id.id];
-                if (!value) {
-                    throw new Error("Missing actor " + key + " (isMain: " + id.isMain + ", id:  " + id.id + ")");
-                }
-                threadService.set(id, value);
-            });
-        };
-        return InstanceCollection;
-    }());
-    exports.InstanceCollection = InstanceCollection;
-    function ni() { return new Error('Not implemented'); }
-    // --- main thread
-    var MainThreadCommandsShape = (function () {
-        function MainThreadCommandsShape() {
-        }
-        MainThreadCommandsShape.prototype.$registerCommand = function (id) { throw ni(); };
-        MainThreadCommandsShape.prototype.$unregisterCommand = function (id) { throw ni(); };
-        MainThreadCommandsShape.prototype.$executeCommand = function (id, args) { throw ni(); };
-        MainThreadCommandsShape.prototype.$getCommands = function () { throw ni(); };
-        return MainThreadCommandsShape;
-    }());
-    exports.MainThreadCommandsShape = MainThreadCommandsShape;
-    var MainThreadConfigurationShape = (function () {
-        function MainThreadConfigurationShape() {
-        }
-        MainThreadConfigurationShape.prototype.$updateConfigurationOption = function (target, key, value) { throw ni(); };
-        MainThreadConfigurationShape.prototype.$removeConfigurationOption = function (target, key) { throw ni(); };
-        return MainThreadConfigurationShape;
-    }());
-    exports.MainThreadConfigurationShape = MainThreadConfigurationShape;
-    var MainThreadDiagnosticsShape = (function () {
-        function MainThreadDiagnosticsShape() {
-        }
-        MainThreadDiagnosticsShape.prototype.$changeMany = function (owner, entries) { throw ni(); };
-        MainThreadDiagnosticsShape.prototype.$clear = function (owner) { throw ni(); };
-        return MainThreadDiagnosticsShape;
-    }());
-    exports.MainThreadDiagnosticsShape = MainThreadDiagnosticsShape;
-    var MainThreadDocumentsShape = (function () {
-        function MainThreadDocumentsShape() {
-        }
-        MainThreadDocumentsShape.prototype.$tryCreateDocument = function (options) { throw ni(); };
-        MainThreadDocumentsShape.prototype.$tryOpenDocument = function (uri) { throw ni(); };
-        MainThreadDocumentsShape.prototype.$registerTextContentProvider = function (handle, scheme) { throw ni(); };
-        MainThreadDocumentsShape.prototype.$onVirtualDocumentChange = function (uri, value) { throw ni(); };
-        MainThreadDocumentsShape.prototype.$unregisterTextContentProvider = function (handle) { throw ni(); };
-        MainThreadDocumentsShape.prototype.$trySaveDocument = function (uri) { throw ni(); };
-        return MainThreadDocumentsShape;
-    }());
-    exports.MainThreadDocumentsShape = MainThreadDocumentsShape;
-    var MainThreadEditorsShape = (function () {
-        function MainThreadEditorsShape() {
-        }
-        MainThreadEditorsShape.prototype.$tryShowTextDocument = function (resource, position, preserveFocus) { throw ni(); };
-        MainThreadEditorsShape.prototype.$registerTextEditorDecorationType = function (key, options) { throw ni(); };
-        MainThreadEditorsShape.prototype.$removeTextEditorDecorationType = function (key) { throw ni(); };
-        MainThreadEditorsShape.prototype.$tryShowEditor = function (id, position) { throw ni(); };
-        MainThreadEditorsShape.prototype.$tryHideEditor = function (id) { throw ni(); };
-        MainThreadEditorsShape.prototype.$trySetOptions = function (id, options) { throw ni(); };
-        MainThreadEditorsShape.prototype.$trySetDecorations = function (id, key, ranges) { throw ni(); };
-        MainThreadEditorsShape.prototype.$tryRevealRange = function (id, range, revealType) { throw ni(); };
-        MainThreadEditorsShape.prototype.$trySetSelections = function (id, selections) { throw ni(); };
-        MainThreadEditorsShape.prototype.$tryApplyEdits = function (id, modelVersionId, edits, opts) { throw ni(); };
-        MainThreadEditorsShape.prototype.$tryInsertSnippet = function (id, template, selections, opts) { throw ni(); };
-        return MainThreadEditorsShape;
-    }());
-    exports.MainThreadEditorsShape = MainThreadEditorsShape;
-    var MainThreadTreeExplorersShape = (function () {
-        function MainThreadTreeExplorersShape() {
-        }
-        MainThreadTreeExplorersShape.prototype.$registerTreeExplorerNodeProvider = function (providerId) { throw ni(); };
-        return MainThreadTreeExplorersShape;
-    }());
-    exports.MainThreadTreeExplorersShape = MainThreadTreeExplorersShape;
-    var MainThreadErrorsShape = (function () {
-        function MainThreadErrorsShape() {
-        }
-        MainThreadErrorsShape.prototype.onUnexpectedExtHostError = function (err) { throw ni(); };
-        return MainThreadErrorsShape;
-    }());
-    exports.MainThreadErrorsShape = MainThreadErrorsShape;
-    var MainThreadLanguageFeaturesShape = (function () {
-        function MainThreadLanguageFeaturesShape() {
-        }
-        MainThreadLanguageFeaturesShape.prototype.$unregister = function (handle) { throw ni(); };
-        MainThreadLanguageFeaturesShape.prototype.$registerOutlineSupport = function (handle, selector) { throw ni(); };
-        MainThreadLanguageFeaturesShape.prototype.$registerCodeLensSupport = function (handle, selector, eventHandle) { throw ni(); };
-        MainThreadLanguageFeaturesShape.prototype.$emitCodeLensEvent = function (eventHandle, event) { throw ni(); };
-        MainThreadLanguageFeaturesShape.prototype.$registerDeclaractionSupport = function (handle, selector) { throw ni(); };
-        MainThreadLanguageFeaturesShape.prototype.$registerImplementationSupport = function (handle, selector) { throw ni(); };
-        MainThreadLanguageFeaturesShape.prototype.$registerTypeDefinitionSupport = function (handle, selector) { throw ni(); };
-        MainThreadLanguageFeaturesShape.prototype.$registerHoverProvider = function (handle, selector) { throw ni(); };
-        MainThreadLanguageFeaturesShape.prototype.$registerDocumentHighlightProvider = function (handle, selector) { throw ni(); };
-        MainThreadLanguageFeaturesShape.prototype.$registerReferenceSupport = function (handle, selector) { throw ni(); };
-        MainThreadLanguageFeaturesShape.prototype.$registerQuickFixSupport = function (handle, selector) { throw ni(); };
-        MainThreadLanguageFeaturesShape.prototype.$registerDocumentFormattingSupport = function (handle, selector) { throw ni(); };
-        MainThreadLanguageFeaturesShape.prototype.$registerRangeFormattingSupport = function (handle, selector) { throw ni(); };
-        MainThreadLanguageFeaturesShape.prototype.$registerOnTypeFormattingSupport = function (handle, selector, autoFormatTriggerCharacters) { throw ni(); };
-        MainThreadLanguageFeaturesShape.prototype.$registerNavigateTypeSupport = function (handle) { throw ni(); };
-        MainThreadLanguageFeaturesShape.prototype.$registerRenameSupport = function (handle, selector) { throw ni(); };
-        MainThreadLanguageFeaturesShape.prototype.$registerSuggestSupport = function (handle, selector, triggerCharacters) { throw ni(); };
-        MainThreadLanguageFeaturesShape.prototype.$registerSignatureHelpProvider = function (handle, selector, triggerCharacter) { throw ni(); };
-        MainThreadLanguageFeaturesShape.prototype.$registerDocumentLinkProvider = function (handle, selector) { throw ni(); };
-        MainThreadLanguageFeaturesShape.prototype.$setLanguageConfiguration = function (handle, languageId, configuration) { throw ni(); };
-        return MainThreadLanguageFeaturesShape;
-    }());
-    exports.MainThreadLanguageFeaturesShape = MainThreadLanguageFeaturesShape;
-    var MainThreadLanguagesShape = (function () {
-        function MainThreadLanguagesShape() {
-        }
-        MainThreadLanguagesShape.prototype.$getLanguages = function () { throw ni(); };
-        return MainThreadLanguagesShape;
-    }());
-    exports.MainThreadLanguagesShape = MainThreadLanguagesShape;
-    var MainThreadMessageServiceShape = (function () {
-        function MainThreadMessageServiceShape() {
-        }
-        MainThreadMessageServiceShape.prototype.$showMessage = function (severity, message, options, commands) { throw ni(); };
-        return MainThreadMessageServiceShape;
-    }());
-    exports.MainThreadMessageServiceShape = MainThreadMessageServiceShape;
-    var MainThreadOutputServiceShape = (function () {
-        function MainThreadOutputServiceShape() {
-        }
-        MainThreadOutputServiceShape.prototype.$append = function (channelId, label, value) { throw ni(); };
-        MainThreadOutputServiceShape.prototype.$clear = function (channelId, label) { throw ni(); };
-        MainThreadOutputServiceShape.prototype.$dispose = function (channelId, label) { throw ni(); };
-        MainThreadOutputServiceShape.prototype.$reveal = function (channelId, label, preserveFocus) { throw ni(); };
-        MainThreadOutputServiceShape.prototype.$close = function (channelId) { throw ni(); };
-        return MainThreadOutputServiceShape;
-    }());
-    exports.MainThreadOutputServiceShape = MainThreadOutputServiceShape;
-    var MainThreadProgressShape = (function () {
-        function MainThreadProgressShape() {
-        }
-        MainThreadProgressShape.prototype.$startWindow = function (handle, title) { throw ni(); };
-        ;
-        MainThreadProgressShape.prototype.$startScm = function (handle) { throw ni(); };
-        ;
-        MainThreadProgressShape.prototype.$progressReport = function (handle, message) { throw ni(); };
-        MainThreadProgressShape.prototype.$progressEnd = function (handle) { throw ni(); };
-        return MainThreadProgressShape;
-    }());
-    exports.MainThreadProgressShape = MainThreadProgressShape;
-    var MainThreadTerminalServiceShape = (function () {
-        function MainThreadTerminalServiceShape() {
-        }
-        MainThreadTerminalServiceShape.prototype.$createTerminal = function (name, shellPath, shellArgs, waitOnExit) { throw ni(); };
-        MainThreadTerminalServiceShape.prototype.$dispose = function (terminalId) { throw ni(); };
-        MainThreadTerminalServiceShape.prototype.$hide = function (terminalId) { throw ni(); };
-        MainThreadTerminalServiceShape.prototype.$sendText = function (terminalId, text, addNewLine) { throw ni(); };
-        MainThreadTerminalServiceShape.prototype.$show = function (terminalId, preserveFocus) { throw ni(); };
-        return MainThreadTerminalServiceShape;
-    }());
-    exports.MainThreadTerminalServiceShape = MainThreadTerminalServiceShape;
-    var MainThreadQuickOpenShape = (function () {
-        function MainThreadQuickOpenShape() {
-        }
-        MainThreadQuickOpenShape.prototype.$show = function (options) { throw ni(); };
-        MainThreadQuickOpenShape.prototype.$setItems = function (items) { throw ni(); };
-        MainThreadQuickOpenShape.prototype.$setError = function (error) { throw ni(); };
-        MainThreadQuickOpenShape.prototype.$input = function (options, validateInput) { throw ni(); };
-        return MainThreadQuickOpenShape;
-    }());
-    exports.MainThreadQuickOpenShape = MainThreadQuickOpenShape;
-    var MainThreadStatusBarShape = (function () {
-        function MainThreadStatusBarShape() {
-        }
-        MainThreadStatusBarShape.prototype.$setEntry = function (id, extensionId, text, tooltip, command, color, alignment, priority) { throw ni(); };
-        MainThreadStatusBarShape.prototype.$dispose = function (id) { throw ni(); };
-        return MainThreadStatusBarShape;
-    }());
-    exports.MainThreadStatusBarShape = MainThreadStatusBarShape;
-    var MainThreadStorageShape = (function () {
-        function MainThreadStorageShape() {
-        }
-        MainThreadStorageShape.prototype.$getValue = function (shared, key) { throw ni(); };
-        MainThreadStorageShape.prototype.$setValue = function (shared, key, value) { throw ni(); };
-        return MainThreadStorageShape;
-    }());
-    exports.MainThreadStorageShape = MainThreadStorageShape;
-    var MainThreadTelemetryShape = (function () {
-        function MainThreadTelemetryShape() {
-        }
-        MainThreadTelemetryShape.prototype.$publicLog = function (eventName, data) { throw ni(); };
-        MainThreadTelemetryShape.prototype.$getTelemetryInfo = function () { throw ni(); };
-        return MainThreadTelemetryShape;
-    }());
-    exports.MainThreadTelemetryShape = MainThreadTelemetryShape;
-    var MainThreadWorkspaceShape = (function () {
-        function MainThreadWorkspaceShape() {
-        }
-        MainThreadWorkspaceShape.prototype.$startSearch = function (include, exclude, maxResults, requestId) { throw ni(); };
-        MainThreadWorkspaceShape.prototype.$cancelSearch = function (requestId) { throw ni(); };
-        MainThreadWorkspaceShape.prototype.$saveAll = function (includeUntitled) { throw ni(); };
-        MainThreadWorkspaceShape.prototype.$applyWorkspaceEdit = function (edits) { throw ni(); };
-        return MainThreadWorkspaceShape;
-    }());
-    exports.MainThreadWorkspaceShape = MainThreadWorkspaceShape;
-    var MainProcessExtensionServiceShape = (function () {
-        function MainProcessExtensionServiceShape() {
-        }
-        MainProcessExtensionServiceShape.prototype.$localShowMessage = function (severity, msg) { throw ni(); };
-        MainProcessExtensionServiceShape.prototype.$onExtensionActivated = function (extensionId) { throw ni(); };
-        MainProcessExtensionServiceShape.prototype.$onExtensionActivationFailed = function (extensionId) { throw ni(); };
-        return MainProcessExtensionServiceShape;
-    }());
-    exports.MainProcessExtensionServiceShape = MainProcessExtensionServiceShape;
-    var MainThreadSCMShape = (function () {
-        function MainThreadSCMShape() {
-        }
-        MainThreadSCMShape.prototype.$register = function (id, features) { throw ni(); };
-        MainThreadSCMShape.prototype.$unregister = function (id) { throw ni(); };
-        MainThreadSCMShape.prototype.$onChange = function (id, resources, count, state) { throw ni(); };
-        MainThreadSCMShape.prototype.$setInputBoxValue = function (value) { throw ni(); };
-        return MainThreadSCMShape;
-    }());
-    exports.MainThreadSCMShape = MainThreadSCMShape;
-    // -- extension host
-    var ExtHostCommandsShape = (function () {
-        function ExtHostCommandsShape() {
-        }
-        ExtHostCommandsShape.prototype.$executeContributedCommand = function (id) {
-            var args = [];
-            for (var _i = 1; _i < arguments.length; _i++) {
-                args[_i - 1] = arguments[_i];
-            }
-            throw ni();
-        };
-        ExtHostCommandsShape.prototype.$getContributedCommandHandlerDescriptions = function () { throw ni(); };
-        return ExtHostCommandsShape;
-    }());
-    exports.ExtHostCommandsShape = ExtHostCommandsShape;
-    var ExtHostConfigurationShape = (function () {
-        function ExtHostConfigurationShape() {
-        }
-        ExtHostConfigurationShape.prototype.$acceptConfigurationChanged = function (values) { throw ni(); };
-        return ExtHostConfigurationShape;
-    }());
-    exports.ExtHostConfigurationShape = ExtHostConfigurationShape;
-    var ExtHostDiagnosticsShape = (function () {
-        function ExtHostDiagnosticsShape() {
-        }
-        return ExtHostDiagnosticsShape;
-    }());
-    exports.ExtHostDiagnosticsShape = ExtHostDiagnosticsShape;
-    var ExtHostDocumentsShape = (function () {
-        function ExtHostDocumentsShape() {
-        }
-        ExtHostDocumentsShape.prototype.$provideTextDocumentContent = function (handle, uri) { throw ni(); };
-        ExtHostDocumentsShape.prototype.$acceptModelAdd = function (initData) { throw ni(); };
-        ExtHostDocumentsShape.prototype.$acceptModelModeChanged = function (strURL, oldModeId, newModeId) { throw ni(); };
-        ExtHostDocumentsShape.prototype.$acceptModelSaved = function (strURL) { throw ni(); };
-        ExtHostDocumentsShape.prototype.$acceptModelDirty = function (strURL) { throw ni(); };
-        ExtHostDocumentsShape.prototype.$acceptModelReverted = function (strURL) { throw ni(); };
-        ExtHostDocumentsShape.prototype.$acceptModelRemoved = function (strURL) { throw ni(); };
-        ExtHostDocumentsShape.prototype.$acceptModelChanged = function (strURL, events, isDirty) { throw ni(); };
-        return ExtHostDocumentsShape;
-    }());
-    exports.ExtHostDocumentsShape = ExtHostDocumentsShape;
-    var ExtHostDocumentSaveParticipantShape = (function () {
-        function ExtHostDocumentSaveParticipantShape() {
-        }
-        ExtHostDocumentSaveParticipantShape.prototype.$participateInSave = function (resource, reason) { throw ni(); };
-        return ExtHostDocumentSaveParticipantShape;
-    }());
-    exports.ExtHostDocumentSaveParticipantShape = ExtHostDocumentSaveParticipantShape;
-    var ExtHostEditorsShape = (function () {
-        function ExtHostEditorsShape() {
-        }
-        ExtHostEditorsShape.prototype.$acceptTextEditorAdd = function (data) { throw ni(); };
-        ExtHostEditorsShape.prototype.$acceptOptionsChanged = function (id, opts) { throw ni(); };
-        ExtHostEditorsShape.prototype.$acceptSelectionsChanged = function (id, event) { throw ni(); };
-        ExtHostEditorsShape.prototype.$acceptActiveEditorAndVisibleEditors = function (id, visibleIds) { throw ni(); };
-        ExtHostEditorsShape.prototype.$acceptEditorPositionData = function (data) { throw ni(); };
-        ExtHostEditorsShape.prototype.$acceptTextEditorRemove = function (id) { throw ni(); };
-        return ExtHostEditorsShape;
-    }());
-    exports.ExtHostEditorsShape = ExtHostEditorsShape;
-    var ExtHostTreeExplorersShape = (function () {
-        function ExtHostTreeExplorersShape() {
-        }
-        ExtHostTreeExplorersShape.prototype.$provideRootNode = function (providerId) { throw ni(); };
-        ;
-        ExtHostTreeExplorersShape.prototype.$resolveChildren = function (providerId, node) { throw ni(); };
-        ExtHostTreeExplorersShape.prototype.$getInternalCommand = function (providerId, node) { throw ni(); };
-        return ExtHostTreeExplorersShape;
-    }());
-    exports.ExtHostTreeExplorersShape = ExtHostTreeExplorersShape;
-    var ExtHostExtensionServiceShape = (function () {
-        function ExtHostExtensionServiceShape() {
-        }
-        ExtHostExtensionServiceShape.prototype.$localShowMessage = function (severity, msg) { throw ni(); };
-        ExtHostExtensionServiceShape.prototype.$activateExtension = function (extensionDescription) { throw ni(); };
-        return ExtHostExtensionServiceShape;
-    }());
-    exports.ExtHostExtensionServiceShape = ExtHostExtensionServiceShape;
-    var ExtHostFileSystemEventServiceShape = (function () {
-        function ExtHostFileSystemEventServiceShape() {
-        }
-        ExtHostFileSystemEventServiceShape.prototype.$onFileEvent = function (events) { throw ni(); };
-        return ExtHostFileSystemEventServiceShape;
-    }());
-    exports.ExtHostFileSystemEventServiceShape = ExtHostFileSystemEventServiceShape;
-    var ObjectIdentifier;
-    (function (ObjectIdentifier) {
-        ObjectIdentifier.name = '$ident';
-        function mixin(obj, id) {
-            Object.defineProperty(obj, ObjectIdentifier.name, { value: id, enumerable: true });
-            return obj;
-        }
-        ObjectIdentifier.mixin = mixin;
-        function of(obj) {
-            return obj[ObjectIdentifier.name];
-        }
-        ObjectIdentifier.of = of;
-    })(ObjectIdentifier = exports.ObjectIdentifier || (exports.ObjectIdentifier = {}));
-    var ExtHostHeapServiceShape = (function () {
-        function ExtHostHeapServiceShape() {
-        }
-        ExtHostHeapServiceShape.prototype.$onGarbageCollection = function (ids) { throw ni(); };
-        return ExtHostHeapServiceShape;
-    }());
-    exports.ExtHostHeapServiceShape = ExtHostHeapServiceShape;
-    var ExtHostLanguageFeaturesShape = (function () {
-        function ExtHostLanguageFeaturesShape() {
-        }
-        ExtHostLanguageFeaturesShape.prototype.$provideDocumentSymbols = function (handle, resource) { throw ni(); };
-        ExtHostLanguageFeaturesShape.prototype.$provideCodeLenses = function (handle, resource) { throw ni(); };
-        ExtHostLanguageFeaturesShape.prototype.$resolveCodeLens = function (handle, resource, symbol) { throw ni(); };
-        ExtHostLanguageFeaturesShape.prototype.$provideDefinition = function (handle, resource, position) { throw ni(); };
-        ExtHostLanguageFeaturesShape.prototype.$provideImplementation = function (handle, resource, position) { throw ni(); };
-        ExtHostLanguageFeaturesShape.prototype.$provideTypeDefinition = function (handle, resource, position) { throw ni(); };
-        ExtHostLanguageFeaturesShape.prototype.$provideHover = function (handle, resource, position) { throw ni(); };
-        ExtHostLanguageFeaturesShape.prototype.$provideDocumentHighlights = function (handle, resource, position) { throw ni(); };
-        ExtHostLanguageFeaturesShape.prototype.$provideReferences = function (handle, resource, position, context) { throw ni(); };
-        ExtHostLanguageFeaturesShape.prototype.$provideCodeActions = function (handle, resource, range) { throw ni(); };
-        ExtHostLanguageFeaturesShape.prototype.$provideDocumentFormattingEdits = function (handle, resource, options) { throw ni(); };
-        ExtHostLanguageFeaturesShape.prototype.$provideDocumentRangeFormattingEdits = function (handle, resource, range, options) { throw ni(); };
-        ExtHostLanguageFeaturesShape.prototype.$provideOnTypeFormattingEdits = function (handle, resource, position, ch, options) { throw ni(); };
-        ExtHostLanguageFeaturesShape.prototype.$provideWorkspaceSymbols = function (handle, search) { throw ni(); };
-        ExtHostLanguageFeaturesShape.prototype.$resolveWorkspaceSymbol = function (handle, symbol) { throw ni(); };
-        ExtHostLanguageFeaturesShape.prototype.$provideRenameEdits = function (handle, resource, position, newName) { throw ni(); };
-        ExtHostLanguageFeaturesShape.prototype.$provideCompletionItems = function (handle, resource, position) { throw ni(); };
-        ExtHostLanguageFeaturesShape.prototype.$resolveCompletionItem = function (handle, resource, position, suggestion) { throw ni(); };
-        ExtHostLanguageFeaturesShape.prototype.$provideSignatureHelp = function (handle, resource, position) { throw ni(); };
-        ExtHostLanguageFeaturesShape.prototype.$provideDocumentLinks = function (handle, resource) { throw ni(); };
-        ExtHostLanguageFeaturesShape.prototype.$resolveDocumentLink = function (handle, link) { throw ni(); };
-        return ExtHostLanguageFeaturesShape;
-    }());
-    exports.ExtHostLanguageFeaturesShape = ExtHostLanguageFeaturesShape;
-    var ExtHostQuickOpenShape = (function () {
-        function ExtHostQuickOpenShape() {
-        }
-        ExtHostQuickOpenShape.prototype.$onItemSelected = function (handle) { throw ni(); };
-        ExtHostQuickOpenShape.prototype.$validateInput = function (input) { throw ni(); };
-        return ExtHostQuickOpenShape;
-    }());
-    exports.ExtHostQuickOpenShape = ExtHostQuickOpenShape;
-    var ExtHostTerminalServiceShape = (function () {
-        function ExtHostTerminalServiceShape() {
-        }
-        ExtHostTerminalServiceShape.prototype.$acceptTerminalClosed = function (id) { throw ni(); };
-        ExtHostTerminalServiceShape.prototype.$acceptTerminalProcessId = function (id, processId) { throw ni(); };
-        return ExtHostTerminalServiceShape;
-    }());
-    exports.ExtHostTerminalServiceShape = ExtHostTerminalServiceShape;
-    var ExtHostSCMShape = (function () {
-        function ExtHostSCMShape() {
-        }
-        ExtHostSCMShape.prototype.$open = function (id, resourceGroupId, uri) { throw ni(); };
-        ExtHostSCMShape.prototype.$acceptChanges = function (id) { throw ni(); };
-        ExtHostSCMShape.prototype.$drag = function (id, fromResourceGroupId, fromUri, toResourceGroupId) { throw ni(); };
-        ExtHostSCMShape.prototype.$getOriginalResource = function (id, uri) { throw ni(); };
-        ExtHostSCMShape.prototype.$onInputBoxValueChange = function (value) { throw ni(); };
-        return ExtHostSCMShape;
-    }());
-    exports.ExtHostSCMShape = ExtHostSCMShape;
-    // --- proxy identifiers
-    exports.MainContext = {
-        MainThreadCommands: threadService_1.createMainContextProxyIdentifier('MainThreadCommands', MainThreadCommandsShape),
-        MainThreadConfiguration: threadService_1.createMainContextProxyIdentifier('MainThreadConfiguration', MainThreadConfigurationShape),
-        MainThreadDiagnostics: threadService_1.createMainContextProxyIdentifier('MainThreadDiagnostics', MainThreadDiagnosticsShape),
-        MainThreadDocuments: threadService_1.createMainContextProxyIdentifier('MainThreadDocuments', MainThreadDocumentsShape),
-        MainThreadEditors: threadService_1.createMainContextProxyIdentifier('MainThreadEditors', MainThreadEditorsShape),
-        MainThreadErrors: threadService_1.createMainContextProxyIdentifier('MainThreadErrors', MainThreadErrorsShape),
-        MainThreadExplorers: threadService_1.createMainContextProxyIdentifier('MainThreadExplorers', MainThreadTreeExplorersShape),
-        MainThreadLanguageFeatures: threadService_1.createMainContextProxyIdentifier('MainThreadLanguageFeatures', MainThreadLanguageFeaturesShape),
-        MainThreadLanguages: threadService_1.createMainContextProxyIdentifier('MainThreadLanguages', MainThreadLanguagesShape),
-        MainThreadMessageService: threadService_1.createMainContextProxyIdentifier('MainThreadMessageService', MainThreadMessageServiceShape),
-        MainThreadOutputService: threadService_1.createMainContextProxyIdentifier('MainThreadOutputService', MainThreadOutputServiceShape),
-        MainThreadProgress: threadService_1.createMainContextProxyIdentifier('MainThreadProgress', MainThreadProgressShape),
-        MainThreadQuickOpen: threadService_1.createMainContextProxyIdentifier('MainThreadQuickOpen', MainThreadQuickOpenShape),
-        MainThreadStatusBar: threadService_1.createMainContextProxyIdentifier('MainThreadStatusBar', MainThreadStatusBarShape),
-        MainThreadStorage: threadService_1.createMainContextProxyIdentifier('MainThreadStorage', MainThreadStorageShape),
-        MainThreadTelemetry: threadService_1.createMainContextProxyIdentifier('MainThreadTelemetry', MainThreadTelemetryShape),
-        MainThreadTerminalService: threadService_1.createMainContextProxyIdentifier('MainThreadTerminalService', MainThreadTerminalServiceShape),
-        MainThreadWorkspace: threadService_1.createMainContextProxyIdentifier('MainThreadWorkspace', MainThreadWorkspaceShape),
-        MainProcessExtensionService: threadService_1.createMainContextProxyIdentifier('MainProcessExtensionService', MainProcessExtensionServiceShape),
-        MainThreadSCM: threadService_1.createMainContextProxyIdentifier('MainThreadSCM', MainThreadSCMShape)
-    };
-    exports.ExtHostContext = {
-        ExtHostCommands: threadService_1.createExtHostContextProxyIdentifier('ExtHostCommands', ExtHostCommandsShape),
-        ExtHostConfiguration: threadService_1.createExtHostContextProxyIdentifier('ExtHostConfiguration', ExtHostConfigurationShape),
-        ExtHostDiagnostics: threadService_1.createExtHostContextProxyIdentifier('ExtHostDiagnostics', ExtHostDiagnosticsShape),
-        ExtHostDocuments: threadService_1.createExtHostContextProxyIdentifier('ExtHostDocuments', ExtHostDocumentsShape),
-        ExtHostDocumentSaveParticipant: threadService_1.createExtHostContextProxyIdentifier('ExtHostDocumentSaveParticipant', ExtHostDocumentSaveParticipantShape),
-        ExtHostEditors: threadService_1.createExtHostContextProxyIdentifier('ExtHostEditors', ExtHostEditorsShape),
-        ExtHostExplorers: threadService_1.createExtHostContextProxyIdentifier('ExtHostExplorers', ExtHostTreeExplorersShape),
-        ExtHostFileSystemEventService: threadService_1.createExtHostContextProxyIdentifier('ExtHostFileSystemEventService', ExtHostFileSystemEventServiceShape),
-        ExtHostHeapService: threadService_1.createExtHostContextProxyIdentifier('ExtHostHeapMonitor', ExtHostHeapServiceShape),
-        ExtHostLanguageFeatures: threadService_1.createExtHostContextProxyIdentifier('ExtHostLanguageFeatures', ExtHostLanguageFeaturesShape),
-        ExtHostQuickOpen: threadService_1.createExtHostContextProxyIdentifier('ExtHostQuickOpen', ExtHostQuickOpenShape),
-        ExtHostExtensionService: threadService_1.createExtHostContextProxyIdentifier('ExtHostExtensionService', ExtHostExtensionServiceShape),
-        ExtHostTerminalService: threadService_1.createExtHostContextProxyIdentifier('ExtHostTerminalService', ExtHostTerminalServiceShape),
-        ExtHostSCM: threadService_1.createExtHostContextProxyIdentifier('ExtHostSCM', ExtHostSCMShape)
-    };
-});
-
-
-
-
-
-
-define(__m[96/*vs/workbench/api/node/extHostCommands*/], __M([0/*require*/,1/*exports*/,16/*vs/base/common/types*/,3/*vs/base/common/winjs.base*/,6/*vs/workbench/api/node/extHostTypes*/,15/*vs/workbench/api/node/extHostTypeConverters*/,19/*vs/base/common/objects*/,2/*vs/workbench/api/node/extHost.protocol*/,20/*vs/base/common/arrays*/]), function (require, exports, types_1, winjs_base_1, extHostTypes, extHostTypeConverter, objects_1, extHost_protocol_1, arrays_1) {
-    /*---------------------------------------------------------------------------------------------
-     *  Copyright (c) Microsoft Corporation. All rights reserved.
-     *  Licensed under the MIT License. See License.txt in the project root for license information.
-     *--------------------------------------------------------------------------------------------*/
-    'use strict';
-    var ExtHostCommands = (function (_super) {
-        __extends(ExtHostCommands, _super);
-        function ExtHostCommands(threadService, extHostEditors, heapService) {
-            var _this = _super.call(this) || this;
-            _this._commands = new Map();
-            _this._extHostEditors = extHostEditors;
-            _this._proxy = threadService.get(extHost_protocol_1.MainContext.MainThreadCommands);
-            _this._converter = new CommandsConverter(_this, heapService);
-            return _this;
-        }
-        Object.defineProperty(ExtHostCommands.prototype, "converter", {
-            get: function () {
-                return this._converter;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        ExtHostCommands.prototype.registerCommand = function (id, callback, thisArg, description) {
-            var _this = this;
-            if (!id.trim().length) {
-                throw new Error('invalid id');
-            }
-            if (this._commands.has(id)) {
-                throw new Error('command with id already exists');
-            }
-            this._commands.set(id, { callback: callback, thisArg: thisArg, description: description });
-            this._proxy.$registerCommand(id);
-            return new extHostTypes.Disposable(function () {
-                if (_this._commands.delete(id)) {
-                    _this._proxy.$unregisterCommand(id);
-                }
-            });
-        };
-        ExtHostCommands.prototype.executeCommand = function (id) {
-            var args = [];
-            for (var _i = 1; _i < arguments.length; _i++) {
-                args[_i - 1] = arguments[_i];
-            }
-            if (this._commands.has(id)) {
-                // we stay inside the extension host and support
-                // to pass any kind of parameters around
-                return this.$executeContributedCommand.apply(this, [id].concat(args));
-            }
-            else {
-                // automagically convert some argument types
-                args = objects_1.cloneAndChange(args, function (value) {
-                    if (value instanceof extHostTypes.Position) {
-                        return extHostTypeConverter.fromPosition(value);
-                    }
-                    if (value instanceof extHostTypes.Range) {
-                        return extHostTypeConverter.fromRange(value);
-                    }
-                    if (value instanceof extHostTypes.Location) {
-                        return extHostTypeConverter.location.from(value);
-                    }
-                    if (!Array.isArray(value)) {
-                        return value;
-                    }
-                });
-                return this._proxy.$executeCommand(id, args);
-            }
-        };
-        ExtHostCommands.prototype.$executeContributedCommand = function (id) {
-            var args = [];
-            for (var _i = 1; _i < arguments.length; _i++) {
-                args[_i - 1] = arguments[_i];
-            }
-            var command = this._commands.get(id);
-            if (!command) {
-                return winjs_base_1.TPromise.wrapError("Contributed command '" + id + "' does not exist.");
-            }
-            var callback = command.callback, thisArg = command.thisArg, description = command.description;
-            if (description) {
-                for (var i = 0; i < description.args.length; i++) {
-                    try {
-                        types_1.validateConstraint(args[i], description.args[i].constraint);
-                    }
-                    catch (err) {
-                        return winjs_base_1.TPromise.wrapError("Running the contributed command:'" + id + "' failed. Illegal argument '" + description.args[i].name + "' - " + description.args[i].description);
-                    }
-                }
-            }
-            try {
-                var result = callback.apply(thisArg, args);
-                return winjs_base_1.TPromise.as(result);
-            }
-            catch (err) {
-                // console.log(err);
-                // try {
-                // 	console.log(toErrorMessage(err));
-                // } catch (err) {
-                // 	//
-                // }
-                return winjs_base_1.TPromise.wrapError("Running the contributed command:'" + id + "' failed.");
-            }
-        };
-        ExtHostCommands.prototype.getCommands = function (filterUnderscoreCommands) {
-            if (filterUnderscoreCommands === void 0) { filterUnderscoreCommands = false; }
-            return this._proxy.$getCommands().then(function (result) {
-                if (filterUnderscoreCommands) {
-                    result = result.filter(function (command) { return command[0] !== '_'; });
-                }
-                return result;
-            });
-        };
-        ExtHostCommands.prototype.$getContributedCommandHandlerDescriptions = function () {
-            var result = Object.create(null);
-            this._commands.forEach(function (command, id) {
-                var description = command.description;
-                if (description) {
-                    result[id] = description;
-                }
-            });
-            return winjs_base_1.TPromise.as(result);
-        };
-        return ExtHostCommands;
-    }(extHost_protocol_1.ExtHostCommandsShape));
-    exports.ExtHostCommands = ExtHostCommands;
-    var CommandsConverter = (function () {
-        // --- conversion between internal and api commands
-        function CommandsConverter(commands, heap) {
-            this._commands = commands;
-            this._heap = heap;
-            this._commands.registerCommand('_internal_command_delegation', this._executeConvertedCommand, this);
-        }
-        CommandsConverter.prototype.toInternal = function (command) {
-            if (!command) {
-                return undefined;
-            }
-            var result = {
-                id: command.command,
-                title: command.title
-            };
-            if (!arrays_1.isFalsyOrEmpty(command.arguments)) {
-                // we have a contributed command with arguments. that
-                // means we don't want to send the arguments around
-                var id = this._heap.keep(command);
-                extHost_protocol_1.ObjectIdentifier.mixin(result, id);
-                result.id = '_internal_command_delegation';
-                result.arguments = [id];
-            }
-            return result;
-        };
-        CommandsConverter.prototype.fromInternal = function (command) {
-            if (!command) {
-                return undefined;
-            }
-            var id = extHost_protocol_1.ObjectIdentifier.of(command);
-            if (typeof id === 'number') {
-                return this._heap.get(id);
-            }
-            else {
-                return {
-                    command: command.id,
-                    title: command.title,
-                    arguments: command.arguments
-                };
-            }
-        };
-        CommandsConverter.prototype._executeConvertedCommand = function () {
-            var args = [];
-            for (var _i = 0; _i < arguments.length; _i++) {
-                args[_i] = arguments[_i];
-            }
-            var actualCmd = this._heap.get(args[0]);
-            return (_a = this._commands).executeCommand.apply(_a, [actualCmd.command].concat(actualCmd.arguments));
-            var _a;
-        };
-        return CommandsConverter;
-    }());
-    exports.CommandsConverter = CommandsConverter;
-});
-
-
-
-
-
-
-define(__m[97/*vs/workbench/api/node/extHostConfiguration*/], __M([0/*require*/,1/*exports*/,19/*vs/base/common/objects*/,4/*vs/base/common/event*/,2/*vs/workbench/api/node/extHost.protocol*/,88/*vs/workbench/services/configuration/common/configurationEditing*/,82/*vs/platform/configuration/common/model*/]), function (require, exports, objects_1, event_1, extHost_protocol_1, configurationEditing_1, model_1) {
-    /*---------------------------------------------------------------------------------------------
-     *  Copyright (c) Microsoft Corporation. All rights reserved.
-     *  Licensed under the MIT License. See License.txt in the project root for license information.
-     *--------------------------------------------------------------------------------------------*/
-    'use strict';
-    function lookUp(tree, key) {
-        if (key) {
-            var parts = key.split('.');
-            var node = tree;
-            for (var i = 0; node && i < parts.length; i++) {
-                node = node[parts[i]];
-            }
-            return node;
-        }
-    }
-    function createUsefulConfiguration(data) {
-        var valueMap = Object.create(null);
-        for (var key in data) {
-            if (Object.prototype.hasOwnProperty.call(data, key)) {
-                valueMap[key] = data[key].value;
-            }
-        }
-        var valueTree = model_1.toValuesTree(valueMap, function (message) { return console.error("Conflict in configuration settings: " + message); });
-        return {
-            data: data,
-            valueTree: valueTree
-        };
-    }
-    var ExtHostConfiguration = (function (_super) {
-        __extends(ExtHostConfiguration, _super);
-        function ExtHostConfiguration(proxy, data) {
-            var _this = _super.call(this) || this;
-            _this._onDidChangeConfiguration = new event_1.Emitter();
-            _this._proxy = proxy;
-            _this._configuration = createUsefulConfiguration(data);
-            return _this;
-        }
-        Object.defineProperty(ExtHostConfiguration.prototype, "onDidChangeConfiguration", {
-            get: function () {
-                return this._onDidChangeConfiguration && this._onDidChangeConfiguration.event;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        ExtHostConfiguration.prototype.$acceptConfigurationChanged = function (data) {
-            this._configuration = createUsefulConfiguration(data);
-            this._onDidChangeConfiguration.fire(undefined);
-        };
-        ExtHostConfiguration.prototype.getConfiguration = function (section) {
-            var _this = this;
-            var config = section
-                ? lookUp(this._configuration.valueTree, section)
-                : this._configuration.valueTree;
-            var result = {
-                has: function (key) {
-                    return typeof lookUp(config, key) !== 'undefined';
-                },
-                get: function (key, defaultValue) {
-                    var result = lookUp(config, key);
-                    if (typeof result === 'undefined') {
-                        result = defaultValue;
-                    }
-                    return result;
-                },
-                update: function (key, value, global) {
-                    if (global === void 0) { global = false; }
-                    key = section ? section + "." + key : key;
-                    var target = global ? configurationEditing_1.ConfigurationTarget.USER : configurationEditing_1.ConfigurationTarget.WORKSPACE;
-                    if (value !== void 0) {
-                        return _this._proxy.$updateConfigurationOption(target, key, value);
-                    }
-                    else {
-                        return _this._proxy.$removeConfigurationOption(target, key);
-                    }
-                },
-                inspect: function (key) {
-                    key = section ? section + "." + key : key;
-                    var config = _this._configuration.data[key];
-                    if (config) {
-                        return {
-                            key: key,
-                            defaultValue: config.default,
-                            globalValue: config.user,
-                            workspaceValue: config.workspace
-                        };
-                    }
-                    return undefined;
-                }
-            };
-            if (typeof config === 'object') {
-                objects_1.mixin(result, config, false);
-            }
-            return Object.freeze(result);
-        };
-        return ExtHostConfiguration;
-    }(extHost_protocol_1.ExtHostConfigurationShape));
-    exports.ExtHostConfiguration = ExtHostConfiguration;
-});
-
-
-
-
-
-
-define(__m[98/*vs/workbench/api/node/extHostDiagnostics*/], __M([0/*require*/,1/*exports*/,64/*vs/nls!vs/workbench/api/node/extHostDiagnostics*/,7/*vs/base/common/uri*/,17/*vs/base/common/severity*/,2/*vs/workbench/api/node/extHost.protocol*/,6/*vs/workbench/api/node/extHostTypes*/]), function (require, exports, nls_1, uri_1, severity_1, extHost_protocol_1, extHostTypes_1) {
-    /*---------------------------------------------------------------------------------------------
-     *  Copyright (c) Microsoft Corporation. All rights reserved.
-     *  Licensed under the MIT License. See License.txt in the project root for license information.
-     *--------------------------------------------------------------------------------------------*/
-    'use strict';
-    var DiagnosticCollection = (function () {
-        function DiagnosticCollection(name, proxy) {
-            this._isDisposed = false;
-            this._data = new Map();
-            this._name = name;
-            this._proxy = proxy;
-        }
-        DiagnosticCollection.prototype.dispose = function () {
-            if (!this._isDisposed) {
-                this._proxy.$clear(this.name);
-                this._proxy = undefined;
-                this._data = undefined;
-                this._isDisposed = true;
-            }
-        };
-        Object.defineProperty(DiagnosticCollection.prototype, "name", {
-            get: function () {
-                this._checkDisposed();
-                return this._name;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        DiagnosticCollection.prototype.set = function (first, diagnostics) {
-            if (!first) {
-                // this set-call is a clear-call
-                this.clear();
-                return;
-            }
-            // the actual implementation for #set
-            this._checkDisposed();
-            var toSync;
-            if (first instanceof uri_1.default) {
-                if (!diagnostics) {
-                    // remove this entry
-                    this.delete(first);
-                    return;
-                }
-                // update single row
-                this._data.set(first.toString(), diagnostics);
-                toSync = [first];
-            }
-            else if (Array.isArray(first)) {
-                // update many rows
-                toSync = [];
-                var lastUri = void 0;
-                // ensure stable-sort: keep the original
-                // index for otherwise equal items
-                var sortedTuples = first
-                    .map(function (tuple, idx) { return ({ tuple: tuple, idx: idx }); })
-                    .sort(DiagnosticCollection._compareIndexedTuplesByUri);
-                for (var _i = 0, sortedTuples_1 = sortedTuples; _i < sortedTuples_1.length; _i++) {
-                    var tuple = sortedTuples_1[_i].tuple;
-                    var uri = tuple[0], diagnostics_1 = tuple[1];
-                    if (!lastUri || uri.toString() !== lastUri.toString()) {
-                        if (lastUri && this._data.get(lastUri.toString()).length === 0) {
-                            this._data.delete(lastUri.toString());
-                        }
-                        lastUri = uri;
-                        toSync.push(uri);
-                        this._data.set(uri.toString(), []);
-                    }
-                    if (!diagnostics_1) {
-                        // [Uri, undefined] means clear this
-                        this._data.get(uri.toString()).length = 0;
-                    }
-                    else {
-                        (_a = this._data.get(uri.toString())).push.apply(_a, diagnostics_1);
-                    }
-                }
-            }
-            // compute change and send to main side
-            var entries = [];
-            for (var _b = 0, toSync_1 = toSync; _b < toSync_1.length; _b++) {
-                var uri = toSync_1[_b];
-                var marker = void 0;
-                var diagnostics_2 = this._data.get(uri.toString());
-                if (diagnostics_2) {
-                    // no more than 250 diagnostics per file
-                    if (diagnostics_2.length > DiagnosticCollection._maxDiagnosticsPerFile) {
-                        marker = [];
-                        var order = [extHostTypes_1.DiagnosticSeverity.Error, extHostTypes_1.DiagnosticSeverity.Warning, extHostTypes_1.DiagnosticSeverity.Information, extHostTypes_1.DiagnosticSeverity.Hint];
-                        orderLoop: for (var i = 0; i < 4; i++) {
-                            for (var _c = 0, diagnostics_3 = diagnostics_2; _c < diagnostics_3.length; _c++) {
-                                var diagnostic = diagnostics_3[_c];
-                                if (diagnostic.severity === order[i]) {
-                                    var len = marker.push(DiagnosticCollection._toMarkerData(diagnostic));
-                                    if (len === DiagnosticCollection._maxDiagnosticsPerFile) {
-                                        break orderLoop;
-                                    }
-                                }
-                            }
-                        }
-                        // add 'signal' marker for showing omitted errors/warnings
-                        marker.push({
-                            severity: severity_1.default.Error,
-                            message: nls_1.localize(0, null, diagnostics_2.length - DiagnosticCollection._maxDiagnosticsPerFile),
-                            startLineNumber: marker[marker.length - 1].startLineNumber,
-                            startColumn: marker[marker.length - 1].startColumn,
-                            endLineNumber: marker[marker.length - 1].endLineNumber,
-                            endColumn: marker[marker.length - 1].endColumn
-                        });
-                    }
-                    else {
-                        marker = diagnostics_2.map(DiagnosticCollection._toMarkerData);
-                    }
-                }
-                entries.push([uri, marker]);
-            }
-            this._proxy.$changeMany(this.name, entries);
-            var _a;
-        };
-        DiagnosticCollection.prototype.delete = function (uri) {
-            this._checkDisposed();
-            this._data.delete(uri.toString());
-            this._proxy.$changeMany(this.name, [[uri, undefined]]);
-        };
-        DiagnosticCollection.prototype.clear = function () {
-            this._checkDisposed();
-            this._data.clear();
-            this._proxy.$clear(this.name);
-        };
-        DiagnosticCollection.prototype.forEach = function (callback, thisArg) {
-            var _this = this;
-            this._checkDisposed();
-            this._data.forEach(function (value, key) {
-                var uri = uri_1.default.parse(key);
-                callback.apply(thisArg, [uri, _this.get(uri), _this]);
-            });
-        };
-        DiagnosticCollection.prototype.get = function (uri) {
-            this._checkDisposed();
-            var result = this._data.get(uri.toString());
-            if (Array.isArray(result)) {
-                return Object.freeze(result.slice(0));
-            }
-            return undefined;
-        };
-        DiagnosticCollection.prototype.has = function (uri) {
-            this._checkDisposed();
-            return Array.isArray(this._data.get(uri.toString()));
-        };
-        DiagnosticCollection.prototype._checkDisposed = function () {
-            if (this._isDisposed) {
-                throw new Error('illegal state - object is disposed');
-            }
-        };
-        DiagnosticCollection._toMarkerData = function (diagnostic) {
-            var range = diagnostic.range;
-            return {
-                startLineNumber: range.start.line + 1,
-                startColumn: range.start.character + 1,
-                endLineNumber: range.end.line + 1,
-                endColumn: range.end.character + 1,
-                message: diagnostic.message,
-                source: diagnostic.source,
-                severity: DiagnosticCollection._convertDiagnosticsSeverity(diagnostic.severity),
-                code: String(diagnostic.code)
-            };
-        };
-        DiagnosticCollection._convertDiagnosticsSeverity = function (severity) {
-            switch (severity) {
-                case 0: return severity_1.default.Error;
-                case 1: return severity_1.default.Warning;
-                case 2: return severity_1.default.Info;
-                case 3: return severity_1.default.Ignore;
-                default: return severity_1.default.Error;
-            }
-        };
-        DiagnosticCollection._compareIndexedTuplesByUri = function (a, b) {
-            if (a.tuple[0].toString() < b.tuple[0].toString()) {
-                return -1;
-            }
-            else if (a.tuple[0].toString() > b.tuple[0].toString()) {
-                return 1;
-            }
-            else if (a.idx < b.idx) {
-                return -1;
-            }
-            else if (a.idx > b.idx) {
-                return 1;
-            }
-            else {
-                return 0;
-            }
-        };
-        return DiagnosticCollection;
-    }());
-    DiagnosticCollection._maxDiagnosticsPerFile = 250;
-    exports.DiagnosticCollection = DiagnosticCollection;
-    var ExtHostDiagnostics = (function (_super) {
-        __extends(ExtHostDiagnostics, _super);
-        function ExtHostDiagnostics(threadService) {
-            var _this = _super.call(this) || this;
-            _this._proxy = threadService.get(extHost_protocol_1.MainContext.MainThreadDiagnostics);
-            _this._collections = [];
-            return _this;
-        }
-        ExtHostDiagnostics.prototype.createDiagnosticCollection = function (name) {
-            if (!name) {
-                name = '_generated_diagnostic_collection_name_#' + ExtHostDiagnostics._idPool++;
-            }
-            var _a = this, _collections = _a._collections, _proxy = _a._proxy;
-            var result = new (function (_super) {
-                __extends(class_1, _super);
-                function class_1() {
-                    var _this = _super.call(this, name, _proxy) || this;
-                    _collections.push(_this);
-                    return _this;
-                }
-                class_1.prototype.dispose = function () {
-                    _super.prototype.dispose.call(this);
-                    var idx = _collections.indexOf(this);
-                    if (idx !== -1) {
-                        _collections.splice(idx, 1);
-                    }
-                };
-                return class_1;
-            }(DiagnosticCollection));
-            return result;
-        };
-        ExtHostDiagnostics.prototype.forEach = function (callback) {
-            this._collections.forEach(callback);
-        };
-        return ExtHostDiagnostics;
-    }(extHost_protocol_1.ExtHostDiagnosticsShape));
-    ExtHostDiagnostics._idPool = 0;
-    exports.ExtHostDiagnostics = ExtHostDiagnostics;
-});
-
-
-
-
-
-
-define(__m[99/*vs/workbench/api/node/extHostDocumentSaveParticipant*/], __M([0/*require*/,1/*exports*/,27/*vs/base/common/callbackList*/,9/*vs/base/common/async*/,5/*vs/base/common/errors*/,3/*vs/base/common/winjs.base*/,2/*vs/workbench/api/node/extHost.protocol*/,6/*vs/workbench/api/node/extHostTypes*/,15/*vs/workbench/api/node/extHostTypeConverters*/]), function (require, exports, callbackList_1, async_1, errors_1, winjs_base_1, extHost_protocol_1, extHostTypes_1, extHostTypeConverters_1) {
-    /*---------------------------------------------------------------------------------------------
-     *  Copyright (c) Microsoft Corporation. All rights reserved.
-     *  Licensed under the MIT License. See License.txt in the project root for license information.
-     *--------------------------------------------------------------------------------------------*/
-    'use strict';
-    var ExtHostDocumentSaveParticipant = (function (_super) {
-        __extends(ExtHostDocumentSaveParticipant, _super);
-        function ExtHostDocumentSaveParticipant(documents, workspace, thresholds) {
-            if (thresholds === void 0) { thresholds = { timeout: 1500, errors: 3 }; }
-            var _this = _super.call(this) || this;
-            _this._callbacks = new callbackList_1.default();
-            _this._badListeners = new WeakMap();
-            _this._documents = documents;
-            _this._workspace = workspace;
-            _this._thresholds = thresholds;
-            return _this;
-        }
-        ExtHostDocumentSaveParticipant.prototype.dispose = function () {
-            this._callbacks.dispose();
-        };
-        Object.defineProperty(ExtHostDocumentSaveParticipant.prototype, "onWillSaveTextDocumentEvent", {
-            get: function () {
-                var _this = this;
-                return function (listener, thisArg, disposables) {
-                    _this._callbacks.add(listener, thisArg);
-                    var result = {
-                        dispose: function () {
-                            _this._callbacks.remove(listener, thisArg);
-                        }
-                    };
-                    if (Array.isArray(disposables)) {
-                        disposables.push(result);
-                    }
-                    return result;
-                };
-            },
-            enumerable: true,
-            configurable: true
-        });
-        ExtHostDocumentSaveParticipant.prototype.$participateInSave = function (resource, reason) {
-            var _this = this;
-            var entries = this._callbacks.entries();
-            var didTimeout = false;
-            var didTimeoutHandle = setTimeout(function () { return didTimeout = true; }, this._thresholds.timeout);
-            var promise = async_1.sequence(entries.map(function (_a) {
-                var fn = _a[0], thisArg = _a[1];
-                return function () {
-                    if (didTimeout) {
-                        // timeout - no more listeners
-                        return undefined;
-                    }
-                    var document = _this._documents.getDocumentData(resource).document;
-                    return _this._deliverEventAsyncAndBlameBadListeners(fn, thisArg, { document: document, reason: extHostTypeConverters_1.TextDocumentSaveReason.to(reason) });
-                };
-            }));
-            return async_1.always(promise, function () { return clearTimeout(didTimeoutHandle); });
-        };
-        ExtHostDocumentSaveParticipant.prototype._deliverEventAsyncAndBlameBadListeners = function (listener, thisArg, stubEvent) {
-            var _this = this;
-            var errors = this._badListeners.get(listener);
-            if (errors > this._thresholds.errors) {
-                // bad listener - ignore
-                return winjs_base_1.TPromise.wrap(false);
-            }
-            return this._deliverEventAsync(listener, thisArg, stubEvent).then(function () {
-                // don't send result across the wire
-                return true;
-            }, function (err) {
-                if (!(err instanceof Error) || err.message !== 'concurrent_edits') {
-                    var errors_2 = _this._badListeners.get(listener);
-                    _this._badListeners.set(listener, !errors_2 ? 1 : errors_2 + 1);
-                }
-                return false;
-            });
-        };
-        ExtHostDocumentSaveParticipant.prototype._deliverEventAsync = function (listener, thisArg, stubEvent) {
-            var _this = this;
-            var promises = [];
-            var document = stubEvent.document, reason = stubEvent.reason;
-            var version = document.version;
-            var event = Object.freeze({
-                document: document,
-                reason: reason,
-                waitUntil: function (p) {
-                    if (Object.isFrozen(promises)) {
-                        throw errors_1.illegalState('waitUntil can not be called async');
-                    }
-                    promises.push(winjs_base_1.TPromise.wrap(p));
-                }
-            });
-            try {
-                // fire event
-                listener.apply(thisArg, [event]);
-            }
-            catch (err) {
-                return winjs_base_1.TPromise.wrapError(err);
-            }
-            // freeze promises after event call
-            Object.freeze(promises);
-            return new winjs_base_1.TPromise(function (resolve, reject) {
-                // join on all listener promises, reject after timeout
-                var handle = setTimeout(function () { return reject(new Error('timeout')); }, _this._thresholds.timeout);
-                return async_1.always(winjs_base_1.TPromise.join(promises), function () { return clearTimeout(handle); }).then(resolve, reject);
-            }).then(function (values) {
-                var edits = [];
-                for (var _i = 0, values_1 = values; _i < values_1.length; _i++) {
-                    var value = values_1[_i];
-                    if (Array.isArray(value) && value.every(function (e) { return e instanceof extHostTypes_1.TextEdit; })) {
-                        for (var _a = 0, value_1 = value; _a < value_1.length; _a++) {
-                            var _b = value_1[_a], newText = _b.newText, range = _b.range;
-                            edits.push({
-                                resource: document.uri,
-                                range: extHostTypeConverters_1.fromRange(range),
-                                newText: newText
-                            });
-                        }
-                    }
-                }
-                // apply edits iff any and iff document
-                // didn't change somehow in the meantime
-                if (edits.length === 0) {
-                    return undefined;
-                }
-                if (version === document.version) {
-                    return _this._workspace.$applyWorkspaceEdit(edits);
-                }
-                // TODO@joh bubble this to listener?
-                return winjs_base_1.TPromise.wrapError(new Error('concurrent_edits'));
-            });
-        };
-        return ExtHostDocumentSaveParticipant;
-    }(extHost_protocol_1.ExtHostDocumentSaveParticipantShape));
-    exports.ExtHostDocumentSaveParticipant = ExtHostDocumentSaveParticipant;
-});
-
-
-
-
-
-
-define(__m[100/*vs/workbench/api/node/extHostDocuments*/], __M([0/*require*/,1/*exports*/,5/*vs/base/common/errors*/,8/*vs/base/common/strings*/,23/*vs/editor/common/editorCommon*/,72/*vs/editor/common/model/textModel*/,52/*vs/editor/common/model/mirrorModel2*/,4/*vs/base/common/event*/,6/*vs/workbench/api/node/extHostTypes*/,15/*vs/workbench/api/node/extHostTypeConverters*/,3/*vs/base/common/winjs.base*/,9/*vs/base/common/async*/,39/*vs/editor/common/model/wordHelper*/,2/*vs/workbench/api/node/extHost.protocol*/]), function (require, exports, errors_1, strings_1, editorCommon, textModel_1, mirrorModel2_1, event_1, extHostTypes_1, TypeConverters, winjs_base_1, async_1, wordHelper_1, extHost_protocol_1) {
-    /*---------------------------------------------------------------------------------------------
-     *  Copyright (c) Microsoft Corporation. All rights reserved.
-     *  Licensed under the MIT License. See License.txt in the project root for license information.
-     *--------------------------------------------------------------------------------------------*/
-    'use strict';
-    var _modeId2WordDefinition = new Map();
-    function setWordDefinitionFor(modeId, wordDefinition) {
-        _modeId2WordDefinition.set(modeId, wordDefinition);
-    }
-    function getWordDefinitionFor(modeId) {
-        return _modeId2WordDefinition.get(modeId);
-    }
-    var ExtHostDocuments = (function (_super) {
-        __extends(ExtHostDocuments, _super);
-        function ExtHostDocuments(threadService) {
-            var _this = _super.call(this) || this;
-            _this._documentData = new Map();
-            _this._documentLoader = new Map();
-            _this._documentContentProviders = new Map();
-            _this._proxy = threadService.get(extHost_protocol_1.MainContext.MainThreadDocuments);
-            _this._onDidAddDocumentEventEmitter = new event_1.Emitter();
-            _this.onDidAddDocument = _this._onDidAddDocumentEventEmitter.event;
-            _this._onDidRemoveDocumentEventEmitter = new event_1.Emitter();
-            _this.onDidRemoveDocument = _this._onDidRemoveDocumentEventEmitter.event;
-            _this._onDidChangeDocumentEventEmitter = new event_1.Emitter();
-            _this.onDidChangeDocument = _this._onDidChangeDocumentEventEmitter.event;
-            _this._onDidSaveDocumentEventEmitter = new event_1.Emitter();
-            _this.onDidSaveDocument = _this._onDidSaveDocumentEventEmitter.event;
-            return _this;
-        }
-        ExtHostDocuments.prototype.getAllDocumentData = function () {
-            var result = [];
-            this._documentData.forEach(function (data) { return result.push(data); });
-            return result;
-        };
-        ExtHostDocuments.prototype.getDocumentData = function (resource) {
-            if (!resource) {
-                return undefined;
-            }
-            var data = this._documentData.get(resource.toString());
-            if (data) {
-                return data;
-            }
-            return undefined;
-        };
-        ExtHostDocuments.prototype.ensureDocumentData = function (uri) {
-            var _this = this;
-            var cached = this._documentData.get(uri.toString());
-            if (cached) {
-                return winjs_base_1.TPromise.as(cached);
-            }
-            var promise = this._documentLoader.get(uri.toString());
-            if (!promise) {
-                promise = this._proxy.$tryOpenDocument(uri).then(function () {
-                    _this._documentLoader.delete(uri.toString());
-                    return _this._documentData.get(uri.toString());
-                }, function (err) {
-                    _this._documentLoader.delete(uri.toString());
-                    return winjs_base_1.TPromise.wrapError(err);
-                });
-                this._documentLoader.set(uri.toString(), promise);
-            }
-            return promise;
-        };
-        ExtHostDocuments.prototype.createDocumentData = function (options) {
-            return this._proxy.$tryCreateDocument(options);
-        };
-        ExtHostDocuments.prototype.registerTextDocumentContentProvider = function (scheme, provider) {
-            var _this = this;
-            if (scheme === 'file' || scheme === 'untitled') {
-                throw new Error("scheme '" + scheme + "' already registered");
-            }
-            var handle = ExtHostDocuments._handlePool++;
-            this._documentContentProviders.set(handle, provider);
-            this._proxy.$registerTextContentProvider(handle, scheme);
-            var subscription;
-            if (typeof provider.onDidChange === 'function') {
-                subscription = provider.onDidChange(function (uri) {
-                    if (_this._documentData.has(uri.toString())) {
-                        _this.$provideTextDocumentContent(handle, uri).then(function (value) {
-                            var document = _this._documentData.get(uri.toString());
-                            if (!document) {
-                                // disposed in the meantime
-                                return;
-                            }
-                            // create lines and compare
-                            var raw = textModel_1.RawText.fromString(value, {
-                                defaultEOL: editorCommon.DefaultEndOfLine.CRLF,
-                                tabSize: 0,
-                                detectIndentation: false,
-                                insertSpaces: false,
-                                trimAutoWhitespace: false
-                            });
-                            // broadcast event when content changed
-                            if (!document.equalLines(raw)) {
-                                return _this._proxy.$onVirtualDocumentChange(uri, raw);
-                            }
-                        }, errors_1.onUnexpectedError);
-                    }
-                });
-            }
-            return new extHostTypes_1.Disposable(function () {
-                if (_this._documentContentProviders.delete(handle)) {
-                    _this._proxy.$unregisterTextContentProvider(handle);
-                }
-                if (subscription) {
-                    subscription.dispose();
-                    subscription = undefined;
-                }
-            });
-        };
-        ExtHostDocuments.prototype.$provideTextDocumentContent = function (handle, uri) {
-            var provider = this._documentContentProviders.get(handle);
-            if (!provider) {
-                return winjs_base_1.TPromise.wrapError("unsupported uri-scheme: " + uri.scheme);
-            }
-            return async_1.asWinJsPromise(function (token) { return provider.provideTextDocumentContent(uri, token); });
-        };
-        ExtHostDocuments.prototype.$acceptModelAdd = function (initData) {
-            var data = new ExtHostDocumentData(this._proxy, initData.url, initData.value.lines, initData.value.EOL, initData.modeId, initData.versionId, initData.isDirty);
-            var key = data.document.uri.toString();
-            if (this._documentData.has(key)) {
-                throw new Error('Document `' + key + '` already exists.');
-            }
-            this._documentData.set(key, data);
-            this._onDidAddDocumentEventEmitter.fire(data.document);
-        };
-        ExtHostDocuments.prototype.$acceptModelModeChanged = function (strURL, oldModeId, newModeId) {
-            var data = this._documentData.get(strURL);
-            // Treat a mode change as a remove + add
-            this._onDidRemoveDocumentEventEmitter.fire(data.document);
-            data._acceptLanguageId(newModeId);
-            this._onDidAddDocumentEventEmitter.fire(data.document);
-        };
-        ExtHostDocuments.prototype.$acceptModelSaved = function (strURL) {
-            var data = this._documentData.get(strURL);
-            data._acceptIsDirty(false);
-            this._onDidSaveDocumentEventEmitter.fire(data.document);
-        };
-        ExtHostDocuments.prototype.$acceptModelDirty = function (strURL) {
-            var document = this._documentData.get(strURL);
-            document._acceptIsDirty(true);
-        };
-        ExtHostDocuments.prototype.$acceptModelReverted = function (strURL) {
-            var document = this._documentData.get(strURL);
-            document._acceptIsDirty(false);
-        };
-        ExtHostDocuments.prototype.$acceptModelRemoved = function (strURL) {
-            if (!this._documentData.has(strURL)) {
-                throw new Error('Document `' + strURL + '` does not exist.');
-            }
-            var data = this._documentData.get(strURL);
-            this._documentData.delete(strURL);
-            this._onDidRemoveDocumentEventEmitter.fire(data.document);
-            data.dispose();
-        };
-        ExtHostDocuments.prototype.$acceptModelChanged = function (strURL, events, isDirty) {
-            var data = this._documentData.get(strURL);
-            data._acceptIsDirty(isDirty);
-            data.onEvents(events);
-            this._onDidChangeDocumentEventEmitter.fire({
-                document: data.document,
-                contentChanges: events.map(function (e) {
-                    return {
-                        range: TypeConverters.toRange(e.range),
-                        rangeLength: e.rangeLength,
-                        text: e.text
-                    };
-                })
-            });
-        };
-        ExtHostDocuments.prototype.setWordDefinitionFor = function (modeId, wordDefinition) {
-            setWordDefinitionFor(modeId, wordDefinition);
-        };
-        return ExtHostDocuments;
-    }(extHost_protocol_1.ExtHostDocumentsShape));
-    ExtHostDocuments._handlePool = 0;
-    exports.ExtHostDocuments = ExtHostDocuments;
-    var ExtHostDocumentData = (function (_super) {
-        __extends(ExtHostDocumentData, _super);
-        function ExtHostDocumentData(proxy, uri, lines, eol, languageId, versionId, isDirty) {
-            var _this = _super.call(this, uri, lines, eol, versionId) || this;
-            _this._proxy = proxy;
-            _this._languageId = languageId;
-            _this._isDirty = isDirty;
-            _this._textLines = [];
-            return _this;
-        }
-        ExtHostDocumentData.prototype.dispose = function () {
-            this._textLines.length = 0;
-            this._isDirty = false;
-            _super.prototype.dispose.call(this);
-        };
-        ExtHostDocumentData.prototype.equalLines = function (_a) {
-            var lines = _a.lines;
-            var len = lines.length;
-            if (len !== this._lines.length) {
-                return false;
-            }
-            for (var i = 0; i < len; i++) {
-                if (lines[i] !== this._lines[i]) {
-                    return false;
-                }
-            }
-            return true;
-        };
-        Object.defineProperty(ExtHostDocumentData.prototype, "document", {
-            get: function () {
-                if (!this._document) {
-                    var data_1 = this;
-                    this._document = {
-                        get uri() { return data_1._uri; },
-                        get fileName() { return data_1._uri.fsPath; },
-                        get isUntitled() { return data_1._uri.scheme !== 'file'; },
-                        get languageId() { return data_1._languageId; },
-                        get version() { return data_1._versionId; },
-                        get isDirty() { return data_1._isDirty; },
-                        save: function () { return data_1._proxy.$trySaveDocument(data_1._uri); },
-                        getText: function (range) { return range ? data_1._getTextInRange(range) : data_1.getText(); },
-                        get lineCount() { return data_1._lines.length; },
-                        lineAt: function (lineOrPos) { return data_1.lineAt(lineOrPos); },
-                        offsetAt: function (pos) { return data_1.offsetAt(pos); },
-                        positionAt: function (offset) { return data_1.positionAt(offset); },
-                        validateRange: function (ran) { return data_1.validateRange(ran); },
-                        validatePosition: function (pos) { return data_1.validatePosition(pos); },
-                        getWordRangeAtPosition: function (pos, regexp) { return data_1.getWordRangeAtPosition(pos, regexp); }
-                    };
-                }
-                return this._document;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        ExtHostDocumentData.prototype._acceptLanguageId = function (newLanguageId) {
-            this._languageId = newLanguageId;
-        };
-        ExtHostDocumentData.prototype._acceptIsDirty = function (isDirty) {
-            this._isDirty = isDirty;
-        };
-        ExtHostDocumentData.prototype._getTextInRange = function (_range) {
-            var range = this.validateRange(_range);
-            if (range.isEmpty) {
-                return '';
-            }
-            if (range.isSingleLine) {
-                return this._lines[range.start.line].substring(range.start.character, range.end.character);
-            }
-            var lineEnding = this._eol, startLineIndex = range.start.line, endLineIndex = range.end.line, resultLines = [];
-            resultLines.push(this._lines[startLineIndex].substring(range.start.character));
-            for (var i = startLineIndex + 1; i < endLineIndex; i++) {
-                resultLines.push(this._lines[i]);
-            }
-            resultLines.push(this._lines[endLineIndex].substring(0, range.end.character));
-            return resultLines.join(lineEnding);
-        };
-        ExtHostDocumentData.prototype.lineAt = function (lineOrPosition) {
-            var line;
-            if (lineOrPosition instanceof extHostTypes_1.Position) {
-                line = lineOrPosition.line;
-            }
-            else if (typeof lineOrPosition === 'number') {
-                line = lineOrPosition;
-            }
-            if (line < 0 || line >= this._lines.length) {
-                throw new Error('Illegal value for `line`');
-            }
-            var result = this._textLines[line];
-            if (!result || result.lineNumber !== line || result.text !== this._lines[line]) {
-                var text = this._lines[line];
-                var firstNonWhitespaceCharacterIndex = /^(\s*)/.exec(text)[1].length;
-                var range = new extHostTypes_1.Range(line, 0, line, text.length);
-                var rangeIncludingLineBreak = line < this._lines.length - 1
-                    ? new extHostTypes_1.Range(line, 0, line + 1, 0)
-                    : range;
-                result = Object.freeze({
-                    lineNumber: line,
-                    range: range,
-                    rangeIncludingLineBreak: rangeIncludingLineBreak,
-                    text: text,
-                    firstNonWhitespaceCharacterIndex: firstNonWhitespaceCharacterIndex,
-                    isEmptyOrWhitespace: firstNonWhitespaceCharacterIndex === text.length
-                });
-                this._textLines[line] = result;
-            }
-            return result;
-        };
-        ExtHostDocumentData.prototype.offsetAt = function (position) {
-            position = this.validatePosition(position);
-            this._ensureLineStarts();
-            return this._lineStarts.getAccumulatedValue(position.line - 1) + position.character;
-        };
-        ExtHostDocumentData.prototype.positionAt = function (offset) {
-            offset = Math.floor(offset);
-            offset = Math.max(0, offset);
-            this._ensureLineStarts();
-            var out = this._lineStarts.getIndexOf(offset);
-            var lineLength = this._lines[out.index].length;
-            // Ensure we return a valid position
-            return new extHostTypes_1.Position(out.index, Math.min(out.remainder, lineLength));
-        };
-        // ---- range math
-        ExtHostDocumentData.prototype.validateRange = function (range) {
-            if (!(range instanceof extHostTypes_1.Range)) {
-                throw new Error('Invalid argument');
-            }
-            var start = this.validatePosition(range.start);
-            var end = this.validatePosition(range.end);
-            if (start === range.start && end === range.end) {
-                return range;
-            }
-            return new extHostTypes_1.Range(start.line, start.character, end.line, end.character);
-        };
-        ExtHostDocumentData.prototype.validatePosition = function (position) {
-            if (!(position instanceof extHostTypes_1.Position)) {
-                throw new Error('Invalid argument');
-            }
-            var line = position.line, character = position.character;
-            var hasChanged = false;
-            if (line < 0) {
-                line = 0;
-                character = 0;
-                hasChanged = true;
-            }
-            else if (line >= this._lines.length) {
-                line = this._lines.length - 1;
-                character = this._lines[line].length;
-                hasChanged = true;
-            }
-            else {
-                var maxCharacter = this._lines[line].length;
-                if (character < 0) {
-                    character = 0;
-                    hasChanged = true;
-                }
-                else if (character > maxCharacter) {
-                    character = maxCharacter;
-                    hasChanged = true;
-                }
-            }
-            if (!hasChanged) {
-                return position;
-            }
-            return new extHostTypes_1.Position(line, character);
-        };
-        ExtHostDocumentData.prototype.getWordRangeAtPosition = function (_position, regexp) {
-            var position = this.validatePosition(_position);
-            if (!regexp || strings_1.regExpLeadsToEndlessLoop(regexp)) {
-                regexp = getWordDefinitionFor(this._languageId);
-            }
-            var wordAtText = wordHelper_1.getWordAtText(position.character + 1, wordHelper_1.ensureValidWordDefinition(regexp), this._lines[position.line], 0);
-            if (wordAtText) {
-                return new extHostTypes_1.Range(position.line, wordAtText.startColumn - 1, position.line, wordAtText.endColumn - 1);
-            }
-            return undefined;
-        };
-        return ExtHostDocumentData;
-    }(mirrorModel2_1.MirrorModel2));
-    exports.ExtHostDocumentData = ExtHostDocumentData;
-});
-
-
-
-
-
-
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
-define(__m[101/*vs/workbench/api/node/extHostEditors*/], __M([0/*require*/,1/*exports*/,5/*vs/base/common/errors*/,20/*vs/base/common/arrays*/,37/*vs/base/common/idGenerator*/,4/*vs/base/common/event*/,3/*vs/base/common/winjs.base*/,6/*vs/workbench/api/node/extHostTypes*/,15/*vs/workbench/api/node/extHostTypeConverters*/,2/*vs/workbench/api/node/extHost.protocol*/]), function (require, exports, errors_1, arrays_1, idGenerator_1, event_1, winjs_base_1, extHostTypes_1, TypeConverters, extHost_protocol_1) {
+define(__m[38/*vs/workbench/api/node/extHostTextEditor*/], __M([1/*require*/,0/*exports*/,23/*vs/base/common/assert*/,6/*vs/base/common/errors*/,30/*vs/base/common/idGenerator*/,2/*vs/base/common/winjs.base*/,5/*vs/workbench/api/node/extHostTypes*/,8/*vs/workbench/api/node/extHostTypeConverters*/]), function (require, exports, assert_1, errors_1, idGenerator_1, winjs_base_1, extHostTypes_1, TypeConverters) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
      *--------------------------------------------------------------------------------------------*/
     'use strict';
-    var ExtHostEditors = (function (_super) {
-        __extends(ExtHostEditors, _super);
-        function ExtHostEditors(threadService, extHostDocuments) {
-            var _this = _super.call(this) || this;
-            _this._onDidChangeTextEditorSelection = new event_1.Emitter();
-            _this.onDidChangeTextEditorSelection = _this._onDidChangeTextEditorSelection.event;
-            _this._onDidChangeTextEditorOptions = new event_1.Emitter();
-            _this.onDidChangeTextEditorOptions = _this._onDidChangeTextEditorOptions.event;
-            _this._onDidChangeTextEditorViewColumn = new event_1.Emitter();
-            _this.onDidChangeTextEditorViewColumn = _this._onDidChangeTextEditorViewColumn.event;
-            _this._extHostDocuments = extHostDocuments;
-            _this._proxy = threadService.get(extHost_protocol_1.MainContext.MainThreadEditors);
-            _this._onDidChangeActiveTextEditor = new event_1.Emitter();
-            _this._onDidChangeVisibleTextEditors = new event_1.Emitter();
-            _this._editors = new Map();
-            _this._visibleEditorIds = [];
-            return _this;
-        }
-        ExtHostEditors.prototype.getActiveTextEditor = function () {
-            return this._editors.get(this._activeEditorId);
-        };
-        ExtHostEditors.prototype.getVisibleTextEditors = function () {
-            var _this = this;
-            return this._visibleEditorIds.map(function (id) { return _this._editors.get(id); });
-        };
-        Object.defineProperty(ExtHostEditors.prototype, "onDidChangeActiveTextEditor", {
-            get: function () {
-                return this._onDidChangeActiveTextEditor && this._onDidChangeActiveTextEditor.event;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(ExtHostEditors.prototype, "onDidChangeVisibleTextEditors", {
-            get: function () {
-                return this._onDidChangeVisibleTextEditors && this._onDidChangeVisibleTextEditors.event;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        ExtHostEditors.prototype.showTextDocument = function (document, column, preserveFocus) {
-            var _this = this;
-            return this._proxy.$tryShowTextDocument(document.uri, TypeConverters.fromViewColumn(column), preserveFocus).then(function (id) {
-                var editor = _this._editors.get(id);
-                if (editor) {
-                    return editor;
-                }
-                else {
-                    throw new Error("Failed to show text document " + document.uri.toString() + ", should show in editor #" + id);
-                }
-            });
-        };
-        ExtHostEditors.prototype.createTextEditorDecorationType = function (options) {
-            return new TextEditorDecorationType(this._proxy, options);
-        };
-        // --- called from main thread
-        ExtHostEditors.prototype.$acceptTextEditorAdd = function (data) {
-            var document = this._extHostDocuments.getDocumentData(data.document);
-            var newEditor = new ExtHostTextEditor(this._proxy, data.id, document, data.selections.map(TypeConverters.toSelection), data.options, TypeConverters.toViewColumn(data.editorPosition));
-            this._editors.set(data.id, newEditor);
-        };
-        ExtHostEditors.prototype.$acceptOptionsChanged = function (id, opts) {
-            var editor = this._editors.get(id);
-            editor._acceptOptions(opts);
-            this._onDidChangeTextEditorOptions.fire({
-                textEditor: editor,
-                options: opts
-            });
-        };
-        ExtHostEditors.prototype.$acceptSelectionsChanged = function (id, event) {
-            var kind = extHostTypes_1.TextEditorSelectionChangeKind.fromValue(event.source);
-            var selections = event.selections.map(TypeConverters.toSelection);
-            var textEditor = this._editors.get(id);
-            textEditor._acceptSelections(selections);
-            this._onDidChangeTextEditorSelection.fire({
-                textEditor: textEditor,
-                selections: selections,
-                kind: kind
-            });
-        };
-        ExtHostEditors.prototype.$acceptActiveEditorAndVisibleEditors = function (id, visibleIds) {
-            var visibleChanged = false;
-            var activeChanged = false;
-            if (!arrays_1.equals(this._visibleEditorIds, visibleIds)) {
-                this._visibleEditorIds = visibleIds;
-                visibleChanged = true;
-            }
-            if (this._activeEditorId !== id) {
-                this._activeEditorId = id;
-                activeChanged = true;
-            }
-            if (visibleChanged) {
-                this._onDidChangeVisibleTextEditors.fire(this.getVisibleTextEditors());
-            }
-            if (activeChanged) {
-                this._onDidChangeActiveTextEditor.fire(this.getActiveTextEditor());
-            }
-        };
-        ExtHostEditors.prototype.$acceptEditorPositionData = function (data) {
-            for (var id in data) {
-                var textEditor = this._editors.get(id);
-                var viewColumn = TypeConverters.toViewColumn(data[id]);
-                if (textEditor.viewColumn !== viewColumn) {
-                    textEditor._acceptViewColumn(viewColumn);
-                    this._onDidChangeTextEditorViewColumn.fire({ textEditor: textEditor, viewColumn: viewColumn });
-                }
-            }
-        };
-        ExtHostEditors.prototype.$acceptTextEditorRemove = function (id) {
-            // make sure the removed editor is not visible
-            var newVisibleEditors = this._visibleEditorIds.filter(function (visibleEditorId) { return visibleEditorId !== id; });
-            if (this._activeEditorId === id) {
-                // removing the current active editor
-                this.$acceptActiveEditorAndVisibleEditors(undefined, newVisibleEditors);
-            }
-            else {
-                this.$acceptActiveEditorAndVisibleEditors(this._activeEditorId, newVisibleEditors);
-            }
-            var editor = this._editors.get(id);
-            editor.dispose();
-            this._editors.delete(id);
-        };
-        return ExtHostEditors;
-    }(extHost_protocol_1.ExtHostEditorsShape));
-    exports.ExtHostEditors = ExtHostEditors;
     var TextEditorDecorationType = (function () {
         function TextEditorDecorationType(proxy, options) {
             this.key = TextEditorDecorationType._Keys.nextId();
@@ -20730,6 +18426,7 @@ define(__m[101/*vs/workbench/api/node/extHostEditors*/], __M([0/*require*/,1/*ex
         return TextEditorDecorationType;
     }());
     TextEditorDecorationType._Keys = new idGenerator_1.IdGenerator('TextEditorDecorationType');
+    exports.TextEditorDecorationType = TextEditorDecorationType;
     var TextEditorEdit = (function () {
         function TextEditorEdit(document, options) {
             this._documentVersionId = document.version;
@@ -20976,6 +18673,7 @@ define(__m[101/*vs/workbench/api/node/extHostEditors*/], __M([0/*require*/,1/*ex
     exports.ExtHostTextEditorOptions = ExtHostTextEditorOptions;
     var ExtHostTextEditor = (function () {
         function ExtHostTextEditor(proxy, id, document, selections, options, viewColumn) {
+            this._disposed = false;
             this._proxy = proxy;
             this._id = id;
             this._documentData = document;
@@ -20983,8 +18681,14 @@ define(__m[101/*vs/workbench/api/node/extHostEditors*/], __M([0/*require*/,1/*ex
             this._options = new ExtHostTextEditorOptions(this._proxy, this._id, options);
             this._viewColumn = viewColumn;
         }
+        Object.defineProperty(ExtHostTextEditor.prototype, "id", {
+            get: function () { return this._id; },
+            enumerable: true,
+            configurable: true
+        });
         ExtHostTextEditor.prototype.dispose = function () {
-            this._documentData = null;
+            assert_1.ok(!this._disposed);
+            this._disposed = true;
         };
         ExtHostTextEditor.prototype.show = function (column) {
             this._proxy.$tryShowEditor(this._id, TypeConverters.fromViewColumn(column));
@@ -20995,9 +18699,7 @@ define(__m[101/*vs/workbench/api/node/extHostEditors*/], __M([0/*require*/,1/*ex
         Object.defineProperty(ExtHostTextEditor.prototype, "document", {
             // ---- the document
             get: function () {
-                return this._documentData
-                    ? this._documentData.document
-                    : undefined;
+                return this._documentData.document;
             },
             set: function (value) {
                 throw errors_1.readonly('document');
@@ -21011,12 +18713,15 @@ define(__m[101/*vs/workbench/api/node/extHostEditors*/], __M([0/*require*/,1/*ex
                 return this._options;
             },
             set: function (value) {
-                this._options.assign(value);
+                if (!this._disposed) {
+                    this._options.assign(value);
+                }
             },
             enumerable: true,
             configurable: true
         });
         ExtHostTextEditor.prototype._acceptOptions = function (options) {
+            assert_1.ok(!this._disposed);
             this._options._accept(options);
         };
         Object.defineProperty(ExtHostTextEditor.prototype, "viewColumn", {
@@ -21031,6 +18736,7 @@ define(__m[101/*vs/workbench/api/node/extHostEditors*/], __M([0/*require*/,1/*ex
             configurable: true
         });
         ExtHostTextEditor.prototype._acceptViewColumn = function (value) {
+            assert_1.ok(!this._disposed);
             this._viewColumn = value;
         };
         Object.defineProperty(ExtHostTextEditor.prototype, "selection", {
@@ -21076,11 +18782,15 @@ define(__m[101/*vs/workbench/api/node/extHostEditors*/], __M([0/*require*/,1/*ex
             return this._runOnProxy(function () { return _this._proxy.$trySetSelections(_this._id, selection); }, silent);
         };
         ExtHostTextEditor.prototype._acceptSelections = function (selections) {
+            assert_1.ok(!this._disposed);
             this._selections = selections;
         };
         // ---- editing
         ExtHostTextEditor.prototype.edit = function (callback, options) {
             if (options === void 0) { options = { undoStopBefore: true, undoStopAfter: true }; }
+            if (this._disposed) {
+                return winjs_base_1.TPromise.wrapError('TextEditor#edit not possible on closed editors');
+            }
             var edit = new TextEditorEdit(this._documentData.document, options);
             callback(edit);
             return this._applyEdit(edit);
@@ -21103,6 +18813,9 @@ define(__m[101/*vs/workbench/api/node/extHostEditors*/], __M([0/*require*/,1/*ex
         };
         ExtHostTextEditor.prototype.insertSnippet = function (snippet, where, options) {
             if (options === void 0) { options = { undoStopBefore: true, undoStopAfter: true }; }
+            if (this._disposed) {
+                return winjs_base_1.TPromise.wrapError('TextEditor#insertSnippet not possible on closed editors');
+            }
             var ranges;
             if (!where || (Array.isArray(where) && where.length === 0)) {
                 ranges = this._selections.map(TypeConverters.fromRange);
@@ -21132,6 +18845,15 @@ define(__m[101/*vs/workbench/api/node/extHostEditors*/], __M([0/*require*/,1/*ex
         // ---- util
         ExtHostTextEditor.prototype._runOnProxy = function (callback, silent) {
             var _this = this;
+            if (this._disposed) {
+                if (!silent) {
+                    return winjs_base_1.TPromise.wrapError(silent);
+                }
+                else {
+                    console.warn('TextEditor is closed/disposed');
+                    return winjs_base_1.TPromise.as(undefined);
+                }
+            }
             return callback().then(function () { return _this; }, function (err) {
                 if (!silent) {
                     return winjs_base_1.TPromise.wrapError(silent);
@@ -21148,6 +18870,7 @@ define(__m[101/*vs/workbench/api/node/extHostEditors*/], __M([0/*require*/,1/*ex
     __decorate([
         deprecated('TextEditor.hide')
     ], ExtHostTextEditor.prototype, "hide", null);
+    exports.ExtHostTextEditor = ExtHostTextEditor;
     function warnOnError(promise) {
         promise.then(null, function (err) {
             console.warn(err);
@@ -21155,12 +18878,1593 @@ define(__m[101/*vs/workbench/api/node/extHostEditors*/], __M([0/*require*/,1/*ex
     }
 });
 
+define(__m[89/*vs/workbench/services/thread/common/abstractThreadService*/], __M([1/*require*/,0/*exports*/]), function (require, exports) {
+    /*---------------------------------------------------------------------------------------------
+     *  Copyright (c) Microsoft Corporation. All rights reserved.
+     *  Licensed under the MIT License. See License.txt in the project root for license information.
+     *--------------------------------------------------------------------------------------------*/
+    'use strict';
+    // declare var Proxy:any; // TODO@TypeScript
+    var AbstractThreadService = (function () {
+        function AbstractThreadService(isMain) {
+            this._proxies = Object.create(null);
+            this._isMain = isMain;
+            this._locals = Object.create(null);
+            this._proxies = Object.create(null);
+        }
+        AbstractThreadService.prototype.handle = function (rpcId, methodName, args) {
+            if (!this._locals[rpcId]) {
+                throw new Error('Unknown actor ' + rpcId);
+            }
+            var actor = this._locals[rpcId];
+            var method = actor[methodName];
+            if (typeof method !== 'function') {
+                throw new Error('Unknown method ' + methodName + ' on actor ' + rpcId);
+            }
+            return method.apply(actor, args);
+        };
+        AbstractThreadService.prototype.get = function (identifier) {
+            if (!this._proxies[identifier.id]) {
+                this._proxies[identifier.id] = this._createProxy(identifier.id, identifier.methodNames);
+            }
+            return this._proxies[identifier.id];
+        };
+        AbstractThreadService.prototype._createProxy = function (id, methodNames) {
+            // Check below how to switch to native proxies
+            var result = {};
+            for (var i = 0; i < methodNames.length; i++) {
+                var methodName = methodNames[i];
+                result[methodName] = this.createMethodProxy(id, methodName);
+            }
+            return result;
+            // let handler = {
+            // 	get: (target, name) => {
+            // 		return (...myArgs: any[]) => {
+            // 			return this._callOnRemote(id, name, myArgs);
+            // 		};
+            // 	}
+            // };
+            // return new Proxy({}, handler);
+        };
+        AbstractThreadService.prototype.createMethodProxy = function (id, methodName) {
+            var _this = this;
+            return function () {
+                var myArgs = [];
+                for (var _i = 0; _i < arguments.length; _i++) {
+                    myArgs[_i] = arguments[_i];
+                }
+                return _this._callOnRemote(id, methodName, myArgs);
+            };
+        };
+        AbstractThreadService.prototype.set = function (identifier, value) {
+            if (identifier.isMain !== this._isMain) {
+                throw new Error('Mismatch in object registration!');
+            }
+            this._locals[identifier.id] = value;
+        };
+        return AbstractThreadService;
+    }());
+    exports.AbstractThreadService = AbstractThreadService;
+});
 
 
 
 
 
-define(__m[102/*vs/workbench/api/node/extHostFileSystemEventService*/], __M([0/*require*/,1/*exports*/,4/*vs/base/common/event*/,6/*vs/workbench/api/node/extHostTypes*/,29/*vs/base/common/glob*/,2/*vs/workbench/api/node/extHost.protocol*/]), function (require, exports, event_1, extHostTypes_1, glob_1, extHost_protocol_1) {
+
+define(__m[90/*vs/workbench/services/thread/common/extHostThreadService*/], __M([1/*require*/,0/*exports*/,89/*vs/workbench/services/thread/common/abstractThreadService*/]), function (require, exports, abstractThreadService_1) {
+    /*---------------------------------------------------------------------------------------------
+     *  Copyright (c) Microsoft Corporation. All rights reserved.
+     *  Licensed under the MIT License. See License.txt in the project root for license information.
+     *--------------------------------------------------------------------------------------------*/
+    'use strict';
+    var ExtHostThreadService = (function (_super) {
+        __extends(ExtHostThreadService, _super);
+        function ExtHostThreadService(remoteCom) {
+            var _this = _super.call(this, false) || this;
+            _this._remoteCom = remoteCom;
+            _this._remoteCom.setManyHandler(_this);
+            return _this;
+        }
+        ExtHostThreadService.prototype._callOnRemote = function (proxyId, path, args) {
+            return this._remoteCom.callOnRemote(proxyId, path, args);
+        };
+        return ExtHostThreadService;
+    }(abstractThreadService_1.AbstractThreadService));
+    exports.ExtHostThreadService = ExtHostThreadService;
+});
+
+define(__m[39/*vs/workbench/services/thread/common/threadService*/], __M([1/*require*/,0/*exports*/,11/*vs/platform/instantiation/common/instantiation*/]), function (require, exports, instantiation_1) {
+    /*---------------------------------------------------------------------------------------------
+     *  Copyright (c) Microsoft Corporation. All rights reserved.
+     *  Licensed under the MIT License. See License.txt in the project root for license information.
+     *--------------------------------------------------------------------------------------------*/
+    'use strict';
+    exports.IThreadService = instantiation_1.createDecorator('threadService');
+    var ProxyIdentifier = (function () {
+        function ProxyIdentifier(isMain, id, ctor) {
+            this.isMain = isMain;
+            this.id = id;
+            this.methodNames = [];
+            for (var prop in ctor.prototype) {
+                if (typeof ctor.prototype[prop] === 'function') {
+                    this.methodNames.push(prop);
+                }
+            }
+        }
+        return ProxyIdentifier;
+    }());
+    exports.ProxyIdentifier = ProxyIdentifier;
+    function createMainContextProxyIdentifier(identifier, ctor) {
+        return new ProxyIdentifier(true, 'm' + identifier, ctor);
+    }
+    exports.createMainContextProxyIdentifier = createMainContextProxyIdentifier;
+    function createExtHostContextProxyIdentifier(identifier, ctor) {
+        return new ProxyIdentifier(false, 'e' + identifier, ctor);
+    }
+    exports.createExtHostContextProxyIdentifier = createExtHostContextProxyIdentifier;
+});
+
+define(__m[3/*vs/workbench/api/node/extHost.protocol*/], __M([1/*require*/,0/*exports*/,39/*vs/workbench/services/thread/common/threadService*/]), function (require, exports, threadService_1) {
+    /*---------------------------------------------------------------------------------------------
+     *  Copyright (c) Microsoft Corporation. All rights reserved.
+     *  Licensed under the MIT License. See License.txt in the project root for license information.
+     *--------------------------------------------------------------------------------------------*/
+    'use strict';
+    var InstanceCollection = (function () {
+        function InstanceCollection() {
+            this._items = Object.create(null);
+        }
+        InstanceCollection.prototype.define = function (id) {
+            var that = this;
+            return new (function () {
+                function class_1() {
+                }
+                class_1.prototype.set = function (value) {
+                    that._set(id, value);
+                    return value;
+                };
+                return class_1;
+            }());
+        };
+        InstanceCollection.prototype._set = function (id, value) {
+            this._items[id.id] = value;
+        };
+        InstanceCollection.prototype.finish = function (isMain, threadService) {
+            var _this = this;
+            var expected = (isMain ? exports.MainContext : exports.ExtHostContext);
+            Object.keys(expected).forEach(function (key) {
+                var id = expected[key];
+                var value = _this._items[id.id];
+                if (!value) {
+                    throw new Error("Missing actor " + key + " (isMain: " + id.isMain + ", id:  " + id.id + ")");
+                }
+                threadService.set(id, value);
+            });
+        };
+        return InstanceCollection;
+    }());
+    exports.InstanceCollection = InstanceCollection;
+    function ni() { return new Error('Not implemented'); }
+    // --- main thread
+    var MainThreadCommandsShape = (function () {
+        function MainThreadCommandsShape() {
+        }
+        MainThreadCommandsShape.prototype.$registerCommand = function (id) { throw ni(); };
+        MainThreadCommandsShape.prototype.$unregisterCommand = function (id) { throw ni(); };
+        MainThreadCommandsShape.prototype.$executeCommand = function (id, args) { throw ni(); };
+        MainThreadCommandsShape.prototype.$getCommands = function () { throw ni(); };
+        return MainThreadCommandsShape;
+    }());
+    exports.MainThreadCommandsShape = MainThreadCommandsShape;
+    var MainThreadConfigurationShape = (function () {
+        function MainThreadConfigurationShape() {
+        }
+        MainThreadConfigurationShape.prototype.$updateConfigurationOption = function (target, key, value) { throw ni(); };
+        MainThreadConfigurationShape.prototype.$removeConfigurationOption = function (target, key) { throw ni(); };
+        return MainThreadConfigurationShape;
+    }());
+    exports.MainThreadConfigurationShape = MainThreadConfigurationShape;
+    var MainThreadDiagnosticsShape = (function () {
+        function MainThreadDiagnosticsShape() {
+        }
+        MainThreadDiagnosticsShape.prototype.$changeMany = function (owner, entries) { throw ni(); };
+        MainThreadDiagnosticsShape.prototype.$clear = function (owner) { throw ni(); };
+        return MainThreadDiagnosticsShape;
+    }());
+    exports.MainThreadDiagnosticsShape = MainThreadDiagnosticsShape;
+    var MainThreadDocumentsShape = (function () {
+        function MainThreadDocumentsShape() {
+        }
+        MainThreadDocumentsShape.prototype.$tryCreateDocument = function (options) { throw ni(); };
+        MainThreadDocumentsShape.prototype.$tryOpenDocument = function (uri) { throw ni(); };
+        MainThreadDocumentsShape.prototype.$registerTextContentProvider = function (handle, scheme) { throw ni(); };
+        MainThreadDocumentsShape.prototype.$onVirtualDocumentChange = function (uri, value) { throw ni(); };
+        MainThreadDocumentsShape.prototype.$unregisterTextContentProvider = function (handle) { throw ni(); };
+        MainThreadDocumentsShape.prototype.$trySaveDocument = function (uri) { throw ni(); };
+        return MainThreadDocumentsShape;
+    }());
+    exports.MainThreadDocumentsShape = MainThreadDocumentsShape;
+    var MainThreadEditorsShape = (function () {
+        function MainThreadEditorsShape() {
+        }
+        MainThreadEditorsShape.prototype.$tryShowTextDocument = function (resource, position, preserveFocus) { throw ni(); };
+        MainThreadEditorsShape.prototype.$registerTextEditorDecorationType = function (key, options) { throw ni(); };
+        MainThreadEditorsShape.prototype.$removeTextEditorDecorationType = function (key) { throw ni(); };
+        MainThreadEditorsShape.prototype.$tryShowEditor = function (id, position) { throw ni(); };
+        MainThreadEditorsShape.prototype.$tryHideEditor = function (id) { throw ni(); };
+        MainThreadEditorsShape.prototype.$trySetOptions = function (id, options) { throw ni(); };
+        MainThreadEditorsShape.prototype.$trySetDecorations = function (id, key, ranges) { throw ni(); };
+        MainThreadEditorsShape.prototype.$tryRevealRange = function (id, range, revealType) { throw ni(); };
+        MainThreadEditorsShape.prototype.$trySetSelections = function (id, selections) { throw ni(); };
+        MainThreadEditorsShape.prototype.$tryApplyEdits = function (id, modelVersionId, edits, opts) { throw ni(); };
+        MainThreadEditorsShape.prototype.$tryInsertSnippet = function (id, template, selections, opts) { throw ni(); };
+        MainThreadEditorsShape.prototype.$getDiffInformation = function (id) { throw ni(); };
+        return MainThreadEditorsShape;
+    }());
+    exports.MainThreadEditorsShape = MainThreadEditorsShape;
+    var MainThreadTreeExplorersShape = (function () {
+        function MainThreadTreeExplorersShape() {
+        }
+        MainThreadTreeExplorersShape.prototype.$registerTreeExplorerNodeProvider = function (providerId) { throw ni(); };
+        return MainThreadTreeExplorersShape;
+    }());
+    exports.MainThreadTreeExplorersShape = MainThreadTreeExplorersShape;
+    var MainThreadErrorsShape = (function () {
+        function MainThreadErrorsShape() {
+        }
+        MainThreadErrorsShape.prototype.onUnexpectedExtHostError = function (err) { throw ni(); };
+        return MainThreadErrorsShape;
+    }());
+    exports.MainThreadErrorsShape = MainThreadErrorsShape;
+    var MainThreadLanguageFeaturesShape = (function () {
+        function MainThreadLanguageFeaturesShape() {
+        }
+        MainThreadLanguageFeaturesShape.prototype.$unregister = function (handle) { throw ni(); };
+        MainThreadLanguageFeaturesShape.prototype.$registerOutlineSupport = function (handle, selector) { throw ni(); };
+        MainThreadLanguageFeaturesShape.prototype.$registerCodeLensSupport = function (handle, selector, eventHandle) { throw ni(); };
+        MainThreadLanguageFeaturesShape.prototype.$emitCodeLensEvent = function (eventHandle, event) { throw ni(); };
+        MainThreadLanguageFeaturesShape.prototype.$registerDeclaractionSupport = function (handle, selector) { throw ni(); };
+        MainThreadLanguageFeaturesShape.prototype.$registerImplementationSupport = function (handle, selector) { throw ni(); };
+        MainThreadLanguageFeaturesShape.prototype.$registerTypeDefinitionSupport = function (handle, selector) { throw ni(); };
+        MainThreadLanguageFeaturesShape.prototype.$registerHoverProvider = function (handle, selector) { throw ni(); };
+        MainThreadLanguageFeaturesShape.prototype.$registerDocumentHighlightProvider = function (handle, selector) { throw ni(); };
+        MainThreadLanguageFeaturesShape.prototype.$registerReferenceSupport = function (handle, selector) { throw ni(); };
+        MainThreadLanguageFeaturesShape.prototype.$registerQuickFixSupport = function (handle, selector) { throw ni(); };
+        MainThreadLanguageFeaturesShape.prototype.$registerDocumentFormattingSupport = function (handle, selector) { throw ni(); };
+        MainThreadLanguageFeaturesShape.prototype.$registerRangeFormattingSupport = function (handle, selector) { throw ni(); };
+        MainThreadLanguageFeaturesShape.prototype.$registerOnTypeFormattingSupport = function (handle, selector, autoFormatTriggerCharacters) { throw ni(); };
+        MainThreadLanguageFeaturesShape.prototype.$registerNavigateTypeSupport = function (handle) { throw ni(); };
+        MainThreadLanguageFeaturesShape.prototype.$registerRenameSupport = function (handle, selector) { throw ni(); };
+        MainThreadLanguageFeaturesShape.prototype.$registerSuggestSupport = function (handle, selector, triggerCharacters) { throw ni(); };
+        MainThreadLanguageFeaturesShape.prototype.$registerSignatureHelpProvider = function (handle, selector, triggerCharacter) { throw ni(); };
+        MainThreadLanguageFeaturesShape.prototype.$registerDocumentLinkProvider = function (handle, selector) { throw ni(); };
+        MainThreadLanguageFeaturesShape.prototype.$setLanguageConfiguration = function (handle, languageId, configuration) { throw ni(); };
+        return MainThreadLanguageFeaturesShape;
+    }());
+    exports.MainThreadLanguageFeaturesShape = MainThreadLanguageFeaturesShape;
+    var MainThreadLanguagesShape = (function () {
+        function MainThreadLanguagesShape() {
+        }
+        MainThreadLanguagesShape.prototype.$getLanguages = function () { throw ni(); };
+        return MainThreadLanguagesShape;
+    }());
+    exports.MainThreadLanguagesShape = MainThreadLanguagesShape;
+    var MainThreadMessageServiceShape = (function () {
+        function MainThreadMessageServiceShape() {
+        }
+        MainThreadMessageServiceShape.prototype.$showMessage = function (severity, message, options, commands) { throw ni(); };
+        return MainThreadMessageServiceShape;
+    }());
+    exports.MainThreadMessageServiceShape = MainThreadMessageServiceShape;
+    var MainThreadOutputServiceShape = (function () {
+        function MainThreadOutputServiceShape() {
+        }
+        MainThreadOutputServiceShape.prototype.$append = function (channelId, label, value) { throw ni(); };
+        MainThreadOutputServiceShape.prototype.$clear = function (channelId, label) { throw ni(); };
+        MainThreadOutputServiceShape.prototype.$dispose = function (channelId, label) { throw ni(); };
+        MainThreadOutputServiceShape.prototype.$reveal = function (channelId, label, preserveFocus) { throw ni(); };
+        MainThreadOutputServiceShape.prototype.$close = function (channelId) { throw ni(); };
+        return MainThreadOutputServiceShape;
+    }());
+    exports.MainThreadOutputServiceShape = MainThreadOutputServiceShape;
+    var MainThreadProgressShape = (function () {
+        function MainThreadProgressShape() {
+        }
+        MainThreadProgressShape.prototype.$startWindow = function (handle, title) { throw ni(); };
+        ;
+        MainThreadProgressShape.prototype.$startScm = function (handle) { throw ni(); };
+        ;
+        MainThreadProgressShape.prototype.$progressReport = function (handle, message) { throw ni(); };
+        MainThreadProgressShape.prototype.$progressEnd = function (handle) { throw ni(); };
+        return MainThreadProgressShape;
+    }());
+    exports.MainThreadProgressShape = MainThreadProgressShape;
+    var MainThreadTerminalServiceShape = (function () {
+        function MainThreadTerminalServiceShape() {
+        }
+        MainThreadTerminalServiceShape.prototype.$createTerminal = function (name, shellPath, shellArgs, waitOnExit) { throw ni(); };
+        MainThreadTerminalServiceShape.prototype.$dispose = function (terminalId) { throw ni(); };
+        MainThreadTerminalServiceShape.prototype.$hide = function (terminalId) { throw ni(); };
+        MainThreadTerminalServiceShape.prototype.$sendText = function (terminalId, text, addNewLine) { throw ni(); };
+        MainThreadTerminalServiceShape.prototype.$show = function (terminalId, preserveFocus) { throw ni(); };
+        MainThreadTerminalServiceShape.prototype.$registerOnData = function (terminalId) { throw ni(); };
+        return MainThreadTerminalServiceShape;
+    }());
+    exports.MainThreadTerminalServiceShape = MainThreadTerminalServiceShape;
+    var MainThreadQuickOpenShape = (function () {
+        function MainThreadQuickOpenShape() {
+        }
+        MainThreadQuickOpenShape.prototype.$show = function (options) { throw ni(); };
+        MainThreadQuickOpenShape.prototype.$setItems = function (items) { throw ni(); };
+        MainThreadQuickOpenShape.prototype.$setError = function (error) { throw ni(); };
+        MainThreadQuickOpenShape.prototype.$input = function (options, validateInput) { throw ni(); };
+        return MainThreadQuickOpenShape;
+    }());
+    exports.MainThreadQuickOpenShape = MainThreadQuickOpenShape;
+    var MainThreadStatusBarShape = (function () {
+        function MainThreadStatusBarShape() {
+        }
+        MainThreadStatusBarShape.prototype.$setEntry = function (id, extensionId, text, tooltip, command, color, alignment, priority) { throw ni(); };
+        MainThreadStatusBarShape.prototype.$dispose = function (id) { throw ni(); };
+        return MainThreadStatusBarShape;
+    }());
+    exports.MainThreadStatusBarShape = MainThreadStatusBarShape;
+    var MainThreadStorageShape = (function () {
+        function MainThreadStorageShape() {
+        }
+        MainThreadStorageShape.prototype.$getValue = function (shared, key) { throw ni(); };
+        MainThreadStorageShape.prototype.$setValue = function (shared, key, value) { throw ni(); };
+        return MainThreadStorageShape;
+    }());
+    exports.MainThreadStorageShape = MainThreadStorageShape;
+    var MainThreadTelemetryShape = (function () {
+        function MainThreadTelemetryShape() {
+        }
+        MainThreadTelemetryShape.prototype.$publicLog = function (eventName, data) { throw ni(); };
+        MainThreadTelemetryShape.prototype.$getTelemetryInfo = function () { throw ni(); };
+        return MainThreadTelemetryShape;
+    }());
+    exports.MainThreadTelemetryShape = MainThreadTelemetryShape;
+    var MainThreadWorkspaceShape = (function () {
+        function MainThreadWorkspaceShape() {
+        }
+        MainThreadWorkspaceShape.prototype.$startSearch = function (include, exclude, maxResults, requestId) { throw ni(); };
+        MainThreadWorkspaceShape.prototype.$cancelSearch = function (requestId) { throw ni(); };
+        MainThreadWorkspaceShape.prototype.$saveAll = function (includeUntitled) { throw ni(); };
+        MainThreadWorkspaceShape.prototype.$applyWorkspaceEdit = function (edits) { throw ni(); };
+        return MainThreadWorkspaceShape;
+    }());
+    exports.MainThreadWorkspaceShape = MainThreadWorkspaceShape;
+    var MainThreadTaskShape = (function () {
+        function MainThreadTaskShape() {
+        }
+        MainThreadTaskShape.prototype.$registerTaskProvider = function (handle) { throw ni(); };
+        MainThreadTaskShape.prototype.$unregisterTaskProvider = function (handle) { throw ni(); };
+        return MainThreadTaskShape;
+    }());
+    exports.MainThreadTaskShape = MainThreadTaskShape;
+    var MainProcessExtensionServiceShape = (function () {
+        function MainProcessExtensionServiceShape() {
+        }
+        MainProcessExtensionServiceShape.prototype.$localShowMessage = function (severity, msg) { throw ni(); };
+        MainProcessExtensionServiceShape.prototype.$onExtensionActivated = function (extensionId) { throw ni(); };
+        MainProcessExtensionServiceShape.prototype.$onExtensionActivationFailed = function (extensionId) { throw ni(); };
+        return MainProcessExtensionServiceShape;
+    }());
+    exports.MainProcessExtensionServiceShape = MainProcessExtensionServiceShape;
+    var MainThreadSCMShape = (function () {
+        function MainThreadSCMShape() {
+        }
+        MainThreadSCMShape.prototype.$registerSourceControl = function (handle, id, label) { throw ni(); };
+        MainThreadSCMShape.prototype.$updateSourceControl = function (handle, features) { throw ni(); };
+        MainThreadSCMShape.prototype.$unregisterSourceControl = function (handle) { throw ni(); };
+        MainThreadSCMShape.prototype.$registerGroup = function (sourceControlHandle, handle, id, label) { throw ni(); };
+        MainThreadSCMShape.prototype.$updateGroup = function (sourceControlHandle, handle, features) { throw ni(); };
+        MainThreadSCMShape.prototype.$updateGroupResourceStates = function (sourceControlHandle, groupHandle, resources) { throw ni(); };
+        MainThreadSCMShape.prototype.$unregisterGroup = function (sourceControlHandle, handle) { throw ni(); };
+        MainThreadSCMShape.prototype.$setInputBoxValue = function (value) { throw ni(); };
+        return MainThreadSCMShape;
+    }());
+    exports.MainThreadSCMShape = MainThreadSCMShape;
+    // -- extension host
+    var ExtHostCommandsShape = (function () {
+        function ExtHostCommandsShape() {
+        }
+        ExtHostCommandsShape.prototype.$executeContributedCommand = function (id) {
+            var args = [];
+            for (var _i = 1; _i < arguments.length; _i++) {
+                args[_i - 1] = arguments[_i];
+            }
+            throw ni();
+        };
+        ExtHostCommandsShape.prototype.$getContributedCommandHandlerDescriptions = function () { throw ni(); };
+        return ExtHostCommandsShape;
+    }());
+    exports.ExtHostCommandsShape = ExtHostCommandsShape;
+    var ExtHostConfigurationShape = (function () {
+        function ExtHostConfigurationShape() {
+        }
+        ExtHostConfigurationShape.prototype.$acceptConfigurationChanged = function (values) { throw ni(); };
+        return ExtHostConfigurationShape;
+    }());
+    exports.ExtHostConfigurationShape = ExtHostConfigurationShape;
+    var ExtHostDiagnosticsShape = (function () {
+        function ExtHostDiagnosticsShape() {
+        }
+        return ExtHostDiagnosticsShape;
+    }());
+    exports.ExtHostDiagnosticsShape = ExtHostDiagnosticsShape;
+    var ExtHostDocumentsShape = (function () {
+        function ExtHostDocumentsShape() {
+        }
+        ExtHostDocumentsShape.prototype.$provideTextDocumentContent = function (handle, uri) { throw ni(); };
+        ExtHostDocumentsShape.prototype.$acceptModelModeChanged = function (strURL, oldModeId, newModeId) { throw ni(); };
+        ExtHostDocumentsShape.prototype.$acceptModelSaved = function (strURL) { throw ni(); };
+        ExtHostDocumentsShape.prototype.$acceptModelDirty = function (strURL) { throw ni(); };
+        ExtHostDocumentsShape.prototype.$acceptModelReverted = function (strURL) { throw ni(); };
+        ExtHostDocumentsShape.prototype.$acceptModelChanged = function (strURL, events, isDirty) { throw ni(); };
+        return ExtHostDocumentsShape;
+    }());
+    exports.ExtHostDocumentsShape = ExtHostDocumentsShape;
+    var ExtHostDocumentSaveParticipantShape = (function () {
+        function ExtHostDocumentSaveParticipantShape() {
+        }
+        ExtHostDocumentSaveParticipantShape.prototype.$participateInSave = function (resource, reason) { throw ni(); };
+        return ExtHostDocumentSaveParticipantShape;
+    }());
+    exports.ExtHostDocumentSaveParticipantShape = ExtHostDocumentSaveParticipantShape;
+    var ExtHostEditorsShape = (function () {
+        function ExtHostEditorsShape() {
+        }
+        ExtHostEditorsShape.prototype.$acceptOptionsChanged = function (id, opts) { throw ni(); };
+        ExtHostEditorsShape.prototype.$acceptSelectionsChanged = function (id, event) { throw ni(); };
+        ExtHostEditorsShape.prototype.$acceptEditorPositionData = function (data) { throw ni(); };
+        return ExtHostEditorsShape;
+    }());
+    exports.ExtHostEditorsShape = ExtHostEditorsShape;
+    var ExtHostDocumentsAndEditorsShape = (function () {
+        function ExtHostDocumentsAndEditorsShape() {
+        }
+        ExtHostDocumentsAndEditorsShape.prototype.$acceptDocumentsAndEditorsDelta = function (delta) { throw ni(); };
+        return ExtHostDocumentsAndEditorsShape;
+    }());
+    exports.ExtHostDocumentsAndEditorsShape = ExtHostDocumentsAndEditorsShape;
+    var ExtHostTreeExplorersShape = (function () {
+        function ExtHostTreeExplorersShape() {
+        }
+        ExtHostTreeExplorersShape.prototype.$provideRootNode = function (providerId) { throw ni(); };
+        ;
+        ExtHostTreeExplorersShape.prototype.$resolveChildren = function (providerId, node) { throw ni(); };
+        ExtHostTreeExplorersShape.prototype.$getInternalCommand = function (providerId, node) { throw ni(); };
+        return ExtHostTreeExplorersShape;
+    }());
+    exports.ExtHostTreeExplorersShape = ExtHostTreeExplorersShape;
+    var ExtHostExtensionServiceShape = (function () {
+        function ExtHostExtensionServiceShape() {
+        }
+        ExtHostExtensionServiceShape.prototype.$localShowMessage = function (severity, msg) { throw ni(); };
+        ExtHostExtensionServiceShape.prototype.$activateExtension = function (extensionDescription) { throw ni(); };
+        return ExtHostExtensionServiceShape;
+    }());
+    exports.ExtHostExtensionServiceShape = ExtHostExtensionServiceShape;
+    var ExtHostFileSystemEventServiceShape = (function () {
+        function ExtHostFileSystemEventServiceShape() {
+        }
+        ExtHostFileSystemEventServiceShape.prototype.$onFileEvent = function (events) { throw ni(); };
+        return ExtHostFileSystemEventServiceShape;
+    }());
+    exports.ExtHostFileSystemEventServiceShape = ExtHostFileSystemEventServiceShape;
+    var ObjectIdentifier;
+    (function (ObjectIdentifier) {
+        ObjectIdentifier.name = '$ident';
+        function mixin(obj, id) {
+            Object.defineProperty(obj, ObjectIdentifier.name, { value: id, enumerable: true });
+            return obj;
+        }
+        ObjectIdentifier.mixin = mixin;
+        function of(obj) {
+            return obj[ObjectIdentifier.name];
+        }
+        ObjectIdentifier.of = of;
+    })(ObjectIdentifier = exports.ObjectIdentifier || (exports.ObjectIdentifier = {}));
+    var ExtHostHeapServiceShape = (function () {
+        function ExtHostHeapServiceShape() {
+        }
+        ExtHostHeapServiceShape.prototype.$onGarbageCollection = function (ids) { throw ni(); };
+        return ExtHostHeapServiceShape;
+    }());
+    exports.ExtHostHeapServiceShape = ExtHostHeapServiceShape;
+    var ExtHostLanguageFeaturesShape = (function () {
+        function ExtHostLanguageFeaturesShape() {
+        }
+        ExtHostLanguageFeaturesShape.prototype.$provideDocumentSymbols = function (handle, resource) { throw ni(); };
+        ExtHostLanguageFeaturesShape.prototype.$provideCodeLenses = function (handle, resource) { throw ni(); };
+        ExtHostLanguageFeaturesShape.prototype.$resolveCodeLens = function (handle, resource, symbol) { throw ni(); };
+        ExtHostLanguageFeaturesShape.prototype.$provideDefinition = function (handle, resource, position) { throw ni(); };
+        ExtHostLanguageFeaturesShape.prototype.$provideImplementation = function (handle, resource, position) { throw ni(); };
+        ExtHostLanguageFeaturesShape.prototype.$provideTypeDefinition = function (handle, resource, position) { throw ni(); };
+        ExtHostLanguageFeaturesShape.prototype.$provideHover = function (handle, resource, position) { throw ni(); };
+        ExtHostLanguageFeaturesShape.prototype.$provideDocumentHighlights = function (handle, resource, position) { throw ni(); };
+        ExtHostLanguageFeaturesShape.prototype.$provideReferences = function (handle, resource, position, context) { throw ni(); };
+        ExtHostLanguageFeaturesShape.prototype.$provideCodeActions = function (handle, resource, range) { throw ni(); };
+        ExtHostLanguageFeaturesShape.prototype.$provideDocumentFormattingEdits = function (handle, resource, options) { throw ni(); };
+        ExtHostLanguageFeaturesShape.prototype.$provideDocumentRangeFormattingEdits = function (handle, resource, range, options) { throw ni(); };
+        ExtHostLanguageFeaturesShape.prototype.$provideOnTypeFormattingEdits = function (handle, resource, position, ch, options) { throw ni(); };
+        ExtHostLanguageFeaturesShape.prototype.$provideWorkspaceSymbols = function (handle, search) { throw ni(); };
+        ExtHostLanguageFeaturesShape.prototype.$resolveWorkspaceSymbol = function (handle, symbol) { throw ni(); };
+        ExtHostLanguageFeaturesShape.prototype.$provideRenameEdits = function (handle, resource, position, newName) { throw ni(); };
+        ExtHostLanguageFeaturesShape.prototype.$provideCompletionItems = function (handle, resource, position) { throw ni(); };
+        ExtHostLanguageFeaturesShape.prototype.$resolveCompletionItem = function (handle, resource, position, suggestion) { throw ni(); };
+        ExtHostLanguageFeaturesShape.prototype.$provideSignatureHelp = function (handle, resource, position) { throw ni(); };
+        ExtHostLanguageFeaturesShape.prototype.$provideDocumentLinks = function (handle, resource) { throw ni(); };
+        ExtHostLanguageFeaturesShape.prototype.$resolveDocumentLink = function (handle, link) { throw ni(); };
+        return ExtHostLanguageFeaturesShape;
+    }());
+    exports.ExtHostLanguageFeaturesShape = ExtHostLanguageFeaturesShape;
+    var ExtHostQuickOpenShape = (function () {
+        function ExtHostQuickOpenShape() {
+        }
+        ExtHostQuickOpenShape.prototype.$onItemSelected = function (handle) { throw ni(); };
+        ExtHostQuickOpenShape.prototype.$validateInput = function (input) { throw ni(); };
+        return ExtHostQuickOpenShape;
+    }());
+    exports.ExtHostQuickOpenShape = ExtHostQuickOpenShape;
+    var ExtHostTerminalServiceShape = (function () {
+        function ExtHostTerminalServiceShape() {
+        }
+        ExtHostTerminalServiceShape.prototype.$acceptTerminalClosed = function (id) { throw ni(); };
+        ExtHostTerminalServiceShape.prototype.$acceptTerminalProcessId = function (id, processId) { throw ni(); };
+        ExtHostTerminalServiceShape.prototype.$acceptTerminalData = function (id, data) { throw ni(); };
+        return ExtHostTerminalServiceShape;
+    }());
+    exports.ExtHostTerminalServiceShape = ExtHostTerminalServiceShape;
+    var ExtHostSCMShape = (function () {
+        function ExtHostSCMShape() {
+        }
+        ExtHostSCMShape.prototype.$provideOriginalResource = function (sourceControlHandle, uri) { throw ni(); };
+        ExtHostSCMShape.prototype.$onActiveSourceControlChange = function (sourceControlHandle) { throw ni(); };
+        ExtHostSCMShape.prototype.$onInputBoxValueChange = function (value) { throw ni(); };
+        ExtHostSCMShape.prototype.$onInputBoxAcceptChanges = function () { throw ni(); };
+        return ExtHostSCMShape;
+    }());
+    exports.ExtHostSCMShape = ExtHostSCMShape;
+    var ExtHostTaskShape = (function () {
+        function ExtHostTaskShape() {
+        }
+        ExtHostTaskShape.prototype.$provideTasks = function (handle) { throw ni(); };
+        return ExtHostTaskShape;
+    }());
+    exports.ExtHostTaskShape = ExtHostTaskShape;
+    // --- proxy identifiers
+    exports.MainContext = {
+        MainThreadCommands: threadService_1.createMainContextProxyIdentifier('MainThreadCommands', MainThreadCommandsShape),
+        MainThreadConfiguration: threadService_1.createMainContextProxyIdentifier('MainThreadConfiguration', MainThreadConfigurationShape),
+        MainThreadDiagnostics: threadService_1.createMainContextProxyIdentifier('MainThreadDiagnostics', MainThreadDiagnosticsShape),
+        MainThreadDocuments: threadService_1.createMainContextProxyIdentifier('MainThreadDocuments', MainThreadDocumentsShape),
+        MainThreadEditors: threadService_1.createMainContextProxyIdentifier('MainThreadEditors', MainThreadEditorsShape),
+        MainThreadErrors: threadService_1.createMainContextProxyIdentifier('MainThreadErrors', MainThreadErrorsShape),
+        MainThreadExplorers: threadService_1.createMainContextProxyIdentifier('MainThreadExplorers', MainThreadTreeExplorersShape),
+        MainThreadLanguageFeatures: threadService_1.createMainContextProxyIdentifier('MainThreadLanguageFeatures', MainThreadLanguageFeaturesShape),
+        MainThreadLanguages: threadService_1.createMainContextProxyIdentifier('MainThreadLanguages', MainThreadLanguagesShape),
+        MainThreadMessageService: threadService_1.createMainContextProxyIdentifier('MainThreadMessageService', MainThreadMessageServiceShape),
+        MainThreadOutputService: threadService_1.createMainContextProxyIdentifier('MainThreadOutputService', MainThreadOutputServiceShape),
+        MainThreadProgress: threadService_1.createMainContextProxyIdentifier('MainThreadProgress', MainThreadProgressShape),
+        MainThreadQuickOpen: threadService_1.createMainContextProxyIdentifier('MainThreadQuickOpen', MainThreadQuickOpenShape),
+        MainThreadStatusBar: threadService_1.createMainContextProxyIdentifier('MainThreadStatusBar', MainThreadStatusBarShape),
+        MainThreadStorage: threadService_1.createMainContextProxyIdentifier('MainThreadStorage', MainThreadStorageShape),
+        MainThreadTelemetry: threadService_1.createMainContextProxyIdentifier('MainThreadTelemetry', MainThreadTelemetryShape),
+        MainThreadTerminalService: threadService_1.createMainContextProxyIdentifier('MainThreadTerminalService', MainThreadTerminalServiceShape),
+        MainThreadWorkspace: threadService_1.createMainContextProxyIdentifier('MainThreadWorkspace', MainThreadWorkspaceShape),
+        MainProcessExtensionService: threadService_1.createMainContextProxyIdentifier('MainProcessExtensionService', MainProcessExtensionServiceShape),
+        MainThreadSCM: threadService_1.createMainContextProxyIdentifier('MainThreadSCM', MainThreadSCMShape),
+        MainThreadTask: threadService_1.createMainContextProxyIdentifier('MainThreadTask', MainThreadTaskShape)
+    };
+    exports.ExtHostContext = {
+        ExtHostCommands: threadService_1.createExtHostContextProxyIdentifier('ExtHostCommands', ExtHostCommandsShape),
+        ExtHostConfiguration: threadService_1.createExtHostContextProxyIdentifier('ExtHostConfiguration', ExtHostConfigurationShape),
+        ExtHostDiagnostics: threadService_1.createExtHostContextProxyIdentifier('ExtHostDiagnostics', ExtHostDiagnosticsShape),
+        ExtHostDocumentsAndEditors: threadService_1.createExtHostContextProxyIdentifier('ExtHostDocumentsAndEditors', ExtHostDocumentsAndEditorsShape),
+        ExtHostDocuments: threadService_1.createExtHostContextProxyIdentifier('ExtHostDocuments', ExtHostDocumentsShape),
+        ExtHostDocumentSaveParticipant: threadService_1.createExtHostContextProxyIdentifier('ExtHostDocumentSaveParticipant', ExtHostDocumentSaveParticipantShape),
+        ExtHostEditors: threadService_1.createExtHostContextProxyIdentifier('ExtHostEditors', ExtHostEditorsShape),
+        ExtHostExplorers: threadService_1.createExtHostContextProxyIdentifier('ExtHostExplorers', ExtHostTreeExplorersShape),
+        ExtHostFileSystemEventService: threadService_1.createExtHostContextProxyIdentifier('ExtHostFileSystemEventService', ExtHostFileSystemEventServiceShape),
+        ExtHostHeapService: threadService_1.createExtHostContextProxyIdentifier('ExtHostHeapMonitor', ExtHostHeapServiceShape),
+        ExtHostLanguageFeatures: threadService_1.createExtHostContextProxyIdentifier('ExtHostLanguageFeatures', ExtHostLanguageFeaturesShape),
+        ExtHostQuickOpen: threadService_1.createExtHostContextProxyIdentifier('ExtHostQuickOpen', ExtHostQuickOpenShape),
+        ExtHostExtensionService: threadService_1.createExtHostContextProxyIdentifier('ExtHostExtensionService', ExtHostExtensionServiceShape),
+        ExtHostTerminalService: threadService_1.createExtHostContextProxyIdentifier('ExtHostTerminalService', ExtHostTerminalServiceShape),
+        ExtHostSCM: threadService_1.createExtHostContextProxyIdentifier('ExtHostSCM', ExtHostSCMShape),
+        ExtHostTask: threadService_1.createExtHostContextProxyIdentifier('ExtHostTask', ExtHostTaskShape)
+    };
+});
+
+
+
+
+
+
+define(__m[93/*vs/workbench/api/node/extHostCommands*/], __M([1/*require*/,0/*exports*/,10/*vs/base/common/types*/,2/*vs/base/common/winjs.base*/,5/*vs/workbench/api/node/extHostTypes*/,8/*vs/workbench/api/node/extHostTypeConverters*/,16/*vs/base/common/objects*/,3/*vs/workbench/api/node/extHost.protocol*/,22/*vs/base/common/arrays*/]), function (require, exports, types_1, winjs_base_1, extHostTypes, extHostTypeConverter, objects_1, extHost_protocol_1, arrays_1) {
+    /*---------------------------------------------------------------------------------------------
+     *  Copyright (c) Microsoft Corporation. All rights reserved.
+     *  Licensed under the MIT License. See License.txt in the project root for license information.
+     *--------------------------------------------------------------------------------------------*/
+    'use strict';
+    var ExtHostCommands = (function (_super) {
+        __extends(ExtHostCommands, _super);
+        function ExtHostCommands(threadService, heapService) {
+            var _this = _super.call(this) || this;
+            _this._commands = new Map();
+            _this._argumentProcessors = [];
+            _this._proxy = threadService.get(extHost_protocol_1.MainContext.MainThreadCommands);
+            _this._converter = new CommandsConverter(_this, heapService);
+            return _this;
+        }
+        Object.defineProperty(ExtHostCommands.prototype, "converter", {
+            get: function () {
+                return this._converter;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        ExtHostCommands.prototype.registerArgumentProcessor = function (processor) {
+            this._argumentProcessors.push(processor);
+        };
+        ExtHostCommands.prototype.registerCommand = function (id, callback, thisArg, description) {
+            var _this = this;
+            if (!id.trim().length) {
+                throw new Error('invalid id');
+            }
+            if (this._commands.has(id)) {
+                throw new Error('command with id already exists');
+            }
+            this._commands.set(id, { callback: callback, thisArg: thisArg, description: description });
+            this._proxy.$registerCommand(id);
+            return new extHostTypes.Disposable(function () {
+                if (_this._commands.delete(id)) {
+                    _this._proxy.$unregisterCommand(id);
+                }
+            });
+        };
+        ExtHostCommands.prototype.executeCommand = function (id) {
+            var args = [];
+            for (var _i = 1; _i < arguments.length; _i++) {
+                args[_i - 1] = arguments[_i];
+            }
+            if (this._commands.has(id)) {
+                // we stay inside the extension host and support
+                // to pass any kind of parameters around
+                return this.$executeContributedCommand.apply(this, [id].concat(args));
+            }
+            else {
+                // automagically convert some argument types
+                args = objects_1.cloneAndChange(args, function (value) {
+                    if (value instanceof extHostTypes.Position) {
+                        return extHostTypeConverter.fromPosition(value);
+                    }
+                    if (value instanceof extHostTypes.Range) {
+                        return extHostTypeConverter.fromRange(value);
+                    }
+                    if (value instanceof extHostTypes.Location) {
+                        return extHostTypeConverter.location.from(value);
+                    }
+                    if (!Array.isArray(value)) {
+                        return value;
+                    }
+                });
+                return this._proxy.$executeCommand(id, args);
+            }
+        };
+        ExtHostCommands.prototype.$executeContributedCommand = function (id) {
+            var _this = this;
+            var args = [];
+            for (var _i = 1; _i < arguments.length; _i++) {
+                args[_i - 1] = arguments[_i];
+            }
+            var command = this._commands.get(id);
+            if (!command) {
+                return winjs_base_1.TPromise.wrapError("Contributed command '" + id + "' does not exist.");
+            }
+            var callback = command.callback, thisArg = command.thisArg, description = command.description;
+            if (description) {
+                for (var i = 0; i < description.args.length; i++) {
+                    try {
+                        types_1.validateConstraint(args[i], description.args[i].constraint);
+                    }
+                    catch (err) {
+                        return winjs_base_1.TPromise.wrapError("Running the contributed command:'" + id + "' failed. Illegal argument '" + description.args[i].name + "' - " + description.args[i].description);
+                    }
+                }
+            }
+            args = args.map(function (arg) { return _this._argumentProcessors.reduce(function (r, p) { return p.processArgument(r); }, arg); });
+            try {
+                var result = callback.apply(thisArg, args);
+                return winjs_base_1.TPromise.as(result);
+            }
+            catch (err) {
+                // console.log(err);
+                // try {
+                // 	console.log(toErrorMessage(err));
+                // } catch (err) {
+                // 	//
+                // }
+                return winjs_base_1.TPromise.wrapError("Running the contributed command:'" + id + "' failed.");
+            }
+        };
+        ExtHostCommands.prototype.getCommands = function (filterUnderscoreCommands) {
+            if (filterUnderscoreCommands === void 0) { filterUnderscoreCommands = false; }
+            return this._proxy.$getCommands().then(function (result) {
+                if (filterUnderscoreCommands) {
+                    result = result.filter(function (command) { return command[0] !== '_'; });
+                }
+                return result;
+            });
+        };
+        ExtHostCommands.prototype.$getContributedCommandHandlerDescriptions = function () {
+            var result = Object.create(null);
+            this._commands.forEach(function (command, id) {
+                var description = command.description;
+                if (description) {
+                    result[id] = description;
+                }
+            });
+            return winjs_base_1.TPromise.as(result);
+        };
+        return ExtHostCommands;
+    }(extHost_protocol_1.ExtHostCommandsShape));
+    exports.ExtHostCommands = ExtHostCommands;
+    var CommandsConverter = (function () {
+        // --- conversion between internal and api commands
+        function CommandsConverter(commands, heap) {
+            this._commands = commands;
+            this._heap = heap;
+            this._commands.registerCommand('_internal_command_delegation', this._executeConvertedCommand, this);
+        }
+        CommandsConverter.prototype.toInternal = function (command) {
+            if (!command) {
+                return undefined;
+            }
+            var result = {
+                id: command.command,
+                title: command.title
+            };
+            if (!arrays_1.isFalsyOrEmpty(command.arguments)) {
+                // we have a contributed command with arguments. that
+                // means we don't want to send the arguments around
+                var id = this._heap.keep(command);
+                extHost_protocol_1.ObjectIdentifier.mixin(result, id);
+                result.id = '_internal_command_delegation';
+                result.arguments = [id];
+            }
+            if (command.tooltip) {
+                result.tooltip = command.tooltip;
+            }
+            return result;
+        };
+        CommandsConverter.prototype.fromInternal = function (command) {
+            if (!command) {
+                return undefined;
+            }
+            var id = extHost_protocol_1.ObjectIdentifier.of(command);
+            if (typeof id === 'number') {
+                return this._heap.get(id);
+            }
+            else {
+                return {
+                    command: command.id,
+                    title: command.title,
+                    arguments: command.arguments
+                };
+            }
+        };
+        CommandsConverter.prototype._executeConvertedCommand = function () {
+            var args = [];
+            for (var _i = 0; _i < arguments.length; _i++) {
+                args[_i] = arguments[_i];
+            }
+            var actualCmd = this._heap.get(args[0]);
+            return (_a = this._commands).executeCommand.apply(_a, [actualCmd.command].concat(actualCmd.arguments));
+            var _a;
+        };
+        return CommandsConverter;
+    }());
+    exports.CommandsConverter = CommandsConverter;
+});
+
+
+
+
+
+
+define(__m[94/*vs/workbench/api/node/extHostConfiguration*/], __M([1/*require*/,0/*exports*/,16/*vs/base/common/objects*/,4/*vs/base/common/event*/,3/*vs/workbench/api/node/extHost.protocol*/,84/*vs/workbench/services/configuration/common/configurationEditing*/,76/*vs/platform/configuration/common/model*/]), function (require, exports, objects_1, event_1, extHost_protocol_1, configurationEditing_1, model_1) {
+    /*---------------------------------------------------------------------------------------------
+     *  Copyright (c) Microsoft Corporation. All rights reserved.
+     *  Licensed under the MIT License. See License.txt in the project root for license information.
+     *--------------------------------------------------------------------------------------------*/
+    'use strict';
+    function lookUp(tree, key) {
+        if (key) {
+            var parts = key.split('.');
+            var node = tree;
+            for (var i = 0; node && i < parts.length; i++) {
+                node = node[parts[i]];
+            }
+            return node;
+        }
+    }
+    function createUsefulConfiguration(data) {
+        var valueMap = Object.create(null);
+        for (var key in data) {
+            if (Object.prototype.hasOwnProperty.call(data, key)) {
+                valueMap[key] = data[key].value;
+            }
+        }
+        var valueTree = model_1.toValuesTree(valueMap, function (message) { return console.error("Conflict in configuration settings: " + message); });
+        return {
+            data: data,
+            valueTree: valueTree
+        };
+    }
+    var ExtHostConfiguration = (function (_super) {
+        __extends(ExtHostConfiguration, _super);
+        function ExtHostConfiguration(proxy, data) {
+            var _this = _super.call(this) || this;
+            _this._onDidChangeConfiguration = new event_1.Emitter();
+            _this._proxy = proxy;
+            _this._configuration = createUsefulConfiguration(data);
+            return _this;
+        }
+        Object.defineProperty(ExtHostConfiguration.prototype, "onDidChangeConfiguration", {
+            get: function () {
+                return this._onDidChangeConfiguration && this._onDidChangeConfiguration.event;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        ExtHostConfiguration.prototype.$acceptConfigurationChanged = function (data) {
+            this._configuration = createUsefulConfiguration(data);
+            this._onDidChangeConfiguration.fire(undefined);
+        };
+        ExtHostConfiguration.prototype.getConfiguration = function (section) {
+            var _this = this;
+            var config = section
+                ? lookUp(this._configuration.valueTree, section)
+                : this._configuration.valueTree;
+            var result = {
+                has: function (key) {
+                    return typeof lookUp(config, key) !== 'undefined';
+                },
+                get: function (key, defaultValue) {
+                    var result = lookUp(config, key);
+                    if (typeof result === 'undefined') {
+                        result = defaultValue;
+                    }
+                    return result;
+                },
+                update: function (key, value, global) {
+                    if (global === void 0) { global = false; }
+                    key = section ? section + "." + key : key;
+                    var target = global ? configurationEditing_1.ConfigurationTarget.USER : configurationEditing_1.ConfigurationTarget.WORKSPACE;
+                    if (value !== void 0) {
+                        return _this._proxy.$updateConfigurationOption(target, key, value);
+                    }
+                    else {
+                        return _this._proxy.$removeConfigurationOption(target, key);
+                    }
+                },
+                inspect: function (key) {
+                    key = section ? section + "." + key : key;
+                    var config = _this._configuration.data[key];
+                    if (config) {
+                        return {
+                            key: key,
+                            defaultValue: config.default,
+                            globalValue: config.user,
+                            workspaceValue: config.workspace
+                        };
+                    }
+                    return undefined;
+                }
+            };
+            if (typeof config === 'object') {
+                objects_1.mixin(result, config, false);
+            }
+            return Object.freeze(result);
+        };
+        return ExtHostConfiguration;
+    }(extHost_protocol_1.ExtHostConfigurationShape));
+    exports.ExtHostConfiguration = ExtHostConfiguration;
+});
+
+
+
+
+
+
+define(__m[95/*vs/workbench/api/node/extHostDiagnostics*/], __M([1/*require*/,0/*exports*/,58/*vs/nls!vs/workbench/api/node/extHostDiagnostics*/,7/*vs/base/common/uri*/,18/*vs/base/common/severity*/,3/*vs/workbench/api/node/extHost.protocol*/,5/*vs/workbench/api/node/extHostTypes*/]), function (require, exports, nls_1, uri_1, severity_1, extHost_protocol_1, extHostTypes_1) {
+    /*---------------------------------------------------------------------------------------------
+     *  Copyright (c) Microsoft Corporation. All rights reserved.
+     *  Licensed under the MIT License. See License.txt in the project root for license information.
+     *--------------------------------------------------------------------------------------------*/
+    'use strict';
+    var DiagnosticCollection = (function () {
+        function DiagnosticCollection(name, proxy) {
+            this._isDisposed = false;
+            this._data = new Map();
+            this._name = name;
+            this._proxy = proxy;
+        }
+        DiagnosticCollection.prototype.dispose = function () {
+            if (!this._isDisposed) {
+                this._proxy.$clear(this.name);
+                this._proxy = undefined;
+                this._data = undefined;
+                this._isDisposed = true;
+            }
+        };
+        Object.defineProperty(DiagnosticCollection.prototype, "name", {
+            get: function () {
+                this._checkDisposed();
+                return this._name;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        DiagnosticCollection.prototype.set = function (first, diagnostics) {
+            if (!first) {
+                // this set-call is a clear-call
+                this.clear();
+                return;
+            }
+            // the actual implementation for #set
+            this._checkDisposed();
+            var toSync;
+            if (first instanceof uri_1.default) {
+                if (!diagnostics) {
+                    // remove this entry
+                    this.delete(first);
+                    return;
+                }
+                // update single row
+                this._data.set(first.toString(), diagnostics);
+                toSync = [first];
+            }
+            else if (Array.isArray(first)) {
+                // update many rows
+                toSync = [];
+                var lastUri = void 0;
+                // ensure stable-sort: keep the original
+                // index for otherwise equal items
+                var sortedTuples = first
+                    .map(function (tuple, idx) { return ({ tuple: tuple, idx: idx }); })
+                    .sort(DiagnosticCollection._compareIndexedTuplesByUri);
+                for (var _i = 0, sortedTuples_1 = sortedTuples; _i < sortedTuples_1.length; _i++) {
+                    var tuple = sortedTuples_1[_i].tuple;
+                    var uri = tuple[0], diagnostics_1 = tuple[1];
+                    if (!lastUri || uri.toString() !== lastUri.toString()) {
+                        if (lastUri && this._data.get(lastUri.toString()).length === 0) {
+                            this._data.delete(lastUri.toString());
+                        }
+                        lastUri = uri;
+                        toSync.push(uri);
+                        this._data.set(uri.toString(), []);
+                    }
+                    if (!diagnostics_1) {
+                        // [Uri, undefined] means clear this
+                        this._data.get(uri.toString()).length = 0;
+                    }
+                    else {
+                        (_a = this._data.get(uri.toString())).push.apply(_a, diagnostics_1);
+                    }
+                }
+            }
+            // compute change and send to main side
+            var entries = [];
+            for (var _b = 0, toSync_1 = toSync; _b < toSync_1.length; _b++) {
+                var uri = toSync_1[_b];
+                var marker = void 0;
+                var diagnostics_2 = this._data.get(uri.toString());
+                if (diagnostics_2) {
+                    // no more than 250 diagnostics per file
+                    if (diagnostics_2.length > DiagnosticCollection._maxDiagnosticsPerFile) {
+                        marker = [];
+                        var order = [extHostTypes_1.DiagnosticSeverity.Error, extHostTypes_1.DiagnosticSeverity.Warning, extHostTypes_1.DiagnosticSeverity.Information, extHostTypes_1.DiagnosticSeverity.Hint];
+                        orderLoop: for (var i = 0; i < 4; i++) {
+                            for (var _c = 0, diagnostics_3 = diagnostics_2; _c < diagnostics_3.length; _c++) {
+                                var diagnostic = diagnostics_3[_c];
+                                if (diagnostic.severity === order[i]) {
+                                    var len = marker.push(DiagnosticCollection._toMarkerData(diagnostic));
+                                    if (len === DiagnosticCollection._maxDiagnosticsPerFile) {
+                                        break orderLoop;
+                                    }
+                                }
+                            }
+                        }
+                        // add 'signal' marker for showing omitted errors/warnings
+                        marker.push({
+                            severity: severity_1.default.Error,
+                            message: nls_1.localize(0, null, diagnostics_2.length - DiagnosticCollection._maxDiagnosticsPerFile),
+                            startLineNumber: marker[marker.length - 1].startLineNumber,
+                            startColumn: marker[marker.length - 1].startColumn,
+                            endLineNumber: marker[marker.length - 1].endLineNumber,
+                            endColumn: marker[marker.length - 1].endColumn
+                        });
+                    }
+                    else {
+                        marker = diagnostics_2.map(DiagnosticCollection._toMarkerData);
+                    }
+                }
+                entries.push([uri, marker]);
+            }
+            this._proxy.$changeMany(this.name, entries);
+            var _a;
+        };
+        DiagnosticCollection.prototype.delete = function (uri) {
+            this._checkDisposed();
+            this._data.delete(uri.toString());
+            this._proxy.$changeMany(this.name, [[uri, undefined]]);
+        };
+        DiagnosticCollection.prototype.clear = function () {
+            this._checkDisposed();
+            this._data.clear();
+            this._proxy.$clear(this.name);
+        };
+        DiagnosticCollection.prototype.forEach = function (callback, thisArg) {
+            var _this = this;
+            this._checkDisposed();
+            this._data.forEach(function (value, key) {
+                var uri = uri_1.default.parse(key);
+                callback.apply(thisArg, [uri, _this.get(uri), _this]);
+            });
+        };
+        DiagnosticCollection.prototype.get = function (uri) {
+            this._checkDisposed();
+            var result = this._data.get(uri.toString());
+            if (Array.isArray(result)) {
+                return Object.freeze(result.slice(0));
+            }
+            return undefined;
+        };
+        DiagnosticCollection.prototype.has = function (uri) {
+            this._checkDisposed();
+            return Array.isArray(this._data.get(uri.toString()));
+        };
+        DiagnosticCollection.prototype._checkDisposed = function () {
+            if (this._isDisposed) {
+                throw new Error('illegal state - object is disposed');
+            }
+        };
+        DiagnosticCollection._toMarkerData = function (diagnostic) {
+            var range = diagnostic.range;
+            return {
+                startLineNumber: range.start.line + 1,
+                startColumn: range.start.character + 1,
+                endLineNumber: range.end.line + 1,
+                endColumn: range.end.character + 1,
+                message: diagnostic.message,
+                source: diagnostic.source,
+                severity: DiagnosticCollection._convertDiagnosticsSeverity(diagnostic.severity),
+                code: String(diagnostic.code)
+            };
+        };
+        DiagnosticCollection._convertDiagnosticsSeverity = function (severity) {
+            switch (severity) {
+                case 0: return severity_1.default.Error;
+                case 1: return severity_1.default.Warning;
+                case 2: return severity_1.default.Info;
+                case 3: return severity_1.default.Ignore;
+                default: return severity_1.default.Error;
+            }
+        };
+        DiagnosticCollection._compareIndexedTuplesByUri = function (a, b) {
+            if (a.tuple[0].toString() < b.tuple[0].toString()) {
+                return -1;
+            }
+            else if (a.tuple[0].toString() > b.tuple[0].toString()) {
+                return 1;
+            }
+            else if (a.idx < b.idx) {
+                return -1;
+            }
+            else if (a.idx > b.idx) {
+                return 1;
+            }
+            else {
+                return 0;
+            }
+        };
+        return DiagnosticCollection;
+    }());
+    DiagnosticCollection._maxDiagnosticsPerFile = 250;
+    exports.DiagnosticCollection = DiagnosticCollection;
+    var ExtHostDiagnostics = (function (_super) {
+        __extends(ExtHostDiagnostics, _super);
+        function ExtHostDiagnostics(threadService) {
+            var _this = _super.call(this) || this;
+            _this._proxy = threadService.get(extHost_protocol_1.MainContext.MainThreadDiagnostics);
+            _this._collections = [];
+            return _this;
+        }
+        ExtHostDiagnostics.prototype.createDiagnosticCollection = function (name) {
+            if (!name) {
+                name = '_generated_diagnostic_collection_name_#' + ExtHostDiagnostics._idPool++;
+            }
+            var _a = this, _collections = _a._collections, _proxy = _a._proxy;
+            var result = new (function (_super) {
+                __extends(class_1, _super);
+                function class_1() {
+                    var _this = _super.call(this, name, _proxy) || this;
+                    _collections.push(_this);
+                    return _this;
+                }
+                class_1.prototype.dispose = function () {
+                    _super.prototype.dispose.call(this);
+                    var idx = _collections.indexOf(this);
+                    if (idx !== -1) {
+                        _collections.splice(idx, 1);
+                    }
+                };
+                return class_1;
+            }(DiagnosticCollection));
+            return result;
+        };
+        ExtHostDiagnostics.prototype.forEach = function (callback) {
+            this._collections.forEach(callback);
+        };
+        return ExtHostDiagnostics;
+    }(extHost_protocol_1.ExtHostDiagnosticsShape));
+    ExtHostDiagnostics._idPool = 0;
+    exports.ExtHostDiagnostics = ExtHostDiagnostics;
+});
+
+
+
+
+
+
+define(__m[96/*vs/workbench/api/node/extHostDocumentSaveParticipant*/], __M([1/*require*/,0/*exports*/,29/*vs/base/common/callbackList*/,12/*vs/base/common/async*/,6/*vs/base/common/errors*/,2/*vs/base/common/winjs.base*/,3/*vs/workbench/api/node/extHost.protocol*/,5/*vs/workbench/api/node/extHostTypes*/,8/*vs/workbench/api/node/extHostTypeConverters*/]), function (require, exports, callbackList_1, async_1, errors_1, winjs_base_1, extHost_protocol_1, extHostTypes_1, extHostTypeConverters_1) {
+    /*---------------------------------------------------------------------------------------------
+     *  Copyright (c) Microsoft Corporation. All rights reserved.
+     *  Licensed under the MIT License. See License.txt in the project root for license information.
+     *--------------------------------------------------------------------------------------------*/
+    'use strict';
+    var ExtHostDocumentSaveParticipant = (function (_super) {
+        __extends(ExtHostDocumentSaveParticipant, _super);
+        function ExtHostDocumentSaveParticipant(documents, workspace, thresholds) {
+            if (thresholds === void 0) { thresholds = { timeout: 1500, errors: 3 }; }
+            var _this = _super.call(this) || this;
+            _this._callbacks = new callbackList_1.default();
+            _this._badListeners = new WeakMap();
+            _this._documents = documents;
+            _this._workspace = workspace;
+            _this._thresholds = thresholds;
+            return _this;
+        }
+        ExtHostDocumentSaveParticipant.prototype.dispose = function () {
+            this._callbacks.dispose();
+        };
+        Object.defineProperty(ExtHostDocumentSaveParticipant.prototype, "onWillSaveTextDocumentEvent", {
+            get: function () {
+                var _this = this;
+                return function (listener, thisArg, disposables) {
+                    _this._callbacks.add(listener, thisArg);
+                    var result = {
+                        dispose: function () {
+                            _this._callbacks.remove(listener, thisArg);
+                        }
+                    };
+                    if (Array.isArray(disposables)) {
+                        disposables.push(result);
+                    }
+                    return result;
+                };
+            },
+            enumerable: true,
+            configurable: true
+        });
+        ExtHostDocumentSaveParticipant.prototype.$participateInSave = function (resource, reason) {
+            var _this = this;
+            var entries = this._callbacks.entries();
+            var didTimeout = false;
+            var didTimeoutHandle = setTimeout(function () { return didTimeout = true; }, this._thresholds.timeout);
+            var promise = async_1.sequence(entries.map(function (_a) {
+                var fn = _a[0], thisArg = _a[1];
+                return function () {
+                    if (didTimeout) {
+                        // timeout - no more listeners
+                        return undefined;
+                    }
+                    var document = _this._documents.getDocumentData(resource).document;
+                    return _this._deliverEventAsyncAndBlameBadListeners(fn, thisArg, { document: document, reason: extHostTypeConverters_1.TextDocumentSaveReason.to(reason) });
+                };
+            }));
+            return async_1.always(promise, function () { return clearTimeout(didTimeoutHandle); });
+        };
+        ExtHostDocumentSaveParticipant.prototype._deliverEventAsyncAndBlameBadListeners = function (listener, thisArg, stubEvent) {
+            var _this = this;
+            var errors = this._badListeners.get(listener);
+            if (errors > this._thresholds.errors) {
+                // bad listener - ignore
+                return winjs_base_1.TPromise.wrap(false);
+            }
+            return this._deliverEventAsync(listener, thisArg, stubEvent).then(function () {
+                // don't send result across the wire
+                return true;
+            }, function (err) {
+                if (!(err instanceof Error) || err.message !== 'concurrent_edits') {
+                    var errors_2 = _this._badListeners.get(listener);
+                    _this._badListeners.set(listener, !errors_2 ? 1 : errors_2 + 1);
+                }
+                return false;
+            });
+        };
+        ExtHostDocumentSaveParticipant.prototype._deliverEventAsync = function (listener, thisArg, stubEvent) {
+            var _this = this;
+            var promises = [];
+            var document = stubEvent.document, reason = stubEvent.reason;
+            var version = document.version;
+            var event = Object.freeze({
+                document: document,
+                reason: reason,
+                waitUntil: function (p) {
+                    if (Object.isFrozen(promises)) {
+                        throw errors_1.illegalState('waitUntil can not be called async');
+                    }
+                    promises.push(winjs_base_1.TPromise.wrap(p));
+                }
+            });
+            try {
+                // fire event
+                listener.apply(thisArg, [event]);
+            }
+            catch (err) {
+                return winjs_base_1.TPromise.wrapError(err);
+            }
+            // freeze promises after event call
+            Object.freeze(promises);
+            return new winjs_base_1.TPromise(function (resolve, reject) {
+                // join on all listener promises, reject after timeout
+                var handle = setTimeout(function () { return reject(new Error('timeout')); }, _this._thresholds.timeout);
+                return async_1.always(winjs_base_1.TPromise.join(promises), function () { return clearTimeout(handle); }).then(resolve, reject);
+            }).then(function (values) {
+                var edits = [];
+                for (var _i = 0, values_1 = values; _i < values_1.length; _i++) {
+                    var value = values_1[_i];
+                    if (Array.isArray(value) && value.every(function (e) { return e instanceof extHostTypes_1.TextEdit; })) {
+                        for (var _a = 0, value_1 = value; _a < value_1.length; _a++) {
+                            var _b = value_1[_a], newText = _b.newText, newEol = _b.newEol, range = _b.range;
+                            edits.push({
+                                resource: document.uri,
+                                range: range && extHostTypeConverters_1.fromRange(range),
+                                newText: newText,
+                                newEol: extHostTypeConverters_1.EndOfLine.from(newEol)
+                            });
+                        }
+                    }
+                }
+                // apply edits iff any and iff document
+                // didn't change somehow in the meantime
+                if (edits.length === 0) {
+                    return undefined;
+                }
+                if (version === document.version) {
+                    return _this._workspace.$applyWorkspaceEdit(edits);
+                }
+                // TODO@joh bubble this to listener?
+                return winjs_base_1.TPromise.wrapError(new Error('concurrent_edits'));
+            });
+        };
+        return ExtHostDocumentSaveParticipant;
+    }(extHost_protocol_1.ExtHostDocumentSaveParticipantShape));
+    exports.ExtHostDocumentSaveParticipant = ExtHostDocumentSaveParticipant;
+});
+
+
+
+
+
+
+define(__m[97/*vs/workbench/api/node/extHostDocuments*/], __M([1/*require*/,0/*exports*/,6/*vs/base/common/errors*/,21/*vs/editor/common/editorCommon*/,4/*vs/base/common/event*/,19/*vs/base/common/lifecycle*/,5/*vs/workbench/api/node/extHostTypes*/,8/*vs/workbench/api/node/extHostTypeConverters*/,2/*vs/base/common/winjs.base*/,12/*vs/base/common/async*/,65/*vs/editor/common/model/textSource*/,3/*vs/workbench/api/node/extHost.protocol*/,36/*vs/workbench/api/node/extHostDocumentData*/]), function (require, exports, errors_1, editorCommon, event_1, lifecycle_1, extHostTypes_1, TypeConverters, winjs_base_1, async_1, textSource_1, extHost_protocol_1, extHostDocumentData_1) {
+    /*---------------------------------------------------------------------------------------------
+     *  Copyright (c) Microsoft Corporation. All rights reserved.
+     *  Licensed under the MIT License. See License.txt in the project root for license information.
+     *--------------------------------------------------------------------------------------------*/
+    'use strict';
+    var ExtHostDocuments = (function (_super) {
+        __extends(ExtHostDocuments, _super);
+        function ExtHostDocuments(threadService, documentsAndEditors) {
+            var _this = _super.call(this) || this;
+            _this._onDidAddDocument = new event_1.Emitter();
+            _this._onDidRemoveDocument = new event_1.Emitter();
+            _this._onDidChangeDocument = new event_1.Emitter();
+            _this._onDidSaveDocument = new event_1.Emitter();
+            _this.onDidAddDocument = _this._onDidAddDocument.event;
+            _this.onDidRemoveDocument = _this._onDidRemoveDocument.event;
+            _this.onDidChangeDocument = _this._onDidChangeDocument.event;
+            _this.onDidSaveDocument = _this._onDidSaveDocument.event;
+            _this._documentLoader = new Map();
+            _this._documentContentProviders = new Map();
+            _this._proxy = threadService.get(extHost_protocol_1.MainContext.MainThreadDocuments);
+            _this._documentsAndEditors = documentsAndEditors;
+            _this._toDispose = [
+                _this._documentsAndEditors.onDidRemoveDocuments(function (documents) {
+                    for (var _i = 0, documents_1 = documents; _i < documents_1.length; _i++) {
+                        var data = documents_1[_i];
+                        _this._onDidRemoveDocument.fire(data.document);
+                    }
+                }),
+                _this._documentsAndEditors.onDidAddDocuments(function (documents) {
+                    for (var _i = 0, documents_2 = documents; _i < documents_2.length; _i++) {
+                        var data = documents_2[_i];
+                        _this._onDidAddDocument.fire(data.document);
+                    }
+                })
+            ];
+            return _this;
+        }
+        ExtHostDocuments.prototype.dispose = function () {
+            lifecycle_1.dispose(this._toDispose);
+        };
+        ExtHostDocuments.prototype.getAllDocumentData = function () {
+            return this._documentsAndEditors.allDocuments();
+        };
+        ExtHostDocuments.prototype.getDocumentData = function (resource) {
+            if (!resource) {
+                return undefined;
+            }
+            var data = this._documentsAndEditors.getDocument(resource.toString());
+            if (data) {
+                return data;
+            }
+            return undefined;
+        };
+        ExtHostDocuments.prototype.ensureDocumentData = function (uri) {
+            var _this = this;
+            var cached = this._documentsAndEditors.getDocument(uri.toString());
+            if (cached) {
+                return winjs_base_1.TPromise.as(cached);
+            }
+            var promise = this._documentLoader.get(uri.toString());
+            if (!promise) {
+                promise = this._proxy.$tryOpenDocument(uri).then(function () {
+                    _this._documentLoader.delete(uri.toString());
+                    return _this._documentsAndEditors.getDocument(uri.toString());
+                }, function (err) {
+                    _this._documentLoader.delete(uri.toString());
+                    return winjs_base_1.TPromise.wrapError(err);
+                });
+                this._documentLoader.set(uri.toString(), promise);
+            }
+            return promise;
+        };
+        ExtHostDocuments.prototype.createDocumentData = function (options) {
+            return this._proxy.$tryCreateDocument(options);
+        };
+        ExtHostDocuments.prototype.registerTextDocumentContentProvider = function (scheme, provider) {
+            var _this = this;
+            if (scheme === 'file' || scheme === 'untitled') {
+                throw new Error("scheme '" + scheme + "' already registered");
+            }
+            var handle = ExtHostDocuments._handlePool++;
+            this._documentContentProviders.set(handle, provider);
+            this._proxy.$registerTextContentProvider(handle, scheme);
+            var subscription;
+            if (typeof provider.onDidChange === 'function') {
+                subscription = provider.onDidChange(function (uri) {
+                    if (_this._documentsAndEditors.getDocument(uri.toString())) {
+                        _this.$provideTextDocumentContent(handle, uri).then(function (value) {
+                            var document = _this._documentsAndEditors.getDocument(uri.toString());
+                            if (!document) {
+                                // disposed in the meantime
+                                return;
+                            }
+                            // create lines and compare
+                            var textSource = textSource_1.TextSource.fromString(value, editorCommon.DefaultEndOfLine.CRLF);
+                            // broadcast event when content changed
+                            if (!document.equalLines(textSource)) {
+                                return _this._proxy.$onVirtualDocumentChange(uri, textSource);
+                            }
+                        }, errors_1.onUnexpectedError);
+                    }
+                });
+            }
+            return new extHostTypes_1.Disposable(function () {
+                if (_this._documentContentProviders.delete(handle)) {
+                    _this._proxy.$unregisterTextContentProvider(handle);
+                }
+                if (subscription) {
+                    subscription.dispose();
+                    subscription = undefined;
+                }
+            });
+        };
+        ExtHostDocuments.prototype.$provideTextDocumentContent = function (handle, uri) {
+            var provider = this._documentContentProviders.get(handle);
+            if (!provider) {
+                return winjs_base_1.TPromise.wrapError("unsupported uri-scheme: " + uri.scheme);
+            }
+            return async_1.asWinJsPromise(function (token) { return provider.provideTextDocumentContent(uri, token); });
+        };
+        ExtHostDocuments.prototype.$acceptModelModeChanged = function (strURL, oldModeId, newModeId) {
+            var data = this._documentsAndEditors.getDocument(strURL);
+            // Treat a mode change as a remove + add
+            this._onDidRemoveDocument.fire(data.document);
+            data._acceptLanguageId(newModeId);
+            this._onDidAddDocument.fire(data.document);
+        };
+        ExtHostDocuments.prototype.$acceptModelSaved = function (strURL) {
+            var data = this._documentsAndEditors.getDocument(strURL);
+            data._acceptIsDirty(false);
+            this._onDidSaveDocument.fire(data.document);
+        };
+        ExtHostDocuments.prototype.$acceptModelDirty = function (strURL) {
+            var document = this._documentsAndEditors.getDocument(strURL);
+            document._acceptIsDirty(true);
+        };
+        ExtHostDocuments.prototype.$acceptModelReverted = function (strURL) {
+            var document = this._documentsAndEditors.getDocument(strURL);
+            document._acceptIsDirty(false);
+        };
+        ExtHostDocuments.prototype.$acceptModelChanged = function (strURL, events, isDirty) {
+            var data = this._documentsAndEditors.getDocument(strURL);
+            data._acceptIsDirty(isDirty);
+            data.onEvents(events);
+            this._onDidChangeDocument.fire({
+                document: data.document,
+                contentChanges: events.map(function (e) {
+                    return {
+                        range: TypeConverters.toRange(e.range),
+                        rangeLength: e.rangeLength,
+                        text: e.text
+                    };
+                })
+            });
+        };
+        ExtHostDocuments.prototype.setWordDefinitionFor = function (modeId, wordDefinition) {
+            extHostDocumentData_1.setWordDefinitionFor(modeId, wordDefinition);
+        };
+        return ExtHostDocuments;
+    }(extHost_protocol_1.ExtHostDocumentsShape));
+    ExtHostDocuments._handlePool = 0;
+    exports.ExtHostDocuments = ExtHostDocuments;
+});
+
+
+
+
+
+
+
+
+
+
+
+
+var __param = (this && this.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
+define(__m[98/*vs/workbench/api/node/extHostDocumentsAndEditors*/], __M([1/*require*/,0/*exports*/,4/*vs/base/common/event*/,19/*vs/base/common/lifecycle*/,3/*vs/workbench/api/node/extHost.protocol*/,36/*vs/workbench/api/node/extHostDocumentData*/,38/*vs/workbench/api/node/extHostTextEditor*/,39/*vs/workbench/services/thread/common/threadService*/,62/*assert*/,8/*vs/workbench/api/node/extHostTypeConverters*/]), function (require, exports, event_1, lifecycle_1, extHost_protocol_1, extHostDocumentData_1, extHostTextEditor_1, threadService_1, assert, typeConverters) {
+    /*---------------------------------------------------------------------------------------------
+     *  Copyright (c) Microsoft Corporation. All rights reserved.
+     *  Licensed under the MIT License. See License.txt in the project root for license information.
+     *--------------------------------------------------------------------------------------------*/
+    'use strict';
+    var ExtHostDocumentsAndEditors = (function (_super) {
+        __extends(ExtHostDocumentsAndEditors, _super);
+        function ExtHostDocumentsAndEditors(_threadService) {
+            var _this = _super.call(this) || this;
+            _this._threadService = _threadService;
+            _this._editors = new Map();
+            _this._documents = new Map();
+            _this._onDidAddDocuments = new event_1.Emitter();
+            _this._onDidRemoveDocuments = new event_1.Emitter();
+            _this._onDidChangeVisibleTextEditors = new event_1.Emitter();
+            _this._onDidChangeActiveTextEditor = new event_1.Emitter();
+            _this.onDidAddDocuments = _this._onDidAddDocuments.event;
+            _this.onDidRemoveDocuments = _this._onDidRemoveDocuments.event;
+            _this.onDidChangeVisibleTextEditors = _this._onDidChangeVisibleTextEditors.event;
+            _this.onDidChangeActiveTextEditor = _this._onDidChangeActiveTextEditor.event;
+            return _this;
+        }
+        ExtHostDocumentsAndEditors.prototype.$acceptDocumentsAndEditorsDelta = function (delta) {
+            var removedDocuments = [];
+            var addedDocuments = [];
+            var removedEditors = [];
+            if (delta.removedDocuments) {
+                for (var _i = 0, _a = delta.removedDocuments; _i < _a.length; _i++) {
+                    var id = _a[_i];
+                    var data = this._documents.get(id);
+                    this._documents.delete(id);
+                    removedDocuments.push(data);
+                }
+            }
+            if (delta.addedDocuments) {
+                for (var _b = 0, _c = delta.addedDocuments; _b < _c.length; _b++) {
+                    var data = _c[_b];
+                    assert.ok(!this._documents.has(data.url.toString()), "document '" + data.url + " already exists!'");
+                    var documentData = new extHostDocumentData_1.ExtHostDocumentData(this._threadService.get(extHost_protocol_1.MainContext.MainThreadDocuments), data.url, data.lines, data.EOL, data.modeId, data.versionId, data.isDirty);
+                    this._documents.set(data.url.toString(), documentData);
+                    addedDocuments.push(documentData);
+                }
+            }
+            if (delta.removedEditors) {
+                for (var _d = 0, _e = delta.removedEditors; _d < _e.length; _d++) {
+                    var id = _e[_d];
+                    var editor = this._editors.get(id);
+                    this._editors.delete(id);
+                    removedEditors.push(editor);
+                }
+            }
+            if (delta.addedEditors) {
+                for (var _f = 0, _g = delta.addedEditors; _f < _g.length; _f++) {
+                    var data = _g[_f];
+                    assert.ok(this._documents.has(data.document.toString()), "document '" + data.document + "' does not exist");
+                    assert.ok(!this._editors.has(data.id), "editor '" + data.id + "' already exists!");
+                    var documentData = this._documents.get(data.document.toString());
+                    var editor = new extHostTextEditor_1.ExtHostTextEditor(this._threadService.get(extHost_protocol_1.MainContext.MainThreadEditors), data.id, documentData, data.selections.map(typeConverters.toSelection), data.options, typeConverters.toViewColumn(data.editorPosition));
+                    this._editors.set(data.id, editor);
+                }
+            }
+            if (delta.newActiveEditor !== undefined) {
+                assert.ok(delta.newActiveEditor === null || this._editors.has(delta.newActiveEditor), "active editor '" + delta.newActiveEditor + "' does not exist");
+                this._activeEditorId = delta.newActiveEditor;
+            }
+            // now that the internal state is complete, fire events
+            if (delta.removedDocuments) {
+                this._onDidRemoveDocuments.fire(removedDocuments);
+            }
+            if (delta.addedDocuments) {
+                this._onDidAddDocuments.fire(addedDocuments);
+            }
+            if (delta.removedEditors || delta.addedEditors) {
+                this._onDidChangeVisibleTextEditors.fire(this.allEditors());
+            }
+            if (delta.newActiveEditor) {
+                this._onDidChangeActiveTextEditor.fire(this.activeEditor());
+            }
+            // now that the events are out, dispose removed documents and editors
+            lifecycle_1.dispose(removedDocuments);
+            lifecycle_1.dispose(removedEditors);
+        };
+        ExtHostDocumentsAndEditors.prototype.getDocument = function (strUrl) {
+            return this._documents.get(strUrl);
+        };
+        ExtHostDocumentsAndEditors.prototype.allDocuments = function () {
+            var result = [];
+            this._documents.forEach(function (data) { return result.push(data); });
+            return result;
+        };
+        ExtHostDocumentsAndEditors.prototype.getEditor = function (id) {
+            return this._editors.get(id);
+        };
+        ExtHostDocumentsAndEditors.prototype.activeEditor = function () {
+            if (!this._activeEditorId) {
+                return undefined;
+            }
+            else {
+                return this._editors.get(this._activeEditorId);
+            }
+        };
+        ExtHostDocumentsAndEditors.prototype.allEditors = function () {
+            var result = [];
+            this._editors.forEach(function (data) { return result.push(data); });
+            return result;
+        };
+        return ExtHostDocumentsAndEditors;
+    }(extHost_protocol_1.ExtHostDocumentsAndEditorsShape));
+    ExtHostDocumentsAndEditors = __decorate([
+        __param(0, threadService_1.IThreadService)
+    ], ExtHostDocumentsAndEditors);
+    exports.ExtHostDocumentsAndEditors = ExtHostDocumentsAndEditors;
+});
+
+
+
+
+
+
+define(__m[99/*vs/workbench/api/node/extHostFileSystemEventService*/], __M([1/*require*/,0/*exports*/,4/*vs/base/common/event*/,5/*vs/workbench/api/node/extHostTypes*/,40/*vs/base/common/glob*/,3/*vs/workbench/api/node/extHost.protocol*/]), function (require, exports, event_1, extHostTypes_1, glob_1, extHost_protocol_1) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -21280,7 +20584,7 @@ define(__m[102/*vs/workbench/api/node/extHostFileSystemEventService*/], __M([0/*
 
 
 
-define(__m[103/*vs/workbench/api/node/extHostHeapService*/], __M([0/*require*/,1/*exports*/,2/*vs/workbench/api/node/extHost.protocol*/]), function (require, exports, extHost_protocol_1) {
+define(__m[100/*vs/workbench/api/node/extHostHeapService*/], __M([1/*require*/,0/*exports*/,3/*vs/workbench/api/node/extHost.protocol*/]), function (require, exports, extHost_protocol_1) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -21321,7 +20625,7 @@ define(__m[103/*vs/workbench/api/node/extHostHeapService*/], __M([0/*require*/,1
 
 
 
-define(__m[104/*vs/workbench/api/node/extHostLanguageFeatures*/], __M([0/*require*/,1/*exports*/,3/*vs/base/common/winjs.base*/,19/*vs/base/common/objects*/,15/*vs/workbench/api/node/extHostTypeConverters*/,6/*vs/workbench/api/node/extHostTypes*/,9/*vs/base/common/async*/,2/*vs/workbench/api/node/extHost.protocol*/,8/*vs/base/common/strings*/]), function (require, exports, winjs_base_1, objects_1, TypeConverters, extHostTypes_1, async_1, extHost_protocol_1, strings_1) {
+define(__m[101/*vs/workbench/api/node/extHostLanguageFeatures*/], __M([1/*require*/,0/*exports*/,2/*vs/base/common/winjs.base*/,16/*vs/base/common/objects*/,8/*vs/workbench/api/node/extHostTypeConverters*/,5/*vs/workbench/api/node/extHostTypes*/,12/*vs/base/common/async*/,3/*vs/workbench/api/node/extHost.protocol*/,9/*vs/base/common/strings*/]), function (require, exports, winjs_base_1, objects_1, TypeConverters, extHostTypes_1, async_1, extHost_protocol_1, strings_1) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -21338,7 +20642,7 @@ define(__m[104/*vs/workbench/api/node/extHostLanguageFeatures*/], __M([0/*requir
             var doc = this._documents.getDocumentData(resource).document;
             return async_1.asWinJsPromise(function (token) { return _this._provider.provideDocumentSymbols(doc, token); }).then(function (value) {
                 if (Array.isArray(value)) {
-                    return value.map(TypeConverters.SymbolInformation.toOutlineEntry);
+                    return value.map(TypeConverters.fromSymbolInformation);
                 }
                 return undefined;
             });
@@ -22093,7 +21397,7 @@ define(__m[104/*vs/workbench/api/node/extHostLanguageFeatures*/], __M([0/*requir
     exports.ExtHostLanguageFeatures = ExtHostLanguageFeatures;
 });
 
-define(__m[105/*vs/workbench/api/node/extHostLanguages*/], __M([0/*require*/,1/*exports*/,2/*vs/workbench/api/node/extHost.protocol*/]), function (require, exports, extHost_protocol_1) {
+define(__m[102/*vs/workbench/api/node/extHostLanguages*/], __M([1/*require*/,0/*exports*/,3/*vs/workbench/api/node/extHost.protocol*/]), function (require, exports, extHost_protocol_1) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -22111,7 +21415,7 @@ define(__m[105/*vs/workbench/api/node/extHostLanguages*/], __M([0/*require*/,1/*
     exports.ExtHostLanguages = ExtHostLanguages;
 });
 
-define(__m[106/*vs/workbench/api/node/extHostMessageService*/], __M([0/*require*/,1/*exports*/,2/*vs/workbench/api/node/extHost.protocol*/]), function (require, exports, extHost_protocol_1) {
+define(__m[103/*vs/workbench/api/node/extHostMessageService*/], __M([1/*require*/,0/*exports*/,3/*vs/workbench/api/node/extHost.protocol*/]), function (require, exports, extHost_protocol_1) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -22161,7 +21465,7 @@ define(__m[106/*vs/workbench/api/node/extHostMessageService*/], __M([0/*require*
     exports.ExtHostMessageService = ExtHostMessageService;
 });
 
-define(__m[107/*vs/workbench/api/node/extHostOutputService*/], __M([0/*require*/,1/*exports*/,2/*vs/workbench/api/node/extHost.protocol*/]), function (require, exports, extHost_protocol_1) {
+define(__m[104/*vs/workbench/api/node/extHostOutputService*/], __M([1/*require*/,0/*exports*/,3/*vs/workbench/api/node/extHost.protocol*/]), function (require, exports, extHost_protocol_1) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -22233,7 +21537,7 @@ define(__m[107/*vs/workbench/api/node/extHostOutputService*/], __M([0/*require*/
 
 
 
-define(__m[108/*vs/workbench/api/node/extHostQuickOpen*/], __M([0/*require*/,1/*exports*/,3/*vs/base/common/winjs.base*/,9/*vs/base/common/async*/,25/*vs/base/common/cancellation*/,2/*vs/workbench/api/node/extHost.protocol*/]), function (require, exports, winjs_base_1, async_1, cancellation_1, extHost_protocol_1) {
+define(__m[105/*vs/workbench/api/node/extHostQuickOpen*/], __M([1/*require*/,0/*exports*/,2/*vs/base/common/winjs.base*/,12/*vs/base/common/async*/,26/*vs/base/common/cancellation*/,3/*vs/workbench/api/node/extHost.protocol*/]), function (require, exports, winjs_base_1, async_1, cancellation_1, extHost_protocol_1) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -22259,45 +21563,50 @@ define(__m[108/*vs/workbench/api/node/extHostQuickOpen*/], __M([0/*require*/,1/*
                 matchOnDetail: options && options.matchOnDetail,
                 ignoreFocusLost: options && options.ignoreFocusOut
             });
-            var promise = itemsPromise.then(function (items) {
-                var pickItems = [];
-                for (var handle = 0; handle < items.length; handle++) {
-                    var item = items[handle];
-                    var label = void 0;
-                    var description = void 0;
-                    var detail = void 0;
-                    if (typeof item === 'string') {
-                        label = item;
-                    }
-                    else {
-                        label = item.label;
-                        description = item.description;
-                        detail = item.detail;
-                    }
-                    pickItems.push({
-                        label: label,
-                        description: description,
-                        handle: handle,
-                        detail: detail
-                    });
-                }
-                // handle selection changes
-                if (options && typeof options.onDidSelectItem === 'function') {
-                    _this._onDidSelectItem = function (handle) {
-                        options.onDidSelectItem(items[handle]);
-                    };
-                }
-                // show items
-                _this._proxy.$setItems(pickItems);
-                return quickPickWidget.then(function (handle) {
-                    if (typeof handle === 'number') {
-                        return items[handle];
-                    }
+            var promise = winjs_base_1.TPromise.any([quickPickWidget, itemsPromise]).then(function (values) {
+                if (values.key === '0') {
                     return undefined;
+                }
+                return itemsPromise.then(function (items) {
+                    var pickItems = [];
+                    for (var handle = 0; handle < items.length; handle++) {
+                        var item = items[handle];
+                        var label = void 0;
+                        var description = void 0;
+                        var detail = void 0;
+                        if (typeof item === 'string') {
+                            label = item;
+                        }
+                        else {
+                            label = item.label;
+                            description = item.description;
+                            detail = item.detail;
+                        }
+                        pickItems.push({
+                            label: label,
+                            description: description,
+                            handle: handle,
+                            detail: detail
+                        });
+                    }
+                    // handle selection changes
+                    if (options && typeof options.onDidSelectItem === 'function') {
+                        _this._onDidSelectItem = function (handle) {
+                            options.onDidSelectItem(items[handle]);
+                        };
+                    }
+                    // show items
+                    _this._proxy.$setItems(pickItems);
+                    return quickPickWidget.then(function (handle) {
+                        if (typeof handle === 'number') {
+                            return items[handle];
+                        }
+                        return undefined;
+                    });
+                }, function (err) {
+                    _this._proxy.$setError(err);
+                    return winjs_base_1.TPromise.wrapError(err);
                 });
-            }, function (err) {
-                _this._proxy.$setError(err);
-                return winjs_base_1.TPromise.wrapError(err);
             });
             return async_1.wireCancellationToken(token, promise, true);
         };
@@ -22325,7 +21634,7 @@ define(__m[108/*vs/workbench/api/node/extHostQuickOpen*/], __M([0/*require*/,1/*
     exports.ExtHostQuickOpen = ExtHostQuickOpen;
 });
 
-define(__m[109/*vs/workbench/api/node/extHostSCM*/], __M([0/*require*/,1/*exports*/,7/*vs/base/common/uri*/,3/*vs/base/common/winjs.base*/,4/*vs/base/common/event*/,9/*vs/base/common/async*/,6/*vs/workbench/api/node/extHostTypes*/,2/*vs/workbench/api/node/extHost.protocol*/]), function (require, exports, uri_1, winjs_base_1, event_1, async_1, extHostTypes_1, extHost_protocol_1) {
+define(__m[106/*vs/workbench/api/node/extHostSCM*/], __M([1/*require*/,0/*exports*/,7/*vs/base/common/uri*/,2/*vs/base/common/winjs.base*/,4/*vs/base/common/event*/,12/*vs/base/common/async*/,3/*vs/workbench/api/node/extHost.protocol*/]), function (require, exports, uri_1, winjs_base_1, event_1, async_1, extHost_protocol_1) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -22348,6 +21657,7 @@ define(__m[109/*vs/workbench/api/node/extHostSCM*/], __M([0/*require*/,1/*export
             this._proxy = _proxy;
             this._value = '';
             this._onDidChange = new event_1.Emitter();
+            this._onDidAccept = new event_1.Emitter();
             // noop
         }
         Object.defineProperty(ExtHostSCMInputBox.prototype, "value", {
@@ -22368,8 +21678,18 @@ define(__m[109/*vs/workbench/api/node/extHostSCM*/], __M([0/*require*/,1/*export
             enumerable: true,
             configurable: true
         });
+        Object.defineProperty(ExtHostSCMInputBox.prototype, "onDidAccept", {
+            get: function () {
+                return this._onDidAccept.event;
+            },
+            enumerable: true,
+            configurable: true
+        });
         ExtHostSCMInputBox.prototype.$onInputBoxValueChange = function (value) {
             this.updateValue(value);
+        };
+        ExtHostSCMInputBox.prototype.$onInputBoxAcceptChanges = function () {
+            this._onDidAccept.fire(this._value);
         };
         ExtHostSCMInputBox.prototype.updateValue = function (value) {
             this._value = value;
@@ -22377,13 +21697,220 @@ define(__m[109/*vs/workbench/api/node/extHostSCM*/], __M([0/*require*/,1/*export
         };
         return ExtHostSCMInputBox;
     }());
+    exports.ExtHostSCMInputBox = ExtHostSCMInputBox;
+    var ExtHostSourceControlResourceGroup = (function () {
+        function ExtHostSourceControlResourceGroup(_proxy, _commands, _sourceControlHandle, _id, _label) {
+            this._proxy = _proxy;
+            this._commands = _commands;
+            this._sourceControlHandle = _sourceControlHandle;
+            this._id = _id;
+            this._label = _label;
+            this._resourceHandlePool = 0;
+            this._resourceStates = new Map();
+            this._hideWhenEmpty = undefined;
+            this._handle = ExtHostSourceControlResourceGroup._handlePool++;
+            this._proxy.$registerGroup(_sourceControlHandle, this._handle, _id, _label);
+        }
+        Object.defineProperty(ExtHostSourceControlResourceGroup.prototype, "id", {
+            get: function () {
+                return this._id;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(ExtHostSourceControlResourceGroup.prototype, "label", {
+            get: function () {
+                return this._label;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(ExtHostSourceControlResourceGroup.prototype, "hideWhenEmpty", {
+            get: function () {
+                return this._hideWhenEmpty;
+            },
+            set: function (hideWhenEmpty) {
+                this._hideWhenEmpty = hideWhenEmpty;
+                this._proxy.$updateGroup(this._sourceControlHandle, this._handle, { hideWhenEmpty: hideWhenEmpty });
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(ExtHostSourceControlResourceGroup.prototype, "resourceStates", {
+            set: function (resources) {
+                var _this = this;
+                this._resourceStates.clear();
+                var rawResources = resources.map(function (r) {
+                    var handle = _this._resourceHandlePool++;
+                    _this._resourceStates.set(handle, r);
+                    var sourceUri = r.resourceUri.toString();
+                    var command = _this._commands.toInternal(r.command);
+                    var iconPath = getIconPath(r.decorations);
+                    var lightIconPath = r.decorations && getIconPath(r.decorations.light) || iconPath;
+                    var darkIconPath = r.decorations && getIconPath(r.decorations.dark) || iconPath;
+                    var icons = [];
+                    if (lightIconPath || darkIconPath) {
+                        icons.push(lightIconPath);
+                    }
+                    if (darkIconPath !== lightIconPath) {
+                        icons.push(darkIconPath);
+                    }
+                    var strikeThrough = r.decorations && !!r.decorations.strikeThrough;
+                    return [handle, sourceUri, command, icons, strikeThrough];
+                });
+                this._proxy.$updateGroupResourceStates(this._sourceControlHandle, this._handle, rawResources);
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(ExtHostSourceControlResourceGroup.prototype, "handle", {
+            get: function () {
+                return this._handle;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        ExtHostSourceControlResourceGroup.prototype.getResourceState = function (handle) {
+            return this._resourceStates.get(handle);
+        };
+        ExtHostSourceControlResourceGroup.prototype.dispose = function () {
+            this._proxy.$unregisterGroup(this._sourceControlHandle, this._handle);
+        };
+        return ExtHostSourceControlResourceGroup;
+    }());
+    ExtHostSourceControlResourceGroup._handlePool = 0;
+    var ExtHostSourceControl = (function () {
+        function ExtHostSourceControl(_proxy, _commands, _id, _label) {
+            this._proxy = _proxy;
+            this._commands = _commands;
+            this._id = _id;
+            this._label = _label;
+            this._groups = new Map();
+            this._count = undefined;
+            this._quickDiffProvider = undefined;
+            this._commitTemplate = undefined;
+            this._acceptInputCommand = undefined;
+            this._statusBarCommands = undefined;
+            this._handle = ExtHostSourceControl._handlePool++;
+            this._proxy.$registerSourceControl(this._handle, _id, _label);
+        }
+        Object.defineProperty(ExtHostSourceControl.prototype, "id", {
+            get: function () {
+                return this._id;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(ExtHostSourceControl.prototype, "label", {
+            get: function () {
+                return this._label;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(ExtHostSourceControl.prototype, "count", {
+            get: function () {
+                return this._count;
+            },
+            set: function (count) {
+                this._count = count;
+                this._proxy.$updateSourceControl(this._handle, { count: count });
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(ExtHostSourceControl.prototype, "quickDiffProvider", {
+            get: function () {
+                return this._quickDiffProvider;
+            },
+            set: function (quickDiffProvider) {
+                this._quickDiffProvider = quickDiffProvider;
+                this._proxy.$updateSourceControl(this._handle, { hasQuickDiffProvider: !!quickDiffProvider });
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(ExtHostSourceControl.prototype, "commitTemplate", {
+            get: function () {
+                return this._commitTemplate;
+            },
+            set: function (commitTemplate) {
+                this._commitTemplate = commitTemplate;
+                this._proxy.$updateSourceControl(this._handle, { commitTemplate: commitTemplate });
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(ExtHostSourceControl.prototype, "acceptInputCommand", {
+            get: function () {
+                return this._acceptInputCommand;
+            },
+            set: function (acceptInputCommand) {
+                this._acceptInputCommand = acceptInputCommand;
+                var internal = this._commands.toInternal(acceptInputCommand);
+                this._proxy.$updateSourceControl(this._handle, { acceptInputCommand: internal });
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(ExtHostSourceControl.prototype, "statusBarCommands", {
+            get: function () {
+                return this._statusBarCommands;
+            },
+            set: function (statusBarCommands) {
+                var _this = this;
+                this._statusBarCommands = statusBarCommands;
+                var internal = (statusBarCommands || []).map(function (c) { return _this._commands.toInternal(c); });
+                this._proxy.$updateSourceControl(this._handle, { statusBarCommands: internal });
+            },
+            enumerable: true,
+            configurable: true
+        });
+        ExtHostSourceControl.prototype.createResourceGroup = function (id, label) {
+            var group = new ExtHostSourceControlResourceGroup(this._proxy, this._commands, this._handle, id, label);
+            this._groups.set(group.handle, group);
+            return group;
+        };
+        ExtHostSourceControl.prototype.getResourceGroup = function (handle) {
+            return this._groups.get(handle);
+        };
+        ExtHostSourceControl.prototype.dispose = function () {
+            this._proxy.$unregisterSourceControl(this._handle);
+        };
+        return ExtHostSourceControl;
+    }());
+    ExtHostSourceControl._handlePool = 0;
     var ExtHostSCM = (function () {
-        function ExtHostSCM(threadService) {
-            this._providers = Object.create(null);
+        function ExtHostSCM(threadService, _commands) {
+            var _this = this;
+            this._commands = _commands;
+            this._sourceControls = new Map();
             this._onDidChangeActiveProvider = new event_1.Emitter();
-            this.cache = Object.create(null);
             this._proxy = threadService.get(extHost_protocol_1.MainContext.MainThreadSCM);
             this._inputBox = new ExtHostSCMInputBox(this._proxy);
+            _commands.registerArgumentProcessor({
+                processArgument: function (arg) {
+                    if (arg && arg.$mid === 3) {
+                        var sourceControl = _this._sourceControls.get(arg.sourceControlHandle);
+                        if (!sourceControl) {
+                            return arg;
+                        }
+                        var group = sourceControl.getResourceGroup(arg.groupHandle);
+                        if (!group) {
+                            return arg;
+                        }
+                        return group.getResourceState(arg.handle);
+                    }
+                    else if (arg && arg.$mid === 4) {
+                        var sourceControl = _this._sourceControls.get(arg.sourceControlHandle);
+                        if (!sourceControl) {
+                            return arg;
+                        }
+                        return sourceControl.getResourceGroup(arg.groupHandle);
+                    }
+                    return arg;
+                }
+            });
         }
         Object.defineProperty(ExtHostSCM.prototype, "onDidChangeActiveProvider", {
             get: function () { return this._onDidChangeActiveProvider.event; },
@@ -22400,144 +21927,38 @@ define(__m[109/*vs/workbench/api/node/extHostSCM*/], __M([0/*require*/,1/*export
             enumerable: true,
             configurable: true
         });
-        ExtHostSCM.prototype.getResourceFromURI = function (uri) {
-            if (uri.scheme !== 'scm') {
-                return undefined;
-            }
-            var providerId = uri.authority;
-            var providerCache = this.cache[providerId];
-            if (!providerCache) {
-                return undefined;
-            }
-            var match = /^\/([^/]+)(\/(.*))?$/.exec(uri.path);
-            if (!match) {
-                return undefined;
-            }
-            var resourceGroupId = match[1];
-            var resourceGroupRef = providerCache[resourceGroupId];
-            if (!resourceGroupRef) {
-                return undefined;
-            }
-            var rawResourceUri = match[3];
-            if (!rawResourceUri) {
-                return resourceGroupRef.resourceGroup;
-            }
-            var resourceUri;
-            try {
-                var rawResource = JSON.parse(rawResourceUri);
-                var resource_1 = uri_1.default.from(rawResource);
-                resourceUri = resource_1.toString();
-            }
-            catch (err) {
-                resourceUri = undefined;
-            }
-            if (!resourceUri) {
-                return undefined;
-            }
-            var resource = resourceGroupRef.resources[resourceUri];
-            if (!resource) {
-                return undefined;
-            }
-            return resource;
+        ExtHostSCM.prototype.createSourceControl = function (id, label) {
+            var handle = ExtHostSCM._handlePool++;
+            var sourceControl = new ExtHostSourceControl(this._proxy, this._commands.converter, id, label);
+            this._sourceControls.set(handle, sourceControl);
+            return sourceControl;
         };
-        ExtHostSCM.prototype.registerSCMProvider = function (providerId, provider) {
-            var _this = this;
-            if (this._providers[providerId]) {
-                throw new Error("Provider " + providerId + " already registered");
+        ExtHostSCM.prototype.$provideOriginalResource = function (sourceControlHandle, uri) {
+            var sourceControl = this._sourceControls.get(sourceControlHandle);
+            if (!sourceControl || !sourceControl.quickDiffProvider) {
+                return winjs_base_1.TPromise.as(null);
             }
-            // TODO@joao: should pluck all the things out of the provider
-            this._providers[providerId] = provider;
-            this._proxy.$register(providerId, {
-                label: provider.label,
-                supportsOpen: !!provider.open,
-                supportsAcceptChanges: !!provider.acceptChanges,
-                supportsDrag: !!provider.drag,
-                supportsOriginalResource: !!provider.getOriginalResource
-            });
-            var onDidChange = event_1.debounceEvent(provider.onDidChange, function (l, e) { return e; }, 100);
-            var onDidChangeListener = onDidChange(function (resourceGroups) {
-                _this.cache[providerId] = Object.create(null);
-                var rawResourceGroups = resourceGroups.map(function (g) {
-                    var resources = Object.create(null);
-                    var rawResources = g.resources.map(function (r) {
-                        var uri = r.uri.toString();
-                        var iconPath = getIconPath(r.decorations);
-                        var lightIconPath = r.decorations && getIconPath(r.decorations.light) || iconPath;
-                        var darkIconPath = r.decorations && getIconPath(r.decorations.dark) || iconPath;
-                        var icons = [];
-                        if (lightIconPath || darkIconPath) {
-                            icons.push(lightIconPath);
-                        }
-                        if (darkIconPath !== lightIconPath) {
-                            icons.push(darkIconPath);
-                        }
-                        var strikeThrough = r.decorations && !!r.decorations.strikeThrough;
-                        resources[uri] = r;
-                        return [uri, icons, strikeThrough];
-                    });
-                    _this.cache[providerId][g.id] = { resourceGroup: g, resources: resources };
-                    return [g.id, g.label, rawResources];
-                });
-                _this._proxy.$onChange(providerId, rawResourceGroups, provider.count, provider.state);
-            });
-            return new extHostTypes_1.Disposable(function () {
-                onDidChangeListener.dispose();
-                delete _this._providers[providerId];
-                _this._proxy.$unregister(providerId);
-            });
+            return async_1.asWinJsPromise(function (token) { return sourceControl.quickDiffProvider.provideOriginalResource(uri, token); });
         };
-        ExtHostSCM.prototype.$open = function (providerId, resourceGroupId, uri) {
-            var provider = this._providers[providerId];
-            if (!provider) {
-                return winjs_base_1.TPromise.as(null);
-            }
-            var providerCache = this.cache[providerId];
-            var resourceGroup = providerCache[resourceGroupId];
-            var resource = resourceGroup && resourceGroup.resources[uri];
-            if (!resource) {
-                return winjs_base_1.TPromise.as(null);
-            }
-            return async_1.asWinJsPromise(function (token) { return provider.open(resource, token); });
-        };
-        ExtHostSCM.prototype.$acceptChanges = function (providerId) {
-            var provider = this._providers[providerId];
-            if (!provider) {
-                return winjs_base_1.TPromise.as(null);
-            }
-            return async_1.asWinJsPromise(function (token) { return provider.acceptChanges(token); });
-        };
-        ExtHostSCM.prototype.$drag = function (providerId, fromResourceGroupId, fromUri, toResourceGroupId) {
-            var provider = this._providers[providerId];
-            if (!provider) {
-                return winjs_base_1.TPromise.as(null);
-            }
-            var providerCache = this.cache[providerId];
-            var fromResourceGroup = providerCache[fromResourceGroupId];
-            var resource = fromResourceGroup && fromResourceGroup.resources[fromUri];
-            var toResourceGroup = providerCache[toResourceGroupId];
-            var resourceGroup = toResourceGroup && toResourceGroup.resourceGroup;
-            if (!resource || !resourceGroup) {
-                return winjs_base_1.TPromise.as(null);
-            }
-            return async_1.asWinJsPromise(function (token) { return provider.drag(resource, resourceGroup, token); });
-        };
-        ExtHostSCM.prototype.$getOriginalResource = function (id, uri) {
-            var provider = this._providers[id];
-            if (!provider) {
-                return winjs_base_1.TPromise.as(null);
-            }
-            return async_1.asWinJsPromise(function (token) { return provider.getOriginalResource(uri, token); });
+        ExtHostSCM.prototype.$onActiveSourceControlChange = function (handle) {
+            this._activeProvider = this._sourceControls.get(handle);
+            return winjs_base_1.TPromise.as(null);
         };
         ExtHostSCM.prototype.$onInputBoxValueChange = function (value) {
             this._inputBox.$onInputBoxValueChange(value);
             return winjs_base_1.TPromise.as(null);
         };
+        ExtHostSCM.prototype.$onInputBoxAcceptChanges = function () {
+            this._inputBox.$onInputBoxAcceptChanges();
+            return winjs_base_1.TPromise.as(null);
+        };
         return ExtHostSCM;
     }());
+    ExtHostSCM._handlePool = 0;
     exports.ExtHostSCM = ExtHostSCM;
 });
 
-define(__m[110/*vs/workbench/api/node/extHostStatusBar*/], __M([0/*require*/,1/*exports*/,83/*vs/platform/statusbar/common/statusbar*/,6/*vs/workbench/api/node/extHostTypes*/,2/*vs/workbench/api/node/extHost.protocol*/]), function (require, exports, statusbar_1, extHostTypes_1, extHost_protocol_1) {
+define(__m[107/*vs/workbench/api/node/extHostStatusBar*/], __M([1/*require*/,0/*exports*/,78/*vs/platform/statusbar/common/statusbar*/,5/*vs/workbench/api/node/extHostTypes*/,3/*vs/workbench/api/node/extHost.protocol*/]), function (require, exports, statusbar_1, extHostTypes_1, extHost_protocol_1) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -22707,7 +22128,7 @@ define(__m[110/*vs/workbench/api/node/extHostStatusBar*/], __M([0/*require*/,1/*
     exports.ExtHostStatusBar = ExtHostStatusBar;
 });
 
-define(__m[111/*vs/workbench/api/node/extHostStorage*/], __M([0/*require*/,1/*exports*/,2/*vs/workbench/api/node/extHost.protocol*/]), function (require, exports, extHost_protocol_1) {
+define(__m[108/*vs/workbench/api/node/extHostStorage*/], __M([1/*require*/,0/*exports*/,3/*vs/workbench/api/node/extHost.protocol*/]), function (require, exports, extHost_protocol_1) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -22728,7 +22149,469 @@ define(__m[111/*vs/workbench/api/node/extHostStorage*/], __M([0/*require*/,1/*ex
     exports.ExtHostStorage = ExtHostStorage;
 });
 
-define(__m[112/*vs/workbench/api/node/extHostTelemetry*/], __M([0/*require*/,1/*exports*/,5/*vs/base/common/errors*/,3/*vs/base/common/winjs.base*/,2/*vs/workbench/api/node/extHost.protocol*/]), function (require, exports, errors_1, winjs_base_1, extHost_protocol_1) {
+
+
+
+
+
+define(__m[109/*vs/workbench/api/node/extHostTask*/], __M([1/*require*/,0/*exports*/,2/*vs/base/common/winjs.base*/,25/*vs/base/common/uuid*/,12/*vs/base/common/async*/,77/*vs/platform/markers/common/problemMatcher*/,83/*vs/workbench/parts/tasks/common/tasks*/,3/*vs/workbench/api/node/extHost.protocol*/,8/*vs/workbench/api/node/extHostTypeConverters*/,5/*vs/workbench/api/node/extHostTypes*/]), function (require, exports, winjs_base_1, UUID, async_1, Problems, TaskSystem, extHost_protocol_1, extHostTypeConverters_1, types) {
+    /*---------------------------------------------------------------------------------------------
+     *  Copyright (c) Microsoft Corporation. All rights reserved.
+     *  Licensed under the MIT License. See License.txt in the project root for license information.
+     *--------------------------------------------------------------------------------------------*/
+    'use strict';
+    var ProblemPattern;
+    (function (ProblemPattern) {
+        function from(value) {
+            if (value === void 0 || value === null) {
+                return undefined;
+            }
+            if (Array.isArray(value)) {
+                var result = [];
+                for (var _i = 0, value_1 = value; _i < value_1.length; _i++) {
+                    var pattern = value_1[_i];
+                    var converted = fromSingle(pattern);
+                    if (!converted) {
+                        return undefined;
+                    }
+                    result.push(converted);
+                }
+                return result;
+            }
+            else {
+                return fromSingle(value);
+            }
+        }
+        ProblemPattern.from = from;
+        function copyProperty(target, source, tk) {
+            var sk = tk;
+            var value = source[sk];
+            if (typeof value === 'number') {
+                target[tk] = value;
+            }
+        }
+        function getValue(value, defaultValue) {
+            if (value !== void 0 && value === null) {
+                return value;
+            }
+            return defaultValue;
+        }
+        function fromSingle(problemPattern) {
+            if (problemPattern === void 0 || problemPattern === null || !(problemPattern.regexp instanceof RegExp)) {
+                return undefined;
+            }
+            var result = {
+                regexp: problemPattern.regexp
+            };
+            copyProperty(result, problemPattern, 'file');
+            copyProperty(result, problemPattern, 'location');
+            copyProperty(result, problemPattern, 'line');
+            copyProperty(result, problemPattern, 'character');
+            copyProperty(result, problemPattern, 'endLine');
+            copyProperty(result, problemPattern, 'endCharacter');
+            copyProperty(result, problemPattern, 'severity');
+            copyProperty(result, problemPattern, 'code');
+            copyProperty(result, problemPattern, 'message');
+            if (problemPattern.loop === true || problemPattern.loop === false) {
+                result.loop = problemPattern.loop;
+            }
+            if (result.location) {
+                result.file = getValue(result.file, 1);
+                result.message = getValue(result.message, 0);
+            }
+            else {
+                result.file = getValue(result.file, 1);
+                result.line = getValue(result.line, 2);
+                result.character = getValue(result.character, 3);
+                result.message = getValue(result.message, 0);
+            }
+            return result;
+        }
+    })(ProblemPattern || (ProblemPattern = {}));
+    var ApplyTo;
+    (function (ApplyTo) {
+        function from(value) {
+            if (value === void 0 || value === null) {
+                return Problems.ApplyToKind.allDocuments;
+            }
+            switch (value) {
+                case types.ApplyToKind.OpenDocuments:
+                    return Problems.ApplyToKind.openDocuments;
+                case types.ApplyToKind.ClosedDocuments:
+                    return Problems.ApplyToKind.closedDocuments;
+            }
+            return Problems.ApplyToKind.allDocuments;
+        }
+        ApplyTo.from = from;
+    })(ApplyTo || (ApplyTo = {}));
+    var FileLocation;
+    (function (FileLocation) {
+        function from(value) {
+            if (value === void 0 || value === null) {
+                return { kind: Problems.FileLocationKind.Auto };
+            }
+            if (typeof value === 'string') {
+                return { kind: Problems.FileLocationKind.Relative, prefix: value };
+            }
+            switch (value) {
+                case types.FileLocationKind.Absolute:
+                    return { kind: Problems.FileLocationKind.Absolute };
+                case types.FileLocationKind.Relative:
+                    return { kind: Problems.FileLocationKind.Relative, prefix: '${workspaceRoot}' };
+            }
+            return { kind: Problems.FileLocationKind.Auto };
+        }
+        FileLocation.from = from;
+    })(FileLocation || (FileLocation = {}));
+    var WatchingPattern;
+    (function (WatchingPattern) {
+        function from(value) {
+            if (value === void 0 || value === null) {
+                return undefined;
+            }
+            if (value instanceof RegExp) {
+                return { regexp: value };
+            }
+            if (!(value.regexp instanceof RegExp)) {
+                return undefined;
+            }
+            var result = {
+                regexp: value.regexp
+            };
+            if (typeof value.file === 'number') {
+                result.file = value.file;
+            }
+            return result;
+        }
+        WatchingPattern.from = from;
+    })(WatchingPattern || (WatchingPattern = {}));
+    var WathingMatcher;
+    (function (WathingMatcher) {
+        function from(value) {
+            if (value === void 0 || value === null) {
+                return undefined;
+            }
+            var result = {
+                activeOnStart: !!value.activeOnStart,
+                beginsPattern: WatchingPattern.from(value.beginsPattern),
+                endsPattern: WatchingPattern.from(value.endsPattern)
+            };
+            return result;
+        }
+        WathingMatcher.from = from;
+    })(WathingMatcher || (WathingMatcher = {}));
+    var ProblemMatcher;
+    (function (ProblemMatcher) {
+        function from(values) {
+            if (values === void 0 || values === null) {
+                return undefined;
+            }
+            var result;
+            for (var _i = 0, values_1 = values; _i < values_1.length; _i++) {
+                var value = values_1[_i];
+                var converted = fromSingle(value);
+                if (converted) {
+                    result.push(converted);
+                }
+            }
+            return result;
+        }
+        ProblemMatcher.from = from;
+        function fromSingle(problemMatcher) {
+            if (problemMatcher === void 0 || problemMatcher === null) {
+                return undefined;
+            }
+            var location = FileLocation.from(problemMatcher.fileLocation);
+            var result = {
+                owner: typeof problemMatcher.owner === 'string' ? problemMatcher.owner : UUID.generateUuid(),
+                applyTo: ApplyTo.from(problemMatcher.applyTo),
+                fileLocation: location.kind,
+                filePrefix: location.prefix,
+                pattern: ProblemPattern.from(problemMatcher.pattern),
+                severity: extHostTypeConverters_1.fromDiagnosticSeverity(problemMatcher.severity),
+            };
+            return result;
+        }
+    })(ProblemMatcher || (ProblemMatcher = {}));
+    var RevealKind;
+    (function (RevealKind) {
+        function from(value) {
+            if (value === void 0 || value === null) {
+                return TaskSystem.ShowOutput.Always;
+            }
+            switch (value) {
+                case types.RevealKind.Silent:
+                    return TaskSystem.ShowOutput.Silent;
+                case types.RevealKind.Never:
+                    return TaskSystem.ShowOutput.Never;
+            }
+            return TaskSystem.ShowOutput.Always;
+        }
+        RevealKind.from = from;
+    })(RevealKind || (RevealKind = {}));
+    var TerminalBehaviour;
+    (function (TerminalBehaviour) {
+        function from(value) {
+            if (value === void 0 || value === null) {
+                return { showOutput: TaskSystem.ShowOutput.Always, echo: false };
+            }
+            return { showOutput: RevealKind.from(value.reveal), echo: !!value.echo };
+        }
+        TerminalBehaviour.from = from;
+    })(TerminalBehaviour || (TerminalBehaviour = {}));
+    var Strings;
+    (function (Strings) {
+        function from(value) {
+            if (value === void 0 || value === null) {
+                return undefined;
+            }
+            for (var _i = 0, value_2 = value; _i < value_2.length; _i++) {
+                var element = value_2[_i];
+                if (typeof element !== 'string') {
+                    return [];
+                }
+            }
+            return value;
+        }
+        Strings.from = from;
+    })(Strings || (Strings = {}));
+    var CommandOptions;
+    (function (CommandOptions) {
+        function from(value) {
+            if (value === void 0 || value === null) {
+                return undefined;
+            }
+            var result = {};
+            if (typeof value.cwd === 'string') {
+                result.cwd = value.cwd;
+            }
+            if (value.env) {
+                result.env = Object.create(null);
+                Object.keys(value.env).forEach(function (key) {
+                    var envValue = value.env[key];
+                    if (typeof envValue === 'string') {
+                        result.env[key] = envValue;
+                    }
+                });
+            }
+            return result;
+        }
+        CommandOptions.from = from;
+    })(CommandOptions || (CommandOptions = {}));
+    var ShellConfiguration;
+    (function (ShellConfiguration) {
+        function from(value) {
+            if (value === void 0 || value === null || typeof value.executable !== 'string') {
+                return true;
+            }
+            var result = {
+                executable: value.executable,
+                args: Strings.from(value.args)
+            };
+            return result;
+        }
+        ShellConfiguration.from = from;
+    })(ShellConfiguration || (ShellConfiguration = {}));
+    var Tasks;
+    (function (Tasks) {
+        function from(tasks, uuidMap) {
+            if (tasks === void 0 || tasks === null) {
+                return [];
+            }
+            var result = [];
+            try {
+                uuidMap.start();
+                for (var _i = 0, tasks_1 = tasks; _i < tasks_1.length; _i++) {
+                    var task = tasks_1[_i];
+                    var converted = fromSingle(task, uuidMap);
+                    if (converted) {
+                        result.push(converted);
+                    }
+                }
+            }
+            finally {
+                uuidMap.finish();
+            }
+            return result;
+        }
+        Tasks.from = from;
+        function fromSingle(task, uuidMap) {
+            if (typeof task.name !== 'string' || typeof task.identifier !== 'string') {
+                return undefined;
+            }
+            var command;
+            if (task instanceof types.ProcessTask) {
+                command = getProcessCommand(task);
+            }
+            else if (task instanceof types.ShellTask) {
+                command = getShellCommand(task);
+            }
+            else {
+                return undefined;
+            }
+            if (command === void 0) {
+                return undefined;
+            }
+            var behaviour = TerminalBehaviour.from(task.terminal);
+            command.echo = behaviour.echo;
+            var result = {
+                _id: uuidMap.getUUID(task.identifier),
+                name: task.name,
+                identifier: task.identifier,
+                command: command,
+                showOutput: behaviour.showOutput,
+                isBackground: !!task.isBackground,
+                suppressTaskName: true,
+                problemMatchers: ProblemMatcher.from(task.problemMatchers)
+            };
+            return result;
+        }
+        function getProcessCommand(value) {
+            if (typeof value.process !== 'string') {
+                return undefined;
+            }
+            var result = {
+                name: value.process,
+                args: Strings.from(value.args),
+                isShellCommand: false,
+                echo: false,
+            };
+            if (value.options) {
+                result.options = CommandOptions.from(value.options);
+            }
+            return result;
+        }
+        function getShellCommand(value) {
+            if (typeof value.commandLine !== 'string') {
+                return undefined;
+            }
+            var result = {
+                name: value.commandLine,
+                isShellCommand: ShellConfiguration.from(value.options),
+                echo: false
+            };
+            if (value.options) {
+                result.options = CommandOptions.from(value.options);
+            }
+            return result;
+        }
+    })(Tasks || (Tasks = {}));
+    var UUIDMap = (function () {
+        function UUIDMap() {
+            this._map = Object.create(null);
+        }
+        UUIDMap.prototype.start = function () {
+            var _this = this;
+            this._unused = Object.create(null);
+            Object.keys(this._map).forEach(function (key) { return _this._unused[key] = true; });
+        };
+        UUIDMap.prototype.getUUID = function (identifier) {
+            delete this._unused[identifier];
+            var result = this._map[identifier];
+            if (result) {
+                return result;
+            }
+            result = UUID.generateUuid();
+            this._map[identifier] = result;
+            return result;
+        };
+        UUIDMap.prototype.finish = function () {
+            var _this = this;
+            Object.keys(this._unused).forEach(function (key) { return delete _this._map[key]; });
+            this._unused = null;
+        };
+        return UUIDMap;
+    }());
+    var TaskSet;
+    (function (TaskSet) {
+        var idMaps = new Map();
+        function getUUIDMap(extensionId) {
+            var result = idMaps.get(extensionId);
+            if (result) {
+                return result;
+            }
+            result = new UUIDMap();
+            idMaps.set(extensionId, result);
+            return result;
+        }
+        function from(extension, value) {
+            if (value === void 0 || value === null || !Array.isArray(value.tasks)) {
+                return { tasks: Object.create(null) };
+            }
+            var tasks = Tasks.from(value.tasks, getUUIDMap(extension.id));
+            var buildTasks;
+            var testTasks;
+            if (value.buildTasks || value.testTasks) {
+                var map_1 = new Map();
+                tasks.forEach(function (task) { return map_1.set(task.identifier, task); });
+                if (Array.isArray(value.buildTasks)) {
+                    buildTasks = [];
+                    for (var _i = 0, _a = value.buildTasks; _i < _a.length; _i++) {
+                        var elem = _a[_i];
+                        if (typeof elem === 'string' && map_1.has(elem)) {
+                            buildTasks.push(map_1.get(elem)._id);
+                        }
+                    }
+                }
+                if (Array.isArray(value.testTasks)) {
+                    testTasks = [];
+                    for (var _b = 0, _c = value.testTasks; _b < _c.length; _b++) {
+                        var elem = _c[_b];
+                        if (typeof elem === 'string' && map_1.has(elem)) {
+                            testTasks.push(map_1.get(elem)._id);
+                        }
+                    }
+                }
+            }
+            return {
+                tasks: tasks,
+                buildTasks: buildTasks,
+                testTasks: testTasks
+            };
+        }
+        TaskSet.from = from;
+    })(TaskSet || (TaskSet = {}));
+    var ExtHostTask = (function (_super) {
+        __extends(ExtHostTask, _super);
+        function ExtHostTask(threadService) {
+            var _this = _super.call(this) || this;
+            _this._proxy = threadService.get(extHost_protocol_1.MainContext.MainThreadTask);
+            _this._handleCounter = 0;
+            _this._handlers = new Map();
+            return _this;
+        }
+        ;
+        ExtHostTask.prototype.registerTaskProvider = function (extension, provider) {
+            var _this = this;
+            if (!provider) {
+                return new types.Disposable(function () { });
+            }
+            var handle = this.nextHandle();
+            this._handlers.set(handle, { provider: provider, extension: extension });
+            this._proxy.$registerTaskProvider(handle);
+            return new types.Disposable(function () {
+                _this._handlers.delete(handle);
+                _this._proxy.$unregisterTaskProvider(handle);
+            });
+        };
+        ExtHostTask.prototype.$provideTasks = function (handle) {
+            var handler = this._handlers.get(handle);
+            if (!handler) {
+                return winjs_base_1.TPromise.wrapError(new Error('no handler found'));
+            }
+            return async_1.asWinJsPromise(function (token) { return handler.provider.provideTasks(token); }).then(function (value) {
+                return TaskSet.from(handler.extension, value);
+            });
+        };
+        ExtHostTask.prototype.nextHandle = function () {
+            return this._handleCounter++;
+        };
+        return ExtHostTask;
+    }(extHost_protocol_1.ExtHostTaskShape));
+    exports.ExtHostTask = ExtHostTask;
+});
+
+define(__m[110/*vs/workbench/api/node/extHostTelemetry*/], __M([1/*require*/,0/*exports*/,6/*vs/base/common/errors*/,2/*vs/base/common/winjs.base*/,3/*vs/workbench/api/node/extHost.protocol*/]), function (require, exports, errors_1, winjs_base_1, extHost_protocol_1) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -22769,7 +22652,7 @@ define(__m[112/*vs/workbench/api/node/extHostTelemetry*/], __M([0/*require*/,1/*
     exports.RemoteTelemetryService = RemoteTelemetryService;
 });
 
-define(__m[113/*vs/workbench/api/node/extHostTerminalService*/], __M([0/*require*/,1/*exports*/,3/*vs/base/common/winjs.base*/,4/*vs/base/common/event*/,2/*vs/workbench/api/node/extHost.protocol*/]), function (require, exports, winjs_base_1, event_1, extHost_protocol_1) {
+define(__m[111/*vs/workbench/api/node/extHostTerminalService*/], __M([1/*require*/,0/*exports*/,2/*vs/base/common/winjs.base*/,4/*vs/base/common/event*/,3/*vs/workbench/api/node/extHost.protocol*/]), function (require, exports, winjs_base_1, event_1, extHost_protocol_1) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -22821,6 +22704,10 @@ define(__m[113/*vs/workbench/api/node/extHostTerminalService*/], __M([0/*require
             this._checkDisposed();
             this._queueApiRequest(this._proxy.$hide, []);
         };
+        ExtHostTerminal.prototype.onData = function (callback) {
+            this._onDataCallback = callback;
+            this._queueApiRequest(this._proxy.$registerOnData, []);
+        };
         ExtHostTerminal.prototype.dispose = function () {
             if (!this._disposed) {
                 this._disposed = true;
@@ -22830,6 +22717,9 @@ define(__m[113/*vs/workbench/api/node/extHostTerminalService*/], __M([0/*require
         ExtHostTerminal.prototype._setProcessId = function (processId) {
             this._pidPromiseComplete(processId);
             this._pidPromiseComplete = null;
+        };
+        ExtHostTerminal.prototype._onData = function (data) {
+            this._onDataCallback(data);
         };
         ExtHostTerminal.prototype._queueApiRequest = function (callback, args) {
             var request = new ApiRequest(callback, args);
@@ -22883,6 +22773,10 @@ define(__m[113/*vs/workbench/api/node/extHostTerminalService*/], __M([0/*require
             var terminal = this._getTerminalById(id);
             terminal._setProcessId(processId);
         };
+        ExtHostTerminalService.prototype.$acceptTerminalData = function (id, data) {
+            var terminal = this._getTerminalById(id);
+            terminal._onData(data);
+        };
         ExtHostTerminalService.prototype._getTerminalById = function (id) {
             var index = this._getTerminalIndexById(id);
             return index !== null ? this._terminals[index] : null;
@@ -22919,7 +22813,97 @@ define(__m[113/*vs/workbench/api/node/extHostTerminalService*/], __M([0/*require
 
 
 
-define(__m[114/*vs/workbench/api/node/extHostTreeExplorers*/], __M([0/*require*/,1/*exports*/,65/*vs/nls!vs/workbench/api/node/extHostTreeExplorers*/,37/*vs/base/common/idGenerator*/,3/*vs/base/common/winjs.base*/,6/*vs/workbench/api/node/extHostTypes*/,2/*vs/workbench/api/node/extHost.protocol*/,9/*vs/base/common/async*/]), function (require, exports, nls_1, idGenerator_1, winjs_base_1, extHostTypes_1, extHost_protocol_1, async_1) {
+define(__m[112/*vs/workbench/api/node/extHostTextEditors*/], __M([1/*require*/,0/*exports*/,4/*vs/base/common/event*/,12/*vs/base/common/async*/,5/*vs/workbench/api/node/extHostTypes*/,8/*vs/workbench/api/node/extHostTypeConverters*/,38/*vs/workbench/api/node/extHostTextEditor*/,3/*vs/workbench/api/node/extHost.protocol*/]), function (require, exports, event_1, async_1, extHostTypes_1, TypeConverters, extHostTextEditor_1, extHost_protocol_1) {
+    /*---------------------------------------------------------------------------------------------
+     *  Copyright (c) Microsoft Corporation. All rights reserved.
+     *  Licensed under the MIT License. See License.txt in the project root for license information.
+     *--------------------------------------------------------------------------------------------*/
+    'use strict';
+    var ExtHostEditors = (function (_super) {
+        __extends(ExtHostEditors, _super);
+        function ExtHostEditors(threadService, extHostDocumentsAndEditors) {
+            var _this = _super.call(this) || this;
+            _this._onDidChangeTextEditorSelection = new event_1.Emitter();
+            _this._onDidChangeTextEditorOptions = new event_1.Emitter();
+            _this._onDidChangeTextEditorViewColumn = new event_1.Emitter();
+            _this._onDidChangeActiveTextEditor = new event_1.Emitter();
+            _this._onDidChangeVisibleTextEditors = new event_1.Emitter();
+            _this.onDidChangeTextEditorSelection = _this._onDidChangeTextEditorSelection.event;
+            _this.onDidChangeTextEditorOptions = _this._onDidChangeTextEditorOptions.event;
+            _this.onDidChangeTextEditorViewColumn = _this._onDidChangeTextEditorViewColumn.event;
+            _this.onDidChangeActiveTextEditor = _this._onDidChangeActiveTextEditor.event;
+            _this.onDidChangeVisibleTextEditors = _this._onDidChangeVisibleTextEditors.event;
+            _this._proxy = threadService.get(extHost_protocol_1.MainContext.MainThreadEditors);
+            _this._extHostDocumentsAndEditors = extHostDocumentsAndEditors;
+            _this._extHostDocumentsAndEditors.onDidChangeVisibleTextEditors(function (e) { return _this._onDidChangeVisibleTextEditors.fire(e); });
+            _this._extHostDocumentsAndEditors.onDidChangeActiveTextEditor(function (e) { return _this._onDidChangeActiveTextEditor.fire(e); });
+            return _this;
+        }
+        ExtHostEditors.prototype.getActiveTextEditor = function () {
+            return this._extHostDocumentsAndEditors.activeEditor();
+        };
+        ExtHostEditors.prototype.getVisibleTextEditors = function () {
+            return this._extHostDocumentsAndEditors.allEditors();
+        };
+        ExtHostEditors.prototype.showTextDocument = function (document, column, preserveFocus) {
+            var _this = this;
+            return this._proxy.$tryShowTextDocument(document.uri, TypeConverters.fromViewColumn(column), preserveFocus).then(function (id) {
+                var editor = _this._extHostDocumentsAndEditors.getEditor(id);
+                if (editor) {
+                    return editor;
+                }
+                else {
+                    throw new Error("Failed to show text document " + document.uri.toString() + ", should show in editor #" + id);
+                }
+            });
+        };
+        ExtHostEditors.prototype.createTextEditorDecorationType = function (options) {
+            return new extHostTextEditor_1.TextEditorDecorationType(this._proxy, options);
+        };
+        // --- called from main thread
+        ExtHostEditors.prototype.$acceptOptionsChanged = function (id, opts) {
+            var editor = this._extHostDocumentsAndEditors.getEditor(id);
+            editor._acceptOptions(opts);
+            this._onDidChangeTextEditorOptions.fire({
+                textEditor: editor,
+                options: opts
+            });
+        };
+        ExtHostEditors.prototype.$acceptSelectionsChanged = function (id, event) {
+            var kind = extHostTypes_1.TextEditorSelectionChangeKind.fromValue(event.source);
+            var selections = event.selections.map(TypeConverters.toSelection);
+            var textEditor = this._extHostDocumentsAndEditors.getEditor(id);
+            textEditor._acceptSelections(selections);
+            this._onDidChangeTextEditorSelection.fire({
+                textEditor: textEditor,
+                selections: selections,
+                kind: kind
+            });
+        };
+        ExtHostEditors.prototype.$acceptEditorPositionData = function (data) {
+            for (var id in data) {
+                var textEditor = this._extHostDocumentsAndEditors.getEditor(id);
+                var viewColumn = TypeConverters.toViewColumn(data[id]);
+                if (textEditor.viewColumn !== viewColumn) {
+                    textEditor._acceptViewColumn(viewColumn);
+                    this._onDidChangeTextEditorViewColumn.fire({ textEditor: textEditor, viewColumn: viewColumn });
+                }
+            }
+        };
+        ExtHostEditors.prototype.getDiffInformation = function (id) {
+            return async_1.toThenable(this._proxy.$getDiffInformation(id));
+        };
+        return ExtHostEditors;
+    }(extHost_protocol_1.ExtHostEditorsShape));
+    exports.ExtHostEditors = ExtHostEditors;
+});
+
+
+
+
+
+
+define(__m[113/*vs/workbench/api/node/extHostTreeExplorers*/], __M([1/*require*/,0/*exports*/,59/*vs/nls!vs/workbench/api/node/extHostTreeExplorers*/,30/*vs/base/common/idGenerator*/,2/*vs/base/common/winjs.base*/,5/*vs/workbench/api/node/extHostTypes*/,3/*vs/workbench/api/node/extHost.protocol*/,12/*vs/base/common/async*/]), function (require, exports, nls_1, idGenerator_1, winjs_base_1, extHostTypes_1, extHost_protocol_1, async_1) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -23009,7 +22993,7 @@ define(__m[114/*vs/workbench/api/node/extHostTreeExplorers*/], __M([0/*require*/
     exports.ExtHostTreeExplorers = ExtHostTreeExplorers;
 });
 
-define(__m[115/*vs/workbench/api/node/extHostWorkspace*/], __M([0/*require*/,1/*exports*/,14/*vs/base/common/paths*/,18/*path*/,15/*vs/workbench/api/node/extHostTypeConverters*/,2/*vs/workbench/api/node/extHost.protocol*/]), function (require, exports, paths_1, path_1, extHostTypeConverters_1, extHost_protocol_1) {
+define(__m[114/*vs/workbench/api/node/extHostWorkspace*/], __M([1/*require*/,0/*exports*/,20/*vs/base/common/paths*/,17/*path*/,8/*vs/workbench/api/node/extHostTypeConverters*/,3/*vs/workbench/api/node/extHost.protocol*/]), function (require, exports, paths_1, path_1, extHostTypeConverters_1, extHost_protocol_1) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -23066,7 +23050,8 @@ define(__m[115/*vs/workbench/api/node/extHostWorkspace*/], __M([0/*require*/,1/*
                     resourceEdits.push({
                         resource: uri,
                         newText: edit_1.newText,
-                        range: extHostTypeConverters_1.fromRange(edit_1.range)
+                        newEol: extHostTypeConverters_1.EndOfLine.from(edit_1.newEol),
+                        range: edit_1.range && extHostTypeConverters_1.fromRange(edit_1.range)
                     });
                 }
             }
@@ -23084,7 +23069,42 @@ define(__m[115/*vs/workbench/api/node/extHostWorkspace*/], __M([0/*require*/,1/*
 
 
 
-define(__m[116/*vs/workbench/api/node/extHost.api.impl*/], __M([0/*require*/,1/*exports*/,4/*vs/base/common/event*/,26/*vs/base/common/map*/,50/*vs/editor/common/modes/languageSelector*/,10/*vs/base/common/platform*/,5/*vs/base/common/errors*/,77/*vs/platform/node/product*/,76/*vs/platform/node/package*/,102/*vs/workbench/api/node/extHostFileSystemEventService*/,100/*vs/workbench/api/node/extHostDocuments*/,99/*vs/workbench/api/node/extHostDocumentSaveParticipant*/,97/*vs/workbench/api/node/extHostConfiguration*/,98/*vs/workbench/api/node/extHostDiagnostics*/,114/*vs/workbench/api/node/extHostTreeExplorers*/,115/*vs/workbench/api/node/extHostWorkspace*/,108/*vs/workbench/api/node/extHostQuickOpen*/,86/*vs/workbench/api/node/extHostProgress*/,109/*vs/workbench/api/node/extHostSCM*/,103/*vs/workbench/api/node/extHostHeapService*/,110/*vs/workbench/api/node/extHostStatusBar*/,96/*vs/workbench/api/node/extHostCommands*/,107/*vs/workbench/api/node/extHostOutputService*/,113/*vs/workbench/api/node/extHostTerminalService*/,106/*vs/workbench/api/node/extHostMessageService*/,101/*vs/workbench/api/node/extHostEditors*/,105/*vs/workbench/api/node/extHostLanguages*/,104/*vs/workbench/api/node/extHostLanguageFeatures*/,91/*vs/workbench/api/node/extHostApiCommands*/,85/*vs/workbench/api/node/extHostFunctions*/,6/*vs/workbench/api/node/extHostTypes*/,7/*vs/base/common/uri*/,17/*vs/base/common/severity*/,23/*vs/editor/common/editorCommon*/,3/*vs/base/common/winjs.base*/,25/*vs/base/common/cancellation*/,14/*vs/base/common/paths*/,31/*fs*/,2/*vs/workbench/api/node/extHost.protocol*/,49/*vs/editor/common/modes/languageConfiguration*/]), function (require, exports, event_1, map_1, languageSelector_1, Platform, errors, product_1, package_1, extHostFileSystemEventService_1, extHostDocuments_1, extHostDocumentSaveParticipant_1, extHostConfiguration_1, extHostDiagnostics_1, extHostTreeExplorers_1, extHostWorkspace_1, extHostQuickOpen_1, extHostProgress_1, extHostSCM_1, extHostHeapService_1, extHostStatusBar_1, extHostCommands_1, extHostOutputService_1, extHostTerminalService_1, extHostMessageService_1, extHostEditors_1, extHostLanguages_1, extHostLanguageFeatures_1, extHostApiCommands_1, extHostFunctions_1, extHostTypes, uri_1, severity_1, EditorCommon, winjs_base_1, cancellation_1, paths, fs_1, extHost_protocol_1, languageConfiguration) {
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+var __generator = (this && this.__generator) || function (thisArg, body) {
+    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t;
+    return { next: verb(0), "throw": verb(1), "return": verb(2) };
+    function verb(n) { return function (v) { return step([n, v]); }; }
+    function step(op) {
+        if (f) throw new TypeError("Generator is already executing.");
+        while (_) try {
+            if (f = 1, y && (t = y[op[0] & 2 ? "return" : op[0] ? "throw" : "next"]) && !(t = t.call(y, op[1])).done) return t;
+            if (y = 0, t) op = [0, t.value];
+            switch (op[0]) {
+                case 0: case 1: t = op; break;
+                case 4: _.label++; return { value: op[1], done: false };
+                case 5: _.label++; y = op[1]; op = [0]; continue;
+                case 7: op = _.ops.pop(); _.trys.pop(); continue;
+                default:
+                    if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) { _ = 0; continue; }
+                    if (op[0] === 3 && (!t || (op[1] > t[0] && op[1] < t[3]))) { _.label = op[1]; break; }
+                    if (op[0] === 6 && _.label < t[1]) { _.label = t[1]; t = op; break; }
+                    if (t && _.label < t[2]) { _.label = t[2]; _.ops.push(op); break; }
+                    if (t[2]) _.ops.pop();
+                    _.trys.pop(); continue;
+            }
+            op = body.call(thisArg, _);
+        } catch (e) { op = [6, e]; y = 0; } finally { f = t = 0; }
+        if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
+    }
+};
+define(__m[115/*vs/workbench/api/node/extHost.api.impl*/], __M([1/*require*/,0/*exports*/,4/*vs/base/common/event*/,27/*vs/base/common/map*/,37/*vs/editor/common/modes/languageSelector*/,13/*vs/base/common/platform*/,6/*vs/base/common/errors*/,71/*vs/platform/node/product*/,70/*vs/platform/node/package*/,99/*vs/workbench/api/node/extHostFileSystemEventService*/,98/*vs/workbench/api/node/extHostDocumentsAndEditors*/,97/*vs/workbench/api/node/extHostDocuments*/,96/*vs/workbench/api/node/extHostDocumentSaveParticipant*/,94/*vs/workbench/api/node/extHostConfiguration*/,95/*vs/workbench/api/node/extHostDiagnostics*/,113/*vs/workbench/api/node/extHostTreeExplorers*/,114/*vs/workbench/api/node/extHostWorkspace*/,105/*vs/workbench/api/node/extHostQuickOpen*/,80/*vs/workbench/api/node/extHostProgress*/,106/*vs/workbench/api/node/extHostSCM*/,100/*vs/workbench/api/node/extHostHeapService*/,107/*vs/workbench/api/node/extHostStatusBar*/,93/*vs/workbench/api/node/extHostCommands*/,104/*vs/workbench/api/node/extHostOutputService*/,111/*vs/workbench/api/node/extHostTerminalService*/,103/*vs/workbench/api/node/extHostMessageService*/,112/*vs/workbench/api/node/extHostTextEditors*/,102/*vs/workbench/api/node/extHostLanguages*/,101/*vs/workbench/api/node/extHostLanguageFeatures*/,87/*vs/workbench/api/node/extHostApiCommands*/,109/*vs/workbench/api/node/extHostTask*/,5/*vs/workbench/api/node/extHostTypes*/,7/*vs/base/common/uri*/,18/*vs/base/common/severity*/,21/*vs/editor/common/editorCommon*/,2/*vs/base/common/winjs.base*/,26/*vs/base/common/cancellation*/,20/*vs/base/common/paths*/,31/*fs*/,3/*vs/workbench/api/node/extHost.protocol*/,41/*vs/editor/common/modes/languageConfiguration*/]), function (require, exports, event_1, map_1, languageSelector_1, Platform, errors, product_1, package_1, extHostFileSystemEventService_1, extHostDocumentsAndEditors_1, extHostDocuments_1, extHostDocumentSaveParticipant_1, extHostConfiguration_1, extHostDiagnostics_1, extHostTreeExplorers_1, extHostWorkspace_1, extHostQuickOpen_1, extHostProgress_1, extHostSCM_1, extHostHeapService_1, extHostStatusBar_1, extHostCommands_1, extHostOutputService_1, extHostTerminalService_1, extHostMessageService_1, extHostTextEditors_1, extHostLanguages_1, extHostLanguageFeatures_1, extHostApiCommands_1, extHostTask_1, extHostTypes, uri_1, severity_1, EditorCommon, winjs_base_1, cancellation_1, paths, fs_1, extHost_protocol_1, languageConfiguration) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -23126,14 +23146,15 @@ define(__m[116/*vs/workbench/api/node/extHost.api.impl*/], __M([0/*require*/,1/*
     /**
      * This method instantiates and returns the extension API surface
      */
-    function createApiFactory(initData, threadService, extensionService, contextService) {
+    function createApiFactory(initData, threadService, extensionService, contextService, telemetryService) {
         // Addressable instances
         var col = new extHost_protocol_1.InstanceCollection();
         var extHostHeapService = col.define(extHost_protocol_1.ExtHostContext.ExtHostHeapService).set(new extHostHeapService_1.ExtHostHeapService());
-        var extHostDocuments = col.define(extHost_protocol_1.ExtHostContext.ExtHostDocuments).set(new extHostDocuments_1.ExtHostDocuments(threadService));
+        var extHostDocumentsAndEditors = col.define(extHost_protocol_1.ExtHostContext.ExtHostDocumentsAndEditors).set(new extHostDocumentsAndEditors_1.ExtHostDocumentsAndEditors(threadService));
+        var extHostDocuments = col.define(extHost_protocol_1.ExtHostContext.ExtHostDocuments).set(new extHostDocuments_1.ExtHostDocuments(threadService, extHostDocumentsAndEditors));
         var extHostDocumentSaveParticipant = col.define(extHost_protocol_1.ExtHostContext.ExtHostDocumentSaveParticipant).set(new extHostDocumentSaveParticipant_1.ExtHostDocumentSaveParticipant(extHostDocuments, threadService.get(extHost_protocol_1.MainContext.MainThreadWorkspace)));
-        var extHostEditors = col.define(extHost_protocol_1.ExtHostContext.ExtHostEditors).set(new extHostEditors_1.ExtHostEditors(threadService, extHostDocuments));
-        var extHostCommands = col.define(extHost_protocol_1.ExtHostContext.ExtHostCommands).set(new extHostCommands_1.ExtHostCommands(threadService, extHostEditors, extHostHeapService));
+        var extHostEditors = col.define(extHost_protocol_1.ExtHostContext.ExtHostEditors).set(new extHostTextEditors_1.ExtHostEditors(threadService, extHostDocumentsAndEditors));
+        var extHostCommands = col.define(extHost_protocol_1.ExtHostContext.ExtHostCommands).set(new extHostCommands_1.ExtHostCommands(threadService, extHostHeapService));
         var extHostExplorers = col.define(extHost_protocol_1.ExtHostContext.ExtHostExplorers).set(new extHostTreeExplorers_1.ExtHostTreeExplorers(threadService, extHostCommands));
         var extHostConfiguration = col.define(extHost_protocol_1.ExtHostContext.ExtHostConfiguration).set(new extHostConfiguration_1.ExtHostConfiguration(threadService.get(extHost_protocol_1.MainContext.MainThreadConfiguration), initData.configuration));
         var extHostDiagnostics = col.define(extHost_protocol_1.ExtHostContext.ExtHostDiagnostics).set(new extHostDiagnostics_1.ExtHostDiagnostics(threadService));
@@ -23141,7 +23162,8 @@ define(__m[116/*vs/workbench/api/node/extHost.api.impl*/], __M([0/*require*/,1/*
         var extHostFileSystemEvent = col.define(extHost_protocol_1.ExtHostContext.ExtHostFileSystemEventService).set(new extHostFileSystemEventService_1.ExtHostFileSystemEventService());
         var extHostQuickOpen = col.define(extHost_protocol_1.ExtHostContext.ExtHostQuickOpen).set(new extHostQuickOpen_1.ExtHostQuickOpen(threadService));
         var extHostTerminalService = col.define(extHost_protocol_1.ExtHostContext.ExtHostTerminalService).set(new extHostTerminalService_1.ExtHostTerminalService(threadService));
-        var extHostSCM = col.define(extHost_protocol_1.ExtHostContext.ExtHostSCM).set(new extHostSCM_1.ExtHostSCM(threadService));
+        var extHostSCM = col.define(extHost_protocol_1.ExtHostContext.ExtHostSCM).set(new extHostSCM_1.ExtHostSCM(threadService, extHostCommands));
+        var extHostTask = col.define(extHost_protocol_1.ExtHostContext.ExtHostTask).set(new extHostTask_1.ExtHostTask(threadService));
         col.define(extHost_protocol_1.ExtHostContext.ExtHostExtensionService).set(extensionService);
         col.finish(false, threadService);
         // Other instances
@@ -23155,8 +23177,8 @@ define(__m[116/*vs/workbench/api/node/extHost.api.impl*/], __M([0/*require*/,1/*
         // Register API-ish commands
         extHostApiCommands_1.ExtHostApiCommands.register(extHostCommands);
         return function (extension) {
-            if (extension.enableProposedApi) {
-                if (!initData.environment.enableProposedApi && !extension.isBuiltin) {
+            if (extension.enableProposedApi && !extension.isBuiltin) {
+                if (!initData.environment.enableProposedApi) {
                     extension.enableProposedApi = false;
                     console.warn('PROPOSED API is only available when developing an extension');
                 }
@@ -23164,12 +23186,13 @@ define(__m[116/*vs/workbench/api/node/extHost.api.impl*/], __M([0/*require*/,1/*
                     console.warn(extension.name + " (" + extension.id + ") uses PROPOSED API which is subject to change and removal without notice");
                 }
             }
-            // namespace: commands
-            var commands = {
-                registerCommand: function (id, command, thisArgs) {
+            var Commands = (function () {
+                function Commands() {
+                }
+                Commands.prototype.registerCommand = function (id, command, thisArgs) {
                     return extHostCommands.registerCommand(id, command, thisArgs);
-                },
-                registerTextEditorCommand: function (id, callback, thisArg) {
+                };
+                Commands.prototype.registerTextEditorCommand = function (id, callback, thisArg) {
                     return extHostCommands.registerCommand(id, function () {
                         var args = [];
                         for (var _i = 0; _i < arguments.length; _i++) {
@@ -23191,19 +23214,52 @@ define(__m[116/*vs/workbench/api/node/extHost.api.impl*/], __M([0/*require*/,1/*
                             console.warn('An error occured while running command ' + id, err);
                         });
                     });
-                },
-                executeCommand: function (id) {
+                };
+                Commands.prototype.registerDiffInformationCommand = function (id, callback, thisArg) {
+                    var _this = this;
+                    return extHostCommands.registerCommand(id, function () {
+                        var args = [];
+                        for (var _i = 0; _i < arguments.length; _i++) {
+                            args[_i] = arguments[_i];
+                        }
+                        return __awaiter(_this, void 0, void 0, function () {
+                            var activeTextEditor, diff;
+                            return __generator(this, function (_a) {
+                                switch (_a.label) {
+                                    case 0:
+                                        activeTextEditor = extHostEditors.getActiveTextEditor();
+                                        if (!activeTextEditor) {
+                                            console.warn('Cannot execute ' + id + ' because there is no active text editor.');
+                                            return [2 /*return*/, undefined];
+                                        }
+                                        return [4 /*yield*/, extHostEditors.getDiffInformation(activeTextEditor.id)];
+                                    case 1:
+                                        diff = _a.sent();
+                                        callback.apply(thisArg, [diff].concat(args));
+                                        return [2 /*return*/];
+                                }
+                            });
+                        });
+                    });
+                };
+                Commands.prototype.executeCommand = function (id) {
                     var args = [];
                     for (var _i = 1; _i < arguments.length; _i++) {
                         args[_i - 1] = arguments[_i];
                     }
                     return extHostCommands.executeCommand.apply(extHostCommands, [id].concat(args));
-                },
-                getCommands: function (filterInternal) {
+                };
+                Commands.prototype.getCommands = function (filterInternal) {
                     if (filterInternal === void 0) { filterInternal = false; }
                     return extHostCommands.getCommands(filterInternal);
-                }
-            };
+                };
+                return Commands;
+            }());
+            __decorate([
+                proposed(extension)
+            ], Commands.prototype, "registerDiffInformationCommand", null);
+            // namespace: commands
+            var commands = new Commands();
             // namespace: env
             var env = Object.freeze({
                 get machineId() { return initData.telemetryInfo.machineId; },
@@ -23370,9 +23426,9 @@ define(__m[116/*vs/workbench/api/node/extHost.api.impl*/], __M([0/*require*/,1/*
                 withWindowProgress: proposedApiFunction(extension, function (title, task) {
                     return extHostProgress.withWindowProgress(extension, title, task);
                 }),
-                withScmProgress: proposedApiFunction(extension, function (task) {
+                withScmProgress: function (task) {
                     return extHostProgress.withScmProgress(extension, task);
-                }),
+                },
                 createOutputChannel: function (name) {
                     return extHostOutputService.createOutputChannel(name);
                 },
@@ -23464,19 +23520,22 @@ define(__m[116/*vs/workbench/api/node/extHost.api.impl*/], __M([0/*require*/,1/*
                 },
                 getConfiguration: function (section) {
                     return extHostConfiguration.getConfiguration(section);
-                }
+                },
+                registerTaskProvider: proposedApiFunction(extension, function (provider) {
+                    return extHostTask.registerTaskProvider(extension, provider);
+                })
             };
             var SCM = (function () {
                 function SCM() {
                 }
-                Object.defineProperty(SCM.prototype, "activeProvider", {
+                Object.defineProperty(SCM.prototype, "activeSourceControl", {
                     get: function () {
                         return extHostSCM.activeProvider;
                     },
                     enumerable: true,
                     configurable: true
                 });
-                Object.defineProperty(SCM.prototype, "onDidChangeActiveProvider", {
+                Object.defineProperty(SCM.prototype, "onDidChangeActiveSourceControl", {
                     get: function () {
                         return extHostSCM.onDidChangeActiveProvider;
                     },
@@ -23490,29 +23549,23 @@ define(__m[116/*vs/workbench/api/node/extHost.api.impl*/], __M([0/*require*/,1/*
                     enumerable: true,
                     configurable: true
                 });
-                SCM.prototype.getResourceFromURI = function (uri) {
-                    return extHostSCM.getResourceFromURI(uri);
-                };
-                SCM.prototype.registerSCMProvider = function (id, provider) {
-                    return extHostSCM.registerSCMProvider(id, provider);
+                Object.defineProperty(SCM.prototype, "onDidAcceptInputValue", {
+                    get: function () {
+                        return event_1.mapEvent(extHostSCM.inputBox.onDidAccept, function () { return extHostSCM.inputBox; });
+                    },
+                    enumerable: true,
+                    configurable: true
+                });
+                SCM.prototype.createSourceControl = function (id, label) {
+                    telemetryService.publicLog('registerSCMProvider', {
+                        extensionId: extension.id,
+                        providerId: id,
+                        providerLabel: label
+                    });
+                    return extHostSCM.createSourceControl(id, label);
                 };
                 return SCM;
             }());
-            __decorate([
-                proposed(extension)
-            ], SCM.prototype, "activeProvider", null);
-            __decorate([
-                proposed(extension)
-            ], SCM.prototype, "onDidChangeActiveProvider", null);
-            __decorate([
-                proposed(extension)
-            ], SCM.prototype, "inputBox", null);
-            __decorate([
-                proposed(extension)
-            ], SCM.prototype, "getResourceFromURI", null);
-            __decorate([
-                proposed(extension)
-            ], SCM.prototype, "registerSCMProvider", null);
             // namespace: scm
             var scm = new SCM();
             return {
@@ -23563,7 +23616,11 @@ define(__m[116/*vs/workbench/api/node/extHost.api.impl*/], __M([0/*require*/,1/*
                 ViewColumn: extHostTypes.ViewColumn,
                 WorkspaceEdit: extHostTypes.WorkspaceEdit,
                 // functions
-                computeDiff: extHostFunctions_1.computeDiff
+                FileLocationKind: extHostTypes.FileLocationKind,
+                ApplyToKind: extHostTypes.ApplyToKind,
+                RevealKind: extHostTypes.RevealKind,
+                ShellTask: extHostTypes.ShellTask,
+                ProcessTask: extHostTypes.ProcessTask
             };
         };
     }
@@ -23668,7 +23725,7 @@ define(__m[116/*vs/workbench/api/node/extHost.api.impl*/], __M([0/*require*/,1/*
 
 
 
-define(__m[54/*vs/workbench/api/node/extHostExtensionService*/], __M([0/*require*/,1/*exports*/,22/*vs/base/common/lifecycle*/,14/*vs/base/common/paths*/,33/*vs/base/node/pfs*/,17/*vs/base/common/severity*/,3/*vs/base/common/winjs.base*/,75/*vs/platform/extensions/common/abstractExtensionService*/,111/*vs/workbench/api/node/extHostStorage*/,116/*vs/workbench/api/node/extHost.api.impl*/,2/*vs/workbench/api/node/extHost.protocol*/,118/*crypto*/]), function (require, exports, lifecycle_1, paths, pfs_1, severity_1, winjs_base_1, abstractExtensionService_1, extHostStorage_1, extHost_api_impl_1, extHost_protocol_1, crypto_1) {
+define(__m[116/*vs/workbench/api/node/extHostExtensionService*/], __M([1/*require*/,0/*exports*/,19/*vs/base/common/lifecycle*/,17/*path*/,32/*vs/base/node/pfs*/,18/*vs/base/common/severity*/,2/*vs/base/common/winjs.base*/,68/*vs/platform/extensions/common/abstractExtensionService*/,108/*vs/workbench/api/node/extHostStorage*/,115/*vs/workbench/api/node/extHost.api.impl*/,3/*vs/workbench/api/node/extHost.protocol*/,117/*crypto*/]), function (require, exports, lifecycle_1, path_1, pfs_1, severity_1, winjs_base_1, abstractExtensionService_1, extHostStorage_1, extHost_api_impl_1, extHost_protocol_1, crypto_1) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -23744,7 +23801,7 @@ define(__m[54/*vs/workbench/api/node/extHostExtensionService*/], __M([0/*require
         });
         ExtensionStoragePath.prototype.value = function (extension) {
             if (this._value) {
-                return paths.join(this._value, extension.id);
+                return path_1.join(this._value, extension.id);
             }
             return undefined;
         };
@@ -23757,7 +23814,7 @@ define(__m[54/*vs/workbench/api/node/extHostExtensionService*/], __M([0/*require
                 .update(workspace.resource.fsPath)
                 .update(workspace.uid ? workspace.uid.toString() : '')
                 .digest('hex');
-            var storagePath = paths.join(this._environment.appSettingsHome, 'workspaceStorage', storageName);
+            var storagePath = path_1.join(this._environment.appSettingsHome, 'workspaceStorage', storageName);
             return pfs_1.dirExists(storagePath).then(function (exists) {
                 if (exists) {
                     return storagePath;
@@ -23786,7 +23843,7 @@ define(__m[54/*vs/workbench/api/node/extHostExtensionService*/], __M([0/*require
             _this._telemetryService = telemetryService;
             _this._contextService = contextService;
             // initialize API first
-            var apiFactory = extHost_api_impl_1.createApiFactory(initData, threadService, _this, _this._contextService);
+            var apiFactory = extHost_api_impl_1.createApiFactory(initData, threadService, _this, _this._contextService, _this._telemetryService);
             extHost_api_impl_1.initializeExtensionApi(_this, apiFactory).then(function () { return _this._triggerOnReady(); });
             return _this;
         }
@@ -23862,7 +23919,7 @@ define(__m[54/*vs/workbench/api/node/extHostExtensionService*/], __M([0/*require
                     subscriptions: [],
                     get extensionPath() { return extensionDescription.extensionFolderPath; },
                     storagePath: _this._storagePath.value(extensionDescription),
-                    asAbsolutePath: function (relativePath) { return paths.normalize(paths.join(extensionDescription.extensionFolderPath, relativePath), true); }
+                    asAbsolutePath: function (relativePath) { return path_1.join(extensionDescription.extensionFolderPath, relativePath); }
                 });
             });
         };
@@ -23985,7 +24042,7 @@ define(__m[54/*vs/workbench/api/node/extHostExtensionService*/], __M([0/*require
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-define(__m[95/*vs/workbench/node/extensionHostMain*/], __M([0/*require*/,1/*exports*/,66/*vs/nls!vs/workbench/node/extensionHostMain*/,33/*vs/base/node/pfs*/,3/*vs/base/common/winjs.base*/,14/*vs/base/common/paths*/,54/*vs/workbench/api/node/extHostExtensionService*/,93/*vs/workbench/services/thread/common/extHostThreadService*/,112/*vs/workbench/api/node/extHostTelemetry*/,84/*vs/platform/workspace/common/workspace*/,2/*vs/workbench/api/node/extHost.protocol*/,5/*vs/base/common/errors*/]), function (require, exports, nls, pfs, winjs_base_1, paths, extHostExtensionService_1, extHostThreadService_1, extHostTelemetry_1, workspace_1, extHost_protocol_1, errors) {
+define(__m[50/*vs/workbench/node/extensionHostMain*/], __M([1/*require*/,0/*exports*/,72/*vs/nls!vs/workbench/node/extensionHostMain*/,32/*vs/base/node/pfs*/,2/*vs/base/common/winjs.base*/,17/*path*/,116/*vs/workbench/api/node/extHostExtensionService*/,90/*vs/workbench/services/thread/common/extHostThreadService*/,110/*vs/workbench/api/node/extHostTelemetry*/,79/*vs/platform/workspace/common/workspace*/,3/*vs/workbench/api/node/extHost.protocol*/,6/*vs/base/common/errors*/]), function (require, exports, nls, pfs, winjs_base_1, path_1, extHostExtensionService_1, extHostThreadService_1, extHostTelemetry_1, workspace_1, extHost_protocol_1, errors) {
     'use strict';
     var nativeExit = process.exit.bind(process);
     process.exit = function () {
@@ -24070,7 +24127,7 @@ define(__m[95/*vs/workbench/node/extensionHostMain*/], __M([0/*require*/,1/*expo
                 }
             });
             var fileNames = Object.keys(desiredFilesMap);
-            return winjs_base_1.TPromise.join(fileNames.map(function (f) { return pfs.exists(paths.join(folderPath, f)); })).then(function (exists) {
+            return winjs_base_1.TPromise.join(fileNames.map(function (f) { return pfs.exists(path_1.join(folderPath, f)); })).then(function (exists) {
                 fileNames
                     .filter(function (f, i) { return exists[i]; })
                     .forEach(function (fileName) {
@@ -24128,7 +24185,7 @@ define(__m[95/*vs/workbench/node/extensionHostMain*/], __M([0/*require*/,1/*expo
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-define(__m[120/*vs/workbench/node/extensionHostProcess*/], __M([0/*require*/,1/*exports*/,5/*vs/base/common/errors*/,3/*vs/base/common/winjs.base*/,95/*vs/workbench/node/extensionHostMain*/,67/*vs/platform/extensions/common/ipcRemoteCom*/,32/*vs/base/common/marshalling*/,79/*vs/base/parts/ipc/node/ipc.net*/,87/*net*/,4/*vs/base/common/event*/]), function (require, exports, errors_1, winjs_base_1, extensionHostMain_1, ipcRemoteCom_1, marshalling_1, ipc_net_1, net_1, event_1) {
+define(__m[119/*vs/workbench/node/extensionHostProcess*/], __M([1/*require*/,0/*exports*/,6/*vs/base/common/errors*/,2/*vs/base/common/winjs.base*/,50/*vs/workbench/node/extensionHostMain*/,61/*vs/platform/extensions/common/ipcRemoteCom*/,33/*vs/base/common/marshalling*/,86/*vs/base/parts/ipc/node/ipc.net*/,88/*net*/,4/*vs/base/common/event*/]), function (require, exports, errors_1, winjs_base_1, extensionHostMain_1, ipcRemoteCom_1, marshalling_1, ipc_net_1, net_1, event_1) {
     'use strict';
     // This calls exit directly in case the initialization is not finished and we need to exit
     // Otherwise, if initialization completed we go to extensionHostMain.terminate()

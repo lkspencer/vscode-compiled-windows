@@ -7,6 +7,7 @@
 	"typescript.tsdk_version.desc": "指定 tsserver 的版本。仅在未使用 npm 安装 tsserver 时需要。",
 	"typescript.disableAutomaticTypeAcquisition": "禁用自动获取类型。需要 TypeScript >= 2.0.6，并且更改后需要重启。",
 	"typescript.check.tscVersion": "检查全局安装的 TypeScript 编译器(例如 tsc )是否不同于使用的 TypeScript 语言服务。",
+	"typescript.tsserver.log": "启用 TS 服务器的日志记录到文件。",
 	"typescript.tsserver.trace": "对发送到 TS 服务器的消息启用跟踪。",
 	"typescript.tsserver.experimentalAutoBuild": "启用实验性自动生成。要求安装 1.9 dev 或 2.x tsserver 版本并在更改后重启 VS Code。",
 	"typescript.validate.enable": "启用/禁用 TypeScript 验证。",
@@ -17,6 +18,7 @@
 	"format.insertSpaceBeforeAndAfterBinaryOperators": "定义二进制运算符后面的空格处理",
 	"format.insertSpaceAfterKeywordsInControlFlowStatements": "定义控制流语句中关键字后面的空格处理。",
 	"format.insertSpaceAfterFunctionKeywordForAnonymousFunctions": "定义匿名函数的函数关键字后面的空格处理。",
+	"format.insertSpaceBeforeFunctionParenthesis": "在函数参数括号前定义空格处理。需要 TypeScript >= 2.1.5。",
 	"format.insertSpaceAfterOpeningAndBeforeClosingNonemptyParenthesis": "定义非空圆括号的左括号后面和右括号前面的空格处理。",
 	"format.insertSpaceAfterOpeningAndBeforeClosingNonemptyBrackets": "定义非空方括号的左括号后面和右括号前面的空格处理。",
 	"format.insertSpaceAfterOpeningAndBeforeClosingTemplateStringBraces": "定义模板字符串的左括号后面和右括号前面的空格处理。要求 TypeScript >= 2.0.6。",
@@ -27,5 +29,7 @@
 	"typescript.goToProjectConfig.title": "转到项目配置",
 	"javascript.goToProjectConfig.title": "转到项目配置",
 	"typescript.referencesCodeLens.enabled": "启用/禁用引用 CodeLens。",
+	"typescript.implementationsCodeLens.enabled": "启用/禁用实现 CodeLens。",
+	"typescript.openTsServerLog.title": "打开 TS 服务器日志文件",
 	"typescript.selectTypeScriptVersion.title": "选择 TypeScript 版本"
 }

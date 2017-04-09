@@ -7,6 +7,7 @@
 	"typescript.tsdk_version.desc": "Gibt die Version von tsserver an. Nur erforderlich, wenn der tsserver nicht mithilfe von npm installiert wird.",
 	"typescript.disableAutomaticTypeAcquisition": "Deaktiviert die automatische Typerfassung. Erfordert TypeScript >= 2.0.6 und einen Neustart nach der Änderung.",
 	"typescript.check.tscVersion": "Überprüfen, ob sich ein global installierter TypeScript-Compiler (z. B. tsc) vom verwendeten TypeScript-Sprachdienst unterscheidet.",
+	"typescript.tsserver.log": "Aktiviert die Protokollierung von TS Server in einer Datei.",
 	"typescript.tsserver.trace": "Aktiviert die Nachverfolgung von an den TS-Server gesendeten Nachrichten.",
 	"typescript.tsserver.experimentalAutoBuild": "Ermöglicht experimentelle automatische Buildvorgänge. Erfordert Version 1.9 dev oder 2.x tsserver sowie einen Neustart von VS Code nach der Änderung.",
 	"typescript.validate.enable": "TypeScript-Überprüfung aktivieren/deaktivieren.",
@@ -17,6 +18,7 @@
 	"format.insertSpaceBeforeAndAfterBinaryOperators": "Definiert die Verarbeitung von Leerzeichen nach einem binären Operator.",
 	"format.insertSpaceAfterKeywordsInControlFlowStatements": "Definiert die Verarbeitung von Leerzeichen nach Schlüsselwörtern in einer Flusssteuerungsanweisung.",
 	"format.insertSpaceAfterFunctionKeywordForAnonymousFunctions": "Definiert die Verarbeitung von Leerzeichen nach einem Funktionsschlüsselwort für anonyme Funktionen.",
+	"format.insertSpaceBeforeFunctionParenthesis": "Definiert die Verarbeitung von Leerzeichen vor Funktionsargumentklammern. Erfordert TypeScript >= 2.1.5.",
 	"format.insertSpaceAfterOpeningAndBeforeClosingNonemptyParenthesis": "Definiert die Verarbeitung von Leerzeichen nach öffnenden und vor schließenden nicht leeren runden Klammern.",
 	"format.insertSpaceAfterOpeningAndBeforeClosingNonemptyBrackets": "Definiert die Verarbeitung von Leerzeichen nach öffnenden und vor schließenden nicht leeren eckigen Klammern.",
 	"format.insertSpaceAfterOpeningAndBeforeClosingTemplateStringBraces": "Definiert die Verarbeitung von Leerzeichen nach öffnenden und vor schließenden geschweiften Klammern für Vorlagenzeichenfolgen. Erfordert TypeScript >= 2.0.6.",
@@ -27,5 +29,7 @@
 	"typescript.goToProjectConfig.title": "Zur Projektkonfiguration wechseln",
 	"javascript.goToProjectConfig.title": "Zur Projektkonfiguration wechseln",
 	"typescript.referencesCodeLens.enabled": "Referenz zu CodeLens aktivieren/deaktivieren.",
+	"typescript.implementationsCodeLens.enabled": "CodeLens-Implementierungen aktivieren/deaktivieren.",
+	"typescript.openTsServerLog.title": "TS Server-Protokolldatei öffnen",
 	"typescript.selectTypeScriptVersion.title": "TypeScript-Version wählen"
 }

@@ -1,10 +1,12 @@
 {
 	"extension.description": "Node.js 用の Visual Studio Code デバッガー拡張機能",
 	"node.label": "Node.js",
+	"open.loaded.script": "読み込み済みのスクリプトを開く",
 	"smartStep.description": "元のソースにマップし直すことができない、生成されたコードを自動的にステップ スルーします。",
 	"skipFiles.description": "デバッグ時にスキップするファイルの glob パターンの配列。",
 	"outFiles.description": "ソース マップを有効にすると、これらの glob パターンは生成した JavaScript ファイルを指定します。パターンが '!' で始まる場合は、ファイルは除外されます。指定しない場合は、生成されたコードはそのソースと同じディレクトリ内にあると想定されます。",
 	"outDir.deprecationMessage": "属性 'outDir' は非推奨です。代わりに 'outFiles' を使用してください。",
+	"trace.description": "診断出力を生成します。これを true に設定する代わりに、コンマで区切られた 1 つ以上のセレクターの一覧を作成することができます。'verbose' セレクターにより、非常に詳細な出力が生成されます。",
 	"launch.args.description": "プログラムに渡されるコマンド ライン引数。",
 	"node.protocol.description": "使用する Node.js デバッグ プロトコルです。",
 	"node.protocol.auto.description": "最適なプロトコルを自動的に検出しようとします",
@@ -16,6 +18,7 @@
 	"node.address.description": "デバッグ対象のプロセスの TCP/IP アドレス (Node.js 5.0 以上の場合のみ)。既定値は 'localhost' です。",
 	"node.timeout.description": "このミリ秒の間、Node.js への接続を再試行します。既定値は 10000 ミリ秒です。",
 	"node.restart.description": "Node.js が終了した後、セッションを再開します。",
+	"node.showAsyncStacks.description": "現在の呼び出し履歴の原因となった非同期呼び出しを表示します。'inspector' プロトコルのみ。",
 	"node.launch.program.description": "プログラムへの絶対パス。生成される値は、package.json ファイルと開かれたファイルを参照して推測されます。この属性を編集してください。",
 	"node.launch.externalConsole.deprecationMessage": "属性 'externalConsole' は非推奨です。代わりに 'console' を使用してください。",
 	"node.launch.console.description": "デバッグ ターゲットの起動場所です。",
@@ -59,6 +62,7 @@
 	"extensionHost.launch.runtimeExecutable.description": "VS Code への絶対パス。",
 	"extensionHost.launch.stopOnEntry.description": "起動後に拡張機能ホストを自動的に停止します。",
 	"extensionHost.launch.sourceMaps.description": "JavaScript ソース マップを使用します。",
+	"extensionHost.launch.env.description": "拡張機能ホストに渡された環境変数。",
 	"extensionHost.snippet.launch.label": "VS Code 拡張機能の開発",
 	"extensionHost.snippet.launch.description": "VS Code 拡張機能をデバッグ モードで起動します",
 	"extensionHost.launch.config.name": "拡張機能の起動"

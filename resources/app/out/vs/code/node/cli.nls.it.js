@@ -9,6 +9,7 @@ define("vs/code/node/cli.nls.it", {
 		"Impostazioni locali da usare, ad esempio en-US o it-IT.",
 		"Forza una nuova istanza di Code.",
 		"Eseguire l\'avvio con il comando \'Developer: Startup Performance\' abilitato.",
+		"Esegui il profiler della CPU durante l\'avvio",
 		"Forza l\'apertura di un file o di una cartella nell\'ultima finestra attiva.",
 		"Consente di specificare la directory in cui si trovano i dati utente. Utile quando viene eseguito come root.",
 		"Visualizza l\'output dettagliato (implica --wait).",

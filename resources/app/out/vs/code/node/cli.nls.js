@@ -12,6 +12,7 @@ define("vs/code/node/cli.nls", {
 		"The locale to use (e.g. en-US or zh-TW).",
 		"Force a new instance of Code.",
 		"Start with the 'Developer: Startup Performance' command enabled.",
+		"Run CPU profiler during startup",
 		"Force opening a file or folder in the last active window.",
 		"Specifies the directory that user data is kept in, useful when running as root.",
 		"Print verbose output (implies --wait).",

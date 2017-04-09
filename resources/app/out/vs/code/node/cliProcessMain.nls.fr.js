@@ -57,9 +57,6 @@ define("vs/code/node/cliProcessMain.nls.fr", {
 	],
 	"vs/platform/extensionManagement/node/extensionManagementService": [
 		"Extension non valide : package.json n\'est pas un fichier JSON.",
-		"Extension non valide : non-correspondance du nom du manifeste.",
-		"Extension non valide : non-correspondance de l\'éditeur du manifeste.",
-		"Extension non valide : non-correspondance de la version du manifeste.",
 		"Redémarrez Code avant de réinstaller {0}.",
 		"Redémarrez Code avant de réinstaller {0}.",
 		"L\'installation de \'{0}\' entraîne également l\'installation de ses dépendances. Voulez-vous continuer ?",

@@ -16,14 +16,19 @@ function makeRandomHexString(length) {
     }
     return result;
 }
+exports.makeRandomHexString = makeRandomHexString;
 function generatePipeName() {
-    var randomName = 'vscode-' + makeRandomHexString(40);
+    return getPipeName(makeRandomHexString(40));
+}
+function getPipeName(name) {
+    const fullName = 'vscode-' + name;
     if (process.platform === 'win32') {
-        return '\\\\.\\pipe\\' + randomName + '-sock';
+        return '\\\\.\\pipe\\' + fullName + '-sock';
     }
     // Mac/Unix: use socket file
-    return path.join(os.tmpdir(), randomName + '.sock');
+    return path.join(os.tmpdir(), fullName + '.sock');
 }
+exports.getPipeName = getPipeName;
 function generatePatchedEnv(env, stdInPipeName, stdOutPipeName, stdErrPipeName) {
     // Set the two unique pipe names and the electron flag as process env
     var newEnv = {};
@@ -103,4 +108,4 @@ function fork(modulePath, args, options, callback) {
     });
 }
 exports.fork = fork;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/8076a19fdcab7e1fc1707952d652f0bb6c6db331/extensions\typescript\out/utils\electron.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/d9484d12b38879b7f4cdd1150efeb2fd2c1fbf39/extensions\typescript\out/utils\electron.js.map

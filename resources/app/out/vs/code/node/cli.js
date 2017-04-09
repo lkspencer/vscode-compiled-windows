@@ -19,7 +19,7 @@ define(__m[6/*vs/base/common/arrays*/], __M([1/*require*/,0/*exports*/]), functi
     /**
      * Returns the last element of an array.
      * @param array The array.
-     * @param n Which element from the end (default ist zero).
+     * @param n Which element from the end (default is zero).
      */
     function tail(array, n) {
         if (n === void 0) { n = 0; }
@@ -79,6 +79,49 @@ define(__m[6/*vs/base/common/arrays*/], __M([1/*require*/,0/*exports*/]), functi
         return low;
     }
     exports.findFirst = findFirst;
+    /**
+     * Takes two *sorted* arrays and computes their delta (removed, added elements).
+     * Finishes in `Math.min(before.length, after.length)` steps.
+     * @param before
+     * @param after
+     * @param compare
+     */
+    function delta(before, after, compare) {
+        var removed = [];
+        var added = [];
+        var beforeIdx = 0;
+        var afterIdx = 0;
+        while (true) {
+            if (beforeIdx === before.length) {
+                added.push.apply(added, after.slice(afterIdx));
+                break;
+            }
+            if (afterIdx === after.length) {
+                removed.push.apply(removed, before.slice(beforeIdx));
+                break;
+            }
+            var beforeElement = before[beforeIdx];
+            var afterElement = after[afterIdx];
+            var n = compare(beforeElement, afterElement);
+            if (n === 0) {
+                // equal
+                beforeIdx += 1;
+                afterIdx += 1;
+            }
+            else if (n < 0) {
+                // beforeElement is smaller -> before element removed
+                removed.push(beforeElement);
+                beforeIdx += 1;
+            }
+            else if (n > 0) {
+                // beforeElement is greater -> after element added
+                added.push(afterElement);
+                afterIdx += 1;
+            }
+        }
+        return { removed: removed, added: added };
+    }
+    exports.delta = delta;
     /**
      * Returns the top N elements from the array.
      *
@@ -333,6 +376,13 @@ define(__m[2/*vs/base/common/platform*/], __M([1/*require*/,0/*exports*/]), func
     exports.clearTimeout = _globals.clearTimeout.bind(_globals);
     exports.setInterval = _globals.setInterval.bind(_globals);
     exports.clearInterval = _globals.clearInterval.bind(_globals);
+    var OperatingSystem;
+    (function (OperatingSystem) {
+        OperatingSystem[OperatingSystem["Windows"] = 1] = "Windows";
+        OperatingSystem[OperatingSystem["Macintosh"] = 2] = "Macintosh";
+        OperatingSystem[OperatingSystem["Linux"] = 3] = "Linux";
+    })(OperatingSystem = exports.OperatingSystem || (exports.OperatingSystem = {}));
+    exports.OS = (_isMacintosh ? 2 /* Macintosh */ : (_isWindows ? 1 /* Windows */ : 3 /* Linux */));
 });
 
 define(__m[3/*vs/base/common/types*/], __M([1/*require*/,0/*exports*/]), function (require, exports) {
@@ -815,10 +865,9 @@ define(__m[9/*vs/base/common/objects*/], __M([1/*require*/,0/*exports*/,3/*vs/ba
         return destination;
     }
     exports.assign = assign;
-    function toObject(arr, keyMap, valueMap) {
-        if (valueMap === void 0) { valueMap = function (x) { return x; }; }
+    function toObject(arr, keyMap) {
         return arr.reduce(function (o, d) {
-            return assign(o, (_a = {}, _a[keyMap(d)] = valueMap(d), _a));
+            return assign(o, (_a = {}, _a[keyMap(d)] = d, _a));
             var _a;
         }, Object.create(null));
     }
@@ -960,6 +1009,22 @@ define(__m[9/*vs/base/common/objects*/], __M([1/*require*/,0/*exports*/,3/*vs/ba
         return typeof result === 'undefined' ? defaultValue : result;
     }
     exports.getOrDefault = getOrDefault;
+    function distinct(base, target) {
+        var result = Object.create(null);
+        if (!base || !target) {
+            return result;
+        }
+        var targetKeys = Object.keys(target);
+        targetKeys.forEach(function (k) {
+            var baseValue = base[k];
+            var targetValue = target[k];
+            if (!equals(baseValue, targetValue)) {
+                result[k] = targetValue;
+            }
+        });
+        return result;
+    }
+    exports.distinct = distinct;
 });
 
 define(__m[4/*vs/base/common/uri*/], __M([1/*require*/,0/*exports*/,2/*vs/base/common/platform*/]), function (require, exports, platform) {
@@ -1169,8 +1234,12 @@ define(__m[4/*vs/base/common/uri*/], __M([1/*require*/,0/*exports*/,2/*vs/base/c
         URI.file = function (path) {
             var ret = new URI();
             ret._scheme = 'file';
-            // normalize to fwd-slashes
-            path = path.replace(/\\/g, URI._slash);
+            // normalize to fwd-slashes on windows,
+            // on other systems bwd-slaches are valid
+            // filename character, eg /f\oo/ba\r.txt
+            if (platform.isWindows) {
+                path = path.replace(/\\/g, URI._slash);
+            }
             // check for authority as used in UNC shares
             // or use the path as given
             if (path[0] === URI._slash && path[0] === path[1]) {
@@ -3527,6 +3596,7 @@ define(__m[10/*vs/platform/environment/node/argv*/], __M([1/*require*/,0/*export
             'unity-launch',
             'reuse-window',
             'performance',
+            'prof-startup',
             'verbose',
             'logExtensionHostCommunication',
             'disable-extensions',
@@ -3596,19 +3666,20 @@ define(__m[10/*vs/platform/environment/node/argv*/], __M([1/*require*/,0/*export
         '--locale <locale>': nls_1.localize(3, null),
         '-n, --new-window': nls_1.localize(4, null),
         '-p, --performance': nls_1.localize(5, null),
-        '-r, --reuse-window': nls_1.localize(6, null),
-        '--user-data-dir <dir>': nls_1.localize(7, null),
-        '--verbose': nls_1.localize(8, null),
-        '-w, --wait': nls_1.localize(9, null),
-        '--extensions-dir <dir>': nls_1.localize(10, null),
-        '--list-extensions': nls_1.localize(11, null),
-        '--show-versions': nls_1.localize(12, null),
-        '--install-extension <ext>': nls_1.localize(13, null),
-        '--uninstall-extension <ext>': nls_1.localize(14, null),
-        '--disable-extensions': nls_1.localize(15, null),
-        '--disable-gpu': nls_1.localize(16, null),
-        '-v, --version': nls_1.localize(17, null),
-        '-h, --help': nls_1.localize(18, null)
+        '--prof-startup': nls_1.localize(6, null),
+        '-r, --reuse-window': nls_1.localize(7, null),
+        '--user-data-dir <dir>': nls_1.localize(8, null),
+        '--verbose': nls_1.localize(9, null),
+        '-w, --wait': nls_1.localize(10, null),
+        '--extensions-dir <dir>': nls_1.localize(11, null),
+        '--list-extensions': nls_1.localize(12, null),
+        '--show-versions': nls_1.localize(13, null),
+        '--install-extension <ext>': nls_1.localize(14, null),
+        '--uninstall-extension <ext>': nls_1.localize(15, null),
+        '--disable-extensions': nls_1.localize(16, null),
+        '--disable-gpu': nls_1.localize(17, null),
+        '-v, --version': nls_1.localize(18, null),
+        '-h, --help': nls_1.localize(19, null)
     };
     function formatOptions(options, columns) {
         var keys = Object.keys(options);
@@ -3646,7 +3717,7 @@ define(__m[10/*vs/platform/environment/node/argv*/], __M([1/*require*/,0/*export
     function buildHelpMessage(fullName, name, version) {
         var columns = process.stdout.isTTY ? process.stdout.columns : 80;
         var executable = "" + name + (os.platform() === 'win32' ? '.exe' : '');
-        return fullName + " " + version + "\n\n" + nls_1.localize(19, null) + ": " + executable + " [" + nls_1.localize(20, null) + "] [" + nls_1.localize(21, null) + "...]\n\n" + nls_1.localize(22, null) + ":\n" + formatOptions(exports.optionsHelp, columns);
+        return fullName + " " + version + "\n\n" + nls_1.localize(20, null) + ": " + executable + " [" + nls_1.localize(21, null) + "] [" + nls_1.localize(22, null) + "...]\n\n" + nls_1.localize(23, null) + ":\n" + formatOptions(exports.optionsHelp, columns);
     }
     exports.buildHelpMessage = buildHelpMessage;
 });

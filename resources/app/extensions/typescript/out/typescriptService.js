@@ -38,6 +38,9 @@ class API {
     has220Features() {
         return semver.gte(this._version, '2.2.0');
     }
+    has222Features() {
+        return semver.gte(this._version, '2.2.2');
+    }
 }
 exports.API = API;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/8076a19fdcab7e1fc1707952d652f0bb6c6db331/extensions\typescript\out/typescriptService.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/d9484d12b38879b7f4cdd1150efeb2fd2c1fbf39/extensions\typescript\out/typescriptService.js.map
