@@ -1,7 +1,9 @@
 [
-	"Open",
+	"開く",
 	"変更のマージ",
 	"ステージング済みの変更",
 	"変更",
-	"オブジェクトを表示できませんでした"
+	"OK",
+	"今後は表示しない",
+	"The git repository at '{0}' has too many active changes, only a subset of Git features will be enabled."
 ]

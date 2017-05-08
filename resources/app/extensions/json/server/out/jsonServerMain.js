@@ -3,6 +3,7 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 'use strict';
+Object.defineProperty(exports, "__esModule", { value: true });
 var vscode_languageserver_1 = require("vscode-languageserver");
 var request_light_1 = require("request-light");
 var path = require("path");
@@ -60,7 +61,7 @@ connection.onInitialize(function (params) {
         capabilities: {
             // Tell the client that the server works in FULL text document sync mode
             textDocumentSync: documents.syncKind,
-            completionProvider: clientDynamicRegisterSupport ? { resolveProvider: true, triggerCharacters: ['"', ':'] } : null,
+            completionProvider: clientSnippetSupport ? { resolveProvider: true, triggerCharacters: ['"', ':'] } : null,
             hoverProvider: true,
             documentSymbolProvider: true,
             documentRangeFormattingProvider: false
@@ -227,6 +228,12 @@ connection.onDidChangeWatchedFiles(function (change) {
     }
 });
 var jsonDocuments = languageModelCache_1.getLanguageModelCache(10, 60, function (document) { return languageService.parseJSONDocument(document); });
+documents.onDidClose(function (e) {
+    jsonDocuments.onDocumentRemoved(e.document);
+});
+connection.onShutdown(function () {
+    jsonDocuments.dispose();
+});
 function getJSONDocument(document) {
     return jsonDocuments.get(document);
 }
@@ -262,4 +269,4 @@ connection.onRequest(ColorSymbolRequest.type, function (uri) {
 });
 // Listen on the connection
 connection.listen();
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/d9484d12b38879b7f4cdd1150efeb2fd2c1fbf39/extensions\json\server\out/jsonServerMain.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/f6868fce3eeb16663840eb82123369dec6077a9b/extensions\json\server\out/jsonServerMain.js.map

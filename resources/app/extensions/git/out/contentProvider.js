@@ -17,8 +17,10 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+Object.defineProperty(exports, "__esModule", { value: true });
 const vscode_1 = require("vscode");
 const decorators_1 = require("./decorators");
+const uri_1 = require("./uri");
 const THREE_MINUTES = 1000 * 60 * 3;
 const FIVE_MINUTES = 1000 * 60 * 5;
 class GitContentProvider {
@@ -27,7 +29,7 @@ class GitContentProvider {
         this.onDidChangeEmitter = new vscode_1.EventEmitter();
         this.cache = Object.create(null);
         this.disposables = [];
-        this.disposables.push(model.onDidChangeRepository(this.eventuallyFireChangeEvents, this), vscode_1.workspace.registerTextDocumentContentProvider('git', this), vscode_1.workspace.registerTextDocumentContentProvider('git-original', this));
+        this.disposables.push(model.onDidChangeRepository(this.eventuallyFireChangeEvents, this), vscode_1.workspace.registerTextDocumentContentProvider('git', this));
         setInterval(() => this.cleanup(), FIVE_MINUTES);
     }
     get onDidChange() { return this.onDidChangeEmitter.event; }
@@ -35,11 +37,8 @@ class GitContentProvider {
         this.fireChangeEvents();
     }
     fireChangeEvents() {
-        return __awaiter(this, void 0, void 0, function* () {
-            yield this.model.whenIdle();
-            Object.keys(this.cache)
-                .forEach(key => this.onDidChangeEmitter.fire(this.cache[key].uri));
-        });
+        Object.keys(this.cache)
+            .forEach(key => this.onDidChangeEmitter.fire(this.cache[key].uri));
     }
     provideTextDocumentContent(uri) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -47,19 +46,15 @@ class GitContentProvider {
             const timestamp = new Date().getTime();
             const cacheValue = { uri, timestamp };
             this.cache[cacheKey] = cacheValue;
-            if (uri.scheme === 'git-original') {
-                uri = new vscode_1.Uri().with({ scheme: 'git', path: uri.query });
-            }
-            let ref = uri.query;
+            let { path, ref } = uri_1.fromGitUri(uri);
             if (ref === '~') {
-                const fileUri = uri.with({ scheme: 'file', query: '' });
+                const fileUri = vscode_1.Uri.file(path);
                 const uriString = fileUri.toString();
                 const [indexStatus] = this.model.indexGroup.resources.filter(r => r.original.toString() === uriString);
                 ref = indexStatus ? '' : 'HEAD';
             }
             try {
-                const result = yield this.model.show(ref, uri);
-                return result;
+                return yield this.model.show(ref, path);
             }
             catch (err) {
                 return '';
@@ -85,8 +80,5 @@ class GitContentProvider {
 __decorate([
     decorators_1.debounce(1100)
 ], GitContentProvider.prototype, "eventuallyFireChangeEvents", null);
-__decorate([
-    decorators_1.throttle
-], GitContentProvider.prototype, "fireChangeEvents", null);
 exports.GitContentProvider = GitContentProvider;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/d9484d12b38879b7f4cdd1150efeb2fd2c1fbf39/extensions\git\out/contentProvider.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/f6868fce3eeb16663840eb82123369dec6077a9b/extensions\git\out/contentProvider.js.map

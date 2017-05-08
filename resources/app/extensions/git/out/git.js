@@ -11,14 +11,14 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+Object.defineProperty(exports, "__esModule", { value: true });
 const fs = require("fs");
 const path = require("path");
 const os = require("os");
 const cp = require("child_process");
+const events_1 = require("events");
+const iconv = require("iconv-lite");
 const util_1 = require("./util");
-const vscode_1 = require("vscode");
-const nls = require("vscode-nls");
-const localize = nls.loadMessageBundle(__filename);
 const readdir = util_1.denodeify(fs.readdir);
 const readfile = util_1.denodeify(fs.readFile);
 var RefType;
@@ -104,7 +104,7 @@ function findGit(hint) {
     });
 }
 exports.findGit = findGit;
-function exec(child) {
+function exec(child, options = {}) {
     return __awaiter(this, void 0, void 0, function* () {
         const disposables = [];
         const once = (ee, name, fn) => {
@@ -115,6 +115,8 @@ function exec(child) {
             ee.on(name, fn);
             disposables.push(util_1.toDisposable(() => ee.removeListener(name, fn)));
         };
+        let encoding = options.encoding || 'utf8';
+        encoding = iconv.encodingExists(encoding) ? encoding : 'utf8';
         const [exitCode, stdout, stderr] = yield Promise.all([
             new Promise((c, e) => {
                 once(child, 'error', e);
@@ -123,19 +125,18 @@ function exec(child) {
             new Promise(c => {
                 const buffers = [];
                 on(child.stdout, 'data', b => buffers.push(b));
-                once(child.stdout, 'close', () => c(buffers.join('')));
+                once(child.stdout, 'close', () => c(iconv.decode(Buffer.concat(buffers), encoding)));
             }),
             new Promise(c => {
                 const buffers = [];
                 on(child.stderr, 'data', b => buffers.push(b));
-                once(child.stderr, 'close', () => c(buffers.join('')));
+                once(child.stderr, 'close', () => c(Buffer.concat(buffers).toString('utf8')));
             })
         ]);
         util_1.dispose(disposables);
         return { exitCode, stdout, stderr };
     });
 }
-exports.exec = exec;
 class GitError {
     constructor(data) {
         if (data.error) {
@@ -184,16 +185,41 @@ exports.GitErrorCodes = {
     GitNotFound: 'GitNotFound',
     CantCreatePipe: 'CantCreatePipe',
     CantAccessRemote: 'CantAccessRemote',
-    RepositoryNotFound: 'RepositoryNotFound'
+    RepositoryNotFound: 'RepositoryNotFound',
+    RepositoryIsLocked: 'RepositoryIsLocked'
 };
+function getGitErrorCode(stderr) {
+    if (/Another git process seems to be running in this repository|If no other git process is currently running/.test(stderr)) {
+        return exports.GitErrorCodes.RepositoryIsLocked;
+    }
+    else if (/Authentication failed/.test(stderr)) {
+        return exports.GitErrorCodes.AuthenticationFailed;
+    }
+    else if (/Not a git repository/.test(stderr)) {
+        return exports.GitErrorCodes.NotAGitRepository;
+    }
+    else if (/bad config file/.test(stderr)) {
+        return exports.GitErrorCodes.BadConfigFile;
+    }
+    else if (/cannot make pipe for command substitution|cannot create standard input pipe/.test(stderr)) {
+        return exports.GitErrorCodes.CantCreatePipe;
+    }
+    else if (/Repository not found/.test(stderr)) {
+        return exports.GitErrorCodes.RepositoryNotFound;
+    }
+    else if (/unable to access/.test(stderr)) {
+        return exports.GitErrorCodes.CantAccessRemote;
+    }
+    return void 0;
+}
 class Git {
     constructor(options) {
-        this._onOutput = new vscode_1.EventEmitter();
+        this._onOutput = new events_1.EventEmitter();
         this.gitPath = options.gitPath;
         this.version = options.version;
         this.env = options.env || {};
     }
-    get onOutput() { return this._onOutput.event; }
+    get onOutput() { return this._onOutput; }
     open(repository) {
         return new Repository(this, repository);
     }
@@ -234,36 +260,17 @@ class Git {
             if (options.input) {
                 child.stdin.end(options.input, 'utf8');
             }
-            const result = yield exec(child);
+            const result = yield exec(child, options);
+            if (options.log !== false && result.stderr.length > 0) {
+                this.log(`${result.stderr}\n`);
+            }
             if (result.exitCode) {
-                let gitErrorCode = void 0;
-                if (/Authentication failed/.test(result.stderr)) {
-                    gitErrorCode = exports.GitErrorCodes.AuthenticationFailed;
-                }
-                else if (/Not a git repository/.test(result.stderr)) {
-                    gitErrorCode = exports.GitErrorCodes.NotAGitRepository;
-                }
-                else if (/bad config file/.test(result.stderr)) {
-                    gitErrorCode = exports.GitErrorCodes.BadConfigFile;
-                }
-                else if (/cannot make pipe for command substitution|cannot create standard input pipe/.test(result.stderr)) {
-                    gitErrorCode = exports.GitErrorCodes.CantCreatePipe;
-                }
-                else if (/Repository not found/.test(result.stderr)) {
-                    gitErrorCode = exports.GitErrorCodes.RepositoryNotFound;
-                }
-                else if (/unable to access/.test(result.stderr)) {
-                    gitErrorCode = exports.GitErrorCodes.CantAccessRemote;
-                }
-                if (options.log !== false) {
-                    this.log(`${result.stderr}\n`);
-                }
                 return Promise.reject(new GitError({
                     message: 'Failed to execute git',
                     stdout: result.stdout,
                     stderr: result.stderr,
                     exitCode: result.exitCode,
-                    gitErrorCode,
+                    gitErrorCode: getGitErrorCode(result.stderr),
                     gitCommand: args[0]
                 }));
             }
@@ -291,10 +298,61 @@ class Git {
         return cp.spawn(this.gitPath, args, options);
     }
     log(output) {
-        this._onOutput.fire(output);
+        this._onOutput.emit('log', output);
     }
 }
 exports.Git = Git;
+class GitStatusParser {
+    constructor() {
+        this.lastRaw = '';
+        this.result = [];
+    }
+    get status() {
+        return this.result;
+    }
+    update(raw) {
+        let i = 0;
+        let nextI;
+        raw = this.lastRaw + raw;
+        while ((nextI = this.parseEntry(raw, i)) !== undefined) {
+            i = nextI;
+        }
+        this.lastRaw = raw.substr(i);
+    }
+    parseEntry(raw, i) {
+        if (i + 4 >= raw.length) {
+            return;
+        }
+        let lastIndex;
+        const entry = {
+            x: raw.charAt(i++),
+            y: raw.charAt(i++),
+            rename: undefined,
+            path: ''
+        };
+        // space
+        i++;
+        if (entry.x === 'R') {
+            lastIndex = raw.indexOf('\0', i);
+            if (lastIndex === -1) {
+                return;
+            }
+            entry.rename = raw.substring(i, lastIndex);
+            i = lastIndex + 1;
+        }
+        lastIndex = raw.indexOf('\0', i);
+        if (lastIndex === -1) {
+            return;
+        }
+        entry.path = raw.substring(i, lastIndex);
+        // If path ends with slash, it must be a nested git repo
+        if (entry.path[entry.path.length - 1] !== '/') {
+            this.result.push(entry);
+        }
+        return lastIndex + 1;
+    }
+}
+exports.GitStatusParser = GitStatusParser;
 class Repository {
     constructor(_git, repositoryRoot) {
         this._git = _git;
@@ -332,13 +390,20 @@ class Repository {
             return result.stdout;
         });
     }
-    buffer(object) {
+    buffer(object, encoding = 'utf8') {
         return __awaiter(this, void 0, void 0, function* () {
             const child = this.stream(['show', object]);
             if (!child.stdout) {
-                return Promise.reject(localize(0, null));
+                return Promise.reject('Can\'t open file from git');
             }
-            return yield this.doBuffer(object);
+            const { exitCode, stdout } = yield exec(child, { encoding });
+            if (exitCode) {
+                return Promise.reject(new GitError({
+                    message: 'Could not show object.',
+                    exitCode
+                }));
+            }
+            return stdout;
             // TODO@joao
             // return new Promise((c, e) => {
             // detectMimesFromStream(child.stdout, null, (err, result) => {
@@ -354,19 +419,6 @@ class Repository {
             // 	}
             // });
             // });
-        });
-    }
-    doBuffer(object) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const child = this.stream(['show', object]);
-            const { exitCode, stdout } = yield exec(child);
-            if (exitCode) {
-                return Promise.reject(new GitError({
-                    message: 'Could not buffer object.',
-                    exitCode
-                }));
-            }
-            return stdout;
         });
     }
     add(paths) {
@@ -592,39 +644,39 @@ class Repository {
             }
         });
     }
-    getStatus() {
-        return __awaiter(this, void 0, void 0, function* () {
-            const executionResult = yield this.run(['status', '-z', '-u']);
-            const status = executionResult.stdout;
-            const result = [];
-            let current;
-            let i = 0;
-            function readName() {
-                const start = i;
-                let c;
-                while ((c = status.charAt(i)) !== '\u0000') {
-                    i++;
+    getStatus(limit = 5000) {
+        return new Promise((c, e) => {
+            const parser = new GitStatusParser();
+            const child = this.stream(['status', '-z', '-u']);
+            const onExit = exitCode => {
+                if (exitCode !== 0) {
+                    const stderr = stderrData.join('');
+                    return e(new GitError({
+                        message: 'Failed to execute git',
+                        stderr,
+                        exitCode,
+                        gitErrorCode: getGitErrorCode(stderr),
+                        gitCommand: 'status'
+                    }));
                 }
-                return status.substring(start, i++);
-            }
-            while (i < status.length) {
-                current = {
-                    x: status.charAt(i++),
-                    y: status.charAt(i++),
-                    path: ''
-                };
-                i++;
-                if (current.x === 'R') {
-                    current.rename = readName();
+                c({ status: parser.status, didHitLimit: false });
+            };
+            const onStdoutData = (raw) => {
+                parser.update(raw);
+                if (parser.status.length > 5000) {
+                    child.removeListener('exit', onExit);
+                    child.stdout.removeListener('data', onStdoutData);
+                    child.kill();
+                    c({ status: parser.status.slice(0, 5000), didHitLimit: true });
                 }
-                current.path = readName();
-                // If path ends with slash, it must be a nested git repo
-                if (current.path[current.path.length - 1] === '/') {
-                    continue;
-                }
-                result.push(current);
-            }
-            return result;
+            };
+            child.stdout.setEncoding('utf8');
+            child.stdout.on('data', onStdoutData);
+            const stderrData = [];
+            child.stderr.setEncoding('utf8');
+            child.stderr.on('data', raw => stderrData.push(raw));
+            child.on('error', e);
+            child.on('exit', onExit);
         });
     }
     getHEAD() {
@@ -750,4 +802,4 @@ class Repository {
     }
 }
 exports.Repository = Repository;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/d9484d12b38879b7f4cdd1150efeb2fd2c1fbf39/extensions\git\out/git.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/f6868fce3eeb16663840eb82123369dec6077a9b/extensions\git\out/git.js.map

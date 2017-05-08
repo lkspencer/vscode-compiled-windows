@@ -3,6 +3,7 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 'use strict';
+Object.defineProperty(exports, "__esModule", { value: true });
 var vscode = require("vscode");
 var path = require("path");
 var nls = require("vscode-nls");
@@ -18,18 +19,66 @@ function isMarkdownFile(document) {
 }
 exports.isMarkdownFile = isMarkdownFile;
 function getMarkdownUri(uri) {
-    return uri.with({ scheme: 'markdown', path: uri.path + '.rendered', query: uri.toString() });
+    if (uri.scheme === 'markdown') {
+        return uri;
+    }
+    return uri.with({
+        scheme: 'markdown',
+        path: uri.fsPath + '.rendered',
+        query: uri.toString()
+    });
 }
 exports.getMarkdownUri = getMarkdownUri;
+var MarkdownPreviewConfig = (function () {
+    function MarkdownPreviewConfig() {
+        var editorConfig = vscode.workspace.getConfiguration('editor');
+        var markdownConfig = vscode.workspace.getConfiguration('markdown');
+        this.scrollBeyondLastLine = editorConfig.get('scrollBeyondLastLine', false);
+        this.wordWrap = editorConfig.get('wordWrap', 'off') !== 'off';
+        this.previewFrontMatter = markdownConfig.get('previewFrontMatter', 'hide');
+        this.scrollPreviewWithEditorSelection = !!markdownConfig.get('preview.scrollPreviewWithEditorSelection', true);
+        this.scrollEditorWithPreview = !!markdownConfig.get('preview.scrollEditorWithPreview', true);
+        this.doubleClickToSwitchToEditor = !!markdownConfig.get('preview.doubleClickToSwitchToEditor', true);
+        this.fontFamily = markdownConfig.get('preview.fontFamily', undefined);
+        this.fontSize = +markdownConfig.get('preview.fontSize', NaN);
+        this.lineHeight = +markdownConfig.get('preview.lineHeight', NaN);
+        this.styles = markdownConfig.get('styles', []);
+    }
+    MarkdownPreviewConfig.getCurrentConfig = function () {
+        return new MarkdownPreviewConfig();
+    };
+    MarkdownPreviewConfig.prototype.isEqualTo = function (otherConfig) {
+        for (var key in this) {
+            if (this.hasOwnProperty(key) && key !== 'styles') {
+                if (this[key] !== otherConfig[key]) {
+                    return false;
+                }
+            }
+        }
+        // Check styles
+        if (this.styles.length !== otherConfig.styles.length) {
+            return false;
+        }
+        for (var i = 0; i < this.styles.length; ++i) {
+            if (this.styles[i] !== otherConfig.styles[i]) {
+                return false;
+            }
+        }
+        return true;
+    };
+    return MarkdownPreviewConfig;
+}());
 var MDDocumentContentProvider = (function () {
-    function MDDocumentContentProvider(engine, context, cspArbiter) {
+    function MDDocumentContentProvider(engine, context, cspArbiter, logger) {
         this.engine = engine;
         this.context = context;
         this.cspArbiter = cspArbiter;
+        this.logger = logger;
         this._onDidChange = new vscode.EventEmitter();
         this._waiting = false;
         this.extraStyles = [];
         this.extraScripts = [];
+        this.config = MarkdownPreviewConfig.getCurrentConfig();
     }
     MDDocumentContentProvider.prototype.addScript = function (resource) {
         this.extraScripts.push(resource);
@@ -40,19 +89,17 @@ var MDDocumentContentProvider = (function () {
     MDDocumentContentProvider.prototype.getMediaPath = function (mediaFile) {
         return vscode.Uri.file(this.context.asAbsolutePath(path.join('media', mediaFile))).toString();
     };
-    MDDocumentContentProvider.prototype.isAbsolute = function (p) {
-        return path.normalize(p + '/') === path.normalize(path.resolve(p) + '/');
-    };
     MDDocumentContentProvider.prototype.fixHref = function (resource, href) {
         if (!href) {
             return href;
         }
         // Use href if it is already an URL
-        if (vscode.Uri.parse(href).scheme) {
-            return href;
+        var hrefUri = vscode.Uri.parse(href);
+        if (['file', 'http', 'https'].indexOf(hrefUri.scheme) >= 0) {
+            return hrefUri.toString();
         }
         // Use href as file URI if it is absolute
-        if (this.isAbsolute(href)) {
+        if (path.isAbsolute(href)) {
             return vscode.Uri.file(href).toString();
         }
         // use a workspace relative path if there is a workspace
@@ -65,21 +112,15 @@ var MDDocumentContentProvider = (function () {
     };
     MDDocumentContentProvider.prototype.computeCustomStyleSheetIncludes = function (uri) {
         var _this = this;
-        var styles = vscode.workspace.getConfiguration('markdown')['styles'];
-        if (styles && Array.isArray(styles) && styles.length > 0) {
-            return styles.map(function (style) {
+        if (this.config.styles && Array.isArray(this.config.styles)) {
+            return this.config.styles.map(function (style) {
                 return "<link rel=\"stylesheet\" href=\"" + _this.fixHref(uri, style) + "\" type=\"text/css\" media=\"screen\">";
             }).join('\n');
         }
         return '';
     };
     MDDocumentContentProvider.prototype.getSettingsOverrideStyles = function (nonce) {
-        var previewSettings = vscode.workspace.getConfiguration('markdown')['preview'];
-        if (!previewSettings) {
-            return '';
-        }
-        var fontFamily = previewSettings.fontFamily, fontSize = previewSettings.fontSize, lineHeight = previewSettings.lineHeight;
-        return "<style nonce=\"" + nonce + "\">\n\t\t\tbody {\n\t\t\t\t" + (fontFamily ? "font-family: " + fontFamily + ";" : '') + "\n\t\t\t\t" + (+fontSize > 0 ? "font-size: " + fontSize + "px;" : '') + "\n\t\t\t\t" + (+lineHeight > 0 ? "line-height: " + lineHeight + ";" : '') + "\n\t\t\t}\n\t\t</style>";
+        return "<style nonce=\"" + nonce + "\">\n\t\t\tbody {\n\t\t\t\t" + (this.config.fontFamily ? "font-family: " + this.config.fontFamily + ";" : '') + "\n\t\t\t\t" + (this.config.fontSize > 0 ? "font-size: " + this.config.fontSize + "px;" : '') + "\n\t\t\t\t" + (this.config.lineHeight > 0 ? "line-height: " + this.config.lineHeight + ";" : '') + "\n\t\t\t}\n\t\t</style>";
     };
     MDDocumentContentProvider.prototype.getStyles = function (uri, nonce) {
         var baseStyles = [
@@ -98,32 +139,43 @@ var MDDocumentContentProvider = (function () {
         var _this = this;
         var sourceUri = vscode.Uri.parse(uri.query);
         return vscode.workspace.openTextDocument(sourceUri).then(function (document) {
-            var scrollBeyondLastLine = vscode.workspace.getConfiguration('editor')['scrollBeyondLastLine'];
-            var wordWrap = vscode.workspace.getConfiguration('editor')['wordWrap'];
-            var markdownConfig = vscode.workspace.getConfiguration('markdown');
-            var previewFrontMatter = markdownConfig.get('previewFrontMatter', 'hide');
+            _this.config = MarkdownPreviewConfig.getCurrentConfig();
             var initialLine = 0;
             var editor = vscode.window.activeTextEditor;
             if (editor && editor.document.uri.fsPath === sourceUri.fsPath) {
                 initialLine = editor.selection.active.line;
             }
             var initialData = {
-                previewUri: encodeURIComponent(uri.toString(true)),
-                source: encodeURIComponent(sourceUri.toString(true)),
+                previewUri: uri.toString(),
+                source: sourceUri.toString(),
                 line: initialLine,
-                scrollPreviewWithEditorSelection: !!markdownConfig.get('preview.scrollPreviewWithEditorSelection', true),
-                scrollEditorWithPreview: !!markdownConfig.get('preview.scrollEditorWithPreview', true),
-                doubleClickToSwitchToEditor: !!markdownConfig.get('preview.doubleClickToSwitchToEditor', true),
+                scrollPreviewWithEditorSelection: _this.config.scrollPreviewWithEditorSelection,
+                scrollEditorWithPreview: _this.config.scrollEditorWithPreview,
+                doubleClickToSwitchToEditor: _this.config.doubleClickToSwitchToEditor
             };
+            _this.logger.log('provideTextDocumentContent', initialData);
             // Content Security Policy
             var nonce = new Date().getTime() + '' + new Date().getMilliseconds();
             var csp = "<meta http-equiv=\"Content-Security-Policy\" content=\"default-src 'self'; img-src 'self' http: https: data:; media-src 'self' http: https: data:; child-src 'none'; script-src 'nonce-" + nonce + "'; style-src 'self' 'unsafe-inline' http: https: data:; font-src 'self' http: https: data:;\">";
-            if (_this.cspArbiter.isEnhancedSecurityDisableForWorkspace()) {
+            if (_this.cspArbiter.isEnhancedSecurityDisableForWorkspace(vscode.workspace.rootPath || sourceUri.toString())) {
                 csp = '';
             }
-            var body = _this.engine.render(sourceUri, previewFrontMatter === 'hide', document.getText());
-            return "<!DOCTYPE html>\n\t\t\t\t<html>\n\t\t\t\t<head>\n\t\t\t\t\t<meta http-equiv=\"Content-type\" content=\"text/html;charset=UTF-8\">\n\t\t\t\t\t" + csp + "\n\t\t\t\t\t<meta id=\"vscode-markdown-preview-data\" data-settings=\"" + JSON.stringify(initialData).replace(/"/g, '&quot;') + "\" data-strings=\"" + JSON.stringify(previewStrings).replace(/"/g, '&quot;') + "\">\n\t\t\t\t\t<script src=\"" + _this.getMediaPath('csp.js') + "\" nonce=\"" + nonce + "\"></script>\n\t\t\t\t\t" + _this.getStyles(uri, nonce) + "\n\t\t\t\t\t<base href=\"" + document.uri.toString(true) + "\">\n\t\t\t\t</head>\n\t\t\t\t<body class=\"" + (scrollBeyondLastLine ? 'scrollBeyondLastLine' : '') + " " + (wordWrap ? 'wordWrap' : '') + " " + (!!markdownConfig.get('preview.markEditorSelection') ? 'showEditorSelection' : '') + "\">\n\t\t\t\t\t" + body + "\n\t\t\t\t\t<div class=\"code-line\" data-line=\"" + document.lineCount + "\"></div>\n\t\t\t\t\t" + _this.getScripts(nonce) + "\n\t\t\t\t</body>\n\t\t\t\t</html>";
+            var body = _this.engine.render(sourceUri, _this.config.previewFrontMatter === 'hide', document.getText());
+            return "<!DOCTYPE html>\n\t\t\t\t<html>\n\t\t\t\t<head>\n\t\t\t\t\t<meta http-equiv=\"Content-type\" content=\"text/html;charset=UTF-8\">\n\t\t\t\t\t" + csp + "\n\t\t\t\t\t<meta id=\"vscode-markdown-preview-data\" data-settings=\"" + JSON.stringify(initialData).replace(/"/g, '&quot;') + "\" data-strings=\"" + JSON.stringify(previewStrings).replace(/"/g, '&quot;') + "\">\n\t\t\t\t\t<script src=\"" + _this.getMediaPath('csp.js') + "\" nonce=\"" + nonce + "\"></script>\n\t\t\t\t\t" + _this.getStyles(uri, nonce) + "\n\t\t\t\t\t<base href=\"" + document.uri.toString(true) + "\">\n\t\t\t\t</head>\n\t\t\t\t<body class=\"vscode-body " + (_this.config.scrollBeyondLastLine ? 'scrollBeyondLastLine' : '') + " " + (_this.config.wordWrap ? 'wordWrap' : '') + " " + (_this.config.markEditorSelection ? 'showEditorSelection' : '') + "\">\n\t\t\t\t\t" + body + "\n\t\t\t\t\t<div class=\"code-line\" data-line=\"" + document.lineCount + "\"></div>\n\t\t\t\t\t" + _this.getScripts(nonce) + "\n\t\t\t\t</body>\n\t\t\t\t</html>";
         });
+    };
+    MDDocumentContentProvider.prototype.updateConfiguration = function () {
+        var _this = this;
+        var newConfig = MarkdownPreviewConfig.getCurrentConfig();
+        if (!this.config.isEqualTo(newConfig)) {
+            this.config = newConfig;
+            // update all generated md documents
+            vscode.workspace.textDocuments.forEach(function (document) {
+                if (document.uri.scheme === 'markdown') {
+                    _this.update(document.uri);
+                }
+            });
+        }
     };
     Object.defineProperty(MDDocumentContentProvider.prototype, "onDidChange", {
         get: function () {
@@ -145,4 +197,4 @@ var MDDocumentContentProvider = (function () {
     return MDDocumentContentProvider;
 }());
 exports.MDDocumentContentProvider = MDDocumentContentProvider;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/d9484d12b38879b7f4cdd1150efeb2fd2c1fbf39/extensions\markdown\out/previewContentProvider.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/f6868fce3eeb16663840eb82123369dec6077a9b/extensions\markdown\out/previewContentProvider.js.map

@@ -1,3 +1,7 @@
 [
-	"Recupero dei dati per ottimizzare IntelliSense in TypeScript"
+	"Recupero dei dati per ottimizzare IntelliSense in TypeScript",
+	"Could not install typings files for JavaScript language features. Please ensure that NPM is installed and is in your PATH",
+	"Altre informazioni",
+	"Non eseguire più la verifica",
+	"Chiudi"
 ]

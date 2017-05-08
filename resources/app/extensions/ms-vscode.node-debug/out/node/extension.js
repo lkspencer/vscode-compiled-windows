@@ -11,21 +11,35 @@ var nls = require("vscode-nls");
 var fs = require("fs");
 var localize = nls.config(process.env.VSCODE_NLS_CONFIG)(__filename);
 function activate(context) {
+    context.subscriptions.push(vscode.commands.registerCommand('extension.node-debug.toggleSkippingFile', toggleSkippingFile));
     context.subscriptions.push(vscode.commands.registerCommand('extension.node-debug.pickLoadedScript', function () { return pickLoadedScript(); }));
-    context.subscriptions.push(vscode.commands.registerCommand('extension.pickNodeProcess', function () { return pickProcess(); }));
     context.subscriptions.push(vscode.commands.registerCommand('extension.node-debug.provideInitialConfigurations', function () { return createInitialConfigurations(); }));
     context.subscriptions.push(vscode.commands.registerCommand('extension.node-debug.startSession', function (config) { return startSession(config); }));
+    context.subscriptions.push(vscode.commands.registerCommand('extension.pickNodeProcess', function () { return pickProcess(); }));
 }
 exports.activate = activate;
 function deactivate() {
 }
 exports.deactivate = deactivate;
+//---- toggle skipped files
+function toggleSkippingFile(res) {
+    var resource = res;
+    if (!resource) {
+        var activeEditor = vscode.window.activeTextEditor;
+        resource = activeEditor && activeEditor.document.fileName;
+    }
+    if (resource) {
+        var args = typeof resource === 'string' ? { resource: resource } : { sourceReference: resource };
+        vscode.commands.executeCommand('workbench.customDebugRequest', 'toggleSkipFileStatus', args);
+    }
+}
 function pickLoadedScript() {
     return listLoadedScripts().then(function (items) {
         var options = {
             placeHolder: localize(0, null),
             matchOnDescription: true,
-            matchOnDetail: true
+            matchOnDetail: true,
+            ignoreFocusOut: true
         };
         if (items === undefined) {
             items = [{ label: localize(1, null), description: '' }];
@@ -53,7 +67,8 @@ function pickProcess() {
         var options = {
             placeHolder: localize(2, null),
             matchOnDescription: true,
-            matchOnDetail: true
+            matchOnDetail: true,
+            ignoreFocusOut: true
         };
         return vscode.window.showQuickPick(items, options).then(function (item) {
             return item ? item.pid : null;
@@ -173,67 +188,89 @@ function listProcesses() {
     });
 }
 //---- extension.node-debug.provideInitialConfigurations
-/*
- * default configuration for node.js
- */
-var initialConfigurations = [
-    {
-        type: 'node',
-        request: 'launch',
-        name: localize(3, null),
-        program: '${file}'
-    },
-    {
-        type: 'node',
-        request: 'attach',
-        name: localize(4, null),
-        address: 'localhost',
-        port: 5858
+function loadPackage(folderPath) {
+    try {
+        var packageJsonPath = path_1.join(folderPath, 'package.json');
+        var jsonContent = fs.readFileSync(packageJsonPath, 'utf8');
+        return JSON.parse(jsonContent);
     }
-];
+    catch (error) {
+        // silently ignore
+    }
+    return undefined;
+}
 /**
  * returns an initial configuration json as a string
  */
 function createInitialConfigurations() {
-    var program = vscode.workspace.textDocuments.some(function (document) { return document.languageId === 'typescript'; }) ? '${workspaceRoot}/app.ts' : undefined;
-    if (vscode.workspace.rootPath) {
-        program = guessProgramFromPackage(vscode.workspace.rootPath);
+    var pkg = vscode.workspace.rootPath ? loadPackage(vscode.workspace.rootPath) : undefined;
+    var config = {
+        type: 'node',
+        request: 'launch',
+        name: localize(3, null)
+    };
+    var initialConfigurations = [config];
+    if (pkg && pkg.name === 'mern-starter') {
+        log(localize(4, null, 'Mern Starter'));
+        configureMern(config);
     }
-    if (program) {
-        initialConfigurations.forEach(function (config) {
-            if (config['program']) {
-                config['program'] = program;
+    else {
+        var program = undefined;
+        // try to find a better value for 'program' by analysing package.json
+        if (pkg) {
+            program = guessProgramFromPackage(pkg);
+            if (program) {
+                log(localize(5, null));
             }
-        });
-    }
-    if (vscode.workspace.textDocuments.some(function (document) { return document.languageId === 'typescript' || document.languageId === 'coffeescript'; })) {
-        initialConfigurations.forEach(function (config) {
-            config['outFiles'] = [];
-        });
+        }
+        if (!program) {
+            log(localize(6, null));
+            program = '${file}';
+        }
+        config['program'] = program;
+        // prepare for source maps by adding 'outFiles' if typescript or coffeescript is detected
+        if (vscode.workspace.textDocuments.some(function (document) { return document.languageId === 'typescript' || document.languageId === 'coffeescript'; })) {
+            log(localize(7, null));
+            config['outFiles'] = ['${workspaceRoot}/out/**/*.js'];
+        }
     }
     // Massage the configuration string, add an aditional tab and comment out processId.
     // Add an aditional empty line between attributes which the user should not edit.
-    var configurationsMassaged = JSON.stringify(initialConfigurations, null, '\t').replace(',\n\t\t"processId', '\n\t\t//"processId')
-        .split('\n').map(function (line) { return '\t' + line; }).join('\n').trim();
+    var configurationsMassaged = JSON.stringify(initialConfigurations, null, '\t').split('\n').map(function (line) { return '\t' + line; }).join('\n').trim();
+    var comment1 = localize(8, null);
+    var comment2 = localize(9, null);
+    var comment3 = localize(10, null, 'https://go.microsoft.com/fwlink/?linkid=830387');
     return [
         '{',
-        '\t// Use IntelliSense to learn about possible Node.js debug attributes.',
-        '\t// Hover to view descriptions of existing attributes.',
-        '\t// For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387',
+        "\t// " + comment1,
+        "\t// " + comment2,
+        "\t// " + comment3,
         '\t"version": "0.2.0",',
         '\t"configurations": ' + configurationsMassaged,
         '}'
     ].join('\n');
 }
+function configureMern(config) {
+    config.protocol = 'inspector';
+    config.runtimeExecutable = 'nodemon';
+    config.runtimeArgs = ['--inspect=9222'];
+    config.program = '${workspaceRoot}/index.js';
+    config.port = 9222;
+    config.timeout = 20000;
+    config.restart = true;
+    config.env = {
+        BABEL_DISABLE_CACHE: '1',
+        NODE_ENV: 'development'
+    };
+    config.console = 'integratedTerminal';
+    config.internalConsoleOptions = 'neverOpen';
+}
 /*
  * try to find the entry point ('main') from the package.json
  */
-function guessProgramFromPackage(folderPath) {
+function guessProgramFromPackage(jsonObject) {
     var program;
     try {
-        var packageJsonPath = path_1.join(folderPath, 'package.json');
-        var jsonContent = fs.readFileSync(packageJsonPath, 'utf8');
-        var jsonObject = JSON.parse(jsonContent);
         if (jsonObject.main) {
             program = jsonObject.main;
         }
@@ -242,7 +279,17 @@ function guessProgramFromPackage(folderPath) {
             program = jsonObject.scripts.start.split(' ').pop();
         }
         if (program) {
-            program = path_1.isAbsolute(program) ? program : path_1.join('${workspaceRoot}', program);
+            var path = void 0;
+            if (path_1.isAbsolute(program)) {
+                path = program;
+            }
+            else {
+                path = path_1.join(vscode.workspace.rootPath, program);
+                program = path_1.join('${workspaceRoot}', program);
+            }
+            if (!fs.existsSync(path) && !fs.existsSync(path + '.js')) {
+                return undefined;
+            }
         }
     }
     catch (error) {
@@ -268,8 +315,16 @@ function startSession(config) {
         config.name = 'Launch';
         config.request = 'launch';
         if (vscode.workspace.rootPath) {
-            // folder case: try to find entry point in package.json
-            config.program = guessProgramFromPackage(vscode.workspace.rootPath);
+            // folder case: try to find more launch info in package.json
+            var pkg = loadPackage(vscode.workspace.rootPath);
+            if (pkg) {
+                if (pkg.name === 'mern-starter') {
+                    configureMern(config);
+                }
+                else {
+                    config.program = guessProgramFromPackage(pkg);
+                }
+            }
         }
         if (!config.program) {
             // 'no folder' case (or no program found)
@@ -316,7 +371,7 @@ function startSession(config) {
                     break;
                 case 'launch':
                     if (config.runtimeExecutable) {
-                        log(localize(5, null));
+                        log(localize(11, null));
                     }
                     else {
                         // only determine version if no runtimeExecutable is set (and 'node' on PATH is used)
@@ -325,14 +380,14 @@ function startSession(config) {
                         if (semVerString) {
                             if (semVerStringToInt(semVerString) >= InspectorMinNodeVersionLaunch) {
                                 config.type = 'node2';
-                                log(localize(6, null, semVerString.trim()));
+                                log(localize(12, null, semVerString.trim()));
                             }
                             else {
-                                log(localize(7, null, semVerString.trim()));
+                                log(localize(13, null, semVerString.trim()));
                             }
                         }
                         else {
-                            log(localize(8, null));
+                            log(localize(14, null));
                         }
                     }
                     break;
@@ -360,7 +415,7 @@ function getProtocolForAttach(config) {
     var port = config.port;
     if (config.processId) {
         // this is only supported for legacy protocol
-        log(localize(9, null));
+        log(localize(15, null));
         return Promise.resolve('legacy');
     }
     var socket = new net.Socket();
@@ -379,11 +434,11 @@ function getProtocolForAttach(config) {
             var protocol;
             var dataStr = data.toString();
             if (dataStr.indexOf('WebSockets request was expected') >= 0) {
-                reason = localize(10, null);
+                reason = localize(16, null);
                 protocol = 'inspector';
             }
             else {
-                reason = localize(11, null);
+                reason = localize(17, null);
                 protocol = 'legacy';
             }
             resolve({ reason: reason, protocol: protocol });
@@ -402,7 +457,7 @@ function getProtocolForAttach(config) {
         }, 2000);
     }).catch(function (err) {
         return {
-            reason: localize(12, null, err.toString()),
+            reason: localize(18, null, err.toString()),
             protocol: 'legacy'
         };
     }).then(function (result) {

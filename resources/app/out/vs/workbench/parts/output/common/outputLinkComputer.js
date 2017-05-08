@@ -16,6 +16,7 @@ define(__m[0/*vs/base/common/arrays*/], __M([1/*require*/,2/*exports*/]), functi
      *  Licensed under the MIT License. See License.txt in the project root for license information.
      *--------------------------------------------------------------------------------------------*/
     'use strict';
+    Object.defineProperty(exports, "__esModule", { value: true });
     /**
      * Returns the last element of an array.
      * @param array The array.
@@ -286,6 +287,7 @@ define(__m[3/*vs/base/common/paths*/], __M([1/*require*/,2/*exports*/,5/*vs/base
      *  Licensed under the MIT License. See License.txt in the project root for license information.
      *--------------------------------------------------------------------------------------------*/
     'use strict';
+    Object.defineProperty(exports, "__esModule", { value: true });
     /**
      * The forward slash path separator.
      */
@@ -591,6 +593,7 @@ define(__m[6/*vs/workbench/parts/output/common/outputLinkComputer*/], __M([1/*re
      *  Licensed under the MIT License. See License.txt in the project root for license information.
      *--------------------------------------------------------------------------------------------*/
     'use strict';
+    Object.defineProperty(exports, "__esModule", { value: true });
     var OutputLinkComputer = (function () {
         function OutputLinkComputer(ctx, createData) {
             this._ctx = ctx;

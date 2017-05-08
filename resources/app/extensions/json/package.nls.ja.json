@@ -5,6 +5,6 @@
 	"json.schemas.fileMatch.item.desc": "JSON ファイルをスキーマに解決する場合に一致するよう '*' を含む可能性があるファイル パターンです。",
 	"json.schemas.schema.desc": "指定された URL のスキーマ定義です。スキーマは、スキーマ URL へのアクセスを避けるためにのみ指定する必要があります。",
 	"json.format.enable.desc": "既定の JSON フォーマッタを有効/無効にします (再起動が必要です)",
-	"json.tracing.desc": "Traces the communication between VS Code and the JSON language server.",
-	"json.colorDecorators.enable.desc": "Enables or disables color decorators"
+	"json.tracing.desc": "VS Code と JSON 言語サーバー間の通信をトレースします。",
+	"json.colorDecorators.enable.desc": "カラー デコレーターを有効または無効にします"
 }

@@ -1,5 +1,6 @@
 [
 	"Использование GIT {0} из {1}",
 	"Обновить Git",
-	"У вас установлен Git {0}. Код лучше всего работает с Git >= 2."
+	"Больше не показывать",
+	"You seem to have git {0} installed. Code works best with git >= 2"
 ]

@@ -4,13 +4,17 @@
 		"Merge Changes",
 		"Staged Changes",
 		"Changes",
-		"Could not show object"
+		"OK",
+		"Never Show Again",
+		"The git repository at '{0}' has too many active changes, only a subset of Git features will be enabled."
 	],
 	"keys": [
 		"open",
 		"merge changes",
 		"staged changes",
 		"changes",
-		"cantshow"
+		"ok",
+		"neveragain",
+		"huge"
 	]
 }

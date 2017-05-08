@@ -3,14 +3,7 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 'use strict';
-var __assign = (this && this.__assign) || Object.assign || function(t) {
-    for (var s, i = 1, n = arguments.length; i < n; i++) {
-        s = arguments[i];
-        for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
-            t[p] = s[p];
-    }
-    return t;
-};
+Object.defineProperty(exports, "__esModule", { value: true });
 const vscode_1 = require("vscode");
 const git_1 = require("./git");
 const model_1 = require("./model");
@@ -65,10 +58,10 @@ class SyncStatusBar {
         this._onDidChange.fire();
     }
     onOperationsChange() {
-        this.state = __assign({}, this.state, { isSyncRunning: this.model.operations.isRunning(model_1.Operation.Sync) });
+        this.state = Object.assign({}, this.state, { isSyncRunning: this.model.operations.isRunning(model_1.Operation.Sync) });
     }
     onModelChange() {
-        this.state = __assign({}, this.state, { hasRemotes: this.model.remotes.length > 0, HEAD: this.model.HEAD });
+        this.state = Object.assign({}, this.state, { hasRemotes: this.model.remotes.length > 0, HEAD: this.model.HEAD });
     }
     get command() {
         if (!this.state.hasRemotes) {
@@ -98,6 +91,7 @@ class SyncStatusBar {
             tooltip = '';
         }
         if (this.state.isSyncRunning) {
+            icon = '$(sync~spin)';
             text = '';
             command = '';
             tooltip = localize(3, null);
@@ -145,4 +139,4 @@ class StatusBarCommands {
     }
 }
 exports.StatusBarCommands = StatusBarCommands;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/d9484d12b38879b7f4cdd1150efeb2fd2c1fbf39/extensions\git\out/statusbar.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/f6868fce3eeb16663840eb82123369dec6077a9b/extensions\git\out/statusbar.js.map

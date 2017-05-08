@@ -3,6 +3,7 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 'use strict';
+Object.defineProperty(exports, "__esModule", { value: true });
 var jsonContributions_1 = require("./features/jsonContributions");
 var httpRequest = require("request-light");
 var vscode_1 = require("vscode");
@@ -18,4 +19,4 @@ function configureHttpRequest() {
     var httpSettings = vscode_1.workspace.getConfiguration('http');
     httpRequest.configure(httpSettings.get('proxy'), httpSettings.get('proxyStrictSSL'));
 }
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/d9484d12b38879b7f4cdd1150efeb2fd2c1fbf39/extensions\javascript\out/javascriptMain.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/f6868fce3eeb16663840eb82123369dec6077a9b/extensions\javascript\out/javascriptMain.js.map

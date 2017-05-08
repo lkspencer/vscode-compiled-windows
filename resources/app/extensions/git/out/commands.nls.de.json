@@ -11,8 +11,8 @@
 	"Möchten Sie die Änderungen in {0} wirklich verwerfen?",
 	"Möchten Sie wirklich Änderungen in {0} Dateien verwerfen?",
 	"Änderungen verwerfen",
-	"Möchten Sie wirklich ALLE Änderungen verwerfen?",
-	"Änderungen verwerfen",
+	"Are you sure you want to discard ALL changes? This is IRREVERSIBLE!",
+	"Discard ALL Changes",
 	"Keine Änderungen zum Speichern vorhanden.",
 	"Commit-Nachricht",
 	"Geben Sie eine Commit-Nachrichte ein.",
@@ -31,6 +31,7 @@
 	"Remotespeicherort auswählen, an dem der Branch \"{0}\" veröffentlicht wird:",
 	"Git ist deaktiviert oder wird in diesem Arbeitsbereich nicht unterstützt.",
 	"Bereinigen Sie Ihre Repository-Arbeitsstruktur vor Auftragsabschluss.",
+	"Can't push refs to remote. Run 'Pull' first to integrate your changes.",
 	"Git: {0}",
 	"Git-Fehler",
 	"Git-Protokoll öffnen"

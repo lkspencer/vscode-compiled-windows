@@ -3,6 +3,7 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 'use strict';
+Object.defineProperty(exports, "__esModule", { value: true });
 const vscode_1 = require("vscode");
 const PConst = require("../protocol.const");
 const baseCodeLensProvider_1 = require("./baseCodeLensProvider");
@@ -30,14 +31,19 @@ class TypeScriptImplementationsCodeLensProvider extends baseCodeLensProvider_1.T
                 throw codeLens;
             }
             const locations = response.body
-                .map(reference => new vscode_1.Location(this.client.asUrl(reference.file), new vscode_1.Range(reference.start.line - 1, reference.start.offset - 1, reference.end.line - 1, reference.end.offset - 1)))
+                .map(reference => 
+            // Only take first line on implementation: https://github.com/Microsoft/vscode/issues/23924
+            new vscode_1.Location(this.client.asUrl(reference.file), reference.start.line === reference.end.line
+                ? new vscode_1.Range(reference.start.line - 1, reference.start.offset - 1, reference.end.line - 1, reference.end.offset - 1)
+                : new vscode_1.Range(reference.start.line - 1, reference.start.offset - 1, reference.start.line, 0)))
                 .filter(location => !(location.uri.fsPath === codeLens.document.fsPath &&
-                location.range.start.line === codeLens.range.start.line));
+                location.range.start.line === codeLens.range.start.line &&
+                location.range.start.character === codeLens.range.start.character));
             codeLens.command = {
                 title: locations.length === 1
                     ? localize(0, null)
                     : localize(1, null, locations.length),
-                command: 'editor.action.showReferences',
+                command: locations.length ? 'editor.action.showReferences' : '',
                 arguments: [codeLens.document, codeLens.range.start, locations]
             };
             return codeLens;
@@ -66,6 +72,5 @@ class TypeScriptImplementationsCodeLensProvider extends baseCodeLensProvider_1.T
         return null;
     }
 }
-Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = TypeScriptImplementationsCodeLensProvider;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/d9484d12b38879b7f4cdd1150efeb2fd2c1fbf39/extensions\typescript\out/features\implementationsCodeLensProvider.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/f6868fce3eeb16663840eb82123369dec6077a9b/extensions\typescript\out/features\implementationsCodeLensProvider.js.map

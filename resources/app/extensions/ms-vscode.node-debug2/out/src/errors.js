@@ -3,11 +3,12 @@
  *--------------------------------------------------------*/
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const utils_1 = require("./utils");
+const nls = require("vscode-nls");
+const localize = nls.config(process.env.VSCODE_NLS_CONFIG)(__filename);
 function runtimeNotFound(_runtime) {
     return {
         id: 2001,
-        format: utils_1.localize('VSND2001', "Cannot find runtime '{0}' on PATH.", '{_runtime}'),
+        format: localize(0, null, '{_runtime}'),
         variables: { _runtime }
     };
 }
@@ -15,7 +16,7 @@ exports.runtimeNotFound = runtimeNotFound;
 function cannotLaunchInTerminal(_error) {
     return {
         id: 2011,
-        format: utils_1.localize('VSND2011', "Cannot launch debug target in terminal ({0}).", '{_error}'),
+        format: localize(1, null, '{_error}'),
         variables: { _error }
     };
 }
@@ -23,7 +24,7 @@ exports.cannotLaunchInTerminal = cannotLaunchInTerminal;
 function cannotLaunchDebugTarget(_error) {
     return {
         id: 2017,
-        format: utils_1.localize('VSND2017', "Cannot launch debug target ({0}).", '{_error}'),
+        format: localize(2, null, '{_error}'),
         variables: { _error },
         showUser: true,
         sendTelemetry: true
@@ -33,14 +34,14 @@ exports.cannotLaunchDebugTarget = cannotLaunchDebugTarget;
 function unknownConsoleType(consoleType) {
     return {
         id: 2028,
-        format: utils_1.localize('VSND2028', "Unknown console type '{0}'.", consoleType)
+        format: localize(3, null, consoleType)
     };
 }
 exports.unknownConsoleType = unknownConsoleType;
 function cannotLaunchBecauseSourceMaps(programPath) {
     return {
         id: 2002,
-        format: utils_1.localize('VSND2002', "Cannot launch program '{0}'; configuring source maps might help.", '{path}'),
+        format: localize(4, null, '{path}'),
         variables: { path: programPath }
     };
 }
@@ -48,7 +49,7 @@ exports.cannotLaunchBecauseSourceMaps = cannotLaunchBecauseSourceMaps;
 function cannotLaunchBecauseOutFiles(programPath) {
     return {
         id: 2003,
-        format: utils_1.localize('VSND2003', "Cannot launch program '{0}'; setting the '{1}' attribute might help.", '{path}', 'outDir or outFiles'),
+        format: localize(5, null, '{path}', 'outDir or outFiles'),
         variables: { path: programPath }
     };
 }
@@ -56,7 +57,7 @@ exports.cannotLaunchBecauseOutFiles = cannotLaunchBecauseOutFiles;
 function cannotLoadEnvVarsFromFile(error) {
     return {
         id: 2029,
-        format: utils_1.localize('VSND2029', "Can't load environment variables from file ({0}).", '{_error}'),
+        format: localize(6, null, '{_error}'),
         variables: { _error: error }
     };
 }

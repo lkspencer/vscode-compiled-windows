@@ -32,16 +32,6 @@ function random(low, high) {
     return Math.floor(Math.random() * (high - low) + low);
 }
 exports.random = random;
-/**
- * Placeholder localize function
- */
-function localize(id, msg, ...args) {
-    args.forEach((arg, i) => {
-        msg = msg.replace(new RegExp(`\\{${i}\\}`, 'g'), arg);
-    });
-    return msg;
-}
-exports.localize = localize;
 function killTree(processId) {
     if (process.platform === 'win32') {
         const TASK_KILL = 'C:\\Windows\\System32\\taskkill.exe';
@@ -110,5 +100,12 @@ function extendObject(toObject, fromObject) {
     return toObject;
 }
 exports.extendObject = extendObject;
+function stripBOM(s) {
+    if (s && s[0] === '\uFEFF') {
+        s = s.substr(1);
+    }
+    return s;
+}
+exports.stripBOM = stripBOM;
 
 //# sourceMappingURL=utils.js.map

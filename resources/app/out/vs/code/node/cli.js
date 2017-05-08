@@ -16,6 +16,7 @@ define(__m[6/*vs/base/common/arrays*/], __M([1/*require*/,0/*exports*/]), functi
      *  Licensed under the MIT License. See License.txt in the project root for license information.
      *--------------------------------------------------------------------------------------------*/
     'use strict';
+    Object.defineProperty(exports, "__esModule", { value: true });
     /**
      * Returns the last element of an array.
      * @param array The array.
@@ -286,6 +287,7 @@ define(__m[2/*vs/base/common/platform*/], __M([1/*require*/,0/*exports*/]), func
      *  Licensed under the MIT License. See License.txt in the project root for license information.
      *--------------------------------------------------------------------------------------------*/
     'use strict';
+    Object.defineProperty(exports, "__esModule", { value: true });
     // --- THIS FILE IS TEMPORARY UNTIL ENV.TS IS CLEANED UP. IT CAN SAFELY BE USED IN ALL TARGET EXECUTION ENVIRONMENTS (node & dom) ---
     var _isWindows = false;
     var _isMacintosh = false;
@@ -391,6 +393,7 @@ define(__m[3/*vs/base/common/types*/], __M([1/*require*/,0/*exports*/]), functio
      *  Licensed under the MIT License. See License.txt in the project root for license information.
      *--------------------------------------------------------------------------------------------*/
     'use strict';
+    Object.defineProperty(exports, "__esModule", { value: true });
     var _typeof = {
         number: 'number',
         string: 'string',
@@ -559,6 +562,7 @@ define(__m[7/*vs/base/common/errors*/], __M([1/*require*/,0/*exports*/,2/*vs/bas
      *  Licensed under the MIT License. See License.txt in the project root for license information.
      *--------------------------------------------------------------------------------------------*/
     'use strict';
+    Object.defineProperty(exports, "__esModule", { value: true });
     // Avoid circular dependency on EventEmitter by implementing a subset of the interface.
     var ErrorHandler = (function () {
         function ErrorHandler() {
@@ -723,6 +727,7 @@ define(__m[9/*vs/base/common/objects*/], __M([1/*require*/,0/*exports*/,3/*vs/ba
      *  Licensed under the MIT License. See License.txt in the project root for license information.
      *--------------------------------------------------------------------------------------------*/
     'use strict';
+    Object.defineProperty(exports, "__esModule", { value: true });
     function clone(obj) {
         if (!obj || typeof obj !== 'object') {
             return obj;
@@ -1033,6 +1038,7 @@ define(__m[4/*vs/base/common/uri*/], __M([1/*require*/,0/*exports*/,2/*vs/base/c
      *  Licensed under the MIT License. See License.txt in the project root for license information.
      *--------------------------------------------------------------------------------------------*/
     'use strict';
+    Object.defineProperty(exports, "__esModule", { value: true });
     function _encode(ch) {
         return '%' + ch.charCodeAt(0).toString(16).toUpperCase();
     }
@@ -1041,7 +1047,7 @@ define(__m[4/*vs/base/common/uri*/], __M([1/*require*/,0/*exports*/,2/*vs/base/c
         return encodeURIComponent(str).replace(/[!'()*]/g, _encode);
     }
     function encodeNoop(str) {
-        return str;
+        return str.replace(/[#?]/, _encode);
     }
     /**
      * Uniform Resource Identifier (URI) http://tools.ietf.org/html/rfc3986.
@@ -1367,10 +1373,10 @@ define(__m[4/*vs/base/common/uri*/], __M([1/*require*/,0/*exports*/,2/*vs/base/c
                 while (true) {
                     var idx = path.indexOf(URI._slash, lastIdx);
                     if (idx === -1) {
-                        parts.push(encoder(path.substring(lastIdx)).replace(/[#?]/, _encode));
+                        parts.push(encoder(path.substring(lastIdx)));
                         break;
                     }
-                    parts.push(encoder(path.substring(lastIdx, idx)).replace(/[#?]/, _encode), URI._slash);
+                    parts.push(encoder(path.substring(lastIdx, idx)), URI._slash);
                     lastIdx = idx + 1;
                 }
                 ;
@@ -1428,7 +1434,6 @@ define(__m[4/*vs/base/common/uri*/], __M([1/*require*/,0/*exports*/,2/*vs/base/c
     URI._schemePattern = /^\w[\w\d+.-]*$/;
     URI._singleSlashStart = /^\//;
     URI._doubleSlashStart = /^\/\//;
-    Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = URI;
 });
 
@@ -3572,6 +3577,7 @@ define(__m[8/*vs/nls!vs/platform/environment/node/argv*/], __M([21/*vs/nls*/,18/
  *--------------------------------------------------------------------------------------------*/
 define(__m[10/*vs/platform/environment/node/argv*/], __M([1/*require*/,0/*exports*/,14/*os*/,15/*minimist*/,16/*assert*/,6/*vs/base/common/arrays*/,8/*vs/nls!vs/platform/environment/node/argv*/]), function (require, exports, os, minimist, assert, arrays_1, nls_1) {
     "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
     var options = {
         string: [
             'locale',
@@ -3584,7 +3590,8 @@ define(__m[10/*vs/platform/environment/node/argv*/], __M([1/*require*/,0/*export
             'debugBrkPluginHost',
             'debugPluginHost',
             'open-url',
-            'prof-startup-timers'
+            'prof-startup-timers',
+            'enable-proposed-api'
         ],
         boolean: [
             'help',
@@ -3676,10 +3683,11 @@ define(__m[10/*vs/platform/environment/node/argv*/], __M([1/*require*/,0/*export
         '--show-versions': nls_1.localize(13, null),
         '--install-extension <ext>': nls_1.localize(14, null),
         '--uninstall-extension <ext>': nls_1.localize(15, null),
-        '--disable-extensions': nls_1.localize(16, null),
-        '--disable-gpu': nls_1.localize(17, null),
-        '-v, --version': nls_1.localize(18, null),
-        '-h, --help': nls_1.localize(19, null)
+        '--enable-proposed-api <ext>': nls_1.localize(16, null),
+        '--disable-extensions': nls_1.localize(17, null),
+        '--disable-gpu': nls_1.localize(18, null),
+        '-v, --version': nls_1.localize(19, null),
+        '-h, --help': nls_1.localize(20, null)
     };
     function formatOptions(options, columns) {
         var keys = Object.keys(options);
@@ -3717,7 +3725,7 @@ define(__m[10/*vs/platform/environment/node/argv*/], __M([1/*require*/,0/*export
     function buildHelpMessage(fullName, name, version) {
         var columns = process.stdout.isTTY ? process.stdout.columns : 80;
         var executable = "" + name + (os.platform() === 'win32' ? '.exe' : '');
-        return fullName + " " + version + "\n\n" + nls_1.localize(20, null) + ": " + executable + " [" + nls_1.localize(21, null) + "] [" + nls_1.localize(22, null) + "...]\n\n" + nls_1.localize(23, null) + ":\n" + formatOptions(exports.optionsHelp, columns);
+        return fullName + " " + version + "\n\n" + nls_1.localize(21, null) + ": " + executable + " [" + nls_1.localize(22, null) + "] [" + nls_1.localize(23, null) + "...]\n\n" + nls_1.localize(24, null) + ":\n" + formatOptions(exports.optionsHelp, columns);
     }
     exports.buildHelpMessage = buildHelpMessage;
 });
@@ -3728,9 +3736,9 @@ define(__m[10/*vs/platform/environment/node/argv*/], __M([1/*require*/,0/*export
  *--------------------------------------------------------------------------------------------*/
 define(__m[11/*vs/platform/node/package*/], __M([1/*require*/,0/*exports*/,12/*path*/,4/*vs/base/common/uri*/]), function (require, exports, path, uri_1) {
     "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
     var rootPath = path.dirname(uri_1.default.parse(require.toUrl('')).fsPath);
     var packageJsonPath = path.join(rootPath, 'package.json');
-    Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = require.__$__nodeRequire(packageJsonPath);
 });
 
@@ -3740,6 +3748,7 @@ define(__m[11/*vs/platform/node/package*/], __M([1/*require*/,0/*exports*/,12/*p
  *--------------------------------------------------------------------------------------------*/
 define(__m[13/*vs/platform/node/product*/], __M([1/*require*/,0/*exports*/,12/*path*/,4/*vs/base/common/uri*/]), function (require, exports, path, uri_1) {
     "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
     var rootPath = path.dirname(uri_1.default.parse(require.toUrl('')).fsPath);
     var productJsonPath = path.join(rootPath, 'product.json');
     var product = require.__$__nodeRequire(productJsonPath);
@@ -3748,7 +3757,6 @@ define(__m[13/*vs/platform/node/product*/], __M([1/*require*/,0/*exports*/,12/*p
         product.nameLong += ' Dev';
         product.dataFolderName += '-dev';
     }
-    Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = product;
 });
 
@@ -3758,6 +3766,7 @@ define(__m[13/*vs/platform/node/product*/], __M([1/*require*/,0/*exports*/,12/*p
  *--------------------------------------------------------------------------------------------*/
 define(__m[20/*vs/code/node/cli*/], __M([1/*require*/,0/*exports*/,19/*child_process*/,5/*vs/base/common/winjs.base*/,9/*vs/base/common/objects*/,10/*vs/platform/environment/node/argv*/,13/*vs/platform/node/product*/,11/*vs/platform/node/package*/]), function (require, exports, child_process_1, winjs_base_1, objects_1, argv_1, product_1, package_1) {
     "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
     function shouldSpawnCliProcess(argv) {
         return argv['list-extensions'] || !!argv['install-extension'] || !!argv['uninstall-extension'];
     }

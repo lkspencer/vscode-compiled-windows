@@ -1,7 +1,7 @@
 {
 	"name": "node-debug",
 	"displayName": "Node Debug",
-	"version": "1.11.17",
+	"version": "1.12.15",
 	"publisher": "ms-vscode",
 	"description": "%extension.description%",
 	"icon": "images/node-debug-icon.svg",
@@ -28,8 +28,7 @@
 		"ms-vscode.node-debug2"
 	],
 	"dependencies": {
-		"vscode-debugprotocol": "^1.18.0",
-		"vscode-debugadapter": "^1.18.0",
+		"vscode-debugadapter": "^1.19.0",
 		"source-map": "0.5.6",
 		"vscode-nls": "^2.0.1",
 		"request-light": "^0.1.0",
@@ -64,24 +63,36 @@
 		"tslint": "^3.15.1",
 		"typescript": "^2.2.1",
 		"vscode": "^1.0.3",
-		"vscode-nls-dev": "^2.0.1",
-		"vscode-debugadapter-testsupport": "^1.18.0",
+		"vscode-nls-dev": "^2.1.1",
+		"vscode-debugadapter-testsupport": "^1.19.0",
+		"vscode-debugprotocol": "^1.19.0",
 		"event-stream": "^3.3.4",
 		"nodemon": "^1.11.0",
 		"vsce": "^1.20.0"
 	},
 	"main": "./out/node/extension",
 	"activationEvents": [
+		"onCommand:extension.node-debug.toggleSkippingFile",
 		"onCommand:extension.node-debug.pickLoadedScript",
-		"onCommand:extension.pickNodeProcess",
 		"onCommand:extension.node-debug.provideInitialConfigurations",
-		"onCommand:extension.node-debug.startSession"
+		"onCommand:extension.node-debug.startSession",
+		"onCommand:extension.pickNodeProcess"
 	],
 	"contributes": {
+		"menus": {
+			"debug/callstack/context": [{
+				"command": "extension.node-debug.toggleSkippingFile",
+				"group": "navigation",
+				"when": "inDebugMode && debugType == 'node'"
+			}]
+		},
 		"commands": [{
 			"command": "extension.node-debug.pickLoadedScript",
 			"title": "%open.loaded.script%",
 			"category": "Debug"
+		}, {
+			"command": "extension.node-debug.toggleSkippingFile",
+			"title": "%toggle.skipping.this.file%"
 		}],
 		"keybindings": [{
 			"command": "extension.node-debug.pickLoadedScript",
@@ -138,24 +149,13 @@
 					"port": 5858
 				}
 			}, {
-				"label": "%node.snippet.attachLegacy.label%",
-				"description": "%node.snippet.attachLegacy.description%",
+				"label": "%node.snippet.attach.label%",
+				"description": "%node.snippet.attach.description%",
 				"body": {
 					"type": "node",
 					"request": "attach",
-					"name": "${1:Attach (Legacy Protocol)}",
-					"port": 5858,
-					"protocol": "legacy"
-				}
-			}, {
-				"label": "%node.snippet.attachInspector.label%",
-				"description": "%node.snippet.attachInspector.description%",
-				"body": {
-					"type": "node",
-					"request": "attach",
-					"name": "${1:Attach (Inspector Protocol)}",
-					"port": 9229,
-					"protocol": "inspector"
+					"name": "${1:Attach}",
+					"port": 5858
 				}
 			}, {
 				"label": "%node.snippet.remoteattach.label%",

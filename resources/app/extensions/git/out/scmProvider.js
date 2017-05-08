@@ -11,9 +11,11 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+Object.defineProperty(exports, "__esModule", { value: true });
 const vscode_1 = require("vscode");
 const model_1 = require("./model");
 const util_1 = require("./util");
+const uri_1 = require("./uri");
 const nls = require("vscode-nls");
 const localize = nls.loadMessageBundle(__filename);
 class GitSCMProvider {
@@ -72,6 +74,7 @@ class GitSCMProvider {
                 this._sourceControl.commitTemplate = yield this.model.getCommitTemplate();
             }
             catch (e) {
+                // noop
             }
         });
     }
@@ -79,9 +82,7 @@ class GitSCMProvider {
         if (uri.scheme !== 'file') {
             return;
         }
-        // As a mitigation for extensions like ESLint showing warnings and errors
-        // for git URIs, let's change the file extension of these uris to .git.
-        return new vscode_1.Uri().with({ scheme: 'git-original', query: uri.path, path: uri.path + '.git' });
+        return uri_1.toGitUri(uri, '', true);
     }
     onDidModelChange() {
         this.mergeGroup.resourceStates = this.model.mergeGroup.resources;
@@ -99,4 +100,4 @@ class GitSCMProvider {
     }
 }
 exports.GitSCMProvider = GitSCMProvider;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/d9484d12b38879b7f4cdd1150efeb2fd2c1fbf39/extensions\git\out/scmProvider.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/f6868fce3eeb16663840eb82123369dec6077a9b/extensions\git\out/scmProvider.js.map

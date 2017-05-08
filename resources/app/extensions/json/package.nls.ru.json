@@ -5,6 +5,6 @@
 	"json.schemas.fileMatch.item.desc": "Шаблон файла, который может содержать \"*\" и с которым выполняется сравнение, при разрешении JSON-файлов в схемах.",
 	"json.schemas.schema.desc": "Определение схемы для указанного URL-адреса. Схему необходимо указать только для того, чтобы не обращаться по URL-адресу схемы.",
 	"json.format.enable.desc": "Включение или отключение модуля форматирования JSON по умолчанию (требуется перезагрузка)",
-	"json.tracing.desc": "Traces the communication between VS Code and the JSON language server.",
-	"json.colorDecorators.enable.desc": "Enables or disables color decorators"
+	"json.tracing.desc": "Отслеживает связь между VS Code и языковым сервером JSON.",
+	"json.colorDecorators.enable.desc": "Включает или отключает декораторы цвета."
 }

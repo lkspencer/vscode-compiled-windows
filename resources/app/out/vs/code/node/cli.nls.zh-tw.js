@@ -19,6 +19,7 @@ define("vs/code/node/cli.nls.zh-tw", {
 		"使用 --list-extension 時，顯示安裝的擴充功能版本。",
 		"安裝擴充功能。",
 		"解除安裝擴充功能。",
+		"Enables proposed api features for an extension.",
 		"停用所有已安裝的擴充功能。",
 		"停用 GPU 硬體加速。",
 		"列印版本。",

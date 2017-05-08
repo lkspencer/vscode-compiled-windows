@@ -2,13 +2,13 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-/// <reference path="../../../../src/vs/vscode.proposed.d.ts" />
 'use strict';
-const vscode = require("vscode");
+Object.defineProperty(exports, "__esModule", { value: true });
+const vscode_1 = require("vscode");
 const vscode_nls_1 = require("vscode-nls");
 const localize = vscode_nls_1.loadMessageBundle(__filename);
 const typingsInstallTimeout = 30 * 1000;
-class TypingsStatus extends vscode.Disposable {
+class TypingsStatus extends vscode_1.Disposable {
     constructor(client) {
         super(() => this.dispose());
         this._acquiringTypings = Object.create({});
@@ -42,12 +42,11 @@ class TypingsStatus extends vscode.Disposable {
         delete this._acquiringTypings[eventId];
     }
 }
-Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = TypingsStatus;
 class AtaProgressReporter {
     constructor(client) {
         this._promises = new Map();
-        this._disposable = vscode.Disposable.from(client.onDidBeginInstallTypings(e => this._onBegin(e.eventId)), client.onDidEndInstallTypings(e => this._onEndOrTimeout(e.eventId)));
+        this._disposable = vscode_1.Disposable.from(client.onDidBeginInstallTypings(e => this._onBegin(e.eventId)), client.onDidEndInstallTypings(e => this._onEndOrTimeout(e.eventId)), client.onTypesInstallerInitializationFailed(_ => this.onTypesInstallerInitializationFailed()));
     }
     dispose() {
         this._disposable.dispose();
@@ -61,7 +60,10 @@ class AtaProgressReporter {
                 resolve();
             });
         });
-        vscode.window.withWindowProgress(localize(0, null), () => promise);
+        vscode_1.window.withProgress({
+            location: vscode_1.ProgressLocation.Window,
+            title: localize(0, null)
+        }, () => promise);
     }
     _onEndOrTimeout(eventId) {
         const resolve = this._promises.get(eventId);
@@ -70,6 +72,34 @@ class AtaProgressReporter {
             resolve();
         }
     }
+    onTypesInstallerInitializationFailed() {
+        if (vscode_1.workspace.getConfiguration('typescript').get('check.npmIsInstalled', true)) {
+            vscode_1.window.showWarningMessage(localize(1, null), {
+                title: localize(2, null),
+                id: 1
+            }, {
+                title: localize(3, null),
+                id: 2
+            }, {
+                title: localize(4, null),
+                id: 3,
+                isCloseAffordance: true
+            }).then(selected => {
+                if (!selected || selected.id === 3) {
+                    return;
+                }
+                switch (selected.id) {
+                    case 1:
+                        vscode_1.commands.executeCommand('vscode.open', vscode_1.Uri.parse('https://go.microsoft.com/fwlink/?linkid=847635'));
+                        break;
+                    case 2:
+                        const tsConfig = vscode_1.workspace.getConfiguration('typescript');
+                        tsConfig.update('check.npmIsInstalled', false, true);
+                        break;
+                }
+            });
+        }
+    }
 }
 exports.AtaProgressReporter = AtaProgressReporter;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/d9484d12b38879b7f4cdd1150efeb2fd2c1fbf39/extensions\typescript\out/utils\typingsStatus.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/f6868fce3eeb16663840eb82123369dec6077a9b/extensions\typescript\out/utils\typingsStatus.js.map

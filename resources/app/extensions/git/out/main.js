@@ -11,6 +11,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+Object.defineProperty(exports, "__esModule", { value: true });
 const vscode_1 = require("vscode");
 const git_1 = require("./git");
 const model_1 = require("./model");
@@ -21,6 +22,7 @@ const contentProvider_1 = require("./contentProvider");
 const autofetch_1 = require("./autofetch");
 const merge_1 = require("./merge");
 const askpass_1 = require("./askpass");
+const util_1 = require("./util");
 const vscode_extension_telemetry_1 = require("vscode-extension-telemetry");
 const nls = require("vscode-nls");
 const localize = nls.config(process.env.VSCODE_NLS_CONFIG)(__filename);
@@ -46,7 +48,9 @@ function init(context, disposables) {
         }
         const model = new model_1.Model(git, workspaceRootPath);
         outputChannel.appendLine(localize(0, null, info.version, info.path));
-        git.onOutput(str => outputChannel.append(str), null, disposables);
+        const onOutput = str => outputChannel.append(str);
+        git.onOutput.addListener('log', onOutput);
+        disposables.push(util_1.toDisposable(() => git.onOutput.removeListener('log', onOutput)));
         const commandCenter = new commands_1.CommandCenter(git, model, outputChannel, telemetryReporter);
         const statusBarCommands = new statusbar_1.StatusBarCommands(model);
         const provider = new scmProvider_1.GitSCMProvider(model, commandCenter, statusBarCommands);
@@ -54,13 +58,7 @@ function init(context, disposables) {
         const autoFetcher = new autofetch_1.AutoFetcher(model);
         const mergeDecorator = new merge_1.MergeDecorator(model);
         disposables.push(commandCenter, provider, contentProvider, autoFetcher, mergeDecorator, model);
-        if (/^[01]/.test(info.version)) {
-            const update = localize(1, null);
-            const choice = yield vscode_1.window.showWarningMessage(localize(2, null, info.version), update);
-            if (choice === update) {
-                vscode_1.commands.executeCommand('vscode.open', vscode_1.Uri.parse('https://git-scm.com/'));
-            }
-        }
+        yield checkGitVersion(info);
     });
 }
 function activate(context) {
@@ -69,5 +67,26 @@ function activate(context) {
     init(context, disposables)
         .catch(err => console.error(err));
 }
-exports.activate = activate;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/d9484d12b38879b7f4cdd1150efeb2fd2c1fbf39/extensions\git\out/main.js.map
+exports.activate = activate;
+function checkGitVersion(info) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const config = vscode_1.workspace.getConfiguration('git');
+        const shouldIgnore = config.get('ignoreLegacyWarning') === true;
+        if (shouldIgnore) {
+            return;
+        }
+        if (!/^[01]/.test(info.version)) {
+            return;
+        }
+        const update = localize(1, null);
+        const neverShowAgain = localize(2, null);
+        const choice = yield vscode_1.window.showWarningMessage(localize(3, null, info.version), update, neverShowAgain);
+        if (choice === update) {
+            vscode_1.commands.executeCommand('vscode.open', vscode_1.Uri.parse('https://git-scm.com/'));
+        }
+        else if (choice === neverShowAgain) {
+            yield config.update('ignoreLegacyWarning', true, true);
+        }
+    });
+}
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/f6868fce3eeb16663840eb82123369dec6077a9b/extensions\git\out/main.js.map

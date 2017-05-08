@@ -3,6 +3,7 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 'use strict';
+Object.defineProperty(exports, "__esModule", { value: true });
 const semver = require("semver");
 class API {
     constructor(_versionString) {
@@ -41,6 +42,9 @@ class API {
     has222Features() {
         return semver.gte(this._version, '2.2.2');
     }
+    has230Features() {
+        return semver.gte(this._version, '2.3.0');
+    }
 }
 exports.API = API;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/d9484d12b38879b7f4cdd1150efeb2fd2c1fbf39/extensions\typescript\out/typescriptService.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/f6868fce3eeb16663840eb82123369dec6077a9b/extensions\typescript\out/typescriptService.js.map

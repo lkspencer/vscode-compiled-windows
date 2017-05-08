@@ -1,3 +1,7 @@
 [
-	"正在擷取資料以改善 TypeScript IntelliSense"
+	"正在擷取資料以改善 TypeScript IntelliSense",
+	"Could not install typings files for JavaScript language features. Please ensure that NPM is installed and is in your PATH",
+	"詳細資訊",
+	"不要再檢查",
+	"關閉"
 ]

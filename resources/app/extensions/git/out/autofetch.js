@@ -17,6 +17,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+Object.defineProperty(exports, "__esModule", { value: true });
 const vscode_1 = require("vscode");
 const git_1 = require("./git");
 const decorators_1 = require("./decorators");
@@ -68,4 +69,4 @@ __decorate([
     decorators_1.throttle
 ], AutoFetcher.prototype, "fetch", null);
 exports.AutoFetcher = AutoFetcher;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/d9484d12b38879b7f4cdd1150efeb2fd2c1fbf39/extensions\git\out/autofetch.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/f6868fce3eeb16663840eb82123369dec6077a9b/extensions\git\out/autofetch.js.map

@@ -17,10 +17,12 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+Object.defineProperty(exports, "__esModule", { value: true });
 const vscode_1 = require("vscode");
 const git_1 = require("./git");
 const model_1 = require("./model");
-const staging = require("./staging");
+const uri_1 = require("./uri");
+const staging_1 = require("./staging");
 const path = require("path");
 const os = require("os");
 const nls = require("vscode-nls");
@@ -118,9 +120,9 @@ class CommandCenter {
         switch (resource.type) {
             case model_1.Status.INDEX_MODIFIED:
             case model_1.Status.INDEX_RENAMED:
-                return resource.original.with({ scheme: 'git', query: 'HEAD' });
+                return uri_1.toGitUri(resource.original, 'HEAD');
             case model_1.Status.MODIFIED:
-                return resource.resourceUri.with({ scheme: 'git', query: '~' });
+                return uri_1.toGitUri(resource.resourceUri, '~');
         }
     }
     getRightResource(resource) {
@@ -128,12 +130,11 @@ class CommandCenter {
             case model_1.Status.INDEX_MODIFIED:
             case model_1.Status.INDEX_ADDED:
             case model_1.Status.INDEX_COPIED:
-                return resource.resourceUri.with({ scheme: 'git' });
             case model_1.Status.INDEX_RENAMED:
-                return resource.resourceUri.with({ scheme: 'git' });
+                return uri_1.toGitUri(resource.resourceUri, '');
             case model_1.Status.INDEX_DELETED:
             case model_1.Status.DELETED:
-                return resource.resourceUri.with({ scheme: 'git', query: 'HEAD' });
+                return uri_1.toGitUri(resource.resourceUri, 'HEAD');
             case model_1.Status.MODIFIED:
             case model_1.Status.UNTRACKED:
             case model_1.Status.IGNORED:
@@ -205,16 +206,45 @@ class CommandCenter {
             yield this.model.init();
         });
     }
-    openFile(resource) {
+    openFile(arg) {
         return __awaiter(this, void 0, void 0, function* () {
-            if (!resource) {
+            let uri;
+            if (arg instanceof vscode_1.Uri) {
+                if (arg.scheme === 'git') {
+                    uri = vscode_1.Uri.file(uri_1.fromGitUri(arg).path);
+                }
+                else if (arg.scheme === 'file') {
+                    uri = arg;
+                }
+            }
+            else {
+                let resource = arg;
+                if (!(resource instanceof model_1.Resource)) {
+                    // can happen when called from a keybinding
+                    resource = this.getSCMResource();
+                }
+                if (resource) {
+                    uri = resource.resourceUri;
+                }
+            }
+            if (!uri) {
                 return;
             }
-            return yield vscode_1.commands.executeCommand('vscode.open', resource.resourceUri);
+            return yield vscode_1.commands.executeCommand('vscode.open', uri);
         });
     }
-    openChange(resource) {
+    openChange(arg) {
         return __awaiter(this, void 0, void 0, function* () {
+            let resource = undefined;
+            if (arg instanceof model_1.Resource) {
+                resource = arg;
+            }
+            else if (arg instanceof vscode_1.Uri) {
+                resource = this.getSCMResource(arg);
+            }
+            else {
+                resource = this.getSCMResource();
+            }
             if (!resource) {
                 return;
             }
@@ -224,24 +254,26 @@ class CommandCenter {
     openFileFromUri(uri) {
         return __awaiter(this, void 0, void 0, function* () {
             const resource = this.getSCMResource(uri);
-            if (!resource) {
+            let uriToOpen;
+            if (resource) {
+                uriToOpen = resource.resourceUri;
+            }
+            else if (uri && uri.scheme === 'git') {
+                const { path } = uri_1.fromGitUri(uri);
+                uriToOpen = vscode_1.Uri.file(path);
+            }
+            else if (uri && uri.scheme === 'file') {
+                uriToOpen = uri;
+            }
+            if (!uriToOpen) {
                 return;
             }
-            return yield vscode_1.commands.executeCommand('vscode.open', resource.resourceUri);
-        });
-    }
-    openChangeFromUri(uri) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const resource = this.getSCMResource(uri);
-            if (!resource) {
-                return;
-            }
-            return yield this._openResource(resource);
+            return yield vscode_1.commands.executeCommand('vscode.open', uriToOpen);
         });
     }
     stage(...resourceStates) {
         return __awaiter(this, void 0, void 0, function* () {
-            if (resourceStates.length === 0) {
+            if (resourceStates.length === 0 || !(resourceStates[0].resourceUri instanceof vscode_1.Uri)) {
                 const resource = this.getSCMResource();
                 if (!resource) {
                     return;
@@ -272,19 +304,16 @@ class CommandCenter {
             if (modifiedUri.scheme !== 'file') {
                 return;
             }
-            const originalUri = modifiedUri.with({ scheme: 'git', query: '~' });
+            const originalUri = uri_1.toGitUri(modifiedUri, '~');
             const originalDocument = yield vscode_1.workspace.openTextDocument(originalUri);
-            const selections = textEditor.selections;
-            const selectedDiffs = diffs.filter(diff => {
-                const modifiedRange = diff.modifiedEndLineNumber === 0
-                    ? new vscode_1.Range(modifiedDocument.lineAt(diff.modifiedStartLineNumber - 1).range.end, modifiedDocument.lineAt(diff.modifiedStartLineNumber).range.start)
-                    : new vscode_1.Range(modifiedDocument.lineAt(diff.modifiedStartLineNumber - 1).range.start, modifiedDocument.lineAt(diff.modifiedEndLineNumber - 1).range.end);
-                return selections.some(selection => !!selection.intersection(modifiedRange));
-            });
+            const selectedLines = staging_1.toLineRanges(textEditor.selections, modifiedDocument);
+            const selectedDiffs = diffs
+                .map(diff => selectedLines.reduce((result, range) => result || staging_1.intersectDiffWithRange(modifiedDocument, diff, range), null))
+                .filter(d => !!d);
             if (!selectedDiffs.length) {
                 return;
             }
-            const result = staging.applyChanges(originalDocument, modifiedDocument, selectedDiffs);
+            const result = staging_1.applyLineChanges(originalDocument, modifiedDocument, selectedDiffs);
             yield this.model.stage(modifiedUri, result);
         });
     }
@@ -299,7 +328,7 @@ class CommandCenter {
             if (modifiedUri.scheme !== 'file') {
                 return;
             }
-            const originalUri = modifiedUri.with({ scheme: 'git', query: '~' });
+            const originalUri = uri_1.toGitUri(modifiedUri, '~');
             const originalDocument = yield vscode_1.workspace.openTextDocument(originalUri);
             const selections = textEditor.selections;
             const selectedDiffs = diffs.filter(diff => {
@@ -318,7 +347,7 @@ class CommandCenter {
             if (pick !== yes) {
                 return;
             }
-            const result = staging.applyChanges(originalDocument, modifiedDocument, selectedDiffs);
+            const result = staging_1.applyLineChanges(originalDocument, modifiedDocument, selectedDiffs);
             const edit = new vscode_1.WorkspaceEdit();
             edit.replace(modifiedUri, new vscode_1.Range(new vscode_1.Position(0, 0), modifiedDocument.lineAt(modifiedDocument.lineCount - 1).range.end), result);
             vscode_1.workspace.applyEdit(edit);
@@ -326,7 +355,7 @@ class CommandCenter {
     }
     unstage(...resourceStates) {
         return __awaiter(this, void 0, void 0, function* () {
-            if (resourceStates.length === 0) {
+            if (resourceStates.length === 0 || !(resourceStates[0].resourceUri instanceof vscode_1.Uri)) {
                 const resource = this.getSCMResource();
                 if (!resource) {
                     return;
@@ -354,34 +383,30 @@ class CommandCenter {
             }
             const modifiedDocument = textEditor.document;
             const modifiedUri = modifiedDocument.uri;
-            if (modifiedUri.scheme !== 'git' || modifiedUri.query !== '') {
+            if (modifiedUri.scheme !== 'git') {
                 return;
             }
-            const originalUri = modifiedUri.with({ scheme: 'git', query: 'HEAD' });
+            const { ref } = uri_1.fromGitUri(modifiedUri);
+            if (ref !== '') {
+                return;
+            }
+            const originalUri = uri_1.toGitUri(modifiedUri, 'HEAD');
             const originalDocument = yield vscode_1.workspace.openTextDocument(originalUri);
-            const selections = textEditor.selections;
-            const selectedDiffs = diffs.filter(diff => {
-                const modifiedRange = diff.modifiedEndLineNumber === 0
-                    ? new vscode_1.Range(diff.modifiedStartLineNumber - 1, 0, diff.modifiedStartLineNumber - 1, 0)
-                    : new vscode_1.Range(modifiedDocument.lineAt(diff.modifiedStartLineNumber - 1).range.start, modifiedDocument.lineAt(diff.modifiedEndLineNumber - 1).range.end);
-                return selections.some(selection => !!selection.intersection(modifiedRange));
-            });
+            const selectedLines = staging_1.toLineRanges(textEditor.selections, modifiedDocument);
+            const selectedDiffs = diffs
+                .map(diff => selectedLines.reduce((result, range) => result || staging_1.intersectDiffWithRange(modifiedDocument, diff, range), null))
+                .filter(d => !!d);
             if (!selectedDiffs.length) {
                 return;
             }
-            const invertedDiffs = selectedDiffs.map(c => ({
-                modifiedStartLineNumber: c.originalStartLineNumber,
-                modifiedEndLineNumber: c.originalEndLineNumber,
-                originalStartLineNumber: c.modifiedStartLineNumber,
-                originalEndLineNumber: c.modifiedEndLineNumber
-            }));
-            const result = staging.applyChanges(modifiedDocument, originalDocument, invertedDiffs);
+            const invertedDiffs = selectedDiffs.map(staging_1.invertLineChange);
+            const result = staging_1.applyLineChanges(modifiedDocument, originalDocument, invertedDiffs);
             yield this.model.stage(modifiedUri, result);
         });
     }
     clean(...resourceStates) {
         return __awaiter(this, void 0, void 0, function* () {
-            if (resourceStates.length === 0) {
+            if (resourceStates.length === 0 || !(resourceStates[0].resourceUri instanceof vscode_1.Uri)) {
                 const resource = this.getSCMResource();
                 if (!resource) {
                     return;
@@ -499,8 +524,11 @@ class CommandCenter {
             vscode_1.scm.inputBox.value = commit.message;
         });
     }
-    checkout() {
+    checkout(treeish) {
         return __awaiter(this, void 0, void 0, function* () {
+            if (typeof treeish === 'string') {
+                return yield this.model.checkout(treeish);
+            }
             const config = vscode_1.workspace.getConfiguration('git');
             const checkoutType = config.get('checkoutType') || 'all';
             const includeTags = checkoutType === 'all' || checkoutType === 'tags';
@@ -639,8 +667,11 @@ class CommandCenter {
             return result.catch((err) => __awaiter(this, void 0, void 0, function* () {
                 let message;
                 switch (err.gitErrorCode) {
-                    case 'DirtyWorkTree':
+                    case git_1.GitErrorCodes.DirtyWorkTree:
                         message = localize(31, null);
+                        break;
+                    case git_1.GitErrorCodes.PushRejected:
+                        message = localize(32, null);
                         break;
                     default:
                         const hint = (err.stderr || err.message || String(err))
@@ -649,8 +680,8 @@ class CommandCenter {
                             .split(/[\r\n]/)
                             .filter(line => !!line)[0];
                         message = hint
-                            ? localize(32, null, hint)
-                            : localize(33, null);
+                            ? localize(33, null, hint)
+                            : localize(34, null);
                         break;
                 }
                 if (!message) {
@@ -658,7 +689,7 @@ class CommandCenter {
                     return;
                 }
                 const outputChannel = this.outputChannel;
-                const openOutputChannelChoice = localize(34, null);
+                const openOutputChannelChoice = localize(35, null);
                 const choice = yield vscode_1.window.showErrorMessage(message, openOutputChannelChoice);
                 if (choice === openOutputChannelChoice) {
                     outputChannel.show();
@@ -675,7 +706,8 @@ class CommandCenter {
             return undefined;
         }
         if (uri.scheme === 'git') {
-            uri = uri.with({ scheme: 'file' });
+            const { path } = uri_1.fromGitUri(uri);
+            uri = vscode_1.Uri.file(path);
         }
         if (uri.scheme === 'file') {
             const uriString = uri.toString();
@@ -708,9 +740,6 @@ __decorate([
 __decorate([
     command('git.openFileFromUri')
 ], CommandCenter.prototype, "openFileFromUri", null);
-__decorate([
-    command('git.openChangeFromUri')
-], CommandCenter.prototype, "openChangeFromUri", null);
 __decorate([
     command('git.stage')
 ], CommandCenter.prototype, "stage", null);
@@ -787,4 +816,4 @@ __decorate([
     command('git.showOutput')
 ], CommandCenter.prototype, "showOutput", null);
 exports.CommandCenter = CommandCenter;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/d9484d12b38879b7f4cdd1150efeb2fd2c1fbf39/extensions\git\out/commands.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/f6868fce3eeb16663840eb82123369dec6077a9b/extensions\git\out/commands.js.map

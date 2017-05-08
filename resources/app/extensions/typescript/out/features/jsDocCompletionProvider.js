@@ -3,27 +3,36 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 'use strict';
+Object.defineProperty(exports, "__esModule", { value: true });
 const vscode_1 = require("vscode");
 const nls = require("vscode-nls");
 const localize = nls.loadMessageBundle(__filename);
-const tryCompleteJsDocCommand = '_typeScript.tryCompleteJsDoc';
+const configurationNamespace = 'jsDocCompletion';
+var Configuration;
+(function (Configuration) {
+    Configuration.enabled = 'enabled';
+})(Configuration || (Configuration = {}));
 class JsDocCompletionItem extends vscode_1.CompletionItem {
-    constructor(file, position) {
+    constructor(file, position, shouldGetJSDocFromTSServer) {
         super('/** */', vscode_1.CompletionItemKind.Snippet);
         this.detail = localize(0, null);
         this.insertText = '';
         this.sortText = '\0';
         this.command = {
-            title: 'Try Complete Js Doc',
-            command: tryCompleteJsDocCommand,
-            arguments: [file, position]
+            title: 'Try Complete JSDoc',
+            command: TryCompleteJsDocCommand.COMMAND_NAME,
+            arguments: [file, position, shouldGetJSDocFromTSServer]
         };
     }
 }
-class JsDocCompletionHelper {
+class JsDocCompletionProvider {
     constructor(client) {
         this.client = client;
-        vscode_1.commands.registerCommand(tryCompleteJsDocCommand, (file, position) => this.tryCompleteJsDoc(file, position));
+        this.config = { enabled: true };
+    }
+    updateConfiguration() {
+        const jsDocCompletionConfig = vscode_1.workspace.getConfiguration(configurationNamespace);
+        this.config.enabled = jsDocCompletionConfig.get(Configuration.enabled, true);
     }
     provideCompletionItems(document, position, _token) {
         const file = this.client.normalizePath(document.uri);
@@ -35,18 +44,24 @@ class JsDocCompletionHelper {
         const line = document.lineAt(position.line).text;
         const prefix = line.slice(0, position.character);
         if (prefix.match(/^\s*$|\/\*\*\s*$|^\s*\/\*\*+\s*$/)) {
-            return [new JsDocCompletionItem(document.uri, position)];
+            return [new JsDocCompletionItem(document.uri, position, this.config.enabled)];
         }
         return [];
     }
     resolveCompletionItem(item, _token) {
         return item;
     }
+}
+exports.JsDocCompletionProvider = JsDocCompletionProvider;
+class TryCompleteJsDocCommand {
+    constructor(client) {
+        this.client = client;
+    }
     /**
      * Try to insert a jsdoc comment, using a template provide by typescript
      * if possible, otherwise falling back to a default comment format.
      */
-    tryCompleteJsDoc(resource, position) {
+    tryCompleteJsDoc(resource, position, shouldGetJSDocFromTSServer) {
         const file = this.client.normalizePath(resource);
         if (!file) {
             return Promise.resolve(false);
@@ -57,6 +72,9 @@ class JsDocCompletionHelper {
         }
         return this.prepForDocCompletion(editor, position)
             .then((start) => {
+            if (!shouldGetJSDocFromTSServer) {
+                return this.tryInsertDefaultDoc(editor, start);
+            }
             return this.tryInsertJsDocFromTemplate(editor, file, start)
                 .then((didInsertFromTemplate) => {
                 if (didInsertFromTemplate) {
@@ -128,6 +146,6 @@ class JsDocCompletionHelper {
         return editor.insertSnippet(snippet, position, { undoStopBefore: false, undoStopAfter: true });
     }
 }
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.default = JsDocCompletionHelper;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/d9484d12b38879b7f4cdd1150efeb2fd2c1fbf39/extensions\typescript\out/features\jsDocCompletionProvider.js.map
+TryCompleteJsDocCommand.COMMAND_NAME = '_typeScript.tryCompleteJsDoc';
+exports.TryCompleteJsDocCommand = TryCompleteJsDocCommand;
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/f6868fce3eeb16663840eb82123369dec6077a9b/extensions\typescript\out/features\jsDocCompletionProvider.js.map

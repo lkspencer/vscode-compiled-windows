@@ -3,6 +3,7 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 'use strict';
+Object.defineProperty(exports, "__esModule", { value: true });
 var vscode = require("vscode");
 var path = require("path");
 var MarkdownDocumentLinkProvider = (function () {
@@ -25,6 +26,7 @@ var MarkdownDocumentLinkProvider = (function () {
                 results.push(new vscode.DocumentLink(new vscode.Range(linkStart, linkEnd), this.normalizeLink(document, link, base)));
             }
             catch (e) {
+                // noop
             }
         }
         return results;
@@ -49,6 +51,5 @@ var MarkdownDocumentLinkProvider = (function () {
     };
     return MarkdownDocumentLinkProvider;
 }());
-Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = MarkdownDocumentLinkProvider;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/d9484d12b38879b7f4cdd1150efeb2fd2c1fbf39/extensions\markdown\out/documentLinkProvider.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/f6868fce3eeb16663840eb82123369dec6077a9b/extensions\markdown\out/documentLinkProvider.js.map

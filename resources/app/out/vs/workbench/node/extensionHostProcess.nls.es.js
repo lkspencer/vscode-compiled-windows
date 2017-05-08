@@ -25,7 +25,7 @@ define("vs/workbench/node/extensionHostProcess.nls.es", {
 		"Aporta opciones de configuración.",
 		"Resumen de la configuración. Esta etiqueta se usará en el archivo de configuración como comentario divisor.",
 		"Descripción de las propiedades de configuración.",
-		"No se puede registrar \"{0}\". Coincide con el patrón de propiedad \"\\[.*\\]$\" para describir la configuración del editor específica del lenguaje. Utilice la contribución \"configurationDefaults\".",
+		"No se puede registrar \"{0}\". Coincide con el patrón de propiedad \'\\\\[.*\\\\]$\' para describir la configuración del editor específica del lenguaje. Utilice la contribución \"configurationDefaults\".",
 		"No se puede registrar \"{0}\". Esta propiedad ya está registrada.",
 		"configuration.properties debe ser un objeto",
 		"si se establece, \"configuration.type\" debe establecerse en \"object\"",
@@ -112,11 +112,10 @@ define("vs/workbench/node/extensionHostProcess.nls.es", {
 	"vs/workbench/api/node/extHostDiagnostics": [
 		"No se mostrarán {0} errores y advertencias adicionales.",
 	],
-	"vs/workbench/api/node/extHostTreeExplorers": [
-		"No hay registrado ningún TreeExplorerNodeProvider con el identificador \"{0}\".",
-		"TreeExplorerNodeProvider \"{0}\" no pudo proporcionar el nodo raíz.",
-		"No hay registrado ningún TreeExplorerNodeProvider con el identificador \"{0}\".",
-		"TreeExplorerNodeProvider \"{0}\" no pudo resolver los elementos secundarios.",
+	"vs/workbench/api/node/extHostTreeView": [
+		"No TreeExplorerNodeProvider with id \'{0}\' registered.",
+		"TreeExplorerNodeProvider \'{0}\' failed to provide root node.",
+		"No TreeExplorerNodeProvider with id \'{0}\' registered.",
 	],
 	"vs/workbench/node/extensionHostMain": [
 		"La ruta de acceso {0} no apunta a un ejecutor de pruebas de extensión.",

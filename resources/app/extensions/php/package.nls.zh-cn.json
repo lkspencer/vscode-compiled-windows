@@ -5,5 +5,5 @@
 	"configuration.validate.run": "不管 linter 是在 save 还是在 type 上运行。",
 	"configuration.title": "PHP",
 	"commands.categroy.php": "PHP",
-	"command.untrustValidationExecutable": "Don't trust PHP validation executable"
+	"command.untrustValidationExecutable": "禁止 PHP 验证程序(定义为工作区设置)"
 }

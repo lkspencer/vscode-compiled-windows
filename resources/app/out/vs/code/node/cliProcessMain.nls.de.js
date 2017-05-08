@@ -22,7 +22,7 @@ define("vs/code/node/cliProcessMain.nls.de", {
 		"{0} wurde im ZIP nicht gefunden.",
 	],
 	"vs/code/node/cliProcessMain": [
-		"Die Erweiterung \"{0}\" wurde nicht gefunden.",
+		"Die Erweiterung \'{0}\' wurde nicht gefunden.",
 		"Die Erweiterung \"{0}\" ist nicht installiert.",
 		"Stellen Sie sicher, dass Sie die vollständige Erweiterungs-ID (einschließlich des Herausgebers) verwenden. Beispiel: {0}",
 		"Die Extension \"{0}\" wurde erfolgreich installiert.",
@@ -40,7 +40,7 @@ define("vs/code/node/cliProcessMain.nls.de", {
 		"Trägt Konfigurationseigenschaften bei.",
 		"Eine Zusammenfassung der Einstellungen. Diese Bezeichnung wird in der Einstellungsdatei als trennender Kommentar verwendet.",
 		"Die Beschreibung der Konfigurationseigenschaften.",
-		"\"{0}\" kann nicht registriert werden. Die Eigenschaft stimmt mit dem Eigenschaftsmuster \'\\[.*\\]$\' zum Beschreiben sprachspezifischer Editor-Einstellungen überein. Verwenden Sie den Beitrag \"configurationDefaults\".",
+		"\"{0}\" kann nicht registriert werden. Die Eigenschaft stimmt mit dem Eigenschaftsmuster \'\\\\[.*\\\\]$\' zum Beschreiben sprachspezifischer Editor-Einstellungen überein. Verwenden Sie den Beitrag \"configurationDefaults\".",
 		"\"{0}\" kann nicht registriert werden. Diese Eigenschaft ist bereits registriert.",
 		"\"configuration.properties\" muss ein Objekt sein.",
 		"Wenn eine Festlegung erfolgt, muss \"configuration.type\" auf \"object\" festgelegt werden.",
@@ -48,7 +48,7 @@ define("vs/code/node/cliProcessMain.nls.de", {
 		"Trägt zu Konfigurationeinstellungen des Standard-Editors für die jeweilige Sprache bei.",
 	],
 	"vs/platform/extensionManagement/common/extensionManagement": [
-		"Erweiterungen",
+		"Extensions",
 		"Einstellungen",
 	],
 	"vs/platform/extensionManagement/node/extensionGalleryService": [

@@ -28,7 +28,7 @@ define("vs/code/electron-browser/sharedProcessMain.nls.fr", {
 		"Ajoute des paramètres de configuration.",
 		"Résumé des paramètres. Cette étiquette va être utilisée dans le fichier de paramètres en tant que commentaire de séparation.",
 		"Description des propriétés de configuration.",
-		"Impossible d\'inscrire \'{0}\'. Ceci correspond au modèle de propriété \'\\[.*\\]$\' permettant de décrire les paramètres d\'éditeur spécifiques à un langage. Utilisez la contribution \'configurationDefaults\'.",
+		"Impossible d\'inscrire \'{0}\'. Ceci correspond au modèle de propriété \'\\\\[.*\\\\]$\' permettant de décrire les paramètres d\'éditeur spécifiques à un langage. Utilisez la contribution \'configurationDefaults\'.",
 		"Impossible d\'inscrire \'{0}\'. Cette propriété est déjà inscrite.",
 		"\'configuration.properties\' doit être un objet",
 		"s\'il est défini, \'configuration.type\' doit avoir la valeur \'object",

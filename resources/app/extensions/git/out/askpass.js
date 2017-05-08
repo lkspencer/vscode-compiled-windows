@@ -11,17 +11,22 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+Object.defineProperty(exports, "__esModule", { value: true });
 const vscode_1 = require("vscode");
 const path = require("path");
 const http = require("http");
 class Askpass {
     constructor() {
+        this.enabled = true;
         this.server = http.createServer((req, res) => this.onRequest(req, res));
-        this.server.listen(0, 'localhost');
-        this.portPromise = new Promise(c => {
-            this.server.on('listening', () => c(this.server.address().port));
-        });
-        this.server.on('error', err => console.error(err));
+        try {
+            this.server.listen(0);
+            this.portPromise = new Promise(c => this.server.on('listening', () => c(this.server.address().port)));
+            this.server.on('error', err => console.error(err));
+        }
+        catch (err) {
+            this.enabled = false;
+        }
     }
     onRequest(req, res) {
         const chunks = [];
@@ -50,17 +55,24 @@ class Askpass {
         });
     }
     getEnv() {
-        return this.portPromise.then(port => ({
-            ELECTRON_RUN_AS_NODE: '1',
-            GIT_ASKPASS: path.join(__dirname, 'askpass.sh'),
-            VSCODE_GIT_ASKPASS_NODE: process.execPath,
-            VSCODE_GIT_ASKPASS_MAIN: path.join(__dirname, 'askpass-main.js'),
-            VSCODE_GIT_ASKPASS_PORT: String(port)
-        }));
+        return __awaiter(this, void 0, void 0, function* () {
+            if (!this.enabled) {
+                return {
+                    GIT_ASKPASS: path.join(__dirname, 'askpass-empty.sh')
+                };
+            }
+            return {
+                ELECTRON_RUN_AS_NODE: '1',
+                GIT_ASKPASS: path.join(__dirname, 'askpass.sh'),
+                VSCODE_GIT_ASKPASS_NODE: process.execPath,
+                VSCODE_GIT_ASKPASS_MAIN: path.join(__dirname, 'askpass-main.js'),
+                VSCODE_GIT_ASKPASS_PORT: String(yield this.portPromise)
+            };
+        });
     }
     dispose() {
         this.server.close();
     }
 }
 exports.Askpass = Askpass;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/d9484d12b38879b7f4cdd1150efeb2fd2c1fbf39/extensions\git\out/askpass.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/f6868fce3eeb16663840eb82123369dec6077a9b/extensions\git\out/askpass.js.map

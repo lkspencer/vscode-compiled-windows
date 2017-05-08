@@ -3,6 +3,7 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 'use strict';
+Object.defineProperty(exports, "__esModule", { value: true });
 var vscode = require("vscode");
 var path = require("path");
 var tableOfContentsProvider_1 = require("./tableOfContentsProvider");
@@ -24,6 +25,7 @@ var MarkdownEngine = (function () {
             this.md = factory(this.md);
         }
         catch (e) {
+            // noop
         }
     };
     Object.defineProperty(MarkdownEngine.prototype, "engine", {
@@ -129,6 +131,7 @@ var MarkdownEngine = (function () {
                 }
             }
             catch (e) {
+                // noop
             }
             return normalizeLink(link);
         };
@@ -143,4 +146,4 @@ var MarkdownEngine = (function () {
     return MarkdownEngine;
 }());
 exports.MarkdownEngine = MarkdownEngine;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/d9484d12b38879b7f4cdd1150efeb2fd2c1fbf39/extensions\markdown\out/markdownEngine.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/f6868fce3eeb16663840eb82123369dec6077a9b/extensions\markdown\out/markdownEngine.js.map

@@ -3,6 +3,7 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 'use strict';
+Object.defineProperty(exports, "__esModule", { value: true });
 const vscode_1 = require("vscode");
 const PConst = require("../protocol.const");
 const baseCodeLensProvider_1 = require("./baseCodeLensProvider");
@@ -11,6 +12,12 @@ const localize = nls.loadMessageBundle(__filename);
 class TypeScriptReferencesCodeLensProvider extends baseCodeLensProvider_1.TypeScriptBaseCodeLensProvider {
     constructor(client) {
         super(client, 'referencesCodeLens.enabled');
+    }
+    provideCodeLenses(document, token) {
+        if (!this.client.apiVersion.has206Features()) {
+            return Promise.resolve([]);
+        }
+        return super.provideCodeLenses(document, token);
     }
     resolveCodeLens(inputCodeLens, token) {
         const codeLens = inputCodeLens;
@@ -33,7 +40,7 @@ class TypeScriptReferencesCodeLensProvider extends baseCodeLensProvider_1.TypeSc
                 title: locations.length === 1
                     ? localize(0, null)
                     : localize(1, null, locations.length),
-                command: 'editor.action.showReferences',
+                command: locations.length ? 'editor.action.showReferences' : '',
                 arguments: [codeLens.document, codeLens.range.start, locations]
             };
             return codeLens;
@@ -77,6 +84,5 @@ class TypeScriptReferencesCodeLensProvider extends baseCodeLensProvider_1.TypeSc
         return null;
     }
 }
-Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = TypeScriptReferencesCodeLensProvider;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/d9484d12b38879b7f4cdd1150efeb2fd2c1fbf39/extensions\typescript\out/features\referencesCodeLensProvider.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/f6868fce3eeb16663840eb82123369dec6077a9b/extensions\typescript\out/features\referencesCodeLensProvider.js.map

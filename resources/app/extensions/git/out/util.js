@@ -11,6 +11,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+Object.defineProperty(exports, "__esModule", { value: true });
 const path_1 = require("path");
 const fs = require("fs");
 function log(...args) {
@@ -50,7 +51,7 @@ function anyEvent(...events) {
 }
 exports.anyEvent = anyEvent;
 function done(promise) {
-    return promise.then(() => void 0, () => void 0);
+    return promise.then(() => void 0);
 }
 exports.done = done;
 function once(event) {
@@ -150,4 +151,4 @@ function uniqueFilter(keyFn) {
     };
 }
 exports.uniqueFilter = uniqueFilter;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/d9484d12b38879b7f4cdd1150efeb2fd2c1fbf39/extensions\git\out/util.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/f6868fce3eeb16663840eb82123369dec6077a9b/extensions\git\out/util.js.map

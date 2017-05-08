@@ -238,6 +238,7 @@ define("vs/code/electron-main/main.nls", {
 		"Show versions of installed extensions, when using --list-extension.",
 		"Installs an extension.",
 		"Uninstalls an extension.",
+		"Enables proposed api features for an extension.",
 		"Disable all installed extensions.",
 		"Disable GPU hardware acceleration.",
 		"Print version.",

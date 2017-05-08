@@ -25,7 +25,7 @@ define("vs/workbench/node/extensionHostProcess.nls.ko", {
 		"구성 설정을 적용합니다.",
 		"설정을 요약합니다. 이 레이블은 설정 파일에서 구분 주석으로 사용됩니다.",
 		"구성 속성에 대한 설명입니다.",
-		"{0}\'을(를) 등록할 수 없습니다. 이는 언어별 편집기 설정을 설명하는 속성 패턴인 \'\\[.*\\]$\'과(와) 일치합니다. \'configurationDefaults\' 기여를 사용하세요.",
+		"\'{0}\'을(를) 등록할 수 없습니다. 이는 언어별 편집기 설정을 설명하는 속성 패턴인 \'\\\\[.*\\\\]$\'과(와) 일치합니다. \'configurationDefaults\' 기여를 사용하세요.",
 		"\'{0}\'을(를) 등록할 수 없습니다. 이 속성은 이미 등록되어 있습니다.",
 		"\'configuration.properties\'는 개체여야 합니다.",
 		"설정된 경우 \'configuration.type\'을 \'개체\'로 설정해야 합니다.",
@@ -112,11 +112,10 @@ define("vs/workbench/node/extensionHostProcess.nls.ko", {
 	"vs/workbench/api/node/extHostDiagnostics": [
 		"{0}개의 추가 오류 및 경고를 표시하지 않습니다.",
 	],
-	"vs/workbench/api/node/extHostTreeExplorers": [
-		"ID가 \'{0}\'인 등록된 TreeExplorerNodeProvider가 없습니다.",
-		"TreeExplorerNodeProvider \'{0}\'에서 루트 노드를 제공하지 못했습니다.",
-		"ID가 \'{0}\'인 등록된 TreeExplorerNodeProvider가 없습니다.",
-		"TreeExplorerNodeProvider \'{0}\'에서 자식을 확인하지 못했습니다.",
+	"vs/workbench/api/node/extHostTreeView": [
+		"No TreeExplorerNodeProvider with id \'{0}\' registered.",
+		"TreeExplorerNodeProvider \'{0}\' failed to provide root node.",
+		"No TreeExplorerNodeProvider with id \'{0}\' registered.",
 	],
 	"vs/workbench/node/extensionHostMain": [
 		"경로 {0}이(가) 유효한 확장 Test Runner를 가리키지 않습니다.",

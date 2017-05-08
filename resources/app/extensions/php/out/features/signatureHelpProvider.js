@@ -3,6 +3,7 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 'use strict';
+Object.defineProperty(exports, "__esModule", { value: true });
 var vscode_1 = require("vscode");
 var phpGlobals = require("./phpGlobals");
 var _NL = '\n'.charCodeAt(0);
@@ -118,6 +119,7 @@ var PHPSignatureHelpProvider = (function () {
                 case _DQuote:
                 case _Quote:
                     while (iterator.hasNext() && ch !== iterator.next()) {
+                        // find the closing quote or double quote
                     }
                     break;
                 case _Comma:
@@ -159,6 +161,5 @@ var PHPSignatureHelpProvider = (function () {
     };
     return PHPSignatureHelpProvider;
 }());
-Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = PHPSignatureHelpProvider;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/d9484d12b38879b7f4cdd1150efeb2fd2c1fbf39/extensions\php\out/features\signatureHelpProvider.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/f6868fce3eeb16663840eb82123369dec6077a9b/extensions\php\out/features\signatureHelpProvider.js.map

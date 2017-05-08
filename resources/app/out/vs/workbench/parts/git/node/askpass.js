@@ -16,6 +16,7 @@ var __M = function(deps) {
  *--------------------------------------------------------------------------------------------*/
 define(__m[4/*vs/base/common/functional*/], __M([1/*require*/,0/*exports*/]), function (require, exports) {
     'use strict';
+    Object.defineProperty(exports, "__esModule", { value: true });
     function not(fn) {
         return function () {
             var args = [];
@@ -46,13 +47,19 @@ define(__m[4/*vs/base/common/functional*/], __M([1/*require*/,0/*exports*/]), fu
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
 define(__m[5/*vs/base/common/lifecycle*/], __M([1/*require*/,0/*exports*/,4/*vs/base/common/functional*/]), function (require, exports, functional_1) {
     'use strict';
+    Object.defineProperty(exports, "__esModule", { value: true });
     exports.empty = Object.freeze({
         dispose: function () { }
     });
@@ -183,6 +190,7 @@ define(__m[12/*vs/base/common/platform*/], __M([1/*require*/,0/*exports*/]), fun
      *  Licensed under the MIT License. See License.txt in the project root for license information.
      *--------------------------------------------------------------------------------------------*/
     'use strict';
+    Object.defineProperty(exports, "__esModule", { value: true });
     // --- THIS FILE IS TEMPORARY UNTIL ENV.TS IS CLEANED UP. IT CAN SAFELY BE USED IN ALL TARGET EXECUTION ENVIRONMENTS (node & dom) ---
     var _isWindows = false;
     var _isMacintosh = false;
@@ -288,6 +296,7 @@ define(__m[8/*vs/base/common/types*/], __M([1/*require*/,0/*exports*/]), functio
      *  Licensed under the MIT License. See License.txt in the project root for license information.
      *--------------------------------------------------------------------------------------------*/
     'use strict';
+    Object.defineProperty(exports, "__esModule", { value: true });
     var _typeof = {
         number: 'number',
         string: 'string',
@@ -456,6 +465,7 @@ define(__m[6/*vs/base/common/errors*/], __M([1/*require*/,0/*exports*/,12/*vs/ba
      *  Licensed under the MIT License. See License.txt in the project root for license information.
      *--------------------------------------------------------------------------------------------*/
     'use strict';
+    Object.defineProperty(exports, "__esModule", { value: true });
     // Avoid circular dependency on EventEmitter by implementing a subset of the interface.
     var ErrorHandler = (function () {
         function ErrorHandler() {
@@ -620,6 +630,7 @@ define(__m[10/*vs/base/common/callbackList*/], __M([1/*require*/,0/*exports*/,6/
      *  Licensed under the MIT License. See License.txt in the project root for license information.
      *--------------------------------------------------------------------------------------------*/
     'use strict';
+    Object.defineProperty(exports, "__esModule", { value: true });
     var CallbackList = (function () {
         function CallbackList() {
         }
@@ -694,7 +705,6 @@ define(__m[10/*vs/base/common/callbackList*/], __M([1/*require*/,0/*exports*/,6/
         };
         return CallbackList;
     }());
-    Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = CallbackList;
 });
 
@@ -704,12 +714,12 @@ define(__m[2/*vs/base/common/event*/], __M([1/*require*/,0/*exports*/,5/*vs/base
      *  Licensed under the MIT License. See License.txt in the project root for license information.
      *--------------------------------------------------------------------------------------------*/
     'use strict';
+    Object.defineProperty(exports, "__esModule", { value: true });
     var Event;
     (function (Event) {
         var _disposable = { dispose: function () { } };
         Event.None = function () { return _disposable; };
     })(Event || (Event = {}));
-    Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Event;
     /**
      * The Emitter can be used to expose an Event to the public
@@ -755,6 +765,9 @@ define(__m[2/*vs/base/common/event*/], __M([1/*require*/,0/*exports*/,5/*vs/base
                         _this._callbacks.add(listener, thisArgs);
                         if (firstListener && _this._options && _this._options.onFirstListenerDidAdd) {
                             _this._options.onFirstListenerDidAdd(_this);
+                        }
+                        if (_this._options && _this._options.onListenerDidAdd) {
+                            _this._options.onListenerDidAdd(_this, listener, thisArgs);
                         }
                         var result;
                         result = {
@@ -880,7 +893,7 @@ define(__m[2/*vs/base/common/event*/], __M([1/*require*/,0/*exports*/,5/*vs/base
      */
     function fromEventEmitter(emitter, eventType) {
         return function (listener, thisArgs, disposables) {
-            var result = emitter.addListener2(eventType, function () {
+            var result = emitter.addListener(eventType, function () {
                 listener.apply(thisArgs, arguments);
             });
             if (Array.isArray(disposables)) {
@@ -953,16 +966,10 @@ define(__m[2/*vs/base/common/event*/], __M([1/*require*/,0/*exports*/,5/*vs/base
         for (var _i = 0; _i < arguments.length; _i++) {
             events[_i] = arguments[_i];
         }
-        var listeners = [];
-        var emitter = new Emitter({
-            onFirstListenerAdd: function () {
-                listeners = events.map(function (e) { return e(function (r) { return emitter.fire(r); }); });
-            },
-            onLastListenerRemove: function () {
-                listeners = lifecycle_1.dispose(listeners);
-            }
-        });
-        return emitter.event;
+        return function (listener, thisArgs, disposables) {
+            if (thisArgs === void 0) { thisArgs = null; }
+            return lifecycle_1.combinedDisposable(events.map(function (event) { return event(function (e) { return listener.call(thisArgs, e); }, null, disposables); }));
+        };
     }
     exports.any = any;
     function debounceEvent(event, merger, delay, leading) {
@@ -1147,14 +1154,38 @@ define(__m[2/*vs/base/common/event*/], __M([1/*require*/,0/*exports*/,5/*vs/base
         return emitter.event;
     }
     exports.buffer = buffer;
-    function createEmptyEvent() {
-        return function (listener, thisArgs, disposables) {
-            if (thisArgs === void 0) { thisArgs = null; }
-            return ({ dispose: function () { return null; } });
-        };
+    /**
+     * Similar to `buffer` but it buffers indefinitely and repeats
+     * the buffered events to every new listener.
+     */
+    function echo(event, nextTick, buffer) {
+        if (nextTick === void 0) { nextTick = false; }
+        if (buffer === void 0) { buffer = []; }
+        buffer = buffer.slice();
+        event(function (e) {
+            buffer.push(e);
+            emitter.fire(e);
+        });
+        var flush = function (listener, thisArgs) { return buffer.forEach(function (e) { return listener.call(thisArgs, e); }); };
+        var emitter = new Emitter({
+            onListenerDidAdd: function (emitter, listener, thisArgs) {
+                if (nextTick) {
+                    setTimeout(function () { return flush(listener, thisArgs); });
+                }
+                else {
+                    flush(listener, thisArgs);
+                }
+            }
+        });
+        return emitter.event;
     }
-    exports.createEmptyEvent = createEmptyEvent;
+    exports.echo = echo;
 });
+
+
+
+
+
 
 
 
@@ -1167,6 +1198,7 @@ define(__m[16/*vs/base/common/uuid*/], __M([1/*require*/,0/*exports*/]), functio
      *  Licensed under the MIT License. See License.txt in the project root for license information.
      *--------------------------------------------------------------------------------------------*/
     'use strict';
+    Object.defineProperty(exports, "__esModule", { value: true });
     var ValueUUID = (function () {
         function ValueUUID(_value) {
             this._value = _value;
@@ -3397,6 +3429,7 @@ define(__m[3/*vs/base/common/winjs.base*/], __M([22/*vs/base/common/winjs.base.r
  *--------------------------------------------------------------------------------------------*/
 define(__m[11/*vs/base/node/event*/], __M([1/*require*/,0/*exports*/,2/*vs/base/common/event*/]), function (require, exports, event_1) {
     'use strict';
+    Object.defineProperty(exports, "__esModule", { value: true });
     function fromEventEmitter(emitter, eventName, map) {
         if (map === void 0) { map = function (id) { return id; }; }
         var fn = function () {
@@ -3421,6 +3454,7 @@ define(__m[11/*vs/base/node/event*/], __M([1/*require*/,0/*exports*/,2/*vs/base/
  *--------------------------------------------------------------------------------------------*/
 define(__m[7/*vs/base/parts/ipc/common/ipc*/], __M([1/*require*/,0/*exports*/,3/*vs/base/common/winjs.base*/,5/*vs/base/common/lifecycle*/,2/*vs/base/common/event*/]), function (require, exports, winjs_base_1, lifecycle_1, event_1) {
     'use strict';
+    Object.defineProperty(exports, "__esModule", { value: true });
     var MessageType;
     (function (MessageType) {
         MessageType[MessageType["RequestCommon"] = 0] = "RequestCommon";
@@ -3623,6 +3657,7 @@ define(__m[7/*vs/base/parts/ipc/common/ipc*/], __M([1/*require*/,0/*exports*/,3/
                 this.protocol.send(raw);
             }
             catch (err) {
+                // noop
             }
         };
         ChannelClient.prototype.dispose = function () {
@@ -3779,8 +3814,14 @@ define(__m[7/*vs/base/parts/ipc/common/ipc*/], __M([1/*require*/,0/*exports*/,3/
 
 
 
+
+
+
+
+
 define(__m[13/*vs/base/parts/ipc/node/ipc.net*/], __M([1/*require*/,0/*exports*/,19/*net*/,3/*vs/base/common/winjs.base*/,2/*vs/base/common/event*/,11/*vs/base/node/event*/,7/*vs/base/parts/ipc/common/ipc*/,20/*path*/,17/*os*/,16/*vs/base/common/uuid*/]), function (require, exports, net_1, winjs_base_1, event_1, event_2, ipc_1, path_1, os_1, uuid_1) {
     'use strict';
+    Object.defineProperty(exports, "__esModule", { value: true });
     function generateRandomPipeName() {
         var randomSuffix = uuid_1.generateUuid();
         if (process.platform === 'win32') {
@@ -3975,6 +4016,7 @@ define(__m[14/*vs/platform/instantiation/common/instantiation*/], __M([1/*requir
      *  Licensed under the MIT License. See License.txt in the project root for license information.
      *--------------------------------------------------------------------------------------------*/
     'use strict';
+    Object.defineProperty(exports, "__esModule", { value: true });
     // ------ internal util
     var _util;
     (function (_util) {
@@ -4034,6 +4076,7 @@ define(__m[15/*vs/workbench/parts/git/common/git*/], __M([1/*require*/,0/*export
      *  Licensed under the MIT License. See License.txt in the project root for license information.
      *--------------------------------------------------------------------------------------------*/
     'use strict';
+    Object.defineProperty(exports, "__esModule", { value: true });
     var RefType;
     (function (RefType) {
         RefType[RefType["Head"] = 0] = "Head";
@@ -4157,6 +4200,7 @@ define(__m[15/*vs/workbench/parts/git/common/git*/], __M([1/*require*/,0/*export
  *--------------------------------------------------------------------------------------------*/
 define(__m[9/*vs/workbench/parts/git/common/gitIpc*/], __M([1/*require*/,0/*exports*/,3/*vs/base/common/winjs.base*/,7/*vs/base/parts/ipc/common/ipc*/,15/*vs/workbench/parts/git/common/git*/]), function (require, exports, winjs_base_1, ipc_1, git_1) {
     'use strict';
+    Object.defineProperty(exports, "__esModule", { value: true });
     var RawFileStatusSerializer = {
         to: function (a) { return [a.x, a.y, a.path, a.mimetype, a.rename]; },
         from: function (b) { return ({ x: b[0], y: b[1], path: b[2], mimetype: b[3], rename: b[4] }); }
@@ -4352,6 +4396,7 @@ define(__m[9/*vs/workbench/parts/git/common/gitIpc*/], __M([1/*require*/,0/*expo
  *--------------------------------------------------------------------------------------------*/
 define(__m[21/*vs/workbench/parts/git/node/askpass*/], __M([1/*require*/,0/*exports*/,13/*vs/base/parts/ipc/node/ipc.net*/,9/*vs/workbench/parts/git/common/gitIpc*/,18/*fs*/]), function (require, exports, ipc_net_1, gitIpc_1, fs) {
     'use strict';
+    Object.defineProperty(exports, "__esModule", { value: true });
     function fatal(err) {
         console.error(err);
         process.exit(1);

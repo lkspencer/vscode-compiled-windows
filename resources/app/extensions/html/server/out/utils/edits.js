@@ -3,6 +3,7 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 'use strict';
+Object.defineProperty(exports, "__esModule", { value: true });
 function applyEdits(document, edits) {
     var text = document.getText();
     var sortedEdits = edits.sort(function (a, b) {
@@ -29,4 +30,4 @@ function comparePositions(p1, p2) {
     }
     return diff;
 }
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/d9484d12b38879b7f4cdd1150efeb2fd2c1fbf39/extensions\html\server\out/utils\edits.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/f6868fce3eeb16663840eb82123369dec6077a9b/extensions\html\server\out/utils\edits.js.map

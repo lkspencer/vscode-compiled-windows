@@ -1,3 +1,7 @@
 [
-	"TypeScript IntelliSense를 향상하기 위해 데이터를 페치하는 중"
+	"TypeScript IntelliSense를 향상하기 위해 데이터를 페치하는 중",
+	"Could not install typings files for JavaScript language features. Please ensure that NPM is installed and is in your PATH",
+	"추가 정보",
+	"다시 확인 안 함",
+	"닫기"
 ]

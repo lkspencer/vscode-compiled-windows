@@ -1,7 +1,9 @@
 [
-	"Open",
+	"Apri",
 	"Esegui merge delle modifiche",
 	"Modifiche preparate per il commit",
 	"Modifiche",
-	"Non è stato possibile mostrare l'oggetto"
+	"OK",
+	"Never Show Again",
+	"The git repository at '{0}' has too many active changes, only a subset of Git features will be enabled."
 ]

@@ -3,24 +3,21 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 'use strict';
+Object.defineProperty(exports, "__esModule", { value: true });
 const vscode_1 = require("vscode");
 class TypeScriptCodeActionProvider {
     constructor(client, mode) {
         this.client = client;
         this.commandId = `_typescript.applyCodeAction.${mode}`;
-        this.supportedCodeActions = client.execute('getSupportedCodeFixes', null, undefined)
-            .then(response => response.body || [])
-            .then(codes => codes.map(code => +code).filter(code => !isNaN(code)))
-            .then(codes => codes.reduce((obj, code) => {
-            obj[code] = true;
-            return obj;
-        }, Object.create(null)));
         vscode_1.commands.registerCommand(this.commandId, this.onCodeAction, this);
     }
     provideCodeActions(document, range, context, token) {
+        if (!this.client.apiVersion.has213Features()) {
+            return [];
+        }
         const file = this.client.normalizePath(document.uri);
         if (!file) {
-            return Promise.resolve([]);
+            return [];
         }
         let formattingOptions = undefined;
         for (const editor of vscode_1.window.visibleTextEditors) {
@@ -35,7 +32,7 @@ class TypeScriptCodeActionProvider {
             range: range,
             formattingOptions: formattingOptions
         };
-        return this.getSupportedCodeActions(context)
+        return this.getSupportedActionsForContext(context)
             .then(supportedActions => {
             if (!supportedActions.length) {
                 return [];
@@ -51,9 +48,20 @@ class TypeScriptCodeActionProvider {
         })
             .then(codeActions => codeActions.map(action => this.actionToEdit(source, action)));
     }
-    getSupportedCodeActions(context) {
-        return this.supportedCodeActions
-            .then(supportedActions => context.diagnostics
+    get supportedCodeActions() {
+        if (!this._supportedCodeActions) {
+            this._supportedCodeActions = this.client.execute('getSupportedCodeFixes', null, undefined)
+                .then(response => response.body || [])
+                .then(codes => codes.map(code => +code).filter(code => !isNaN(code)))
+                .then(codes => codes.reduce((obj, code) => {
+                obj[code] = true;
+                return obj;
+            }, Object.create(null)));
+        }
+        return this._supportedCodeActions;
+    }
+    getSupportedActionsForContext(context) {
+        return this.supportedCodeActions.then(supportedActions => context.diagnostics
             .map(diagnostic => +diagnostic.code)
             .filter(code => supportedActions[code]));
     }
@@ -100,6 +108,5 @@ class TypeScriptCodeActionProvider {
         });
     }
 }
-Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = TypeScriptCodeActionProvider;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/d9484d12b38879b7f4cdd1150efeb2fd2c1fbf39/extensions\typescript\out/features\codeActionProvider.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/f6868fce3eeb16663840eb82123369dec6077a9b/extensions\typescript\out/features\codeActionProvider.js.map

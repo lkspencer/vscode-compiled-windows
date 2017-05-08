@@ -625,7 +625,8 @@ var AMDLoader;
                         errorback(err);
                         return;
                     }
-                    var vmScriptSrc = _this._path.normalize(scriptSrc);
+                    var normalizedScriptSrc = _this._path.normalize(scriptSrc);
+                    var vmScriptSrc = normalizedScriptSrc;
                     // Make the script src friendly towards electron
                     if (AMDLoader.isElectronRenderer) {
                         var driveLetterMatch = vmScriptSrc.match(/^([a-z])\:(.*)/i);
@@ -641,7 +642,7 @@ var AMDLoader;
                     else {
                         contents = prefix + data + suffix;
                     }
-                    contents = nodeInstrumenter(contents, vmScriptSrc);
+                    contents = nodeInstrumenter(contents, normalizedScriptSrc);
                     if (!opts.nodeCachedDataDir) {
                         _this._loadAndEvalScript(scriptSrc, vmScriptSrc, contents, { filename: vmScriptSrc }, recorder);
                         callback();

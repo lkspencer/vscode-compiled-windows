@@ -3,6 +3,7 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 'use strict';
+Object.defineProperty(exports, "__esModule", { value: true });
 const vscode_1 = require("vscode");
 var Configuration;
 (function (Configuration) {
@@ -14,6 +15,7 @@ var Configuration;
     Configuration.insertSpaceBeforeFunctionParenthesis = 'insertSpaceBeforeFunctionParenthesis';
     Configuration.insertSpaceAfterOpeningAndBeforeClosingNonemptyParenthesis = 'insertSpaceAfterOpeningAndBeforeClosingNonemptyParenthesis';
     Configuration.insertSpaceAfterOpeningAndBeforeClosingNonemptyBrackets = 'insertSpaceAfterOpeningAndBeforeClosingNonemptyBrackets';
+    Configuration.insertSpaceAfterOpeningAndBeforeClosingNonemptyBraces = 'insertSpaceAfterOpeningAndBeforeClosingNonemptyBraces';
     Configuration.insertSpaceAfterOpeningAndBeforeClosingTemplateStringBraces = 'insertSpaceAfterOpeningAndBeforeClosingTemplateStringBraces';
     Configuration.insertSpaceAfterOpeningAndBeforeClosingJsxExpressionBraces = 'insertSpaceAfterOpeningAndBeforeClosingJsxExpressionBraces';
     Configuration.placeOpenBraceOnNewLineForFunctions = 'placeOpenBraceOnNewLineForFunctions';
@@ -40,6 +42,7 @@ var Configuration;
         result.insertSpaceBeforeFunctionParenthesis = false;
         result.insertSpaceAfterOpeningAndBeforeClosingNonemptyParenthesis = false;
         result.insertSpaceAfterOpeningAndBeforeClosingNonemptyBrackets = false;
+        result.insertSpaceAfterOpeningAndBeforeClosingNonemptyBraces = true;
         result.insertSpaceAfterOpeningAndBeforeClosingTemplateStringBraces = false;
         result.insertSpaceAfterOpeningAndBeforeClosingJsxExpressionBraces = false;
         result.placeOpenBraceOnNewLineForFunctions = false;
@@ -83,13 +86,14 @@ class TypeScriptFormattingProvider {
             if (!absPath) {
                 return Promise.resolve(Object.create(null));
             }
+            const formatOptions = this.getFormatOptions(options);
             const args = {
                 file: absPath,
-                formatOptions: this.getFormatOptions(options)
+                formatOptions: formatOptions
             };
             return this.client.execute('configure', args, token).then(_ => {
-                this.formatOptions[key] = args.formatOptions;
-                return args.formatOptions;
+                this.formatOptions[key] = formatOptions;
+                return formatOptions;
             });
         }
     }
@@ -183,6 +187,7 @@ class TypeScriptFormattingProvider {
             insertSpaceBeforeFunctionParenthesis: this.config.insertSpaceBeforeFunctionParenthesis,
             insertSpaceAfterOpeningAndBeforeClosingNonemptyParenthesis: this.config.insertSpaceAfterOpeningAndBeforeClosingNonemptyParenthesis,
             insertSpaceAfterOpeningAndBeforeClosingNonemptyBrackets: this.config.insertSpaceAfterOpeningAndBeforeClosingNonemptyBrackets,
+            insertSpaceAfterOpeningAndBeforeClosingNonemptyBraces: this.config.insertSpaceAfterOpeningAndBeforeClosingNonemptyBraces,
             insertSpaceAfterOpeningAndBeforeClosingTemplateStringBraces: this.config.insertSpaceAfterOpeningAndBeforeClosingTemplateStringBraces,
             insertSpaceAfterOpeningAndBeforeClosingJsxExpressionBraces: this.config.insertSpaceAfterOpeningAndBeforeClosingJsxExpressionBraces,
             placeOpenBraceOnNewLineForFunctions: this.config.placeOpenBraceOnNewLineForFunctions,
@@ -190,6 +195,5 @@ class TypeScriptFormattingProvider {
         };
     }
 }
-Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = TypeScriptFormattingProvider;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/d9484d12b38879b7f4cdd1150efeb2fd2c1fbf39/extensions\typescript\out/features\formattingProvider.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/f6868fce3eeb16663840eb82123369dec6077a9b/extensions\typescript\out/features\formattingProvider.js.map

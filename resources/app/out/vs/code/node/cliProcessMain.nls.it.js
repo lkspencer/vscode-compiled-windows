@@ -40,7 +40,7 @@ define("vs/code/node/cliProcessMain.nls.it", {
 		"Impostazioni di configurazione di contributes.",
 		"Riepilogo delle impostazioni. Questa etichetta verrà usata nel file di impostazioni come commento di separazione.",
 		"Descrizione delle proprietà di configurazione.",
-		"Non è possibile registrare \'{0}\'. Corrisponde al criterio di proprietà \'\\[.*\\]$\' per la descrizione delle impostazioni dell\'editor specifiche del linguaggio. Usare il contributo \'configurationDefaults\'.",
+		"Non è possibile registrare \'{0}\'. Corrisponde al criterio di proprietà \'\\\\[.*\\\\]$\' per la descrizione delle impostazioni dell\'editor specifiche del linguaggio. Usare il contributo \'configurationDefaults\'.",
 		"Non è possibile registrare \'{0}\'. Questa proprietà è già registrata.",
 		"\'configuration.properties\' deve essere un oggetto",
 		"se impostato, \'configuration.type\' deve essere impostato su \'object",

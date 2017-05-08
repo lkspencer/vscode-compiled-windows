@@ -3,9 +3,11 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 'use strict';
+Object.defineProperty(exports, "__esModule", { value: true });
 var vscode_languageserver_1 = require("vscode-languageserver");
 var languageModes_1 = require("./modes/languageModes");
 var formatting_1 = require("./modes/formatting");
+var arrays_1 = require("./utils/arrays");
 var url = require("url");
 var path = require("path");
 var vscode_uri_1 = require("vscode-uri");
@@ -59,7 +61,7 @@ connection.onInitialize(function (params) {
         capabilities: {
             // Tell the client that the server works in FULL text document sync mode
             textDocumentSync: documents.syncKind,
-            completionProvider: clientDynamicRegisterSupport ? { resolveProvider: true, triggerCharacters: ['.', ':', '<', '"', '=', '/'] } : null,
+            completionProvider: clientSnippetSupport ? { resolveProvider: true, triggerCharacters: ['.', ':', '<', '"', '=', '/'] } : null,
             hoverProvider: true,
             documentHighlightProvider: true,
             documentRangeFormattingProvider: false,
@@ -135,18 +137,11 @@ function validateTextDocument(textDocument) {
     if (textDocument.languageId === 'html') {
         languageModes.getAllModesInDocument(textDocument).forEach(function (mode) {
             if (mode.doValidation && validation[mode.getId()]) {
-                pushAll(diagnostics, mode.doValidation(textDocument));
+                arrays_1.pushAll(diagnostics, mode.doValidation(textDocument));
             }
         });
     }
     connection.sendDiagnostics({ uri: textDocument.uri, diagnostics: diagnostics });
-}
-function pushAll(to, from) {
-    if (from) {
-        for (var i = 0; i < from.length; i++) {
-            to.push(from[i]);
-        }
-    }
 }
 connection.onCompletion(function (textDocumentPosition) {
     var document = documents.get(textDocumentPosition.textDocument.uri);
@@ -219,17 +214,20 @@ connection.onDocumentRangeFormatting(function (formatParams) {
 connection.onDocumentLinks(function (documentLinkParam) {
     var document = documents.get(documentLinkParam.textDocument.uri);
     var documentContext = {
-        resolveReference: function (ref) {
+        resolveReference: function (ref, base) {
+            if (base) {
+                ref = url.resolve(base, ref);
+            }
             if (workspacePath && ref[0] === '/') {
                 return vscode_uri_1.default.file(path.join(workspacePath, ref)).toString();
             }
             return url.resolve(document.uri, ref);
-        }
+        },
     };
     var links = [];
     languageModes.getAllModesInDocument(document).forEach(function (m) {
         if (m.findDocumentLinks) {
-            pushAll(links, m.findDocumentLinks(document, documentContext));
+            arrays_1.pushAll(links, m.findDocumentLinks(document, documentContext));
         }
     });
     return links;
@@ -239,7 +237,7 @@ connection.onDocumentSymbol(function (documentSymbolParms) {
     var symbols = [];
     languageModes.getAllModesInDocument(document).forEach(function (m) {
         if (m.findDocumentSymbols) {
-            pushAll(symbols, m.findDocumentSymbols(document));
+            arrays_1.pushAll(symbols, m.findDocumentSymbols(document));
         }
     });
     return symbols;
@@ -250,7 +248,7 @@ connection.onRequest(ColorSymbolRequest.type, function (uri) {
     if (document) {
         languageModes.getAllModesInDocument(document).forEach(function (m) {
             if (m.findColorSymbols) {
-                pushAll(ranges, m.findColorSymbols(document));
+                arrays_1.pushAll(ranges, m.findColorSymbols(document));
             }
         });
     }
@@ -258,4 +256,4 @@ connection.onRequest(ColorSymbolRequest.type, function (uri) {
 });
 // Listen on the connection
 connection.listen();
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/d9484d12b38879b7f4cdd1150efeb2fd2c1fbf39/extensions\html\server\out/htmlServerMain.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/f6868fce3eeb16663840eb82123369dec6077a9b/extensions\html\server\out/htmlServerMain.js.map

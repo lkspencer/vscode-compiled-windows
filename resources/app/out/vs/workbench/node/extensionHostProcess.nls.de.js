@@ -25,7 +25,7 @@ define("vs/workbench/node/extensionHostProcess.nls.de", {
 		"Trägt Konfigurationseigenschaften bei.",
 		"Eine Zusammenfassung der Einstellungen. Diese Bezeichnung wird in der Einstellungsdatei als trennender Kommentar verwendet.",
 		"Die Beschreibung der Konfigurationseigenschaften.",
-		"\"{0}\" kann nicht registriert werden. Die Eigenschaft stimmt mit dem Eigenschaftsmuster \'\\[.*\\]$\' zum Beschreiben sprachspezifischer Editor-Einstellungen überein. Verwenden Sie den Beitrag \"configurationDefaults\".",
+		"\"{0}\" kann nicht registriert werden. Die Eigenschaft stimmt mit dem Eigenschaftsmuster \'\\\\[.*\\\\]$\' zum Beschreiben sprachspezifischer Editor-Einstellungen überein. Verwenden Sie den Beitrag \"configurationDefaults\".",
 		"\"{0}\" kann nicht registriert werden. Diese Eigenschaft ist bereits registriert.",
 		"\"configuration.properties\" muss ein Objekt sein.",
 		"Wenn eine Festlegung erfolgt, muss \"configuration.type\" auf \"object\" festgelegt werden.",
@@ -112,11 +112,10 @@ define("vs/workbench/node/extensionHostProcess.nls.de", {
 	"vs/workbench/api/node/extHostDiagnostics": [
 		"{0} weitere Fehler und Warnungen werden nicht angezeigt.",
 	],
-	"vs/workbench/api/node/extHostTreeExplorers": [
-		"Es ist kein TreeExplorerNodeProvider mit ID \"{0}\" registriert.",
-		"TreeExplorerNodeProvider \"{0}\" hat keinen Stammknoten bereitgestellt.",
-		"Es ist kein TreeExplorerNodeProvider mit ID \"{0}\" registriert.",
-		"TreeExplorerNodeProvider \"{0}\" hat \"resolveChildren\" nicht ausgeführt.",
+	"vs/workbench/api/node/extHostTreeView": [
+		"No TreeExplorerNodeProvider with id \'{0}\' registered.",
+		"TreeExplorerNodeProvider \'{0}\' failed to provide root node.",
+		"No TreeExplorerNodeProvider with id \'{0}\' registered.",
 	],
 	"vs/workbench/node/extensionHostMain": [
 		"Der Pfad \"{0}\" verweist nicht auf einen gültigen Test Runner für eine Extension.",

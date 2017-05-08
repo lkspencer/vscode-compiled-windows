@@ -3,37 +3,40 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 'use strict';
+Object.defineProperty(exports, "__esModule", { value: true });
 class Kind {
 }
-Kind.unknown = '';
-Kind.keyword = 'keyword';
-Kind.script = 'script';
-Kind.module = 'module';
+Kind.alias = 'alias';
+Kind.callSignature = 'call';
 Kind.class = 'class';
-Kind.interface = 'interface';
-Kind.type = 'type';
+Kind.const = 'const';
+Kind.constructorImplementation = 'constructor';
+Kind.constructSignature = 'construct';
+Kind.directory = 'directory';
 Kind.enum = 'enum';
-Kind.variable = 'var';
-Kind.localVariable = 'local var';
+Kind.externalModuleName = 'external module name';
+Kind.file = 'file';
 Kind.function = 'function';
+Kind.indexSignature = 'index';
+Kind.interface = 'interface';
+Kind.keyword = 'keyword';
+Kind.let = 'let';
 Kind.localFunction = 'local function';
+Kind.localVariable = 'local var';
 Kind.memberFunction = 'method';
 Kind.memberGetAccessor = 'getter';
 Kind.memberSetAccessor = 'setter';
 Kind.memberVariable = 'property';
-Kind.constructorImplementation = 'constructor';
-Kind.callSignature = 'call';
-Kind.indexSignature = 'index';
-Kind.constructSignature = 'construct';
-Kind.parameter = 'parameter';
-Kind.typeParameter = 'type parameter';
+Kind.module = 'module';
 Kind.primitiveType = 'primitive type';
-Kind.alias = 'alias';
-Kind.const = 'const';
-Kind.let = 'let';
+Kind.script = 'script';
+Kind.type = 'type';
+Kind.variable = 'var';
 Kind.warning = 'warning';
-Kind.directory = 'directory';
-Kind.file = 'file';
-Kind.externalModuleName = 'external module name';
-exports.Kind = Kind;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/d9484d12b38879b7f4cdd1150efeb2fd2c1fbf39/extensions\typescript\out/protocol.const.js.map
+exports.Kind = Kind;
+class DiagnosticCategory {
+}
+DiagnosticCategory.error = 'error';
+DiagnosticCategory.warning = 'warning';
+exports.DiagnosticCategory = DiagnosticCategory;
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/f6868fce3eeb16663840eb82123369dec6077a9b/extensions\typescript\out/protocol.const.js.map

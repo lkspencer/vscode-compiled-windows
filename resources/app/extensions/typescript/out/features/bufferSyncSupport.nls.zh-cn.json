@@ -1,5 +1,5 @@
 [
-	"版本不匹配! 全局 tsc ({0}) != VS Code 的语言服务({1})。可能出现不一致的编译错误",
+	"Version mismatch! global tsc ({0}) != VS Code's language service ({1}). Inconsistent compile errors might occur",
 	"详细信息",
 	"不要再次检查",
 	"关闭",

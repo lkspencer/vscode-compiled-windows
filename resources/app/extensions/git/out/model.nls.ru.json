@@ -1,7 +1,9 @@
 [
-	"Open",
+	"Открыть",
 	"Объединить изменения",
-	"Промежуточные изменения",
+	"Промежуточно сохраненные изменения",
 	"Изменения",
-	"Не удалось отобразить объект."
+	"ОК",
+	"Never Show Again",
+	"The git repository at '{0}' has too many active changes, only a subset of Git features will be enabled."
 ]

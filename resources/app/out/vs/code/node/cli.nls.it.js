@@ -19,6 +19,7 @@ define("vs/code/node/cli.nls.it", {
 		"Mostra le versioni delle estensioni installate, quando si usa --list-extension.",
 		"Installa un\'estensione.",
 		"Disinstalla un\'estensione.",
+		"Abilita funzionalità di API proposte per un\'estensione specifica.",
 		"Disabilita tutte le estensioni installate.",
 		"Disabilita l\'accelerazione hardware della GPU.",
 		"Visualizza la versione.",

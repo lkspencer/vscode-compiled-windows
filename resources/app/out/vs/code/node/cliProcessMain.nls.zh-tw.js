@@ -40,7 +40,7 @@ define("vs/code/node/cliProcessMain.nls.zh-tw", {
 		"提供組態設定。",
 		"設定的摘要。此標籤將會在設定檔中作為分隔註解使用。",
 		"組態屬性的描述。",
-		"無法註冊 \'{0}\'。這符合用於描述語言專用編輯器設定的屬性模式 \'\\[.*\\]$\'。請使用 \'configurationDefaults\' 貢獻。",
+		"無法註冊 \'{0}\'。這符合用於描述語言專用編輯器設定的屬性模式 \'\\\\[.*\\\\]$\'。請使用 \'configurationDefaults\' 貢獻。",
 		"無法註冊 \'{0}\'。此屬性已經註冊。",
 		"\'configuration.properties\' 必須是物件",
 		"如果已設定，\'configuration.type\' 必須設定為物件",
@@ -48,7 +48,7 @@ define("vs/code/node/cliProcessMain.nls.zh-tw", {
 		"依語言貢獻預設編輯器組態設定。",
 	],
 	"vs/platform/extensionManagement/common/extensionManagement": [
-		"擴充功能",
+		"延伸模組",
 		"喜好設定",
 	],
 	"vs/platform/extensionManagement/node/extensionGalleryService": [

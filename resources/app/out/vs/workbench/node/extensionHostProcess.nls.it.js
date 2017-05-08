@@ -25,7 +25,7 @@ define("vs/workbench/node/extensionHostProcess.nls.it", {
 		"Impostazioni di configurazione di contributes.",
 		"Riepilogo delle impostazioni. Questa etichetta verrà usata nel file di impostazioni come commento di separazione.",
 		"Descrizione delle proprietà di configurazione.",
-		"Non è possibile registrare \'{0}\'. Corrisponde al criterio di proprietà \'\\[.*\\]$\' per la descrizione delle impostazioni dell\'editor specifiche del linguaggio. Usare il contributo \'configurationDefaults\'.",
+		"Non è possibile registrare \'{0}\'. Corrisponde al criterio di proprietà \'\\\\[.*\\\\]$\' per la descrizione delle impostazioni dell\'editor specifiche del linguaggio. Usare il contributo \'configurationDefaults\'.",
 		"Non è possibile registrare \'{0}\'. Questa proprietà è già registrata.",
 		"\'configuration.properties\' deve essere un oggetto",
 		"se impostato, \'configuration.type\' deve essere impostato su \'object",
@@ -79,7 +79,7 @@ define("vs/workbench/node/extensionHostProcess.nls.it", {
 		"Aggiunge come contributo i criteri di problema",
 		"Il criterio di problema non è valido e verrà ignorato.",
 		"Il criterio di problema non è valido e verrà ignorato.",
-		"Errore: non è possibile convertire la descrizione in un matcher problemi:\n{0}\n",
+		"Errore: la descrizione non può essere convertita in un matcher problemi:\n{0}\n",
 		"Errore: la descrizione non definisce un criterio problema valido:\n{0}\n",
 		"Errore: la descrizione non definisce un proprietario:\n{0}\n",
 		"Errore: la descrizione non definisce un percorso file:\n{0}\n",
@@ -112,11 +112,10 @@ define("vs/workbench/node/extensionHostProcess.nls.it", {
 	"vs/workbench/api/node/extHostDiagnostics": [
 		"Non verranno visualizzati altri {0} errori e avvisi.",
 	],
-	"vs/workbench/api/node/extHostTreeExplorers": [
-		"Non è stato registrato alcun elemento TreeExplorerNodeProvider con ID \'{0}\'.",
-		"Con l\'elemento TreeExplorerNodeProvider \'{0}\' non è stato possibile fornire il nodo radice.",
-		"Non è stato registrato alcun elemento TreeExplorerNodeProvider con ID \'{0}\'.",
-		"Con l\'elemento TreeExplorerNodeProvider \'{0}\' non è stato possibile risolvere gli elementi figlio.",
+	"vs/workbench/api/node/extHostTreeView": [
+		"No TreeExplorerNodeProvider with id \'{0}\' registered.",
+		"TreeExplorerNodeProvider \'{0}\' failed to provide root node.",
+		"No TreeExplorerNodeProvider with id \'{0}\' registered.",
 	],
 	"vs/workbench/node/extensionHostMain": [
 		"Il percorso {0} non punta a un Test Runner di estensioni valido.",

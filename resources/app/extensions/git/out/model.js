@@ -17,16 +17,15 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+Object.defineProperty(exports, "__esModule", { value: true });
 const vscode_1 = require("vscode");
 const git_1 = require("./git");
 const util_1 = require("./util");
 const decorators_1 = require("./decorators");
 const watch_1 = require("./watch");
 const path = require("path");
-const fs = require("fs");
 const nls = require("vscode-nls");
 const timeout = (millis) => new Promise(c => setTimeout(c, millis));
-const exists = (path) => new Promise(c => fs.exists(path, c));
 const localize = nls.loadMessageBundle(__filename);
 const iconsRootPath = path.join(path.dirname(__dirname), 'resources', 'icons');
 function getIconUri(iconName, theme) {
@@ -58,7 +57,8 @@ var Status;
     Status[Status["BOTH_MODIFIED"] = 15] = "BOTH_MODIFIED";
 })(Status = exports.Status || (exports.Status = {}));
 class Resource {
-    constructor(_resourceGroup, _resourceUri, _type, _renameResourceUri) {
+    constructor(workspaceRoot, _resourceGroup, _resourceUri, _type, _renameResourceUri) {
+        this.workspaceRoot = workspaceRoot;
         this._resourceGroup = _resourceGroup;
         this._resourceUri = _resourceUri;
         this._type = _type;
@@ -108,15 +108,22 @@ class Resource {
             case Status.BOTH_DELETED:
             case Status.DELETED_BY_THEM:
             case Status.DELETED_BY_US:
+            case Status.INDEX_DELETED:
                 return true;
             default:
                 return false;
         }
     }
+    get faded() {
+        const workspaceRootPath = this.workspaceRoot.fsPath;
+        return this.resourceUri.fsPath.substr(0, workspaceRootPath.length) !== workspaceRootPath;
+    }
     get decorations() {
         const light = { iconPath: this.getIconPath('light') };
         const dark = { iconPath: this.getIconPath('dark') };
-        return { strikeThrough: this.strikeThrough, light, dark };
+        const strikeThrough = this.strikeThrough;
+        const faded = this.faded;
+        return { strikeThrough, faded, light, dark };
     }
 }
 Resource.Icons = {
@@ -147,6 +154,9 @@ __decorate([
 __decorate([
     decorators_1.memoize
 ], Resource.prototype, "command", null);
+__decorate([
+    decorators_1.memoize
+], Resource.prototype, "faded", null);
 exports.Resource = Resource;
 class ResourceGroup {
     constructor(_id, _label, _resources) {
@@ -230,6 +240,14 @@ function isReadOnly(operation) {
             return false;
     }
 }
+function shouldShowProgress(operation) {
+    switch (operation) {
+        case Operation.Fetch:
+            return false;
+        default:
+            return true;
+    }
+}
 class OperationsImpl {
     constructor(operations = 0) {
         this.operations = operations;
@@ -251,7 +269,6 @@ class OperationsImpl {
 class Model {
     constructor(_git, workspaceRootPath) {
         this._git = _git;
-        this.workspaceRootPath = workspaceRootPath;
         this._onDidChangeRepository = new vscode_1.EventEmitter();
         this.onDidChangeRepository = this._onDidChangeRepository.event;
         this._onDidChangeState = new vscode_1.EventEmitter();
@@ -269,8 +286,11 @@ class Model {
         this._remotes = [];
         this._operations = new OperationsImpl();
         this._state = State.Uninitialized;
+        this.isRepositoryHuge = false;
+        this.didWarnAboutLimit = false;
         this.repositoryDisposable = util_1.EmptyDisposable;
         this.disposables = [];
+        this.workspaceRoot = vscode_1.Uri.file(workspaceRootPath);
         const fsWatcher = vscode_1.workspace.createFileSystemWatcher('**');
         this.onWorkspaceChange = util_1.anyEvent(fsWatcher.onDidChange, fsWatcher.onDidCreate, fsWatcher.onDidDelete);
         this.disposables.push(fsWatcher);
@@ -307,34 +327,12 @@ class Model {
         this._workingTreeGroup = new WorkingTreeGroup();
         this._onDidChangeResources.fire();
     }
-    whenIdle() {
-        return __awaiter(this, void 0, void 0, function* () {
-            while (!this.operations.isIdle()) {
-                yield util_1.eventToPromise(this.onDidRunOperation);
-            }
-        });
-    }
-    /**
-     * Returns promise which resolves when there is no `.git/index.lock` file,
-     * or when it has attempted way too many times. Back off mechanism.
-     */
-    whenUnlocked() {
-        return __awaiter(this, void 0, void 0, function* () {
-            let millis = 100;
-            let retries = 0;
-            while (retries < 10 && (yield exists(path.join(this.repository.root, '.git', 'index.lock')))) {
-                retries += 1;
-                millis *= 1.4;
-                yield timeout(millis);
-            }
-        });
-    }
     init() {
         return __awaiter(this, void 0, void 0, function* () {
             if (this.state !== State.NotAGitRepository) {
                 return;
             }
-            yield this._git.init(this.workspaceRootPath);
+            yield this._git.init(this.workspaceRoot.fsPath);
             yield this.status();
         });
     }
@@ -418,7 +416,12 @@ class Model {
     }
     fetch() {
         return __awaiter(this, void 0, void 0, function* () {
-            yield this.run(Operation.Fetch, () => this.repository.fetch());
+            try {
+                yield this.run(Operation.Fetch, () => this.repository.fetch());
+            }
+            catch (err) {
+                // noop
+            }
         });
     }
     pull(rebase) {
@@ -435,27 +438,20 @@ class Model {
         return __awaiter(this, void 0, void 0, function* () {
             yield this.run(Operation.Sync, () => __awaiter(this, void 0, void 0, function* () {
                 yield this.repository.pull();
-                const shouldPush = this.HEAD ? this.HEAD.ahead > 0 : true;
+                const shouldPush = this.HEAD && typeof this.HEAD.ahead === 'number' ? this.HEAD.ahead > 0 : true;
                 if (shouldPush) {
                     yield this.repository.push();
                 }
             }));
         });
     }
-    show(ref, uri) {
+    show(ref, filePath) {
         return __awaiter(this, void 0, void 0, function* () {
-            // TODO@Joao: should we make this a general concept?
-            yield this.whenIdle();
             return yield this.run(Operation.Show, () => __awaiter(this, void 0, void 0, function* () {
-                const relativePath = path.relative(this.repository.root, uri.fsPath).replace(/\\/g, '/');
-                const result = yield this.repository.git.exec(this.repository.root, ['show', `${ref}:${relativePath}`]);
-                if (result.exitCode !== 0) {
-                    throw new git_1.GitError({
-                        message: localize(4, null),
-                        exitCode: result.exitCode
-                    });
-                }
-                return result.stdout;
+                const relativePath = path.relative(this.repository.root, filePath).replace(/\\/g, '/');
+                const configFiles = vscode_1.workspace.getConfiguration('files');
+                const encoding = configFiles.get('encoding');
+                return yield this.repository.buffer(`${ref}:${relativePath}`, encoding);
             }));
         });
     }
@@ -466,15 +462,14 @@ class Model {
     }
     run(operation, runOperation = () => Promise.resolve(null)) {
         return __awaiter(this, void 0, void 0, function* () {
-            return vscode_1.window.withScmProgress(() => __awaiter(this, void 0, void 0, function* () {
+            const run = () => __awaiter(this, void 0, void 0, function* () {
                 this._operations = this._operations.start(operation);
                 this._onRunOperation.fire(operation);
                 try {
                     yield this.assertIdleState();
-                    yield this.whenUnlocked();
-                    const result = yield runOperation();
+                    const result = yield this.retryRun(runOperation);
                     if (!isReadOnly(operation)) {
-                        yield this.update();
+                        yield this.updateModelState();
                     }
                     return result;
                 }
@@ -492,7 +487,30 @@ class Model {
                     this._operations = this._operations.end(operation);
                     this._onDidRunOperation.fire(operation);
                 }
-            }));
+            });
+            return shouldShowProgress(operation)
+                ? vscode_1.window.withProgress({ location: vscode_1.ProgressLocation.SourceControl }, run)
+                : run();
+        });
+    }
+    retryRun(runOperation = () => Promise.resolve(null)) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let attempt = 0;
+            while (true) {
+                try {
+                    attempt++;
+                    return yield runOperation();
+                }
+                catch (err) {
+                    if (err.gitErrorCode === git_1.GitErrorCodes.RepositoryIsLocked && attempt <= 10) {
+                        // quatratic backoff
+                        yield timeout(Math.pow(attempt, 2) * 50);
+                    }
+                    else {
+                        throw err;
+                    }
+                }
+            }
         });
     }
     /* We use the native Node `watch` for faster, non debounced events.
@@ -507,7 +525,7 @@ class Model {
             }
             this.repositoryDisposable.dispose();
             const disposables = [];
-            const repositoryRoot = yield this._git.getRepositoryRoot(this.workspaceRootPath);
+            const repositoryRoot = yield this._git.getRepositoryRoot(this.workspaceRoot.fsPath);
             this.repository = this._git.open(repositoryRoot);
             const dotGitPath = path.join(repositoryRoot, '.git');
             const { event: onRawGitChange, disposable: watcher } = watch_1.watch(dotGitPath);
@@ -519,12 +537,27 @@ class Model {
             const onNonGitChange = util_1.filterEvent(this.onWorkspaceChange, uri => !/\/\.git\//.test(uri.fsPath));
             onNonGitChange(this.onFSChange, this, disposables);
             this.repositoryDisposable = util_1.combinedDisposable(disposables);
+            this.isRepositoryHuge = false;
+            this.didWarnAboutLimit = false;
             this.state = State.Idle;
         });
     }
-    update() {
+    updateModelState() {
         return __awaiter(this, void 0, void 0, function* () {
-            const status = yield this.repository.getStatus();
+            const { status, didHitLimit } = yield this.repository.getStatus();
+            const config = vscode_1.workspace.getConfiguration('git');
+            const shouldIgnore = config.get('ignoreLimitWarning') === true;
+            this.isRepositoryHuge = didHitLimit;
+            if (didHitLimit && !shouldIgnore && !this.didWarnAboutLimit) {
+                const ok = { title: localize(4, null), isCloseAffordance: true };
+                const neverAgain = { title: localize(5, null) };
+                vscode_1.window.showWarningMessage(localize(6, null, this.repository.root), ok, neverAgain).then(result => {
+                    if (result === neverAgain) {
+                        config.update('ignoreLimitWarning', true, false);
+                    }
+                });
+                this.didWarnAboutLimit = true;
+            }
             let HEAD;
             try {
                 HEAD = yield this.repository.getHEAD();
@@ -533,10 +566,12 @@ class Model {
                         HEAD = yield this.repository.getBranch(HEAD.name);
                     }
                     catch (err) {
+                        // noop
                     }
                 }
             }
             catch (err) {
+                // noop
             }
             const [refs, remotes] = yield Promise.all([this.repository.getRefs(), this.repository.getRemotes()]);
             this._HEAD = HEAD;
@@ -549,41 +584,41 @@ class Model {
                 const uri = vscode_1.Uri.file(path.join(this.repository.root, raw.path));
                 const renameUri = raw.rename ? vscode_1.Uri.file(path.join(this.repository.root, raw.rename)) : undefined;
                 switch (raw.x + raw.y) {
-                    case '??': return workingTree.push(new Resource(this.workingTreeGroup, uri, Status.UNTRACKED));
-                    case '!!': return workingTree.push(new Resource(this.workingTreeGroup, uri, Status.IGNORED));
-                    case 'DD': return merge.push(new Resource(this.mergeGroup, uri, Status.BOTH_DELETED));
-                    case 'AU': return merge.push(new Resource(this.mergeGroup, uri, Status.ADDED_BY_US));
-                    case 'UD': return merge.push(new Resource(this.mergeGroup, uri, Status.DELETED_BY_THEM));
-                    case 'UA': return merge.push(new Resource(this.mergeGroup, uri, Status.ADDED_BY_THEM));
-                    case 'DU': return merge.push(new Resource(this.mergeGroup, uri, Status.DELETED_BY_US));
-                    case 'AA': return merge.push(new Resource(this.mergeGroup, uri, Status.BOTH_ADDED));
-                    case 'UU': return merge.push(new Resource(this.mergeGroup, uri, Status.BOTH_MODIFIED));
+                    case '??': return workingTree.push(new Resource(this.workspaceRoot, this.workingTreeGroup, uri, Status.UNTRACKED));
+                    case '!!': return workingTree.push(new Resource(this.workspaceRoot, this.workingTreeGroup, uri, Status.IGNORED));
+                    case 'DD': return merge.push(new Resource(this.workspaceRoot, this.mergeGroup, uri, Status.BOTH_DELETED));
+                    case 'AU': return merge.push(new Resource(this.workspaceRoot, this.mergeGroup, uri, Status.ADDED_BY_US));
+                    case 'UD': return merge.push(new Resource(this.workspaceRoot, this.mergeGroup, uri, Status.DELETED_BY_THEM));
+                    case 'UA': return merge.push(new Resource(this.workspaceRoot, this.mergeGroup, uri, Status.ADDED_BY_THEM));
+                    case 'DU': return merge.push(new Resource(this.workspaceRoot, this.mergeGroup, uri, Status.DELETED_BY_US));
+                    case 'AA': return merge.push(new Resource(this.workspaceRoot, this.mergeGroup, uri, Status.BOTH_ADDED));
+                    case 'UU': return merge.push(new Resource(this.workspaceRoot, this.mergeGroup, uri, Status.BOTH_MODIFIED));
                 }
                 let isModifiedInIndex = false;
                 switch (raw.x) {
                     case 'M':
-                        index.push(new Resource(this.indexGroup, uri, Status.INDEX_MODIFIED));
+                        index.push(new Resource(this.workspaceRoot, this.indexGroup, uri, Status.INDEX_MODIFIED));
                         isModifiedInIndex = true;
                         break;
                     case 'A':
-                        index.push(new Resource(this.indexGroup, uri, Status.INDEX_ADDED));
+                        index.push(new Resource(this.workspaceRoot, this.indexGroup, uri, Status.INDEX_ADDED));
                         break;
                     case 'D':
-                        index.push(new Resource(this.indexGroup, uri, Status.INDEX_DELETED));
+                        index.push(new Resource(this.workspaceRoot, this.indexGroup, uri, Status.INDEX_DELETED));
                         break;
                     case 'R':
-                        index.push(new Resource(this.indexGroup, uri, Status.INDEX_RENAMED, renameUri));
+                        index.push(new Resource(this.workspaceRoot, this.indexGroup, uri, Status.INDEX_RENAMED, renameUri));
                         break;
                     case 'C':
-                        index.push(new Resource(this.indexGroup, uri, Status.INDEX_COPIED));
+                        index.push(new Resource(this.workspaceRoot, this.indexGroup, uri, Status.INDEX_COPIED));
                         break;
                 }
                 switch (raw.y) {
                     case 'M':
-                        workingTree.push(new Resource(this.workingTreeGroup, uri, Status.MODIFIED, renameUri));
+                        workingTree.push(new Resource(this.workspaceRoot, this.workingTreeGroup, uri, Status.MODIFIED, renameUri));
                         break;
                     case 'D':
-                        workingTree.push(new Resource(this.workingTreeGroup, uri, Status.DELETED, renameUri));
+                        workingTree.push(new Resource(this.workspaceRoot, this.workingTreeGroup, uri, Status.DELETED, renameUri));
                         break;
                 }
             });
@@ -599,6 +634,9 @@ class Model {
         if (!autorefresh) {
             return;
         }
+        if (this.isRepositoryHuge) {
+            return;
+        }
         if (!this.operations.isIdle()) {
             return;
         }
@@ -612,6 +650,13 @@ class Model {
             yield this.whenIdle();
             yield this.status();
             yield timeout(5000);
+        });
+    }
+    whenIdle() {
+        return __awaiter(this, void 0, void 0, function* () {
+            while (!this.operations.isIdle()) {
+                yield util_1.eventToPromise(this.onDidRunOperation);
+            }
         });
     }
     dispose() {
@@ -633,46 +678,13 @@ __decorate([
 ], Model.prototype, "status", null);
 __decorate([
     decorators_1.throttle
-], Model.prototype, "add", null);
-__decorate([
-    decorators_1.throttle
-], Model.prototype, "stage", null);
-__decorate([
-    decorators_1.throttle
-], Model.prototype, "revertFiles", null);
-__decorate([
-    decorators_1.throttle
-], Model.prototype, "commit", null);
-__decorate([
-    decorators_1.throttle
-], Model.prototype, "clean", null);
-__decorate([
-    decorators_1.throttle
-], Model.prototype, "branch", null);
-__decorate([
-    decorators_1.throttle
-], Model.prototype, "checkout", null);
-__decorate([
-    decorators_1.throttle
-], Model.prototype, "getCommit", null);
-__decorate([
-    decorators_1.throttle
-], Model.prototype, "reset", null);
-__decorate([
-    decorators_1.throttle
 ], Model.prototype, "fetch", null);
-__decorate([
-    decorators_1.throttle
-], Model.prototype, "pull", null);
-__decorate([
-    decorators_1.throttle
-], Model.prototype, "push", null);
 __decorate([
     decorators_1.throttle
 ], Model.prototype, "sync", null);
 __decorate([
     decorators_1.throttle
-], Model.prototype, "update", null);
+], Model.prototype, "updateModelState", null);
 __decorate([
     decorators_1.debounce(1000)
 ], Model.prototype, "eventuallyUpdateWhenIdleAndWait", null);
@@ -680,4 +692,4 @@ __decorate([
     decorators_1.throttle
 ], Model.prototype, "updateWhenIdleAndWait", null);
 exports.Model = Model;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/d9484d12b38879b7f4cdd1150efeb2fd2c1fbf39/extensions\git\out/model.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/f6868fce3eeb16663840eb82123369dec6077a9b/extensions\git\out/model.js.map

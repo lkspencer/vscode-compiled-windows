@@ -71,7 +71,7 @@ define("vs/code/node/cliProcessMain.nls", {
 		"All",
 		"Cancel",
 		"Are you sure you want to uninstall '{0}'?",
-		"Ok",
+		"OK",
 		"Cancel",
 		"Cannot uninstall extension '{0}'. Extension '{1}' depends on this.",
 		"Cannot uninstall extension '{0}'. Extensions '{1}' and '{2}' depend on this.",

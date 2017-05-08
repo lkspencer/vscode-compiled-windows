@@ -40,7 +40,7 @@ define("vs/code/node/cliProcessMain.nls.es", {
 		"Aporta opciones de configuración.",
 		"Resumen de la configuración. Esta etiqueta se usará en el archivo de configuración como comentario divisor.",
 		"Descripción de las propiedades de configuración.",
-		"No se puede registrar \"{0}\". Coincide con el patrón de propiedad \"\\[.*\\]$\" para describir la configuración del editor específica del lenguaje. Utilice la contribución \"configurationDefaults\".",
+		"No se puede registrar \"{0}\". Coincide con el patrón de propiedad \'\\\\[.*\\\\]$\' para describir la configuración del editor específica del lenguaje. Utilice la contribución \"configurationDefaults\".",
 		"No se puede registrar \"{0}\". Esta propiedad ya está registrada.",
 		"configuration.properties debe ser un objeto",
 		"si se establece, \"configuration.type\" debe establecerse en \"object\"",

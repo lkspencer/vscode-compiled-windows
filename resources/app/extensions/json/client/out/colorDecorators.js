@@ -3,6 +3,7 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 'use strict';
+Object.defineProperty(exports, "__esModule", { value: true });
 var vscode_1 = require("vscode");
 var MAX_DECORATORS = 500;
 var decorationType = {
@@ -98,7 +99,7 @@ function activateColorDecorations(decoratorProvider, supportedLanguages, isDecor
                         var range = ranges[i];
                         var text = document.getText(range);
                         var value = JSON.parse(text);
-                        var color = hex2rgba(value);
+                        var color = hex2CSSColor(value);
                         if (color) {
                             decorations.push({
                                 range: range,
@@ -118,24 +119,33 @@ function activateColorDecorations(decoratorProvider, supportedLanguages, isDecor
     return vscode_1.Disposable.from.apply(vscode_1.Disposable, disposables);
 }
 exports.activateColorDecorations = activateColorDecorations;
-var CharCode_Hash = 35;
-function hex2rgba(hex) {
-    if (!hex) {
+var colorPattern = /^#[0-9A-Fa-f]{3,8}$/;
+function hex2CSSColor(hex) {
+    if (!hex || !colorPattern.test(hex)) {
         return null;
     }
-    if (hex.length === 7 && hex.charCodeAt(0) === CharCode_Hash) {
-        // #RRGGBB format
+    if (hex.length === 4 || hex.length === 7) {
+        // #RGB or #RRGGBB format
         return hex;
     }
-    if (hex.length === 9 && hex.charCodeAt(0) === CharCode_Hash) {
+    if (hex.length === 5) {
+        // #RGBA format
+        var val = parseInt(hex.substr(1), 16);
+        var r = (val >> 12) & 0xF;
+        var g = (val >> 8) & 0xF;
+        var b = (val >> 4) & 0xF;
+        var a = val & 0xF;
+        return "rgba(" + (r + r * 16) + ", " + (g + g * 16) + ", " + (b + b + 16) + ", " + +(a / 16).toFixed(2) + ")";
+    }
+    if (hex.length === 9) {
         // #RRGGBBAA format
         var val = parseInt(hex.substr(1), 16);
-        var r = (val >> 24) & 255;
-        var g = (val >> 16) & 255;
-        var b = (val >> 8) & 255;
-        var a = val & 255;
+        var r = (val >> 24) & 0xFF;
+        var g = (val >> 16) & 0xFF;
+        var b = (val >> 8) & 0xFF;
+        var a = val & 0xFF;
         return "rgba(" + r + ", " + g + ", " + b + ", " + +(a / 255).toFixed(2) + ")";
     }
     return null;
 }
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/d9484d12b38879b7f4cdd1150efeb2fd2c1fbf39/extensions\json\client\out/colorDecorators.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/f6868fce3eeb16663840eb82123369dec6077a9b/extensions\json\client\out/colorDecorators.js.map

@@ -5,6 +5,6 @@
 	"json.schemas.fileMatch.item.desc": "Criteri dei file che possono contenere '*' da usare per la ricerca durante la risoluzione di file JSON in schemi.",
 	"json.schemas.schema.desc": "Definizione dello schema per l'URL specificato. È necessario specificare lo schema per evitare accessi all'URL dello schema.",
 	"json.format.enable.desc": "Abilita/Disabilita il formattatore JSON predefinito (richiede il riavvio)",
-	"json.tracing.desc": "Traces the communication between VS Code and the JSON language server.",
-	"json.colorDecorators.enable.desc": "Enables or disables color decorators"
+	"json.tracing.desc": "Traccia la comunicazione tra VS Code e il server del linguaggio JSON.",
+	"json.colorDecorators.enable.desc": "Abilita o disabilita gli elementi Decorator di tipo colore"
 }

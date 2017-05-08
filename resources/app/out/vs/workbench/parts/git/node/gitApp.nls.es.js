@@ -12,7 +12,7 @@ define("vs/workbench/parts/git/node/gitApp.nls.es", {
 		"No se puede ejecutar un comando shell en una unidad UNC.",
 	],
 	"vs/workbench/parts/git/node/git.lib": [
-		"No se puede abrir el archivo de GIT.",
+		"No se puede abrir el archivo de GIT",
 		"El archivo parece ser binario y no se puede abrir como texto",
 	]
 });

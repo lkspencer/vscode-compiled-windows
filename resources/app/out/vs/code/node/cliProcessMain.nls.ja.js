@@ -40,7 +40,7 @@ define("vs/code/node/cliProcessMain.nls.ja", {
 		"構成の設定を提供します。",
 		"設定の概要です。このラベルは、設定ファイルでコメントの区切り文字として使用します。",
 		"構成のプロパティの説明です。",
-		"\'{0}\' を登録できません。これは、言語固有のエディター設定を記述するプロパティ パターン \'\\[.*\\]$\' に一致しています。\'configurationDefaults\' コントリビューションを使用してください。",
+		"\'{0}\' を登録できません。これは、言語固有のエディター設定を記述するプロパティ パターン \'\\\\[.*\\\\]$\' に一致しています。\'configurationDefaults\' コントリビューションを使用してください。",
 		"\'{0}\' を登録できません。このプロパティは既に登録されています。",
 		"\'configuration.properties\' は、オブジェクトである必要があります",
 		"設定すると、\'configuration.type\' は \'オブジェクトに設定されなければなりません",
@@ -115,7 +115,7 @@ define("vs/code/node/cliProcessMain.nls.ja", {
 	],
 	"vs/platform/message/common/message": [
 		"閉じる",
-		"後で",
+		"後続",
 		"キャンセル",
 	],
 	"vs/platform/request/node/request": [

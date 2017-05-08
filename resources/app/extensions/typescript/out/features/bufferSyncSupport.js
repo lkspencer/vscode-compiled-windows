@@ -3,6 +3,7 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 'use strict';
+Object.defineProperty(exports, "__esModule", { value: true });
 const cp = require("child_process");
 const fs = require("fs");
 const vscode_1 = require("vscode");
@@ -24,7 +25,7 @@ class SyncedBuffer {
         this.client = client;
     }
     open() {
-        let args = {
+        const args = {
             file: this.filepath,
             fileContent: this.document.getText(),
         };
@@ -33,6 +34,9 @@ class SyncedBuffer {
             if (scriptKind) {
                 args.scriptKindName = scriptKind;
             }
+        }
+        if (vscode_1.workspace.rootPath && this.client.apiVersion.has230Features()) {
+            args.projectRootPath = vscode_1.workspace.rootPath;
         }
         this.client.execute('open', args, false);
     }
@@ -279,6 +283,5 @@ class BufferSyncSupport {
         }
     }
 }
-Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = BufferSyncSupport;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/d9484d12b38879b7f4cdd1150efeb2fd2c1fbf39/extensions\typescript\out/features\bufferSyncSupport.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/f6868fce3eeb16663840eb82123369dec6077a9b/extensions\typescript\out/features\bufferSyncSupport.js.map

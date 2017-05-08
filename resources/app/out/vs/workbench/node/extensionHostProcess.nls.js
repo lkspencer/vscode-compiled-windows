@@ -115,11 +115,10 @@ define("vs/workbench/node/extensionHostProcess.nls", {
 	"vs/workbench/api/node/extHostDiagnostics": [
 		"Not showing {0} further errors and warnings."
 	],
-	"vs/workbench/api/node/extHostTreeExplorers": [
+	"vs/workbench/api/node/extHostTreeView": [
 		"No TreeExplorerNodeProvider with id '{0}' registered.",
 		"TreeExplorerNodeProvider '{0}' failed to provide root node.",
-		"No TreeExplorerNodeProvider with id '{0}' registered.",
-		"TreeExplorerNodeProvider '{0}' failed to resolveChildren."
+		"No TreeExplorerNodeProvider with id '{0}' registered."
 	],
 	"vs/workbench/node/extensionHostMain": [
 		"Path {0} does not point to a valid extension test runner."

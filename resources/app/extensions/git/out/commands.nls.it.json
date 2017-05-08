@@ -11,8 +11,8 @@
 	"Rimuovere le modifiche in {0}?",
 	"Rimuovere le modifiche in {0} file?",
 	"Rimuovi modifiche",
-	"Rimuovere TUTTE le modifiche?",
-	"Rimuovi modifiche",
+	"Are you sure you want to discard ALL changes? This is IRREVERSIBLE!",
+	"Discard ALL Changes",
 	"Non ci sono modifiche di cui eseguire il commit.",
 	"Messaggio di commit",
 	"Specificare un messaggio di commit",
@@ -31,6 +31,7 @@
 	"Selezionare un repository remoto in cui pubblicare il ramo '{0}':",
 	"GIT è disabilitato oppure non supportato in quest'area di lavoro",
 	"Pulire l'albero di lavoro del repository prima dell'estrazione.",
+	"Can't push refs to remote. Run 'Pull' first to integrate your changes.",
 	"GIT: {0}",
 	"Errore GIT",
 	"Apri log GIT"

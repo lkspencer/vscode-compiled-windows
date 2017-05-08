@@ -2,16 +2,26 @@
  * Copyright (C) Microsoft Corporation. All rights reserved.
  *--------------------------------------------------------*/
 "use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 const vscode_chrome_debug_core_1 = require("vscode-chrome-debug-core");
+const telemetry = vscode_chrome_debug_core_1.telemetry.telemetry;
 const vscode_debugadapter_1 = require("vscode-debugadapter");
 const path = require("path");
 const fs = require("fs");
 const cp = require("child_process");
 const pathUtils = require("./pathUtils");
 const utils = require("./utils");
-const utils_1 = require("./utils");
 const errors = require("./errors");
+const nls = require("vscode-nls");
+const localize = nls.config(process.env.VSCODE_NLS_CONFIG)(__filename);
 const DefaultSourceMapPathOverrides = {
     'webpack:///./*': '${cwd}/*',
     'webpack:///*': '*',
@@ -68,11 +78,14 @@ class NodeDebugAdapter extends vscode_chrome_debug_core_1.ChromeDebugAdapter {
                 return this.getRelativePathErrorResponse('program', programPath);
             }
             if (!fs.existsSync(programPath)) {
-                return this.getNotExistErrorResponse('program', programPath);
+                programPath += '.js';
+                if (!fs.existsSync(programPath)) {
+                    return this.getNotExistErrorResponse('program', programPath);
+                }
             }
             programPath = path.normalize(programPath);
             if (pathUtils.normalizeDriveLetter(programPath) !== pathUtils.realPath(programPath)) {
-                vscode_chrome_debug_core_1.logger.warn(utils_1.localize('program.path.case.mismatch.warning', "Program path uses differently cased character as file on disk; this might result in breakpoints not being hit."));
+                vscode_chrome_debug_core_1.logger.warn(localize(0, null));
             }
         }
         return this.resolveProgramPath(programPath, args.sourceMaps).then(resolvedProgramPath => {
@@ -98,7 +111,7 @@ class NodeDebugAdapter extends vscode_chrome_debug_core_1.ChromeDebugAdapter {
             const runtimeArgs = args.runtimeArgs || [];
             const programArgs = args.args || [];
             let launchArgs = [runtimeExecutable];
-            if (!args.noDebug) {
+            if (!args.noDebug && !args.port) {
                 launchArgs.push(`--inspect=${port}`);
                 // Always stop on entry to set breakpoints
                 launchArgs.push('--debug-brk');
@@ -110,7 +123,7 @@ class NodeDebugAdapter extends vscode_chrome_debug_core_1.ChromeDebugAdapter {
             if (args.console === 'integratedTerminal' || args.console === 'externalTerminal') {
                 const termArgs = {
                     kind: args.console === 'integratedTerminal' ? 'integrated' : 'external',
-                    title: utils_1.localize('node.console.title', "Node Debug Console"),
+                    title: localize(1, null),
                     cwd,
                     args: launchArgs,
                     env: envArgs
@@ -150,10 +163,19 @@ class NodeDebugAdapter extends vscode_chrome_debug_core_1.ChromeDebugAdapter {
         super.commonArgs(args);
     }
     doAttach(port, targetUrl, address, timeout) {
-        return super.doAttach(port, targetUrl, address, timeout)
-            .then(() => {
+        const _super = name => super[name];
+        return __awaiter(this, void 0, void 0, function* () {
+            yield _super("doAttach").call(this, port, targetUrl, address, timeout);
             this.beginWaitingForDebuggerPaused();
             this.getNodeProcessDetailsIfNeeded();
+            const supportsStepBack = yield this.supportsStepBack();
+            return { supportsStepBack };
+        });
+    }
+    supportsStepBack() {
+        return __awaiter(this, void 0, void 0, function* () {
+            const { domains } = yield this.chrome.Schema.getDomains();
+            return !!domains.find(d => d.name === 'TimeTravel');
         });
     }
     launchInTerminal(termArgs) {
@@ -206,13 +228,14 @@ class NodeDebugAdapter extends vscode_chrome_debug_core_1.ChromeDebugAdapter {
                 this._session.sendEvent(new vscode_debugadapter_1.OutputEvent(msg, 'stderr'));
             };
             nodeProcess.stderr.on('data', onStderr);
-            // If only running, use stdout/stderr instead of debug protocol logs
-            if (noDebugMode) {
-                nodeProcess.stdout.on('data', (data) => {
+            // Must attach a listener to stdout or process will hang on Windows
+            nodeProcess.stdout.on('data', (data) => {
+                // If only running, use stdout/stderr instead of debug protocol logs
+                if (noDebugMode) {
                     let msg = data.toString();
                     this._session.sendEvent(new vscode_debugadapter_1.OutputEvent(msg, 'stdout'));
-                });
-            }
+                }
+            });
             resolve();
         });
     }
@@ -221,15 +244,18 @@ class NodeDebugAdapter extends vscode_chrome_debug_core_1.ChromeDebugAdapter {
         if (args.envFile) {
             try {
                 const env = {};
-                const buffer = fs.readFileSync(args.envFile, 'utf8');
+                const buffer = utils.stripBOM(fs.readFileSync(args.envFile, 'utf8'));
                 buffer.split('\n').forEach(line => {
                     const r = line.match(/^\s*([\w\.\-]+)\s*=\s*(.*)?\s*$/);
                     if (r !== null) {
-                        let value = r[2] || '';
-                        if (value.length > 0 && value.charAt(0) === '"' && value.charAt(value.length - 1) === '"') {
-                            value = value.replace(/\\n/gm, '\n');
+                        const key = r[1];
+                        if (!process.env[key]) {
+                            let value = r[2] || '';
+                            if (value.length > 0 && value.charAt(0) === '"' && value.charAt(value.length - 1) === '"') {
+                                value = value.replace(/\\n/gm, '\n');
+                            }
+                            env[key] = value.replace(/(^['"]|['"]$)/g, '');
                         }
-                        env[r[1]] = value.replace(/(^['"]|['"]$)/g, '');
                     }
                 });
                 return utils.extendObject(env, args.env); // launch config env vars overwrite .env vars
@@ -411,7 +437,7 @@ class NodeDebugAdapter extends vscode_chrome_debug_core_1.ChromeDebugAdapter {
                 }
                 this._loggedTargetVersion = true;
                 vscode_chrome_debug_core_1.logger.log(`Target node version: ${version} ${arch}`);
-                vscode_chrome_debug_core_1.telemetry.reportEvent('nodeVersion', { version });
+                telemetry.reportEvent('nodeVersion', { version });
             }
         }, error => vscode_chrome_debug_core_1.logger.error('Error evaluating `process.pid`: ' + error.message));
     }
@@ -459,7 +485,7 @@ class NodeDebugAdapter extends vscode_chrome_debug_core_1.ChromeDebugAdapter {
     getNotExistErrorResponse(attribute, path) {
         return Promise.reject({
             id: 2007,
-            format: utils_1.localize('attribute.path.not.exist', "Attribute '{0}' does not exist ('{1}').", attribute, '{path}'),
+            format: localize(2, null, attribute, '{path}'),
             variables: { path }
         });
     }
@@ -467,13 +493,13 @@ class NodeDebugAdapter extends vscode_chrome_debug_core_1.ChromeDebugAdapter {
      * 'Path not absolute' error with 'More Information' link.
      */
     getRelativePathErrorResponse(attribute, path) {
-        const format = utils_1.localize('attribute.path.not.absolute', "Attribute '{0}' is not absolute ('{1}'); consider adding '{2}' as a prefix to make it absolute.", attribute, '{path}', '${workspaceRoot}/');
+        const format = localize(3, null, attribute, '{path}', '${workspaceRoot}/');
         return this.getErrorResponseWithInfoLink(2008, format, { path }, 20003);
     }
     getRuntimeNotOnPathErrorResponse(runtime) {
         return Promise.reject({
             id: 2001,
-            format: utils_1.localize('VSND2001', "Cannot find runtime '{0}' on PATH.", '{_runtime}'),
+            format: localize(4, null, '{_runtime}'),
             variables: { _runtime: runtime }
         });
     }
@@ -487,13 +513,13 @@ class NodeDebugAdapter extends vscode_chrome_debug_core_1.ChromeDebugAdapter {
             variables,
             showUser: true,
             url: 'http://go.microsoft.com/fwlink/?linkID=534832#_' + infoId.toString(),
-            urlLabel: utils_1.localize('more.information', "More Information")
+            urlLabel: localize(5, null)
         });
     }
     getReadonlyOrigin(aPath) {
         return path.isAbsolute(aPath) || aPath.startsWith(vscode_chrome_debug_core_1.ChromeDebugAdapter.EVAL_NAME_PREFIX) ?
-            utils_1.localize('origin.from.node', "read-only content from Node.js") :
-            utils_1.localize('origin.core.module', "read-only core module");
+            localize(6, null) :
+            localize(7, null);
     }
     /**
      * If realPath is an absolute path or a URL, return realPath. Otherwise, prepend the node_internals marker

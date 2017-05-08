@@ -3,6 +3,7 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 'use strict';
+Object.defineProperty(exports, "__esModule", { value: true });
 const vscode_1 = require("vscode");
 const PConst = require("../protocol.const");
 const Previewer = require("./previewer");
@@ -46,17 +47,19 @@ class MyCompletionItem extends vscode_1.CompletionItem {
             case PConst.Kind.let:
             case PConst.Kind.variable:
             case PConst.Kind.localVariable:
+            case PConst.Kind.alias:
                 return vscode_1.CompletionItemKind.Variable;
             case PConst.Kind.memberVariable:
             case PConst.Kind.memberGetAccessor:
             case PConst.Kind.memberSetAccessor:
                 return vscode_1.CompletionItemKind.Field;
             case PConst.Kind.function:
+                return vscode_1.CompletionItemKind.Function;
             case PConst.Kind.memberFunction:
             case PConst.Kind.constructSignature:
             case PConst.Kind.callSignature:
             case PConst.Kind.indexSignature:
-                return vscode_1.CompletionItemKind.Function;
+                return vscode_1.CompletionItemKind.Method;
             case PConst.Kind.enum:
                 return vscode_1.CompletionItemKind.Enum;
             case PConst.Kind.module:
@@ -264,6 +267,5 @@ class TypeScriptCompletionItemProvider {
         return new vscode_1.SnippetString(codeSnippet);
     }
 }
-Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = TypeScriptCompletionItemProvider;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/d9484d12b38879b7f4cdd1150efeb2fd2c1fbf39/extensions\typescript\out/features\completionItemProvider.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/f6868fce3eeb16663840eb82123369dec6077a9b/extensions\typescript\out/features\completionItemProvider.js.map

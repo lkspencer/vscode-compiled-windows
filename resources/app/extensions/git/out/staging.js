@@ -3,8 +3,9 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 'use strict';
+Object.defineProperty(exports, "__esModule", { value: true });
 const vscode_1 = require("vscode");
-function applyChanges(original, modified, diffs) {
+function applyLineChanges(original, modified, diffs) {
     const result = [];
     let currentLine = 0;
     for (let diff of diffs) {
@@ -25,5 +26,65 @@ function applyChanges(original, modified, diffs) {
     result.push(original.getText(new vscode_1.Range(currentLine, 0, original.lineCount, 0)));
     return result.join('');
 }
-exports.applyChanges = applyChanges;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/d9484d12b38879b7f4cdd1150efeb2fd2c1fbf39/extensions\git\out/staging.js.map
+exports.applyLineChanges = applyLineChanges;
+function toLineRanges(selections, textDocument) {
+    const lineRanges = selections.map(s => {
+        const startLine = textDocument.lineAt(s.start.line);
+        const endLine = textDocument.lineAt(s.end.line);
+        return new vscode_1.Range(startLine.range.start, endLine.range.end);
+    });
+    lineRanges.sort((a, b) => a.start.line - b.start.line);
+    const result = lineRanges.reduce((result, l) => {
+        if (result.length === 0) {
+            result.push(l);
+            return result;
+        }
+        const [last, ...rest] = result;
+        const intersection = l.intersection(last);
+        if (intersection) {
+            return [intersection, ...rest];
+        }
+        if (l.start.line === last.end.line + 1) {
+            const merge = new vscode_1.Range(last.start, l.end);
+            return [merge, ...rest];
+        }
+        return [l, ...result];
+    }, []);
+    result.reverse();
+    return result;
+}
+exports.toLineRanges = toLineRanges;
+function getModifiedRange(textDocument, diff) {
+    return diff.modifiedEndLineNumber === 0
+        ? new vscode_1.Range(textDocument.lineAt(diff.modifiedStartLineNumber - 1).range.end, textDocument.lineAt(diff.modifiedStartLineNumber).range.start)
+        : new vscode_1.Range(textDocument.lineAt(diff.modifiedStartLineNumber - 1).range.start, textDocument.lineAt(diff.modifiedEndLineNumber - 1).range.end);
+}
+function intersectDiffWithRange(textDocument, diff, range) {
+    const modifiedRange = getModifiedRange(textDocument, diff);
+    const intersection = range.intersection(modifiedRange);
+    if (!intersection) {
+        return null;
+    }
+    if (diff.modifiedEndLineNumber === 0) {
+        return diff;
+    }
+    else {
+        return {
+            originalStartLineNumber: diff.originalStartLineNumber,
+            originalEndLineNumber: diff.originalEndLineNumber,
+            modifiedStartLineNumber: intersection.start.line + 1,
+            modifiedEndLineNumber: intersection.end.line + 1
+        };
+    }
+}
+exports.intersectDiffWithRange = intersectDiffWithRange;
+function invertLineChange(diff) {
+    return {
+        modifiedStartLineNumber: diff.originalStartLineNumber,
+        modifiedEndLineNumber: diff.originalEndLineNumber,
+        originalStartLineNumber: diff.modifiedStartLineNumber,
+        originalEndLineNumber: diff.modifiedEndLineNumber
+    };
+}
+exports.invertLineChange = invertLineChange;
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/f6868fce3eeb16663840eb82123369dec6077a9b/extensions\git\out/staging.js.map

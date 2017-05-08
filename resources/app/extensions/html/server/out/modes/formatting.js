@@ -3,15 +3,48 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 'use strict';
+Object.defineProperty(exports, "__esModule", { value: true });
 var edits_1 = require("../utils/edits");
 var vscode_languageserver_types_1 = require("vscode-languageserver-types");
+var arrays_1 = require("../utils/arrays");
+var strings_1 = require("../utils/strings");
 function format(languageModes, document, formatRange, formattingOptions, enabledModes) {
+    var result = [];
+    var endPos = formatRange.end;
+    var endOffset = document.offsetAt(endPos);
+    var content = document.getText();
+    if (endPos.character === 0 && endPos.line > 0 && endOffset !== content.length) {
+        // if selection ends after a new line, exclude that new line
+        var prevLineStart = document.offsetAt(vscode_languageserver_types_1.Position.create(endPos.line - 1, 0));
+        while (strings_1.isEOL(content, endOffset - 1) && endOffset > prevLineStart) {
+            endOffset--;
+        }
+        formatRange = vscode_languageserver_types_1.Range.create(formatRange.start, document.positionAt(endOffset));
+    }
     // run the html formatter on the full range and pass the result content to the embedded formatters.
     // from the final content create a single edit
     // advantages of this approach are
     //  - correct indents in the html document
     //  - correct initial indent for embedded formatters
     //  - no worrying of overlapping edits
+    // make sure we start in html
+    var allRanges = languageModes.getModesInRange(document, formatRange);
+    var i = 0;
+    var startPos = formatRange.start;
+    while (i < allRanges.length && allRanges[i].mode.getId() !== 'html') {
+        var range = allRanges[i];
+        if (!range.attributeValue && range.mode.format) {
+            var edits = range.mode.format(document, vscode_languageserver_types_1.Range.create(startPos, range.end), formattingOptions);
+            arrays_1.pushAll(result, edits);
+        }
+        startPos = range.end;
+        i++;
+    }
+    if (i === allRanges.length) {
+        return result;
+    }
+    // modify the range
+    formatRange = vscode_languageserver_types_1.Range.create(startPos, formatRange.end);
     // perform a html format and apply changes to a new document
     var htmlMode = languageModes.getMode('html');
     var htmlEdits = htmlMode.format(document, formatRange, formattingOptions);
@@ -36,16 +69,18 @@ function format(languageModes, document, formatRange, formattingOptions, enabled
         }
         ;
         if (embeddedEdits.length === 0) {
-            return htmlEdits;
+            arrays_1.pushAll(result, htmlEdits);
+            return result;
         }
         // apply all embedded format edits and create a single edit for all changes
         var resultContent = edits_1.applyEdits(newDocument, embeddedEdits);
         var resultReplaceText = resultContent.substring(document.offsetAt(formatRange.start), resultContent.length - afterFormatRangeLength);
-        return [vscode_languageserver_types_1.TextEdit.replace(formatRange, resultReplaceText)];
+        result.push(vscode_languageserver_types_1.TextEdit.replace(formatRange, resultReplaceText));
+        return result;
     }
     finally {
         languageModes.onDocumentRemoved(newDocument);
     }
 }
 exports.format = format;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/d9484d12b38879b7f4cdd1150efeb2fd2c1fbf39/extensions\html\server\out/modes\formatting.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/f6868fce3eeb16663840eb82123369dec6077a9b/extensions\html\server\out/modes\formatting.js.map
