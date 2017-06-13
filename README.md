@@ -42,8 +42,10 @@ Finished compilation with 0 errors after 12152 ms
 ```
 
 3. Press `Ctrl + C` to stop the watch.
-4. Delete the old folder if it is still there from a previous build and then run the build
-   command `gulp vscode-win32`
+4. Run the build
+   command `gulp vscode-win32-x64`  
+   * At the time of writing this, `node --version` **must** be v7.4.0
+   * At the time of writing this, `npm --version` **must** be v4.6.1
 5. Once you have a freshly built new version of VS Code, run it and test to make sure that
    it works.
 
@@ -55,7 +57,7 @@ After testing the newly built version of VS Code, delete everything out of your
     1. LICENSE.txt
     1. README.md
 
-1. Copy the contents from the new VSCode-win32 folder that was created during the build
+1. Copy the contents from the new VSCode-win32-x64 folder that was created during the build
    into the `vscode-compiled-windows` folder.
 1. In git bash, change to the `vscode-compiled-windows` folder.
 1. Run the following git commands to commit everything, create a new tag and push it all
