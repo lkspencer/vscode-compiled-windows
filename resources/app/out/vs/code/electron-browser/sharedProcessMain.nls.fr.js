@@ -2,17 +2,6 @@
  * Copyright (C) Microsoft Corporation. All rights reserved.
  *--------------------------------------------------------*/
 define("vs/code/electron-browser/sharedProcessMain.nls.fr", {
-	"vs/base/common/json": [
-		"Symbole non valide",
-		"Format de nombre non valide",
-		"Nom de propriété attendu",
-		"Valeur attendue",
-		"Signe des deux points attendu",
-		"Virgule attendue",
-		"Accolade fermante attendue",
-		"Crochet fermant attendu",
-		"Fin de fichier attendue",
-	],
 	"vs/base/common/severity": [
 		"Erreur",
 		"Avertissement",
@@ -74,6 +63,12 @@ define("vs/code/electron-browser/sharedProcessMain.nls.fr", {
 		"Toutes les contributions de l\'extension VS Code représentées par ce package.",
 		"Définit l\'extension à marquer en tant que préversion dans Marketplace.",
 		"Événements d\'activation pour l\'extension VS Code.",
+		"Événement d\'activation envoyé quand un fichier résolu dans le langage spécifié est ouvert.",
+		"Événement d\'activation envoyé quand la commande spécifiée est appelée.",
+		"Événement d\'activation envoyé quand une session de débogage du type spécifié est démarrée.",
+		"Événement d\'activation envoyé quand un dossier ouvert contient au moins un fichier correspondant au modèle glob spécifié.",
+		"Événement d\'activation envoyé quand la vue spécifiée est développée.",
+		"Événement d\'activation envoyé au démarrage de VS Code. Pour garantir la qualité de l\'expérience utilisateur, utilisez cet événement d\'activation dans votre extension uniquement quand aucune autre combinaison d\'événements d\'activation ne fonctionne dans votre cas d\'utilisation.",
 		"Ensemble de badges à afficher dans la barre latérale de la page d\'extensions de Marketplace.",
 		"URL de l\'image du badge.",
 		"Lien du badge.",

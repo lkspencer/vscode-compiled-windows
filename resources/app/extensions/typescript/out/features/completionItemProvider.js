@@ -1,8 +1,8 @@
+"use strict";
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-'use strict';
 Object.defineProperty(exports, "__esModule", { value: true });
 const vscode_1 = require("vscode");
 const PConst = require("../protocol.const");
@@ -112,17 +112,23 @@ class MyCompletionItem extends vscode_1.CompletionItem {
 var Configuration;
 (function (Configuration) {
     Configuration.useCodeSnippetsOnMethodSuggest = 'useCodeSnippetsOnMethodSuggest';
+    Configuration.nameSuggestions = 'nameSuggestions';
 })(Configuration || (Configuration = {}));
 class TypeScriptCompletionItemProvider {
     constructor(client, typingsStatus) {
         this.client = client;
         this.typingsStatus = typingsStatus;
-        this.config = { useCodeSnippetsOnMethodSuggest: false };
+        this.config = {
+            useCodeSnippetsOnMethodSuggest: false,
+            nameSuggestions: true
+        };
     }
     updateConfiguration() {
         // Use shared setting for js and ts
         const typeScriptConfig = vscode_1.workspace.getConfiguration('typescript');
         this.config.useCodeSnippetsOnMethodSuggest = typeScriptConfig.get(Configuration.useCodeSnippetsOnMethodSuggest, false);
+        const jsConfig = vscode_1.workspace.getConfiguration('javascript');
+        this.config.nameSuggestions = jsConfig.get(Configuration.nameSuggestions, true);
     }
     provideCompletionItems(document, position, token) {
         if (this.typingsStatus.isAcquiringTypings) {
@@ -165,11 +171,13 @@ class TypeScriptCompletionItemProvider {
                 // Only enable dot completions when previous character is an identifier.
                 // Prevents incorrectly completing while typing spread operators.
                 if (position.character > 0) {
-                    const preText = document.getText(new vscode_1.Range(new vscode_1.Position(position.line, 0), new vscode_1.Position(position.line, position.character - 1)));
+                    const preText = document.getText(new vscode_1.Range(position.line, 0, position.line, position.character - 1));
                     enableDotCompletions = preText.match(/[a-z_$\)\]\}]\s*$/ig) !== null;
                 }
-                for (let i = 0; i < body.length; i++) {
-                    const element = body[i];
+                for (const element of body) {
+                    if (element.kind === PConst.Kind.warning && !this.config.nameSuggestions) {
+                        continue;
+                    }
                     const item = new MyCompletionItem(position, document, element, enableDotCompletions, !this.config.useCodeSnippetsOnMethodSuggest);
                     completionItems.push(item);
                 }
@@ -200,8 +208,8 @@ class TypeScriptCompletionItemProvider {
                 return item;
             }
             const detail = details[0];
-            item.documentation = Previewer.plain(detail.documentation);
             item.detail = Previewer.plain(detail.displayParts);
+            item.documentation = Previewer.plainDocumentation(detail.documentation, detail.tags);
             if (detail && this.config.useCodeSnippetsOnMethodSuggest && (item.kind === vscode_1.CompletionItemKind.Function || item.kind === vscode_1.CompletionItemKind.Method)) {
                 return this.isValidFunctionCompletionContext(filepath, item.position).then(shouldCompleteFunction => {
                     if (shouldCompleteFunction) {
@@ -268,4 +276,4 @@ class TypeScriptCompletionItemProvider {
     }
 }
 exports.default = TypeScriptCompletionItemProvider;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/f6868fce3eeb16663840eb82123369dec6077a9b/extensions\typescript\out/features\completionItemProvider.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/376c52b955428d205459bea6619fc161fc8faacf/extensions\typescript\out/features\completionItemProvider.js.map

@@ -22,7 +22,6 @@ const vscode_1 = require("vscode");
 const git_1 = require("./git");
 const util_1 = require("./util");
 const decorators_1 = require("./decorators");
-const watch_1 = require("./watch");
 const path = require("path");
 const nls = require("vscode-nls");
 const timeout = (millis) => new Promise(c => setTimeout(c, millis));
@@ -209,6 +208,7 @@ var Operation;
     Operation[Operation["Show"] = 8192] = "Show";
     Operation[Operation["Stage"] = 16384] = "Stage";
     Operation[Operation["GetCommitTemplate"] = 32768] = "GetCommitTemplate";
+    Operation[Operation["DeleteBranch"] = 65536] = "DeleteBranch";
 })(Operation = exports.Operation || (exports.Operation = {}));
 // function getOperationName(operation: Operation): string {
 // 	switch (operation) {
@@ -399,6 +399,11 @@ class Model {
             yield this.run(Operation.Branch, () => this.repository.branch(name, true));
         });
     }
+    deleteBranch(name, force) {
+        return __awaiter(this, void 0, void 0, function* () {
+            yield this.run(Operation.DeleteBranch, () => this.repository.deleteBranch(name, force));
+        });
+    }
     checkout(treeish) {
         return __awaiter(this, void 0, void 0, function* () {
             yield this.run(Operation.Checkout, () => this.repository.checkout(treeish, []));
@@ -527,10 +532,7 @@ class Model {
             const disposables = [];
             const repositoryRoot = yield this._git.getRepositoryRoot(this.workspaceRoot.fsPath);
             this.repository = this._git.open(repositoryRoot);
-            const dotGitPath = path.join(repositoryRoot, '.git');
-            const { event: onRawGitChange, disposable: watcher } = watch_1.watch(dotGitPath);
-            disposables.push(watcher);
-            const onGitChange = util_1.mapEvent(onRawGitChange, ({ filename }) => vscode_1.Uri.file(path.join(dotGitPath, filename)));
+            const onGitChange = util_1.filterEvent(this.onWorkspaceChange, uri => /\/\.git\//.test(uri.fsPath));
             const onRelevantGitChange = util_1.filterEvent(onGitChange, uri => !/\/\.git\/index\.lock$/.test(uri.fsPath));
             onRelevantGitChange(this.onFSChange, this, disposables);
             onRelevantGitChange(this._onDidChangeRepository.fire, this._onDidChangeRepository, disposables);
@@ -692,4 +694,4 @@ __decorate([
     decorators_1.throttle
 ], Model.prototype, "updateWhenIdleAndWait", null);
 exports.Model = Model;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/f6868fce3eeb16663840eb82123369dec6077a9b/extensions\git\out/model.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/376c52b955428d205459bea6619fc161fc8faacf/extensions\git\out/model.js.map

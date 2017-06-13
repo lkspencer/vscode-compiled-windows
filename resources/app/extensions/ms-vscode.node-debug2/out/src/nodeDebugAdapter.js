@@ -1,7 +1,7 @@
+"use strict";
 /*---------------------------------------------------------
  * Copyright (C) Microsoft Corporation. All rights reserved.
  *--------------------------------------------------------*/
-"use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
@@ -174,8 +174,14 @@ class NodeDebugAdapter extends vscode_chrome_debug_core_1.ChromeDebugAdapter {
     }
     supportsStepBack() {
         return __awaiter(this, void 0, void 0, function* () {
-            const { domains } = yield this.chrome.Schema.getDomains();
-            return !!domains.find(d => d.name === 'TimeTravel');
+            try {
+                const { domains } = yield this.chrome.Schema.getDomains();
+                return !!domains.find(d => d.name === 'TimeTravel');
+            }
+            catch (e) {
+                // API not supported by runtime
+                return Promise.resolve(false);
+            }
         });
     }
     launchInTerminal(termArgs) {
@@ -216,18 +222,7 @@ class NodeDebugAdapter extends vscode_chrome_debug_core_1.ChromeDebugAdapter {
                 this.terminateSession(msg);
             });
             const noDebugMode = this._launchAttachArgs.noDebug;
-            // Listen to stderr at least until the debugger is attached
-            const onStderr = (data) => {
-                let msg = data.toString();
-                // Chop off the Chrome-specific debug URL message
-                const chromeMsgIndex = msg.indexOf('To start debugging, open the following URL in Chrome:');
-                if (chromeMsgIndex >= 0) {
-                    msg = msg.substr(0, chromeMsgIndex);
-                    nodeProcess.stderr.removeListener('data', onStderr);
-                }
-                this._session.sendEvent(new vscode_debugadapter_1.OutputEvent(msg, 'stderr'));
-            };
-            nodeProcess.stderr.on('data', onStderr);
+            this.captureStderr(nodeProcess, noDebugMode);
             // Must attach a listener to stdout or process will hang on Windows
             nodeProcess.stdout.on('data', (data) => {
                 // If only running, use stdout/stderr instead of debug protocol logs
@@ -238,6 +233,45 @@ class NodeDebugAdapter extends vscode_chrome_debug_core_1.ChromeDebugAdapter {
             });
             resolve();
         });
+    }
+    captureStderr(nodeProcess, noDebugMode) {
+        let handlingEarlyNodeMsgs = true;
+        nodeProcess.stderr.on('data', (data) => {
+            let msg = data.toString();
+            let isLastEarlyNodeMsg = false;
+            // There are some messages printed to stderr at the start of debugging that can be misleading.
+            // Node is "handlingEarlyNodeMsgs" from launch to when one of these messages is printed:
+            //   "To start debugging, open the following URL in Chrome: ..." - Node <8
+            //   --debug-brk deprecation message - Node 8+
+            // In this mode, we strip those messages from stderr output. After one of them is printed, we don't
+            // watch stderr anymore and pass it along (unless in noDebugMode)
+            if (handlingEarlyNodeMsgs && !noDebugMode) {
+                const chromeMsgIndex = msg.indexOf('To start debugging, open the following URL in Chrome:');
+                if (chromeMsgIndex >= 0) {
+                    msg = msg.substr(0, chromeMsgIndex);
+                    isLastEarlyNodeMsg = true;
+                }
+                const msgMatch = msg.match(NodeDebugAdapter.DEBUG_BRK_DEP_MSG);
+                if (msgMatch) {
+                    isLastEarlyNodeMsg = true;
+                    msg = msg.replace(NodeDebugAdapter.DEBUG_BRK_DEP_MSG, '');
+                }
+                const helpMsg = /For help see https:\/\/nodejs.org\/en\/docs\/inspector\s*/;
+                msg = msg.replace(helpMsg, '');
+            }
+            if (handlingEarlyNodeMsgs || noDebugMode) {
+                this._session.sendEvent(new vscode_debugadapter_1.OutputEvent(msg, 'stderr'));
+            }
+            if (isLastEarlyNodeMsg) {
+                handlingEarlyNodeMsgs = false;
+            }
+        });
+    }
+    onConsoleAPICalled(params) {
+        // Strip the --debug-brk deprecation message which is printed at startup
+        if (!params.args || params.args.length !== 1 || typeof params.args[0].value !== 'string' || !params.args[0].value.match(NodeDebugAdapter.DEBUG_BRK_DEP_MSG)) {
+            super.onConsoleAPICalled(params);
+        }
     }
     collectEnvFileArgs(args) {
         // read env from disk and merge into envVars
@@ -541,6 +575,7 @@ class NodeDebugAdapter extends vscode_chrome_debug_core_1.ChromeDebugAdapter {
 NodeDebugAdapter.NODE = 'node';
 NodeDebugAdapter.RUNINTERMINAL_TIMEOUT = 5000;
 NodeDebugAdapter.NODE_TERMINATION_POLL_INTERVAL = 3000;
+NodeDebugAdapter.DEBUG_BRK_DEP_MSG = /\(node:\d+\) \[DEP0062\] DeprecationWarning: `node --inspect --debug-brk` is deprecated\. Please use `node --inspect-brk` instead\.\s*/;
 NodeDebugAdapter.NODE_INTERNALS = '<node_internals>';
 exports.NodeDebugAdapter = NodeDebugAdapter;
 function getSourceMapPathOverrides(cwd, sourceMapPathOverrides) {

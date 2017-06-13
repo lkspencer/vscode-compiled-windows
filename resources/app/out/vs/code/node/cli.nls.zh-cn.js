@@ -19,7 +19,7 @@ define("vs/code/node/cli.nls.zh-cn", {
 		"使用 --list-extension 时，显示已安装扩展的版本。",
 		"安装扩展。",
 		"卸载扩展。",
-		"Enables proposed api features for an extension.",
+		"启用扩展程序实验性 api 功能。",
 		"禁用所有已安装的扩展。",
 		"禁用 GPU 硬件加速。",
 		"打印版本。",

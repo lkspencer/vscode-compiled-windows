@@ -1,8 +1,8 @@
+"use strict";
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-'use strict';
 Object.defineProperty(exports, "__esModule", { value: true });
 const vscode_1 = require("vscode");
 const nls = require("vscode-nls");
@@ -13,15 +13,20 @@ var Configuration;
     Configuration.enabled = 'enabled';
 })(Configuration || (Configuration = {}));
 class JsDocCompletionItem extends vscode_1.CompletionItem {
-    constructor(file, position, shouldGetJSDocFromTSServer) {
+    constructor(document, position, shouldGetJSDocFromTSServer) {
         super('/** */', vscode_1.CompletionItemKind.Snippet);
         this.detail = localize(0, null);
         this.insertText = '';
         this.sortText = '\0';
+        const line = document.lineAt(position.line).text;
+        const prefix = line.slice(0, position.character).match(/\/\**\s*$/);
+        const suffix = line.slice(position.character).match(/^\s*\**\//);
+        const start = position.translate(0, prefix ? -prefix[0].length : 0);
+        this.range = new vscode_1.Range(start, position.translate(0, suffix ? suffix[0].length : 0));
         this.command = {
             title: 'Try Complete JSDoc',
             command: TryCompleteJsDocCommand.COMMAND_NAME,
-            arguments: [file, position, shouldGetJSDocFromTSServer]
+            arguments: [document.uri, start, shouldGetJSDocFromTSServer]
         };
     }
 }
@@ -44,7 +49,7 @@ class JsDocCompletionProvider {
         const line = document.lineAt(position.line).text;
         const prefix = line.slice(0, position.character);
         if (prefix.match(/^\s*$|\/\*\*\s*$|^\s*\/\*\*+\s*$/)) {
-            return [new JsDocCompletionItem(document.uri, position, this.config.enabled)];
+            return [new JsDocCompletionItem(document, position, this.config.enabled)];
         }
         return [];
     }
@@ -54,15 +59,15 @@ class JsDocCompletionProvider {
 }
 exports.JsDocCompletionProvider = JsDocCompletionProvider;
 class TryCompleteJsDocCommand {
-    constructor(client) {
-        this.client = client;
+    constructor(lazyClient) {
+        this.lazyClient = lazyClient;
     }
     /**
      * Try to insert a jsdoc comment, using a template provide by typescript
      * if possible, otherwise falling back to a default comment format.
      */
-    tryCompleteJsDoc(resource, position, shouldGetJSDocFromTSServer) {
-        const file = this.client.normalizePath(resource);
+    tryCompleteJsDoc(resource, start, shouldGetJSDocFromTSServer) {
+        const file = this.lazyClient().normalizePath(resource);
         if (!file) {
             return Promise.resolve(false);
         }
@@ -70,40 +75,16 @@ class TryCompleteJsDocCommand {
         if (!editor || editor.document.uri.fsPath !== resource.fsPath) {
             return Promise.resolve(false);
         }
-        return this.prepForDocCompletion(editor, position)
-            .then((start) => {
-            if (!shouldGetJSDocFromTSServer) {
-                return this.tryInsertDefaultDoc(editor, start);
-            }
-            return this.tryInsertJsDocFromTemplate(editor, file, start)
-                .then((didInsertFromTemplate) => {
-                if (didInsertFromTemplate) {
-                    return true;
-                }
-                return this.tryInsertDefaultDoc(editor, start);
-            });
-        });
-    }
-    /**
-     * Prepare the area around the position for insertion of the jsdoc.
-     *
-     * Removes any the prefix and suffix of a possible jsdoc
-     */
-    prepForDocCompletion(editor, position) {
-        const line = editor.document.lineAt(position.line).text;
-        const prefix = line.slice(0, position.character).match(/\/\**\s*$/);
-        const suffix = line.slice(position.character).match(/^\s*\**\//);
-        if (!prefix && !suffix) {
-            // Nothing to remove
-            return Promise.resolve(position);
+        if (!shouldGetJSDocFromTSServer) {
+            return this.tryInsertDefaultDoc(editor, start);
         }
-        const start = position.translate(0, prefix ? -prefix[0].length : 0);
-        return editor.edit(edits => {
-            edits.delete(new vscode_1.Range(start, position.translate(0, suffix ? suffix[0].length : 0)));
-        }, {
-            undoStopBefore: true,
-            undoStopAfter: false
-        }).then(() => start);
+        return this.tryInsertJsDocFromTemplate(editor, file, start)
+            .then((didInsertFromTemplate) => {
+            if (didInsertFromTemplate) {
+                return true;
+            }
+            return this.tryInsertDefaultDoc(editor, start);
+        });
     }
     tryInsertJsDocFromTemplate(editor, file, position) {
         const args = {
@@ -112,7 +93,7 @@ class TryCompleteJsDocCommand {
             offset: position.character + 1
         };
         return Promise.race([
-            this.client.execute('docCommentTemplate', args),
+            this.lazyClient().execute('docCommentTemplate', args),
             new Promise((_, reject) => setTimeout(reject, 250))
         ]).then((res) => {
             if (!res || !res.body) {
@@ -148,4 +129,4 @@ class TryCompleteJsDocCommand {
 }
 TryCompleteJsDocCommand.COMMAND_NAME = '_typeScript.tryCompleteJsDoc';
 exports.TryCompleteJsDocCommand = TryCompleteJsDocCommand;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/f6868fce3eeb16663840eb82123369dec6077a9b/extensions\typescript\out/features\jsDocCompletionProvider.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/376c52b955428d205459bea6619fc161fc8faacf/extensions\typescript\out/features\jsDocCompletionProvider.js.map

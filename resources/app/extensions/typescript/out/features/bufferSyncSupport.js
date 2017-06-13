@@ -1,22 +1,24 @@
+"use strict";
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-'use strict';
 Object.defineProperty(exports, "__esModule", { value: true });
 const cp = require("child_process");
 const fs = require("fs");
 const vscode_1 = require("vscode");
 const async_1 = require("../utils/async");
-const linkedMap_1 = require("./linkedMap");
 const nls = require("vscode-nls");
 let localize = nls.loadMessageBundle(__filename);
-const Mode2ScriptKind = {
-    'typescript': 'TS',
-    'typescriptreact': 'TSX',
-    'javascript': 'JS',
-    'javascriptreact': 'JSX'
-};
+function mode2ScriptKind(mode) {
+    switch (mode) {
+        case 'typescript': return 'TS';
+        case 'typescriptreact': return 'TSX';
+        case 'javascript': return 'JS';
+        case 'javascriptreact': return 'JSX';
+    }
+    return undefined;
+}
 class SyncedBuffer {
     constructor(document, filepath, diagnosticRequestor, client) {
         this.document = document;
@@ -30,7 +32,7 @@ class SyncedBuffer {
             fileContent: this.document.getText(),
         };
         if (this.client.apiVersion.has203Features()) {
-            const scriptKind = Mode2ScriptKind[this.document.languageId];
+            const scriptKind = mode2ScriptKind(this.document.languageId);
             if (scriptKind) {
                 args.scriptKindName = scriptKind;
             }
@@ -44,21 +46,20 @@ class SyncedBuffer {
         return this.document.lineCount;
     }
     close() {
-        let args = {
+        const args = {
             file: this.filepath
         };
         this.client.execute('close', args, false);
     }
     onContentChanged(events) {
-        let filePath = this.client.normalizePath(this.document.uri);
+        const filePath = this.client.normalizePath(this.document.uri);
         if (!filePath) {
             return;
         }
-        for (let i = 0; i < events.length; i++) {
-            let event = events[i];
-            let range = event.range;
-            let text = event.text;
-            let args = {
+        for (const event of events) {
+            const range = event.range;
+            const text = event.text;
+            const args = {
                 file: filePath,
                 line: range.start.line + 1,
                 offset: range.start.character + 1,
@@ -73,21 +74,17 @@ class SyncedBuffer {
 }
 const checkTscVersionSettingKey = 'check.tscVersion';
 class BufferSyncSupport {
-    constructor(client, modeIds, diagnostics, extensions, validate = true) {
+    constructor(client, modeIds, diagnostics, validate = true) {
         this.disposables = [];
         this.client = client;
-        this.modeIds = Object.create(null);
-        modeIds.forEach(modeId => this.modeIds[modeId] = true);
+        this.modeIds = new Set(modeIds);
         this.diagnostics = diagnostics;
-        this.extensions = extensions;
         this._validate = validate;
-        this.projectValidationRequested = false;
         this.pendingDiagnostics = Object.create(null);
         this.diagnosticDelayer = new async_1.Delayer(300);
         this.syncedBuffers = Object.create(null);
-        this.emitQueue = new linkedMap_1.default();
         const tsConfig = vscode_1.workspace.getConfiguration('typescript');
-        this.checkGlobalTSCVersion = client.checkGlobalTSCVersion && this.modeIds['typescript'] === true && tsConfig.get(checkTscVersionSettingKey, true);
+        this.checkGlobalTSCVersion = client.checkGlobalTSCVersion && this.modeIds.has('typescript') && tsConfig.get(checkTscVersionSettingKey, true);
     }
     listen() {
         vscode_1.workspace.onDidOpenTextDocument(this.onDidOpenTextDocument, this, this.disposables);
@@ -119,7 +116,7 @@ class BufferSyncSupport {
         }
     }
     onDidOpenTextDocument(document) {
-        if (!this.modeIds[document.languageId]) {
+        if (!this.modeIds.has(document.languageId)) {
             return;
         }
         let resource = document.uri;
@@ -228,20 +225,6 @@ class BufferSyncSupport {
             return;
         }
         this.checkGlobalTSCVersion = false;
-        function openUrl(url) {
-            let cmd;
-            switch (process.platform) {
-                case 'darwin':
-                    cmd = 'open';
-                    break;
-                case 'win32':
-                    cmd = 'start';
-                    break;
-                default:
-                    cmd = 'xdg-open';
-            }
-            return cp.exec(cmd + ' ' + url);
-        }
         let tscVersion = undefined;
         try {
             let out = cp.execSync('tsc --version', { encoding: 'utf8' });
@@ -271,7 +254,7 @@ class BufferSyncSupport {
                 }
                 switch (selected.id) {
                     case 1:
-                        openUrl('http://go.microsoft.com/fwlink/?LinkId=826239');
+                        vscode_1.commands.executeCommand('vscode.open', vscode_1.Uri.parse('http://go.microsoft.com/fwlink/?LinkId=826239'));
                         break;
                     case 2:
                         const tsConfig = vscode_1.workspace.getConfiguration('typescript');
@@ -284,4 +267,4 @@ class BufferSyncSupport {
     }
 }
 exports.default = BufferSyncSupport;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/f6868fce3eeb16663840eb82123369dec6077a9b/extensions\typescript\out/features\bufferSyncSupport.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/376c52b955428d205459bea6619fc161fc8faacf/extensions\typescript\out/features\bufferSyncSupport.js.map

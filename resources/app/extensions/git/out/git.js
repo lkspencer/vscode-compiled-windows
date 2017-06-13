@@ -186,7 +186,8 @@ exports.GitErrorCodes = {
     CantCreatePipe: 'CantCreatePipe',
     CantAccessRemote: 'CantAccessRemote',
     RepositoryNotFound: 'RepositoryNotFound',
-    RepositoryIsLocked: 'RepositoryIsLocked'
+    RepositoryIsLocked: 'RepositoryIsLocked',
+    BranchNotFullyMerged: 'BranchNotFullyMerged'
 };
 function getGitErrorCode(stderr) {
     if (/Another git process seems to be running in this repository|If no other git process is currently running/.test(stderr)) {
@@ -209,6 +210,9 @@ function getGitErrorCode(stderr) {
     }
     else if (/unable to access/.test(stderr)) {
         return exports.GitErrorCodes.CantAccessRemote;
+    }
+    else if (/branch '.+' is not fully merged/.test(stderr)) {
+        return exports.GitErrorCodes.BranchNotFullyMerged;
     }
     return void 0;
 }
@@ -289,7 +293,7 @@ class Git {
         }
         options.env = util_1.assign({}, process.env, this.env, options.env || {}, {
             VSCODE_GIT_COMMAND: args[0],
-            LC_ALL: 'en_US',
+            LC_ALL: 'en_US.UTF-8',
             LANG: 'en_US.UTF-8'
         });
         if (options.log !== false) {
@@ -509,6 +513,12 @@ class Repository {
     branch(name, checkout) {
         return __awaiter(this, void 0, void 0, function* () {
             const args = checkout ? ['checkout', '-q', '-b', name] : ['branch', '-q', name];
+            yield this.run(args);
+        });
+    }
+    deleteBranch(name, force) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const args = ['branch', force ? '-D' : '-d', name];
             yield this.run(args);
         });
     }
@@ -802,4 +812,4 @@ class Repository {
     }
 }
 exports.Repository = Repository;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/f6868fce3eeb16663840eb82123369dec6077a9b/extensions\git\out/git.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/376c52b955428d205459bea6619fc161fc8faacf/extensions\git\out/git.js.map

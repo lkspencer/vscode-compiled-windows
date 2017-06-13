@@ -1,42 +1,45 @@
+"use strict";
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-'use strict';
 Object.defineProperty(exports, "__esModule", { value: true });
 const vscode = require("vscode");
-const versionBarEntry = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, Number.MIN_VALUE);
-function showHideStatus() {
-    if (!versionBarEntry) {
-        return;
+class VersionStatus extends vscode.Disposable {
+    constructor() {
+        super(() => this.dispose());
+        this.versionBarEntry = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, Number.MIN_VALUE);
+        this.onChangeEditorSub = vscode.window.onDidChangeActiveTextEditor(this.showHideStatus, this);
     }
-    if (!vscode.window.activeTextEditor) {
-        versionBarEntry.hide();
-        return;
+    dispose() {
+        this.versionBarEntry.dispose();
+        this.onChangeEditorSub.dispose();
     }
-    let doc = vscode.window.activeTextEditor.document;
-    if (vscode.languages.match('typescript', doc) || vscode.languages.match('typescriptreact', doc)) {
-        versionBarEntry.show();
-        return;
+    showHideStatus() {
+        if (!this.versionBarEntry) {
+            return;
+        }
+        if (!vscode.window.activeTextEditor) {
+            this.versionBarEntry.hide();
+            return;
+        }
+        let doc = vscode.window.activeTextEditor.document;
+        if (vscode.languages.match('typescript', doc) || vscode.languages.match('typescriptreact', doc)) {
+            this.versionBarEntry.show();
+            return;
+        }
+        if (!vscode.window.activeTextEditor.viewColumn) {
+            // viewColumn is undefined for the debug/output panel, but we still want
+            // to show the version info
+            return;
+        }
+        this.versionBarEntry.hide();
     }
-    if (!vscode.window.activeTextEditor.viewColumn) {
-        // viewColumn is undefined for the debug/output panel, but we still want
-        // to show the version info
-        return;
+    setInfo(message, tooltip) {
+        this.versionBarEntry.text = message;
+        this.versionBarEntry.tooltip = tooltip;
+        this.versionBarEntry.command = 'typescript.selectTypeScriptVersion';
     }
-    versionBarEntry.hide();
 }
-exports.showHideStatus = showHideStatus;
-function disposeStatus() {
-    if (versionBarEntry) {
-        versionBarEntry.dispose();
-    }
-}
-exports.disposeStatus = disposeStatus;
-function setInfo(message, tooltip) {
-    versionBarEntry.text = message;
-    versionBarEntry.tooltip = tooltip;
-    versionBarEntry.command = 'typescript.selectTypeScriptVersion';
-}
-exports.setInfo = setInfo;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/f6868fce3eeb16663840eb82123369dec6077a9b/extensions\typescript\out/utils\versionStatus.js.map
+exports.default = VersionStatus;
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/376c52b955428d205459bea6619fc161fc8faacf/extensions\typescript\out/utils\versionStatus.js.map

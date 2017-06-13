@@ -2,5 +2,5 @@
 	"Utilisation de git {0} à partir de {1}",
 	"Mettre à jour Git",
 	"Ne plus afficher",
-	"You seem to have git {0} installed. Code works best with git >= 2"
+	"Git {0} semble installé. Le code fonctionne mieux avec git >= 2"
 ]

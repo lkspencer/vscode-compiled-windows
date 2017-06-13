@@ -13,10 +13,10 @@ var MDDocumentSymbolProvider = (function () {
     MDDocumentSymbolProvider.prototype.provideDocumentSymbols = function (document) {
         var toc = new tableOfContentsProvider_1.TableOfContentsProvider(this.engine, document);
         return toc.getToc().map(function (entry) {
-            return new vscode.SymbolInformation(entry.text, vscode.SymbolKind.Module, '', entry.location);
+            return new vscode.SymbolInformation(entry.text, vscode.SymbolKind.Namespace, '', entry.location);
         });
     };
     return MDDocumentSymbolProvider;
 }());
 exports.default = MDDocumentSymbolProvider;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/f6868fce3eeb16663840eb82123369dec6077a9b/extensions\markdown\out/documentSymbolProvider.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/376c52b955428d205459bea6619fc161fc8faacf/extensions\markdown\out/documentSymbolProvider.js.map

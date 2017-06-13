@@ -4,6 +4,6 @@
 	"Modifications en zone de transit",
 	"Modifications",
 	"OK",
-	"Never Show Again",
-	"The git repository at '{0}' has too many active changes, only a subset of Git features will be enabled."
+	"Ne plus afficher",
+	"Le dépôt Git dans '{0}' a trop de modifications actives, seul un sous-ensemble de fonctionnalités Git sera activé."
 ]

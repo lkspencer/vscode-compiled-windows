@@ -1,7 +1,7 @@
+"use strict";
 /*---------------------------------------------------------
  * Copyright (C) Microsoft Corporation. All rights reserved.
  *--------------------------------------------------------*/
-"use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const vscode_chrome_debug_core_1 = require("vscode-chrome-debug-core");
 const path = require("path");

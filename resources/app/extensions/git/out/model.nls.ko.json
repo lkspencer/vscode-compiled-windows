@@ -4,6 +4,6 @@
 	"스테이징된 변경 내용",
 	"변경 내용",
 	"확인",
-	"Never Show Again",
-	"The git repository at '{0}' has too many active changes, only a subset of Git features will be enabled."
+	"다시 표시 안 함",
+	"'{0}'의 Git 리포지토리에 활성 변경 내용이 너무 많습니다. Git 기능의 하위 집합만 사용할 수 있도록 설정됩니다."
 ]

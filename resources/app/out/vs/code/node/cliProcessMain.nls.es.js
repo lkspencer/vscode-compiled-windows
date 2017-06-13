@@ -2,17 +2,6 @@
  * Copyright (C) Microsoft Corporation. All rights reserved.
  *--------------------------------------------------------*/
 define("vs/code/node/cliProcessMain.nls.es", {
-	"vs/base/common/json": [
-		"Símbolo no válido",
-		"Formato de número no válido",
-		"Se esperaba el nombre de la propiedad",
-		"Se esperaba un valor",
-		"Se esperaban dos puntos",
-		"Se esperaba una coma",
-		"Se esperaba una llave de cierre",
-		"Se esperaba un corchete de cierre",
-		"Se esperaba un fin de archivo",
-	],
 	"vs/base/common/severity": [
 		"Error",
 		"Advertencia",
@@ -86,6 +75,12 @@ define("vs/code/node/cliProcessMain.nls.es", {
 		"Todas las contribuciones de la extensión VS Code representadas por este paquete.",
 		"Establece la extensión que debe marcarse como versión preliminar en Marketplace.",
 		"Eventos de activación de la extensión VS Code.",
+		"Un evento de activación emitido cada vez que se abre un archivo que se resuelve en el idioma especificado.",
+		"Un evento de activación emitido cada vez que se invoca el comando especificado.",
+		"Un evento de activación emitido cada vez que se inicia una sesión de depuración del tipo especificado.",
+		"Un evento de activación emitido cada vez que se abre una carpeta que contiene al menos un archivo que coincide con el patrón global especificado.",
+		"Un evento de activación emitido cada vez que se expande la vista especificada.",
+		"Un evento de activación emitido al inicio de VS Code. Para garantizar una buena experiencia para el usuario final, use este evento de activación en su extensión solo cuando no le sirva ninguna otra combinación de eventos de activación en su caso.",
 		"Matriz de distintivos que se muestran en la barra lateral de la página de extensiones de Marketplace.",
 		"URL de la imagen del distintivo.",
 		"Vínculo del distintivo.",

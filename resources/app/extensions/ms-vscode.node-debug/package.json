@@ -1,7 +1,7 @@
 {
 	"name": "node-debug",
 	"displayName": "Node Debug",
-	"version": "1.12.15",
+	"version": "1.13.10",
 	"publisher": "ms-vscode",
 	"description": "%extension.description%",
 	"icon": "images/node-debug-icon.svg",
@@ -14,21 +14,21 @@
 	"license": "MIT",
 	"private": true,
 	"scripts": {
-		"prepublish": "node ./node_modules/gulp/bin/gulp.js build",
-		"build": "node ./node_modules/gulp/bin/gulp.js build",
-		"test": "node ./node_modules/mocha/bin/mocha --timeout 10000 -u tdd ./out/tests/",
-		"nodemon": "./node_modules/.bin/nodemon --debug --nolazy ./out/node/nodeDebug.js --server=4711",
+		"prepublish": "gulp build",
+		"build": "gulp build",
+		"test": "mocha --timeout 10000 -u tdd ./out/tests/",
+		"nodemon": "nodemon --debug --nolazy ./out/node/nodeDebug.js --server=4711",
 		"postinstall": "node ./node_modules/vscode/bin/install"
 	},
 	"engines": {
-		"vscode": "^1.8.0",
-		"node": "^6.3.0"
+		"vscode": "^1.13.0",
+		"node": "^7.4.0"
 	},
 	"extensionDependencies": [
 		"ms-vscode.node-debug2"
 	],
 	"dependencies": {
-		"vscode-debugadapter": "^1.19.0",
+		"vscode-debugadapter": "^1.20.0",
 		"source-map": "0.5.6",
 		"vscode-nls": "^2.0.1",
 		"request-light": "^0.1.0",
@@ -54,18 +54,19 @@
 		"gulp-tsb": "^2.0.2",
 		"gulp-sourcemaps": "^1.9.1",
 		"gulp-filter": "^4.0.0",
-		"gulp-tslint": "^6.1.1",
+		"gulp-tslint": "^8.0.0",
 		"gulp-uglify": "^2.0.0",
-		"tslint-microsoft-contrib": "^2.0.10",
+		"tslint-microsoft-contrib": "^5.0.0",
 		"del": "^2.2.2",
 		"run-sequence": "^1.2.2",
 		"mocha": "^3.1.2",
-		"tslint": "^3.15.1",
+		"tslint": "^5.2.0",
+		"tsutils": "^1.8.0",
 		"typescript": "^2.2.1",
 		"vscode": "^1.0.3",
 		"vscode-nls-dev": "^2.1.1",
-		"vscode-debugadapter-testsupport": "^1.19.0",
-		"vscode-debugprotocol": "^1.19.0",
+		"vscode-debugadapter-testsupport": "^1.20.0",
+		"vscode-debugprotocol": "^1.20.0",
 		"event-stream": "^3.3.4",
 		"nodemon": "^1.11.0",
 		"vsce": "^1.20.0"
@@ -385,6 +386,22 @@
 							"description": "%node.restart.description%",
 							"default": true
 						},
+						"localRoot": {
+							"type": [
+								"string",
+								"null"
+							],
+							"description": "%node.localRoot.description%",
+							"default": null
+						},
+						"remoteRoot": {
+							"type": [
+								"string",
+								"null"
+							],
+							"description": "%node.remoteRoot.description%",
+							"default": null
+						},
 						"smartStep": {
 							"type": "boolean",
 							"description": "%smartStep.description%",
@@ -486,7 +503,7 @@
 								"string",
 								"null"
 							],
-							"description": "%node.attach.localRoot.description%",
+							"description": "%node.localRoot.description%",
 							"default": null
 						},
 						"remoteRoot": {
@@ -494,7 +511,7 @@
 								"string",
 								"null"
 							],
-							"description": "%node.attach.remoteRoot.description%",
+							"description": "%node.remoteRoot.description%",
 							"default": null
 						},
 						"smartStep": {

@@ -297,7 +297,6 @@ function multiGlob(patterns, opts) {
     });
 }
 exports.multiGlob = multiGlob;
-;
 function multiGlobMatches(patterns, path) {
     var matched = false;
     for (var _i = 0, patterns_1 = patterns; _i < patterns_1.length; _i++) {

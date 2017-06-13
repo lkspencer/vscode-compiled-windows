@@ -4,6 +4,6 @@
 	"Промежуточно сохраненные изменения",
 	"Изменения",
 	"ОК",
-	"Never Show Again",
-	"The git repository at '{0}' has too many active changes, only a subset of Git features will be enabled."
+	"Больше не показывать",
+	"Репозиторий git в '{0}' имеет очень много активных изменений, только часть функций Git будет доступна."
 ]

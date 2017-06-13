@@ -75,6 +75,13 @@ function exec(command, options) {
         });
     });
 }
+let _channel;
+function getOutputChannel() {
+    if (!_channel) {
+        _channel = vscode.window.createOutputChannel('Gulp Auto Detection');
+    }
+    return _channel;
+}
 function getGulpTasks() {
     return __awaiter(this, void 0, void 0, function* () {
         let workspaceRoot = vscode.workspace.rootPath;
@@ -101,11 +108,11 @@ function getGulpTasks() {
             gulpCommand = 'gulp';
         }
         let commandLine = `${gulpCommand} --tasks-simple --no-color`;
-        let channel = vscode.window.createOutputChannel('tasks');
         try {
             let { stdout, stderr } = yield exec(commandLine, { cwd: workspaceRoot });
-            if (stderr) {
-                channel.appendLine(stderr);
+            if (stderr && stderr.length > 0) {
+                getOutputChannel().appendLine(stderr);
+                getOutputChannel().show(true);
             }
             let result = [];
             if (stdout) {
@@ -116,7 +123,7 @@ function getGulpTasks() {
                     if (line.length === 0) {
                         continue;
                     }
-                    let task = new vscode.ShellTask(`gulp: ${line}`, `${gulpCommand} ${line}`);
+                    let task = new vscode.ShellTask(line, `${gulpCommand} ${line}`);
                     task.identifier = `gulp.${line}`;
                     result.push(task);
                     let lowerCaseLine = line.toLowerCase();
@@ -143,12 +150,17 @@ function getGulpTasks() {
             return result;
         }
         catch (err) {
+            let channel = getOutputChannel();
             if (err.stderr) {
                 channel.appendLine(err.stderr);
             }
+            if (err.stdout) {
+                channel.appendLine(err.stdout);
+            }
             channel.appendLine(localize(0, null, err.error ? err.error.toString() : 'unknown'));
+            channel.show(true);
             return emptyTasks;
         }
     });
 }
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/f6868fce3eeb16663840eb82123369dec6077a9b/extensions\gulp\out/main.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/376c52b955428d205459bea6619fc161fc8faacf/extensions\gulp\out/main.js.map

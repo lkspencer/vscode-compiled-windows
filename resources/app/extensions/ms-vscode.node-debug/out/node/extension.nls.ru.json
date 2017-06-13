@@ -11,11 +11,11 @@
 	"Наведите указатель мыши, чтобы просмотреть описания существующих атрибутов.",
 	"Для получения дополнительной информации посетите: {0}",
 	"Отладка с помощью протокола прежней версии, так как задан исполняемый файл среды выполнения.",
-	"Debugging with inspector protocol because Node.js {0} was detected.",
-	"Debugging with legacy protocol because Node.js {0} was detected.",
-	"Debugging with legacy protocol because Node.js version could not be determined.",
+	"Выполняется отладка с помощью протокола Inspector, так как была обнаружена версия Node.js {0}.",
+	"Выполняется отладка с помощью протокола предыдущей версии, так как была обнаружена версия Node.js {0}.",
+	"Выполняется отладка с помощью протокола предыдущей версии, так как не удалось определить версию Node.js.",
 	"Отладка идет с устаревшим протоколом, так как подключение к процессу по идентификатору поддерживается только для устаревших протоколов.",
 	"Отладка ведется с протоколом инспектора, так как он был обнаружен.",
 	"Отладка ведется с устаревшим протоколом, так как он был обнаружен.",
-	"Debugging with legacy protocol because Node.js version could not be determined: {0}"
+	"Debugging with legacy protocol because Node.js version could not be determined ({0})"
 ]

@@ -1,6 +1,6 @@
 [
 	"Daten werden zum Optimieren von TypeScript IntelliSense abgerufen",
-	"Could not install typings files for JavaScript language features. Please ensure that NPM is installed and is in your PATH",
+	"Typisierungsdateien für JavaScript-Sprachfunktionen konnten nicht installiert werden. Stellen Sie sicher, das NPM installiert ist, oder konfigurieren Sie \"typescript.npm\" in Ihren Benutzereinstellungen.",
 	"Weitere Informationen",
 	"Nicht erneut überprüfen",
 	"Schließen"

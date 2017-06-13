@@ -5,5 +5,5 @@
 	"configuration.validate.run": "Gibt an, ob der Linter beim Speichern oder bei der Eingabe ausgeführt wird.",
 	"configuration.title": "PHP",
 	"commands.categroy.php": "PHP",
-	"command.untrustValidationExecutable": "Disallow PHP validation executable (defined as workspace setting)"
+	"command.untrustValidationExecutable": "Ausführbare Datei für PHP-Überprüfung nicht zulassen (als Arbeitsbereicheinstellung definiert)"
 }

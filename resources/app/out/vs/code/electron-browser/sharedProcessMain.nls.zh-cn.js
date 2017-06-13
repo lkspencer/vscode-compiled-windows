@@ -2,17 +2,6 @@
  * Copyright (C) Microsoft Corporation. All rights reserved.
  *--------------------------------------------------------*/
 define("vs/code/electron-browser/sharedProcessMain.nls.zh-cn", {
-	"vs/base/common/json": [
-		"符号无效",
-		"数字格式无效",
-		"需要属性名",
-		"需要值",
-		"需要冒号",
-		"需要逗号",
-		"需要右大括号",
-		"需要右括号",
-		"预期的文件结尾",
-	],
 	"vs/base/common/severity": [
 		"错误",
 		"警告",
@@ -28,7 +17,7 @@ define("vs/code/electron-browser/sharedProcessMain.nls.zh-cn", {
 		"用于配置字符串。",
 		"设置摘要。此标签将在设置文件中用作分隔注释。",
 		"配置属性的描述。",
-		"无法注册“{0}”。这符合属性模式 \"\\\\[.*\\\\]$\"，可用于描述特定语言编辑器设置。请使用 \"configurationDefaults\"。",
+		"无法注册“{0}”。其符合描述特定语言编辑器设置的表达式 \"\\\\[.*\\\\]$\"。请使用 \"configurationDefaults\"。",
 		"无法注册“{0}”。此属性已注册。",
 		"configuration.properties 必须是对象",
 		"如果进行设置，\"configuration.type\" 必须设置为对象",
@@ -74,6 +63,12 @@ define("vs/code/electron-browser/sharedProcessMain.nls.zh-cn", {
 		"由此包表示的 VS Code 扩展的所有贡献。",
 		"在 Marketplace 中设置扩展，将其标记为“预览”。",
 		"VS Code 扩展的激活事件。",
+		"在打开被解析为指定语言的文件时发出的激活事件。",
+		"在调用指定命令时发出的激活事件。",
+		"在指定类型的调试会话开始时发出的激活事件。",
+		"在打开至少包含一个匹配指定 glob 模式的文件的文件夹时发出的激活事件。",
+		"在指定视图被展开时发出的激活事件。",
+		"在 VS Code 启动时发出的激活事件。为确保良好的最终用户体验，请仅在其他激活事件组合不适用于你的情况时，才在扩展中使用此事件。",
 		"在 Marketplace 的扩展页边栏中显示的徽章数组。",
 		"徽章图像 URL。",
 		"徽章链接。",

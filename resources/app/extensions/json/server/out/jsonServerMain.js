@@ -97,7 +97,8 @@ var schemaRequestService = function (uri) {
             }
         });
     }
-    return request_light_1.xhr({ url: uri, followRedirects: 5 }).then(function (response) {
+    var headers = { 'Accept-Encoding': 'gzip, deflate' };
+    return request_light_1.xhr({ url: uri, followRedirects: 5, headers: headers }).then(function (response) {
         return response.responseText;
     }, function (error) {
         return Promise.reject(error.responseText || request_light_1.getErrorStatusDescription(error.status) || error.toString());
@@ -269,4 +270,4 @@ connection.onRequest(ColorSymbolRequest.type, function (uri) {
 });
 // Listen on the connection
 connection.listen();
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/f6868fce3eeb16663840eb82123369dec6077a9b/extensions\json\server\out/jsonServerMain.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/376c52b955428d205459bea6619fc161fc8faacf/extensions\json\server\out/jsonServerMain.js.map

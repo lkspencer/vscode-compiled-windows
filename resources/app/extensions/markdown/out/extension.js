@@ -14,6 +14,8 @@ var security_1 = require("./security");
 var previewContentProvider_1 = require("./previewContentProvider");
 var tableOfContentsProvider_1 = require("./tableOfContentsProvider");
 var logger_1 = require("./logger");
+var nls = require("vscode-nls");
+var localize = nls.loadMessageBundle(__filename);
 var resolveExtensionResources = function (extension, stylePath) {
     var resource = vscode.Uri.parse(stylePath);
     if (resource.scheme) {
@@ -40,7 +42,7 @@ function activate(context) {
             if (!contributes) {
                 return "continue";
             }
-            var styles = contributes['markdown.preview'] && contributes['markdown.preview'].styles;
+            var styles = contributes['markdown.previewStyles'];
             if (styles) {
                 if (!Array.isArray(styles)) {
                     styles = [styles];
@@ -55,7 +57,7 @@ function activate(context) {
                     }
                 }
             }
-            var scripts = contributes['markdown.preview'] && contributes['markdown.preview'].scripts;
+            var scripts = contributes['markdown.previewScripts'];
             if (scripts) {
                 if (!Array.isArray(scripts)) {
                     scripts = [scripts];
@@ -139,6 +141,9 @@ function activate(context) {
     }));
     context.subscriptions.push(vscode.commands.registerCommand('markdown.showPreviewSecuritySelector', function (resource) {
         previewSecuritySelector.showSecutitySelectorForWorkspace(resource ? vscode.Uri.parse(resource).query : undefined);
+    }));
+    context.subscriptions.push(vscode.commands.registerCommand('_markdown.onPreviewStyleLoadError', function (resources) {
+        vscode.window.showWarningMessage(localize(0, null, resources.join(', ')));
     }));
     context.subscriptions.push(vscode.workspace.onDidSaveTextDocument(function (document) {
         if (previewContentProvider_1.isMarkdownFile(document)) {
@@ -234,4 +239,4 @@ function getPackageInfo() {
     }
     return null;
 }
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/f6868fce3eeb16663840eb82123369dec6077a9b/extensions\markdown\out/extension.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/376c52b955428d205459bea6619fc161fc8faacf/extensions\markdown\out/extension.js.map

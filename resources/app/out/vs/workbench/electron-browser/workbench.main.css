@@ -224,21 +224,7 @@
 	font-size: 85%;
 	font-weight: normal;
 	text-align: center;
-	background: #BEBEBE;
-	color: #FFF;
 	display: inline;
-}
-
-.vs-dark .monaco-count-badge {
-	color: #FFF;
-	background: #4D4D4D;
-}
-
-/* High Contrast Theming */
-.hc-black .monaco-count-badge {
-	background: #000;
-	border: 1px solid #6FC3DF;
-	margin-top: 2px;
 }
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
@@ -273,27 +259,8 @@
 	display: inline-block;
 }
 
-.dropdown > .dropdown-label:not(:empty):not(.tick) {
+.dropdown > .dropdown-label:not(:empty) {
 	padding: 0 .5em;
-}
-
-.dropdown > .dropdown-label:empty.tick {
-	padding: 0 1em 0 0;
-}
-
-.dropdown > .dropdown-label.tick {
-	padding: 0 1em 0 .5em;
-}
-
-.dropdown > .dropdown-label.tick:after {
-	content: '';
-	width: 0;
-	height: 0;
-	position: relative;
-	top: 1em;
-	left: .5em;
-	border: 4px solid transparent;
-	border-top: 4px solid #fff;
 }
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
@@ -325,28 +292,6 @@
 	right: 2px;
 }
 
-.monaco-findInput > .controls > .matchCount {
-	margin-left: 2px;
-	float: left;
-	overflow: hidden;
-	max-width: 30px;
-	min-width: 20px;
-	text-align: center;
-
-	border-radius: 5px;
-	padding: 0 4px;
-
-	-webkit-box-sizing:	border-box;
-	-o-box-sizing:		border-box;
-	-moz-box-sizing:	border-box;
-	-ms-box-sizing:		border-box;
-	box-sizing:			border-box;
-}
-
-.vs .monaco-findInput > .controls > .matchCount {
-	background: #ddd;
-}
-
 .vs .monaco-findInput.disabled {
 	background-color: #E1E1E1;
 }
@@ -354,10 +299,6 @@
 /* Theming */
 .vs-dark .monaco-findInput.disabled {
 	background-color: #333;
-}
-
-.vs-dark .monaco-findInput > .controls > .matchCount {
-	background: #555;
 }
 
 /* Highlighting */
@@ -606,11 +547,11 @@
 
 .monaco-kbkey {
 	display: inline-block;
-	border: solid 1px #ccc;
-	border-bottom-color: #bbb;
+	border: solid 1px rgba(204, 204, 204, 0.4);
+	border-bottom-color: rgba(187, 187, 187, 0.4);
 	border-radius: 3px;
-	box-shadow: inset 0 -1px 0 #bbb;
-	background-color: #ddd;
+	box-shadow: inset 0 -1px 0 rgba(187, 187, 187, 0.4);
+	background-color: rgba(221, 221, 221, 0.4);
 	vertical-align: middle;
 	color: #555;
 	line-height: 10px;
@@ -622,9 +563,9 @@
 .vs-dark .monaco-kbkey {
 	background-color: rgba(128, 128, 128, 0.17);
 	color: #ccc;
-	border: solid 1px #333;
-	border-bottom-color: #444;
-	box-shadow: inset 0 -1px 0 #444;
+	border: solid 1px rgba(51, 51, 51, 0.6);
+	border-bottom-color: rgba(68, 68, 68, 0.6);
+	box-shadow: inset 0 -1px 0 rgba(68, 68, 68, 0.6);
 }
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
@@ -942,7 +883,7 @@ Applies to all other files
  *--------------------------------------------------------------------------------------------*/
 .progress-container {
 	width: 100%;
-	height: 5px;	
+	height: 5px;
 }
 
 .progress-container .progress-bit {
@@ -951,7 +892,6 @@ Applies to all other files
 	position: absolute;
 	left: 0;
 	display: none;
-	background-color: #0E70C0;
 }
 
 .progress-container.active .progress-bit {
@@ -988,14 +928,6 @@ Applies to all other files
 	-moz-animation-duration: 4s;
 	-moz-animation-iteration-count: infinite;
 	-moz-animation-timing-function: linear;
-}
-
-.progress-container.infinite.done .progress-bit {
-	transition: opacity 200ms linear;
-	-webkit-transition: opacity 200ms linear;
-	-o-transition: opacity 200ms linear;
-	-moz-transition: opacity 200ms linear;
-	-ms-transition: opacity 200ms linear;
 }
 
 @keyframes progress { from { left: 0; width: 2%; }	50% { left: 50%; width: 5%; } to { left: 98%; width: 2%; } }
@@ -1296,6 +1228,10 @@ Applies to all other files
 	display: flex;
 }
 
+.monaco-split-view > .split-view-view > .header.hide {
+	display: none;
+}
+
 /* Bold font style does not go well with CJK fonts */
 .monaco-split-view:lang(zh-Hans) > .split-view-view > .header,
 .monaco-split-view:lang(zh-Hant) > .split-view-view > .header,
@@ -1363,7 +1299,7 @@ Applies to all other files
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-.monaco-toolbar .dropdown > .dropdown-label:not(:empty):not(.tick) {
+.monaco-toolbar .dropdown > .dropdown-label:not(:empty) {
 	padding: 0;
 }
 
@@ -1586,8 +1522,6 @@ Applies to all other files
 .monaco-tree-drag-image {
 	display: inline-block;
 	padding: 1px 7px;
-	color: white;
-	background-color: #4A4A4A;
 	border-radius: 10px;
 	font-size: 12px;
 	position: absolute;
@@ -1656,6 +1590,41 @@ Applies to all other files
 .hc-black .monaco-tree-action.collapse-all,
 .vs-dark .monaco-tree-action.collapse-all {
 	background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='-1 0 16 16' enable-background='new -1 0 16 16'%3E%3Cpath fill='%23C5C5C5' d='M14 1v9h-1v-8h-8v-1h9zm-11 2v1h8v8h1v-9h-9zm7 2v9h-9v-9h9zm-2 2h-5v5h5v-5z'/%3E%3Crect x='4' y='9' fill='%2375BEFF' width='3' height='1'/%3E%3C/svg%3E") center center no-repeat;
+}
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+.monaco-editor .inputarea {
+	min-width: 0;
+	min-height: 0;
+	margin: 0;
+	padding: 0;
+	position: absolute;
+	outline: none !important;
+	resize: none;
+	border: none;
+	overflow: hidden;
+	color: transparent;
+	background-color: transparent;
+}
+/*.monaco-editor .inputarea {
+	position: fixed !important;
+	width: 800px !important;
+	height: 500px !important;
+	top: initial !important;
+	left: initial !important;
+	bottom: 0 !important;
+	right: 0 !important;
+	color: black !important;
+	background: white !important;
+	line-height: 15px !important;
+	font-size: 14px !important;
+}*/
+.monaco-editor .inputarea.ime-input {
+	z-index: 10;
 }
 
 /*---------------------------------------------------------------------------------------------
@@ -1868,35 +1837,6 @@ Applies to all other files
 .monaco-editor .minimap-slider.active {
 	opacity: 1;
 }
-
-.monaco-editor.vs .minimap-slider {
-	background: rgba(100, 100, 100, .4);
-}
-.monaco-editor.vs-dark .minimap-slider {
-	background: rgba(121, 121, 121, .4);
-}
-.monaco-editor.hc-black .minimap-slider {
-	background: rgba(111, 195, 223, .6);
-}
-
-.monaco-editor.vs .minimap-slider:hover,
-.monaco-editor.vs-dark .minimap-slider:hover {
-	background: rgba(100, 100, 100, .7);
-}
-.monaco-editor.hc-black .minimap-slider:hover {
-	background: rgba(111, 195, 223, .8);
-}
-
-.monaco-editor.vs .minimap-slider.active {
-	background: rgba(0, 0, 0, .6);
-}
-.monaco-editor.vs-dark .minimap-slider.active {
-	background: rgba(191, 191, 191, .4);
-}
-.monaco-editor.hc-black .minimap-slider.active {
-	background: rgba(111, 195, 223, 1);
-}
-
 .monaco-editor .minimap-shadow-hidden {
 	position: absolute;
 	width: 0;
@@ -1905,11 +1845,6 @@ Applies to all other files
 	position: absolute;
 	left: -6px;
 	width: 6px;
-	box-shadow: #DDD -6px 0 6px -6px inset;
-}
-
-.monaco-editor.vs-dark .minimap-shadow-visible {
-	box-shadow: #000 -6px 0 6px -6px inset;
 }
 
 /*---------------------------------------------------------------------------------------------
@@ -1930,10 +1865,6 @@ Applies to all other files
 	position: absolute;
 	width: 1px;
 	top: 0;
-	background: lightgrey;
-}
-.monaco-editor.vs-dark .view-ruler {
-	background: #5A5A5A;
 }
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
@@ -1945,15 +1876,6 @@ Applies to all other files
 	top: 0;
 	left: 0;
 	height: 6px;
-	box-shadow: #DDD 0 6px 6px -6px inset;
-}
-
-.monaco-editor.vs-dark .scroll-decoration {
-	box-shadow: #000 0 6px 6px -6px inset;
-}
-
-.monaco-editor.hc-black .scroll-decoration {
-	box-shadow: none;
 }
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
@@ -2096,9 +2018,6 @@ Applies to all other files
 .modified-in-monaco-diff-editor				.slider.active { background: rgba(171, 171, 171, .4); }
 .modified-in-monaco-diff-editor.hc-black	.slider.active { background: none; }
 
-.monaco-diff-editor.side-by-side			.editor.modified { box-shadow: -6px 0 5px -5px #DDD; }
-.monaco-diff-editor.side-by-side.vs-dark	.editor.modified { box-shadow: -6px 0 5px -5px black; }
-
 /* ---------- Diff ---------- */
 
 .monaco-editor .insert-sign, .monaco-editor .delete-sign {
@@ -2156,7 +2075,7 @@ Applies to all other files
 	color: inherit;
 }
 
-/* -------------------- Editor, inputarea and background -------------------- */
+/* -------------------- Editor -------------------- */
 
 .monaco-editor {
 	position: relative;
@@ -2170,69 +2089,6 @@ Applies to all other files
 	-webkit-font-feature-settings: "liga" on, "calt" on;
 	font-feature-settings: "liga" on, "calt" on;
 }
-.monaco-editor .inputarea {
-	/*Chrome cannot handle typing in a 0x0 textarea*/
-	width: 1px;
-	height: 1px;
-	min-width: 0;
-	min-height: 0;
-	margin: 0;
-	padding: 0;
-	position: absolute;
-	outline: none !important;
-	resize: none;
-	border: none;
-	overflow: hidden;
-}
-/*.monaco-editor .inputarea {
-	position: fixed !important;
-	width: 800px !important;
-	height: 200px !important;
-	top: initial !important;
-	left: initial !important;
-	bottom: 0 !important;
-	right: 0 !important;
-}*/
-.monaco-editor.ff .inputarea,
-.monaco-editor.ie .inputarea {
-	width: 0;
-	height: 0;
-}
-.monaco-editor.ime-input .inputarea {
-	z-index: 10;
-}
-
-.monaco-editor,
-.monaco-editor .inputarea {
-	color: #333;
-	/*
-	 * WORKAROUND:
-	 * Because of bug https://monacotools.visualstudio.com/DefaultCollection/Monaco/_workitems/edit/13254
-	 * we are *not* using the color white (or #ffffff, rgba(255,255,255)) but something very close to white.
-	 */
-	background: #fffffe;
-}
-.monaco-editor.ime-input .inputarea {
-	background: rgba(255, 255, 255, 0.85);
-}
-
-.monaco-editor.vs-dark,
-.monaco-editor.vs-dark .inputarea,
-.monaco-editor.vs-dark .zone-widget .monaco-editor {
-	color: #BBB;
-	background: #1E1E1E;
-}
-.monaco-editor.vs-dark.ime-input .inputarea {
-	background: rgba(0, 0, 0, 0.65);
-}
-
-.monaco-editor.hc-black,
-.monaco-editor.hc-black .inputarea,
-.monaco-editor.hc-black .zone-widget .monaco-editor {
-	color: #fff;
-	background: #000;
-}
-
 
 /* -------------------- Misc -------------------- */
 
@@ -2245,17 +2101,6 @@ Applies to all other files
 	position: absolute;
 	top: 0;
 }
-
-/* -------------------- Squigglies -------------------- */
-
-.monaco-editor.vs		.redsquiggly,
-.monaco-editor.vs-dark	.redsquiggly { background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 6 3' enable-background='new 0 0 6 3' height='3' width='6'%3E%3Cg fill='%23F00'%3E%3Cpolygon points='5.5,0 2.5,3 1.1,3 4.1,0'/%3E%3Cpolygon points='4,0 6,2 6,0.6 5.4,0'/%3E%3Cpolygon points='0,2 1,3 2.4,3 0,0.6'/%3E%3C/g%3E%3C/svg%3E") repeat-x bottom left; }
-.monaco-editor.hc-black .redsquiggly { border-bottom: 4px double #E47777; opacity: 0.8; }
-
-.monaco-editor.vs		.greensquiggly,
-.monaco-editor.vs-dark	.greensquiggly { background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' height='3' width='6'%3E%3Cg fill='%23080'%3E%3Cpolygon points='5.5,0 2.5,3 1.1,3 4.1,0'/%3E%3Cpolygon points='4,0 6,2 6,0.6 5.4,0'/%3E%3Cpolygon points='0,2 1,3 2.4,3 0,0.6'/%3E%3C/g%3E%3C/svg%3E") repeat-x bottom left; }
-.monaco-editor.hc-black .greensquiggly { border-bottom: 4px double #71B771; opacity: 0.8; }
-
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -2267,19 +2112,7 @@ Applies to all other files
 .monaco-editor.hc-black .view-line {
 	mix-blend-mode: difference;
 }
-.monaco-editor.vs .vs-whitespace		{ color: rgba(51, 51, 51, 0.2); }
-.monaco-editor.vs-dark .vs-whitespace	{ color: rgba(227, 228, 226, 0.16); }
-.monaco-editor.hc-black .vs-whitespace	{ color: rgba(227, 228, 226, 0.16); }
 
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
-
-.monaco-editor .accessibilityHelpWidget {
-	padding: 10px;
-	vertical-align: middle;
-}
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -2287,11 +2120,7 @@ Applies to all other files
 
 .monaco-editor .bracket-match {
 	box-sizing: border-box;
-	background-color: rgba(0, 100, 0, 0.1);
 }
-.monaco-editor.vs		.bracket-match { border: 1px solid #B9B9B9; }
-.monaco-editor.vs-dark	.bracket-match { border: 1px solid #888; }
-.monaco-editor.hc-black .bracket-match { border: 1px solid #fff; }
 
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
@@ -2310,8 +2139,6 @@ Applies to all other files
 	overflow: hidden;
 	display: inline-block;
 	text-overflow: ellipsis;
-	font-size: 90%;
-	color: #999999;
 }
 
 .monaco-editor .codelens-decoration > span,
@@ -2331,11 +2158,6 @@ Applies to all other files
 .monaco-editor .codelens-decoration > a:hover {
 	text-decoration: underline;
 	cursor: pointer;
-	color: blue !important;
-}
-
-.monaco-editor.vs-dark .codelens-decoration > a:hover {
-	color: #4E94CE !important;
 }
 
 .monaco-editor .codelens-decoration.invisible-cl {
@@ -2353,6 +2175,7 @@ Applies to all other files
 	-o-animation: fadein 0.5s linear;
 	animation: fadein 0.5s linear;
 }
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -2434,7 +2257,9 @@ Applies to all other files
 	height: 64px; /* find input height + replace input height */
 }
 .monaco-editor .find-widget.replaceToggled > .replace-part {
-	display: inline-block;
+	display: flex;
+	display: -webkit-flex;
+	align-items: center;
 }
 
 .monaco-editor .find-widget.visible,
@@ -2464,6 +2289,9 @@ Applies to all other files
 .monaco-editor .find-widget > .replace-part {
 	margin: 4px 0 0 17px;
 	font-size: 12px;
+	display: flex;
+	display: -webkit-flex;
+	align-items: center;
 }
 
 .monaco-editor .find-widget > .find-part .monaco-inputbox,
@@ -2471,6 +2299,10 @@ Applies to all other files
 	height: 25px;
 }
 
+.monaco-editor .find-widget > .find-part .monaco-inputbox > .wrapper > .input {
+	width: 100% !important;
+	padding-right: 66px;
+}
 .monaco-editor .find-widget > .find-part .monaco-inputbox > .wrapper > .input,
 .monaco-editor .find-widget > .replace-part .monaco-inputbox > .wrapper > .input {
 	padding-top: 2px;
@@ -2478,21 +2310,16 @@ Applies to all other files
 }
 
 .monaco-editor .find-widget .monaco-findInput {
-	display: inline-block;
 	vertical-align: middle;
-}
-
-.monaco-editor .find-widget.no-results .matchesCount {
-	color: #A1260D;
-}
-
-.monaco-editor.vs-dark .find-widget.no-results .matchesCount,
-.monaco-editor.hc-black .find-widget.no-results .matchesCount {
-	color: #F48771
+	display: flex;
+	display: -webkit-flex;
+	flex:1;
 }
 
 .monaco-editor .find-widget .matchesCount {
-	display: inline-block;
+	display: flex;
+	display: -webkit-flex;
+	flex: initial;
 	margin: 0 1px 0 3px;
 	padding: 2px 2px 0 2px;
 	height: 25px;
@@ -2503,10 +2330,12 @@ Applies to all other files
 }
 
 .monaco-editor .find-widget .button {
+	min-width: 20px;
 	width: 20px;
 	height: 20px;
-	display: inline-block;
-	vertical-align: middle;
+	display: flex;
+	display: -webkit-flex;
+	flex: initial;
 	margin-left: 3px;
 	background-position: center center;
 	background-repeat: no-repeat;
@@ -2619,12 +2448,10 @@ Applies to all other files
 }
 
 .monaco-editor .find-widget > .replace-part > .replace-input {
-	display: inline-block;
+	display: flex;
+	display: -webkit-flex;
 	vertical-align: middle;
-}
-
-.monaco-editor .find-widget > .replace-part > .replace-input > .monaco-inputbox {
-	width: 100%;
+	width: auto !important;
 }
 
 /* REDUCED */
@@ -2634,15 +2461,15 @@ Applies to all other files
 }
 
 /* NARROW (SMALLER THAN REDUCED) */
-.monaco-editor .find-widget.narrow-find-widget > .find-part .monaco-findInput,
-.monaco-editor .find-widget.narrow-find-widget > .replace-part .replace-input {
-	width: 171px !important;
-}
-.monaco-editor .find-widget.narrow-find-widget > .find-part .monaco-inputbox > .wrapper > .input {
-	width: 105px !important;
+.monaco-editor .find-widget.narrow-find-widget {
+	max-width: 257px !important;
 }
 
 /* COLLAPSED (SMALLER THAN NARROW) */
+.monaco-editor .find-widget.collapsed-find-widget {
+	max-width: 111px !important;
+}
+
 .monaco-editor .find-widget.collapsed-find-widget .button.previous,
 .monaco-editor .find-widget.collapsed-find-widget .button.next,
 .monaco-editor .find-widget.collapsed-find-widget .button.replace,
@@ -2650,10 +2477,9 @@ Applies to all other files
 .monaco-editor .find-widget.collapsed-find-widget > .find-part .monaco-findInput .controls {
 	display:none;
 }
-.monaco-editor .find-widget.collapsed-find-widget > .find-part .monaco-findInput,
-.monaco-editor .find-widget.collapsed-find-widget > .replace-part .replace-input,
+
 .monaco-editor .find-widget.collapsed-find-widget > .find-part .monaco-inputbox > .wrapper > .input {
-	width: 71px !important;
+	padding-right: 0px;
 }
 
 .monaco-editor .findMatch {
@@ -2665,6 +2491,11 @@ Applies to all other files
 	-ms-animation-name: inherit !important;
 	animation-duration: 0;
 	animation-name: inherit !important;
+}
+
+.monaco-editor .find-widget .monaco-sash {
+	width: 2px !important;
+	margin-left: -4px;
 }
 
 .monaco-editor.hc-black .find-widget .previous,
@@ -2747,19 +2578,23 @@ Applies to all other files
 	transition: opacity 0.5s;
 }
 
-.monaco-editor .margin-view-overlays:hover .folding {
+.monaco-editor .margin-view-overlays .folding {
 	background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' x='0px' y='0px' viewBox='0 0 15 15' style='enable-background:new 0 0 15 15;'%3E %3Cpath style='fill:%23B6B6B6' d='M11,4v7H4V4H11 M12,3H3v9h9V3L12,3z'/%3E %3Cline style='fill:none;stroke:%236B6B6B;stroke-miterlimit:10' x1='10' y1='7.5' x2='5' y2='7.5'/%3E %3C/svg%3E");
+}
+
+.monaco-editor.hc-black .margin-view-overlays .folding,
+.monaco-editor.vs-dark .margin-view-overlays .folding {
+	background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' x='0px' y='0px' viewBox='0 0 15 15' style='enable-background:new 0 0 15 15;'%3E %3Cpath style='fill:%235A5A5A' d='M11,4v7H4V4H11 M12,3H3v9h9V3L12,3z'/%3E %3Cline style='fill:none;stroke:%23C5C5C5;stroke-miterlimit:10' x1='10' y1='7.5' x2='5' y2='7.5'/%3E %3C/svg%3E");
+}
+
+.monaco-editor .margin-view-overlays:hover .folding,
+.monaco-editor.alwaysShowFoldIcons .margin-view-overlays .folding {
 	opacity: 1;
 }
 
 .monaco-editor .margin-view-overlays .folding.collapsed {
 	background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' x='0px' y='0px' viewBox='0 0 15 15' style='enable-background:new 0 0 15 15;'%3E %3Crect x='3' y='3' style='fill:%23E8E8E8' width='9' height='9'/%3E %3Cpath style='fill:%23B6B6B6' d='M11,4v7H4V4H11 M12,3H3v9h9V3L12,3z'/%3E %3Cline style='fill:none;stroke:%236B6B6B;stroke-miterlimit:10' x1='10' y1='7.5' x2='5' y2='7.5'/%3E %3Cline style='fill:none;stroke:%236B6B6B;stroke-miterlimit:10' x1='7.5' y1='5' x2='7.5' y2='10'/%3E %3C/svg%3E");
 	opacity: 1;
-}
-
-.monaco-editor.hc-black .margin-view-overlays:hover .folding,
-.monaco-editor.vs-dark .margin-view-overlays:hover .folding {
-	background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' x='0px' y='0px' viewBox='0 0 15 15' style='enable-background:new 0 0 15 15;'%3E %3Cpath style='fill:%235A5A5A' d='M11,4v7H4V4H11 M12,3H3v9h9V3L12,3z'/%3E %3Cline style='fill:none;stroke:%23C5C5C5;stroke-miterlimit:10' x1='10' y1='7.5' x2='5' y2='7.5'/%3E %3C/svg%3E");
 }
 
 .monaco-editor.hc-black .margin-view-overlays .folding.collapsed,
@@ -2785,17 +2620,6 @@ Applies to all other files
 .monaco-editor .goto-definition-link {
 	text-decoration: underline;
 	cursor: pointer;
-}
-
-.monaco-editor .goto-definition-link-hover {
-	margin: 0.5em;
-	padding: 0;
-	padding-left: 0.5em;
-	border-left: 4px solid rgba(0, 0, 0, 0.14);
-}
-
-.monaco-editor.vs-dark .goto-definition-link-hover {
-	border-left: 4px solid rgba(255, 255, 255, 0.25);
 }
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
@@ -2824,8 +2648,6 @@ Applies to all other files
 
 .monaco-editor .monaco-editor-overlaymessage .message {
 	padding: 1px 4px;
-	background: #1382CE;
-	color: white;
 }
 
 .monaco-editor .monaco-editor-overlaymessage .anchor {
@@ -2835,7 +2657,6 @@ Applies to all other files
 	border-style: solid;
 	z-index: 1000;
 	border-width: 8px;
-	border-top-color: #1382CE;
 	position: absolute;
 }
 
@@ -2936,7 +2757,6 @@ Applies to all other files
 }
 
 .monaco-editor-hover code {
-	background-color: rgba(132, 132, 132, 0.14);
 	border-radius: 3px;
 	padding: 0 0.4em;
 }
@@ -2945,9 +2765,6 @@ Applies to all other files
 	white-space: pre-wrap;
 	word-break: break-all;
 }
-
-.monaco-editor.vs-dark .monaco-editor-hover a { color: #1C5DAF; }
-.monaco-editor.hc-black .monaco-editor-hover a { color: #1C5DAF; }
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -2977,18 +2794,7 @@ Applies to all other files
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-.monaco-editor.vs		.valueSetReplacement { outline: solid 2px #888; }
-.monaco-editor.vs-dark	.valueSetReplacement { outline: solid 2px #888; }
-.monaco-editor.hc-black	.valueSetReplacement { outline: none; }
-
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
-
 .tm-inspect-widget {
-	background-color: #F3F3F3;
-	border: 1px solid #CCC;
 	z-index: 50;
 	-webkit-user-select: text;
 	-ms-user-select: text;
@@ -2999,12 +2805,13 @@ Applies to all other files
 	padding: 10px;
 }
 
-.monaco-editor.vs-dark .tm-inspect-widget { background-color: #2D2D30; border-color: #555; }
-
-.monaco-editor.hc-black .tm-inspect-widget { background-color: #0C141F; }
-
 .tm-token {
 	font-family: monospace;
+}
+
+.tm-metadata-separator {
+	height: 1px;
+	border: 0;
 }
 
 .tm-token-length {
@@ -3046,8 +2853,6 @@ Applies to all other files
 
 .monaco-editor .parameter-hints-widget {
 	z-index: 10;
-	background-color: #F3F3F3;
-	border: 1px solid rgb(200, 200, 200);
 	display: flex;
 	flex-direction: column;
 	line-height: 1.5em;
@@ -3082,20 +2887,13 @@ Applies to all other files
 	flex-direction: column;
 }
 
-.monaco-editor .parameter-hints-widget.multiple .body {
-	border-left: 1px solid rgba(204, 204, 204, 0.5);
-}
-
 .monaco-editor .parameter-hints-widget .signature {
 	padding: 4px 5px;
 }
 
-.monaco-editor .parameter-hints-widget .signature.has-docs {
-	border-bottom: 1px solid rgba(204, 204, 204, 0.5);
-}
-
 .monaco-editor .parameter-hints-widget .docs {
 	padding: 0 10px 0 5px;
+	white-space: pre-wrap;
 }
 
 .monaco-editor .parameter-hints-widget .buttons {
@@ -3158,19 +2956,7 @@ Applies to all other files
 	margin-right: 0.5em;
 }
 
-/*** VS Dark */
-
-.monaco-editor.vs-dark .parameter-hints-widget {
-	background-color: #2D2D30;
-	border-color: rgba(85,85,85,0.5);
-}
-
-.monaco-editor.hc-black .parameter-hints-widget .body,
-.monaco-editor.vs-dark .parameter-hints-widget .body,
-.monaco-editor.hc-black .parameter-hints-widget .signature,
-.monaco-editor.vs-dark .parameter-hints-widget .signature {
-	border-color: rgba(85,85,85,0.5);
-}
+/*** VS Dark & High Contrast*/
 
 .monaco-editor.hc-black .parameter-hints-widget .button.previous,
 .monaco-editor.vs-dark .parameter-hints-widget .button.previous {
@@ -3180,13 +2966,6 @@ Applies to all other files
 .monaco-editor.hc-black .parameter-hints-widget .button.next,
 .monaco-editor.vs-dark .parameter-hints-widget .button.next {
 	background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='%23E8E8E8' d='M5.1 5l-.9.9 3.6 3.6 3.9-3.6-1-.9-3 2.7L5.1 5z'/%3E%3C/svg%3E");
-}
-
-/*** High Contrast */
-
-.monaco-editor.hc-black .parameter-hints-widget {
-	background-color: #0C141F;
-	border: 2px solid #6FC3DF;
 }
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
@@ -3240,13 +3019,6 @@ Applies to all other files
 	vertical-align: top;
 }
 
-.monaco-editor .reference-zone-widget .label {
-	font-size: 0.9em;
-	text-align: center;
-	color: #646465;
-	margin-top: 6px;
-}
-
 .monaco-editor .reference-zone-widget .messages {
 	height: 100%;
 	width: 100%;
@@ -3259,19 +3031,6 @@ Applies to all other files
 	font-size: 13px;
 }
 
-.monaco-editor .reference-zone-widget .ref-tree .monaco-tree.focused .monaco-tree-rows > .monaco-tree-row.selected.has-children > .content:before	{
-	border-left-color: #A6A6A6;
-}
-
-.monaco-editor .reference-zone-widget .ref-tree .monaco-tree.focused .monaco-tree-rows > .monaco-tree-row.selected.has-children > .content:after {
-	border-left-color: rgba(51, 153, 255, .2);
-}
-
-.monaco-editor .reference-zone-widget .ref-tree .monaco-tree.focused .monaco-tree-rows > .monaco-tree-row.selected.expanded > .content:before {
-	border-right-color: #646465;
-	border-left-color: transparent;
-}
-
 .monaco-editor .reference-zone-widget .ref-tree .reference {
 	text-overflow: ellipsis;
 	overflow: hidden;
@@ -3282,34 +3041,8 @@ Applies to all other files
 	line-height: 22px;
 }
 
-.monaco-editor .reference-zone-widget .ref-tree .reference-file .directory {
-	opacity: 0.7;
-	margin-left: 0.5em;
-	font-size: 0.9em;
-}
-
 .monaco-editor .reference-zone-widget .monaco-count-badge {
 	margin-right: 12px;
-}
-
-/* dark room */
-
-.monaco-editor.vs-dark .reference-zone-widget .ref-tree .block,
-.monaco-editor.vs-dark .reference-zone-widget .overlay {
-	background-color: #1e1e1e;
-}
-
-.monaco-editor.vs-dark .reference-zone-widget .ref-tree .monaco-tree.focused .monaco-tree-rows > .monaco-tree-row.selected.has-children > .content:before	{
-	border-left-color: white;
-}
-
-.monaco-editor.vs-dark .reference-zone-widget .ref-tree .monaco-tree.focused .monaco-tree-rows > .monaco-tree-row.selected.has-children > .content:after {
-	border-left-color: rgba(51, 153, 255, .2);
-}
-
-.monaco-editor.vs-dark .reference-zone-widget .ref-tree .monaco-tree.focused .monaco-tree-rows > .monaco-tree-row.selected.expanded > .content:before {
-	border-right-color: white;
-	border-left-color: transparent;
 }
 
 /* High Contrast Theming */
@@ -3317,10 +3050,6 @@ Applies to all other files
 .monaco-editor.hc-black .reference-zone-widget .ref-tree .reference-file {
 	line-height: 20px;
 	font-weight: bold;
-}
-
-.monaco-editor.hc-black .reference-zone-widget .ref-tree .reference-file .directory {
-	font-weight: normal;
 }
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
@@ -3341,10 +3070,6 @@ Applies to all other files
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-.monaco-editor.vs		.new-snippet { background-color: rgba(10, 50, 150, 0.1); }
-.monaco-editor.vs-dark	.new-snippet { background-color: rgba(100, 105, 110, 0.1); }
-.monaco-editor.hc-black	.new-snippet { background-color: rgba(100, 105, 110, 0.1); }
-
 .monaco-editor.vs		.snippet-placeholder { background-color: rgba(10, 50, 100, 0.1); }
 .monaco-editor.vs-dark	.snippet-placeholder { background-color: rgba(124, 124, 124, 0.1); }
 .monaco-editor.hc-black	.snippet-placeholder { background-color: rgba(124, 124, 124, 0.1); }
@@ -3358,28 +3083,62 @@ Applies to all other files
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-/* Suggest */
+/* Suggest widget*/
 .monaco-editor .suggest-widget {
 	z-index: 40;
-	width: 438px;
 }
 
-.monaco-editor .suggest-widget.visible {
-	-webkit-transition: left .05s ease-in-out;
-	-moz-transition: left .05s ease-in-out;
-	-o-transition: left .05s ease-in-out;
-	transition: left .05s ease-in-out;
+/** Initial widths **/
+
+.monaco-editor .suggest-widget {
+	width: 430px;
 }
 
+.monaco-editor .suggest-widget > .message,
+.monaco-editor .suggest-widget > .tree,
+.monaco-editor .suggest-widget > .details {
+	width: 100%;
+	border-style: solid;
+	border-width: 1px;
+	box-sizing: border-box;
+}
+
+.monaco-editor.hc-black .suggest-widget > .message,
+.monaco-editor.hc-black .suggest-widget > .tree,
+.monaco-editor.hc-black .suggest-widget > .details {
+	border-width: 2px;
+}
+
+/** Adjust width when docs are expanded to the side **/
+.monaco-editor .suggest-widget.docs-side {
+	width: 660px;
+}
+
+.monaco-editor .suggest-widget.docs-side > .tree,
+.monaco-editor .suggest-widget.docs-side > .details {
+	width: 50%;
+	float: left;
+}
+
+.monaco-editor .suggest-widget.docs-side.list-right > .tree,
+.monaco-editor .suggest-widget.docs-side.list-right > .details  {
+	float: right;
+}
+
+
+/* Styles for Message element for when widget is loading or is empty */
 .monaco-editor .suggest-widget > .message {
 	padding-left: 22px;
-	opacity: 0.7;
 }
 
+/** Styles for the list element **/
 .monaco-editor .suggest-widget > .tree {
 	height: 100%;
-	width: 100%;
 }
+
+
+
+/** Styles for each row in the list element **/
 
 .monaco-editor .suggest-widget .monaco-list .monaco-list-row {
 	display: flex;
@@ -3404,47 +3163,39 @@ Applies to all other files
 	text-overflow: ellipsis;
 }
 
-.monaco-editor .suggest-widget .monaco-list .monaco-list-row .docs {
-	display: none;
-	overflow: hidden;
-}
-
-.monaco-editor .suggest-widget .monaco-list .monaco-list-row .docs > .docs-text {
-	flex: 2;
-	white-space: nowrap;
-	text-overflow: ellipsis;
-	overflow: hidden;
-	opacity: 0.85;
-}
-
-.monaco-editor .suggest-widget .monaco-list .monaco-list-row .docs > .docs-text.no-docs {
-	opacity: 0.5;
-	font-style: italic;
-}
-
-.monaco-editor .suggest-widget .monaco-list .monaco-list-row .docs > .docs-details {
-	opacity: 0.6;
-	background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16'%3E%3Cpath d='M8 1c-3.865 0-7 3.135-7 7s3.135 7 7 7 7-3.135 7-7-3.135-7-7-7zm1 12h-2v-7h2v7zm0-8h-2v-2h2v2z' fill='%231BA1E2'/%3E%3Cpath d='M7 6h2v7h-2v-7zm0-1h2v-2h-2v2z' fill='%23fff'/%3E%3C/svg%3E");
-	background-position: center center;
-	background-repeat: no-repeat;
-	background-size: 70%;
-}
-
-.monaco-editor .suggest-widget .details > .header > .go-back,
-.monaco-editor .suggest-widget .monaco-list .monaco-list-row .docs > .docs-details {
-	color: #0035DD;
-}
-
-.monaco-editor .suggest-widget .monaco-list .monaco-list-row .docs > .docs-details:hover {
-	opacity: 1;
-}
-
 .monaco-editor .suggest-widget:not(.frozen) .monaco-highlighted-label .highlight {
 	font-weight: bold;
 }
 
+/** Icon styles **/
+
+.monaco-editor .suggest-widget .details > .monaco-scrollable-element > .body > .header > .close,
+.monaco-editor .suggest-widget .monaco-list .monaco-list-row > .contents > .main > .readMore {
+	opacity: 0.6;
+	background-position: center center;
+	background-repeat: no-repeat;
+	background-size: 70%;
+	cursor: pointer;
+}
+
+.monaco-editor .suggest-widget .details > .monaco-scrollable-element > .body > .header > .close {
+	background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='3 3 16 16' enable-background='new 3 3 16 16'%3E%3Cpolygon fill='%23424242' points='12.597,11.042 15.4,13.845 13.844,15.4 11.042,12.598 8.239,15.4 6.683,13.845 9.485,11.042 6.683,8.239 8.238,6.683 11.042,9.486 13.845,6.683 15.4,8.239'/%3E%3C/svg%3E");
+	float: right;
+	margin-right: 5px;
+}
+
+.monaco-editor .suggest-widget .monaco-list .monaco-list-row > .contents > .main > .readMore {
+	background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16'%3E%3Cpath d='M8 1c-3.865 0-7 3.135-7 7s3.135 7 7 7 7-3.135 7-7-3.135-7-7-7zm1 12h-2v-7h2v7zm0-8h-2v-2h2v2z' fill='%231BA1E2'/%3E%3Cpath d='M7 6h2v7h-2v-7zm0-1h2v-2h-2v2z' fill='%23fff'/%3E%3C/svg%3E");
+}
+
+.monaco-editor .suggest-widget .details > .monaco-scrollable-element > .body > .header > .close:hover,
+.monaco-editor .suggest-widget .monaco-list .monaco-list-row > .contents > .main > .readMore:hover {
+	opacity: 1;
+}
+
+/** Type Info and icon next to the label in the focused completion item **/
+
 .monaco-editor .suggest-widget .monaco-list .monaco-list-row > .contents > .main > .type-label {
-	display: none;
 	margin-left: 0.8em;
 	flex: 1;
 	text-align: right;
@@ -3457,17 +3208,20 @@ Applies to all other files
 	display: inline;
 }
 
+.monaco-editor .suggest-widget .monaco-list .monaco-list-row > .contents > .main > .readMore,
+.monaco-editor .suggest-widget .monaco-list .monaco-list-row > .contents > .main > .type-label,
+.monaco-editor .suggest-widget.docs-side .monaco-list .monaco-list-row.focused > .contents > .main > .readMore,
+.monaco-editor .suggest-widget.docs-side .monaco-list .monaco-list-row.focused > .contents > .main > .type-label,
+.monaco-editor .suggest-widget.docs-below .monaco-list .monaco-list-row.focused > .contents > .main > .readMore {
+	display: none;
+}
+
+.monaco-editor .suggest-widget .monaco-list .monaco-list-row.focused > .contents > .main > .readMore,
 .monaco-editor .suggest-widget .monaco-list .monaco-list-row.focused > .contents > .main > .type-label {
 	display: inline;
 }
 
-.monaco-editor .suggest-widget .monaco-list .monaco-list-row.focused .type-label {
-	display: inline;
-}
-
-.monaco-editor .suggest-widget .monaco-list .monaco-list-row.focused .docs {
-	display: flex;
-}
+/** Styles for each row in the list **/
 
 .monaco-editor .suggest-widget .monaco-list .monaco-list-row .icon {
 	display: block;
@@ -3514,38 +3268,19 @@ Applies to all other files
 	display: inline-block;
 }
 
+/** Styles for the docs of the completion item in focus **/
 .monaco-editor .suggest-widget .details {
-	height: 100%;
-	box-sizing: border-box;
 	display: flex;
 	flex-direction: column;
 	cursor: default;
 }
 
-.monaco-editor .suggest-widget .details > .header {
-	padding: 4px 5px;
-	display: flex;
-	box-sizing: border-box;
-	border-bottom: 1px solid rgba(204, 204, 204, 0.5);
+.monaco-editor .suggest-widget .details.no-docs {
+	display: none;
 }
 
-.monaco-editor .suggest-widget .details > .header > .title {
-	flex: 2;
-	overflow: hidden;
-	text-overflow: ellipsis;
-}
-
-.monaco-editor .suggest-widget .details > .header > .go-back {
-	cursor: pointer;
-	opacity: 0.6;
-	background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='-0.994 0 16 16' enable-background='new -0.994 0 16 16'%3E%3Cpath fill='%23808080' d='M13 6c0 1.461-.636 2.846-1.746 3.797l-5.584 4.951-1.324-1.496 5.595-4.962c.678-.582 1.061-1.413 1.061-2.29 0-1.654-1.345-3-2.997-3-.71 0-1.399.253-1.938.713l-1.521 1.287h2.448l-1.998 2h-3.996v-4l1.998-2v2.692l1.775-1.504c.899-.766 2.047-1.188 3.232-1.188 2.754 0 4.995 2.243 4.995 5z'/%3E%3C/svg%3E");
-	background-size: 70%;
-	background-position: center center;
-	background-repeat: no-repeat;
-}
-
-.monaco-editor .suggest-widget .details > .header > .go-back:hover {
-	opacity: 1;
+.monaco-editor .suggest-widget.docs-below .details {
+	border-top-width: 0px;
 }
 
 .monaco-editor .suggest-widget .details > .monaco-scrollable-element {
@@ -3560,11 +3295,17 @@ Applies to all other files
 	white-space: pre-wrap;
 }
 
-.monaco-editor .suggest-widget .details > .monaco-scrollable-element > .body > .type {
+.monaco-editor .suggest-widget .details > .monaco-scrollable-element > .body > .header > .type {
+	flex: 2;
+	overflow: hidden;
+	text-overflow: ellipsis;
 	opacity: 0.7;
+	word-break: break-all;
+	margin: 0;
+	padding: 4px 0 4px 5px;
 }
 
-.monaco-editor .suggest-widget .details > .monaco-scrollable-element > .body > p {
+.monaco-editor .suggest-widget .details > .monaco-scrollable-element > .body > .docs {
 	margin: 0;
 	padding: 4px 5px;
 }
@@ -3573,28 +3314,12 @@ Applies to all other files
 	display: none;
 }
 
-/* Dark theme */
 
-.monaco-editor.vs-dark .suggest-widget .details > .header {
-	border-color: rgba(85,85,85,0.5);
-}
+/* High Contrast and Dark Theming */
 
-.monaco-editor.vs-dark .suggest-widget .monaco-list .monaco-list-row .docs > .docs-details,
-.monaco-editor.vs-dark .suggest-widget .details > .header > .go-back {
-	color: #4E94CE;
-}
-
-
-/* High Contrast Theming */
-
-.monaco-editor.hc-black .suggest-widget .details > .monaco-scrollable-element > .body > .docs,
-.monaco-editor.hc-black .suggest-widget .monaco-list .monaco-list-row .docs {
-	color: #C07A7A;
-}
-
-.monaco-editor.hc-black .suggest-widget .monaco-list .monaco-list-row .docs > .docs-details,
-.monaco-editor.hc-black .suggest-widget .details > .header > .go-back {
-	color: #4E94CE;
+.monaco-editor.vs-dark .suggest-widget .details > .monaco-scrollable-element > .body > .header > .close,
+.monaco-editor.hc-black .suggest-widget .details > .monaco-scrollable-element > .body > .header > .close {
+	background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='3 3 16 16' enable-background='new 3 3 16 16'%3E%3Cpolygon fill='%23e8e8e8' points='12.597,11.042 15.4,13.845 13.844,15.4 11.042,12.598 8.239,15.4 6.683,13.845 9.485,11.042 6.683,8.239 8.238,6.683 11.042,9.486 13.845,6.683 15.4,8.239'/%3E%3C/svg%3E");
 }
 
 .monaco-editor.vs-dark .suggest-widget .monaco-list .monaco-list-row .icon,
@@ -3943,6 +3668,9 @@ Applies to all other files
 
 .monaco-workbench > .activitybar > .content {
 	height: 100%;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
 }
 
 .monaco-workbench > .activitybar > .content .monaco-action-bar {
@@ -4091,17 +3819,17 @@ Applies to all other files
 .monaco-workbench .editor-statusbar-item > .editor-status-eol,
 .monaco-workbench .editor-statusbar-item > .editor-status-selection,
 .monaco-workbench .editor-statusbar-item > .editor-status-indentation,
-.monaco-workbench .editor-statusbar-item > .editor-status-metadata {
+.monaco-workbench .editor-statusbar-item > .editor-status-metadata,
+.monaco-workbench .editor-statusbar-item > .editor-status-tabfocusmode,
+.monaco-workbench .editor-statusbar-item > .editor-status-screenreadermode {
 	padding: 0 5px 0 5px;
 }
 
-.monaco-workbench .editor-statusbar-item > .editor-status-metadata {
-	cursor: default;
+.monaco-workbench .editor-statusbar-item > .editor-status-metadata,
+.monaco-workbench > .part.statusbar > .statusbar-item > .editor-statusbar-item > a.editor-status-screenreadermode {
+	cursor: default !important;
 }
 
-.monaco-workbench .editor-statusbar-item > .editor-status-tabfocusmode {
-	padding: 0 5px 0 5px;
-}
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -4721,7 +4449,7 @@ Applies to all other files
 
 /* Font Families (with CJK support) */
 
-.monaco-shell { font-family: -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "HelveticaNeue-Light", "Ubuntu", "Droid Sans", sans-serif; }
+.monaco-shell { font-family: system-ui, "Segoe WPC", "Segoe UI", "HelveticaNeue-Light", "Ubuntu", "Droid Sans", sans-serif; }
 .monaco-shell:lang(zh-Hans) { font-family: -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "HelveticaNeue-Light", "Noto Sans", "Microsoft YaHei", "PingFang SC", "Hiragino Sans GB", "Source Han Sans SC", "Source Han Sans CN", "Source Han Sans", sans-serif; }
 .monaco-shell:lang(zh-Hant) { font-family: -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "HelveticaNeue-Light", "Noto Sans", "Microsoft Jhenghei", "PingFang TC", "Source Han Sans TC", "Source Han Sans", "Source Han Sans TW", sans-serif; }
 .monaco-shell:lang(ja) { font-family: -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "HelveticaNeue-Light", "Noto Sans", "Meiryo", "Hiragino Kaku Gothic Pro", "Source Han Sans J", "Source Han Sans JP", "Source Han Sans", "Sazanami Gothic", "IPA Gothic", sans-serif; }
@@ -4802,6 +4530,10 @@ Applies to all other files
 	outline-style: solid;
 	outline-offset: -1px;
 	opacity: 1 !important;
+}
+
+.monaco-shell .mac select:focus {
+	border: none; /* outline is a square, but border has a radius, so we avoid this glitch when focussed (https://github.com/Microsoft/vscode/issues/26045) */
 }
 
 .monaco-shell.hc-black [tabindex="0"]:focus,
@@ -4916,6 +4648,15 @@ Applies to all other files
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
+.monaco-editor .accessibilityHelpWidget {
+	padding: 10px;
+	vertical-align: middle;
+}
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
 .toggle-word-wrap-action {
 	background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cstyle%3E.st0{opacity:0}.st0,.st1{fill:%23f6f6f6}.st2{fill:%23424242}%3C/style%3E%3Cg id='outline'%3E%3Cpath class='st0' d='M0 0h16v16H0z'/%3E%3Cpath class='st1' d='M16 3H9v.445c-.034-.07-.062-.145-.1-.21a2.318 2.318 0 0 0-.759-.793C7.81 2.229 7 2.117 7 2.109V0H4v2.438c-.078-.042-.15-.092-.233-.125a2.685 2.685 0 0 0-1.013-.188c-.184 0-.392.016-.619.055a5.422 5.422 0 0 0-.506.115c-.149.045-.337.096-.493.162-.173.077-.39.151-.533.25L0 3.006v3.17c0 .297.045.56.136.821.1.291.255.525.454.736.207.224.462.351.75.467.065.027.137.026.205.039a2.827 2.827 0 0 0-.651.532 3.064 3.064 0 0 0-.6 1.061 3.81 3.81 0 0 0-.188 1.21c0 .402.062.784.185 1.137.132.377.323.709.562.978a2.748 2.748 0 0 0 2.131.942c.333 0 .595-.042.876-.13a2.61 2.61 0 0 0 .678-.333L5 13.225v-1.811L8.586 15h4.828l-2-2H16V3zM5 10.586V8.523l-.556-.404c-.081-.043-.152-.083-.228-.119h1.96c.196 0 .409.266.634.266.187 0 .366-.007.538-.029L5 10.586z'/%3E%3C/g%3E%3Cg id='icon_x5F_bg'%3E%3Cpath class='st2' d='M10 4v2h3v4H9l2-2H9l-3 3 3 3h2l-2-2h6V4zM3.869 3.568a1.21 1.21 0 0 0-.473-.329c-.274-.111-.623-.15-1.055-.076a3.5 3.5 0 0 0-.711.208 1.501 1.501 0 0 0-.234.125l-.043.03v1.056l.168-.139c.149-.124.326-.225.527-.303.196-.074.399-.113.604-.113.188 0 .33.051.431.157.087.095.137.248.147.456l-.962.144c-.219.03-.41.086-.57.166a1.245 1.245 0 0 0-.398.311 1.234 1.234 0 0 0-.229.426 1.714 1.714 0 0 0 .011 1.008 1.096 1.096 0 0 0 .638.67c.155.063.328.093.528.093a1.25 1.25 0 0 0 .978-.441v.345h1.007V4.769c0-.255-.03-.484-.089-.681a1.423 1.423 0 0 0-.275-.52zm-.636 1.896V5.7c0 .119-.018.231-.055.341a.745.745 0 0 1-.377.447.694.694 0 0 1-.512.027.454.454 0 0 1-.156-.094.389.389 0 0 1-.094-.139.474.474 0 0 1-.035-.186c0-.077.009-.147.024-.212a.33.33 0 0 1 .078-.141.436.436 0 0 1 .161-.109 1.3 1.3 0 0 1 .305-.073l.661-.097zM8.284 4.397a2.253 2.253 0 0 0-.244-.656 1.354 1.354 0 0 0-.436-.459 1.165 1.165 0 0 0-.642-.173 1.136 1.136 0 0 0-.69.223 1.312 1.312 0 0 0-.264.266V1.119H5.09v6.224h.918v-.281a1.023 1.023 0 0 0 .472.328c.098.032.208.047.33.047.255 0 .483-.06.677-.177.192-.115.355-.278.486-.486a2.29 2.29 0 0 0 .293-.718 3.87 3.87 0 0 0 .096-.886 3.76 3.76 0 0 0-.078-.773zm-.861.758c0 .232-.02.439-.059.613-.036.172-.09.315-.159.424a.639.639 0 0 1-.233.237.582.582 0 0 1-.565.014.683.683 0 0 1-.211-.183.925.925 0 0 1-.141-.283 1.187 1.187 0 0 1-.054-.358v-.517c0-.164.02-.314.059-.447.037-.132.088-.242.157-.336a.668.668 0 0 1 .228-.208.584.584 0 0 1 .289-.071.554.554 0 0 1 .497.279c.063.099.108.214.143.354.031.143.049.306.049.482zM2.409 10.019a.913.913 0 0 1 .316-.239c.218-.1.547-.105.766-.018.104.042.204.1.32.184l.329.26V9.064l-.096-.062a1.932 1.932 0 0 0-.905-.215c-.308 0-.593.057-.846.168-.25.11-.467.27-.647.475a2.072 2.072 0 0 0-.403.717c-.09.272-.137.57-.137.895 0 .289.043.561.129.808.087.249.212.471.374.652.161.185.361.333.597.441.232.104.493.155.778.155.233 0 .434-.028.613-.084a1.85 1.85 0 0 0 .466-.217l.078-.061v-.889l-.2.095a.402.402 0 0 1-.076.026c-.05.017-.099.035-.128.049-.036.023-.227.09-.227.09-.06.024-.14.043-.218.059a.977.977 0 0 1-.599-.057.827.827 0 0 1-.306-.225 1.088 1.088 0 0 1-.205-.376 1.728 1.728 0 0 1-.076-.529c0-.21.028-.399.083-.56.054-.158.129-.294.22-.4z'/%3E%3C/g%3E%3C/svg%3E") center center no-repeat;
 }
@@ -4936,10 +4677,6 @@ Applies to all other files
 	justify-content: center;
 	flex-direction: column;
 	padding: 0 10px;
-}
-
-.monaco-editor .zone-widget .zone-widget-container.breakpoint-widget .breakpoint-select-container .select-box {
-	border-color: rgba(128, 128, 128, 0.35);
 }
 
 .monaco-editor .zone-widget .zone-widget-container.breakpoint-widget .inputBoxContainer {
@@ -4981,12 +4718,20 @@ Applies to all other files
 	background: rgba(255, 255, 102, 0.45);
 }
 
+.monaco-editor .debug-top-stack-frame-range {
+	background: #ffeca0;
+}
+
 .monaco-editor .debug-top-stack-frame-column::before {
 	background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cstyle%3E.icon-canvas-transparent{opacity:0;fill:%23f6f6f6}.icon-vs-bg{fill:%23424242}.icon-vs-yellow{fill:%23fc0}%3C/style%3E%3Cpath class='icon-canvas-transparent' d='M16 16H0V0h16v16z' id='canvas'/%3E%3Cpath class='icon-vs-bg' d='M14.414 8l-5 6H3V2h6.414l5 6z' id='outline' style='display: none;'/%3E%3Cg id='iconBg'%3E%3Cpath class='icon-vs-yellow' d='M13 8l-4 5H4V3h5l4 5z'/%3E%3C/g%3E%3C/svg%3E") center center no-repeat;
 }
 
 .monaco-editor .debug-focused-stack-frame-line {
 	background: rgba(206, 231, 206, 0.45);
+}
+
+.monaco-editor .debug-focused-stack-frame-range {
+	background: rgba(206, 231, 206, 1);
 }
 
 .monaco-editor .debug-breakpoint-hint-glyph {
@@ -5145,9 +4890,17 @@ Applies to all other files
 	background: rgba(122, 189, 122, 0.3);
 }
 
+.monaco-editor.vs-dark .debug-focused-stack-frame-range {
+	background: rgba(122, 189, 122, 0.5);
+}
+
 .monaco-editor.vs-dark .debug-top-stack-frame-line,
 .monaco-editor.vs-dark .debug-top-stack-frame-exception-line {
 	background-color: rgba(255, 255, 0, 0.2)
+}
+
+.monaco-editor.vs-dark .debug-top-stack-frame-range {
+	background-color: rgba(255, 255, 0, 0.3)
 }
 
 .monaco-editor.vs-dark .debug-breakpoint-glyph,
@@ -5330,7 +5083,6 @@ Applies to all other files
  *--------------------------------------------------------------------------------------------*/
 
 .monaco-editor .debug-hover-widget {
-	border: 1px solid #CCC;
 	position: absolute;
 	margin-top: -1px;
 	cursor: default;
@@ -5339,8 +5091,6 @@ Applies to all other files
 	animation-name: fadeIn;
 	-webkit-user-select: text;
 	word-break: break-all;
-	background-color: #F3F3F3;
-	border: 1px solid #CCC;
 	padding: 4px 5px;
 }
 
@@ -5413,12 +5163,6 @@ Applies to all other files
 
 /* Dark theme */
 
-.monaco-editor.vs-dark .debug-hover-widget,
-.monaco-editor.hc-black .debug-hover-widget {
-	background-color: #2D2D30;
-	border-color: #555;
-}
-
 .monaco-editor.vs-dark .debug-hover-widget .value,
 .monaco-editor.hc-black .debug-hover-widget .value {
 	color: rgba(204, 204, 204, 0.6);
@@ -5442,11 +5186,6 @@ Applies to all other files
 .monaco-editor.vs-dark .debug-hover-widget .value.string,
 .monaco-editor.hc-black .debug-hover-widget .value.string {
 	color: #CE9178;
-}
-
-.monaco-editor.vs-dark .debug-hover-widget,
-.monaco-editor.hc-black .debug-hover-widget {
-	border-color: #555;
 }
 
 .monaco-editor.vs-dark .debugHoverHighlight,
@@ -5512,17 +5251,11 @@ Applies to all other files
 	margin-right: 0.3em;
 	height: 20px;
 	flex-shrink: 1;
-	border: 1px solid #dddddd;
 	margin-top: 7px;
 }
 
 .monaco-workbench.mac > .part > .title > .title-actions .start-debug-action-item {
 	border-radius: 4px;
-}
-
-.vs-dark .monaco-workbench > .part > .title > .title-actions .start-debug-action-item,
-.hc-black .monaco-workbench > .part > .title > .title-actions .start-debug-action-item {
-	border-color: #3c3c3c;
 }
 
 .monaco-workbench > .part > .title > .title-actions .start-debug-action-item .icon {
@@ -5537,15 +5270,6 @@ Applies to all other files
 .vs-dark .monaco-workbench > .part > .title > .title-actions .start-debug-action-item .icon,
 .hc-black .monaco-workbench > .part > .title > .title-actions .start-debug-action-item .icon {
 	background: url("data:image/svg+xml,%3C!DOCTYPE svg PUBLIC '-//W3C//DTD SVG 1.1//EN' 'http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd' [ %3C!ENTITY ns_flows 'http://ns.adobe.com/Flows/1.0/'%3E ]%3E%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='-3 0 16 16' enable-background='new -3 0 16 16'%3E%3Cpath fill='%2389D185' d='M1 2v12l8-6-8-6z'/%3E%3C/svg%3E") center center no-repeat;
-}
-
-.monaco-workbench > .part > .title > .title-actions .start-debug-action-item .configuration {
-	border-left: 1px solid #dddddd;
-}
-
-.vs-dark .monaco-workbench > .part > .title > .title-actions .start-debug-action-item .configuration,
-.hc-black .monaco-workbench > .part > .title > .title-actions .start-debug-action-item .configuration {
-	border-color: #3c3c3c;
 }
 
 .monaco-workbench .monaco-action-bar .start-debug-action-item .configuration .select-box {
@@ -5674,6 +5398,10 @@ Applies to all other files
 
 .debug-viewlet .debug-call-stack .stack-frame.label {
 	text-align: center;
+	font-style: italic;
+}
+
+.debug-viewlet .debug-call-stack .stack-frame.subtle {
 	font-style: italic;
 }
 
@@ -5866,6 +5594,10 @@ Applies to all other files
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
+.monaco-editor .zone-widget.exception-widget-container {
+	overflow: hidden;
+}
+
 .monaco-editor .zone-widget .zone-widget-container.exception-widget {
 	padding: 6px 10px;
 	white-space: pre-wrap;
@@ -5888,6 +5620,11 @@ Applies to all other files
 
 .monaco-editor .zone-widget .zone-widget-container.exception-widget .stack-trace {
 	margin-top: 0.5em;
+}
+
+.monaco-editor .zone-widget .zone-widget-container.exception-widget a {
+	text-decoration: underline;
+	cursor: pointer;
 }
 
 /* High Contrast Theming */
@@ -5979,6 +5716,7 @@ Applies to all other files
 
 .monaco-workbench .repl .repl-tree .monaco-tree .monaco-tree-row.has-children > .content.input-output-pair:before {
 	top: 8px;
+	cursor: pointer;
 }
 
 .monaco-workbench .repl .repl-tree .monaco-tree .monaco-tree-row.has-children > .content.input-output-pair:after {
@@ -6017,21 +5755,13 @@ Applies to all other files
 	position: absolute;
 }
 
-.monaco-workbench.windows .repl .repl-input-wrapper:before {
-	content: '\203A'; /* character does not exist on windows */
-	font-size: 30px;
-	line-height: 12px;
+.monaco-workbench .repl .repl-input-wrapper:before {
+	content: '\276f';
+	line-height: 18px;
 }
 
 .monaco-workbench.linux .repl .repl-input-wrapper:before {
-	content: '\276f';
 	font-size: 9px;
-	line-height: 18px;
-}
-
-.monaco-workbench.mac .repl .repl-input-wrapper:before {
-	content: '\276f';
-	line-height: 18px;
 }
 
 /* Actions */
@@ -6156,87 +5886,9 @@ Applies to all other files
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-.monaco-workbench .extensionViewlet-action.toggle {
-	background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16'%3E%3Cpath d='M13.451 5.609l-.579-.939-1.068.812-.076.094c-.335.415-.927 1.341-1.124 2.876l-.021.165.033.163.071.345c0 1.654-1.346 3-3 3-.795 0-1.545-.311-2.107-.868-.563-.567-.873-1.317-.873-2.111 0-1.431 1.007-2.632 2.351-2.929v2.926s2.528-2.087 2.984-2.461h.012l3.061-2.582-4.919-4.1h-1.137v2.404c-3.429.318-6.121 3.211-6.121 6.721 0 1.809.707 3.508 1.986 4.782 1.277 1.282 2.976 1.988 4.784 1.988 3.722 0 6.75-3.028 6.75-6.75 0-1.245-.349-2.468-1.007-3.536z' fill='%23F6F6F6'/%3E%3Cpath d='M12.6 6.134l-.094.071c-.269.333-.746 1.096-.91 2.375.057.277.092.495.092.545 0 2.206-1.794 4-4 4-1.098 0-2.093-.445-2.817-1.164-.718-.724-1.163-1.718-1.163-2.815 0-2.206 1.794-4 4-4l.351.025v1.85s1.626-1.342 1.631-1.339l1.869-1.577-3.5-2.917v2.218l-.371-.03c-3.176 0-5.75 2.574-5.75 5.75 0 1.593.648 3.034 1.695 4.076 1.042 1.046 2.482 1.694 4.076 1.694 3.176 0 5.75-2.574 5.75-5.75-.001-1.106-.318-2.135-.859-3.012z' fill='%23424242'/%3E%3C/svg%3E") center center no-repeat;
-}
-
-.vs-dark .monaco-workbench .extensionViewlet-action.toggle,
-.hc-black .monaco-workbench .extensionViewlet-action.toggle {
-	background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16'%3E%3Cpath d='M13.451 5.609l-.579-.939-1.068.812-.076.094c-.335.415-.927 1.341-1.124 2.876l-.021.165.033.163.071.345c0 1.654-1.346 3-3 3-.795 0-1.545-.311-2.107-.868-.563-.567-.873-1.317-.873-2.111 0-1.431 1.007-2.632 2.351-2.929v2.926s2.528-2.087 2.984-2.461h.012l3.061-2.582-4.919-4.1h-1.137v2.404c-3.429.318-6.121 3.211-6.121 6.721 0 1.809.707 3.508 1.986 4.782 1.277 1.282 2.976 1.988 4.784 1.988 3.722 0 6.75-3.028 6.75-6.75 0-1.245-.349-2.468-1.007-3.536z' fill='%232D2D30'/%3E%3Cpath d='M12.6 6.134l-.094.071c-.269.333-.746 1.096-.91 2.375.057.277.092.495.092.545 0 2.206-1.794 4-4 4-1.098 0-2.093-.445-2.817-1.164-.718-.724-1.163-1.718-1.163-2.815 0-2.206 1.794-4 4-4l.351.025v1.85s1.626-1.342 1.631-1.339l1.869-1.577-3.5-2.917v2.218l-.371-.03c-3.176 0-5.75 2.574-5.75 5.75 0 1.593.648 3.034 1.695 4.076 1.042 1.046 2.482 1.694 4.076 1.694 3.176 0 5.75-2.574 5.75-5.75-.001-1.106-.318-2.135-.859-3.012z' fill='%23C5C5C5'/%3E%3C/svg%3E") center center no-repeat;
-}
-
-.custom-viewlet-tree-node-item {
-	height: 22px;
-	line-height: 22px;
-}
-
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
-
 .monaco-action-bar .action-item .action-label.extension-action {
-	border: 1px solid #CCC;
-	color: #6C6C6C;
-	background-color: #E2E2E2;
 	padding: 0 5px;
 	line-height: initial;
-}
-
-.monaco-action-bar .action-item:not(.disabled):hover .action-label.extension-action {
-	background-color: #D9D9D9;
-}
-
-.monaco-action-bar .action-item:not(.disabled):active .action-label.extension-action {
-	background-color: #C9C9C9;
-}
-
-.vs-dark .monaco-action-bar .action-item .action-label.extension-action {
-	border: 1px solid #545454;
-	color: #CCC;
-	background-color: #3A3A3A;
-}
-
-.vs-dark .monaco-action-bar .action-item:not(.disabled):hover .action-label.extension-action {
-	background-color: #464646;
-}
-
-.vs-dark .monaco-action-bar .action-item:not(.disabled):active .action-label.extension-action {
-	background-color: #505050;
-}
-
-.monaco-action-bar .action-item .action-label.extension-action.install,
-.monaco-action-bar .action-item .action-label.extension-action.enable,
-.monaco-action-bar .action-item .action-label.extension-action.update {
-	color: white;
-	background-color: #327e36;
-	border-color: #519A55;
-}
-
-.monaco-action-bar .action-item:not(.disabled):hover .action-label.extension-action.install,
-.monaco-action-bar .action-item:not(.disabled):hover .action-label.extension-action.enable,
-.monaco-action-bar .action-item:not(.disabled):hover .action-label.extension-action.update {
-	background-color: #478E4B;
-}
-
-.monaco-action-bar .action-item:not(.disabled):active .action-label.extension-action.install,
-.monaco-action-bar .action-item:not(.disabled):active .action-label.extension-action.enable,
-.monaco-action-bar .action-item:not(.disabled):active .action-label.extension-action.update {
-	background-color: #6DA770;
-}
-
-.monaco-action-bar .action-item .action-label.extension-action.reload {
-	color: white;
-	background-color: #007ACC;
-	border-color: #3F8BCE;
-}
-
-.monaco-action-bar .action-item:not(.disabled):hover .action-label.extension-action.reload {
-	background-color: #2584C4;
-}
-
-.monaco-action-bar .action-item:not(.disabled):active .action-label.extension-action.reload {
-	background-color: #4294CC
 }
 
 .monaco-action-bar .action-item .action-label.clear-extensions {
@@ -6267,7 +5919,6 @@ Applies to all other files
 
 .monaco-action-bar .action-item .action-label.extension-action.built-in-status {
 	border-radius: 4px;
-	border-color: #c1c1c1;
 	color: inherit;
 	background-color: transparent;
 	opacity: 0.9;
@@ -6351,12 +6002,6 @@ Applies to all other files
 	user-select: text;
 	-webkit-user-select: text;
 	white-space: nowrap;
-}
-
-.extension-editor > .header > .details > .title .extension-status {
-	width: 10px;
-	height: 10px;
-	margin-left: 10px;
 }
 
 .extension-editor > .header > .details > .subtitle {
@@ -6642,24 +6287,6 @@ Applies to all other files
 .extension-ratings.small > .count {
 	margin-left: 2px;
 }
-
-.extension-status {
-	display: none;
-}
-
-.extension-status.active,
-.extension-status.disabled {
-	border-radius: 50%;
-	display: inline-block;
-}
-
-.extension-status.active {
-	background: #478E4B;
-}
-
-.extension-status.disabled {
-	background: #5f5f5f;
-}
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -6753,10 +6380,11 @@ Applies to all other files
 .extensions-viewlet > .extensions .extension > .details > .header-container > .header {
 	display: flex;
 	align-items: baseline;
-	flex-wrap: wrap;
+	flex-wrap: nowrap;
 	overflow: hidden;
 	flex: 1;
 	min-width: 0;
+
 }
 
 .extensions-viewlet > .extensions .extension > .details > .header-container > .header > .name {
@@ -6793,12 +6421,6 @@ Applies to all other files
 	display: none;
 }
 
-.extensions-viewlet > .extensions .extension > .details > .header-container .extension-status {
-	width: 8px;
-	height: 8px;
-	margin-left: 6px;
-}
-
 .extensions-viewlet > .extensions .extension > .details > .footer {
 	display: flex;
 	justify-content: flex-end;
@@ -6826,7 +6448,7 @@ Applies to all other files
 
 .extensions-viewlet > .extensions .extension.disabled > .icon,
 .extensions-viewlet > .extensions .extension.disabled > .details > .header-container,
-.extensions-viewlet > .extensions .extension.disabled > .details > .description,
+.extensions-viewlet > .extensions .extension.disabled > .details > .description
 .extensions-viewlet > .extensions .extension.disabled > .details > .footer > .author {
 	opacity: 0.5;
 }
@@ -6880,16 +6502,8 @@ Applies to all other files
 
 .monaco-shell .feedback-form .content .contactus {
 	padding: 10px;
-	border: solid 1px #B4BABF;
-	background-color: #EBF2F9;
 	float: right;
 }
-
-.monaco-shell.vs-dark .feedback-form .content .contactus {
-	border: solid 1px #44444C;
-	background-color: #333337;
-}
-
 
 .monaco-shell .feedback-form .content .channels {
 	margin-top: 5px;
@@ -6902,12 +6516,7 @@ Applies to all other files
 
 /* TODO @C5 review link color */
 .monaco-shell .feedback-form .content .channels a {
-	color: #007ACC;
 	padding: 2px 0;
-}
-
-.monaco-shell.vs-dark .feedback-form .content .channels a {
-	color: #75BEFF;
 }
 
 .monaco-shell .feedback-form .content .channels a:hover {
@@ -6975,10 +6584,6 @@ Applies to all other files
 	width: 20%;
 }
 
-.monaco-shell .feedback-form .feedback-sentiment span {
-	color:rgb(111, 111, 111);
-}
-
 .monaco-shell .feedback-form .sentiment {
 	height: 32px;
 	width: 32px;
@@ -6992,10 +6597,6 @@ Applies to all other files
 	background-color: #eaeaea;
 }
 
-.monaco-shell .feedback-form .sentiment.checked {
-	border: 1px solid #39F;
-}
-
 /* Statusbar */
 .monaco-shell .statusbar-item > .dropdown.send-feedback {
 	display: inline-block;
@@ -7007,20 +6608,6 @@ Applies to all other files
 }
 
 /* Theming */
-.monaco-shell.vs .feedback-form {
-	color: black;
-	background: #F6F6F6;
-}
-
-.monaco-shell .feedback-form h2 {
-	color: #007ACC;
-}
-
-.monaco-shell.vs .feedback-form h3 {
-	color: #646465;
-}
-
-
 .monaco-shell.vs .feedback-form .feedback-alias, .monaco-shell.vs .feedback-form .feedback-description {
 	font-family: inherit;
 	border: 1px solid transparent;
@@ -7068,33 +6655,17 @@ Applies to all other files
 	background-color: #E51400;
 }
 
-.monaco-shell.vs-dark .feedback-form {
-	background: #252526;
-	box-shadow: 0 2px 8px #000;
-}
-
-.monaco-shell.vs-dark .feedback-form h2 {
-	color: #75BEFF;
-}
-
 .monaco-shell.vs-dark .feedback-form h3 {
 	font-weight: normal;
 	font-size: 1.2em;
 }
 
 .monaco-shell.vs-dark .feedback-form .sentiment:hover {
-	background-color: #1e1e1e;
-}
-
-.monaco-shell.vs-dark .feedback-form .sentiment.checked {
-	border-color: #75BEFF;
+	background-color: rgba(30,30,30,0.8);
 }
 
 .monaco-shell.vs-dark .feedback-form .feedback-alias, .monaco-shell.vs-dark .feedback-form .feedback-description {
 	font-family: inherit;
-	border: 1px solid transparent;
-	background-color: #333337;
-	color: #D4D4D4;
 }
 
 .monaco-shell.vs-dark .feedback-form .cancel,
@@ -7103,7 +6674,7 @@ Applies to all other files
 }
 
 .monaco-shell.vs-dark .feedback-form .cancel:hover {
-	background-color: #1e1e1e;
+	background-color: rgba(30,30,30,0.8);
 }
 
 .monaco-shell .feedback-form .sentiment.smile {
@@ -7131,40 +6702,18 @@ Applies to all other files
 	margin-left: 5px;
 }
 
-.monaco-shell .feedback-form .privacyLink {
-	float: left;
-	color: #007ACC !Important;
-}
-.monaco-shell.vs-dark .feedback-form .privacyLink {
-	color: #75BEFF !Important;
-}
-
-.monaco-shell .feedback-form .privacyLink:hover {
-	text-decoration: underline;
-}
-
 /* High Contrast Theming */
 .monaco-shell.hc-black .feedback-form {
-	background-color: #000;
 	outline: 2px solid #6fc3df;
 	outline-offset: -2px;
 }
 
-.monaco-shell.hc-black .feedback-form h2 {
-	color: white;
-}
-
 .monaco-shell.hc-black .feedback-form .feedback-alias, .monaco-shell.hc-black .feedback-form .feedback-description {
 	font-family: inherit;
-	border: 1px solid #6FC3DF;
-	background-color: #000;
-	color: #D4D4D4;
 }
 
 .monaco-shell.hc-black .feedback-form .content .contactus {
 	padding: 10px;
-	border: solid 1px #6FC3DF;
-	background-color: #0C141F;
 	float: right;
 }
 .monaco-shell.hc-black .feedback-form .cancel {
@@ -7187,13 +6736,6 @@ Applies to all other files
 	background-color: #0C141F;
 }
 
-.monaco-shell.hc-black .feedback-form .sentiment {
-	border: 1px solid transparent;
-}
-
-.monaco-shell.hc-black .feedback-form .sentiment.checked {
-	border: 1px solid #f38518;
-}
 
 .monaco-shell .feedback-form .infotip {
 	background: none;
@@ -7204,10 +6746,6 @@ Applies to all other files
 	height: 16px;
 	width: 16px;
 	display: inline-block;
-}
-
-.monaco-shell.hc-black .feedback-form .privacyLink {
-	color: white !Important;
 }
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
@@ -7394,16 +6932,6 @@ Applies to all other files
 .hc-black .monaco-workbench .explorer-viewlet .editor-group {
 	line-height: 20px;
 }
-
-/* TODO@Theme */
-
-.vs .monaco-workbench .explorer-viewlet .header .monaco-count-badge {
-	background-color: rgba(190, 190, 190, 0.7);
-}
-
-.vs-dark .monaco-workbench .explorer-viewlet .header .monaco-count-badge {
-	background-color: rgba(100, 100, 100, 0.5);
-}
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -7531,537 +7059,6 @@ Applies to all other files
 .hc-black .monaco-workbench .explorer-viewlet .explorer-open-editors .close-editor-action {
 	background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='3 3 16 16' enable-background='new 3 3 16 16'%3E%3Cpolygon fill='%23e8e8e8' points='12.597,11.042 15.4,13.845 13.844,15.4 11.042,12.598 8.239,15.4 6.683,13.845 9.485,11.042 6.683,8.239 8.238,6.683 11.042,9.486 13.845,6.683 15.4,8.239'/%3E%3C/svg%3E") center center no-repeat;
 }
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
-
-/* Appbar */
-
-.monaco-workbench .git-action.open-in-diff {
-	background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16'%3E%3Cpath fill='%23656565' d='M15 4v6h-2.276c.113-.318.187-.653.226-1h1.05v-5h-2v-2h-4v2.051c-.347.038-.681.112-1 .225v-3.276h5l3 3zm-7 8.949v1.051h-6v-7h2.276c.126-.354.28-.693.485-1h-3.761v9h8v-2.051c-.166.02-.329.051-.5.051l-.5-.051z'/%3E%3Cpath fill='%2300539C' d='M12 8.5c0-1.933-1.567-3.5-3.5-3.5s-3.5 1.567-3.5 3.5 1.567 3.5 3.5 3.5c.711 0 1.369-.215 1.922-.578l3.578 3.578 1-1-3.578-3.578c.363-.553.578-1.211.578-1.922zm-3.5 2.5c-1.381 0-2.5-1.119-2.5-2.5s1.119-2.5 2.5-2.5 2.5 1.119 2.5 2.5-1.119 2.5-2.5 2.5z'/%3E%3C/svg%3E") center center no-repeat;
-}
-
-.monaco-workbench .git-action.open-in-editor {
-	background: url("data:image/svg+xml,%3C!DOCTYPE svg PUBLIC '-//W3C//DTD SVG 1.1//EN' 'http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd' [ %3C!ENTITY ns_flows 'http://ns.adobe.com/Flows/1.0/'%3E ]%3E%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16'%3E%3Cpolygon fill='%23656565' points='10,2 7.414,2 8.414,3 9,3 9,3.586 9,4 9,4.414 9,6 12,6 12,13 4,13 4,8 3,8 3,14 13,14 13,5'/%3E%3Cpolygon fill='%2300539C' points='5,1 3,1 5,3 1,3 1,5 5,5 3,7 5,7 8,4'/%3E%3C/svg%3E") center center no-repeat;
-}
-
-.vs-dark .monaco-workbench .git-action.open-in-diff,
-.hc-black .monaco-workbench .git-action.open-in-diff {
-	background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16'%3E%3Cpath fill='%23C5C5C5' d='M15 4v6h-2.276c.113-.318.187-.653.226-1h1.05v-5h-2v-2h-4v2.051c-.347.038-.681.112-1 .225v-3.276h5l3 3zm-7 8.949v1.051h-6v-7h2.276c.126-.354.28-.693.485-1h-3.761v9h8v-2.051c-.166.02-.329.051-.5.051l-.5-.051z'/%3E%3Cpath fill='%2375BEFF' d='M12 8.5c0-1.933-1.567-3.5-3.5-3.5s-3.5 1.567-3.5 3.5 1.567 3.5 3.5 3.5c.711 0 1.369-.215 1.922-.578l3.578 3.578 1-1-3.578-3.578c.363-.553.578-1.211.578-1.922zm-3.5 2.5c-1.381 0-2.5-1.119-2.5-2.5s1.119-2.5 2.5-2.5 2.5 1.119 2.5 2.5-1.119 2.5-2.5 2.5z'/%3E%3C/svg%3E") center center no-repeat;
-}
-
-.vs-dark .monaco-workbench .git-action.open-in-editor,
-.hc-black .monaco-workbench .git-action.open-in-editor {
-	background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16'%3E%3Cpolygon fill='%23C5C5C5' points='10,2 7.414,2 8.414,3 9,3 9,3.586 9,4 9,4.414 9,6 12,6 12,13 4,13 4,8 3,8 3,14 13,14 13,5'/%3E%3Cpolygon fill='%2375BEFF' points='5,1 3,1 5,3 1,3 1,5 5,5 3,7 5,7 8,4'/%3E%3C/svg%3E") center center no-repeat;
-}
-
-/* Activity Bar */
-.monaco-workbench > .activitybar .monaco-action-bar .action-label.git {
-	-webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32'%3E%3Cpath d='M27.459 14.902l-10.439-10.439c-.296-.294-.672-.452-1.089-.452-.417 0-.793.157-1.089.452l-2.248 2.247 2.549 2.549c.249-.112.522-.177.813-.177 1.106 0 2.002.896 2.002 2.002 0 .291-.064.565-.176.814l2.311 2.336c.25-.111.633-.234.923-.234 1.106 0 2 .911 2 2.016s-.894 1.969-2 1.969c-1.105-.001-2.016-.751-2.016-1.985 0-.28.016-.462.119-.704l-2.373-2.374-.023.007v6.274c.747.295 1.277 1.026 1.277 1.875 0 1.105-.878 2.016-1.984 2.016-1.104 0-2.031-.926-2.031-2.031 0-.846.535-1.564 1.28-1.857l.001-6.25c-.762-.282-1.309-1.009-1.309-1.871 0-.28.059-.546.162-.788l-2.555-2.557-7.115 7.114c-.599.601-.601 1.576.001 2.178l10.44 10.518c.296.295.671.45 1.089.45.415 0 .796-.159 1.089-.45l10.391-10.471c.601-.599.599-1.576 0-2.177z' fill='%23fff'/%3E%3C/svg%3E") no-repeat 50% 50%;
-}
-
-/* Status / Quick Open */
-.monaco-shell .git-statusbar-group > .git-statusbar-branch-item,
-.vs-dark .monaco-workbench .quick-open-widget .quick-open-tree .quick-open-entry .quick-open-entry-icon.git {
-	background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32'%3E%3Cpath d='M27.459 14.902l-10.439-10.439c-.296-.294-.672-.452-1.089-.452-.417 0-.793.157-1.089.452l-2.248 2.247 2.549 2.549c.249-.112.522-.177.813-.177 1.106 0 2.002.896 2.002 2.002 0 .291-.064.565-.176.814l2.311 2.336c.25-.111.633-.234.923-.234 1.106 0 2 .911 2 2.016s-.894 1.969-2 1.969c-1.105-.001-2.016-.751-2.016-1.985 0-.28.016-.462.119-.704l-2.373-2.374-.023.007v6.274c.747.295 1.277 1.026 1.277 1.875 0 1.105-.878 2.016-1.984 2.016-1.104 0-2.031-.926-2.031-2.031 0-.846.535-1.564 1.28-1.857l.001-6.25c-.762-.282-1.309-1.009-1.309-1.871 0-.28.059-.546.162-.788l-2.555-2.557-7.115 7.114c-.599.601-.601 1.576.001 2.178l10.44 10.518c.296.295.671.45 1.089.45.415 0 .796-.159 1.089-.45l10.391-10.471c.601-.599.599-1.576 0-2.177z' fill='%23fff'/%3E%3C/svg%3E");
-}
-
-/* Git viewlet label */
-
-.git-viewlet-label-progress > .badge-content {
-	background-image: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNCIgaGVpZ2h0PSIxNCIgdmlld0JveD0iMiAyIDE0IDE0IiBlbmFibGUtYmFja2dyb3VuZD0ibmV3IDIgMiAxNCAxNCI+PHBhdGggZmlsbD0iI2ZmZiIgZD0iTTkgMTZjLTMuODYgMC03LTMuMTQtNy03czMuMTQtNyA3LTdjMy44NTkgMCA3IDMuMTQxIDcgN3MtMy4xNDEgNy03IDd6bTAtMTIuNmMtMy4wODggMC01LjYgMi41MTMtNS42IDUuNnMyLjUxMiA1LjYgNS42IDUuNiA1LjYtMi41MTIgNS42LTUuNi0yLjUxMi01LjYtNS42LTUuNnptMy44NiA3LjFsLTMuMTYtMS44OTZ2LTMuODA0aC0xLjR2NC41OTZsMy44NCAyLjMwNS43Mi0xLjIwMXoiLz48L3N2Zz4=);
-	background-position: center center;
-	background-repeat: no-repeat;
-}
-
-/* Git merge editor decorations */
-.monaco-editor .git-merge-control-decoration {
-	background-color: rgba(255, 139, 0, 0.3);
-}
-.monaco-editor.vs-dark .git-merge-control-decoration {
-	background-color: rgba(235, 59, 0, 0.3);
-}
-
-.monaco-shell .git-branch-dropdown-menu .action-label.git-action.checkout.HEAD {
-	font-weight: bold;
-}
-
-.monaco-shell .git-branch-dropdown-menu .monaco-inputbox {
-	font-size: 12px;
-	width: 100%;
-}
-
-.monaco-shell .git-branch-dropdown-menu .monaco-inputbox > .wrapper > .input {
-	background-color: transparent;
-}
-
-.monaco-shell .git-branch-dropdown-menu .monaco-inputbox > .wrapper > .input {
-	padding: 0.8em 1em;
-}
-
-/* Quick Open */
-
-.monaco-workbench .quick-open-widget .quick-open-tree .quick-open-entry .quick-open-entry-icon.git {
-	background-size: 100%;
-}
-
-.vs .monaco-workbench .quick-open-widget .quick-open-tree .quick-open-entry .quick-open-entry-icon.git {
-	background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32'%3E%3Cdefs%3E%3CclipPath%3E%3Cpath d='M.06 91.886h91.828v-91.886h-91.828v91.886z'/%3E%3C/clipPath%3E%3CclipPath id='a'%3E%3Cpath d='M0 0h92v92h-92v-92z'/%3E%3C/clipPath%3E%3C/defs%3E%3Cpath d='M28.497 14.84l-11.354-11.353c-.653-.654-1.714-.654-2.368 0l-2.357 2.358 2.99 2.991c.695-.235 1.492-.077 2.046.477.557.558.713 1.361.473 2.059l2.882 2.882c.698-.241 1.502-.085 2.059.473.778.778.778 2.039 0 2.818-.779.779-2.04.779-2.819 0-.586-.586-.73-1.446-.434-2.167l-2.688-2.688v7.074c.19.094.369.219.527.377.778.778.778 2.039 0 2.819-.778.778-2.04.778-2.818 0-.778-.779-.778-2.04 0-2.819.192-.192.415-.338.653-.435v-7.14c-.237-.097-.46-.241-.653-.435-.589-.589-.731-1.455-.429-2.179l-2.948-2.949-7.785 7.785c-.654.655-.654 1.715 0 2.369l11.354 11.353c.654.654 1.714.654 2.369 0l11.3-11.301c.654-.654.654-1.715 0-2.369' fill='%23424242' clip-path='url(%23a)'/%3E%3C/svg%3E");
-}
-
-/* Actions */
-
-.monaco-shell .git-action.live-sync.icon {
-	background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16'%3E%3Cg fill='%23fff'%3E%3Cpath d='M3.637 8.5c0-1.602.975-3.152 2.363-3.738l-.002.238h.002v3l2-2v-4h-4l-2 2h2.348c-1.417.996-2.348 2.64-2.348 4.5 0 2.863 2.201 5.246 5 5.5v-1.669c-1.898-.246-3.363-1.866-3.363-3.831zm3.363 3.607v-.107l-.029-.007.029.114zM12.363 7.5c0 1.602-.975 3.152-2.363 3.738l.002-.238h-.002v-3l-2 2v4h4l2-2h-2.348c1.417-.996 2.348-2.641 2.348-4.5 0-2.863-2.201-5.246-5-5.5v1.669c1.898.246 3.363 1.866 3.363 3.831z'/%3E%3C/g%3E%3C/svg%3E") 7px center no-repeat;
-}
-
-.monaco-shell .git-action.live-sync.icon.loading {
-	animation: spin-forever 1.6s linear infinite;
-}
-
-@keyframes spin-forever { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-
-/* High Contrast Theming */
-.hc-black .monaco-workbench > .activitybar .monaco-action-bar .badge.git-viewlet-label-progress .badge-content {
-	width: 1px;
-}
-
-/* Status bar */
-
-.monaco-shell .git-statusbar-group > a {
-	padding: 0 5px;
-}
-
-.monaco-shell .git-statusbar-group > a.disabled {
-	opacity: 0.7;
-}
-
-.monaco-shell .git-statusbar-group > a.octicon {
-	line-height: 22px;
-	width: 16px;
-	text-align: center;
-}
-
-.monaco-shell .git-statusbar-group .octicon {
-	font-size: 14px;
-}
-
-.monaco-shell .git-statusbar-group > .git-statusbar-sync-item:not(.empty) > span.octicon {
-	margin-right: 6px;
-}
-
-@keyframes spin {
-	from { transform: rotate(0deg); }
-	to { transform: rotate(1080deg); }
-}
-
-.monaco-shell .git-statusbar-group > .git-statusbar-sync-item.syncing > .octicon {
-	animation: 2s ease-in-out infinite spin;
-}
-
-.monaco-shell .git-statusbar-group > .git-statusbar-sync-item.disabled > .ahead-behind,
-.monaco-shell .git-statusbar-group > .git-statusbar-sync-item.busy > .ahead-behind {
-	cursor: default;
-}
-
-.monaco-shell .git-statusbar-group > .git-statusbar-branch-item {
-	background-repeat: no-repeat;
-	background-position: 4px 50%;
-	background-size: 17px;
-	cursor: default;
-	padding: 0 5px 0 22px;
-}
-
-.monaco-shell .git-statusbar-group > a:not(.disabled):not(.busy) {
-	cursor: pointer;
-}
-
-.monaco-shell .git-statusbar-group > .busy,
-.monaco-shell .git-statusbar-group > .disabled, {
-	opacity: 0.6;
-	cursor: default;
-}
-
-.monaco-shell .git-statusbar-group > .git-statusbar-branch-item.headless {
-	font-style: italic;
-}
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
-
-/* Git viewlet */
-
-.git-viewlet {
-	height: 100%;
-}
-
-/* Actionbar actions */
-
-.git-action.refresh {
-	background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16'%3E%3Cpath d='M13.451 5.609l-.579-.939-1.068.812-.076.094c-.335.415-.927 1.341-1.124 2.876l-.021.165.033.163.071.345c0 1.654-1.346 3-3 3-.795 0-1.545-.311-2.107-.868-.563-.567-.873-1.317-.873-2.111 0-1.431 1.007-2.632 2.351-2.929v2.926s2.528-2.087 2.984-2.461h.012l3.061-2.582-4.919-4.1h-1.137v2.404c-3.429.318-6.121 3.211-6.121 6.721 0 1.809.707 3.508 1.986 4.782 1.277 1.282 2.976 1.988 4.784 1.988 3.722 0 6.75-3.028 6.75-6.75 0-1.245-.349-2.468-1.007-3.536z' fill='%23F6F6F6'/%3E%3Cpath d='M12.6 6.134l-.094.071c-.269.333-.746 1.096-.91 2.375.057.277.092.495.092.545 0 2.206-1.794 4-4 4-1.098 0-2.093-.445-2.817-1.164-.718-.724-1.163-1.718-1.163-2.815 0-2.206 1.794-4 4-4l.351.025v1.85s1.626-1.342 1.631-1.339l1.869-1.577-3.5-2.917v2.218l-.371-.03c-3.176 0-5.75 2.574-5.75 5.75 0 1.593.648 3.034 1.695 4.076 1.042 1.046 2.482 1.694 4.076 1.694 3.176 0 5.75-2.574 5.75-5.75-.001-1.106-.318-2.135-.859-3.012z' fill='%23424242'/%3E%3C/svg%3E") center center no-repeat;
-}
-
-.git-action.smart-commit {
-	background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16'%3E%3Cpolygon points='5.382,13 2.382,7 6.618,7 7,7.764 9.382,3 13.618,3 8.618,13' fill='%23F6F6F6'/%3E%3Cpath d='M12 4l-4 8h-2l-2-4h2l1 2 3-6h2z' fill='%23424242'/%3E%3C/svg%3E") center center no-repeat;
-}
-
-.git-action.run-pull {
-	background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16'%3E%3Crect x='3' y='2' width='10' height='5' fill='%23424242'/%3E%3Cpolygon points='9,8 7,8 7,11 5,9 5,11 8,14 11,11 11,9 9,11' fill='%2300539C'/%3E%3C/svg%3E") center center no-repeat;
-}
-
-.git-action.run-push {
-	background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16'%3E%3Cpath d='M3 9v5h10v-5h-10z' fill='%23424242'/%3E%3Cpolygon points='7,8 9,8 9,5 11,7 11,5 8,2 5,5 5,7 7,5' fill='%2300539C'/%3E%3C/svg%3E") center center no-repeat;
-}
-
-/* Tree actions */
-
-.git-action.stage {
-	background: url("data:image/svg+xml,%3Csvg width='16' height='16' xmlns='http://www.w3.org/2000/svg'%3E%3Ctitle%3ELayer 1%3C/title%3E%3Crect height='11' width='3' y='3' x='7' fill='%23424242'/%3E%3Crect height='3' width='11' y='7' x='3' fill='%23424242'/%3E%3C/svg%3E") center center no-repeat;
-}
-
-.git-viewlet .focused .monaco-tree-row.selected:not(.highlighted) > .content.actions .git-action.stage {
-	background: url("data:image/svg+xml,%3Csvg width='16' height='16' xmlns='http://www.w3.org/2000/svg'%3E%3Ctitle%3ELayer 1%3C/title%3E%3Crect height='11' width='3' y='3' x='7' fill='%23fff'/%3E%3Crect height='3' width='11' y='7' x='3' fill='%23fff'/%3E%3C/svg%3E") center center no-repeat;
-}
-
-.git-action.undo {
-	background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='-0.994 0 16 16' enable-background='new -0.994 0 16 16'%3E%3Cpath fill='%23424242' d='M13 6c0 1.461-.636 2.846-1.746 3.797l-5.584 4.951-1.324-1.496 5.595-4.962c.678-.582 1.061-1.413 1.061-2.29 0-1.654-1.345-3-2.997-3-.71 0-1.399.253-1.938.713l-1.521 1.287h2.448l-1.998 2h-3.996v-4l1.998-2v2.692l1.775-1.504c.899-.766 2.047-1.188 3.232-1.188 2.754 0 4.995 2.243 4.995 5z'/%3E%3C/svg%3E") center center no-repeat;
-}
-
-.git-viewlet .focused .monaco-tree-row.selected:not(.highlighted) > .content.actions .git-action.undo {
-	background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='-0.994 0 16 16' enable-background='new -0.994 0 16 16'%3E%3Cpath fill='%23fff' d='M13 6c0 1.461-.636 2.846-1.746 3.797l-5.584 4.951-1.324-1.496 5.595-4.962c.678-.582 1.061-1.413 1.061-2.29 0-1.654-1.345-3-2.997-3-.71 0-1.399.253-1.938.713l-1.521 1.287h2.448l-1.998 2h-3.996v-4l1.998-2v2.692l1.775-1.504c.899-.766 2.047-1.188 3.232-1.188 2.754 0 4.995 2.243 4.995 5z'/%3E%3C/svg%3E") center center no-repeat;
-}
-
-.git-action.unstage {
-	background: url("data:image/svg+xml,%3Csvg width='16' height='16' xmlns='http://www.w3.org/2000/svg'%3E%3Ctitle%3ELayer 1%3C/title%3E%3Crect height='3' width='11' y='7' x='3' fill='%23424242'/%3E%3C/svg%3E") center center no-repeat;
-}
-
-.git-viewlet .focused .monaco-tree-row.selected:not(.highlighted) > .content.actions .git-action.unstage {
-	background: url("data:image/svg+xml,%3Csvg width='16' height='16' xmlns='http://www.w3.org/2000/svg'%3E%3Ctitle%3ELayer 1%3C/title%3E%3Crect height='3' width='11' y='7' x='3' fill='%23fff'/%3E%3C/svg%3E") center center no-repeat;
-}
-
-/* Dark theme actions */
-
-.vs-dark .git-action.refresh,
-.hc-black .git-action.refresh {
-	background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16'%3E%3Cpath d='M13.451 5.609l-.579-.939-1.068.812-.076.094c-.335.415-.927 1.341-1.124 2.876l-.021.165.033.163.071.345c0 1.654-1.346 3-3 3-.795 0-1.545-.311-2.107-.868-.563-.567-.873-1.317-.873-2.111 0-1.431 1.007-2.632 2.351-2.929v2.926s2.528-2.087 2.984-2.461h.012l3.061-2.582-4.919-4.1h-1.137v2.404c-3.429.318-6.121 3.211-6.121 6.721 0 1.809.707 3.508 1.986 4.782 1.277 1.282 2.976 1.988 4.784 1.988 3.722 0 6.75-3.028 6.75-6.75 0-1.245-.349-2.468-1.007-3.536z' fill='%232D2D30'/%3E%3Cpath d='M12.6 6.134l-.094.071c-.269.333-.746 1.096-.91 2.375.057.277.092.495.092.545 0 2.206-1.794 4-4 4-1.098 0-2.093-.445-2.817-1.164-.718-.724-1.163-1.718-1.163-2.815 0-2.206 1.794-4 4-4l.351.025v1.85s1.626-1.342 1.631-1.339l1.869-1.577-3.5-2.917v2.218l-.371-.03c-3.176 0-5.75 2.574-5.75 5.75 0 1.593.648 3.034 1.695 4.076 1.042 1.046 2.482 1.694 4.076 1.694 3.176 0 5.75-2.574 5.75-5.75-.001-1.106-.318-2.135-.859-3.012z' fill='%23C5C5C5'/%3E%3C/svg%3E") center center no-repeat;
-}
-
-.vs-dark .git-action.commit,
-.hc-black .git-action.commit,
-.vs-dark .git-action.stage-and-commit,
-.hc-black .git-action.stage-and-commit,
-.vs-dark .git-action.smart-commit,
-.hc-black .git-action.smart-commit {
-	background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='-2 -2 16 16' enable-background='new -2 -2 16 16'%3E%3Cpolygon fill='%23C5C5C5' points='9,0 4.5,9 3,6 0,6 3,12 6,12 12,0'/%3E%3C/svg%3E") center center no-repeat;
-}
-
-.vs-dark .git-action.run-pull {
-	background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16'%3E%3Crect x='3' y='2' width='10' height='5' fill='%23C5C5C5'/%3E%3Cpolygon points='9,8 7,8 7,11 5,9 5,11 8,14 11,11 11,9 9,11' fill='%2375BEFF'/%3E%3C/svg%3E") center center no-repeat;
-}
-
-.vs-dark .git-action.run-push {
-	background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16'%3E%3Cpath d='M3 9v5h10v-5h-10z' fill='%23C5C5C5'/%3E%3Cpolygon points='7,8 9,8 9,5 11,7 11,5 8,2 5,5 5,7 7,5' fill='%2375BEFF'/%3E%3C/svg%3E") center center no-repeat;
-}
-
-.vs-dark .git-action.stage,
-.hc-black .git-action.stage {
-	background: url("data:image/svg+xml,%3Csvg width='16' height='16' xmlns='http://www.w3.org/2000/svg'%3E%3Ctitle%3ELayer 1%3C/title%3E%3Crect height='11' width='3' y='3' x='7' fill='%23C5C5C5'/%3E%3Crect height='3' width='11' y='7' x='3' fill='%23C5C5C5'/%3E%3C/svg%3E") center center no-repeat;
-}
-
-.vs-dark .git-action.undo,
-.hc-black .git-action.undo {
-	background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='-0.994 0 16 16' enable-background='new -0.994 0 16 16'%3E%3Cpath fill='%23C5C5C5' d='M13 6c0 1.461-.636 2.846-1.746 3.797l-5.584 4.951-1.324-1.496 5.595-4.962c.678-.582 1.061-1.413 1.061-2.29 0-1.654-1.345-3-2.997-3-.71 0-1.399.253-1.938.713l-1.521 1.287h2.448l-1.998 2h-3.996v-4l1.998-2v2.692l1.775-1.504c.899-.766 2.047-1.188 3.232-1.188 2.754 0 4.995 2.243 4.995 5z'/%3E%3C/svg%3E") center center no-repeat;
-}
-
-.vs-dark .git-action.unstage,
-.hc-black .git-action.unstage {
-	background: url("data:image/svg+xml,%3Csvg width='16' height='16' xmlns='http://www.w3.org/2000/svg'%3E%3Ctitle%3ELayer 1%3C/title%3E%3Crect height='3' width='11' y='7' x='3' fill='%23C5C5C5'/%3E%3C/svg%3E") center center no-repeat;
-}
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
-
-/* Commit view */
-
-.git-viewlet > .changes-view > .commit-view {
-	box-sizing: border-box;
-	padding: 5px 9px 5px 16px;
-}
-
-.git-viewlet > .changes-view > .commit-view > .monaco-inputbox {
-	width: 100%;
-}
-
-.git-viewlet > .changes-view > .commit-view > .monaco-inputbox > .wrapper > .mirror {
-	max-height: 134px;
-}
-
-.git-viewlet > .changes-view > .commit-view > .monaco-inputbox > .wrapper > textarea.input {
-	min-height: 26px;
-}
-
-.git-viewlet > .changes-view > .commit-view.scroll > .monaco-inputbox > .wrapper > textarea.input {
-	overflow-y: scroll;
-}
-
-/* Status view */
-
-.git-viewlet > .changes-view > .status-view > .monaco-tree .monaco-tree-row .content {
-	line-height: 22px;
-	display: flex;
-}
-
-.git-viewlet > .changes-view > .status-view > .monaco-tree .monaco-tree-row .content .monaco-action-bar {
-	display: none;
-	margin-right: 12px;
-}
-
-.git-viewlet > .changes-view > .status-view > .monaco-tree .monaco-tree-row .content .monaco-action-bar .action-item {
-	margin-top: 2px;
-}
-
-.git-viewlet > .changes-view > .status-view > .monaco-tree .monaco-tree-row .content .monaco-action-bar .action-label {
-	width: 16px;
-	height: 16px;
-}
-
-.git-viewlet > .changes-view > .status-view > .monaco-tree .monaco-tree-row:hover .content .monaco-action-bar,
-.git-viewlet > .changes-view > .status-view > .monaco-tree.focused .monaco-tree-row.focused .content .monaco-action-bar {
-	display: block;
-}
-
-.git-viewlet > .changes-view > .status-view > .monaco-tree .monaco-tree-row:hover .content .monaco-count-badge,
-.git-viewlet > .changes-view > .status-view > .monaco-tree.focused .monaco-tree-row.focused .content .monaco-count-badge {
-	display: none;
-}
-
-.git-viewlet > .changes-view > .status-view > .monaco-tree .monaco-tree-rows > .monaco-tree-row > .content:before {
-	background: none;
-}
-
-.git-viewlet > .changes-view > .status-view > .monaco-tree .monaco-tree-row .status-group {
-	font-size: 11px;
-	font-weight: bold;
-	text-transform: uppercase;
-	cursor: default;
-}
-
-/* Bold font style does not go well with CJK fonts */
-.git-viewlet:lang(zh-Hans) > .changes-view > .status-view > .monaco-tree .monaco-tree-row .status-group,
-.git-viewlet:lang(zh-Hant) > .changes-view > .status-view > .monaco-tree .monaco-tree-row .status-group,
-.git-viewlet:lang(ja) > .changes-view > .status-view > .monaco-tree .monaco-tree-row .status-group,
-.git-viewlet:lang(ko) > .changes-view > .status-view > .monaco-tree .monaco-tree-row .status-group { font-weight: normal; }
-
-.git-viewlet > .changes-view > .status-view > .monaco-tree .monaco-tree-row .count-badge-wrapper {
-	padding-right: 12px;
-}
-
-.git-viewlet > .changes-view > .status-view > .monaco-tree .monaco-tree-row .status-group,
-.git-viewlet > .changes-view > .status-view > .monaco-tree .monaco-tree-row .file-status {
-	overflow: hidden;
-	text-overflow: ellipsis;
-	flex: 1;
-}
-
-.vs-dark .git-viewlet > .changes-view > .status-view > .monaco-tree .monaco-tree-row .status-group {
-	color: inherit;
-}
-
-.git-viewlet > .changes-view > .status-view > .monaco-tree .monaco-tree-row .file-status.out-of-workspace {
-	opacity: 0.5;
-}
-
-.git-viewlet > .changes-view > .status-view > .monaco-tree .monaco-tree-row .file-status .status {
-	padding: 2px 4px;
-	font-family: Menlo, Monaco, Consolas, "Droid Sans Mono", "Inconsolata", "Courier New", monospace, "Droid Sans Fallback";
-	font-size: 70%;
-	color: white;
-	text-align: center;
-	border-radius: 0.5em;
-	vertical-align: bottom;
-}
-
-.git-viewlet > .changes-view > .status-view > .monaco-tree .monaco-tree-row .file-status .name {
-	margin-left: 0.4em;
-}
-
-.git-viewlet > .changes-view > .status-view > .monaco-tree .monaco-tree-row .file-status.modified .status	{ background-color: #007ACC; }
-.git-viewlet > .changes-view > .status-view > .monaco-tree .monaco-tree-row .file-status.added .status		{ background-color: #2d883e; }
-.git-viewlet > .changes-view > .status-view > .monaco-tree .monaco-tree-row .file-status.deleted .status	{ background-color: #B9131A; }
-.git-viewlet > .changes-view > .status-view > .monaco-tree .monaco-tree-row .file-status.renamed .status	{ background-color: #4668C5; }
-.git-viewlet > .changes-view > .status-view > .monaco-tree .monaco-tree-row .file-status.copied .status	{ background-color: #682079; }
-.git-viewlet > .changes-view > .status-view > .monaco-tree .monaco-tree-row .file-status.untracked .status	{ background-color: #6C6C6C; }
-.git-viewlet > .changes-view > .status-view > .monaco-tree .monaco-tree-row .file-status.ignored .status	{ background-color: #969696; }
-.git-viewlet > .changes-view > .status-view > .monaco-tree .monaco-tree-row .file-status.conflict .status	{ background-color: #9B4F96; }
-.git-viewlet > .changes-view > .status-view > .monaco-tree .monaco-tree-row.selected .file-status .status	{ background-color: #ffffff; color: #666; }
-
-.vs-dark .git-viewlet > .changes-view > .status-view > .monaco-tree .monaco-tree-row .file-status.modified .status		{ background-color: #1B80B2; }
-.vs-dark .git-viewlet > .changes-view > .status-view > .monaco-tree .monaco-tree-row .file-status.added .status		{ background-color: #3c8746; }
-.vs-dark .git-viewlet > .changes-view > .status-view > .monaco-tree .monaco-tree-row .file-status.deleted .status		{ background-color: #9E121D; }
-.vs-dark .git-viewlet > .changes-view > .status-view > .monaco-tree .monaco-tree-row .file-status.copied .status		{ background-color: #692C77; }
-.vs-dark .git-viewlet > .changes-view > .status-view > .monaco-tree .monaco-tree-row .file-status.conflict .status		{ background-color: #7F4E7E; }
-.vs-dark .git-viewlet > .changes-view > .status-view > .monaco-tree .monaco-tree-row.selected .file-status .status		{ background-color: #ffffff; color: #666; }
-
-.git-viewlet > .changes-view > .status-view > .monaco-tree .monaco-tree-row .file-status.deleted .name,
-.git-viewlet > .changes-view > .status-view > .monaco-tree .monaco-tree-row .file-status.both-deleted .name,
-.git-viewlet > .changes-view > .status-view > .monaco-tree .monaco-tree-row .file-status.deleted-by-them .name,
-.git-viewlet > .changes-view > .status-view > .monaco-tree .monaco-tree-row .file-status.deleted-by-us .name {
-	text-decoration: line-through;
-}
-
-.git-viewlet > .changes-view > .status-view > .monaco-tree .monaco-tree-row .file-status:not(.renamed) > .rename {
-	display: none;
-}
-
-.git-viewlet > .changes-view > .status-view > .monaco-tree .monaco-tree-row .file-status .rename-name:not(:empty),
-.git-viewlet > .changes-view > .status-view > .monaco-tree .monaco-tree-row .file-status .rename-arrow {
-	margin-left: 0.4em;
-}
-
-.git-viewlet > .changes-view > .status-view > .monaco-tree .monaco-tree-row .file-status .rename-folder:not(:empty),
-.git-viewlet > .changes-view > .status-view > .monaco-tree .monaco-tree-row .file-status .folder:not(:empty) {
-	opacity: 0.7;
-	font-size: 0.9em;
-	margin-left: 0.8em;
-}
-
-/* High Contrast Theming */
-.hc-black .git-viewlet > .changes-view > .status-view > .monaco-tree .monaco-tree-row .content {
-	line-height: 20px;
-}
-
-.hc-black .git-viewlet > .changes-view > .status-view > .monaco-tree .monaco-tree-row .file-status .status {
-	top: 2px;
-}
-
-.hc-black .git-viewlet > .changes-view > .status-view > .monaco-tree .monaco-tree-row .file-status.modified .status,
-.hc-black .git-viewlet > .changes-view > .status-view > .monaco-tree .monaco-tree-row .file-status.added .status,
-.hc-black .git-viewlet > .changes-view > .status-view > .monaco-tree .monaco-tree-row .file-status.deleted .status,
-.hc-black .git-viewlet > .changes-view > .status-view > .monaco-tree .monaco-tree-row .file-status.renamed .status,
-.hc-black .git-viewlet > .changes-view > .status-view > .monaco-tree .monaco-tree-row .file-status.copied .status,
-.hc-black .git-viewlet > .changes-view > .status-view > .monaco-tree .monaco-tree-row .file-status.untracked .status,
-.hc-black .git-viewlet > .changes-view > .status-view > .monaco-tree .monaco-tree-row .file-status.ignored .status,
-.hc-black .git-viewlet > .changes-view > .status-view > .monaco-tree .monaco-tree-row .file-status.conflict .status,
-.hc-black .git-viewlet > .changes-view > .status-view > .monaco-tree .monaco-tree-row.selected .file-status .status {
-	background-color: #000;
-	color: #fff;
-	border: 1px solid #6FC3DF;
-}
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
-
-.git-viewlet > .disabled-view {
-	padding: 0 20px 0 20px;
-}
-
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
-
-.git-viewlet > .empty-view {
-	padding: 0 20px 0 20px;
-}
-
-.git-viewlet > .empty-view > .section:not(:empty) {
-	margin: 20px 0;
-	padding-top: 20px;
-	border-top: 1px solid rgba(0, 0, 0, 0.05);
-}
-
-.git-viewlet > .empty-view > .section > p:first-child {
-	margin-top: 0;
-}
-
-.git-viewlet > .empty-view .monaco-inputbox {
-	width: 100%;
-	margin-bottom: 10px;
-}
-
-.git-viewlet > .empty-view .combo-box {
-	width: 100%;
-	min-width: inherit;
-	padding: 4px 4px 4px 0;
-	margin-bottom: 10px;
-}
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
-
-.git-viewlet > .gitless-view {
-	padding: 0 20px 0 20px;
-}
-
-.git-viewlet > .gitless-view > p {
-	line-height: 1.5em;
-}
-
-.git-viewlet > .gitless-view .code {
-	display: inline;
-}
-
-.git-viewlet > .gitless-view a
-{
-	color: inherit;
-	font-weight: bold;
-	text-decoration: underline;
-}
-
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
-
-.git-viewlet > .huge-view {
-	padding: 0 20px 0 20px;
-}
-
-.git-viewlet > .huge-view > p {
-	line-height: 1.5em;
-}
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
-
-.git-viewlet > .notroot-view {
-	padding: 0 20px 0 20px;
-}
-
-.git-viewlet > .notroot-view > p {
-	line-height: 1.5em;
-}
-
-.git-viewlet > .notroot-view .code {
-	display: inline;
-}
-
-.git-viewlet > .notroot-view a
-{
-	color: inherit;
-	font-weight: bold;
-	text-decoration: underline;
-}
-
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
-
-.git-viewlet > .noworkspace-view {
-	padding: 0 20px 0 20px;
-}
-
-.git-viewlet > .noworkspace-view > p {
-	line-height: 1.5em;
-}
-
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -8252,18 +7249,6 @@ Applies to all other files
 	margin: 0px 4px;
 }
 
-/* Theming */
-.defineKeybindingWidget {
-	background-color: #EFEFF2;
-	box-shadow: 0 2px 8px #A8A8A8;
-}
-
-.hc-black .defineKeybindingWidget,
-.vs-dark .defineKeybindingWidget {
-	background-color: #2D2D30;
-	box-shadow: 0 2px 8px #000;
-}
-
 /* Editor decorations */
 .monaco-editor .inlineKeybindingInfo:before {
 	margin: 0.2em 0.1em 0 0.1em;
@@ -8293,15 +7278,6 @@ Applies to all other files
 .monaco-editor .keybindingError {
 	box-shadow:	inset 0 0 0 1px #B9B9B9;
 	background-color: rgba(250, 100, 100, 0.2);
-}
-
-/* launcher widget */
-.monaco-editor .defineKeybindingLauncher {
-	background: #007ACC;
-	color: white;
-	padding: 10px;
-	border-radius: 5px;
-	cursor: pointer;
 }
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
@@ -8343,10 +7319,6 @@ Applies to all other files
 	height: 30px;
 }
 
-.keybindings-editor > .keybindings-header .search-container > .settings-search-input > .monaco-inputbox {
-	border: 1px solid #ddd;
-}
-
 .keybindings-editor > .keybindings-header .search-container > .settings-search-input > .monaco-inputbox .input {
 	font-size: 14px;
 	padding-left:10px;
@@ -8354,7 +7326,7 @@ Applies to all other files
 
 .keybindings-editor > .keybindings-header .open-keybindings-container {
 	margin-top: 10px;
-	color: #aaa;
+	opacity: 0.7;
 	display: flex;
 }
 
@@ -8363,17 +7335,6 @@ Applies to all other files
 	cursor: pointer;
 	margin-left: 4px;
 }
-
-/* body styling */
-
-.keybindings-editor > .keybindings-body {
-	border-top: 1px solid #efeff2;
-}
-
-.vs-dark .keybindings-editor > .keybindings-body {
-	border-top: 1px solid #2d2d2d;
-}
-
 
 /** List based styling **/
 
@@ -8388,18 +7349,10 @@ Applies to all other files
 	display: flex;
 }
 
-.keybindings-editor > .keybindings-body .keybindings-list-container .monaco-list-row.keybindings-list-header.focused,
-.keybindings-editor > .keybindings-body .keybindings-list-container .monaco-list-row.keybindings-list-header.selected,
-.keybindings-editor > .keybindings-body .keybindings-list-container .monaco-list-row.keybindings-list-header:hover,
-.keybindings-editor > .keybindings-body > .keybindings-list-container .monaco-list-row.keybindings-list-header,
 .keybindings-editor > .keybindings-body > .keybindings-list-container .monaco-list-row.even:not(.focused):not(.selected):not(:hover),
 .keybindings-editor > .keybindings-body > .keybindings-list-container .monaco-list:not(:focus) .monaco-list-row.focused.even:not(.selected):not(:hover),
 .keybindings-editor > .keybindings-body > .keybindings-list-container .monaco-list:not(.focused) .monaco-list-row.focused.even:not(.selected):not(:hover) {
 	background-color: rgba(130, 130, 130, 0.04);
-}
-
-.keybindings-editor > .keybindings-body > .keybindings-list-container .monaco-list-row:hover {
-	background-color: rgba(128, 128, 128, 0.15);
 }
 
 .keybindings-editor > .keybindings-body .keybindings-list-container .monaco-list-row > .header {
@@ -8468,17 +7421,7 @@ Applies to all other files
 }
 
 .keybindings-editor > .keybindings-body > .keybindings-list-container .monaco-list-row > .column .highlight {
-	color: #007ACC;
 	font-weight: bold;
-}
-
-.keybindings-editor > .keybindings-body > .keybindings-list-container .monaco-list:focus .monaco-list-row.selected > .column .highlight {
-	color: #1b3c53;
-}
-
-.vs-dark .keybindings-editor > .keybindings-body > .keybindings-list-container .monaco-list:focus .monaco-list-row.selected > .column .highlight,
-.hc-black .keybindings-editor > .keybindings-body > .keybindings-list-container .monaco-list:focus .monaco-list-row.selected > .column .highlight {
-	color: #049aff;
 }
 
 .keybindings-editor > .keybindings-body > .keybindings-list-container .monaco-list-row > .column .monaco-action-bar {
@@ -8524,7 +7467,6 @@ Applies to all other files
  *--------------------------------------------------------------------------------------------*/
 
 .preferences-editor > .preferences-header {
-	border-bottom: 1px solid #efeff2;
 	display: flex;
 	flex-wrap: wrap;
 	padding-left: 27px;
@@ -8539,8 +7481,8 @@ Applies to all other files
 	padding-bottom: 5px;
 }
 
-.vs-dark .preferences-editor > .preferences-header {
-	border-bottom: 1px solid #2d2d2d;
+.preferences-editor > .preferences-editors-container.side-by-side-preferences-editor {
+	position: relative;
 }
 
 .settings-tabs-widget {
@@ -8628,25 +7570,10 @@ Applies to all other files
 	position: absolute;
 	right: 10px;
 	border-radius: 2px;
-	background-color: #EFEFF2;
 }
 
 .settings-header-widget > .settings-count-widget.hide {
 	display: none;
-}
-
-.hc-black .settings-header-widget > .settings-count-widget,
-.vs-dark .settings-header-widget > .settings-count-widget {
-	background-color: #2D2D30;
-}
-
-.settings-header-widget > .settings-count-widget.no-results {
-	color: #A1260D;
-}
-
-.hc-black .settings-header-widget > .settings-count-widget.no-results,
-.vs-dark .settings-header-widget > .settings-count-widget.no-results {
-	color: #F48771
 }
 
 .settings-header-widget > .settings-search-container {
@@ -8668,14 +7595,6 @@ Applies to all other files
 .settings-header-widget > .settings-search-container > .settings-search-input > .monaco-inputbox .input {
 	font-size: 14px;
 	padding-left:10px;
-}
-
-.vs-dark .preferences-editor .side-by-side-preferences-editor > .editable-preferences-editor-container {
-	box-shadow: -6px 0 5px -5px black;
-}
-
-.preferences-editor .side-by-side-preferences-editor > .editable-preferences-editor-container {
-	box-shadow: -6px 0 5px -5px #DDD;
 }
 
 .monaco-editor .settings-group-title-widget {
@@ -8758,8 +7677,6 @@ Applies to all other files
 }
 
 .monaco-editor .floating-click-widget {
-	background: #007ACC;
-	color: white;
 	padding: 10px;
 	border-radius: 5px;
 	cursor: pointer;
@@ -8948,23 +7865,9 @@ Applies to all other files
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-.monaco-editor .dirty-diff-modified-glyph {
-	border-left: 3px solid rgba(0, 122, 204, 0.6);
-	margin-left: 5px;
-}
-
-.monaco-editor.vs-dark .dirty-diff-modified-glyph {
-	border-left: 3px solid rgba(0, 188, 242, 0.6);
-	margin-left: 5px;
-}
-
-.monaco-editor .dirty-diff-added-glyph {
-	border-left: 3px solid rgba(45, 136, 62, 0.6);
-	margin-left: 5px;
-}
-
-.monaco-editor.vs-dark .dirty-diff-added-glyph {
-	border-left: 3px solid  rgba(127, 186, 0, 0.6);
+.monaco-editor .dirty-diff-modified-glyph,
+.monaco-editor .dirty-diff-added-glyph,
+.monaco-editor .dirty-diff-deleted-glyph:after {
 	margin-left: 5px;
 }
 
@@ -8972,11 +7875,7 @@ Applies to all other files
 	content: '';
 	position: absolute;
 	bottom: -4px;
-	margin-left: 5px;
 	box-sizing: border-box;
-	border-left: 4px solid rgba(185, 19, 26, 0.76);
-	border-top: 4px solid transparent;
-	border-bottom: 4px solid transparent;
 	width: 4px;
 	height: 0;
 	z-index: 9;
@@ -9302,28 +8201,6 @@ Applies to all other files
 	font-style: italic;
 }
 
-.search-viewlet .checkbox {
-	display: inline-block;
-	visibility: hidden;
-	border: 1px solid rgba(128, 128, 128, 0.5);
-	width: 0;
-	height: 12px;
-	margin-right: 0;
-	position: relative;
-	top: 2px;
-	transition:			width 150ms, margin-right 150ms ease-in;
-}
-
-.search-viewlet .linematch .checkbox.checked {
-	background-position: -66px -150px;
-}
-
-.search-viewlet .select .linematch .checkbox {
-	visibility: visible;
-	width: 12px;
-	margin-right: 4px;
-}
-
 .search-viewlet .query-clear {
 	background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='3 3 16 16' enable-background='new 3 3 16 16'%3E%3Cpolygon fill='%23656565' points='12.597,11.042 15.4,13.845 13.844,15.4 11.042,12.598 8.239,15.4 6.683,13.845 9.485,11.042 6.683,8.239 8.238,6.683 11.042,9.486 13.845,6.683 15.4,8.239'/%3E%3C/svg%3E") center center no-repeat;
 }
@@ -9453,16 +8330,8 @@ Applies to all other files
 	background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cstyle%3E.icon-canvas-transparent{opacity:0;fill:%232d2d30}.icon-vs-out{fill:%232d2d30}.icon-vs-bg{fill:%23c5c5c5}.icon-vs-fg{fill:%232b282e}%3C/style%3E%3Cpath class='icon-canvas-transparent' d='M16 16H0V0h16v16z' id='canvas'/%3E%3Cpath class='icon-vs-out' d='M16 10.015l-.258.043c.155.455.258.935.258 1.442 0 2.481-2.019 4.5-4.5 4.5-.508 0-.988-.103-1.444-.259l-.043.259H5.986l-.373-2.237-1.846 1.317-2.848-2.847 1.319-1.847L0 10.013V5.986l2.238-.373L.919 3.767 3.768.919l1.846 1.319L5.986 0h4.028l.372 2.238L12.233.919l2.847 2.848-1.318 1.846L16 5.986v4.029z' id='outline' style='display: none;'/%3E%3Cpath class='icon-vs-bg' d='M7 11.5c0-.501.101-.975.253-1.426A2.207 2.207 0 0 1 8 5.788c.958 0 1.767.613 2.074 1.466A4.417 4.417 0 0 1 11.5 7c1.421 0 2.675.675 3.5 1.706V6.834l-2.121-.354a5.14 5.14 0 0 0-.354-.854l1.25-1.75-1.65-1.65-1.752 1.251c-.137-.072-.262-.159-.408-.219-.147-.061-.296-.088-.444-.134L9.167 1H6.834L6.48 3.121c-.295.092-.581.21-.854.354l-1.75-1.25-1.65 1.65 1.252 1.752c-.073.137-.16.263-.221.409-.06.145-.087.295-.133.443L1 6.833v2.333l2.121.354c.092.295.21.581.354.854l-1.25 1.75 1.65 1.65 1.752-1.251c.137.072.262.159.408.219.146.06.296.087.444.133L6.833 15h1.873C7.675 14.175 7 12.921 7 11.5z' id='iconBg'/%3E%3Cpath class='icon-vs-bg' d='M11.5 8a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7zM9 12v-1h5v1H9z' id='notificationBg'/%3E%3Cg id='notificationFg'%3E%3Cpath class='icon-vs-fg' d='M9 11h5v1H9z' style='display: none;'/%3E%3C/g%3E%3C/svg%3E") center center no-repeat;
 }
 
-.search-viewlet .findInFileMatch,
-.monaco-editor .findInFileMatch {
-	background-color: rgba(234, 92, 0, 0.3);
-	animation-duration: 0;
-	animation-name: inherit !important;
-}
-
 .search-viewlet .replace.findInFileMatch {
 	text-decoration: line-through;
-	background-color: rgba(255, 0, 0, 0.2);
 }
 
 .search-viewlet .findInFileMatch,
@@ -9470,24 +8339,10 @@ Applies to all other files
 	white-space: pre;
 }
 
-.search-viewlet .replaceMatch {
-	background-color: rgba(155, 185, 85, 0.5);
-}
-
 .hc-black .monaco-workbench .search-viewlet .replaceMatch,
-.hc-black .monaco-workbench .search-viewlet .findInFileMatch,
-.monaco-editor.hc-black .findInFileMatch {
+.hc-black .monaco-workbench .search-viewlet .findInFileMatch {
 	background: none !important;
-	border: 1px dotted #f38518;
 	box-sizing: border-box;
-}
-
-.hc-black .monaco-workbench .search-viewlet .replace.findInFileMatch {
-	border: 1px dashed #FF008F;
-}
-
-.hc-black .monaco-workbench .search-viewlet .replaceMatch {
-	border: 1px dashed rgb(51, 255, 46);
 }
 
 .monaco-workbench .search-viewlet a.prominent {
@@ -9495,19 +8350,6 @@ Applies to all other files
 }
 
 /* Theming */
-
-.search-viewlet .highlight {
-	color: black;
-	background-color: rgba(234, 92, 0, 0.3);
-}
-
-.vs .search-viewlet .filematch .name {
-	color: #1E1E1E;
-}
-
-.vs .search-viewlet .monaco-tree.focused .monaco-tree-row.selected .filematch .name {
-	color: #FFF;
-}
 
 .vs .search-viewlet .search-widget .toggle-replace-button:hover {
 	background-color: rgba(0, 0, 0, 0.1) !important;
@@ -9525,10 +8367,6 @@ Applies to all other files
 	background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16'%3E%3Cpath fill='%23646465' d='M11 10.07h-5.656l5.656-5.656v5.656z'/%3E%3C/svg%3E");
 }
 
-.vs-dark .search-viewlet .monaco-tree .filematch .name {
-	color: #FFF;
-}
-
 .vs-dark .search-viewlet .query-clear {
 	background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='3 3 16 16' enable-background='new 3 3 16 16'%3E%3Cpolygon fill='%23e8e8e8' points='12.597,11.042 15.4,13.845 13.844,15.4 11.042,12.598 8.239,15.4 6.683,13.845 9.485,11.042 6.683,8.239 8.238,6.683 11.042,9.486 13.845,6.683 15.4,8.239'/%3E%3C/svg%3E") center center no-repeat;
 }
@@ -9539,7 +8377,6 @@ Applies to all other files
 }
 
 .vs-dark .search-viewlet .message {
-	color: #FFF;
 	opacity: .5;
 }
 
@@ -9626,6 +8463,15 @@ Applies to all other files
 	-webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='13' height='13' viewBox='-295.5 390.5 13 13'%3E%3Cpath fill='%23FFF' d='M-289 390.5c-3.6 0-6.5 2.9-6.5 6.5s2.9 6.5 6.5 6.5 6.5-2.9 6.5-6.5-2.9-6.5-6.5-6.5zm.9 11.1h-1.9v-6.5h1.9v6.5zm0-7.4h-1.9v-1.9h1.9v1.9z'/%3E%3C/svg%3E") no-repeat 50% 50%;
 	-webkit-mask-size: 11px;
 }
+
+.monaco-workbench .quick-open-task-configure {
+	background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16'%3E%3Cg fill='%23424242'%3E%3Cpath d='M12.714 9.603c-.07.207-.15.407-.246.601l1.017 2.139c-.335.424-.718.807-1.142 1.143l-2.14-1.018c-.193.097-.394.176-.601.247l-.795 2.235c-.265.03-.534.05-.807.05-.272 0-.541-.02-.806-.05l-.795-2.235c-.207-.071-.408-.15-.602-.247l-2.14 1.017c-.424-.336-.807-.719-1.143-1.143l1.017-2.139c-.094-.193-.175-.393-.245-.6l-2.236-.796c-.03-.265-.05-.534-.05-.807s.02-.542.05-.807l2.236-.795c.07-.207.15-.407.246-.601l-1.016-2.139c.336-.423.719-.807 1.143-1.142l2.14 1.017c.193-.096.394-.176.602-.247l.793-2.236c.265-.03.534-.05.806-.05.273 0 .542.02.808.05l.795 2.236c.207.07.407.15.601.246l2.14-1.017c.424.335.807.719 1.142 1.142l-1.017 2.139c.096.194.176.394.246.601l2.236.795c.029.266.049.535.049.808s-.02.542-.05.807l-2.236.796zm-4.714-4.603c-1.657 0-3 1.343-3 3s1.343 3 3 3 3-1.343 3-3-1.343-3-3-3z'/%3E%3Ccircle cx='8' cy='8' r='1.5'/%3E%3C/g%3E%3C/svg%3E");
+}
+
+.vs-dark .monaco-workbench .quick-open-task-configure,
+.hc-black .monaco-workbench .quick-open-task-configure {
+	background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16'%3E%3Cg fill='%23C5C5C5'%3E%3Cpath d='M12.714 9.603c-.07.207-.15.407-.246.601l1.017 2.139c-.335.424-.718.807-1.142 1.143l-2.14-1.018c-.193.097-.394.176-.601.247l-.795 2.235c-.265.03-.534.05-.807.05-.272 0-.541-.02-.806-.05l-.795-2.235c-.207-.071-.408-.15-.602-.247l-2.14 1.017c-.424-.336-.807-.719-1.143-1.143l1.017-2.139c-.094-.193-.175-.393-.245-.6l-2.236-.796c-.03-.265-.05-.534-.05-.807s.02-.542.05-.807l2.236-.795c.07-.207.15-.407.246-.601l-1.016-2.139c.336-.423.719-.807 1.143-1.142l2.14 1.017c.193-.096.394-.176.602-.247l.793-2.236c.265-.03.534-.05.806-.05.273 0 .542.02.808.05l.795 2.236c.207.07.407.15.601.246l2.14-1.017c.424.335.807.719 1.142 1.142l-1.017 2.139c.096.194.176.394.246.601l2.236.795c.029.266.049.535.049.808s-.02.542-.05.807l-2.236.796zm-4.714-4.603c-1.657 0-3 1.343-3 3s1.343 3 3 3 3-1.343 3-3-1.343-3-3-3z'/%3E%3Ccircle cx='8' cy='8' r='1.5'/%3E%3C/g%3E%3C/svg%3E");
+}
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -9633,7 +8479,6 @@ Applies to all other files
 
 .monaco-workbench .panel.integrated-terminal .xterm-viewport {
 	/* Use the hack presented in http://stackoverflow.com/a/38748186/1156119 to get opacity transitions working on the scrollbar */
-	background-color: rgba(121, 121, 121, 0);
 	-webkit-background-clip: text;
 	-webkit-text-fill-color: transparent;
 	transition: background-color 800ms linear;
@@ -9655,12 +8500,10 @@ Applies to all other files
 .monaco-workbench .panel.integrated-terminal .xterm:focus .xterm-viewport,
 .monaco-workbench .panel.integrated-terminal .xterm:hover .xterm-viewport {
 	transition: opacity 100ms linear;
-	background-color: rgba(121, 121, 121, 0.4);
 }
 
 .monaco-workbench .panel.integrated-terminal .xterm .xterm-viewport::-webkit-scrollbar-thumb:hover {
 	transition: opacity 0ms linear;
-	background-color: rgba(100, 100, 100, .7);
 }
 
 .monaco-workbench .panel.integrated-terminal .xterm .xterm-viewport::-webkit-scrollbar-thumb:window-inactive {
@@ -9677,17 +8520,15 @@ Applies to all other files
 	display: flex;
 	flex-direction: column;
 	background-color: transparent!important;
-	color: #333;
-	-webkit-user-select: initial;
+	user-select: initial;
 	position: relative;
 }
-.vs-dark .monaco-workbench .panel.integrated-terminal { color: #CCC; }
-.hc-black .monaco-workbench .panel.integrated-terminal { color: #FFF; }
 
 .monaco-workbench .panel.integrated-terminal .terminal-outer-container {
 	height: 100%;
-	padding: 0 20px;
+	padding-left: 20px; /*Don't use right padding in case xterm.js misbehaves*/
 	width: 100%;
+	box-sizing: border-box;
 }
 
 .monaco-workbench .panel.integrated-terminal .terminal-wrapper {
@@ -9730,6 +8571,11 @@ Applies to all other files
 	font-weight: normal !important;
 }
 
+.monaco-workbench .panel.integrated-terminal .xterm a.active {
+	cursor: pointer;
+	text-decoration: underline;
+}
+
 /* Terminal actions */
 
 /* Light theme */
@@ -9758,8 +8604,7 @@ Applies to all other files
 }
 
 .monaco-workbench .terminal-message-widget {
-	/* This font list is sourced from a .monaco-shell style */
-	font-family: -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "HelveticaNeue-Light", "Ubuntu", "Droid Sans", sans-serif;
+	font-family: system-ui, "Segoe WPC", "Segoe UI", "HelveticaNeue-Light", "Ubuntu", "Droid Sans", sans-serif;
 	font-size: 14px;
 	line-height: 19px;
 	padding: 4px 5px;
@@ -9780,7 +8625,6 @@ Applies to all other files
  *--------------------------------------------------------------------------------------------*/
 
 .monaco-workbench .panel.integrated-terminal .xterm {
-	background-color: transparent!important;
 	position: relative;
 	height: 100%;
 }
@@ -9828,17 +8672,7 @@ Applies to all other files
 
 .monaco-workbench .panel.integrated-terminal .xterm a {
 	color: inherit;
-	cursor: text;
-	text-decoration: none;
-}
-
-.monaco-workbench .panel.integrated-terminal.ctrlcmd-held .xterm a:hover {
-	cursor: pointer;
-	text-decoration: underline;
-}
-
-.monaco-workbench .panel.integrated-terminal.ctrlcmd-held .xterm a.xterm-invalid-link:hover {
-	cursor: text;
+	cursor: inherit;
 	text-decoration: none;
 }
 
@@ -9930,7 +8764,8 @@ Applies to all other files
 	overflow-y: scroll;
 }
 
-.terminal .xterm-wide-char {
+.terminal .xterm-wide-char,
+.terminal .xterm-normal-char  {
 	display: inline-block;
 }
 
@@ -11931,6 +10766,41 @@ Applies to all other files
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
+.update-activity {
+	-webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16'%3E%3Cg fill='%23424242'%3E%3Cpath d='M12.714 9.603c-.07.207-.15.407-.246.601l1.017 2.139c-.335.424-.718.807-1.142 1.143l-2.14-1.018c-.193.097-.394.176-.601.247l-.795 2.235c-.265.03-.534.05-.807.05-.272 0-.541-.02-.806-.05l-.795-2.235c-.207-.071-.408-.15-.602-.247l-2.14 1.017c-.424-.336-.807-.719-1.143-1.143l1.017-2.139c-.094-.193-.175-.393-.245-.6l-2.236-.796c-.03-.265-.05-.534-.05-.807s.02-.542.05-.807l2.236-.795c.07-.207.15-.407.246-.601l-1.016-2.139c.336-.423.719-.807 1.143-1.142l2.14 1.017c.193-.096.394-.176.602-.247l.793-2.236c.265-.03.534-.05.806-.05.273 0 .542.02.808.05l.795 2.236c.207.07.407.15.601.246l2.14-1.017c.424.335.807.719 1.142 1.142l-1.017 2.139c.096.194.176.394.246.601l2.236.795c.029.266.049.535.049.808s-.02.542-.05.807l-2.236.796zm-4.714-4.603c-1.657 0-3 1.343-3 3s1.343 3 3 3 3-1.343 3-3-1.343-3-3-3z'/%3E%3Ccircle cx='8' cy='8' r='1.5'/%3E%3C/g%3E%3C/svg%3E") no-repeat 50% 50%;
+	-webkit-mask-size: 22px;
+}
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+.custom-view-tree-node-item {
+	display: flex;
+	height: 22px;
+	line-height: 22px;
+}
+
+.custom-view-tree-node-item > .custom-view-tree-node-item-icon {
+	background-size: 16px;
+	background-position: left center;
+	background-repeat: no-repeat;
+	padding-right: 6px;
+	width: 16px;
+	height: 22px;
+	-webkit-font-smoothing: antialiased;
+}
+
+.custom-view-tree-node-item > .custom-view-tree-node-item-label {
+	flex: 1;
+	text-overflow: ellipsis;
+	overflow: hidden;
+}
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
 .monaco-workbench .part.editor.empty.has-watermark {
 	background-position-y: calc(50% - 100px);
 }
@@ -12031,13 +10901,8 @@ Applies to all other files
 	height: 100%;
 	width: 100%;
 	z-index: 9999;
-	background: rgba(0,0,0,0.52);
 	font-size: 10px;
 	transition: font-size .25s;
-}
-
-.vs .monaco-workbench > .welcomeOverlay {
-	background: rgba(255,255,255,.52);
 }
 
 #workbench\.parts\.editor {
@@ -12061,15 +10926,6 @@ Applies to all other files
 	font-size: 1.6em;
 }
 
-.monaco-workbench > .welcomeOverlay > .key {
-	color: #000;
-}
-
-.vs-dark .monaco-workbench > .welcomeOverlay > .key,
-.hc-black .monaco-workbench > .welcomeOverlay > .key {
-	color: #FFF;
-}
-
 .monaco-workbench > .welcomeOverlay > .key > .label {
 	padding: 0 1ex;
 }
@@ -12077,7 +10933,6 @@ Applies to all other files
 .monaco-workbench > .welcomeOverlay > .key > .shortcut {
 	letter-spacing: 0.15em;
 	font-size: 0.8125em;
-	color: #d7ba7d;
 	font-family: "Lucida Grande", sans-serif;
 }
 
@@ -12209,9 +11064,6 @@ Applies to all other files
 	max-width: 1200px;
 	font-size: 10px;
 }
-.vs .monaco-workbench > .part.editor > .content .welcomePage {
-	color: #6C6C6C;
-}
 
 .monaco-workbench > .part.editor > .content .welcomePage .row {
 	display: flex;
@@ -12234,12 +11086,7 @@ Applies to all other files
 }
 
 .monaco-workbench > .part.editor > .content .welcomePage a {
-	color: #2e70c0;
 	text-decoration: none;
-}
-
-.vs-dark .monaco-workbench > .part.editor > .content .welcomePage a {
-	color: #4080D0;
 }
 
 .monaco-workbench > .part.editor > .content .welcomePage a:focus {
@@ -12247,35 +11094,13 @@ Applies to all other files
 	outline-offset: -1px;
 }
 
-.monaco-workbench > .part.editor > .content .welcomePage a:hover {
-	color: #6ea0dc;
-}
-
-.hc-black .monaco-workbench > .part.editor > .content .welcomePage a {
-	color: #0b9eff;
-}
-
-.hc-black .monaco-workbench > .part.editor > .content .welcomePage a:hover {
-	color: #f38518;
-}
-
 .monaco-workbench > .part.editor > .content .welcomePage h1 {
 	padding: 0;
 	margin: 0;
 	border: none;
-	/*font-family: -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI Light", "HelveticaNeue-Light", "Ubuntu", "Droid Sans", sans-serif;*/
 	font-weight: normal;
-	color: rgba(0,0,0,.8);
 	font-size: 3.6em;
 	white-space: nowrap;
-}
-
-.vs-dark .monaco-workbench > .part.editor > .content .welcomePage h1 {
-	color: rgba(255,255,255,.76);
-}
-
-.hc-black .monaco-workbench > .part.editor > .content .welcomePage h1 {
-	color: white;
 }
 
 .monaco-workbench > .part.editor > .content .welcomePage .title {
@@ -12283,18 +11108,14 @@ Applies to all other files
 	margin-bottom: 1em;
 	flex: 1 100%;
 }
+
 .monaco-workbench > .part.editor > .content .welcomePage .subtitle {
 	margin-top: .8em;
 	font-size: 2.6em;
-	color: rgba(0,0,0,.53);
 	display: block;
-}
-.vs-dark .monaco-workbench > .part.editor > .content .welcomePage .subtitle {
-	color: rgba(255,255,255,.46);
 }
 
 .hc-black .monaco-workbench > .part.editor > .content .welcomePage .subtitle {
-	color: white;
 	font-weight: 200;
 }
 
@@ -12332,6 +11153,10 @@ Applies to all other files
 	display: initial;
 }
 
+.monaco-workbench > .part.editor > .content .welcomePage .splash .recent li.moreRecent {
+	margin-top: 5px;
+}
+
 .monaco-workbench > .part.editor > .content .welcomePage .splash .recent li {
 	min-width: 0;
 	white-space: nowrap;
@@ -12340,22 +11165,6 @@ Applies to all other files
 }
 .monaco-workbench > .part.editor > .content .welcomePage .splash .recent .path {
 	padding-left: 1em;
-	color: rgba(255,255,255,.46);
-}
-
-.monaco-workbench > .part.editor > .content .welcomePage .splash .recent .none,
-.monaco-workbench > .part.editor > .content .welcomePage .splash .recent .path {
-	color: rgba(0,0,0,.53);
-}
-
-.vs-dark .monaco-workbench > .part.editor > .content .welcomePage .splash .recent .none,
-.vs-dark .monaco-workbench > .part.editor > .content .welcomePage .splash .recent .path {
-	color: rgba(255,255,255,.46);
-}
-
-.hc-black .monaco-workbench > .part.editor > .content .welcomePage .splash .recent .none,
-.hc-black .monaco-workbench > .part.editor > .content .welcomePage .splash .recent .path {
-	color: white;
 }
 
 .monaco-workbench > .part.editor > .content .welcomePage .splash .title,
@@ -12375,9 +11184,9 @@ Applies to all other files
 	margin: 7px 0px;
 }
 .monaco-workbench > .part.editor > .content .welcomePage .commands li button {
-	margin: 0;
+	margin: 1px;
 	padding: 12px 10px;
-	width: 100%;
+	width: calc(100% - 2px);
 	height: 5em;
 	font-size: 1.3em;
 	text-align: left;
@@ -12397,42 +11206,12 @@ Applies to all other files
 	margin-bottom: .25em;
 }
 
-.vs .monaco-workbench > .part.editor > .content .welcomePage .commands li button h3 {
-	color: #2c2c2c;
-}
-
 .monaco-workbench > .part.editor > .content .welcomePage .commands li button {
-	color: #6c6c6c;
-	background:rgba(0,0,0,.04);
 	border: none;
-}
-.monaco-workbench > .part.editor > .content .welcomePage .commands li button:hover {
-	background:rgba(0,0,0,.10);
-}
-
-.vs-dark .monaco-workbench > .part.editor > .content .welcomePage .commands li button > h3 {
-	color: #ccc;
 }
 
 .hc-black .monaco-workbench > .part.editor > .content .welcomePage .commands li button > h3 {
 	font-weight: bold;
-}
-
-.vs-dark .monaco-workbench > .part.editor > .content .welcomePage .commands li button {
-	color: #828282;
-	background: rgba(0, 0, 0, .2);
-}
-
-.vs-dark .monaco-workbench > .part.editor > .content .welcomePage .commands li button:hover {
-	background: rgba(200, 235, 255, .072);
-}
-
-.vs-dark .monaco-workbench > .part.editor > .content .welcomePage.extra-dark .commands li button {
-	background: rgba(200, 235, 255, .042);
-}
-
-.vs-dark .monaco-workbench > .part.editor > .content .welcomePage.extra-dark .commands li button:hover {
-	background: rgba(200, 235, 255, .072);
 }
 
 .monaco-workbench > .part.editor > .content .welcomePage .commands li button:focus {
@@ -12441,25 +11220,23 @@ Applies to all other files
 }
 
 .hc-black .monaco-workbench > .part.editor > .content .welcomePage .commands li button {
-	color: white;
-	background: black;
-	border-color: #f38518;
 	border-width: 1px;
 	border-style: solid;
 }
 
 .hc-black .monaco-workbench > .part.editor > .content .welcomePage .commands li button:hover {
-	outline: 1px dashed #f38518;
+	outline-width: 1px;
+	outline-style: dashed;
 	outline-offset: -5px;
 }
 
-.monaco-workbench > .part.editor > .content .welcomePage .commands li button .currentKeymap {
+.monaco-workbench > .part.editor > .content .welcomePage .commands li button .enabledExtension {
 	display: none;
 }
-.monaco-workbench > .part.editor > .content .welcomePage .commands li button .installKeymap.installed {
+.monaco-workbench > .part.editor > .content .welcomePage .commands li button .installExtension.installed {
 	display: none;
 }
-.monaco-workbench > .part.editor > .content .welcomePage .commands li button .currentKeymap.installed {
+.monaco-workbench > .part.editor > .content .welcomePage .commands li button .enabledExtension.installed {
 	display: inline;
 }
 
@@ -12496,18 +11273,6 @@ Applies to all other files
 	display: list-item;
 }
 
-.monaco-workbench > .part.editor > .content .welcomePageContainer .scm-only {
-	display: none;
-}
-.monaco-workbench > .part.editor > .content .welcomePageContainer.scmEnabled .scm-only {
-	display: initial;
-}
-.monaco-workbench > .part.editor > .content .welcomePageContainer.scmEnabled li.scm-only {
-	display: list-item;
-}
-.monaco-workbench > .part.editor > .content .welcomePageContainer.scmEnabled .git-only {
-	display: none;
-}
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -12527,7 +11292,6 @@ Applies to all other files
 }
 
 .monaco-workbench > .part.editor > .content .walkThroughContent a {
-	color: #4080D0;
 	text-decoration: none;
 }
 
@@ -12579,7 +11343,6 @@ Applies to all other files
 }
 
 .monaco-workbench > .part.editor > .content .walkThroughContent a:hover {
-	color: #4080D0;
 	text-decoration: underline;
 }
 
@@ -12616,35 +11379,10 @@ Applies to all other files
 	line-height: 19px;
 }
 
-/*.monaco-workbench.mac > .part.editor > .content .walkThroughContent code,
-.monaco-workbench.mac > .part.editor > .content .walkThroughContent .shortcut {
-	font-size: 12px;
-	line-height: 18px;
-}*/
-
-.vs .monaco-workbench > .part.editor > .content .walkThroughContent code,
-.vs .monaco-workbench > .part.editor > .content .walkThroughContent .shortcut {
-	color: #A31515;
-}
-
-.vs-dark .monaco-workbench > .part.editor > .content .walkThroughContent code,
-.vs-dark .monaco-workbench > .part.editor > .content .walkThroughContent .shortcut {
-	color: #D7BA7D;
-}
-
 .monaco-workbench > .part.editor > .content .walkThroughContent blockquote {
 	margin: 0 7px 0 5px;
 	padding: 0 16px 0 10px;
 	border-left: 5px solid;
-}
-.vs .monaco-workbench > .part.editor > .content .walkThroughContent blockquote,
-.vs-dark .monaco-workbench > .part.editor > .content .walkThroughContent blockquote {
-	background: rgba(127, 127, 127, 0.1);
-	border-color: rgba(0, 122, 204, 0.5);
-}
-.hc-black .monaco-workbench > .part.editor > .content .walkThroughContent blockquote {
-	background: transparent;
-	border-color: #fff;
 }
 
 .monaco-workbench > .part.editor > .content .walkThroughContent .monaco-tokenized-source {
@@ -12671,28 +11409,9 @@ Applies to all other files
 	display: initial;
 }
 
-.monaco-workbench > .part.editor > .content .walkThroughContent .scm-only {
-	display: none;
-}
-.monaco-workbench > .part.editor > .content .walkThroughContent.scmEnabled .scm-only {
-	display: initial;
-}
-.monaco-workbench > .part.editor > .content .walkThroughContent.scmEnabled .git-only {
-	display: none;
-}
-
-.vs .monaco-workbench > .part.editor > .content .walkThroughContent .monaco-editor-background,
-.vs .monaco-workbench > .part.editor > .content .walkThroughContent .glyph-margin {
-	background-color: #eee;
-}
-
-.vs-dark .monaco-workbench > .part.editor > .content .walkThroughContent .monaco-editor-background,
-.vs-dark .monaco-workbench > .part.editor > .content .walkThroughContent .glyph-margin {
-	background-color: #111;
-}
-
 .hc-black .monaco-workbench > .part.editor > .content .walkThroughContent .monaco-editor {
-	border: 1px white solid
+	border-width: 1px;
+	border-style: solid;
 }
 
 /*---------------------------------------------------------------------------------------------

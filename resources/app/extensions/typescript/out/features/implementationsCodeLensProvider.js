@@ -1,8 +1,8 @@
+"use strict";
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-'use strict';
 Object.defineProperty(exports, "__esModule", { value: true });
 const vscode_1 = require("vscode");
 const PConst = require("../protocol.const");
@@ -10,12 +10,17 @@ const baseCodeLensProvider_1 = require("./baseCodeLensProvider");
 const nls = require("vscode-nls");
 const localize = nls.loadMessageBundle(__filename);
 class TypeScriptImplementationsCodeLensProvider extends baseCodeLensProvider_1.TypeScriptBaseCodeLensProvider {
-    constructor(client) {
-        super(client, 'implementationsCodeLens.enabled');
+    constructor(client, language) {
+        super(client);
+        this.language = language;
+    }
+    updateConfiguration() {
+        const config = vscode_1.workspace.getConfiguration(this.language);
+        this.setEnabled(config.get('implementationsCodeLens.enabled', false));
     }
     provideCodeLenses(document, token) {
         if (!this.client.apiVersion.has220Features()) {
-            return Promise.resolve([]);
+            return [];
         }
         return super.provideCodeLenses(document, token);
     }
@@ -73,4 +78,4 @@ class TypeScriptImplementationsCodeLensProvider extends baseCodeLensProvider_1.T
     }
 }
 exports.default = TypeScriptImplementationsCodeLensProvider;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/f6868fce3eeb16663840eb82123369dec6077a9b/extensions\typescript\out/features\implementationsCodeLensProvider.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/376c52b955428d205459bea6619fc161fc8faacf/extensions\typescript\out/features\implementationsCodeLensProvider.js.map

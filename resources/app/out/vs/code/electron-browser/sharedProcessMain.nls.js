@@ -5,17 +5,6 @@
  * Copyright (c) Microsoft Corporation. All rights reserved.
  *--------------------------------------------------------*/
 define("vs/code/electron-browser/sharedProcessMain.nls", {
-	"vs/base/common/json": [
-		"Invalid symbol",
-		"Invalid number format",
-		"Property name expected",
-		"Value expected",
-		"Colon expected",
-		"Comma expected",
-		"Closing brace expected",
-		"Closing bracket expected",
-		"End of file expected"
-	],
 	"vs/base/common/severity": [
 		"Error",
 		"Warning",
@@ -77,6 +66,12 @@ define("vs/code/electron-browser/sharedProcessMain.nls", {
 		"All contributions of the VS Code extension represented by this package.",
 		"Sets the extension to be flagged as a Preview in the Marketplace.",
 		"Activation events for the VS Code extension.",
+		"An activation event emitted whenever a file that resolves to the specified language gets opened.",
+		"An activation event emitted whenever the specified command gets invoked.",
+		"An activation event emitted whenever a debug session of the specified type is started.",
+		"An activation event emitted whenever a folder is opened that contains at least a file matching the specified glob pattern.",
+		"An activation event emitted whenever the specified view is expanded.",
+		"An activation event emitted on VS Code startup. To ensure a great end user experience, please use this activation event in your extension only when no other activation events combination works in your use-case.",
 		"Array of badges to display in the sidebar of the Marketplace's extension page.",
 		"Badge image URL.",
 		"Badge link.",

@@ -17,6 +17,8 @@ function activate(context) {
     context.subscriptions.push(registerKeybindingsCompletions());
     //settings.json suggestions
     context.subscriptions.push(registerSettingsCompletions());
+    //extensions.json suggestions
+    context.subscriptions.push(registerExtensionsCompletions());
     // launch.json decorations
     context.subscriptions.push(vscode.window.onDidChangeActiveTextEditor(function (editor) { return updateLaunchJsonDecorations(editor); }, null, context.subscriptions));
     context.subscriptions.push(vscode.workspace.onDidChangeTextDocument(function (event) {
@@ -49,11 +51,39 @@ function registerSettingsCompletions() {
         }
     });
 }
-function newSimpleCompletionItem(text, range, description) {
-    var item = new vscode.CompletionItem(text);
+function registerExtensionsCompletions() {
+    return vscode.languages.registerCompletionItemProvider({ pattern: '**/extensions.json' }, {
+        provideCompletionItems: function (document, position, token) {
+            var location = jsonc_parser_1.getLocation(document.getText(), document.offsetAt(position));
+            var range = document.getWordRangeAtPosition(position) || new vscode.Range(position, position);
+            if (location.path[0] === 'recommendations') {
+                var config = jsonc_parser_1.parse(document.getText());
+                var alreadyEnteredExtensions_1 = config && config.recommendations || [];
+                if (Array.isArray(alreadyEnteredExtensions_1)) {
+                    return vscode.extensions.all
+                        .filter(function (e) { return !(e.id.startsWith('vscode.')
+                        || e.id === 'Microsoft.vscode-markdown'
+                        || alreadyEnteredExtensions_1.indexOf(e.id) > -1); })
+                        .map(function (e) {
+                        var item = new vscode.CompletionItem(e.id);
+                        var insertText = "\"" + e.id + "\"";
+                        item.kind = vscode.CompletionItemKind.Value;
+                        item.insertText = insertText;
+                        item.range = range;
+                        item.filterText = insertText;
+                        return item;
+                    });
+                }
+            }
+            return [];
+        }
+    });
+}
+function newSimpleCompletionItem(label, range, description, insertText) {
+    var item = new vscode.CompletionItem(label);
     item.kind = vscode.CompletionItemKind.Value;
     item.detail = description;
-    item.insertText = text;
+    item.insertText = insertText || label;
     item.range = range;
     return item;
 }
@@ -87,4 +117,4 @@ function updateLaunchJsonDecorations(editor) {
     });
     editor.setDecorations(decoration, ranges);
 }
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/f6868fce3eeb16663840eb82123369dec6077a9b/extensions\configuration-editing\out/extension.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/376c52b955428d205459bea6619fc161fc8faacf/extensions\configuration-editing\out/extension.js.map

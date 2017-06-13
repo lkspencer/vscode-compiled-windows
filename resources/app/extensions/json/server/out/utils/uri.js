@@ -316,4 +316,4 @@ URI._regexp = /^(([^:/?#]+?):)?(\/\/([^/?#]*))?([^?#]*)(\?([^#]*))?(#(.*))?/;
 URI._driveLetterPath = /^\/[a-zA-z]:/;
 URI._upperCaseDrive = /^(\/)?([A-Z]:)/;
 exports.default = URI;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/f6868fce3eeb16663840eb82123369dec6077a9b/extensions\json\server\out/utils\uri.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/376c52b955428d205459bea6619fc161fc8faacf/extensions\json\server\out/utils\uri.js.map

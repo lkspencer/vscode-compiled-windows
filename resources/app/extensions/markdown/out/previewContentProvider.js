@@ -24,7 +24,7 @@ function getMarkdownUri(uri) {
     }
     return uri.with({
         scheme: 'markdown',
-        path: uri.fsPath + '.rendered',
+        path: uri.path + '.rendered',
         query: uri.toString()
     });
 }
@@ -39,6 +39,7 @@ var MarkdownPreviewConfig = (function () {
         this.scrollPreviewWithEditorSelection = !!markdownConfig.get('preview.scrollPreviewWithEditorSelection', true);
         this.scrollEditorWithPreview = !!markdownConfig.get('preview.scrollEditorWithPreview', true);
         this.doubleClickToSwitchToEditor = !!markdownConfig.get('preview.doubleClickToSwitchToEditor', true);
+        this.markEditorSelection = !!markdownConfig.get('preview.markEditorSelection', true);
         this.fontFamily = markdownConfig.get('preview.fontFamily', undefined);
         this.fontSize = +markdownConfig.get('preview.fontSize', NaN);
         this.lineHeight = +markdownConfig.get('preview.lineHeight', NaN);
@@ -114,7 +115,7 @@ var MDDocumentContentProvider = (function () {
         var _this = this;
         if (this.config.styles && Array.isArray(this.config.styles)) {
             return this.config.styles.map(function (style) {
-                return "<link rel=\"stylesheet\" href=\"" + _this.fixHref(uri, style) + "\" type=\"text/css\" media=\"screen\">";
+                return "<link rel=\"stylesheet\" class=\"code-user-style\" data-source=\"" + style.replace(/"/g, '&quot;') + "\" href=\"" + _this.fixHref(uri, style) + "\" type=\"text/css\" media=\"screen\">";
             }).join('\n');
         }
         return '';
@@ -132,19 +133,19 @@ var MDDocumentContentProvider = (function () {
     MDDocumentContentProvider.prototype.getScripts = function (nonce) {
         var scripts = [this.getMediaPath('main.js')].concat(this.extraScripts.map(function (resource) { return resource.toString(); }));
         return scripts
-            .map(function (source) { return "<script src=\"" + source + "\" nonce=\"" + nonce + "\"></script>"; })
+            .map(function (source) { return "<script async src=\"" + source + "\" nonce=\"" + nonce + "\"></script>"; })
             .join('\n');
     };
     MDDocumentContentProvider.prototype.provideTextDocumentContent = function (uri) {
         var _this = this;
         var sourceUri = vscode.Uri.parse(uri.query);
+        var initialLine = undefined;
+        var editor = vscode.window.activeTextEditor;
+        if (editor && editor.document.uri.fsPath === sourceUri.fsPath) {
+            initialLine = editor.selection.active.line;
+        }
         return vscode.workspace.openTextDocument(sourceUri).then(function (document) {
             _this.config = MarkdownPreviewConfig.getCurrentConfig();
-            var initialLine = 0;
-            var editor = vscode.window.activeTextEditor;
-            if (editor && editor.document.uri.fsPath === sourceUri.fsPath) {
-                initialLine = editor.selection.active.line;
-            }
             var initialData = {
                 previewUri: uri.toString(),
                 source: sourceUri.toString(),
@@ -161,7 +162,7 @@ var MDDocumentContentProvider = (function () {
                 csp = '';
             }
             var body = _this.engine.render(sourceUri, _this.config.previewFrontMatter === 'hide', document.getText());
-            return "<!DOCTYPE html>\n\t\t\t\t<html>\n\t\t\t\t<head>\n\t\t\t\t\t<meta http-equiv=\"Content-type\" content=\"text/html;charset=UTF-8\">\n\t\t\t\t\t" + csp + "\n\t\t\t\t\t<meta id=\"vscode-markdown-preview-data\" data-settings=\"" + JSON.stringify(initialData).replace(/"/g, '&quot;') + "\" data-strings=\"" + JSON.stringify(previewStrings).replace(/"/g, '&quot;') + "\">\n\t\t\t\t\t<script src=\"" + _this.getMediaPath('csp.js') + "\" nonce=\"" + nonce + "\"></script>\n\t\t\t\t\t" + _this.getStyles(uri, nonce) + "\n\t\t\t\t\t<base href=\"" + document.uri.toString(true) + "\">\n\t\t\t\t</head>\n\t\t\t\t<body class=\"vscode-body " + (_this.config.scrollBeyondLastLine ? 'scrollBeyondLastLine' : '') + " " + (_this.config.wordWrap ? 'wordWrap' : '') + " " + (_this.config.markEditorSelection ? 'showEditorSelection' : '') + "\">\n\t\t\t\t\t" + body + "\n\t\t\t\t\t<div class=\"code-line\" data-line=\"" + document.lineCount + "\"></div>\n\t\t\t\t\t" + _this.getScripts(nonce) + "\n\t\t\t\t</body>\n\t\t\t\t</html>";
+            return "<!DOCTYPE html>\n\t\t\t\t<html>\n\t\t\t\t<head>\n\t\t\t\t\t<meta http-equiv=\"Content-type\" content=\"text/html;charset=UTF-8\">\n\t\t\t\t\t" + csp + "\n\t\t\t\t\t<meta id=\"vscode-markdown-preview-data\" data-settings=\"" + JSON.stringify(initialData).replace(/"/g, '&quot;') + "\" data-strings=\"" + JSON.stringify(previewStrings).replace(/"/g, '&quot;') + "\">\n\t\t\t\t\t<script src=\"" + _this.getMediaPath('csp.js') + "\" nonce=\"" + nonce + "\"></script>\n\t\t\t\t\t<script src=\"" + _this.getMediaPath('loading.js') + "\" nonce=\"" + nonce + "\"></script>\n\t\t\t\t\t" + _this.getStyles(uri, nonce) + "\n\t\t\t\t\t<base href=\"" + document.uri.toString(true) + "\">\n\t\t\t\t</head>\n\t\t\t\t<body class=\"vscode-body " + (_this.config.scrollBeyondLastLine ? 'scrollBeyondLastLine' : '') + " " + (_this.config.wordWrap ? 'wordWrap' : '') + " " + (_this.config.markEditorSelection ? 'showEditorSelection' : '') + "\">\n\t\t\t\t\t" + body + "\n\t\t\t\t\t<div class=\"code-line\" data-line=\"" + document.lineCount + "\"></div>\n\t\t\t\t\t" + _this.getScripts(nonce) + "\n\t\t\t\t</body>\n\t\t\t\t</html>";
         });
     };
     MDDocumentContentProvider.prototype.updateConfiguration = function () {
@@ -197,4 +198,4 @@ var MDDocumentContentProvider = (function () {
     return MDDocumentContentProvider;
 }());
 exports.MDDocumentContentProvider = MDDocumentContentProvider;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/f6868fce3eeb16663840eb82123369dec6077a9b/extensions\markdown\out/previewContentProvider.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/376c52b955428d205459bea6619fc161fc8faacf/extensions\markdown\out/previewContentProvider.js.map

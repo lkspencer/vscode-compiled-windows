@@ -81,6 +81,44 @@ define(__m[6/*vs/base/common/arrays*/], __M([1/*require*/,0/*exports*/]), functi
     }
     exports.findFirst = findFirst;
     /**
+     * Like `Array#sort` but always stable. Comes at a cost: iterates 2n-times,
+     * creates n-objects in addition to sorting (log(n))
+     */
+    function stableSort(data, compare) {
+        var data2 = data;
+        for (var idx = 0; idx < data2.length; idx++) {
+            data2[idx] = { idx: idx, e: data[idx] };
+        }
+        data2.sort(function (a, b) {
+            var ret = compare(a.e, b.e);
+            if (ret === 0) {
+                ret = a.idx - b.idx;
+            }
+            return ret;
+        });
+        for (var idx = 0; idx < data2.length; idx++) {
+            data[idx] = data2[idx].e;
+        }
+        return data;
+    }
+    exports.stableSort = stableSort;
+    function groupBy(data, compare) {
+        var result = [];
+        var currentGroup;
+        for (var _i = 0, _a = data.slice(0).sort(compare); _i < _a.length; _i++) {
+            var element = _a[_i];
+            if (!currentGroup || compare(currentGroup[0], element) !== 0) {
+                currentGroup = [element];
+                result.push(currentGroup);
+            }
+            else {
+                currentGroup.push(element);
+            }
+        }
+        return result;
+    }
+    exports.groupBy = groupBy;
+    /**
      * Takes two *sorted* arrays and computes their delta (removed, added elements).
      * Finishes in `Math.min(before.length, after.length)` steps.
      * @param before
@@ -295,7 +333,6 @@ define(__m[2/*vs/base/common/platform*/], __M([1/*require*/,0/*exports*/]), func
     var _isRootUser = false;
     var _isNative = false;
     var _isWeb = false;
-    var _isQunit = false;
     var _locale = undefined;
     var _language = undefined;
     exports.LANGUAGE_DEFAULT = 'en';
@@ -327,7 +364,6 @@ define(__m[2/*vs/base/common/platform*/], __M([1/*require*/,0/*exports*/]), func
         _isWeb = true;
         _locale = navigator.language;
         _language = _locale;
-        _isQunit = !!self.QUnit;
     }
     var Platform;
     (function (Platform) {
@@ -336,16 +372,16 @@ define(__m[2/*vs/base/common/platform*/], __M([1/*require*/,0/*exports*/]), func
         Platform[Platform["Linux"] = 2] = "Linux";
         Platform[Platform["Windows"] = 3] = "Windows";
     })(Platform = exports.Platform || (exports.Platform = {}));
-    exports._platform = Platform.Web;
+    var _platform = Platform.Web;
     if (_isNative) {
         if (_isMacintosh) {
-            exports._platform = Platform.Mac;
+            _platform = Platform.Mac;
         }
         else if (_isWindows) {
-            exports._platform = Platform.Windows;
+            _platform = Platform.Windows;
         }
         else if (_isLinux) {
-            exports._platform = Platform.Linux;
+            _platform = Platform.Linux;
         }
     }
     exports.isWindows = _isWindows;
@@ -354,8 +390,7 @@ define(__m[2/*vs/base/common/platform*/], __M([1/*require*/,0/*exports*/]), func
     exports.isRootUser = _isRootUser;
     exports.isNative = _isNative;
     exports.isWeb = _isWeb;
-    exports.isQunit = _isQunit;
-    exports.platform = exports._platform;
+    exports.platform = _platform;
     /**
      * The language used for the user interface. The format of
      * the string is all lower case (e.g. zh-tw for Traditional
@@ -385,6 +420,15 @@ define(__m[2/*vs/base/common/platform*/], __M([1/*require*/,0/*exports*/]), func
         OperatingSystem[OperatingSystem["Linux"] = 3] = "Linux";
     })(OperatingSystem = exports.OperatingSystem || (exports.OperatingSystem = {}));
     exports.OS = (_isMacintosh ? 2 /* Macintosh */ : (_isWindows ? 1 /* Windows */ : 3 /* Linux */));
+    var AccessibilitySupport;
+    (function (AccessibilitySupport) {
+        /**
+         * This should be the browser case where it is not known if a screen reader is attached or no.
+         */
+        AccessibilitySupport[AccessibilitySupport["Unknown"] = 0] = "Unknown";
+        AccessibilitySupport[AccessibilitySupport["Disabled"] = 1] = "Disabled";
+        AccessibilitySupport[AccessibilitySupport["Enabled"] = 2] = "Enabled";
+    })(AccessibilitySupport = exports.AccessibilitySupport || (exports.AccessibilitySupport = {}));
 });
 
 define(__m[3/*vs/base/common/types*/], __M([1/*require*/,0/*exports*/]), function (require, exports) {
@@ -3590,7 +3634,6 @@ define(__m[10/*vs/platform/environment/node/argv*/], __M([1/*require*/,0/*export
             'debugBrkPluginHost',
             'debugPluginHost',
             'open-url',
-            'prof-startup-timers',
             'enable-proposed-api'
         ],
         boolean: [
@@ -3609,7 +3652,8 @@ define(__m[10/*vs/platform/environment/node/argv*/], __M([1/*require*/,0/*export
             'disable-extensions',
             'list-extensions',
             'show-versions',
-            'nolazy'
+            'nolazy',
+            'skip-getting-started'
         ],
         alias: {
             help: 'h',

@@ -26,6 +26,7 @@ function getJavascriptMode(documentRegions) {
     var host = {
         getCompilationSettings: function () { return compilerOptions; },
         getScriptFileNames: function () { return [FILE_NAME, JQUERY_D_TS]; },
+        getScriptKind: function () { return ts.ScriptKind.JS; },
         getScriptVersion: function (fileName) {
             if (fileName === FILE_NAME) {
                 return String(scriptFileVersion);
@@ -62,8 +63,9 @@ function getJavascriptMode(documentRegions) {
         },
         doValidation: function (document) {
             updateCurrentTextDocument(document);
-            var diagnostics = jsLanguageService.getSyntacticDiagnostics(FILE_NAME);
-            return diagnostics.map(function (diag) {
+            var syntaxDiagnostics = jsLanguageService.getSyntacticDiagnostics(FILE_NAME);
+            var semanticDiagnostics = jsLanguageService.getSemanticDiagnostics(FILE_NAME);
+            return syntaxDiagnostics.concat(semanticDiagnostics).map(function (diag) {
                 return {
                     range: convertRange(currentTextDocument, diag),
                     severity: vscode_languageserver_types_1.DiagnosticSeverity.Error,
@@ -387,4 +389,4 @@ function generateIndent(level, options) {
         return strings_1.repeat('\t', level);
     }
 }
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/f6868fce3eeb16663840eb82123369dec6077a9b/extensions\html\server\out/modes\javascriptMode.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/376c52b955428d205459bea6619fc161fc8faacf/extensions\html\server\out/modes\javascriptMode.js.map

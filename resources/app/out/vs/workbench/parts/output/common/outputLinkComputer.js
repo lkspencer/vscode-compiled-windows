@@ -81,6 +81,44 @@ define(__m[0/*vs/base/common/arrays*/], __M([1/*require*/,2/*exports*/]), functi
     }
     exports.findFirst = findFirst;
     /**
+     * Like `Array#sort` but always stable. Comes at a cost: iterates 2n-times,
+     * creates n-objects in addition to sorting (log(n))
+     */
+    function stableSort(data, compare) {
+        var data2 = data;
+        for (var idx = 0; idx < data2.length; idx++) {
+            data2[idx] = { idx: idx, e: data[idx] };
+        }
+        data2.sort(function (a, b) {
+            var ret = compare(a.e, b.e);
+            if (ret === 0) {
+                ret = a.idx - b.idx;
+            }
+            return ret;
+        });
+        for (var idx = 0; idx < data2.length; idx++) {
+            data[idx] = data2[idx].e;
+        }
+        return data;
+    }
+    exports.stableSort = stableSort;
+    function groupBy(data, compare) {
+        var result = [];
+        var currentGroup;
+        for (var _i = 0, _a = data.slice(0).sort(compare); _i < _a.length; _i++) {
+            var element = _a[_i];
+            if (!currentGroup || compare(currentGroup[0], element) !== 0) {
+                currentGroup = [element];
+                result.push(currentGroup);
+            }
+            else {
+                currentGroup.push(element);
+            }
+        }
+        return result;
+    }
+    exports.groupBy = groupBy;
+    /**
      * Takes two *sorted* arrays and computes their delta (removed, added elements).
      * Finishes in `Math.min(before.length, after.length)` steps.
      * @param before

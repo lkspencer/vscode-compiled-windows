@@ -1,8 +1,8 @@
+"use strict";
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-'use strict';
 Object.defineProperty(exports, "__esModule", { value: true });
 const vscode_1 = require("vscode");
 class ReferencesCodeLens extends vscode_1.CodeLens {
@@ -14,30 +14,27 @@ class ReferencesCodeLens extends vscode_1.CodeLens {
 }
 exports.ReferencesCodeLens = ReferencesCodeLens;
 class TypeScriptBaseCodeLensProvider {
-    constructor(client, toggleSettingName) {
+    constructor(client) {
         this.client = client;
-        this.toggleSettingName = toggleSettingName;
-        this.enabled = false;
+        this.enabled = true;
         this.onDidChangeCodeLensesEmitter = new vscode_1.EventEmitter();
     }
     get onDidChangeCodeLenses() {
         return this.onDidChangeCodeLensesEmitter.event;
     }
-    updateConfiguration() {
-        const typeScriptConfig = vscode_1.workspace.getConfiguration('typescript');
-        const wasEnabled = this.enabled;
-        this.enabled = typeScriptConfig.get(this.toggleSettingName, false);
-        if (wasEnabled !== this.enabled) {
+    setEnabled(enabled) {
+        if (this.enabled !== enabled) {
+            this.enabled = enabled;
             this.onDidChangeCodeLensesEmitter.fire();
         }
     }
     provideCodeLenses(document, token) {
         if (!this.enabled) {
-            return Promise.resolve([]);
+            return [];
         }
         const filepath = this.client.normalizePath(document.uri);
         if (!filepath) {
-            return Promise.resolve([]);
+            return [];
         }
         return this.client.execute('navtree', { file: filepath }, token).then(response => {
             if (!response) {
@@ -49,6 +46,9 @@ class TypeScriptBaseCodeLensProvider {
                 tree.childItems.forEach(item => this.walkNavTree(document, item, null, referenceableSpans));
             }
             return referenceableSpans.map(span => new ReferencesCodeLens(document.uri, filepath, span));
+        }, (err) => {
+            this.client.error(`'navtree' request failed with error.`, err);
+            return [];
         });
     }
     walkNavTree(document, item, parent, results) {
@@ -75,7 +75,7 @@ class TypeScriptBaseCodeLensProvider {
         }
         const range = new vscode_1.Range(span.start.line - 1, span.start.offset - 1, span.end.line - 1, span.end.offset - 1);
         const text = document.getText(range);
-        const identifierMatch = new RegExp(`^(.*?(\\b|\\W))${(item.text || '').replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&')}\\b`, 'gm');
+        const identifierMatch = new RegExp(`^(.*?(\\b|\\W))${(item.text || '').replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&')}(\\b|\\W)`, 'gm');
         const match = identifierMatch.exec(text);
         const prefixLength = match ? match.index + match[1].length : 0;
         const startOffset = document.offsetAt(new vscode_1.Position(range.start.line, range.start.character)) + prefixLength;
@@ -83,4 +83,4 @@ class TypeScriptBaseCodeLensProvider {
     }
 }
 exports.TypeScriptBaseCodeLensProvider = TypeScriptBaseCodeLensProvider;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/f6868fce3eeb16663840eb82123369dec6077a9b/extensions\typescript\out/features\baseCodeLensProvider.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/376c52b955428d205459bea6619fc161fc8faacf/extensions\typescript\out/features\baseCodeLensProvider.js.map

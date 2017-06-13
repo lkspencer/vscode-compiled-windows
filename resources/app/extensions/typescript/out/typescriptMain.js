@@ -1,13 +1,13 @@
+"use strict";
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
+Object.defineProperty(exports, "__esModule", { value: true });
 /* --------------------------------------------------------------------------------------------
  * Includes code from typescript-sublime-plugin project, obtained from
  * https://github.com/Microsoft/TypeScript-Sublime-Plugin/blob/master/TypeScript%20Indent.tmPreferences
  * ------------------------------------------------------------------------------------------ */
-'use strict';
-Object.defineProperty(exports, "__esModule", { value: true });
 const vscode_1 = require("vscode");
 // This must be the first statement otherwise modules might got loaded with
 // the wrong locale.
@@ -33,68 +33,98 @@ const workspaceSymbolProvider_1 = require("./features/workspaceSymbolProvider");
 const codeActionProvider_1 = require("./features/codeActionProvider");
 const referencesCodeLensProvider_1 = require("./features/referencesCodeLensProvider");
 const jsDocCompletionProvider_1 = require("./features/jsDocCompletionProvider");
+const directiveCommentCompletionProvider_1 = require("./features/directiveCommentCompletionProvider");
+const taskProvider_1 = require("./features/taskProvider");
 const implementationsCodeLensProvider_1 = require("./features/implementationsCodeLensProvider");
 const BuildStatus = require("./utils/buildStatus");
 const ProjectStatus = require("./utils/projectStatus");
 const typingsStatus_1 = require("./utils/typingsStatus");
-const VersionStatus = require("./utils/versionStatus");
+const versionStatus_1 = require("./utils/versionStatus");
+const plugins_1 = require("./utils/plugins");
 var ProjectConfigAction;
 (function (ProjectConfigAction) {
     ProjectConfigAction[ProjectConfigAction["None"] = 0] = "None";
     ProjectConfigAction[ProjectConfigAction["CreateConfig"] = 1] = "CreateConfig";
     ProjectConfigAction[ProjectConfigAction["LearnMore"] = 2] = "LearnMore";
 })(ProjectConfigAction || (ProjectConfigAction = {}));
+const MODE_ID_TS = 'typescript';
+const MODE_ID_TSX = 'typescriptreact';
+const MODE_ID_JS = 'javascript';
+const MODE_ID_JSX = 'javascriptreact';
+const standardLanguageDescriptions = [
+    {
+        id: 'typescript',
+        diagnosticSource: 'ts',
+        modeIds: [MODE_ID_TS, MODE_ID_TSX],
+        configFile: 'tsconfig.json'
+    }, {
+        id: 'javascript',
+        diagnosticSource: 'js',
+        modeIds: [MODE_ID_JS, MODE_ID_JSX],
+        configFile: 'jsconfig.json'
+    }
+];
 function activate(context) {
-    const MODE_ID_TS = 'typescript';
-    const MODE_ID_TSX = 'typescriptreact';
-    const MODE_ID_JS = 'javascript';
-    const MODE_ID_JSX = 'javascriptreact';
-    const clientHost = new TypeScriptServiceClientHost([
-        {
-            id: 'typescript',
-            diagnosticSource: 'ts',
-            modeIds: [MODE_ID_TS, MODE_ID_TSX],
-            extensions: ['.ts', '.tsx'],
-            configFile: 'tsconfig.json'
-        },
-        {
-            id: 'javascript',
-            diagnosticSource: 'js',
-            modeIds: [MODE_ID_JS, MODE_ID_JSX],
-            extensions: ['.js', '.jsx'],
-            configFile: 'jsconfig.json'
-        }
-    ], context.storagePath, context.globalState, context.workspaceState);
-    context.subscriptions.push(clientHost);
-    const client = clientHost.serviceClient;
+    const plugins = plugins_1.getContributedTypeScriptServerPlugins();
+    const lazyClientHost = (() => {
+        let clientHost;
+        return () => {
+            if (!clientHost) {
+                clientHost = new TypeScriptServiceClientHost(standardLanguageDescriptions, context.storagePath, context.globalState, context.workspaceState, plugins);
+                context.subscriptions.push(clientHost);
+                const host = clientHost;
+                clientHost.serviceClient.onReady().then(() => {
+                    context.subscriptions.push(ProjectStatus.create(host.serviceClient, path => new Promise(resolve => setTimeout(() => resolve(host.handles(path)), 750)), context.workspaceState));
+                }, () => {
+                    // Nothing to do here. The client did show a message;
+                });
+            }
+            return clientHost;
+        };
+    })();
     context.subscriptions.push(vscode_1.commands.registerCommand('typescript.reloadProjects', () => {
-        clientHost.reloadProjects();
+        lazyClientHost().reloadProjects();
     }));
     context.subscriptions.push(vscode_1.commands.registerCommand('javascript.reloadProjects', () => {
-        clientHost.reloadProjects();
+        lazyClientHost().reloadProjects();
     }));
     context.subscriptions.push(vscode_1.commands.registerCommand('typescript.selectTypeScriptVersion', () => {
-        client.onVersionStatusClicked();
+        lazyClientHost().serviceClient.onVersionStatusClicked();
     }));
     context.subscriptions.push(vscode_1.commands.registerCommand('typescript.openTsServerLog', () => {
-        client.openTsServerLogFile();
+        lazyClientHost().serviceClient.openTsServerLogFile();
     }));
+    context.subscriptions.push(vscode_1.commands.registerCommand('typescript.restartTsServer', () => {
+        lazyClientHost().serviceClient.restartTsServer();
+    }));
+    context.subscriptions.push(new taskProvider_1.default(() => lazyClientHost().serviceClient));
     const goToProjectConfig = (isTypeScript) => {
         const editor = vscode_1.window.activeTextEditor;
         if (editor) {
-            clientHost.goToProjectConfig(isTypeScript, editor.document.uri);
+            lazyClientHost().goToProjectConfig(isTypeScript, editor.document.uri);
         }
     };
     context.subscriptions.push(vscode_1.commands.registerCommand('typescript.goToProjectConfig', goToProjectConfig.bind(null, true)));
     context.subscriptions.push(vscode_1.commands.registerCommand('javascript.goToProjectConfig', goToProjectConfig.bind(null, false)));
-    const jsDocCompletionCommand = new jsDocCompletionProvider_1.TryCompleteJsDocCommand(client);
+    const jsDocCompletionCommand = new jsDocCompletionProvider_1.TryCompleteJsDocCommand(() => lazyClientHost().serviceClient);
     context.subscriptions.push(vscode_1.commands.registerCommand(jsDocCompletionProvider_1.TryCompleteJsDocCommand.COMMAND_NAME, jsDocCompletionCommand.tryCompleteJsDoc, jsDocCompletionCommand));
-    vscode_1.window.onDidChangeActiveTextEditor(VersionStatus.showHideStatus, null, context.subscriptions);
-    client.onReady().then(() => {
-        context.subscriptions.push(ProjectStatus.create(client, path => new Promise(resolve => setTimeout(() => resolve(clientHost.handles(path)), 750)), context.workspaceState));
-    }, () => {
-        // Nothing to do here. The client did show a message;
-    });
+    const supportedLanguage = [].concat.apply([], standardLanguageDescriptions.map(x => x.modeIds).concat(plugins.map(x => x.languages)));
+    function didOpenTextDocument(textDocument) {
+        if (supportedLanguage.indexOf(textDocument.languageId) >= 0) {
+            openListener.dispose();
+            // Force activation
+            void lazyClientHost();
+            return true;
+        }
+        return false;
+    }
+    ;
+    const openListener = vscode_1.workspace.onDidOpenTextDocument(didOpenTextDocument);
+    for (let textDocument of vscode_1.workspace.textDocuments) {
+        if (didOpenTextDocument(textDocument)) {
+            break;
+        }
+    }
     BuildStatus.update({ queueLength: 0 });
 }
 exports.activate = activate;
@@ -103,16 +133,15 @@ class LanguageProvider {
     constructor(client, description) {
         this.client = client;
         this.description = description;
+        this.toUpdateOnConfigurationChanged = [];
         this._validate = true;
         this.disposables = [];
         this.versionDependentDisposables = [];
-        this.extensions = Object.create(null);
-        description.extensions.forEach(extension => this.extensions[extension] = true);
         this.bufferSyncSupport = new bufferSyncSupport_1.default(client, description.modeIds, {
             delete: (file) => {
                 this.currentDiagnostics.delete(client.asUrl(file));
             }
-        }, this.extensions);
+        });
         this.syntaxDiagnostics = Object.create(null);
         this.currentDiagnostics = vscode_1.languages.createDiagnosticCollection(description.id);
         this.typingsStatus = new typingsStatus_1.default(client);
@@ -149,18 +178,20 @@ class LanguageProvider {
     registerProviders(client) {
         const selector = this.description.modeIds;
         const config = vscode_1.workspace.getConfiguration(this.id);
-        this.completionItemProvider = new completionItemProvider_1.default(client, this.typingsStatus);
-        this.completionItemProvider.updateConfiguration();
-        this.disposables.push(vscode_1.languages.registerCompletionItemProvider(selector, this.completionItemProvider, '.'));
+        const completionItemProvider = new completionItemProvider_1.default(client, this.typingsStatus);
+        completionItemProvider.updateConfiguration();
+        this.toUpdateOnConfigurationChanged.push(completionItemProvider);
+        this.disposables.push(vscode_1.languages.registerCompletionItemProvider(selector, completionItemProvider, '.'));
+        this.disposables.push(vscode_1.languages.registerCompletionItemProvider(selector, new directiveCommentCompletionProvider_1.DirectiveCommentCompletionProvider(client), '@'));
         this.formattingProvider = new formattingProvider_1.default(client);
         this.formattingProvider.updateConfiguration(config);
         this.disposables.push(vscode_1.languages.registerOnTypeFormattingEditProvider(selector, this.formattingProvider, ';', '}', '\n'));
         if (this.formattingProvider.isEnabled()) {
             this.formattingProviderRegistration = vscode_1.languages.registerDocumentRangeFormattingEditProvider(selector, this.formattingProvider);
         }
-        this.JsDocCompletionProvider = new jsDocCompletionProvider_1.JsDocCompletionProvider(client);
-        this.JsDocCompletionProvider.updateConfiguration();
-        this.disposables.push(vscode_1.languages.registerCompletionItemProvider(selector, this.JsDocCompletionProvider, '*'));
+        const jsDocCompletionProvider = new jsDocCompletionProvider_1.JsDocCompletionProvider(client);
+        jsDocCompletionProvider.updateConfiguration();
+        this.disposables.push(vscode_1.languages.registerCompletionItemProvider(selector, jsDocCompletionProvider, '*'));
         this.disposables.push(vscode_1.languages.registerHoverProvider(selector, new hoverProvider_1.default(client)));
         this.disposables.push(vscode_1.languages.registerDefinitionProvider(selector, new definitionProvider_1.default(client)));
         this.disposables.push(vscode_1.languages.registerDocumentHighlightProvider(selector, new documentHighlightProvider_1.default(client)));
@@ -168,16 +199,18 @@ class LanguageProvider {
         this.disposables.push(vscode_1.languages.registerDocumentSymbolProvider(selector, new documentSymbolProvider_1.default(client)));
         this.disposables.push(vscode_1.languages.registerSignatureHelpProvider(selector, new signatureHelpProvider_1.default(client), '(', ','));
         this.disposables.push(vscode_1.languages.registerRenameProvider(selector, new renameProvider_1.default(client)));
-        this.referenceCodeLensProvider = new referencesCodeLensProvider_1.default(client);
-        this.referenceCodeLensProvider.updateConfiguration();
-        this.disposables.push(vscode_1.languages.registerCodeLensProvider(selector, this.referenceCodeLensProvider));
-        this.implementationCodeLensProvider = new implementationsCodeLensProvider_1.default(client);
-        this.implementationCodeLensProvider.updateConfiguration();
-        this.disposables.push(vscode_1.languages.registerCodeLensProvider(selector, this.implementationCodeLensProvider));
         this.disposables.push(vscode_1.languages.registerCodeActionsProvider(selector, new codeActionProvider_1.default(client, this.description.id)));
         this.registerVersionDependentProviders();
         this.description.modeIds.forEach(modeId => {
             this.disposables.push(vscode_1.languages.registerWorkspaceSymbolProvider(new workspaceSymbolProvider_1.default(client, modeId)));
+            const referenceCodeLensProvider = new referencesCodeLensProvider_1.default(client, modeId);
+            referenceCodeLensProvider.updateConfiguration();
+            this.toUpdateOnConfigurationChanged.push(referenceCodeLensProvider);
+            this.disposables.push(vscode_1.languages.registerCodeLensProvider(selector, referenceCodeLensProvider));
+            const implementationCodeLensProvider = new implementationsCodeLensProvider_1.default(client, modeId);
+            implementationCodeLensProvider.updateConfiguration();
+            this.toUpdateOnConfigurationChanged.push(implementationCodeLensProvider);
+            this.disposables.push(vscode_1.languages.registerCodeLensProvider(selector, implementationCodeLensProvider));
             this.disposables.push(vscode_1.languages.setLanguageConfiguration(modeId, {
                 indentationRules: {
                     // ^(.*\*/)?\s*\}.*$
@@ -232,15 +265,6 @@ class LanguageProvider {
     configurationChanged() {
         const config = vscode_1.workspace.getConfiguration(this.id);
         this.updateValidate(config.get(validateSetting, true));
-        if (this.completionItemProvider) {
-            this.completionItemProvider.updateConfiguration();
-        }
-        if (this.referenceCodeLensProvider) {
-            this.referenceCodeLensProvider.updateConfiguration();
-        }
-        if (this.implementationCodeLensProvider) {
-            this.implementationCodeLensProvider.updateConfiguration();
-        }
         if (this.formattingProvider) {
             this.formattingProvider.updateConfiguration(config);
             if (!this.formattingProvider.isEnabled() && this.formattingProviderRegistration) {
@@ -251,17 +275,22 @@ class LanguageProvider {
                 this.formattingProviderRegistration = vscode_1.languages.registerDocumentRangeFormattingEditProvider(this.description.modeIds, this.formattingProvider);
             }
         }
-        if (this.JsDocCompletionProvider) {
-            this.JsDocCompletionProvider.updateConfiguration();
+        for (const toUpdate of this.toUpdateOnConfigurationChanged) {
+            toUpdate.updateConfiguration();
         }
     }
-    handles(file) {
-        const extension = path.extname(file);
-        if ((extension && this.extensions[extension]) || this.bufferSyncSupport.handles(file)) {
+    handles(file, doc) {
+        if (doc && this.description.modeIds.indexOf(doc.languageId) >= 0) {
+            return true;
+        }
+        if (this.bufferSyncSupport.handles(file)) {
             return true;
         }
         const basename = path.basename(file);
-        return !!basename && basename === this.description.configFile;
+        if (!!basename && basename === this.description.configFile) {
+            return true;
+        }
+        return false;
     }
     get id() {
         return this.description.id;
@@ -328,7 +357,8 @@ class LanguageProvider {
     }
 }
 class TypeScriptServiceClientHost {
-    constructor(descriptions, storagePath, globalState, workspaceState) {
+    constructor(descriptions, storagePath, globalState, workspaceState, plugins) {
+        this.languages = [];
         this.disposables = [];
         const handleProjectCreateOrDelete = () => {
             this.client.execute('reloadProjects', null, false);
@@ -344,8 +374,9 @@ class TypeScriptServiceClientHost {
         configFileWatcher.onDidCreate(handleProjectCreateOrDelete, this, this.disposables);
         configFileWatcher.onDidDelete(handleProjectCreateOrDelete, this, this.disposables);
         configFileWatcher.onDidChange(handleProjectChange, this, this.disposables);
-        this.client = new typescriptServiceClient_1.default(this, storagePath, globalState, workspaceState, this.disposables);
-        this.languages = [];
+        this.versionStatus = new versionStatus_1.default();
+        this.disposables.push(this.versionStatus);
+        this.client = new typescriptServiceClient_1.default(this, storagePath, globalState, workspaceState, this.versionStatus, plugins, this.disposables);
         this.languagePerId = Object.create(null);
         for (const description of descriptions) {
             const manager = new LanguageProvider(this.client, description);
@@ -353,6 +384,28 @@ class TypeScriptServiceClientHost {
             this.disposables.push(manager);
             this.languagePerId[description.id] = manager;
         }
+        this.client.onReady().then(() => {
+            if (!this.client.apiVersion.has230Features()) {
+                return;
+            }
+            const langauges = new Set();
+            for (const plugin of plugins) {
+                for (const language of plugin.languages) {
+                    langauges.add(language);
+                }
+            }
+            if (langauges.size) {
+                const description = {
+                    id: 'typescript-plugins',
+                    modeIds: Array.from(langauges.values()),
+                    diagnosticSource: 'ts-plugins'
+                };
+                const manager = new LanguageProvider(this.client, description);
+                this.languages.push(manager);
+                this.disposables.push(manager);
+                this.languagePerId[description.id] = manager;
+            }
+        });
     }
     dispose() {
         while (this.disposables.length) {
@@ -361,18 +414,9 @@ class TypeScriptServiceClientHost {
                 obj.dispose();
             }
         }
-        this.configFileWatcher.dispose();
     }
     get serviceClient() {
         return this.client;
-    }
-    restartTsServer() {
-        this.client.restartTsServer();
-        if (this.languages) {
-            for (const provider of this.languages) {
-                provider.reInitialize();
-            }
-        }
     }
     reloadProjects() {
         this.client.execute('reloadProjects', null, false);
@@ -417,9 +461,15 @@ class TypeScriptServiceClientHost {
                 switch (selected && selected.id) {
                     case ProjectConfigAction.CreateConfig:
                         const configFile = vscode_1.Uri.file(path.join(rootPath, isTypeScriptProject ? 'tsconfig.json' : 'jsconfig.json'));
+                        const col = vscode_1.window.activeTextEditor ? vscode_1.window.activeTextEditor.viewColumn : undefined;
                         return vscode_1.workspace.openTextDocument(configFile)
-                            .then(undefined, _ => vscode_1.workspace.openTextDocument(configFile.with({ scheme: 'untitled' })))
-                            .then(doc => vscode_1.window.showTextDocument(doc, vscode_1.window.activeTextEditor ? vscode_1.window.activeTextEditor.viewColumn : undefined));
+                            .then(doc => {
+                            return vscode_1.window.showTextDocument(doc, col);
+                        }, _ => {
+                            return vscode_1.workspace.openTextDocument(configFile.with({ scheme: 'untitled' }))
+                                .then(doc => vscode_1.window.showTextDocument(doc, col))
+                                .then(editor => editor.insertSnippet(new vscode_1.SnippetString('{\n\t$0\n}')));
+                        });
                     case ProjectConfigAction.LearnMore:
                         if (isTypeScriptProject) {
                             vscode_1.commands.executeCommand('vscode.open', vscode_1.Uri.parse('https://go.microsoft.com/fwlink/?linkid=841896'));
@@ -435,13 +485,14 @@ class TypeScriptServiceClientHost {
         });
     }
     findLanguage(file) {
-        for (let i = 0; i < this.languages.length; i++) {
-            let language = this.languages[i];
-            if (language.handles(file)) {
-                return language;
+        return vscode_1.workspace.openTextDocument(this.client.asUrl(file)).then((doc) => {
+            for (const language of this.languages) {
+                if (language.handles(file, doc)) {
+                    return language;
+                }
             }
-        }
-        return null;
+            return null;
+        }, () => null);
     }
     triggerAllDiagnostics() {
         Object.keys(this.languagePerId).forEach(key => this.languagePerId[key].triggerAllDiagnostics());
@@ -453,21 +504,23 @@ class TypeScriptServiceClientHost {
         });
     }
     /* internal */ syntaxDiagnosticsReceived(event) {
-        let body = event.body;
+        const body = event.body;
         if (body && body.diagnostics) {
-            let language = this.findLanguage(body.file);
-            if (language) {
-                language.syntaxDiagnosticsReceived(body.file, this.createMarkerDatas(body.diagnostics, language.diagnosticSource));
-            }
+            this.findLanguage(body.file).then(language => {
+                if (language) {
+                    language.syntaxDiagnosticsReceived(body.file, this.createMarkerDatas(body.diagnostics, language.diagnosticSource));
+                }
+            });
         }
     }
     /* internal */ semanticDiagnosticsReceived(event) {
-        let body = event.body;
+        const body = event.body;
         if (body && body.diagnostics) {
-            let language = this.findLanguage(body.file);
-            if (language) {
-                language.semanticDiagnosticsReceived(body.file, this.createMarkerDatas(body.diagnostics, language.diagnosticSource));
-            }
+            this.findLanguage(body.file).then(language => {
+                if (language) {
+                    language.semanticDiagnosticsReceived(body.file, this.createMarkerDatas(body.diagnostics, language.diagnosticSource));
+                }
+            });
         }
         /*
         if (Is.defined(body.queueLength)) {
@@ -481,50 +534,51 @@ class TypeScriptServiceClientHost {
         if (!body || !body.diagnostics || !body.configFile) {
             return;
         }
-        const language = body.triggerFile ? this.findLanguage(body.triggerFile) : this.findLanguage(body.configFile);
-        if (!language) {
-            return;
-        }
-        if (body.diagnostics.length === 0) {
-            language.configFileDiagnosticsReceived(body.configFile, []);
-        }
-        else if (body.diagnostics.length >= 1) {
-            vscode_1.workspace.openTextDocument(vscode_1.Uri.file(body.configFile)).then((document) => {
-                let curly = undefined;
-                let nonCurly = undefined;
-                let diagnostic;
-                for (let index = 0; index < document.lineCount; index++) {
-                    const line = document.lineAt(index);
-                    const text = line.text;
-                    const firstNonWhitespaceCharacterIndex = line.firstNonWhitespaceCharacterIndex;
-                    if (firstNonWhitespaceCharacterIndex < text.length) {
-                        if (text.charAt(firstNonWhitespaceCharacterIndex) === '{') {
-                            curly = [index, firstNonWhitespaceCharacterIndex, firstNonWhitespaceCharacterIndex + 1];
-                            break;
-                        }
-                        else {
-                            const matches = /\s*([^\s]*)(?:\s*|$)/.exec(text.substr(firstNonWhitespaceCharacterIndex));
-                            if (matches && matches.length >= 1) {
-                                nonCurly = [index, firstNonWhitespaceCharacterIndex, firstNonWhitespaceCharacterIndex + matches[1].length];
+        (body.triggerFile ? this.findLanguage(body.triggerFile) : this.findLanguage(body.configFile)).then(language => {
+            if (!language) {
+                return;
+            }
+            if (body.diagnostics.length === 0) {
+                language.configFileDiagnosticsReceived(body.configFile, []);
+            }
+            else if (body.diagnostics.length >= 1) {
+                vscode_1.workspace.openTextDocument(vscode_1.Uri.file(body.configFile)).then((document) => {
+                    let curly = undefined;
+                    let nonCurly = undefined;
+                    let diagnostic;
+                    for (let index = 0; index < document.lineCount; index++) {
+                        const line = document.lineAt(index);
+                        const text = line.text;
+                        const firstNonWhitespaceCharacterIndex = line.firstNonWhitespaceCharacterIndex;
+                        if (firstNonWhitespaceCharacterIndex < text.length) {
+                            if (text.charAt(firstNonWhitespaceCharacterIndex) === '{') {
+                                curly = [index, firstNonWhitespaceCharacterIndex, firstNonWhitespaceCharacterIndex + 1];
+                                break;
+                            }
+                            else {
+                                const matches = /\s*([^\s]*)(?:\s*|$)/.exec(text.substr(firstNonWhitespaceCharacterIndex));
+                                if (matches && matches.length >= 1) {
+                                    nonCurly = [index, firstNonWhitespaceCharacterIndex, firstNonWhitespaceCharacterIndex + matches[1].length];
+                                }
                             }
                         }
                     }
-                }
-                const match = curly || nonCurly;
-                if (match) {
-                    diagnostic = new vscode_1.Diagnostic(new vscode_1.Range(match[0], match[1], match[0], match[2]), body.diagnostics[0].text);
-                }
-                else {
-                    diagnostic = new vscode_1.Diagnostic(new vscode_1.Range(0, 0, 0, 0), body.diagnostics[0].text);
-                }
-                if (diagnostic) {
-                    diagnostic.source = language.diagnosticSource;
-                    language.configFileDiagnosticsReceived(body.configFile, [diagnostic]);
-                }
-            }, _error => {
-                language.configFileDiagnosticsReceived(body.configFile, [new vscode_1.Diagnostic(new vscode_1.Range(0, 0, 0, 0), body.diagnostics[0].text)]);
-            });
-        }
+                    const match = curly || nonCurly;
+                    if (match) {
+                        diagnostic = new vscode_1.Diagnostic(new vscode_1.Range(match[0], match[1], match[0], match[2]), body.diagnostics[0].text);
+                    }
+                    else {
+                        diagnostic = new vscode_1.Diagnostic(new vscode_1.Range(0, 0, 0, 0), body.diagnostics[0].text);
+                    }
+                    if (diagnostic) {
+                        diagnostic.source = language.diagnosticSource;
+                        language.configFileDiagnosticsReceived(body.configFile, [diagnostic]);
+                    }
+                }, _error => {
+                    language.configFileDiagnosticsReceived(body.configFile, [new vscode_1.Diagnostic(new vscode_1.Range(0, 0, 0, 0), body.diagnostics[0].text)]);
+                });
+            }
+        });
     }
     createMarkerDatas(diagnostics, source) {
         const result = [];
@@ -550,4 +604,4 @@ class TypeScriptServiceClientHost {
         }
     }
 }
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/f6868fce3eeb16663840eb82123369dec6077a9b/extensions\typescript\out/typescriptMain.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/376c52b955428d205459bea6619fc161fc8faacf/extensions\typescript\out/typescriptMain.js.map

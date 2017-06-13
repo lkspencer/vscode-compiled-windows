@@ -135,7 +135,6 @@ function listProcesses() {
                             }
                         }
                     }
-                    ;
                     resolve(items);
                 }
             });
@@ -256,7 +255,6 @@ function configureMern(config) {
     config.runtimeArgs = ['--inspect=9222'];
     config.program = '${workspaceRoot}/index.js';
     config.port = 9222;
-    config.timeout = 20000;
     config.restart = true;
     config.env = {
         BABEL_DISABLE_CACHE: '1',
@@ -308,7 +306,6 @@ var StartSessionResult = (function () {
     }
     return StartSessionResult;
 }());
-;
 function startSession(config) {
     if (Object.keys(config).length === 0) {
         config.type = 'node';

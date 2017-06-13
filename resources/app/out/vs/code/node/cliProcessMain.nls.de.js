@@ -2,17 +2,6 @@
  * Copyright (C) Microsoft Corporation. All rights reserved.
  *--------------------------------------------------------*/
 define("vs/code/node/cliProcessMain.nls.de", {
-	"vs/base/common/json": [
-		"Ungültiges Symbol",
-		"Ungültiges Zahlenformat.",
-		"Ein Eigenschaftenname wurde erwartet.",
-		"Ein Wert wurde erwartet.",
-		"Ein Doppelpunkt wurde erwartet.",
-		"Ein Komma wurde erwartet.",
-		"Eine schließende geschweifte Klammer wurde erwartet.",
-		"Eine schließende Klammer wurde erwartet.",
-		"Das Dateiende wurde erwartet.",
-	],
 	"vs/base/common/severity": [
 		"Fehler",
 		"Warnung",
@@ -86,6 +75,12 @@ define("vs/code/node/cliProcessMain.nls.de", {
 		"Alle Beiträge der VS Code-Extension, die durch dieses Paket dargestellt werden.",
 		"Legt die Erweiterung fest, die im Marketplace als Vorschau gekennzeichnet werden soll.",
 		"Aktivierungsereignisse für die VS Code-Extension.",
+		"Ein Aktivierungsereignis wird beim Öffnen einer Datei ausgegeben, die in die angegebene Sprache aufgelöst wird.",
+		"Ein Aktivierungsereignis wird beim Aufrufen des angegebenen Befehls ausgegeben.",
+		"Ein Aktivierungsereignis wird beim Starten einer Debugsitzung des angegebenen Typs ausgegeben.",
+		"Ein Aktivierungsereignis wird beim Öffnen eines Ordners ausgegeben, der mindestens eine Datei enthält, die mit dem angegebenen Globmuster übereinstimmt.",
+		"Ein Aktivierungsereignis wird beim Erweitern der angegebenen Ansicht ausgegeben.",
+		"Ein Aktivierungsereignis wird beim Start von VS Code ausgegeben. Damit für die Endbenutzer eine bestmögliche Benutzerfreundlichkeit sichergestellt ist, verwenden Sie dieses Aktivierungsereignis in Ihrer Erweiterung nur dann, wenn in Ihrem Anwendungsfall keine andere Kombination an Aktivierungsereignissen funktioniert.",
 		"Array aus Badges, die im Marketplace in der Seitenleiste auf der Seite mit den Erweiterungen angezeigt werden.",
 		"Die Bild-URL für den Badge.",
 		"Der Link für den Badge.",

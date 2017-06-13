@@ -17,5 +17,5 @@
 	"ID로 프로세스에 연결하는 기능은 레거시 프로토콜에만 지원되므로 레거시 프로토콜로 디버그합니다.",
 	"검사 프로토콜이 검색되었기 때문에 검사 프로토콜로 디버그합니다.",
 	"레거시 프로토콜이 검색되었기 때문에 레거시 프로토콜로 디버그합니다.",
-	"Node.js 버전을\n 확인할 수 없어서 레거시 프로토콜로 디버그합니다. {0}"
+	"Debugging with legacy protocol because Node.js version could not be determined ({0})"
 ]

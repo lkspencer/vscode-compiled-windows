@@ -1,5 +1,4 @@
 [
-	"TypeScript",
 	"La ruta de acceso {0} no apunta a una instalación válida de tsserver. Se usará la versión de TypeScript del paquete.",
 	"Otra aplicación (por ejemplo, una herramienta de detección de virus con un comportamiento erróneo) eliminó el tsserver de VSCode. Debe reinstalar VS Code.",
 	"personalizada",

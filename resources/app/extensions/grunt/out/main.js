@@ -75,6 +75,13 @@ function exec(command, options) {
         });
     });
 }
+let _channel;
+function getOutputChannel() {
+    if (!_channel) {
+        _channel = vscode.window.createOutputChannel('Grunt Auto Detection');
+    }
+    return _channel;
+}
 function getGruntTasks() {
     return __awaiter(this, void 0, void 0, function* () {
         let workspaceRoot = vscode.workspace.rootPath;
@@ -98,12 +105,11 @@ function getGruntTasks() {
             command = 'grunt';
         }
         let commandLine = `${command} --help --no-color`;
-        let channel = vscode.window.createOutputChannel('tasks');
         try {
             let { stdout, stderr } = yield exec(commandLine, { cwd: workspaceRoot });
             if (stderr) {
-                channel.appendLine(stderr);
-                channel.show(true);
+                getOutputChannel().appendLine(stderr);
+                getOutputChannel().show(true);
             }
             let result = [];
             if (stdout) {
@@ -142,8 +148,8 @@ function getGruntTasks() {
                             if (matches && matches.length === 2) {
                                 let taskName = matches[1];
                                 let task = taskName.indexOf(' ') === -1
-                                    ? new vscode.ShellTask(`grunt: ${taskName}`, `${command} ${taskName}`)
-                                    : new vscode.ShellTask(`grunt: ${taskName}`, `${command} "${taskName}"`);
+                                    ? new vscode.ShellTask(taskName, `${command} ${taskName}`)
+                                    : new vscode.ShellTask(taskName, `${command} "${taskName}"`);
                                 task.identifier = `grunt.${taskName}`;
                                 result.push(task);
                                 let lowerCaseTaskName = taskName.toLowerCase();
@@ -173,13 +179,17 @@ function getGruntTasks() {
             return result;
         }
         catch (err) {
+            let channel = getOutputChannel();
             if (err.stderr) {
                 channel.appendLine(err.stderr);
-                channel.show(true);
+            }
+            if (err.stdout) {
+                channel.appendLine(err.stdout);
             }
             channel.appendLine(localize(0, null, err.error ? err.error.toString() : 'unknown'));
+            channel.show(true);
             return emptyTasks;
         }
     });
 }
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/f6868fce3eeb16663840eb82123369dec6077a9b/extensions\grunt\out/main.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/376c52b955428d205459bea6619fc161fc8faacf/extensions\grunt\out/main.js.map

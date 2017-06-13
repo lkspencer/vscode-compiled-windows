@@ -1,8 +1,8 @@
+"use strict";
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-'use strict';
 Object.defineProperty(exports, "__esModule", { value: true });
 const vscode_1 = require("vscode");
 class TypeScriptCodeActionProvider {
@@ -34,7 +34,7 @@ class TypeScriptCodeActionProvider {
         };
         return this.getSupportedActionsForContext(context)
             .then(supportedActions => {
-            if (!supportedActions.length) {
+            if (!supportedActions.size) {
                 return [];
             }
             return this.client.execute('getCodeFixes', {
@@ -43,7 +43,7 @@ class TypeScriptCodeActionProvider {
                 endLine: range.end.line + 1,
                 startOffset: range.start.character + 1,
                 endOffset: range.end.character + 1,
-                errorCodes: supportedActions
+                errorCodes: Array.from(supportedActions)
             }, token).then(response => response.body || []);
         })
             .then(codeActions => codeActions.map(action => this.actionToEdit(source, action)));
@@ -61,9 +61,9 @@ class TypeScriptCodeActionProvider {
         return this._supportedCodeActions;
     }
     getSupportedActionsForContext(context) {
-        return this.supportedCodeActions.then(supportedActions => context.diagnostics
+        return this.supportedCodeActions.then(supportedActions => new Set(context.diagnostics
             .map(diagnostic => +diagnostic.code)
-            .filter(code => supportedActions[code]));
+            .filter(code => supportedActions[code])));
     }
     actionToEdit(source, action) {
         const workspaceEdit = new vscode_1.WorkspaceEdit();
@@ -109,4 +109,4 @@ class TypeScriptCodeActionProvider {
     }
 }
 exports.default = TypeScriptCodeActionProvider;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/f6868fce3eeb16663840eb82123369dec6077a9b/extensions\typescript\out/features\codeActionProvider.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/376c52b955428d205459bea6619fc161fc8faacf/extensions\typescript\out/features\codeActionProvider.js.map

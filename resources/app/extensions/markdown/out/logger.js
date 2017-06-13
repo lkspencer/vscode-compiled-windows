@@ -70,4 +70,4 @@ var Logger = (function () {
     return Logger;
 }());
 exports.Logger = Logger;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/f6868fce3eeb16663840eb82123369dec6077a9b/extensions\markdown\out/logger.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/376c52b955428d205459bea6619fc161fc8faacf/extensions\markdown\out/logger.js.map

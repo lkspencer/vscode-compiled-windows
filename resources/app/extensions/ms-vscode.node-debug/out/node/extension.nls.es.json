@@ -17,5 +17,5 @@
 	"Depurando con protocolos heredados porque la asociación a un proceso por el id. solo se admite para protocolos heredados.",
 	"Depurando con el protocolo inspector porque se ha detectado.",
 	"Depurando con el protocolo heredado porque se ha detectado.",
-	"Depurando con el protocolo heredado porque no se pudo determinar la versión de Node.js: {0}"
+	"Depurando con el protocolo heredado porque no se pudo determinar la versión de Node.js ({0})"
 ]

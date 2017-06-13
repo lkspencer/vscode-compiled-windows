@@ -20,7 +20,6 @@ const commands_1 = require("./commands");
 const statusbar_1 = require("./statusbar");
 const contentProvider_1 = require("./contentProvider");
 const autofetch_1 = require("./autofetch");
-const merge_1 = require("./merge");
 const askpass_1 = require("./askpass");
 const util_1 = require("./util");
 const vscode_extension_telemetry_1 = require("vscode-extension-telemetry");
@@ -56,8 +55,7 @@ function init(context, disposables) {
         const provider = new scmProvider_1.GitSCMProvider(model, commandCenter, statusBarCommands);
         const contentProvider = new contentProvider_1.GitContentProvider(model);
         const autoFetcher = new autofetch_1.AutoFetcher(model);
-        const mergeDecorator = new merge_1.MergeDecorator(model);
-        disposables.push(commandCenter, provider, contentProvider, autoFetcher, mergeDecorator, model);
+        disposables.push(commandCenter, provider, contentProvider, autoFetcher, model);
         yield checkGitVersion(info);
     });
 }
@@ -89,4 +87,4 @@ function checkGitVersion(info) {
         }
     });
 }
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/f6868fce3eeb16663840eb82123369dec6077a9b/extensions\git\out/main.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/376c52b955428d205459bea6619fc161fc8faacf/extensions\git\out/main.js.map

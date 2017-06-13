@@ -17,5 +17,5 @@
 	"Débogage à l'aide du protocole hérité, car l'attachement à un processus par ID n'est pris en charge que pour le protocole hérité.",
 	"Débogage avec le protocole Inspector car il a été détecté.",
 	"Débogage avec un protocole hérité car il a été détecté.",
-	"Débogage avec un protocole hérité en raison de l'impossibilité de déterminer la version de Node.js : {0}"
+	"Debugging with legacy protocol because Node.js version could not be determined ({0})"
 ]

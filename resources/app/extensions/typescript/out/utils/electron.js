@@ -1,8 +1,8 @@
+"use strict";
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-'use strict';
 Object.defineProperty(exports, "__esModule", { value: true });
 const path = require("path");
 const os = require("os");
@@ -42,16 +42,16 @@ function generatePatchedEnv(env, stdInPipeName, stdOutPipeName, stdErrPipeName) 
     newEnv['ELECTRON_RUN_AS_NODE'] = '1';
     return newEnv;
 }
-function fork(modulePath, args, options, callback) {
+function fork(modulePath, args, options, logger, callback) {
     var callbackCalled = false;
-    var resolve = (result) => {
+    const resolve = (result) => {
         if (callbackCalled) {
             return;
         }
         callbackCalled = true;
         callback(null, result);
     };
-    var reject = (err) => {
+    const reject = (err) => {
         if (callbackCalled) {
             return;
         }
@@ -59,10 +59,10 @@ function fork(modulePath, args, options, callback) {
         callback(err, null);
     };
     // Generate three unique pipe names
-    var stdInPipeName = generatePipeName();
-    var stdOutPipeName = generatePipeName();
-    let stdErrPipeName = generatePipeName();
-    var newEnv = generatePatchedEnv(options.env || process.env, stdInPipeName, stdOutPipeName, stdErrPipeName);
+    const stdInPipeName = generatePipeName();
+    const stdOutPipeName = generatePipeName();
+    const stdErrPipeName = generatePipeName();
+    const newEnv = generatePatchedEnv(process.env, stdInPipeName, stdOutPipeName, stdErrPipeName);
     var childProcess;
     // Begin listening to stderr pipe
     let stdErrServer = net.createServer((stdErrStream) => {
@@ -83,7 +83,7 @@ function fork(modulePath, args, options, callback) {
     });
     stdOutServer.listen(stdOutPipeName);
     var serverClosed = false;
-    var closeServer = () => {
+    const closeServer = () => {
         if (serverClosed) {
             return;
         }
@@ -92,7 +92,8 @@ function fork(modulePath, args, options, callback) {
         stdErrServer.close();
     };
     // Create the process
-    let bootstrapperPath = path.join(__dirname, 'electronForkStart');
+    logger.info('Forking TSServer', `PATH: ${newEnv['PATH']}`);
+    const bootstrapperPath = path.join(__dirname, 'electronForkStart');
     childProcess = cp.fork(bootstrapperPath, [modulePath].concat(args), {
         silent: true,
         cwd: options.cwd,
@@ -109,4 +110,4 @@ function fork(modulePath, args, options, callback) {
     });
 }
 exports.fork = fork;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/f6868fce3eeb16663840eb82123369dec6077a9b/extensions\typescript\out/utils\electron.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/376c52b955428d205459bea6619fc161fc8faacf/extensions\typescript\out/utils\electron.js.map

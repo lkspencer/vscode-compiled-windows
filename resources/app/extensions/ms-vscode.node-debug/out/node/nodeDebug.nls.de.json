@@ -1,8 +1,8 @@
 [
 	"Das Festlegen des Werts wird nicht unterstützt.",
 	"Paused on Promise Rejection",
-	"Promise Rejection ({0})",
-	"Promise Rejection",
+	"Promise-Rejection ({0})",
+	"Promise-Rejection",
 	"Bei Schritt angehalten",
 	"Beim Haltepunkt angehalten",
 	"Bei Ausnahme angehalten",
@@ -37,7 +37,6 @@
 	"Schreibgeschützter Inhalt aus Node.js.",
 	"Schreibgeschützter Inhalt aus Remote-Node.js.",
 	"Schreibgeschütztes Kernmodul",
-	"{0} <Fehler: {1}>",
 	"Aufgrund von \"skipFiles\" übersprungen",
 	"Aufgrund von \"smartStep\" übersprungen",
 	"Schreibgeschützter Inlineinhalt aus der Quellzuordnung.",

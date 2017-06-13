@@ -2,7 +2,7 @@
  * Copyright (C) Microsoft Corporation. All rights reserved.
  *--------------------------------------------------------*/
 (function() {
-var __m = ["exports","require","vs/base/common/platform","vs/base/common/strings","vs/base/common/winjs.base","vs/base/common/types","path","vs/base/common/arrays","vs/base/common/objects","vs/base/common/event","vs/base/common/paths","vs/base/common/errors","child_process","vs/base/common/lifecycle","vs/base/common/uri","vs/base/common/scorer","fs","vs/base/common/glob","vs/base/parts/ipc/node/ipc.cp","vs/base/node/extfs","vs/base/common/map","vs/base/common/functional","vs/base/parts/ipc/common/ipc","vs/nls","vs/nls!vs/workbench/services/search/node/searchApp","vs/base/node/flow","string_decoder","vs/base/node/event","vs/base/common/parsers","vs/workbench/services/search/node/ripgrepTextSearch","vs/base/node/stream","vs/base/common/uuid","vs/base/common/events","vs/base/node/stdFork","os","vs/workbench/services/search/node/textSearchWorkerProvider","vs/base/common/cancellation","vs/base/common/comparers","vs/base/node/encoding","vs/workbench/services/search/node/worker/searchWorkerIpc","vs/workbench/services/search/node/textSearch","vs/workbench/services/search/node/rawSearchService","vs/nls!vs/base/common/errorMessage","vs/base/common/async","vs/base/common/callbackList","vs/base/common/errorMessage","vs/nls!vs/base/common/processes","vs/base/common/processes","vs/nls!vs/base/node/processes","vs/base/node/processes","vs/workbench/services/search/node/searchIpc","vs/base/node/decoder","vs/platform/instantiation/common/instantiation","vs/platform/files/common/files","vs/workbench/services/search/node/fileSearch","stream","jschardet","iconv-lite","net","assert","events","vscode-ripgrep","vs/base/common/winjs.base.raw","graceful-fs","vs/workbench/services/search/node/searchApp"];
+var __m = ["exports","require","vs/base/common/winjs.base","vs/base/common/platform","vs/base/common/strings","vs/base/common/types","path","vs/base/common/event","vs/base/common/arrays","vs/base/common/objects","vs/base/common/paths","vs/base/common/errors","child_process","vs/base/common/uri","vs/base/common/lifecycle","vs/base/common/scorer","fs","vs/base/common/glob","vs/base/parts/ipc/node/ipc.cp","vs/base/node/flow","vs/base/node/extfs","vs/base/common/map","vs/base/common/functional","vs/base/parts/ipc/common/ipc","vs/nls","vs/nls!vs/workbench/services/search/node/searchApp","string_decoder","vs/base/node/event","vs/base/node/stream","vs/workbench/services/search/node/ripgrepTextSearch","vs/workbench/services/search/node/rawSearchService","vs/base/common/parsers","vs/base/common/events","vs/base/node/stdFork","os","vs/workbench/services/search/node/textSearchWorkerProvider","vs/base/common/cancellation","vs/base/common/comparers","vs/base/node/encoding","vs/workbench/services/search/node/worker/searchWorkerIpc","vs/workbench/services/search/node/textSearch","vs/base/common/async","vs/nls!vs/base/common/errorMessage","vs/base/common/callbackList","vs/base/node/decoder","vs/base/common/errorMessage","vs/nls!vs/base/common/processes","vs/base/common/processes","vs/nls!vs/base/node/processes","vs/base/node/processes","vs/workbench/services/search/node/searchIpc","vs/base/common/uuid","vs/platform/instantiation/common/instantiation","vs/platform/files/common/files","vs/workbench/services/search/node/fileSearch","stream","jschardet","iconv-lite","net","assert","events","vscode-ripgrep","vs/base/common/winjs.base.raw","graceful-fs","vs/workbench/services/search/node/searchApp"];
 var __M = function(deps) {
   var result = [];
   for (var i = 0, len = deps.length; i < len; i++) {
@@ -10,7 +10,7 @@ var __M = function(deps) {
   }
   return result;
 };
-define(__m[7/*vs/base/common/arrays*/], __M([1/*require*/,0/*exports*/]), function (require, exports) {
+define(__m[8/*vs/base/common/arrays*/], __M([1/*require*/,0/*exports*/]), function (require, exports) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -80,6 +80,44 @@ define(__m[7/*vs/base/common/arrays*/], __M([1/*require*/,0/*exports*/]), functi
         return low;
     }
     exports.findFirst = findFirst;
+    /**
+     * Like `Array#sort` but always stable. Comes at a cost: iterates 2n-times,
+     * creates n-objects in addition to sorting (log(n))
+     */
+    function stableSort(data, compare) {
+        var data2 = data;
+        for (var idx = 0; idx < data2.length; idx++) {
+            data2[idx] = { idx: idx, e: data[idx] };
+        }
+        data2.sort(function (a, b) {
+            var ret = compare(a.e, b.e);
+            if (ret === 0) {
+                ret = a.idx - b.idx;
+            }
+            return ret;
+        });
+        for (var idx = 0; idx < data2.length; idx++) {
+            data[idx] = data2[idx].e;
+        }
+        return data;
+    }
+    exports.stableSort = stableSort;
+    function groupBy(data, compare) {
+        var result = [];
+        var currentGroup;
+        for (var _i = 0, _a = data.slice(0).sort(compare); _i < _a.length; _i++) {
+            var element = _a[_i];
+            if (!currentGroup || compare(currentGroup[0], element) !== 0) {
+                currentGroup = [element];
+                result.push(currentGroup);
+            }
+            else {
+                currentGroup.push(element);
+            }
+        }
+        return result;
+    }
+    exports.groupBy = groupBy;
     /**
      * Takes two *sorted* arrays and computes their delta (removed, added elements).
      * Finishes in `Math.min(before.length, after.length)` steps.
@@ -352,7 +390,7 @@ define(__m[32/*vs/base/common/events*/], __M([1/*require*/,0/*exports*/]), funct
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-define(__m[21/*vs/base/common/functional*/], __M([1/*require*/,0/*exports*/]), function (require, exports) {
+define(__m[22/*vs/base/common/functional*/], __M([1/*require*/,0/*exports*/]), function (require, exports) {
     'use strict';
     Object.defineProperty(exports, "__esModule", { value: true });
     function not(fn) {
@@ -395,7 +433,7 @@ define(__m[21/*vs/base/common/functional*/], __M([1/*require*/,0/*exports*/]), f
 
 
 
-define(__m[13/*vs/base/common/lifecycle*/], __M([1/*require*/,0/*exports*/,21/*vs/base/common/functional*/]), function (require, exports, functional_1) {
+define(__m[14/*vs/base/common/lifecycle*/], __M([1/*require*/,0/*exports*/,22/*vs/base/common/functional*/]), function (require, exports, functional_1) {
     'use strict';
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.empty = Object.freeze({
@@ -536,7 +574,7 @@ define(__m[13/*vs/base/common/lifecycle*/], __M([1/*require*/,0/*exports*/,21/*v
 
 
 
-define(__m[20/*vs/base/common/map*/], __M([1/*require*/,0/*exports*/]), function (require, exports) {
+define(__m[21/*vs/base/common/map*/], __M([1/*require*/,0/*exports*/]), function (require, exports) {
     'use strict';
     Object.defineProperty(exports, "__esModule", { value: true });
     /**
@@ -913,7 +951,7 @@ define(__m[20/*vs/base/common/map*/], __M([1/*require*/,0/*exports*/]), function
     exports.ResourceMap = ResourceMap;
 });
 
-define(__m[2/*vs/base/common/platform*/], __M([1/*require*/,0/*exports*/]), function (require, exports) {
+define(__m[3/*vs/base/common/platform*/], __M([1/*require*/,0/*exports*/]), function (require, exports) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -927,7 +965,6 @@ define(__m[2/*vs/base/common/platform*/], __M([1/*require*/,0/*exports*/]), func
     var _isRootUser = false;
     var _isNative = false;
     var _isWeb = false;
-    var _isQunit = false;
     var _locale = undefined;
     var _language = undefined;
     exports.LANGUAGE_DEFAULT = 'en';
@@ -959,7 +996,6 @@ define(__m[2/*vs/base/common/platform*/], __M([1/*require*/,0/*exports*/]), func
         _isWeb = true;
         _locale = navigator.language;
         _language = _locale;
-        _isQunit = !!self.QUnit;
     }
     var Platform;
     (function (Platform) {
@@ -968,16 +1004,16 @@ define(__m[2/*vs/base/common/platform*/], __M([1/*require*/,0/*exports*/]), func
         Platform[Platform["Linux"] = 2] = "Linux";
         Platform[Platform["Windows"] = 3] = "Windows";
     })(Platform = exports.Platform || (exports.Platform = {}));
-    exports._platform = Platform.Web;
+    var _platform = Platform.Web;
     if (_isNative) {
         if (_isMacintosh) {
-            exports._platform = Platform.Mac;
+            _platform = Platform.Mac;
         }
         else if (_isWindows) {
-            exports._platform = Platform.Windows;
+            _platform = Platform.Windows;
         }
         else if (_isLinux) {
-            exports._platform = Platform.Linux;
+            _platform = Platform.Linux;
         }
     }
     exports.isWindows = _isWindows;
@@ -986,8 +1022,7 @@ define(__m[2/*vs/base/common/platform*/], __M([1/*require*/,0/*exports*/]), func
     exports.isRootUser = _isRootUser;
     exports.isNative = _isNative;
     exports.isWeb = _isWeb;
-    exports.isQunit = _isQunit;
-    exports.platform = exports._platform;
+    exports.platform = _platform;
     /**
      * The language used for the user interface. The format of
      * the string is all lower case (e.g. zh-tw for Traditional
@@ -1017,6 +1052,15 @@ define(__m[2/*vs/base/common/platform*/], __M([1/*require*/,0/*exports*/]), func
         OperatingSystem[OperatingSystem["Linux"] = 3] = "Linux";
     })(OperatingSystem = exports.OperatingSystem || (exports.OperatingSystem = {}));
     exports.OS = (_isMacintosh ? 2 /* Macintosh */ : (_isWindows ? 1 /* Windows */ : 3 /* Linux */));
+    var AccessibilitySupport;
+    (function (AccessibilitySupport) {
+        /**
+         * This should be the browser case where it is not known if a screen reader is attached or no.
+         */
+        AccessibilitySupport[AccessibilitySupport["Unknown"] = 0] = "Unknown";
+        AccessibilitySupport[AccessibilitySupport["Disabled"] = 1] = "Disabled";
+        AccessibilitySupport[AccessibilitySupport["Enabled"] = 2] = "Enabled";
+    })(AccessibilitySupport = exports.AccessibilitySupport || (exports.AccessibilitySupport = {}));
 });
 
 /*---------------------------------------------------------------------------------------------
@@ -1140,7 +1184,7 @@ define(__m[15/*vs/base/common/scorer*/], __M([1/*require*/,0/*exports*/]), funct
 END THIRD PARTY
 */ 
 
-define(__m[3/*vs/base/common/strings*/], __M([1/*require*/,0/*exports*/,20/*vs/base/common/map*/]), function (require, exports, map_1) {
+define(__m[4/*vs/base/common/strings*/], __M([1/*require*/,0/*exports*/,21/*vs/base/common/map*/]), function (require, exports, map_1) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -1328,7 +1372,7 @@ define(__m[3/*vs/base/common/strings*/], __M([1/*require*/,0/*exports*/,20/*vs/b
     exports.indexOfIgnoreCase = indexOfIgnoreCase;
     function createRegExp(searchString, isRegex, options) {
         if (options === void 0) { options = {}; }
-        if (searchString === '') {
+        if (!searchString) {
             throw new Error('Cannot create regex from empty string');
         }
         if (!isRegex) {
@@ -1414,14 +1458,16 @@ define(__m[3/*vs/base/common/strings*/], __M([1/*require*/,0/*exports*/,20/*vs/b
      * Returns the leading whitespace of the string.
      * If the string contains only whitespaces, returns entire string
      */
-    function getLeadingWhitespace(str) {
-        for (var i = 0, len = str.length; i < len; i++) {
+    function getLeadingWhitespace(str, start, end) {
+        if (start === void 0) { start = 0; }
+        if (end === void 0) { end = str.length; }
+        for (var i = start; i < end; i++) {
             var chCode = str.charCodeAt(i);
             if (chCode !== 32 /* Space */ && chCode !== 9 /* Tab */) {
-                return str.substring(0, i);
+                return str.substring(start, i);
             }
         }
-        return str;
+        return str.substring(start, end);
     }
     exports.getLeadingWhitespace = getLeadingWhitespace;
     /**
@@ -1601,6 +1647,14 @@ define(__m[3/*vs/base/common/strings*/], __M([1/*require*/,0/*exports*/,20/*vs/b
         return CONTAINS_RTL.test(str);
     }
     exports.containsRTL = containsRTL;
+    /**
+     * Generated using https://github.com/alexandrudima/unicode-utils/blob/master/generate-emoji-test.js
+     */
+    var CONTAINS_EMOJI = /(?:[\u231A\u231B\u23F0\u23F3\u2600-\u27BF\u2B50\u2B55]|\uD83C[\uDDE6-\uDDFF\uDF00-\uDFFF]|\uD83D[\uDC00-\uDE4F\uDE80-\uDEF8]|\uD83E[\uDD00-\uDDE6])/;
+    function containsEmoji(str) {
+        return CONTAINS_EMOJI.test(str);
+    }
+    exports.containsEmoji = containsEmoji;
     var IS_BASIC_ASCII = /^[\t\n\r\x20-\x7E]*$/;
     /**
      * Returns true if `str` contains only basic ASCII characters in the range 32 - 126 (including 32 and 126) or \n, \r, \t
@@ -1609,6 +1663,15 @@ define(__m[3/*vs/base/common/strings*/], __M([1/*require*/,0/*exports*/,20/*vs/b
         return IS_BASIC_ASCII.test(str);
     }
     exports.isBasicASCII = isBasicASCII;
+    function containsFullWidthCharacter(str) {
+        for (var i = 0, len = str.length; i < len; i++) {
+            if (isFullWidthCharacter(str.charCodeAt(i))) {
+                return true;
+            }
+        }
+        return false;
+    }
+    exports.containsFullWidthCharacter = containsFullWidthCharacter;
     function isFullWidthCharacter(charCode) {
         // Do a cheap trick to better support wrapping of wide characters, treat them as 2 columns
         // http://jrgraphix.net/research/unicode_blocks.php
@@ -1777,7 +1840,7 @@ define(__m[3/*vs/base/common/strings*/], __M([1/*require*/,0/*exports*/,20/*vs/b
     exports.repeat = repeat;
 });
 
-define(__m[10/*vs/base/common/paths*/], __M([1/*require*/,0/*exports*/,2/*vs/base/common/platform*/,7/*vs/base/common/arrays*/,3/*vs/base/common/strings*/]), function (require, exports, platform_1, arrays_1, strings_1) {
+define(__m[10/*vs/base/common/paths*/], __M([1/*require*/,0/*exports*/,3/*vs/base/common/platform*/,8/*vs/base/common/arrays*/,4/*vs/base/common/strings*/]), function (require, exports, platform_1, arrays_1, strings_1) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -2083,7 +2146,7 @@ define(__m[10/*vs/base/common/paths*/], __M([1/*require*/,0/*exports*/,2/*vs/bas
     exports.isValidBasename = isValidBasename;
 });
 
-define(__m[37/*vs/base/common/comparers*/], __M([1/*require*/,0/*exports*/,15/*vs/base/common/scorer*/,3/*vs/base/common/strings*/,10/*vs/base/common/paths*/]), function (require, exports, scorer, strings, paths) {
+define(__m[37/*vs/base/common/comparers*/], __M([1/*require*/,0/*exports*/,15/*vs/base/common/scorer*/,4/*vs/base/common/strings*/,10/*vs/base/common/paths*/]), function (require, exports, scorer, strings, paths) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -2405,7 +2468,7 @@ define(__m[5/*vs/base/common/types*/], __M([1/*require*/,0/*exports*/]), functio
     exports.create = create;
 });
 
-define(__m[11/*vs/base/common/errors*/], __M([1/*require*/,0/*exports*/,2/*vs/base/common/platform*/,5/*vs/base/common/types*/]), function (require, exports, platform, types) {
+define(__m[11/*vs/base/common/errors*/], __M([1/*require*/,0/*exports*/,3/*vs/base/common/platform*/,5/*vs/base/common/types*/]), function (require, exports, platform, types) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -2570,7 +2633,7 @@ define(__m[11/*vs/base/common/errors*/], __M([1/*require*/,0/*exports*/,2/*vs/ba
     exports.getErrorMessage = getErrorMessage;
 });
 
-define(__m[44/*vs/base/common/callbackList*/], __M([1/*require*/,0/*exports*/,11/*vs/base/common/errors*/]), function (require, exports, errors_1) {
+define(__m[43/*vs/base/common/callbackList*/], __M([1/*require*/,0/*exports*/,11/*vs/base/common/errors*/]), function (require, exports, errors_1) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -2654,572 +2717,7 @@ define(__m[44/*vs/base/common/callbackList*/], __M([1/*require*/,0/*exports*/,11
     exports.default = CallbackList;
 });
 
-define(__m[9/*vs/base/common/event*/], __M([1/*require*/,0/*exports*/,13/*vs/base/common/lifecycle*/,44/*vs/base/common/callbackList*/,21/*vs/base/common/functional*/]), function (require, exports, lifecycle_1, callbackList_1, functional_1) {
-    /*---------------------------------------------------------------------------------------------
-     *  Copyright (c) Microsoft Corporation. All rights reserved.
-     *  Licensed under the MIT License. See License.txt in the project root for license information.
-     *--------------------------------------------------------------------------------------------*/
-    'use strict';
-    Object.defineProperty(exports, "__esModule", { value: true });
-    var Event;
-    (function (Event) {
-        var _disposable = { dispose: function () { } };
-        Event.None = function () { return _disposable; };
-    })(Event || (Event = {}));
-    exports.default = Event;
-    /**
-     * The Emitter can be used to expose an Event to the public
-     * to fire it from the insides.
-     * Sample:
-        class Document {
-    
-            private _onDidChange = new Emitter<(value:string)=>any>();
-    
-            public onDidChange = this._onDidChange.event;
-    
-            // getter-style
-            // get onDidChange(): Event<(value:string)=>any> {
-            // 	return this._onDidChange.event;
-            // }
-    
-            private _doIt() {
-                //...
-                this._onDidChange.fire(value);
-            }
-        }
-     */
-    var Emitter = (function () {
-        function Emitter(_options) {
-            this._options = _options;
-        }
-        Object.defineProperty(Emitter.prototype, "event", {
-            /**
-             * For the public to allow to subscribe
-             * to events from this Emitter
-             */
-            get: function () {
-                var _this = this;
-                if (!this._event) {
-                    this._event = function (listener, thisArgs, disposables) {
-                        if (!_this._callbacks) {
-                            _this._callbacks = new callbackList_1.default();
-                        }
-                        var firstListener = _this._callbacks.isEmpty();
-                        if (firstListener && _this._options && _this._options.onFirstListenerAdd) {
-                            _this._options.onFirstListenerAdd(_this);
-                        }
-                        _this._callbacks.add(listener, thisArgs);
-                        if (firstListener && _this._options && _this._options.onFirstListenerDidAdd) {
-                            _this._options.onFirstListenerDidAdd(_this);
-                        }
-                        if (_this._options && _this._options.onListenerDidAdd) {
-                            _this._options.onListenerDidAdd(_this, listener, thisArgs);
-                        }
-                        var result;
-                        result = {
-                            dispose: function () {
-                                result.dispose = Emitter._noop;
-                                if (!_this._disposed) {
-                                    _this._callbacks.remove(listener, thisArgs);
-                                    if (_this._options && _this._options.onLastListenerRemove && _this._callbacks.isEmpty()) {
-                                        _this._options.onLastListenerRemove(_this);
-                                    }
-                                }
-                            }
-                        };
-                        if (Array.isArray(disposables)) {
-                            disposables.push(result);
-                        }
-                        return result;
-                    };
-                }
-                return this._event;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        /**
-         * To be kept private to fire an event to
-         * subscribers
-         */
-        Emitter.prototype.fire = function (event) {
-            if (this._callbacks) {
-                this._callbacks.invoke.call(this._callbacks, event);
-            }
-        };
-        Emitter.prototype.dispose = function () {
-            if (this._callbacks) {
-                this._callbacks.dispose();
-                this._callbacks = undefined;
-                this._disposed = true;
-            }
-        };
-        return Emitter;
-    }());
-    Emitter._noop = function () { };
-    exports.Emitter = Emitter;
-    var EventMultiplexer = (function () {
-        function EventMultiplexer() {
-            var _this = this;
-            this.hasListeners = false;
-            this.events = [];
-            this.emitter = new Emitter({
-                onFirstListenerAdd: function () { return _this.onFirstListenerAdd(); },
-                onLastListenerRemove: function () { return _this.onLastListenerRemove(); }
-            });
-        }
-        Object.defineProperty(EventMultiplexer.prototype, "event", {
-            get: function () {
-                return this.emitter.event;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        EventMultiplexer.prototype.add = function (event) {
-            var _this = this;
-            var e = { event: event, listener: null };
-            this.events.push(e);
-            if (this.hasListeners) {
-                this.hook(e);
-            }
-            var dispose = function () {
-                if (_this.hasListeners) {
-                    _this.unhook(e);
-                }
-                var idx = _this.events.indexOf(e);
-                _this.events.splice(idx, 1);
-            };
-            return lifecycle_1.toDisposable(functional_1.once(dispose));
-        };
-        EventMultiplexer.prototype.onFirstListenerAdd = function () {
-            var _this = this;
-            this.hasListeners = true;
-            this.events.forEach(function (e) { return _this.hook(e); });
-        };
-        EventMultiplexer.prototype.onLastListenerRemove = function () {
-            var _this = this;
-            this.hasListeners = false;
-            this.events.forEach(function (e) { return _this.unhook(e); });
-        };
-        EventMultiplexer.prototype.hook = function (e) {
-            var _this = this;
-            e.listener = e.event(function (r) { return _this.emitter.fire(r); });
-        };
-        EventMultiplexer.prototype.unhook = function (e) {
-            e.listener.dispose();
-            e.listener = null;
-        };
-        EventMultiplexer.prototype.dispose = function () {
-            this.emitter.dispose();
-        };
-        return EventMultiplexer;
-    }());
-    exports.EventMultiplexer = EventMultiplexer;
-    /**
-     * Creates an Event which is backed-up by the event emitter. This allows
-     * to use the existing eventing pattern and is likely using less memory.
-     * Sample:
-     *
-     * 	class Document {
-     *
-     *		private _eventbus = new EventEmitter();
-     *
-     *		public onDidChange = fromEventEmitter(this._eventbus, 'changed');
-     *
-     *		// getter-style
-     *		// get onDidChange(): Event<(value:string)=>any> {
-     *		// 	cache fromEventEmitter result and return
-     *		// }
-     *
-     *		private _doIt() {
-     *			// ...
-     *			this._eventbus.emit('changed', value)
-     *		}
-     *	}
-     */
-    function fromEventEmitter(emitter, eventType) {
-        return function (listener, thisArgs, disposables) {
-            var result = emitter.addListener(eventType, function () {
-                listener.apply(thisArgs, arguments);
-            });
-            if (Array.isArray(disposables)) {
-                disposables.push(result);
-            }
-            return result;
-        };
-    }
-    exports.fromEventEmitter = fromEventEmitter;
-    function fromCallback(fn) {
-        var listener;
-        var emitter = new Emitter({
-            onFirstListenerAdd: function () { return listener = fn(function (e) { return emitter.fire(e); }); },
-            onLastListenerRemove: function () { return listener.dispose(); }
-        });
-        return emitter.event;
-    }
-    exports.fromCallback = fromCallback;
-    function fromPromise(promise) {
-        var emitter = new Emitter();
-        var shouldEmit = false;
-        promise
-            .then(null, function () { return null; })
-            .then(function () {
-            if (!shouldEmit) {
-                setTimeout(function () { return emitter.fire(); }, 0);
-            }
-            else {
-                emitter.fire();
-            }
-        });
-        shouldEmit = true;
-        return emitter.event;
-    }
-    exports.fromPromise = fromPromise;
-    function delayed(promise) {
-        var toCancel = null;
-        var listener = null;
-        var emitter = new Emitter({
-            onFirstListenerAdd: function () {
-                toCancel = promise.then(function (event) { return listener = event(function (e) { return emitter.fire(e); }); }, function () { return null; });
-            },
-            onLastListenerRemove: function () {
-                if (toCancel) {
-                    toCancel.cancel();
-                    toCancel = null;
-                }
-                if (listener) {
-                    listener.dispose();
-                    listener = null;
-                }
-            }
-        });
-        return emitter.event;
-    }
-    exports.delayed = delayed;
-    function once(event) {
-        return function (listener, thisArgs, disposables) {
-            if (thisArgs === void 0) { thisArgs = null; }
-            var result = event(function (e) {
-                result.dispose();
-                return listener.call(thisArgs, e);
-            }, null, disposables);
-            return result;
-        };
-    }
-    exports.once = once;
-    function any() {
-        var events = [];
-        for (var _i = 0; _i < arguments.length; _i++) {
-            events[_i] = arguments[_i];
-        }
-        return function (listener, thisArgs, disposables) {
-            if (thisArgs === void 0) { thisArgs = null; }
-            return lifecycle_1.combinedDisposable(events.map(function (event) { return event(function (e) { return listener.call(thisArgs, e); }, null, disposables); }));
-        };
-    }
-    exports.any = any;
-    function debounceEvent(event, merger, delay, leading) {
-        if (delay === void 0) { delay = 100; }
-        if (leading === void 0) { leading = false; }
-        var subscription;
-        var output;
-        var handle;
-        var emitter = new Emitter({
-            onFirstListenerAdd: function () {
-                subscription = event(function (cur) {
-                    output = merger(output, cur);
-                    if (!handle && leading) {
-                        emitter.fire(output);
-                    }
-                    clearTimeout(handle);
-                    handle = setTimeout(function () {
-                        var _output = output;
-                        output = undefined;
-                        emitter.fire(_output);
-                        handle = null;
-                    }, delay);
-                });
-            },
-            onLastListenerRemove: function () {
-                subscription.dispose();
-            }
-        });
-        return emitter.event;
-    }
-    exports.debounceEvent = debounceEvent;
-    /**
-     * The EventDelayer is useful in situations in which you want
-     * to delay firing your events during some code.
-     * You can wrap that code and be sure that the event will not
-     * be fired during that wrap.
-     *
-     * ```
-     * const emitter: Emitter;
-     * const delayer = new EventDelayer();
-     * const delayedEvent = delayer.wrapEvent(emitter.event);
-     *
-     * delayedEvent(console.log);
-     *
-     * delayer.bufferEvents(() => {
-     *   emitter.fire(); // event will not be fired yet
-     * });
-     *
-     * // event will only be fired at this point
-     * ```
-     */
-    var EventBufferer = (function () {
-        function EventBufferer() {
-            this.buffers = [];
-        }
-        EventBufferer.prototype.wrapEvent = function (event) {
-            var _this = this;
-            return function (listener, thisArgs, disposables) {
-                return event(function (i) {
-                    var buffer = _this.buffers[_this.buffers.length - 1];
-                    if (buffer) {
-                        buffer.push(function () { return listener.call(thisArgs, i); });
-                    }
-                    else {
-                        listener.call(thisArgs, i);
-                    }
-                }, void 0, disposables);
-            };
-        };
-        EventBufferer.prototype.bufferEvents = function (fn) {
-            var buffer = [];
-            this.buffers.push(buffer);
-            fn();
-            this.buffers.pop();
-            buffer.forEach(function (flush) { return flush(); });
-        };
-        return EventBufferer;
-    }());
-    exports.EventBufferer = EventBufferer;
-    function mapEvent(event, map) {
-        return function (listener, thisArgs, disposables) {
-            if (thisArgs === void 0) { thisArgs = null; }
-            return event(function (i) { return listener.call(thisArgs, map(i)); }, null, disposables);
-        };
-    }
-    exports.mapEvent = mapEvent;
-    function filterEvent(event, filter) {
-        return function (listener, thisArgs, disposables) {
-            if (thisArgs === void 0) { thisArgs = null; }
-            return event(function (e) { return filter(e) && listener.call(thisArgs, e); }, null, disposables);
-        };
-    }
-    exports.filterEvent = filterEvent;
-    var ChainableEvent = (function () {
-        function ChainableEvent(_event) {
-            this._event = _event;
-        }
-        Object.defineProperty(ChainableEvent.prototype, "event", {
-            get: function () { return this._event; },
-            enumerable: true,
-            configurable: true
-        });
-        ChainableEvent.prototype.map = function (fn) {
-            return new ChainableEvent(mapEvent(this._event, fn));
-        };
-        ChainableEvent.prototype.filter = function (fn) {
-            return new ChainableEvent(filterEvent(this._event, fn));
-        };
-        ChainableEvent.prototype.on = function (listener, thisArgs, disposables) {
-            return this._event(listener, thisArgs, disposables);
-        };
-        return ChainableEvent;
-    }());
-    function chain(event) {
-        return new ChainableEvent(event);
-    }
-    exports.chain = chain;
-    function stopwatch(event) {
-        var start = new Date().getTime();
-        return mapEvent(once(event), function (_) { return new Date().getTime() - start; });
-    }
-    exports.stopwatch = stopwatch;
-    /**
-     * Buffers the provided event until a first listener comes
-     * along, at which point fire all the events at once and
-     * pipe the event from then on.
-     *
-     * ```typescript
-     * const emitter = new Emitter<number>();
-     * const event = emitter.event;
-     * const bufferedEvent = buffer(event);
-     *
-     * emitter.fire(1);
-     * emitter.fire(2);
-     * emitter.fire(3);
-     * // nothing...
-     *
-     * const listener = bufferedEvent(num => console.log(num));
-     * // 1, 2, 3
-     *
-     * emitter.fire(4);
-     * // 4
-     * ```
-     */
-    function buffer(event, nextTick, buffer) {
-        if (nextTick === void 0) { nextTick = false; }
-        if (buffer === void 0) { buffer = []; }
-        buffer = buffer.slice();
-        var listener = event(function (e) {
-            if (buffer) {
-                buffer.push(e);
-            }
-            else {
-                emitter.fire(e);
-            }
-        });
-        var flush = function () {
-            buffer.forEach(function (e) { return emitter.fire(e); });
-            buffer = null;
-        };
-        var emitter = new Emitter({
-            onFirstListenerAdd: function () {
-                if (!listener) {
-                    listener = event(function (e) { return emitter.fire(e); });
-                }
-            },
-            onFirstListenerDidAdd: function () {
-                if (buffer) {
-                    if (nextTick) {
-                        setTimeout(flush);
-                    }
-                    else {
-                        flush();
-                    }
-                }
-            },
-            onLastListenerRemove: function () {
-                listener.dispose();
-                listener = null;
-            }
-        });
-        return emitter.event;
-    }
-    exports.buffer = buffer;
-    /**
-     * Similar to `buffer` but it buffers indefinitely and repeats
-     * the buffered events to every new listener.
-     */
-    function echo(event, nextTick, buffer) {
-        if (nextTick === void 0) { nextTick = false; }
-        if (buffer === void 0) { buffer = []; }
-        buffer = buffer.slice();
-        event(function (e) {
-            buffer.push(e);
-            emitter.fire(e);
-        });
-        var flush = function (listener, thisArgs) { return buffer.forEach(function (e) { return listener.call(thisArgs, e); }); };
-        var emitter = new Emitter({
-            onListenerDidAdd: function (emitter, listener, thisArgs) {
-                if (nextTick) {
-                    setTimeout(function () { return flush(listener, thisArgs); });
-                }
-                else {
-                    flush(listener, thisArgs);
-                }
-            }
-        });
-        return emitter.event;
-    }
-    exports.echo = echo;
-});
-
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
-define(__m[36/*vs/base/common/cancellation*/], __M([1/*require*/,0/*exports*/,9/*vs/base/common/event*/]), function (require, exports, event_1) {
-    'use strict';
-    Object.defineProperty(exports, "__esModule", { value: true });
-    var shortcutEvent = Object.freeze(function (callback, context) {
-        var handle = setTimeout(callback.bind(context), 0);
-        return { dispose: function () { clearTimeout(handle); } };
-    });
-    var CancellationToken;
-    (function (CancellationToken) {
-        CancellationToken.None = Object.freeze({
-            isCancellationRequested: false,
-            onCancellationRequested: event_1.default.None
-        });
-        CancellationToken.Cancelled = Object.freeze({
-            isCancellationRequested: true,
-            onCancellationRequested: shortcutEvent
-        });
-    })(CancellationToken = exports.CancellationToken || (exports.CancellationToken = {}));
-    var MutableToken = (function () {
-        function MutableToken() {
-            this._isCancelled = false;
-        }
-        MutableToken.prototype.cancel = function () {
-            if (!this._isCancelled) {
-                this._isCancelled = true;
-                if (this._emitter) {
-                    this._emitter.fire(undefined);
-                    this._emitter = undefined;
-                }
-            }
-        };
-        Object.defineProperty(MutableToken.prototype, "isCancellationRequested", {
-            get: function () {
-                return this._isCancelled;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(MutableToken.prototype, "onCancellationRequested", {
-            get: function () {
-                if (this._isCancelled) {
-                    return shortcutEvent;
-                }
-                if (!this._emitter) {
-                    this._emitter = new event_1.Emitter();
-                }
-                return this._emitter.event;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        return MutableToken;
-    }());
-    var CancellationTokenSource = (function () {
-        function CancellationTokenSource() {
-        }
-        Object.defineProperty(CancellationTokenSource.prototype, "token", {
-            get: function () {
-                if (!this._token) {
-                    // be lazy and create the token only when
-                    // actually needed
-                    this._token = new MutableToken();
-                }
-                return this._token;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        CancellationTokenSource.prototype.cancel = function () {
-            if (!this._token) {
-                // save an object by returning the default
-                // cancelled token when cancellation happens
-                // before someone asks for the token
-                this._token = CancellationToken.Cancelled;
-            }
-            else {
-                this._token.cancel();
-            }
-        };
-        CancellationTokenSource.prototype.dispose = function () {
-            this.cancel();
-        };
-        return CancellationTokenSource;
-    }());
-    exports.CancellationTokenSource = CancellationTokenSource;
-});
-
-define(__m[8/*vs/base/common/objects*/], __M([1/*require*/,0/*exports*/,5/*vs/base/common/types*/]), function (require, exports, Types) {
+define(__m[9/*vs/base/common/objects*/], __M([1/*require*/,0/*exports*/,5/*vs/base/common/types*/]), function (require, exports, Types) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -3530,7 +3028,7 @@ define(__m[8/*vs/base/common/objects*/], __M([1/*require*/,0/*exports*/,5/*vs/ba
     exports.distinct = distinct;
 });
 
-define(__m[28/*vs/base/common/parsers*/], __M([1/*require*/,0/*exports*/,5/*vs/base/common/types*/]), function (require, exports, Types) {
+define(__m[31/*vs/base/common/parsers*/], __M([1/*require*/,0/*exports*/,5/*vs/base/common/types*/]), function (require, exports, Types) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -3714,7 +3212,7 @@ define(__m[28/*vs/base/common/parsers*/], __M([1/*require*/,0/*exports*/,5/*vs/b
     exports.AbstractSystemVariables = AbstractSystemVariables;
 });
 
-define(__m[14/*vs/base/common/uri*/], __M([1/*require*/,0/*exports*/,2/*vs/base/common/platform*/]), function (require, exports, platform) {
+define(__m[13/*vs/base/common/uri*/], __M([1/*require*/,0/*exports*/,3/*vs/base/common/platform*/]), function (require, exports, platform) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -4129,7 +3627,7 @@ define(__m[14/*vs/base/common/uri*/], __M([1/*require*/,0/*exports*/,2/*vs/base/
 
 
 
-define(__m[31/*vs/base/common/uuid*/], __M([1/*require*/,0/*exports*/]), function (require, exports) {
+define(__m[51/*vs/base/common/uuid*/], __M([1/*require*/,0/*exports*/]), function (require, exports) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -6303,7 +5801,7 @@ if (typeof process !== 'undefined' && typeof process.nextTick === 'function') {
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-define(__m[4/*vs/base/common/winjs.base*/], __M([62/*vs/base/common/winjs.base.raw*/,11/*vs/base/common/errors*/]), function (winjs, __Errors__) {
+define(__m[2/*vs/base/common/winjs.base*/], __M([62/*vs/base/common/winjs.base.raw*/,11/*vs/base/common/errors*/]), function (winjs, __Errors__) {
 	'use strict';
 
 	var outstandingPromiseErrors = {};
@@ -6360,6 +5858,580 @@ define(__m[4/*vs/base/common/winjs.base*/], __M([62/*vs/base/common/winjs.base.r
 		PPromise: winjs.Promise
 	};
 });
+define(__m[7/*vs/base/common/event*/], __M([1/*require*/,0/*exports*/,14/*vs/base/common/lifecycle*/,43/*vs/base/common/callbackList*/,2/*vs/base/common/winjs.base*/,22/*vs/base/common/functional*/]), function (require, exports, lifecycle_1, callbackList_1, winjs_base_1, functional_1) {
+    /*---------------------------------------------------------------------------------------------
+     *  Copyright (c) Microsoft Corporation. All rights reserved.
+     *  Licensed under the MIT License. See License.txt in the project root for license information.
+     *--------------------------------------------------------------------------------------------*/
+    'use strict';
+    Object.defineProperty(exports, "__esModule", { value: true });
+    var Event;
+    (function (Event) {
+        var _disposable = { dispose: function () { } };
+        Event.None = function () { return _disposable; };
+    })(Event || (Event = {}));
+    exports.default = Event;
+    /**
+     * The Emitter can be used to expose an Event to the public
+     * to fire it from the insides.
+     * Sample:
+        class Document {
+    
+            private _onDidChange = new Emitter<(value:string)=>any>();
+    
+            public onDidChange = this._onDidChange.event;
+    
+            // getter-style
+            // get onDidChange(): Event<(value:string)=>any> {
+            // 	return this._onDidChange.event;
+            // }
+    
+            private _doIt() {
+                //...
+                this._onDidChange.fire(value);
+            }
+        }
+     */
+    var Emitter = (function () {
+        function Emitter(_options) {
+            this._options = _options;
+        }
+        Object.defineProperty(Emitter.prototype, "event", {
+            /**
+             * For the public to allow to subscribe
+             * to events from this Emitter
+             */
+            get: function () {
+                var _this = this;
+                if (!this._event) {
+                    this._event = function (listener, thisArgs, disposables) {
+                        if (!_this._callbacks) {
+                            _this._callbacks = new callbackList_1.default();
+                        }
+                        var firstListener = _this._callbacks.isEmpty();
+                        if (firstListener && _this._options && _this._options.onFirstListenerAdd) {
+                            _this._options.onFirstListenerAdd(_this);
+                        }
+                        _this._callbacks.add(listener, thisArgs);
+                        if (firstListener && _this._options && _this._options.onFirstListenerDidAdd) {
+                            _this._options.onFirstListenerDidAdd(_this);
+                        }
+                        if (_this._options && _this._options.onListenerDidAdd) {
+                            _this._options.onListenerDidAdd(_this, listener, thisArgs);
+                        }
+                        var result;
+                        result = {
+                            dispose: function () {
+                                result.dispose = Emitter._noop;
+                                if (!_this._disposed) {
+                                    _this._callbacks.remove(listener, thisArgs);
+                                    if (_this._options && _this._options.onLastListenerRemove && _this._callbacks.isEmpty()) {
+                                        _this._options.onLastListenerRemove(_this);
+                                    }
+                                }
+                            }
+                        };
+                        if (Array.isArray(disposables)) {
+                            disposables.push(result);
+                        }
+                        return result;
+                    };
+                }
+                return this._event;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        /**
+         * To be kept private to fire an event to
+         * subscribers
+         */
+        Emitter.prototype.fire = function (event) {
+            if (this._callbacks) {
+                this._callbacks.invoke.call(this._callbacks, event);
+            }
+        };
+        Emitter.prototype.dispose = function () {
+            if (this._callbacks) {
+                this._callbacks.dispose();
+                this._callbacks = undefined;
+                this._disposed = true;
+            }
+        };
+        return Emitter;
+    }());
+    Emitter._noop = function () { };
+    exports.Emitter = Emitter;
+    var EventMultiplexer = (function () {
+        function EventMultiplexer() {
+            var _this = this;
+            this.hasListeners = false;
+            this.events = [];
+            this.emitter = new Emitter({
+                onFirstListenerAdd: function () { return _this.onFirstListenerAdd(); },
+                onLastListenerRemove: function () { return _this.onLastListenerRemove(); }
+            });
+        }
+        Object.defineProperty(EventMultiplexer.prototype, "event", {
+            get: function () {
+                return this.emitter.event;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        EventMultiplexer.prototype.add = function (event) {
+            var _this = this;
+            var e = { event: event, listener: null };
+            this.events.push(e);
+            if (this.hasListeners) {
+                this.hook(e);
+            }
+            var dispose = function () {
+                if (_this.hasListeners) {
+                    _this.unhook(e);
+                }
+                var idx = _this.events.indexOf(e);
+                _this.events.splice(idx, 1);
+            };
+            return lifecycle_1.toDisposable(functional_1.once(dispose));
+        };
+        EventMultiplexer.prototype.onFirstListenerAdd = function () {
+            var _this = this;
+            this.hasListeners = true;
+            this.events.forEach(function (e) { return _this.hook(e); });
+        };
+        EventMultiplexer.prototype.onLastListenerRemove = function () {
+            var _this = this;
+            this.hasListeners = false;
+            this.events.forEach(function (e) { return _this.unhook(e); });
+        };
+        EventMultiplexer.prototype.hook = function (e) {
+            var _this = this;
+            e.listener = e.event(function (r) { return _this.emitter.fire(r); });
+        };
+        EventMultiplexer.prototype.unhook = function (e) {
+            e.listener.dispose();
+            e.listener = null;
+        };
+        EventMultiplexer.prototype.dispose = function () {
+            this.emitter.dispose();
+        };
+        return EventMultiplexer;
+    }());
+    exports.EventMultiplexer = EventMultiplexer;
+    /**
+     * Creates an Event which is backed-up by the event emitter. This allows
+     * to use the existing eventing pattern and is likely using less memory.
+     * Sample:
+     *
+     * 	class Document {
+     *
+     *		private _eventbus = new EventEmitter();
+     *
+     *		public onDidChange = fromEventEmitter(this._eventbus, 'changed');
+     *
+     *		// getter-style
+     *		// get onDidChange(): Event<(value:string)=>any> {
+     *		// 	cache fromEventEmitter result and return
+     *		// }
+     *
+     *		private _doIt() {
+     *			// ...
+     *			this._eventbus.emit('changed', value)
+     *		}
+     *	}
+     */
+    function fromEventEmitter(emitter, eventType) {
+        return function (listener, thisArgs, disposables) {
+            var result = emitter.addListener(eventType, function () {
+                listener.apply(thisArgs, arguments);
+            });
+            if (Array.isArray(disposables)) {
+                disposables.push(result);
+            }
+            return result;
+        };
+    }
+    exports.fromEventEmitter = fromEventEmitter;
+    function fromCallback(fn) {
+        var listener;
+        var emitter = new Emitter({
+            onFirstListenerAdd: function () { return listener = fn(function (e) { return emitter.fire(e); }); },
+            onLastListenerRemove: function () { return listener.dispose(); }
+        });
+        return emitter.event;
+    }
+    exports.fromCallback = fromCallback;
+    function fromPromise(promise) {
+        var emitter = new Emitter();
+        var shouldEmit = false;
+        promise
+            .then(null, function () { return null; })
+            .then(function () {
+            if (!shouldEmit) {
+                setTimeout(function () { return emitter.fire(); }, 0);
+            }
+            else {
+                emitter.fire();
+            }
+        });
+        shouldEmit = true;
+        return emitter.event;
+    }
+    exports.fromPromise = fromPromise;
+    function toPromise(event) {
+        return new winjs_base_1.TPromise(function (complete) {
+            var sub = event(function (e) {
+                sub.dispose();
+                complete(e);
+            });
+        });
+    }
+    exports.toPromise = toPromise;
+    function delayed(promise) {
+        var toCancel = null;
+        var listener = null;
+        var emitter = new Emitter({
+            onFirstListenerAdd: function () {
+                toCancel = promise.then(function (event) { return listener = event(function (e) { return emitter.fire(e); }); }, function () { return null; });
+            },
+            onLastListenerRemove: function () {
+                if (toCancel) {
+                    toCancel.cancel();
+                    toCancel = null;
+                }
+                if (listener) {
+                    listener.dispose();
+                    listener = null;
+                }
+            }
+        });
+        return emitter.event;
+    }
+    exports.delayed = delayed;
+    function once(event) {
+        return function (listener, thisArgs, disposables) {
+            if (thisArgs === void 0) { thisArgs = null; }
+            var result = event(function (e) {
+                result.dispose();
+                return listener.call(thisArgs, e);
+            }, null, disposables);
+            return result;
+        };
+    }
+    exports.once = once;
+    function any() {
+        var events = [];
+        for (var _i = 0; _i < arguments.length; _i++) {
+            events[_i] = arguments[_i];
+        }
+        return function (listener, thisArgs, disposables) {
+            if (thisArgs === void 0) { thisArgs = null; }
+            return lifecycle_1.combinedDisposable(events.map(function (event) { return event(function (e) { return listener.call(thisArgs, e); }, null, disposables); }));
+        };
+    }
+    exports.any = any;
+    function debounceEvent(event, merger, delay, leading) {
+        if (delay === void 0) { delay = 100; }
+        if (leading === void 0) { leading = false; }
+        var subscription;
+        var output;
+        var handle;
+        var emitter = new Emitter({
+            onFirstListenerAdd: function () {
+                subscription = event(function (cur) {
+                    output = merger(output, cur);
+                    if (!handle && leading) {
+                        emitter.fire(output);
+                    }
+                    clearTimeout(handle);
+                    handle = setTimeout(function () {
+                        var _output = output;
+                        output = undefined;
+                        emitter.fire(_output);
+                        handle = null;
+                    }, delay);
+                });
+            },
+            onLastListenerRemove: function () {
+                subscription.dispose();
+            }
+        });
+        return emitter.event;
+    }
+    exports.debounceEvent = debounceEvent;
+    /**
+     * The EventDelayer is useful in situations in which you want
+     * to delay firing your events during some code.
+     * You can wrap that code and be sure that the event will not
+     * be fired during that wrap.
+     *
+     * ```
+     * const emitter: Emitter;
+     * const delayer = new EventDelayer();
+     * const delayedEvent = delayer.wrapEvent(emitter.event);
+     *
+     * delayedEvent(console.log);
+     *
+     * delayer.bufferEvents(() => {
+     *   emitter.fire(); // event will not be fired yet
+     * });
+     *
+     * // event will only be fired at this point
+     * ```
+     */
+    var EventBufferer = (function () {
+        function EventBufferer() {
+            this.buffers = [];
+        }
+        EventBufferer.prototype.wrapEvent = function (event) {
+            var _this = this;
+            return function (listener, thisArgs, disposables) {
+                return event(function (i) {
+                    var buffer = _this.buffers[_this.buffers.length - 1];
+                    if (buffer) {
+                        buffer.push(function () { return listener.call(thisArgs, i); });
+                    }
+                    else {
+                        listener.call(thisArgs, i);
+                    }
+                }, void 0, disposables);
+            };
+        };
+        EventBufferer.prototype.bufferEvents = function (fn) {
+            var buffer = [];
+            this.buffers.push(buffer);
+            fn();
+            this.buffers.pop();
+            buffer.forEach(function (flush) { return flush(); });
+        };
+        return EventBufferer;
+    }());
+    exports.EventBufferer = EventBufferer;
+    function mapEvent(event, map) {
+        return function (listener, thisArgs, disposables) {
+            if (thisArgs === void 0) { thisArgs = null; }
+            return event(function (i) { return listener.call(thisArgs, map(i)); }, null, disposables);
+        };
+    }
+    exports.mapEvent = mapEvent;
+    function filterEvent(event, filter) {
+        return function (listener, thisArgs, disposables) {
+            if (thisArgs === void 0) { thisArgs = null; }
+            return event(function (e) { return filter(e) && listener.call(thisArgs, e); }, null, disposables);
+        };
+    }
+    exports.filterEvent = filterEvent;
+    var ChainableEvent = (function () {
+        function ChainableEvent(_event) {
+            this._event = _event;
+        }
+        Object.defineProperty(ChainableEvent.prototype, "event", {
+            get: function () { return this._event; },
+            enumerable: true,
+            configurable: true
+        });
+        ChainableEvent.prototype.map = function (fn) {
+            return new ChainableEvent(mapEvent(this._event, fn));
+        };
+        ChainableEvent.prototype.filter = function (fn) {
+            return new ChainableEvent(filterEvent(this._event, fn));
+        };
+        ChainableEvent.prototype.on = function (listener, thisArgs, disposables) {
+            return this._event(listener, thisArgs, disposables);
+        };
+        return ChainableEvent;
+    }());
+    function chain(event) {
+        return new ChainableEvent(event);
+    }
+    exports.chain = chain;
+    function stopwatch(event) {
+        var start = new Date().getTime();
+        return mapEvent(once(event), function (_) { return new Date().getTime() - start; });
+    }
+    exports.stopwatch = stopwatch;
+    /**
+     * Buffers the provided event until a first listener comes
+     * along, at which point fire all the events at once and
+     * pipe the event from then on.
+     *
+     * ```typescript
+     * const emitter = new Emitter<number>();
+     * const event = emitter.event;
+     * const bufferedEvent = buffer(event);
+     *
+     * emitter.fire(1);
+     * emitter.fire(2);
+     * emitter.fire(3);
+     * // nothing...
+     *
+     * const listener = bufferedEvent(num => console.log(num));
+     * // 1, 2, 3
+     *
+     * emitter.fire(4);
+     * // 4
+     * ```
+     */
+    function buffer(event, nextTick, buffer) {
+        if (nextTick === void 0) { nextTick = false; }
+        if (buffer === void 0) { buffer = []; }
+        buffer = buffer.slice();
+        var listener = event(function (e) {
+            if (buffer) {
+                buffer.push(e);
+            }
+            else {
+                emitter.fire(e);
+            }
+        });
+        var flush = function () {
+            buffer.forEach(function (e) { return emitter.fire(e); });
+            buffer = null;
+        };
+        var emitter = new Emitter({
+            onFirstListenerAdd: function () {
+                if (!listener) {
+                    listener = event(function (e) { return emitter.fire(e); });
+                }
+            },
+            onFirstListenerDidAdd: function () {
+                if (buffer) {
+                    if (nextTick) {
+                        setTimeout(flush);
+                    }
+                    else {
+                        flush();
+                    }
+                }
+            },
+            onLastListenerRemove: function () {
+                listener.dispose();
+                listener = null;
+            }
+        });
+        return emitter.event;
+    }
+    exports.buffer = buffer;
+    /**
+     * Similar to `buffer` but it buffers indefinitely and repeats
+     * the buffered events to every new listener.
+     */
+    function echo(event, nextTick, buffer) {
+        if (nextTick === void 0) { nextTick = false; }
+        if (buffer === void 0) { buffer = []; }
+        buffer = buffer.slice();
+        event(function (e) {
+            buffer.push(e);
+            emitter.fire(e);
+        });
+        var flush = function (listener, thisArgs) { return buffer.forEach(function (e) { return listener.call(thisArgs, e); }); };
+        var emitter = new Emitter({
+            onListenerDidAdd: function (emitter, listener, thisArgs) {
+                if (nextTick) {
+                    setTimeout(function () { return flush(listener, thisArgs); });
+                }
+                else {
+                    flush(listener, thisArgs);
+                }
+            }
+        });
+        return emitter.event;
+    }
+    exports.echo = echo;
+});
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+define(__m[36/*vs/base/common/cancellation*/], __M([1/*require*/,0/*exports*/,7/*vs/base/common/event*/]), function (require, exports, event_1) {
+    'use strict';
+    Object.defineProperty(exports, "__esModule", { value: true });
+    var shortcutEvent = Object.freeze(function (callback, context) {
+        var handle = setTimeout(callback.bind(context), 0);
+        return { dispose: function () { clearTimeout(handle); } };
+    });
+    var CancellationToken;
+    (function (CancellationToken) {
+        CancellationToken.None = Object.freeze({
+            isCancellationRequested: false,
+            onCancellationRequested: event_1.default.None
+        });
+        CancellationToken.Cancelled = Object.freeze({
+            isCancellationRequested: true,
+            onCancellationRequested: shortcutEvent
+        });
+    })(CancellationToken = exports.CancellationToken || (exports.CancellationToken = {}));
+    var MutableToken = (function () {
+        function MutableToken() {
+            this._isCancelled = false;
+        }
+        MutableToken.prototype.cancel = function () {
+            if (!this._isCancelled) {
+                this._isCancelled = true;
+                if (this._emitter) {
+                    this._emitter.fire(undefined);
+                    this._emitter = undefined;
+                }
+            }
+        };
+        Object.defineProperty(MutableToken.prototype, "isCancellationRequested", {
+            get: function () {
+                return this._isCancelled;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(MutableToken.prototype, "onCancellationRequested", {
+            get: function () {
+                if (this._isCancelled) {
+                    return shortcutEvent;
+                }
+                if (!this._emitter) {
+                    this._emitter = new event_1.Emitter();
+                }
+                return this._emitter.event;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        return MutableToken;
+    }());
+    var CancellationTokenSource = (function () {
+        function CancellationTokenSource() {
+        }
+        Object.defineProperty(CancellationTokenSource.prototype, "token", {
+            get: function () {
+                if (!this._token) {
+                    // be lazy and create the token only when
+                    // actually needed
+                    this._token = new MutableToken();
+                }
+                return this._token;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        CancellationTokenSource.prototype.cancel = function () {
+            if (!this._token) {
+                // save an object by returning the default
+                // cancelled token when cancellation happens
+                // before someone asks for the token
+                this._token = CancellationToken.Cancelled;
+            }
+            else {
+                this._token.cancel();
+            }
+        };
+        CancellationTokenSource.prototype.dispose = function () {
+            this.cancel();
+        };
+        return CancellationTokenSource;
+    }());
+    exports.CancellationTokenSource = CancellationTokenSource;
+});
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -6374,7 +6446,7 @@ define(__m[4/*vs/base/common/winjs.base*/], __M([62/*vs/base/common/winjs.base.r
 
 
 
-define(__m[43/*vs/base/common/async*/], __M([1/*require*/,0/*exports*/,11/*vs/base/common/errors*/,2/*vs/base/common/platform*/,4/*vs/base/common/winjs.base*/,36/*vs/base/common/cancellation*/,13/*vs/base/common/lifecycle*/,9/*vs/base/common/event*/]), function (require, exports, errors, platform, winjs_base_1, cancellation_1, lifecycle_1, event_1) {
+define(__m[41/*vs/base/common/async*/], __M([1/*require*/,0/*exports*/,11/*vs/base/common/errors*/,3/*vs/base/common/platform*/,2/*vs/base/common/winjs.base*/,36/*vs/base/common/cancellation*/,14/*vs/base/common/lifecycle*/,7/*vs/base/common/event*/]), function (require, exports, errors, platform, winjs_base_1, cancellation_1, lifecycle_1, event_1) {
     'use strict';
     Object.defineProperty(exports, "__esModule", { value: true });
     function isThenable(obj) {
@@ -6960,7 +7032,7 @@ define(__m[43/*vs/base/common/async*/], __M([1/*require*/,0/*exports*/,11/*vs/ba
     exports.ninvoke = ninvoke;
 });
 
-define(__m[17/*vs/base/common/glob*/], __M([1/*require*/,0/*exports*/,7/*vs/base/common/arrays*/,3/*vs/base/common/strings*/,10/*vs/base/common/paths*/,20/*vs/base/common/map*/,4/*vs/base/common/winjs.base*/]), function (require, exports, arrays, strings, paths, map_1, winjs_base_1) {
+define(__m[17/*vs/base/common/glob*/], __M([1/*require*/,0/*exports*/,8/*vs/base/common/arrays*/,4/*vs/base/common/strings*/,10/*vs/base/common/paths*/,21/*vs/base/common/map*/,2/*vs/base/common/winjs.base*/]), function (require, exports, arrays, strings, paths, map_1, winjs_base_1) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -7461,7 +7533,7 @@ define(__m[17/*vs/base/common/glob*/], __M([1/*require*/,0/*exports*/,7/*vs/base
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-define(__m[51/*vs/base/node/decoder*/], __M([1/*require*/,0/*exports*/,26/*string_decoder*/]), function (require, exports, sd) {
+define(__m[44/*vs/base/node/decoder*/], __M([1/*require*/,0/*exports*/,26/*string_decoder*/]), function (require, exports, sd) {
     'use strict';
     Object.defineProperty(exports, "__esModule", { value: true });
     /**
@@ -7488,9 +7560,6 @@ define(__m[51/*vs/base/node/decoder*/], __M([1/*require*/,0/*exports*/,26/*strin
             }
             var start = 0;
             var ch;
-            while (start < value.length && ((ch = value.charCodeAt(start)) === 13 /* CarriageReturn */ || ch === 10 /* LineFeed */)) {
-                start++;
-            }
             var idx = start;
             while (idx < value.length) {
                 ch = value.charCodeAt(idx);
@@ -7525,7 +7594,7 @@ define(__m[51/*vs/base/node/decoder*/], __M([1/*require*/,0/*exports*/,26/*strin
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-define(__m[27/*vs/base/node/event*/], __M([1/*require*/,0/*exports*/,9/*vs/base/common/event*/]), function (require, exports, event_1) {
+define(__m[27/*vs/base/node/event*/], __M([1/*require*/,0/*exports*/,7/*vs/base/common/event*/]), function (require, exports, event_1) {
     'use strict';
     Object.defineProperty(exports, "__esModule", { value: true });
     function fromEventEmitter(emitter, eventName, map) {
@@ -7550,7 +7619,7 @@ define(__m[27/*vs/base/node/event*/], __M([1/*require*/,0/*exports*/,9/*vs/base/
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-define(__m[25/*vs/base/node/flow*/], __M([1/*require*/,0/*exports*/,59/*assert*/]), function (require, exports, assert) {
+define(__m[19/*vs/base/node/flow*/], __M([1/*require*/,0/*exports*/,59/*assert*/]), function (require, exports, assert) {
     'use strict';
     Object.defineProperty(exports, "__esModule", { value: true });
     /**
@@ -7694,7 +7763,7 @@ define(__m[25/*vs/base/node/flow*/], __M([1/*require*/,0/*exports*/,59/*assert*/
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-define(__m[19/*vs/base/node/extfs*/], __M([1/*require*/,0/*exports*/,31/*vs/base/common/uuid*/,3/*vs/base/common/strings*/,2/*vs/base/common/platform*/,25/*vs/base/node/flow*/,16/*fs*/,6/*path*/]), function (require, exports, uuid, strings, platform, flow, fs, paths) {
+define(__m[20/*vs/base/node/extfs*/], __M([1/*require*/,0/*exports*/,51/*vs/base/common/uuid*/,4/*vs/base/common/strings*/,3/*vs/base/common/platform*/,19/*vs/base/node/flow*/,16/*fs*/,6/*path*/]), function (require, exports, uuid, strings, platform, flow, fs, paths) {
     'use strict';
     Object.defineProperty(exports, "__esModule", { value: true });
     var loop = flow.loop;
@@ -8078,7 +8147,7 @@ define(__m[19/*vs/base/node/extfs*/], __M([1/*require*/,0/*exports*/,31/*vs/base
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-define(__m[33/*vs/base/node/stdFork*/], __M([1/*require*/,0/*exports*/,6/*path*/,34/*os*/,58/*net*/,12/*child_process*/,14/*vs/base/common/uri*/]), function (require, exports, path, os, net, cp, uri_1) {
+define(__m[33/*vs/base/node/stdFork*/], __M([1/*require*/,0/*exports*/,6/*path*/,34/*os*/,58/*net*/,12/*child_process*/,13/*vs/base/common/uri*/]), function (require, exports, path, os, net, cp, uri_1) {
     'use strict';
     Object.defineProperty(exports, "__esModule", { value: true });
     function makeRandomHexString(length) {
@@ -8187,7 +8256,7 @@ define(__m[33/*vs/base/node/stdFork*/], __M([1/*require*/,0/*exports*/,6/*path*/
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-define(__m[30/*vs/base/node/stream*/], __M([1/*require*/,0/*exports*/,16/*fs*/,4/*vs/base/common/winjs.base*/]), function (require, exports, fs, winjs_base_1) {
+define(__m[28/*vs/base/node/stream*/], __M([1/*require*/,0/*exports*/,16/*fs*/,2/*vs/base/common/winjs.base*/]), function (require, exports, fs, winjs_base_1) {
     'use strict';
     Object.defineProperty(exports, "__esModule", { value: true });
     /**
@@ -8332,7 +8401,7 @@ define(__m[30/*vs/base/node/stream*/], __M([1/*require*/,0/*exports*/,16/*fs*/,4
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-define(__m[38/*vs/base/node/encoding*/], __M([1/*require*/,0/*exports*/,30/*vs/base/node/stream*/,57/*iconv-lite*/,56/*jschardet*/]), function (require, exports, stream, iconv, jschardet) {
+define(__m[38/*vs/base/node/encoding*/], __M([1/*require*/,0/*exports*/,28/*vs/base/node/stream*/,57/*iconv-lite*/,56/*jschardet*/]), function (require, exports, stream, iconv, jschardet) {
     'use strict';
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.UTF8 = 'utf8';
@@ -8482,7 +8551,7 @@ define(__m[38/*vs/base/node/encoding*/], __M([1/*require*/,0/*exports*/,30/*vs/b
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-define(__m[22/*vs/base/parts/ipc/common/ipc*/], __M([1/*require*/,0/*exports*/,4/*vs/base/common/winjs.base*/,13/*vs/base/common/lifecycle*/,9/*vs/base/common/event*/]), function (require, exports, winjs_base_1, lifecycle_1, event_1) {
+define(__m[23/*vs/base/parts/ipc/common/ipc*/], __M([1/*require*/,0/*exports*/,2/*vs/base/common/winjs.base*/,14/*vs/base/common/lifecycle*/,7/*vs/base/common/event*/]), function (require, exports, winjs_base_1, lifecycle_1, event_1) {
     'use strict';
     Object.defineProperty(exports, "__esModule", { value: true });
     var MessageType;
@@ -8835,8 +8904,8 @@ define(__m[22/*vs/base/parts/ipc/common/ipc*/], __M([1/*require*/,0/*exports*/,4
     exports.eventFromCall = eventFromCall;
 });
 
-define(__m[42/*vs/nls!vs/base/common/errorMessage*/], __M([23/*vs/nls*/,24/*vs/nls!vs/workbench/services/search/node/searchApp*/]), function(nls, data) { return nls.create("vs/base/common/errorMessage", data); });
-define(__m[45/*vs/base/common/errorMessage*/], __M([1/*require*/,0/*exports*/,42/*vs/nls!vs/base/common/errorMessage*/,8/*vs/base/common/objects*/,5/*vs/base/common/types*/,7/*vs/base/common/arrays*/,3/*vs/base/common/strings*/]), function (require, exports, nls, objects, types, arrays, strings) {
+define(__m[42/*vs/nls!vs/base/common/errorMessage*/], __M([24/*vs/nls*/,25/*vs/nls!vs/workbench/services/search/node/searchApp*/]), function(nls, data) { return nls.create("vs/base/common/errorMessage", data); });
+define(__m[45/*vs/base/common/errorMessage*/], __M([1/*require*/,0/*exports*/,42/*vs/nls!vs/base/common/errorMessage*/,9/*vs/base/common/objects*/,5/*vs/base/common/types*/,8/*vs/base/common/arrays*/,4/*vs/base/common/strings*/]), function (require, exports, nls, objects, types, arrays, strings) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -9027,7 +9096,7 @@ define(__m[45/*vs/base/common/errorMessage*/], __M([1/*require*/,0/*exports*/,42
     exports.toErrorMessage = toErrorMessage;
 });
 
-define(__m[46/*vs/nls!vs/base/common/processes*/], __M([23/*vs/nls*/,24/*vs/nls!vs/workbench/services/search/node/searchApp*/]), function(nls, data) { return nls.create("vs/base/common/processes", data); });
+define(__m[46/*vs/nls!vs/base/common/processes*/], __M([24/*vs/nls*/,25/*vs/nls!vs/workbench/services/search/node/searchApp*/]), function(nls, data) { return nls.create("vs/base/common/processes", data); });
 
 
 
@@ -9038,7 +9107,7 @@ define(__m[46/*vs/nls!vs/base/common/processes*/], __M([23/*vs/nls*/,24/*vs/nls!
 
 
 
-define(__m[47/*vs/base/common/processes*/], __M([1/*require*/,0/*exports*/,46/*vs/nls!vs/base/common/processes*/,8/*vs/base/common/objects*/,2/*vs/base/common/platform*/,5/*vs/base/common/types*/,28/*vs/base/common/parsers*/]), function (require, exports, NLS, Objects, Platform, Types, parsers_1) {
+define(__m[47/*vs/base/common/processes*/], __M([1/*require*/,0/*exports*/,46/*vs/nls!vs/base/common/processes*/,9/*vs/base/common/objects*/,3/*vs/base/common/platform*/,5/*vs/base/common/types*/,31/*vs/base/common/parsers*/]), function (require, exports, NLS, Objects, Platform, Types, parsers_1) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -9139,7 +9208,7 @@ define(__m[47/*vs/base/common/processes*/], __M([1/*require*/,0/*exports*/,46/*v
     exports.ExecutableParser = ExecutableParser;
 });
 
-define(__m[48/*vs/nls!vs/base/node/processes*/], __M([23/*vs/nls*/,24/*vs/nls!vs/workbench/services/search/node/searchApp*/]), function(nls, data) { return nls.create("vs/base/node/processes", data); });
+define(__m[48/*vs/nls!vs/base/node/processes*/], __M([24/*vs/nls*/,25/*vs/nls!vs/workbench/services/search/node/searchApp*/]), function(nls, data) { return nls.create("vs/base/node/processes", data); });
 
 
 
@@ -9150,7 +9219,7 @@ define(__m[48/*vs/nls!vs/base/node/processes*/], __M([23/*vs/nls*/,24/*vs/nls!vs
 
 
 
-define(__m[49/*vs/base/node/processes*/], __M([1/*require*/,0/*exports*/,6/*path*/,12/*child_process*/,55/*stream*/,33/*vs/base/node/stdFork*/,48/*vs/nls!vs/base/node/processes*/,4/*vs/base/common/winjs.base*/,5/*vs/base/common/types*/,14/*vs/base/common/uri*/,8/*vs/base/common/objects*/,10/*vs/base/common/paths*/,2/*vs/base/common/platform*/,51/*vs/base/node/decoder*/,47/*vs/base/common/processes*/]), function (require, exports, path, cp, stream_1, stdFork_1, nls, winjs_base_1, Types, uri_1, Objects, TPath, Platform, decoder_1, processes_1) {
+define(__m[49/*vs/base/node/processes*/], __M([1/*require*/,0/*exports*/,6/*path*/,12/*child_process*/,55/*stream*/,33/*vs/base/node/stdFork*/,48/*vs/nls!vs/base/node/processes*/,2/*vs/base/common/winjs.base*/,5/*vs/base/common/types*/,13/*vs/base/common/uri*/,9/*vs/base/common/objects*/,10/*vs/base/common/paths*/,3/*vs/base/common/platform*/,44/*vs/base/node/decoder*/,47/*vs/base/common/processes*/]), function (require, exports, path, cp, stream_1, stdFork_1, nls, winjs_base_1, Types, uri_1, Objects, TPath, Platform, decoder_1, processes_1) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -9595,7 +9664,7 @@ define(__m[49/*vs/base/node/processes*/], __M([1/*require*/,0/*exports*/,6/*path
 
 
 
-define(__m[18/*vs/base/parts/ipc/node/ipc.cp*/], __M([1/*require*/,0/*exports*/,12/*child_process*/,4/*vs/base/common/winjs.base*/,43/*vs/base/common/async*/,8/*vs/base/common/objects*/,9/*vs/base/common/event*/,27/*vs/base/node/event*/,49/*vs/base/node/processes*/,22/*vs/base/parts/ipc/common/ipc*/]), function (require, exports, child_process_1, winjs_base_1, async_1, objects_1, event_1, event_2, processes_1, ipc_1) {
+define(__m[18/*vs/base/parts/ipc/node/ipc.cp*/], __M([1/*require*/,0/*exports*/,12/*child_process*/,2/*vs/base/common/winjs.base*/,41/*vs/base/common/async*/,9/*vs/base/common/objects*/,7/*vs/base/common/event*/,27/*vs/base/node/event*/,49/*vs/base/node/processes*/,23/*vs/base/parts/ipc/common/ipc*/]), function (require, exports, child_process_1, winjs_base_1, async_1, objects_1, event_1, event_2, processes_1, ipc_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     var Server = (function (_super) {
@@ -9662,6 +9731,9 @@ define(__m[18/*vs/base/parts/ipc/node/ipc.cp*/], __M([1/*require*/,0/*exports*/,
                     forkOpts.env = objects_1.assign(objects_1.clone(process.env), { 'VSCODE_PARENT_PID': String(process.pid) });
                     if (this.options && this.options.env) {
                         forkOpts.env = objects_1.assign(forkOpts.env, this.options.env);
+                    }
+                    if (this.options && this.options.freshExecArgv) {
+                        forkOpts.execArgv = [];
                     }
                     if (this.options && typeof this.options.debug === 'number') {
                         forkOpts.execArgv = ['--nolazy', '--debug=' + this.options.debug];
@@ -9805,7 +9877,7 @@ define(__m[52/*vs/platform/instantiation/common/instantiation*/], __M([1/*requir
 
 
 
-define(__m[53/*vs/platform/files/common/files*/], __M([1/*require*/,0/*exports*/,10/*vs/base/common/paths*/,32/*vs/base/common/events*/,2/*vs/base/common/platform*/,52/*vs/platform/instantiation/common/instantiation*/,3/*vs/base/common/strings*/]), function (require, exports, paths, events, platform_1, instantiation_1, strings_1) {
+define(__m[53/*vs/platform/files/common/files*/], __M([1/*require*/,0/*exports*/,10/*vs/base/common/paths*/,32/*vs/base/common/events*/,3/*vs/base/common/platform*/,52/*vs/platform/instantiation/common/instantiation*/,4/*vs/base/common/strings*/]), function (require, exports, paths, events, platform_1, instantiation_1, strings_1) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -10273,7 +10345,7 @@ define(__m[53/*vs/platform/files/common/files*/], __M([1/*require*/,0/*exports*/
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-define(__m[54/*vs/workbench/services/search/node/fileSearch*/], __M([1/*require*/,0/*exports*/,12/*child_process*/,26/*string_decoder*/,45/*vs/base/common/errorMessage*/,16/*fs*/,6/*path*/,15/*vs/base/common/scorer*/,7/*vs/base/common/arrays*/,2/*vs/base/common/platform*/,3/*vs/base/common/strings*/,5/*vs/base/common/types*/,17/*vs/base/common/glob*/,19/*vs/base/node/extfs*/,25/*vs/base/node/flow*/]), function (require, exports, childProcess, string_decoder_1, errorMessage_1, fs, paths, scorer, arrays, platform, strings, types, glob, extfs, flow) {
+define(__m[54/*vs/workbench/services/search/node/fileSearch*/], __M([1/*require*/,0/*exports*/,12/*child_process*/,26/*string_decoder*/,45/*vs/base/common/errorMessage*/,16/*fs*/,6/*path*/,15/*vs/base/common/scorer*/,8/*vs/base/common/arrays*/,3/*vs/base/common/platform*/,4/*vs/base/common/strings*/,5/*vs/base/common/types*/,17/*vs/base/common/glob*/,20/*vs/base/node/extfs*/,19/*vs/base/node/flow*/]), function (require, exports, childProcess, string_decoder_1, errorMessage_1, fs, paths, scorer, arrays, platform, strings, types, glob, extfs, flow) {
     'use strict';
     Object.defineProperty(exports, "__esModule", { value: true });
     var Traversal;
@@ -11018,7 +11090,7 @@ define(__m[39/*vs/workbench/services/search/node/worker/searchWorkerIpc*/], __M(
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-define(__m[35/*vs/workbench/services/search/node/textSearchWorkerProvider*/], __M([1/*require*/,0/*exports*/,34/*os*/,14/*vs/base/common/uri*/,22/*vs/base/parts/ipc/common/ipc*/,18/*vs/base/parts/ipc/node/ipc.cp*/,39/*vs/workbench/services/search/node/worker/searchWorkerIpc*/]), function (require, exports, os, uri_1, ipc, ipc_cp_1, searchWorkerIpc_1) {
+define(__m[35/*vs/workbench/services/search/node/textSearchWorkerProvider*/], __M([1/*require*/,0/*exports*/,34/*os*/,13/*vs/base/common/uri*/,23/*vs/base/parts/ipc/common/ipc*/,18/*vs/base/parts/ipc/node/ipc.cp*/,39/*vs/workbench/services/search/node/worker/searchWorkerIpc*/]), function (require, exports, os, uri_1, ipc, ipc_cp_1, searchWorkerIpc_1) {
     'use strict';
     Object.defineProperty(exports, "__esModule", { value: true });
     var TextSearchWorkerProvider = (function () {
@@ -11063,7 +11135,7 @@ define(__m[35/*vs/workbench/services/search/node/textSearchWorkerProvider*/], __
 
 
 
-define(__m[29/*vs/workbench/services/search/node/ripgrepTextSearch*/], __M([1/*require*/,0/*exports*/,60/*events*/,6/*path*/,12/*child_process*/,61/*vscode-ripgrep*/,3/*vs/base/common/strings*/,19/*vs/base/node/extfs*/,38/*vs/base/node/encoding*/,17/*vs/base/common/glob*/,4/*vs/base/common/winjs.base*/]), function (require, exports, events_1, path, cp, vscode_ripgrep_1, strings, extfs, encoding, glob, winjs_base_1) {
+define(__m[29/*vs/workbench/services/search/node/ripgrepTextSearch*/], __M([1/*require*/,0/*exports*/,60/*events*/,6/*path*/,26/*string_decoder*/,12/*child_process*/,61/*vscode-ripgrep*/,4/*vs/base/common/strings*/,20/*vs/base/node/extfs*/,38/*vs/base/node/encoding*/,17/*vs/base/common/glob*/,2/*vs/base/common/winjs.base*/]), function (require, exports, events_1, path, string_decoder_1, cp, vscode_ripgrep_1, strings, extfs, encoding, glob, winjs_base_1) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -11206,21 +11278,27 @@ define(__m[29/*vs/workbench/services/search/node/ripgrepTextSearch*/], __M([1/*r
             _this.maxResults = maxResults;
             _this.rootFolder = rootFolder;
             _this.numResults = 0;
+            _this.stringDecoder = new string_decoder_1.StringDecoder();
             return _this;
         }
         RipgrepParser.prototype.cancel = function () {
             this.isDone = true;
         };
         RipgrepParser.prototype.flush = function () {
+            this.handleDecodedData(this.stringDecoder.end());
             if (this.fileMatch) {
                 this.onResult();
             }
         };
         RipgrepParser.prototype.handleData = function (data) {
+            var dataStr = typeof data === 'string' ? data : this.stringDecoder.write(data);
+            this.handleDecodedData(dataStr);
+        };
+        RipgrepParser.prototype.handleDecodedData = function (decodedData) {
             // If the previous data chunk didn't end in a newline, prepend it to this chunk
             var dataStr = this.remainder ?
-                this.remainder + data.toString() :
-                data.toString();
+                this.remainder + decodedData :
+                decodedData;
             var dataLines = dataStr.split(/\r\n|\n/);
             this.remainder = dataLines[dataLines.length - 1] ? dataLines.pop() : null;
             for (var l = 0; l < dataLines.length; l++) {
@@ -11245,7 +11323,7 @@ define(__m[29/*vs/workbench/services/search/node/ripgrepTextSearch*/], __M([1/*r
                     if (this.fileMatch) {
                         this.onResult();
                     }
-                    this.fileMatch = new FileMatch(path.join(this.rootFolder, r[1]));
+                    this.fileMatch = new FileMatch(path.isAbsolute(r[1]) ? r[1] : path.join(this.rootFolder, r[1]));
                 }
                 else {
                     // Line is empty (or malformed)
@@ -11420,6 +11498,12 @@ define(__m[29/*vs/workbench/services/search/node/ripgrepTextSearch*/], __M([1/*r
         if (config.fileEncoding && config.fileEncoding !== 'utf8') {
             args.push('--encoding', encoding.toCanonicalName(config.fileEncoding));
         }
+        // Ripgrep handles -- as a -- arg separator. Only --.
+        // - is ok, --- is ok, --some-flag is handled as query text. Need to special case.
+        if (config.contentPattern.pattern === '--') {
+            config.contentPattern.isRegExp = true;
+            config.contentPattern.pattern = '\\-\\-';
+        }
         var searchPatternAfterDoubleDashes;
         if (config.contentPattern.isWordMatch) {
             var regexp = strings.createRegExp(config.contentPattern.pattern, config.contentPattern.isRegExp, { wholeWord: config.contentPattern.isWordMatch });
@@ -11445,6 +11529,7 @@ define(__m[29/*vs/workbench/services/search/node/ripgrepTextSearch*/], __M([1/*r
         else {
             args.push('./');
         }
+        args.push.apply(args, config.extraFiles);
         return { args: args, siblingClauses: siblingClauses };
     }
     function getSiblings(file) {
@@ -11463,7 +11548,7 @@ define(__m[29/*vs/workbench/services/search/node/ripgrepTextSearch*/], __M([1/*r
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-define(__m[41/*vs/workbench/services/search/node/rawSearchService*/], __M([1/*require*/,0/*exports*/,16/*fs*/,6/*path*/,63/*graceful-fs*/,7/*vs/base/common/arrays*/,37/*vs/base/common/comparers*/,8/*vs/base/common/objects*/,15/*vs/base/common/scorer*/,3/*vs/base/common/strings*/,4/*vs/base/common/winjs.base*/,54/*vs/workbench/services/search/node/fileSearch*/,53/*vs/platform/files/common/files*/,29/*vs/workbench/services/search/node/ripgrepTextSearch*/,40/*vs/workbench/services/search/node/textSearch*/,35/*vs/workbench/services/search/node/textSearchWorkerProvider*/]), function (require, exports, fs, path_1, gracefulFs, arrays, comparers_1, objects, scorer, strings, winjs_base_1, fileSearch_1, files_1, ripgrepTextSearch_1, textSearch_1, textSearchWorkerProvider_1) {
+define(__m[30/*vs/workbench/services/search/node/rawSearchService*/], __M([1/*require*/,0/*exports*/,16/*fs*/,6/*path*/,63/*graceful-fs*/,8/*vs/base/common/arrays*/,37/*vs/base/common/comparers*/,9/*vs/base/common/objects*/,15/*vs/base/common/scorer*/,4/*vs/base/common/strings*/,2/*vs/base/common/winjs.base*/,54/*vs/workbench/services/search/node/fileSearch*/,53/*vs/platform/files/common/files*/,29/*vs/workbench/services/search/node/ripgrepTextSearch*/,40/*vs/workbench/services/search/node/textSearch*/,35/*vs/workbench/services/search/node/textSearchWorkerProvider*/]), function (require, exports, fs, path_1, gracefulFs, arrays, comparers_1, objects, scorer, strings, winjs_base_1, fileSearch_1, files_1, ripgrepTextSearch_1, textSearch_1, textSearchWorkerProvider_1) {
     'use strict';
     Object.defineProperty(exports, "__esModule", { value: true });
     gracefulFs.gracefulify(fs);
@@ -11900,7 +11985,7 @@ define(__m[41/*vs/workbench/services/search/node/rawSearchService*/], __M([1/*re
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-define(__m[64/*vs/workbench/services/search/node/searchApp*/], __M([1/*require*/,0/*exports*/,18/*vs/base/parts/ipc/node/ipc.cp*/,50/*vs/workbench/services/search/node/searchIpc*/,41/*vs/workbench/services/search/node/rawSearchService*/]), function (require, exports, ipc_cp_1, searchIpc_1, rawSearchService_1) {
+define(__m[64/*vs/workbench/services/search/node/searchApp*/], __M([1/*require*/,0/*exports*/,18/*vs/base/parts/ipc/node/ipc.cp*/,50/*vs/workbench/services/search/node/searchIpc*/,30/*vs/workbench/services/search/node/rawSearchService*/]), function (require, exports, ipc_cp_1, searchIpc_1, rawSearchService_1) {
     'use strict';
     Object.defineProperty(exports, "__esModule", { value: true });
     var server = new ipc_cp_1.Server();

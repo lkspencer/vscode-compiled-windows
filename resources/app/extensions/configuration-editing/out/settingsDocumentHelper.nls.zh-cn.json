@@ -1,7 +1,7 @@
 [
 	"例如 myFile.txt",
-	"e.g. myFolder/myFile.txt",
-	"e.g. /Users/Development/myProject/myFolder/myFile.txt",
+	"例如 myFolder/myFile.txt",
+	"例如 /Users/Development/myProject/myFolder/myFile.txt",
 	"例如 myProject",
 	"例如 /Users/Development/myProject",
 	"例如 VS Code",

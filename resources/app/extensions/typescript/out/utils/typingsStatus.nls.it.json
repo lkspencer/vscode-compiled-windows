@@ -1,6 +1,6 @@
 [
 	"Recupero dei dati per ottimizzare IntelliSense in TypeScript",
-	"Could not install typings files for JavaScript language features. Please ensure that NPM is installed and is in your PATH",
+	"Non è stato possibile installare i file di definizione tipi per le funzionalità del linguaggio JavaScript. Verificare che NPM sia installato e o configurare 'typescript.npm' nelle impostazioni utente",
 	"Altre informazioni",
 	"Non eseguire più la verifica",
 	"Chiudi"

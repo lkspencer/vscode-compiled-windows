@@ -2,17 +2,6 @@
  * Copyright (C) Microsoft Corporation. All rights reserved.
  *--------------------------------------------------------*/
 define("vs/code/electron-browser/sharedProcessMain.nls.zh-tw", {
-	"vs/base/common/json": [
-		"符號無效",
-		"數字格式無效",
-		"必須有屬性名稱",
-		"必須有值",
-		"必須為冒號",
-		"必須為逗號",
-		"必須為右大括號",
-		"必須為右中括號",
-		"必須為檔案結尾",
-	],
 	"vs/base/common/severity": [
 		"錯誤",
 		"警告",
@@ -74,6 +63,12 @@ define("vs/code/electron-browser/sharedProcessMain.nls.zh-tw", {
 		"此封裝所代表的所有 VS Code 擴充功能比重。",
 		"將延伸模組設為在 Marketplace 中標幟為 [預覽]。",
 		"VS Code 擴充功能的啟動事件。",
+		"當指定語言檔案開啟時激發該事件",
+		"當指定的命令被調用時激發該事件",
+		"當指定的工作偵錯階段開始時激發該事件",
+		"當開啟指定的文件夾包含glob模式匹配的文件時激發該事件",
+		"當指定的檢視被擴展時激發該事件",
+		"當VS Code啟動時激發該事件,為了確保最好的使用者體驗,當您的擴充功能沒有其他組合作業時,請激活此事件.",
 		"要顯示於 Marketplace 擴充頁面資訊看板的徽章陣列。",
 		"徽章映像 URL。",
 		"徽章連結。",

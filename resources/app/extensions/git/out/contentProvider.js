@@ -81,4 +81,4 @@ __decorate([
     decorators_1.debounce(1100)
 ], GitContentProvider.prototype, "eventuallyFireChangeEvents", null);
 exports.GitContentProvider = GitContentProvider;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/f6868fce3eeb16663840eb82123369dec6077a9b/extensions\git\out/contentProvider.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/376c52b955428d205459bea6619fc161fc8faacf/extensions\git\out/contentProvider.js.map

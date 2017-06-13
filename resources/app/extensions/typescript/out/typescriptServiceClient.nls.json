@@ -1,6 +1,5 @@
 {
 	"messages": [
-		"TypeScript",
 		"The path {0} doesn't point to a valid tsserver install. Falling back to bundled TypeScript version.",
 		"VSCode's tsserver was deleted by another application such as a misbehaving virus detection tool. Please reinstall VS Code.",
 		"custom",
@@ -22,7 +21,6 @@
 		"Report Issue"
 	],
 	"keys": [
-		"channelName",
 		"noServerFound",
 		"noBundledServerFound",
 		"versionNumber.custom",

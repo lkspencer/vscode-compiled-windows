@@ -1,9 +1,8 @@
 [
-	"TypeScript",
 	"路径 {0} 未指向有效的 tsserver 安装。请回退到捆绑的 TypeScript 版本。",
 	"其他应用程序(例如运行异常的病毒检测工具)已删除 VSCode 的 tsserver。请重新安装 VS Code。",
 	"自定义",
-	"TypeScript language server couldn't be started. Error message is: {0}",
+	"无法启动 TypeScript 语言服务器。错误消息为: {0}",
 	"使用 VSCode 的版本",
 	"当前处于活动状态",
 	"使用工作区版本",

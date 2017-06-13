@@ -2,17 +2,6 @@
  * Copyright (C) Microsoft Corporation. All rights reserved.
  *--------------------------------------------------------*/
 define("vs/code/electron-browser/sharedProcessMain.nls.it", {
-	"vs/base/common/json": [
-		"Simbolo non valido",
-		"Formato di numero non valido",
-		"È previsto un nome di proprietà",
-		"È previsto un valore",
-		"Sono previsti i due punti",
-		"È prevista la virgola",
-		"È prevista la parentesi graffa di chiusura",
-		"È prevista la parentesi quadra di chiusura",
-		"È prevista la fine del file",
-	],
 	"vs/base/common/severity": [
 		"Errore",
 		"Avviso",
@@ -74,6 +63,12 @@ define("vs/code/electron-browser/sharedProcessMain.nls.it", {
 		"Tutti i contributi dell\'estensione Visual Studio Code rappresentati da questo pacchetto.",
 		"Imposta l\'estensione in modo che venga contrassegnata come Anteprima nel Marketplace.",
 		"Eventi di attivazione per l\'estensione Visual Studio Code.",
+		"Un evento di attivazione emesso ogni volta che viene aperto un file che risolve nella lingua specificata.",
+		"Un evento di attivazione emesso ogni volta che viene invocato il comando specificato.",
+		"Un evento di attivazione emesso ogni volta che viene iniziata una sessione di debug del tipo specificato.",
+		"Un evento di attivazione emesso ogni volta che si apre una cartella che contiene almeno un file corrispondente al criterio GLOB specificato.",
+		"Un evento di attivazione emesso ogni volta che la visualizzazione specificata viene espansa.",
+		"Un evento di attivazione emesso all\'avvio di VS Code. Per garantire la migliore esperienza per l\'utente finale, sei pregato di utilizzare questo evento di attivazione nella tua estensione solo quando nessun\'altra combinazione di eventi di attivazione funziona nel tuo caso.",
 		"Matrice di notifiche da visualizzare nella barra laterale della pagina delle estensioni del Marketplace.",
 		"URL di immagine della notifica.",
 		"Collegamento della notifica.",

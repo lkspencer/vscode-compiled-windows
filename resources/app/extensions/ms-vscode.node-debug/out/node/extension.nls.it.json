@@ -17,5 +17,5 @@
 	"Il debug verrà eseguito con il protocollo legacy perché il collegamento a un processo in base all'ID è supportato solo per il protocollo legacy.",
 	"Debug con protocollo inspector perché è stato rilevato.",
 	"Debug con protocollo legacy perché è stato rilevato.",
-	"Debug con protocollo legacy perché non è stato possibile determinare la versione di Node.js : {0}"
+	"Debug con protocollo legacy perché la versione di Node.js non è stata determinata ({0})"
 ]

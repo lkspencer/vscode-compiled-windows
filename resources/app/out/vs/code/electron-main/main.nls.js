@@ -5,17 +5,6 @@
  * Copyright (c) Microsoft Corporation. All rights reserved.
  *--------------------------------------------------------*/
 define("vs/code/electron-main/main.nls", {
-	"vs/base/common/json": [
-		"Invalid symbol",
-		"Invalid number format",
-		"Property name expected",
-		"Value expected",
-		"Colon expected",
-		"Comma expected",
-		"Closing brace expected",
-		"Closing bracket expected",
-		"End of file expected"
-	],
 	"vs/base/common/severity": [
 		"Error",
 		"Warning",
@@ -32,6 +21,7 @@ define("vs/code/electron-main/main.nls", {
 		"&&Help",
 		"New &&Window",
 		"About {0}",
+		"Services",
 		"Hide {0}",
 		"Hide Others",
 		"Show All",
@@ -80,6 +70,9 @@ define("vs/code/electron-main/main.nls", {
 		"E&&mmet...",
 		"&&Toggle Line Comment",
 		"Toggle &&Block Comment",
+		"Use Alt+Click for Multi-Cursor",
+		"Use Cmd+Click for Multi-Cursor",
+		"Use Ctrl+Click for Multi-Cursor",
 		"&&Add Cursor Above",
 		"A&&dd Cursor Below",
 		"Add C&&ursors to Line Ends",
@@ -96,7 +89,7 @@ define("vs/code/electron-main/main.nls", {
 		"&&Shrink Selection",
 		"&&Explorer",
 		"&&Search",
-		"&&Git",
+		"S&&CM",
 		"&&Debug",
 		"E&&xtensions",
 		"&&Output",
@@ -141,6 +134,8 @@ define("vs/code/electron-main/main.nls", {
 		"Go to &&Symbol in File...",
 		"Go to Symbol in &&Workspace...",
 		"Go to &&Definition",
+		"Go to &&Type Definition",
+		"Go to &&Implementation",
 		"Go to &&Line...",
 		"&&Start Debugging",
 		"Start &&Without Debugging",
@@ -167,6 +162,7 @@ define("vs/code/electron-main/main.nls", {
 		"Accessibility &&Options",
 		"Report &&Issues",
 		"&&Welcome",
+		"&&Interactive Playground",
 		"&&Documentation",
 		"&&Release Notes",
 		"&&Keyboard Shortcuts Reference",
@@ -176,12 +172,13 @@ define("vs/code/electron-main/main.nls", {
 		"View &&License",
 		"&&Privacy Statement",
 		"&&About",
+		"Accessibility Options",
 		"Restart To Update...",
 		"Checking For Updates...",
 		"Download Available Update",
 		"Downloading Update...",
 		"Installing Update...",
-		"Check For Updates...",
+		"Check for Updates...",
 		"\nVersion {0}\nCommit {1}\nDate {2}\nShell {3}\nRenderer {4}\nNode {5}",
 		"OK"
 	],
@@ -192,7 +189,6 @@ define("vs/code/electron-main/main.nls", {
 		"OK",
 		"Path does not exist",
 		"The path '{0}' does not seem to exist anymore on disk.",
-		"Accessibility Options",
 		"Reopen",
 		"Keep Waiting",
 		"Close",
@@ -259,6 +255,12 @@ define("vs/code/electron-main/main.nls", {
 		"All contributions of the VS Code extension represented by this package.",
 		"Sets the extension to be flagged as a Preview in the Marketplace.",
 		"Activation events for the VS Code extension.",
+		"An activation event emitted whenever a file that resolves to the specified language gets opened.",
+		"An activation event emitted whenever the specified command gets invoked.",
+		"An activation event emitted whenever a debug session of the specified type is started.",
+		"An activation event emitted whenever a folder is opened that contains at least a file matching the specified glob pattern.",
+		"An activation event emitted whenever the specified view is expanded.",
+		"An activation event emitted on VS Code startup. To ensure a great end user experience, please use this activation event in your extension only when no other activation events combination works in your use-case.",
 		"Array of badges to display in the sidebar of the Marketplace's extension page.",
 		"Badge image URL.",
 		"Badge link.",
@@ -276,8 +278,5 @@ define("vs/code/electron-main/main.nls", {
 	"vs/platform/telemetry/common/telemetryService": [
 		"Telemetry",
 		"Enable usage data and errors to be sent to Microsoft."
-	],
-	"vs/workbench/parts/git/electron-main/askpassService": [
-		"Git"
 	]
 });

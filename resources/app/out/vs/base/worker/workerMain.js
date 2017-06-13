@@ -2,7 +2,7 @@
  * Copyright (C) Microsoft Corporation. All rights reserved.
  *--------------------------------------------------------*/
 (function() {
-var __m = ["require","exports","vs/base/common/winjs.base","vs/base/common/platform","vs/base/common/errors","vs/editor/common/core/range","vs/base/common/event","vs/editor/common/core/position","vs/base/common/lifecycle","vs/editor/common/core/uint","vs/base/common/uri","vs/base/common/diff/diff","vs/base/common/functional","vs/base/common/cancellation","vs/base/common/strings","vs/base/common/types","vs/base/common/diff/diffChange","vs/base/common/async","vs/base/common/callbackList","vs/base/common/map","vs/editor/common/core/selection","vs/editor/common/core/token","vs/base/common/keyCodes","vs/editor/common/core/characterClassifier","vs/editor/common/diff/diffComputer","vs/editor/common/model/wordHelper","vs/editor/common/modes/linkComputer","vs/editor/common/modes/supports/inplaceReplaceSupport","vs/editor/common/standalone/standaloneBase","vs/editor/common/viewModel/prefixSumComputer","vs/editor/common/model/mirrorModel","vs/base/common/worker/simpleWorker","vs/editor/common/services/editorSimpleWorker","vs/base/common/winjs.base.raw"];
+var __m = ["exports","require","vs/base/common/winjs.base","vs/base/common/platform","vs/base/common/errors","vs/editor/common/core/position","vs/editor/common/core/uint","vs/base/common/lifecycle","vs/base/common/event","vs/editor/common/core/range","vs/base/common/cancellation","vs/base/common/diff/diff","vs/base/common/functional","vs/base/common/uri","vs/base/common/keyCodes","vs/editor/common/model/mirrorModel","vs/base/common/strings","vs/base/common/types","vs/base/common/async","vs/editor/common/viewModel/prefixSumComputer","vs/base/common/diff/diffChange","vs/base/common/callbackList","vs/editor/common/core/selection","vs/editor/common/core/token","vs/base/common/map","vs/editor/common/core/characterClassifier","vs/editor/common/diff/diffComputer","vs/editor/common/model/wordHelper","vs/editor/common/modes/linkComputer","vs/editor/common/modes/supports/inplaceReplaceSupport","vs/editor/common/standalone/standaloneBase","vs/base/common/worker/simpleWorker","vs/base/common/winjs.base.raw","vs/editor/common/services/editorSimpleWorker"];
 var __M = function(deps) {
   var result = [];
   for (var i = 0, len = deps.length; i < len; i++) {
@@ -265,14 +265,20 @@ var AMDLoader;
             if (typeof options.nodeCachedDataWriteDelay !== 'number' || options.nodeCachedDataWriteDelay < 0) {
                 options.nodeCachedDataWriteDelay = 1000 * 7;
             }
-            if (typeof options.onNodeCachedDataError !== 'function') {
-                options.onNodeCachedDataError = function (err) {
-                    if (err.errorCode === 'cachedDataRejected') {
+            if (typeof options.onNodeCachedData !== 'function') {
+                options.onNodeCachedData = function (err, data) {
+                    if (!err) {
+                        // ignore
+                    }
+                    else if (err.errorCode === 'cachedDataRejected') {
                         console.warn('Rejected cached data from file: ' + err.path);
                     }
                     else if (err.errorCode === 'unlink' || err.errorCode === 'writeFile') {
                         console.error('Problems writing cached data file: ' + err.path);
                         console.error(err.detail);
+                    }
+                    else {
+                        console.error(err);
                     }
                 };
             }
@@ -595,17 +601,78 @@ var AMDLoader;
     }());
     var NodeScriptLoader = (function () {
         function NodeScriptLoader() {
-            this._initialized = false;
+            this._didInitialize = false;
+            this._didPatchNodeRequire = false;
+            // js-flags have an impact on cached data
+            this._jsflags = '';
+            for (var _i = 0, _a = process.argv; _i < _a.length; _i++) {
+                var arg = _a[_i];
+                if (arg.indexOf('--js-flags=') === 0) {
+                    this._jsflags = arg;
+                    break;
+                }
+            }
         }
         NodeScriptLoader.prototype._init = function (nodeRequire) {
-            if (this._initialized) {
+            if (this._didInitialize) {
                 return;
             }
-            this._initialized = true;
+            this._didInitialize = true;
             this._fs = nodeRequire('fs');
             this._vm = nodeRequire('vm');
             this._path = nodeRequire('path');
             this._crypto = nodeRequire('crypto');
+        };
+        // patch require-function of nodejs such that we can manually create a script
+        // from cached data. this is done by overriding the `Module._compile` function
+        NodeScriptLoader.prototype._initNodeRequire = function (nodeRequire, moduleManager) {
+            var nodeCachedDataDir = moduleManager.getConfig().getOptionsLiteral().nodeCachedDataDir;
+            if (!nodeCachedDataDir || this._didPatchNodeRequire) {
+                return;
+            }
+            this._didPatchNodeRequire = true;
+            var that = this;
+            var Module = nodeRequire('module');
+            function makeRequireFunction(mod) {
+                var Module = mod.constructor;
+                var require = function require(path) {
+                    try {
+                        return mod.require(path);
+                    }
+                    finally {
+                        // nothing
+                    }
+                };
+                require.resolve = function resolve(request) {
+                    return Module._resolveFilename(request, mod);
+                };
+                require.main = process.mainModule;
+                require.extensions = Module._extensions;
+                require.cache = Module._cache;
+                return require;
+            }
+            Module.prototype._compile = function (content, filename) {
+                // remove shebang
+                content = content.replace(/^#!.*/, '');
+                // create wrapper function
+                var wrapper = Module.wrap(content);
+                var cachedDataPath = that._getCachedDataPath(nodeCachedDataDir, filename);
+                var options = { filename: filename };
+                try {
+                    options.cachedData = that._fs.readFileSync(cachedDataPath);
+                }
+                catch (e) {
+                    options.produceCachedData = true;
+                }
+                var script = new that._vm.Script(wrapper, options);
+                var compileWrapper = script.runInThisContext(options);
+                var dirname = that._path.dirname(filename);
+                var require = makeRequireFunction(this);
+                var args = [this.exports, require, this, filename, dirname, process, AMDLoader.global, Buffer];
+                var result = compileWrapper.apply(this.exports, args);
+                that._processCachedData(moduleManager, script, cachedDataPath);
+                return result;
+            };
         };
         NodeScriptLoader.prototype.load = function (moduleManager, scriptSrc, callback, errorback) {
             var _this = this;
@@ -613,6 +680,7 @@ var AMDLoader;
             var nodeRequire = (opts.nodeRequire || AMDLoader.global.nodeRequire);
             var nodeInstrumenter = (opts.nodeInstrumenter || function (c) { return c; });
             this._init(nodeRequire);
+            this._initNodeRequire(nodeRequire, moduleManager);
             var recorder = moduleManager.getRecorder();
             if (/^node\|/.test(scriptSrc)) {
                 var pieces = scriptSrc.split('|');
@@ -640,9 +708,13 @@ var AMDLoader;
                     if (AMDLoader.isElectronRenderer) {
                         var driveLetterMatch = vmScriptSrc.match(/^([a-z])\:(.*)/i);
                         if (driveLetterMatch) {
-                            vmScriptSrc = driveLetterMatch[1].toUpperCase() + ':' + driveLetterMatch[2];
+                            // windows
+                            vmScriptSrc = "file:///" + (driveLetterMatch[1].toUpperCase() + ':' + driveLetterMatch[2]).replace(/\\/g, '/');
                         }
-                        vmScriptSrc = 'file:///' + vmScriptSrc.replace(/\\/g, '/');
+                        else {
+                            // nix
+                            vmScriptSrc = "file://" + vmScriptSrc;
+                        }
                     }
                     var contents, prefix = '(function (require, define, __filename, __dirname) { ', suffix = '\n});';
                     if (data.charCodeAt(0) === NodeScriptLoader._BOM) {
@@ -658,44 +730,16 @@ var AMDLoader;
                     }
                     else {
                         var cachedDataPath_1 = _this._getCachedDataPath(opts.nodeCachedDataDir, scriptSrc);
-                        _this._fs.readFile(cachedDataPath_1, function (err, data) {
+                        _this._fs.readFile(cachedDataPath_1, function (err, cachedData) {
                             // create script options
-                            var scriptOptions = {
+                            var options = {
                                 filename: vmScriptSrc,
-                                produceCachedData: typeof data === 'undefined',
-                                cachedData: data
+                                produceCachedData: typeof cachedData === 'undefined',
+                                cachedData: cachedData
                             };
-                            var script = _this._loadAndEvalScript(scriptSrc, vmScriptSrc, contents, scriptOptions, recorder);
+                            var script = _this._loadAndEvalScript(scriptSrc, vmScriptSrc, contents, options, recorder);
                             callback();
-                            // cached code after math
-                            if (script.cachedDataRejected) {
-                                // data rejected => delete cache file
-                                opts.onNodeCachedDataError({
-                                    errorCode: 'cachedDataRejected',
-                                    path: cachedDataPath_1
-                                });
-                                NodeScriptLoader._runSoon(function () { return _this._fs.unlink(cachedDataPath_1, function (err) {
-                                    if (err) {
-                                        moduleManager.getConfig().getOptionsLiteral().onNodeCachedDataError({
-                                            errorCode: 'unlink',
-                                            path: cachedDataPath_1,
-                                            detail: err
-                                        });
-                                    }
-                                }); }, opts.nodeCachedDataWriteDelay);
-                            }
-                            else if (script.cachedDataProduced) {
-                                // data produced => write cache file
-                                NodeScriptLoader._runSoon(function () { return _this._fs.writeFile(cachedDataPath_1, script.cachedData, function (err) {
-                                    if (err) {
-                                        moduleManager.getConfig().getOptionsLiteral().onNodeCachedDataError({
-                                            errorCode: 'writeFile',
-                                            path: cachedDataPath_1,
-                                            detail: err
-                                        });
-                                    }
-                                }); }, opts.nodeCachedDataWriteDelay);
-                            }
+                            _this._processCachedData(moduleManager, script, cachedDataPath_1);
                         });
                     }
                 });
@@ -711,10 +755,50 @@ var AMDLoader;
             recorder.record(AMDLoader.LoaderEventType.NodeEndEvaluatingScript, scriptSrc);
             return script;
         };
-        NodeScriptLoader.prototype._getCachedDataPath = function (baseDir, filename) {
-            var hash = this._crypto.createHash('md5').update(filename, 'utf8').digest('hex');
+        NodeScriptLoader.prototype._getCachedDataPath = function (basedir, filename) {
+            var hash = this._crypto.createHash('md5').update(filename, 'utf8').update(this._jsflags, 'utf8').digest('hex');
             var basename = this._path.basename(filename).replace(/\.js$/, '');
-            return this._path.join(baseDir, hash + "-" + basename + ".code");
+            return this._path.join(basedir, basename + "-" + hash + ".code");
+        };
+        NodeScriptLoader.prototype._processCachedData = function (moduleManager, script, cachedDataPath) {
+            var _this = this;
+            if (script.cachedDataRejected) {
+                // data rejected => delete cache file
+                moduleManager.getConfig().getOptionsLiteral().onNodeCachedData({
+                    errorCode: 'cachedDataRejected',
+                    path: cachedDataPath
+                });
+                NodeScriptLoader._runSoon(function () {
+                    return _this._fs.unlink(cachedDataPath, function (err) {
+                        if (err) {
+                            moduleManager.getConfig().getOptionsLiteral().onNodeCachedData({
+                                errorCode: 'unlink',
+                                path: cachedDataPath,
+                                detail: err
+                            });
+                        }
+                    });
+                }, moduleManager.getConfig().getOptionsLiteral().nodeCachedDataWriteDelay);
+            }
+            else if (script.cachedDataProduced) {
+                // data produced => tell outside world
+                moduleManager.getConfig().getOptionsLiteral().onNodeCachedData(undefined, {
+                    path: cachedDataPath,
+                    length: script.cachedData.length
+                });
+                // data produced => write cache file
+                NodeScriptLoader._runSoon(function () {
+                    return _this._fs.writeFile(cachedDataPath, script.cachedData, function (err) {
+                        if (err) {
+                            moduleManager.getConfig().getOptionsLiteral().onNodeCachedData({
+                                errorCode: 'writeFile',
+                                path: cachedDataPath,
+                                detail: err
+                            });
+                        }
+                    });
+                }, moduleManager.getConfig().getOptionsLiteral().nodeCachedDataWriteDelay);
+            }
         };
         NodeScriptLoader._runSoon = function (callback, minTimeout) {
             var timeout = minTimeout + Math.ceil(Math.random() * minTimeout);
@@ -1584,7 +1668,7 @@ var AMDLoader;
     }
 })(AMDLoader || (AMDLoader = {}));
 
-define(__m[16/*vs/base/common/diff/diffChange*/], __M([0/*require*/,1/*exports*/]), function (require, exports) {
+define(__m[20/*vs/base/common/diff/diffChange*/], __M([1/*require*/,0/*exports*/]), function (require, exports) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -1642,7 +1726,7 @@ define(__m[16/*vs/base/common/diff/diffChange*/], __M([0/*require*/,1/*exports*/
     exports.DiffChange = DiffChange;
 });
 
-define(__m[11/*vs/base/common/diff/diff*/], __M([0/*require*/,1/*exports*/,16/*vs/base/common/diff/diffChange*/]), function (require, exports, diffChange_1) {
+define(__m[11/*vs/base/common/diff/diff*/], __M([1/*require*/,0/*exports*/,20/*vs/base/common/diff/diffChange*/]), function (require, exports, diffChange_1) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -2352,7 +2436,7 @@ define(__m[11/*vs/base/common/diff/diff*/], __M([0/*require*/,1/*exports*/,16/*v
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-define(__m[12/*vs/base/common/functional*/], __M([0/*require*/,1/*exports*/]), function (require, exports) {
+define(__m[12/*vs/base/common/functional*/], __M([1/*require*/,0/*exports*/]), function (require, exports) {
     'use strict';
     Object.defineProperty(exports, "__esModule", { value: true });
     function not(fn) {
@@ -2385,7 +2469,7 @@ define(__m[12/*vs/base/common/functional*/], __M([0/*require*/,1/*exports*/]), f
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-define(__m[22/*vs/base/common/keyCodes*/], __M([0/*require*/,1/*exports*/]), function (require, exports) {
+define(__m[14/*vs/base/common/keyCodes*/], __M([1/*require*/,0/*exports*/]), function (require, exports) {
     'use strict';
     Object.defineProperty(exports, "__esModule", { value: true });
     /**
@@ -2561,200 +2645,176 @@ define(__m[22/*vs/base/common/keyCodes*/], __M([0/*require*/,1/*exports*/]), fun
          * Cover all key codes when IME is processing input.
          */
         KeyCode[KeyCode["KEY_IN_COMPOSITION"] = 109] = "KEY_IN_COMPOSITION";
+        KeyCode[KeyCode["ABNT_C1"] = 110] = "ABNT_C1";
+        KeyCode[KeyCode["ABNT_C2"] = 111] = "ABNT_C2";
         /**
          * Placed last to cover the length of the enum.
          * Please do not depend on this value!
          */
-        KeyCode[KeyCode["MAX_VALUE"] = 110] = "MAX_VALUE";
+        KeyCode[KeyCode["MAX_VALUE"] = 112] = "MAX_VALUE";
     })(KeyCode = exports.KeyCode || (exports.KeyCode = {}));
-    var Mapping = (function () {
-        function Mapping(fromKeyCode, toKeyCode) {
-            this._fromKeyCode = fromKeyCode;
-            this._toKeyCode = toKeyCode;
+    var KeyCodeStrMap = (function () {
+        function KeyCodeStrMap() {
+            this._keyCodeToStr = [];
+            this._strToKeyCode = Object.create(null);
         }
-        Mapping.prototype.fromKeyCode = function (keyCode) {
-            return this._fromKeyCode[keyCode];
+        KeyCodeStrMap.prototype.define = function (keyCode, str) {
+            this._keyCodeToStr[keyCode] = str;
+            this._strToKeyCode[str.toLowerCase()] = keyCode;
         };
-        Mapping.prototype.toKeyCode = function (str) {
-            if (this._toKeyCode.hasOwnProperty(str)) {
-                return this._toKeyCode[str];
-            }
-            return 0 /* Unknown */;
+        KeyCodeStrMap.prototype.keyCodeToStr = function (keyCode) {
+            return this._keyCodeToStr[keyCode];
         };
-        return Mapping;
+        KeyCodeStrMap.prototype.strToKeyCode = function (str) {
+            return this._strToKeyCode[str.toLowerCase()] || 0 /* Unknown */;
+        };
+        return KeyCodeStrMap;
     }());
-    exports.Mapping = Mapping;
-    function createMapping(fill1, fill2) {
-        var MAP = [];
-        fill1(MAP);
-        var REVERSE_MAP = {};
-        for (var i = 0, len = MAP.length; i < len; i++) {
-            if (!MAP[i]) {
-                continue;
-            }
-            REVERSE_MAP[MAP[i]] = i;
+    var uiMap = new KeyCodeStrMap();
+    var userSettingsUSMap = new KeyCodeStrMap();
+    var userSettingsGeneralMap = new KeyCodeStrMap();
+    (function () {
+        function define(keyCode, uiLabel, usUserSettingsLabel, generalUserSettingsLabel) {
+            if (usUserSettingsLabel === void 0) { usUserSettingsLabel = uiLabel; }
+            if (generalUserSettingsLabel === void 0) { generalUserSettingsLabel = usUserSettingsLabel; }
+            uiMap.define(keyCode, uiLabel);
+            userSettingsUSMap.define(keyCode, usUserSettingsLabel);
+            userSettingsGeneralMap.define(keyCode, generalUserSettingsLabel);
         }
-        fill2(REVERSE_MAP);
-        var FINAL_REVERSE_MAP = {};
-        for (var entry in REVERSE_MAP) {
-            if (REVERSE_MAP.hasOwnProperty(entry)) {
-                FINAL_REVERSE_MAP[entry] = REVERSE_MAP[entry];
-                FINAL_REVERSE_MAP[entry.toLowerCase()] = REVERSE_MAP[entry];
-            }
-        }
-        return new Mapping(MAP, FINAL_REVERSE_MAP);
-    }
-    var STRING = createMapping(function (TO_STRING_MAP) {
-        TO_STRING_MAP[0 /* Unknown */] = 'unknown';
-        TO_STRING_MAP[1 /* Backspace */] = 'Backspace';
-        TO_STRING_MAP[2 /* Tab */] = 'Tab';
-        TO_STRING_MAP[3 /* Enter */] = 'Enter';
-        TO_STRING_MAP[4 /* Shift */] = 'Shift';
-        TO_STRING_MAP[5 /* Ctrl */] = 'Ctrl';
-        TO_STRING_MAP[6 /* Alt */] = 'Alt';
-        TO_STRING_MAP[7 /* PauseBreak */] = 'PauseBreak';
-        TO_STRING_MAP[8 /* CapsLock */] = 'CapsLock';
-        TO_STRING_MAP[9 /* Escape */] = 'Escape';
-        TO_STRING_MAP[10 /* Space */] = 'Space';
-        TO_STRING_MAP[11 /* PageUp */] = 'PageUp';
-        TO_STRING_MAP[12 /* PageDown */] = 'PageDown';
-        TO_STRING_MAP[13 /* End */] = 'End';
-        TO_STRING_MAP[14 /* Home */] = 'Home';
-        TO_STRING_MAP[15 /* LeftArrow */] = 'LeftArrow';
-        TO_STRING_MAP[16 /* UpArrow */] = 'UpArrow';
-        TO_STRING_MAP[17 /* RightArrow */] = 'RightArrow';
-        TO_STRING_MAP[18 /* DownArrow */] = 'DownArrow';
-        TO_STRING_MAP[19 /* Insert */] = 'Insert';
-        TO_STRING_MAP[20 /* Delete */] = 'Delete';
-        TO_STRING_MAP[21 /* KEY_0 */] = '0';
-        TO_STRING_MAP[22 /* KEY_1 */] = '1';
-        TO_STRING_MAP[23 /* KEY_2 */] = '2';
-        TO_STRING_MAP[24 /* KEY_3 */] = '3';
-        TO_STRING_MAP[25 /* KEY_4 */] = '4';
-        TO_STRING_MAP[26 /* KEY_5 */] = '5';
-        TO_STRING_MAP[27 /* KEY_6 */] = '6';
-        TO_STRING_MAP[28 /* KEY_7 */] = '7';
-        TO_STRING_MAP[29 /* KEY_8 */] = '8';
-        TO_STRING_MAP[30 /* KEY_9 */] = '9';
-        TO_STRING_MAP[31 /* KEY_A */] = 'A';
-        TO_STRING_MAP[32 /* KEY_B */] = 'B';
-        TO_STRING_MAP[33 /* KEY_C */] = 'C';
-        TO_STRING_MAP[34 /* KEY_D */] = 'D';
-        TO_STRING_MAP[35 /* KEY_E */] = 'E';
-        TO_STRING_MAP[36 /* KEY_F */] = 'F';
-        TO_STRING_MAP[37 /* KEY_G */] = 'G';
-        TO_STRING_MAP[38 /* KEY_H */] = 'H';
-        TO_STRING_MAP[39 /* KEY_I */] = 'I';
-        TO_STRING_MAP[40 /* KEY_J */] = 'J';
-        TO_STRING_MAP[41 /* KEY_K */] = 'K';
-        TO_STRING_MAP[42 /* KEY_L */] = 'L';
-        TO_STRING_MAP[43 /* KEY_M */] = 'M';
-        TO_STRING_MAP[44 /* KEY_N */] = 'N';
-        TO_STRING_MAP[45 /* KEY_O */] = 'O';
-        TO_STRING_MAP[46 /* KEY_P */] = 'P';
-        TO_STRING_MAP[47 /* KEY_Q */] = 'Q';
-        TO_STRING_MAP[48 /* KEY_R */] = 'R';
-        TO_STRING_MAP[49 /* KEY_S */] = 'S';
-        TO_STRING_MAP[50 /* KEY_T */] = 'T';
-        TO_STRING_MAP[51 /* KEY_U */] = 'U';
-        TO_STRING_MAP[52 /* KEY_V */] = 'V';
-        TO_STRING_MAP[53 /* KEY_W */] = 'W';
-        TO_STRING_MAP[54 /* KEY_X */] = 'X';
-        TO_STRING_MAP[55 /* KEY_Y */] = 'Y';
-        TO_STRING_MAP[56 /* KEY_Z */] = 'Z';
-        TO_STRING_MAP[57 /* Meta */] = 'Meta';
-        TO_STRING_MAP[58 /* ContextMenu */] = 'ContextMenu';
-        TO_STRING_MAP[59 /* F1 */] = 'F1';
-        TO_STRING_MAP[60 /* F2 */] = 'F2';
-        TO_STRING_MAP[61 /* F3 */] = 'F3';
-        TO_STRING_MAP[62 /* F4 */] = 'F4';
-        TO_STRING_MAP[63 /* F5 */] = 'F5';
-        TO_STRING_MAP[64 /* F6 */] = 'F6';
-        TO_STRING_MAP[65 /* F7 */] = 'F7';
-        TO_STRING_MAP[66 /* F8 */] = 'F8';
-        TO_STRING_MAP[67 /* F9 */] = 'F9';
-        TO_STRING_MAP[68 /* F10 */] = 'F10';
-        TO_STRING_MAP[69 /* F11 */] = 'F11';
-        TO_STRING_MAP[70 /* F12 */] = 'F12';
-        TO_STRING_MAP[71 /* F13 */] = 'F13';
-        TO_STRING_MAP[72 /* F14 */] = 'F14';
-        TO_STRING_MAP[73 /* F15 */] = 'F15';
-        TO_STRING_MAP[74 /* F16 */] = 'F16';
-        TO_STRING_MAP[75 /* F17 */] = 'F17';
-        TO_STRING_MAP[76 /* F18 */] = 'F18';
-        TO_STRING_MAP[77 /* F19 */] = 'F19';
-        TO_STRING_MAP[78 /* NumLock */] = 'NumLock';
-        TO_STRING_MAP[79 /* ScrollLock */] = 'ScrollLock';
-        TO_STRING_MAP[80 /* US_SEMICOLON */] = ';';
-        TO_STRING_MAP[81 /* US_EQUAL */] = '=';
-        TO_STRING_MAP[82 /* US_COMMA */] = ',';
-        TO_STRING_MAP[83 /* US_MINUS */] = '-';
-        TO_STRING_MAP[84 /* US_DOT */] = '.';
-        TO_STRING_MAP[85 /* US_SLASH */] = '/';
-        TO_STRING_MAP[86 /* US_BACKTICK */] = '`';
-        TO_STRING_MAP[87 /* US_OPEN_SQUARE_BRACKET */] = '[';
-        TO_STRING_MAP[88 /* US_BACKSLASH */] = '\\';
-        TO_STRING_MAP[89 /* US_CLOSE_SQUARE_BRACKET */] = ']';
-        TO_STRING_MAP[90 /* US_QUOTE */] = '\'';
-        TO_STRING_MAP[91 /* OEM_8 */] = 'OEM_8';
-        TO_STRING_MAP[92 /* OEM_102 */] = 'OEM_102';
-        TO_STRING_MAP[93 /* NUMPAD_0 */] = 'NumPad0';
-        TO_STRING_MAP[94 /* NUMPAD_1 */] = 'NumPad1';
-        TO_STRING_MAP[95 /* NUMPAD_2 */] = 'NumPad2';
-        TO_STRING_MAP[96 /* NUMPAD_3 */] = 'NumPad3';
-        TO_STRING_MAP[97 /* NUMPAD_4 */] = 'NumPad4';
-        TO_STRING_MAP[98 /* NUMPAD_5 */] = 'NumPad5';
-        TO_STRING_MAP[99 /* NUMPAD_6 */] = 'NumPad6';
-        TO_STRING_MAP[100 /* NUMPAD_7 */] = 'NumPad7';
-        TO_STRING_MAP[101 /* NUMPAD_8 */] = 'NumPad8';
-        TO_STRING_MAP[102 /* NUMPAD_9 */] = 'NumPad9';
-        TO_STRING_MAP[103 /* NUMPAD_MULTIPLY */] = 'NumPad_Multiply';
-        TO_STRING_MAP[104 /* NUMPAD_ADD */] = 'NumPad_Add';
-        TO_STRING_MAP[105 /* NUMPAD_SEPARATOR */] = 'NumPad_Separator';
-        TO_STRING_MAP[106 /* NUMPAD_SUBTRACT */] = 'NumPad_Subtract';
-        TO_STRING_MAP[107 /* NUMPAD_DECIMAL */] = 'NumPad_Decimal';
-        TO_STRING_MAP[108 /* NUMPAD_DIVIDE */] = 'NumPad_Divide';
-        // for (let i = 0; i < KeyCode.MAX_VALUE; i++) {
-        // 	if (!TO_STRING_MAP[i]) {
-        // 		console.warn('Missing string representation for ' + KeyCode[i]);
-        // 	}
-        // }
-    }, function (FROM_STRING_MAP) {
-        FROM_STRING_MAP['\r'] = 3 /* Enter */;
-    });
-    exports.USER_SETTINGS = createMapping(function (TO_USER_SETTINGS_MAP) {
-        for (var i = 0, len = STRING._fromKeyCode.length; i < len; i++) {
-            TO_USER_SETTINGS_MAP[i] = STRING._fromKeyCode[i];
-        }
-        TO_USER_SETTINGS_MAP[15 /* LeftArrow */] = 'Left';
-        TO_USER_SETTINGS_MAP[16 /* UpArrow */] = 'Up';
-        TO_USER_SETTINGS_MAP[17 /* RightArrow */] = 'Right';
-        TO_USER_SETTINGS_MAP[18 /* DownArrow */] = 'Down';
-    }, function (FROM_USER_SETTINGS_MAP) {
-        FROM_USER_SETTINGS_MAP['OEM_1'] = 80 /* US_SEMICOLON */;
-        FROM_USER_SETTINGS_MAP['OEM_PLUS'] = 81 /* US_EQUAL */;
-        FROM_USER_SETTINGS_MAP['OEM_COMMA'] = 82 /* US_COMMA */;
-        FROM_USER_SETTINGS_MAP['OEM_MINUS'] = 83 /* US_MINUS */;
-        FROM_USER_SETTINGS_MAP['OEM_PERIOD'] = 84 /* US_DOT */;
-        FROM_USER_SETTINGS_MAP['OEM_2'] = 85 /* US_SLASH */;
-        FROM_USER_SETTINGS_MAP['OEM_3'] = 86 /* US_BACKTICK */;
-        FROM_USER_SETTINGS_MAP['OEM_4'] = 87 /* US_OPEN_SQUARE_BRACKET */;
-        FROM_USER_SETTINGS_MAP['OEM_5'] = 88 /* US_BACKSLASH */;
-        FROM_USER_SETTINGS_MAP['OEM_6'] = 89 /* US_CLOSE_SQUARE_BRACKET */;
-        FROM_USER_SETTINGS_MAP['OEM_7'] = 90 /* US_QUOTE */;
-        FROM_USER_SETTINGS_MAP['OEM_8'] = 91 /* OEM_8 */;
-        FROM_USER_SETTINGS_MAP['OEM_102'] = 92 /* OEM_102 */;
-    });
+        define(0 /* Unknown */, 'unknown');
+        define(1 /* Backspace */, 'Backspace');
+        define(2 /* Tab */, 'Tab');
+        define(3 /* Enter */, 'Enter');
+        define(4 /* Shift */, 'Shift');
+        define(5 /* Ctrl */, 'Ctrl');
+        define(6 /* Alt */, 'Alt');
+        define(7 /* PauseBreak */, 'PauseBreak');
+        define(8 /* CapsLock */, 'CapsLock');
+        define(9 /* Escape */, 'Escape');
+        define(10 /* Space */, 'Space');
+        define(11 /* PageUp */, 'PageUp');
+        define(12 /* PageDown */, 'PageDown');
+        define(13 /* End */, 'End');
+        define(14 /* Home */, 'Home');
+        define(15 /* LeftArrow */, 'LeftArrow', 'Left');
+        define(16 /* UpArrow */, 'UpArrow', 'Up');
+        define(17 /* RightArrow */, 'RightArrow', 'Right');
+        define(18 /* DownArrow */, 'DownArrow', 'Down');
+        define(19 /* Insert */, 'Insert');
+        define(20 /* Delete */, 'Delete');
+        define(21 /* KEY_0 */, '0');
+        define(22 /* KEY_1 */, '1');
+        define(23 /* KEY_2 */, '2');
+        define(24 /* KEY_3 */, '3');
+        define(25 /* KEY_4 */, '4');
+        define(26 /* KEY_5 */, '5');
+        define(27 /* KEY_6 */, '6');
+        define(28 /* KEY_7 */, '7');
+        define(29 /* KEY_8 */, '8');
+        define(30 /* KEY_9 */, '9');
+        define(31 /* KEY_A */, 'A');
+        define(32 /* KEY_B */, 'B');
+        define(33 /* KEY_C */, 'C');
+        define(34 /* KEY_D */, 'D');
+        define(35 /* KEY_E */, 'E');
+        define(36 /* KEY_F */, 'F');
+        define(37 /* KEY_G */, 'G');
+        define(38 /* KEY_H */, 'H');
+        define(39 /* KEY_I */, 'I');
+        define(40 /* KEY_J */, 'J');
+        define(41 /* KEY_K */, 'K');
+        define(42 /* KEY_L */, 'L');
+        define(43 /* KEY_M */, 'M');
+        define(44 /* KEY_N */, 'N');
+        define(45 /* KEY_O */, 'O');
+        define(46 /* KEY_P */, 'P');
+        define(47 /* KEY_Q */, 'Q');
+        define(48 /* KEY_R */, 'R');
+        define(49 /* KEY_S */, 'S');
+        define(50 /* KEY_T */, 'T');
+        define(51 /* KEY_U */, 'U');
+        define(52 /* KEY_V */, 'V');
+        define(53 /* KEY_W */, 'W');
+        define(54 /* KEY_X */, 'X');
+        define(55 /* KEY_Y */, 'Y');
+        define(56 /* KEY_Z */, 'Z');
+        define(57 /* Meta */, 'Meta');
+        define(58 /* ContextMenu */, 'ContextMenu');
+        define(59 /* F1 */, 'F1');
+        define(60 /* F2 */, 'F2');
+        define(61 /* F3 */, 'F3');
+        define(62 /* F4 */, 'F4');
+        define(63 /* F5 */, 'F5');
+        define(64 /* F6 */, 'F6');
+        define(65 /* F7 */, 'F7');
+        define(66 /* F8 */, 'F8');
+        define(67 /* F9 */, 'F9');
+        define(68 /* F10 */, 'F10');
+        define(69 /* F11 */, 'F11');
+        define(70 /* F12 */, 'F12');
+        define(71 /* F13 */, 'F13');
+        define(72 /* F14 */, 'F14');
+        define(73 /* F15 */, 'F15');
+        define(74 /* F16 */, 'F16');
+        define(75 /* F17 */, 'F17');
+        define(76 /* F18 */, 'F18');
+        define(77 /* F19 */, 'F19');
+        define(78 /* NumLock */, 'NumLock');
+        define(79 /* ScrollLock */, 'ScrollLock');
+        define(80 /* US_SEMICOLON */, ';', ';', 'OEM_1');
+        define(81 /* US_EQUAL */, '=', '=', 'OEM_PLUS');
+        define(82 /* US_COMMA */, ',', ',', 'OEM_COMMA');
+        define(83 /* US_MINUS */, '-', '-', 'OEM_MINUS');
+        define(84 /* US_DOT */, '.', '.', 'OEM_PERIOD');
+        define(85 /* US_SLASH */, '/', '/', 'OEM_2');
+        define(86 /* US_BACKTICK */, '`', '`', 'OEM_3');
+        define(110 /* ABNT_C1 */, 'ABNT_C1');
+        define(111 /* ABNT_C2 */, 'ABNT_C2');
+        define(87 /* US_OPEN_SQUARE_BRACKET */, '[', '[', 'OEM_4');
+        define(88 /* US_BACKSLASH */, '\\', '\\', 'OEM_5');
+        define(89 /* US_CLOSE_SQUARE_BRACKET */, ']', ']', 'OEM_6');
+        define(90 /* US_QUOTE */, '\'', '\'', 'OEM_7');
+        define(91 /* OEM_8 */, 'OEM_8');
+        define(92 /* OEM_102 */, 'OEM_102');
+        define(93 /* NUMPAD_0 */, 'NumPad0');
+        define(94 /* NUMPAD_1 */, 'NumPad1');
+        define(95 /* NUMPAD_2 */, 'NumPad2');
+        define(96 /* NUMPAD_3 */, 'NumPad3');
+        define(97 /* NUMPAD_4 */, 'NumPad4');
+        define(98 /* NUMPAD_5 */, 'NumPad5');
+        define(99 /* NUMPAD_6 */, 'NumPad6');
+        define(100 /* NUMPAD_7 */, 'NumPad7');
+        define(101 /* NUMPAD_8 */, 'NumPad8');
+        define(102 /* NUMPAD_9 */, 'NumPad9');
+        define(103 /* NUMPAD_MULTIPLY */, 'NumPad_Multiply');
+        define(104 /* NUMPAD_ADD */, 'NumPad_Add');
+        define(105 /* NUMPAD_SEPARATOR */, 'NumPad_Separator');
+        define(106 /* NUMPAD_SUBTRACT */, 'NumPad_Subtract');
+        define(107 /* NUMPAD_DECIMAL */, 'NumPad_Decimal');
+        define(108 /* NUMPAD_DIVIDE */, 'NumPad_Divide');
+    })();
     var KeyCodeUtils;
     (function (KeyCodeUtils) {
-        function toString(key) {
-            return STRING.fromKeyCode(key);
+        function toString(keyCode) {
+            return uiMap.keyCodeToStr(keyCode);
         }
         KeyCodeUtils.toString = toString;
         function fromString(key) {
-            return STRING.toKeyCode(key);
+            return uiMap.strToKeyCode(key);
         }
         KeyCodeUtils.fromString = fromString;
+        function toUserSettingsUS(keyCode) {
+            return userSettingsUSMap.keyCodeToStr(keyCode);
+        }
+        KeyCodeUtils.toUserSettingsUS = toUserSettingsUS;
+        function toUserSettingsGeneral(keyCode) {
+            return userSettingsGeneralMap.keyCodeToStr(keyCode);
+        }
+        KeyCodeUtils.toUserSettingsGeneral = toUserSettingsGeneral;
+        function fromUserSettings(key) {
+            return userSettingsUSMap.strToKeyCode(key) || userSettingsGeneralMap.strToKeyCode(key);
+        }
+        KeyCodeUtils.fromUserSettings = fromUserSettings;
     })(KeyCodeUtils = exports.KeyCodeUtils || (exports.KeyCodeUtils = {}));
     /**
      * Binary encoding strategy:
@@ -2864,8 +2924,20 @@ define(__m[22/*vs/base/common/keyCodes*/], __M([0/*require*/,1/*exports*/]), fun
         return ChordKeybinding;
     }());
     exports.ChordKeybinding = ChordKeybinding;
+    var ResolvedKeybindingPart = (function () {
+        function ResolvedKeybindingPart(ctrlKey, shiftKey, altKey, metaKey, kbLabel, kbAriaLabel) {
+            this.ctrlKey = ctrlKey;
+            this.shiftKey = shiftKey;
+            this.altKey = altKey;
+            this.metaKey = metaKey;
+            this.keyLabel = kbLabel;
+            this.keyAriaLabel = kbAriaLabel;
+        }
+        return ResolvedKeybindingPart;
+    }());
+    exports.ResolvedKeybindingPart = ResolvedKeybindingPart;
     /**
-     * A resolved keybinding.
+     * A resolved keybinding. Can be a simple keybinding or a chord keybinding.
      */
     var ResolvedKeybinding = (function () {
         function ResolvedKeybinding() {
@@ -2889,7 +2961,7 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-define(__m[8/*vs/base/common/lifecycle*/], __M([0/*require*/,1/*exports*/,12/*vs/base/common/functional*/]), function (require, exports, functional_1) {
+define(__m[7/*vs/base/common/lifecycle*/], __M([1/*require*/,0/*exports*/,12/*vs/base/common/functional*/]), function (require, exports, functional_1) {
     'use strict';
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.empty = Object.freeze({
@@ -3030,7 +3102,7 @@ define(__m[8/*vs/base/common/lifecycle*/], __M([0/*require*/,1/*exports*/,12/*vs
 
 
 
-define(__m[19/*vs/base/common/map*/], __M([0/*require*/,1/*exports*/]), function (require, exports) {
+define(__m[24/*vs/base/common/map*/], __M([1/*require*/,0/*exports*/]), function (require, exports) {
     'use strict';
     Object.defineProperty(exports, "__esModule", { value: true });
     /**
@@ -3407,7 +3479,7 @@ define(__m[19/*vs/base/common/map*/], __M([0/*require*/,1/*exports*/]), function
     exports.ResourceMap = ResourceMap;
 });
 
-define(__m[3/*vs/base/common/platform*/], __M([0/*require*/,1/*exports*/]), function (require, exports) {
+define(__m[3/*vs/base/common/platform*/], __M([1/*require*/,0/*exports*/]), function (require, exports) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -3421,7 +3493,6 @@ define(__m[3/*vs/base/common/platform*/], __M([0/*require*/,1/*exports*/]), func
     var _isRootUser = false;
     var _isNative = false;
     var _isWeb = false;
-    var _isQunit = false;
     var _locale = undefined;
     var _language = undefined;
     exports.LANGUAGE_DEFAULT = 'en';
@@ -3453,7 +3524,6 @@ define(__m[3/*vs/base/common/platform*/], __M([0/*require*/,1/*exports*/]), func
         _isWeb = true;
         _locale = navigator.language;
         _language = _locale;
-        _isQunit = !!self.QUnit;
     }
     var Platform;
     (function (Platform) {
@@ -3462,16 +3532,16 @@ define(__m[3/*vs/base/common/platform*/], __M([0/*require*/,1/*exports*/]), func
         Platform[Platform["Linux"] = 2] = "Linux";
         Platform[Platform["Windows"] = 3] = "Windows";
     })(Platform = exports.Platform || (exports.Platform = {}));
-    exports._platform = Platform.Web;
+    var _platform = Platform.Web;
     if (_isNative) {
         if (_isMacintosh) {
-            exports._platform = Platform.Mac;
+            _platform = Platform.Mac;
         }
         else if (_isWindows) {
-            exports._platform = Platform.Windows;
+            _platform = Platform.Windows;
         }
         else if (_isLinux) {
-            exports._platform = Platform.Linux;
+            _platform = Platform.Linux;
         }
     }
     exports.isWindows = _isWindows;
@@ -3480,8 +3550,7 @@ define(__m[3/*vs/base/common/platform*/], __M([0/*require*/,1/*exports*/]), func
     exports.isRootUser = _isRootUser;
     exports.isNative = _isNative;
     exports.isWeb = _isWeb;
-    exports.isQunit = _isQunit;
-    exports.platform = exports._platform;
+    exports.platform = _platform;
     /**
      * The language used for the user interface. The format of
      * the string is all lower case (e.g. zh-tw for Traditional
@@ -3511,9 +3580,18 @@ define(__m[3/*vs/base/common/platform*/], __M([0/*require*/,1/*exports*/]), func
         OperatingSystem[OperatingSystem["Linux"] = 3] = "Linux";
     })(OperatingSystem = exports.OperatingSystem || (exports.OperatingSystem = {}));
     exports.OS = (_isMacintosh ? 2 /* Macintosh */ : (_isWindows ? 1 /* Windows */ : 3 /* Linux */));
+    var AccessibilitySupport;
+    (function (AccessibilitySupport) {
+        /**
+         * This should be the browser case where it is not known if a screen reader is attached or no.
+         */
+        AccessibilitySupport[AccessibilitySupport["Unknown"] = 0] = "Unknown";
+        AccessibilitySupport[AccessibilitySupport["Disabled"] = 1] = "Disabled";
+        AccessibilitySupport[AccessibilitySupport["Enabled"] = 2] = "Enabled";
+    })(AccessibilitySupport = exports.AccessibilitySupport || (exports.AccessibilitySupport = {}));
 });
 
-define(__m[14/*vs/base/common/strings*/], __M([0/*require*/,1/*exports*/,19/*vs/base/common/map*/]), function (require, exports, map_1) {
+define(__m[16/*vs/base/common/strings*/], __M([1/*require*/,0/*exports*/,24/*vs/base/common/map*/]), function (require, exports, map_1) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -3701,7 +3779,7 @@ define(__m[14/*vs/base/common/strings*/], __M([0/*require*/,1/*exports*/,19/*vs/
     exports.indexOfIgnoreCase = indexOfIgnoreCase;
     function createRegExp(searchString, isRegex, options) {
         if (options === void 0) { options = {}; }
-        if (searchString === '') {
+        if (!searchString) {
             throw new Error('Cannot create regex from empty string');
         }
         if (!isRegex) {
@@ -3787,14 +3865,16 @@ define(__m[14/*vs/base/common/strings*/], __M([0/*require*/,1/*exports*/,19/*vs/
      * Returns the leading whitespace of the string.
      * If the string contains only whitespaces, returns entire string
      */
-    function getLeadingWhitespace(str) {
-        for (var i = 0, len = str.length; i < len; i++) {
+    function getLeadingWhitespace(str, start, end) {
+        if (start === void 0) { start = 0; }
+        if (end === void 0) { end = str.length; }
+        for (var i = start; i < end; i++) {
             var chCode = str.charCodeAt(i);
             if (chCode !== 32 /* Space */ && chCode !== 9 /* Tab */) {
-                return str.substring(0, i);
+                return str.substring(start, i);
             }
         }
-        return str;
+        return str.substring(start, end);
     }
     exports.getLeadingWhitespace = getLeadingWhitespace;
     /**
@@ -3974,6 +4054,14 @@ define(__m[14/*vs/base/common/strings*/], __M([0/*require*/,1/*exports*/,19/*vs/
         return CONTAINS_RTL.test(str);
     }
     exports.containsRTL = containsRTL;
+    /**
+     * Generated using https://github.com/alexandrudima/unicode-utils/blob/master/generate-emoji-test.js
+     */
+    var CONTAINS_EMOJI = /(?:[\u231A\u231B\u23F0\u23F3\u2600-\u27BF\u2B50\u2B55]|\uD83C[\uDDE6-\uDDFF\uDF00-\uDFFF]|\uD83D[\uDC00-\uDE4F\uDE80-\uDEF8]|\uD83E[\uDD00-\uDDE6])/;
+    function containsEmoji(str) {
+        return CONTAINS_EMOJI.test(str);
+    }
+    exports.containsEmoji = containsEmoji;
     var IS_BASIC_ASCII = /^[\t\n\r\x20-\x7E]*$/;
     /**
      * Returns true if `str` contains only basic ASCII characters in the range 32 - 126 (including 32 and 126) or \n, \r, \t
@@ -3982,6 +4070,15 @@ define(__m[14/*vs/base/common/strings*/], __M([0/*require*/,1/*exports*/,19/*vs/
         return IS_BASIC_ASCII.test(str);
     }
     exports.isBasicASCII = isBasicASCII;
+    function containsFullWidthCharacter(str) {
+        for (var i = 0, len = str.length; i < len; i++) {
+            if (isFullWidthCharacter(str.charCodeAt(i))) {
+                return true;
+            }
+        }
+        return false;
+    }
+    exports.containsFullWidthCharacter = containsFullWidthCharacter;
     function isFullWidthCharacter(charCode) {
         // Do a cheap trick to better support wrapping of wide characters, treat them as 2 columns
         // http://jrgraphix.net/research/unicode_blocks.php
@@ -4150,7 +4247,7 @@ define(__m[14/*vs/base/common/strings*/], __M([0/*require*/,1/*exports*/,19/*vs/
     exports.repeat = repeat;
 });
 
-define(__m[15/*vs/base/common/types*/], __M([0/*require*/,1/*exports*/]), function (require, exports) {
+define(__m[17/*vs/base/common/types*/], __M([1/*require*/,0/*exports*/]), function (require, exports) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -4319,7 +4416,7 @@ define(__m[15/*vs/base/common/types*/], __M([0/*require*/,1/*exports*/]), functi
     exports.create = create;
 });
 
-define(__m[4/*vs/base/common/errors*/], __M([0/*require*/,1/*exports*/,3/*vs/base/common/platform*/,15/*vs/base/common/types*/]), function (require, exports, platform, types) {
+define(__m[4/*vs/base/common/errors*/], __M([1/*require*/,0/*exports*/,3/*vs/base/common/platform*/,17/*vs/base/common/types*/]), function (require, exports, platform, types) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -4484,7 +4581,7 @@ define(__m[4/*vs/base/common/errors*/], __M([0/*require*/,1/*exports*/,3/*vs/bas
     exports.getErrorMessage = getErrorMessage;
 });
 
-define(__m[18/*vs/base/common/callbackList*/], __M([0/*require*/,1/*exports*/,4/*vs/base/common/errors*/]), function (require, exports, errors_1) {
+define(__m[21/*vs/base/common/callbackList*/], __M([1/*require*/,0/*exports*/,4/*vs/base/common/errors*/]), function (require, exports, errors_1) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -4568,572 +4665,7 @@ define(__m[18/*vs/base/common/callbackList*/], __M([0/*require*/,1/*exports*/,4/
     exports.default = CallbackList;
 });
 
-define(__m[6/*vs/base/common/event*/], __M([0/*require*/,1/*exports*/,8/*vs/base/common/lifecycle*/,18/*vs/base/common/callbackList*/,12/*vs/base/common/functional*/]), function (require, exports, lifecycle_1, callbackList_1, functional_1) {
-    /*---------------------------------------------------------------------------------------------
-     *  Copyright (c) Microsoft Corporation. All rights reserved.
-     *  Licensed under the MIT License. See License.txt in the project root for license information.
-     *--------------------------------------------------------------------------------------------*/
-    'use strict';
-    Object.defineProperty(exports, "__esModule", { value: true });
-    var Event;
-    (function (Event) {
-        var _disposable = { dispose: function () { } };
-        Event.None = function () { return _disposable; };
-    })(Event || (Event = {}));
-    exports.default = Event;
-    /**
-     * The Emitter can be used to expose an Event to the public
-     * to fire it from the insides.
-     * Sample:
-        class Document {
-    
-            private _onDidChange = new Emitter<(value:string)=>any>();
-    
-            public onDidChange = this._onDidChange.event;
-    
-            // getter-style
-            // get onDidChange(): Event<(value:string)=>any> {
-            // 	return this._onDidChange.event;
-            // }
-    
-            private _doIt() {
-                //...
-                this._onDidChange.fire(value);
-            }
-        }
-     */
-    var Emitter = (function () {
-        function Emitter(_options) {
-            this._options = _options;
-        }
-        Object.defineProperty(Emitter.prototype, "event", {
-            /**
-             * For the public to allow to subscribe
-             * to events from this Emitter
-             */
-            get: function () {
-                var _this = this;
-                if (!this._event) {
-                    this._event = function (listener, thisArgs, disposables) {
-                        if (!_this._callbacks) {
-                            _this._callbacks = new callbackList_1.default();
-                        }
-                        var firstListener = _this._callbacks.isEmpty();
-                        if (firstListener && _this._options && _this._options.onFirstListenerAdd) {
-                            _this._options.onFirstListenerAdd(_this);
-                        }
-                        _this._callbacks.add(listener, thisArgs);
-                        if (firstListener && _this._options && _this._options.onFirstListenerDidAdd) {
-                            _this._options.onFirstListenerDidAdd(_this);
-                        }
-                        if (_this._options && _this._options.onListenerDidAdd) {
-                            _this._options.onListenerDidAdd(_this, listener, thisArgs);
-                        }
-                        var result;
-                        result = {
-                            dispose: function () {
-                                result.dispose = Emitter._noop;
-                                if (!_this._disposed) {
-                                    _this._callbacks.remove(listener, thisArgs);
-                                    if (_this._options && _this._options.onLastListenerRemove && _this._callbacks.isEmpty()) {
-                                        _this._options.onLastListenerRemove(_this);
-                                    }
-                                }
-                            }
-                        };
-                        if (Array.isArray(disposables)) {
-                            disposables.push(result);
-                        }
-                        return result;
-                    };
-                }
-                return this._event;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        /**
-         * To be kept private to fire an event to
-         * subscribers
-         */
-        Emitter.prototype.fire = function (event) {
-            if (this._callbacks) {
-                this._callbacks.invoke.call(this._callbacks, event);
-            }
-        };
-        Emitter.prototype.dispose = function () {
-            if (this._callbacks) {
-                this._callbacks.dispose();
-                this._callbacks = undefined;
-                this._disposed = true;
-            }
-        };
-        return Emitter;
-    }());
-    Emitter._noop = function () { };
-    exports.Emitter = Emitter;
-    var EventMultiplexer = (function () {
-        function EventMultiplexer() {
-            var _this = this;
-            this.hasListeners = false;
-            this.events = [];
-            this.emitter = new Emitter({
-                onFirstListenerAdd: function () { return _this.onFirstListenerAdd(); },
-                onLastListenerRemove: function () { return _this.onLastListenerRemove(); }
-            });
-        }
-        Object.defineProperty(EventMultiplexer.prototype, "event", {
-            get: function () {
-                return this.emitter.event;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        EventMultiplexer.prototype.add = function (event) {
-            var _this = this;
-            var e = { event: event, listener: null };
-            this.events.push(e);
-            if (this.hasListeners) {
-                this.hook(e);
-            }
-            var dispose = function () {
-                if (_this.hasListeners) {
-                    _this.unhook(e);
-                }
-                var idx = _this.events.indexOf(e);
-                _this.events.splice(idx, 1);
-            };
-            return lifecycle_1.toDisposable(functional_1.once(dispose));
-        };
-        EventMultiplexer.prototype.onFirstListenerAdd = function () {
-            var _this = this;
-            this.hasListeners = true;
-            this.events.forEach(function (e) { return _this.hook(e); });
-        };
-        EventMultiplexer.prototype.onLastListenerRemove = function () {
-            var _this = this;
-            this.hasListeners = false;
-            this.events.forEach(function (e) { return _this.unhook(e); });
-        };
-        EventMultiplexer.prototype.hook = function (e) {
-            var _this = this;
-            e.listener = e.event(function (r) { return _this.emitter.fire(r); });
-        };
-        EventMultiplexer.prototype.unhook = function (e) {
-            e.listener.dispose();
-            e.listener = null;
-        };
-        EventMultiplexer.prototype.dispose = function () {
-            this.emitter.dispose();
-        };
-        return EventMultiplexer;
-    }());
-    exports.EventMultiplexer = EventMultiplexer;
-    /**
-     * Creates an Event which is backed-up by the event emitter. This allows
-     * to use the existing eventing pattern and is likely using less memory.
-     * Sample:
-     *
-     * 	class Document {
-     *
-     *		private _eventbus = new EventEmitter();
-     *
-     *		public onDidChange = fromEventEmitter(this._eventbus, 'changed');
-     *
-     *		// getter-style
-     *		// get onDidChange(): Event<(value:string)=>any> {
-     *		// 	cache fromEventEmitter result and return
-     *		// }
-     *
-     *		private _doIt() {
-     *			// ...
-     *			this._eventbus.emit('changed', value)
-     *		}
-     *	}
-     */
-    function fromEventEmitter(emitter, eventType) {
-        return function (listener, thisArgs, disposables) {
-            var result = emitter.addListener(eventType, function () {
-                listener.apply(thisArgs, arguments);
-            });
-            if (Array.isArray(disposables)) {
-                disposables.push(result);
-            }
-            return result;
-        };
-    }
-    exports.fromEventEmitter = fromEventEmitter;
-    function fromCallback(fn) {
-        var listener;
-        var emitter = new Emitter({
-            onFirstListenerAdd: function () { return listener = fn(function (e) { return emitter.fire(e); }); },
-            onLastListenerRemove: function () { return listener.dispose(); }
-        });
-        return emitter.event;
-    }
-    exports.fromCallback = fromCallback;
-    function fromPromise(promise) {
-        var emitter = new Emitter();
-        var shouldEmit = false;
-        promise
-            .then(null, function () { return null; })
-            .then(function () {
-            if (!shouldEmit) {
-                setTimeout(function () { return emitter.fire(); }, 0);
-            }
-            else {
-                emitter.fire();
-            }
-        });
-        shouldEmit = true;
-        return emitter.event;
-    }
-    exports.fromPromise = fromPromise;
-    function delayed(promise) {
-        var toCancel = null;
-        var listener = null;
-        var emitter = new Emitter({
-            onFirstListenerAdd: function () {
-                toCancel = promise.then(function (event) { return listener = event(function (e) { return emitter.fire(e); }); }, function () { return null; });
-            },
-            onLastListenerRemove: function () {
-                if (toCancel) {
-                    toCancel.cancel();
-                    toCancel = null;
-                }
-                if (listener) {
-                    listener.dispose();
-                    listener = null;
-                }
-            }
-        });
-        return emitter.event;
-    }
-    exports.delayed = delayed;
-    function once(event) {
-        return function (listener, thisArgs, disposables) {
-            if (thisArgs === void 0) { thisArgs = null; }
-            var result = event(function (e) {
-                result.dispose();
-                return listener.call(thisArgs, e);
-            }, null, disposables);
-            return result;
-        };
-    }
-    exports.once = once;
-    function any() {
-        var events = [];
-        for (var _i = 0; _i < arguments.length; _i++) {
-            events[_i] = arguments[_i];
-        }
-        return function (listener, thisArgs, disposables) {
-            if (thisArgs === void 0) { thisArgs = null; }
-            return lifecycle_1.combinedDisposable(events.map(function (event) { return event(function (e) { return listener.call(thisArgs, e); }, null, disposables); }));
-        };
-    }
-    exports.any = any;
-    function debounceEvent(event, merger, delay, leading) {
-        if (delay === void 0) { delay = 100; }
-        if (leading === void 0) { leading = false; }
-        var subscription;
-        var output;
-        var handle;
-        var emitter = new Emitter({
-            onFirstListenerAdd: function () {
-                subscription = event(function (cur) {
-                    output = merger(output, cur);
-                    if (!handle && leading) {
-                        emitter.fire(output);
-                    }
-                    clearTimeout(handle);
-                    handle = setTimeout(function () {
-                        var _output = output;
-                        output = undefined;
-                        emitter.fire(_output);
-                        handle = null;
-                    }, delay);
-                });
-            },
-            onLastListenerRemove: function () {
-                subscription.dispose();
-            }
-        });
-        return emitter.event;
-    }
-    exports.debounceEvent = debounceEvent;
-    /**
-     * The EventDelayer is useful in situations in which you want
-     * to delay firing your events during some code.
-     * You can wrap that code and be sure that the event will not
-     * be fired during that wrap.
-     *
-     * ```
-     * const emitter: Emitter;
-     * const delayer = new EventDelayer();
-     * const delayedEvent = delayer.wrapEvent(emitter.event);
-     *
-     * delayedEvent(console.log);
-     *
-     * delayer.bufferEvents(() => {
-     *   emitter.fire(); // event will not be fired yet
-     * });
-     *
-     * // event will only be fired at this point
-     * ```
-     */
-    var EventBufferer = (function () {
-        function EventBufferer() {
-            this.buffers = [];
-        }
-        EventBufferer.prototype.wrapEvent = function (event) {
-            var _this = this;
-            return function (listener, thisArgs, disposables) {
-                return event(function (i) {
-                    var buffer = _this.buffers[_this.buffers.length - 1];
-                    if (buffer) {
-                        buffer.push(function () { return listener.call(thisArgs, i); });
-                    }
-                    else {
-                        listener.call(thisArgs, i);
-                    }
-                }, void 0, disposables);
-            };
-        };
-        EventBufferer.prototype.bufferEvents = function (fn) {
-            var buffer = [];
-            this.buffers.push(buffer);
-            fn();
-            this.buffers.pop();
-            buffer.forEach(function (flush) { return flush(); });
-        };
-        return EventBufferer;
-    }());
-    exports.EventBufferer = EventBufferer;
-    function mapEvent(event, map) {
-        return function (listener, thisArgs, disposables) {
-            if (thisArgs === void 0) { thisArgs = null; }
-            return event(function (i) { return listener.call(thisArgs, map(i)); }, null, disposables);
-        };
-    }
-    exports.mapEvent = mapEvent;
-    function filterEvent(event, filter) {
-        return function (listener, thisArgs, disposables) {
-            if (thisArgs === void 0) { thisArgs = null; }
-            return event(function (e) { return filter(e) && listener.call(thisArgs, e); }, null, disposables);
-        };
-    }
-    exports.filterEvent = filterEvent;
-    var ChainableEvent = (function () {
-        function ChainableEvent(_event) {
-            this._event = _event;
-        }
-        Object.defineProperty(ChainableEvent.prototype, "event", {
-            get: function () { return this._event; },
-            enumerable: true,
-            configurable: true
-        });
-        ChainableEvent.prototype.map = function (fn) {
-            return new ChainableEvent(mapEvent(this._event, fn));
-        };
-        ChainableEvent.prototype.filter = function (fn) {
-            return new ChainableEvent(filterEvent(this._event, fn));
-        };
-        ChainableEvent.prototype.on = function (listener, thisArgs, disposables) {
-            return this._event(listener, thisArgs, disposables);
-        };
-        return ChainableEvent;
-    }());
-    function chain(event) {
-        return new ChainableEvent(event);
-    }
-    exports.chain = chain;
-    function stopwatch(event) {
-        var start = new Date().getTime();
-        return mapEvent(once(event), function (_) { return new Date().getTime() - start; });
-    }
-    exports.stopwatch = stopwatch;
-    /**
-     * Buffers the provided event until a first listener comes
-     * along, at which point fire all the events at once and
-     * pipe the event from then on.
-     *
-     * ```typescript
-     * const emitter = new Emitter<number>();
-     * const event = emitter.event;
-     * const bufferedEvent = buffer(event);
-     *
-     * emitter.fire(1);
-     * emitter.fire(2);
-     * emitter.fire(3);
-     * // nothing...
-     *
-     * const listener = bufferedEvent(num => console.log(num));
-     * // 1, 2, 3
-     *
-     * emitter.fire(4);
-     * // 4
-     * ```
-     */
-    function buffer(event, nextTick, buffer) {
-        if (nextTick === void 0) { nextTick = false; }
-        if (buffer === void 0) { buffer = []; }
-        buffer = buffer.slice();
-        var listener = event(function (e) {
-            if (buffer) {
-                buffer.push(e);
-            }
-            else {
-                emitter.fire(e);
-            }
-        });
-        var flush = function () {
-            buffer.forEach(function (e) { return emitter.fire(e); });
-            buffer = null;
-        };
-        var emitter = new Emitter({
-            onFirstListenerAdd: function () {
-                if (!listener) {
-                    listener = event(function (e) { return emitter.fire(e); });
-                }
-            },
-            onFirstListenerDidAdd: function () {
-                if (buffer) {
-                    if (nextTick) {
-                        setTimeout(flush);
-                    }
-                    else {
-                        flush();
-                    }
-                }
-            },
-            onLastListenerRemove: function () {
-                listener.dispose();
-                listener = null;
-            }
-        });
-        return emitter.event;
-    }
-    exports.buffer = buffer;
-    /**
-     * Similar to `buffer` but it buffers indefinitely and repeats
-     * the buffered events to every new listener.
-     */
-    function echo(event, nextTick, buffer) {
-        if (nextTick === void 0) { nextTick = false; }
-        if (buffer === void 0) { buffer = []; }
-        buffer = buffer.slice();
-        event(function (e) {
-            buffer.push(e);
-            emitter.fire(e);
-        });
-        var flush = function (listener, thisArgs) { return buffer.forEach(function (e) { return listener.call(thisArgs, e); }); };
-        var emitter = new Emitter({
-            onListenerDidAdd: function (emitter, listener, thisArgs) {
-                if (nextTick) {
-                    setTimeout(function () { return flush(listener, thisArgs); });
-                }
-                else {
-                    flush(listener, thisArgs);
-                }
-            }
-        });
-        return emitter.event;
-    }
-    exports.echo = echo;
-});
-
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
-define(__m[13/*vs/base/common/cancellation*/], __M([0/*require*/,1/*exports*/,6/*vs/base/common/event*/]), function (require, exports, event_1) {
-    'use strict';
-    Object.defineProperty(exports, "__esModule", { value: true });
-    var shortcutEvent = Object.freeze(function (callback, context) {
-        var handle = setTimeout(callback.bind(context), 0);
-        return { dispose: function () { clearTimeout(handle); } };
-    });
-    var CancellationToken;
-    (function (CancellationToken) {
-        CancellationToken.None = Object.freeze({
-            isCancellationRequested: false,
-            onCancellationRequested: event_1.default.None
-        });
-        CancellationToken.Cancelled = Object.freeze({
-            isCancellationRequested: true,
-            onCancellationRequested: shortcutEvent
-        });
-    })(CancellationToken = exports.CancellationToken || (exports.CancellationToken = {}));
-    var MutableToken = (function () {
-        function MutableToken() {
-            this._isCancelled = false;
-        }
-        MutableToken.prototype.cancel = function () {
-            if (!this._isCancelled) {
-                this._isCancelled = true;
-                if (this._emitter) {
-                    this._emitter.fire(undefined);
-                    this._emitter = undefined;
-                }
-            }
-        };
-        Object.defineProperty(MutableToken.prototype, "isCancellationRequested", {
-            get: function () {
-                return this._isCancelled;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(MutableToken.prototype, "onCancellationRequested", {
-            get: function () {
-                if (this._isCancelled) {
-                    return shortcutEvent;
-                }
-                if (!this._emitter) {
-                    this._emitter = new event_1.Emitter();
-                }
-                return this._emitter.event;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        return MutableToken;
-    }());
-    var CancellationTokenSource = (function () {
-        function CancellationTokenSource() {
-        }
-        Object.defineProperty(CancellationTokenSource.prototype, "token", {
-            get: function () {
-                if (!this._token) {
-                    // be lazy and create the token only when
-                    // actually needed
-                    this._token = new MutableToken();
-                }
-                return this._token;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        CancellationTokenSource.prototype.cancel = function () {
-            if (!this._token) {
-                // save an object by returning the default
-                // cancelled token when cancellation happens
-                // before someone asks for the token
-                this._token = CancellationToken.Cancelled;
-            }
-            else {
-                this._token.cancel();
-            }
-        };
-        CancellationTokenSource.prototype.dispose = function () {
-            this.cancel();
-        };
-        return CancellationTokenSource;
-    }());
-    exports.CancellationTokenSource = CancellationTokenSource;
-});
-
-define(__m[10/*vs/base/common/uri*/], __M([0/*require*/,1/*exports*/,3/*vs/base/common/platform*/]), function (require, exports, platform) {
+define(__m[13/*vs/base/common/uri*/], __M([1/*require*/,0/*exports*/,3/*vs/base/common/platform*/]), function (require, exports, platform) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -7614,7 +7146,7 @@ if (typeof process !== 'undefined' && typeof process.nextTick === 'function') {
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-define(__m[2/*vs/base/common/winjs.base*/], __M([33/*vs/base/common/winjs.base.raw*/,4/*vs/base/common/errors*/]), function (winjs, __Errors__) {
+define(__m[2/*vs/base/common/winjs.base*/], __M([32/*vs/base/common/winjs.base.raw*/,4/*vs/base/common/errors*/]), function (winjs, __Errors__) {
 	'use strict';
 
 	var outstandingPromiseErrors = {};
@@ -7671,6 +7203,580 @@ define(__m[2/*vs/base/common/winjs.base*/], __M([33/*vs/base/common/winjs.base.r
 		PPromise: winjs.Promise
 	};
 });
+define(__m[8/*vs/base/common/event*/], __M([1/*require*/,0/*exports*/,7/*vs/base/common/lifecycle*/,21/*vs/base/common/callbackList*/,2/*vs/base/common/winjs.base*/,12/*vs/base/common/functional*/]), function (require, exports, lifecycle_1, callbackList_1, winjs_base_1, functional_1) {
+    /*---------------------------------------------------------------------------------------------
+     *  Copyright (c) Microsoft Corporation. All rights reserved.
+     *  Licensed under the MIT License. See License.txt in the project root for license information.
+     *--------------------------------------------------------------------------------------------*/
+    'use strict';
+    Object.defineProperty(exports, "__esModule", { value: true });
+    var Event;
+    (function (Event) {
+        var _disposable = { dispose: function () { } };
+        Event.None = function () { return _disposable; };
+    })(Event || (Event = {}));
+    exports.default = Event;
+    /**
+     * The Emitter can be used to expose an Event to the public
+     * to fire it from the insides.
+     * Sample:
+        class Document {
+    
+            private _onDidChange = new Emitter<(value:string)=>any>();
+    
+            public onDidChange = this._onDidChange.event;
+    
+            // getter-style
+            // get onDidChange(): Event<(value:string)=>any> {
+            // 	return this._onDidChange.event;
+            // }
+    
+            private _doIt() {
+                //...
+                this._onDidChange.fire(value);
+            }
+        }
+     */
+    var Emitter = (function () {
+        function Emitter(_options) {
+            this._options = _options;
+        }
+        Object.defineProperty(Emitter.prototype, "event", {
+            /**
+             * For the public to allow to subscribe
+             * to events from this Emitter
+             */
+            get: function () {
+                var _this = this;
+                if (!this._event) {
+                    this._event = function (listener, thisArgs, disposables) {
+                        if (!_this._callbacks) {
+                            _this._callbacks = new callbackList_1.default();
+                        }
+                        var firstListener = _this._callbacks.isEmpty();
+                        if (firstListener && _this._options && _this._options.onFirstListenerAdd) {
+                            _this._options.onFirstListenerAdd(_this);
+                        }
+                        _this._callbacks.add(listener, thisArgs);
+                        if (firstListener && _this._options && _this._options.onFirstListenerDidAdd) {
+                            _this._options.onFirstListenerDidAdd(_this);
+                        }
+                        if (_this._options && _this._options.onListenerDidAdd) {
+                            _this._options.onListenerDidAdd(_this, listener, thisArgs);
+                        }
+                        var result;
+                        result = {
+                            dispose: function () {
+                                result.dispose = Emitter._noop;
+                                if (!_this._disposed) {
+                                    _this._callbacks.remove(listener, thisArgs);
+                                    if (_this._options && _this._options.onLastListenerRemove && _this._callbacks.isEmpty()) {
+                                        _this._options.onLastListenerRemove(_this);
+                                    }
+                                }
+                            }
+                        };
+                        if (Array.isArray(disposables)) {
+                            disposables.push(result);
+                        }
+                        return result;
+                    };
+                }
+                return this._event;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        /**
+         * To be kept private to fire an event to
+         * subscribers
+         */
+        Emitter.prototype.fire = function (event) {
+            if (this._callbacks) {
+                this._callbacks.invoke.call(this._callbacks, event);
+            }
+        };
+        Emitter.prototype.dispose = function () {
+            if (this._callbacks) {
+                this._callbacks.dispose();
+                this._callbacks = undefined;
+                this._disposed = true;
+            }
+        };
+        return Emitter;
+    }());
+    Emitter._noop = function () { };
+    exports.Emitter = Emitter;
+    var EventMultiplexer = (function () {
+        function EventMultiplexer() {
+            var _this = this;
+            this.hasListeners = false;
+            this.events = [];
+            this.emitter = new Emitter({
+                onFirstListenerAdd: function () { return _this.onFirstListenerAdd(); },
+                onLastListenerRemove: function () { return _this.onLastListenerRemove(); }
+            });
+        }
+        Object.defineProperty(EventMultiplexer.prototype, "event", {
+            get: function () {
+                return this.emitter.event;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        EventMultiplexer.prototype.add = function (event) {
+            var _this = this;
+            var e = { event: event, listener: null };
+            this.events.push(e);
+            if (this.hasListeners) {
+                this.hook(e);
+            }
+            var dispose = function () {
+                if (_this.hasListeners) {
+                    _this.unhook(e);
+                }
+                var idx = _this.events.indexOf(e);
+                _this.events.splice(idx, 1);
+            };
+            return lifecycle_1.toDisposable(functional_1.once(dispose));
+        };
+        EventMultiplexer.prototype.onFirstListenerAdd = function () {
+            var _this = this;
+            this.hasListeners = true;
+            this.events.forEach(function (e) { return _this.hook(e); });
+        };
+        EventMultiplexer.prototype.onLastListenerRemove = function () {
+            var _this = this;
+            this.hasListeners = false;
+            this.events.forEach(function (e) { return _this.unhook(e); });
+        };
+        EventMultiplexer.prototype.hook = function (e) {
+            var _this = this;
+            e.listener = e.event(function (r) { return _this.emitter.fire(r); });
+        };
+        EventMultiplexer.prototype.unhook = function (e) {
+            e.listener.dispose();
+            e.listener = null;
+        };
+        EventMultiplexer.prototype.dispose = function () {
+            this.emitter.dispose();
+        };
+        return EventMultiplexer;
+    }());
+    exports.EventMultiplexer = EventMultiplexer;
+    /**
+     * Creates an Event which is backed-up by the event emitter. This allows
+     * to use the existing eventing pattern and is likely using less memory.
+     * Sample:
+     *
+     * 	class Document {
+     *
+     *		private _eventbus = new EventEmitter();
+     *
+     *		public onDidChange = fromEventEmitter(this._eventbus, 'changed');
+     *
+     *		// getter-style
+     *		// get onDidChange(): Event<(value:string)=>any> {
+     *		// 	cache fromEventEmitter result and return
+     *		// }
+     *
+     *		private _doIt() {
+     *			// ...
+     *			this._eventbus.emit('changed', value)
+     *		}
+     *	}
+     */
+    function fromEventEmitter(emitter, eventType) {
+        return function (listener, thisArgs, disposables) {
+            var result = emitter.addListener(eventType, function () {
+                listener.apply(thisArgs, arguments);
+            });
+            if (Array.isArray(disposables)) {
+                disposables.push(result);
+            }
+            return result;
+        };
+    }
+    exports.fromEventEmitter = fromEventEmitter;
+    function fromCallback(fn) {
+        var listener;
+        var emitter = new Emitter({
+            onFirstListenerAdd: function () { return listener = fn(function (e) { return emitter.fire(e); }); },
+            onLastListenerRemove: function () { return listener.dispose(); }
+        });
+        return emitter.event;
+    }
+    exports.fromCallback = fromCallback;
+    function fromPromise(promise) {
+        var emitter = new Emitter();
+        var shouldEmit = false;
+        promise
+            .then(null, function () { return null; })
+            .then(function () {
+            if (!shouldEmit) {
+                setTimeout(function () { return emitter.fire(); }, 0);
+            }
+            else {
+                emitter.fire();
+            }
+        });
+        shouldEmit = true;
+        return emitter.event;
+    }
+    exports.fromPromise = fromPromise;
+    function toPromise(event) {
+        return new winjs_base_1.TPromise(function (complete) {
+            var sub = event(function (e) {
+                sub.dispose();
+                complete(e);
+            });
+        });
+    }
+    exports.toPromise = toPromise;
+    function delayed(promise) {
+        var toCancel = null;
+        var listener = null;
+        var emitter = new Emitter({
+            onFirstListenerAdd: function () {
+                toCancel = promise.then(function (event) { return listener = event(function (e) { return emitter.fire(e); }); }, function () { return null; });
+            },
+            onLastListenerRemove: function () {
+                if (toCancel) {
+                    toCancel.cancel();
+                    toCancel = null;
+                }
+                if (listener) {
+                    listener.dispose();
+                    listener = null;
+                }
+            }
+        });
+        return emitter.event;
+    }
+    exports.delayed = delayed;
+    function once(event) {
+        return function (listener, thisArgs, disposables) {
+            if (thisArgs === void 0) { thisArgs = null; }
+            var result = event(function (e) {
+                result.dispose();
+                return listener.call(thisArgs, e);
+            }, null, disposables);
+            return result;
+        };
+    }
+    exports.once = once;
+    function any() {
+        var events = [];
+        for (var _i = 0; _i < arguments.length; _i++) {
+            events[_i] = arguments[_i];
+        }
+        return function (listener, thisArgs, disposables) {
+            if (thisArgs === void 0) { thisArgs = null; }
+            return lifecycle_1.combinedDisposable(events.map(function (event) { return event(function (e) { return listener.call(thisArgs, e); }, null, disposables); }));
+        };
+    }
+    exports.any = any;
+    function debounceEvent(event, merger, delay, leading) {
+        if (delay === void 0) { delay = 100; }
+        if (leading === void 0) { leading = false; }
+        var subscription;
+        var output;
+        var handle;
+        var emitter = new Emitter({
+            onFirstListenerAdd: function () {
+                subscription = event(function (cur) {
+                    output = merger(output, cur);
+                    if (!handle && leading) {
+                        emitter.fire(output);
+                    }
+                    clearTimeout(handle);
+                    handle = setTimeout(function () {
+                        var _output = output;
+                        output = undefined;
+                        emitter.fire(_output);
+                        handle = null;
+                    }, delay);
+                });
+            },
+            onLastListenerRemove: function () {
+                subscription.dispose();
+            }
+        });
+        return emitter.event;
+    }
+    exports.debounceEvent = debounceEvent;
+    /**
+     * The EventDelayer is useful in situations in which you want
+     * to delay firing your events during some code.
+     * You can wrap that code and be sure that the event will not
+     * be fired during that wrap.
+     *
+     * ```
+     * const emitter: Emitter;
+     * const delayer = new EventDelayer();
+     * const delayedEvent = delayer.wrapEvent(emitter.event);
+     *
+     * delayedEvent(console.log);
+     *
+     * delayer.bufferEvents(() => {
+     *   emitter.fire(); // event will not be fired yet
+     * });
+     *
+     * // event will only be fired at this point
+     * ```
+     */
+    var EventBufferer = (function () {
+        function EventBufferer() {
+            this.buffers = [];
+        }
+        EventBufferer.prototype.wrapEvent = function (event) {
+            var _this = this;
+            return function (listener, thisArgs, disposables) {
+                return event(function (i) {
+                    var buffer = _this.buffers[_this.buffers.length - 1];
+                    if (buffer) {
+                        buffer.push(function () { return listener.call(thisArgs, i); });
+                    }
+                    else {
+                        listener.call(thisArgs, i);
+                    }
+                }, void 0, disposables);
+            };
+        };
+        EventBufferer.prototype.bufferEvents = function (fn) {
+            var buffer = [];
+            this.buffers.push(buffer);
+            fn();
+            this.buffers.pop();
+            buffer.forEach(function (flush) { return flush(); });
+        };
+        return EventBufferer;
+    }());
+    exports.EventBufferer = EventBufferer;
+    function mapEvent(event, map) {
+        return function (listener, thisArgs, disposables) {
+            if (thisArgs === void 0) { thisArgs = null; }
+            return event(function (i) { return listener.call(thisArgs, map(i)); }, null, disposables);
+        };
+    }
+    exports.mapEvent = mapEvent;
+    function filterEvent(event, filter) {
+        return function (listener, thisArgs, disposables) {
+            if (thisArgs === void 0) { thisArgs = null; }
+            return event(function (e) { return filter(e) && listener.call(thisArgs, e); }, null, disposables);
+        };
+    }
+    exports.filterEvent = filterEvent;
+    var ChainableEvent = (function () {
+        function ChainableEvent(_event) {
+            this._event = _event;
+        }
+        Object.defineProperty(ChainableEvent.prototype, "event", {
+            get: function () { return this._event; },
+            enumerable: true,
+            configurable: true
+        });
+        ChainableEvent.prototype.map = function (fn) {
+            return new ChainableEvent(mapEvent(this._event, fn));
+        };
+        ChainableEvent.prototype.filter = function (fn) {
+            return new ChainableEvent(filterEvent(this._event, fn));
+        };
+        ChainableEvent.prototype.on = function (listener, thisArgs, disposables) {
+            return this._event(listener, thisArgs, disposables);
+        };
+        return ChainableEvent;
+    }());
+    function chain(event) {
+        return new ChainableEvent(event);
+    }
+    exports.chain = chain;
+    function stopwatch(event) {
+        var start = new Date().getTime();
+        return mapEvent(once(event), function (_) { return new Date().getTime() - start; });
+    }
+    exports.stopwatch = stopwatch;
+    /**
+     * Buffers the provided event until a first listener comes
+     * along, at which point fire all the events at once and
+     * pipe the event from then on.
+     *
+     * ```typescript
+     * const emitter = new Emitter<number>();
+     * const event = emitter.event;
+     * const bufferedEvent = buffer(event);
+     *
+     * emitter.fire(1);
+     * emitter.fire(2);
+     * emitter.fire(3);
+     * // nothing...
+     *
+     * const listener = bufferedEvent(num => console.log(num));
+     * // 1, 2, 3
+     *
+     * emitter.fire(4);
+     * // 4
+     * ```
+     */
+    function buffer(event, nextTick, buffer) {
+        if (nextTick === void 0) { nextTick = false; }
+        if (buffer === void 0) { buffer = []; }
+        buffer = buffer.slice();
+        var listener = event(function (e) {
+            if (buffer) {
+                buffer.push(e);
+            }
+            else {
+                emitter.fire(e);
+            }
+        });
+        var flush = function () {
+            buffer.forEach(function (e) { return emitter.fire(e); });
+            buffer = null;
+        };
+        var emitter = new Emitter({
+            onFirstListenerAdd: function () {
+                if (!listener) {
+                    listener = event(function (e) { return emitter.fire(e); });
+                }
+            },
+            onFirstListenerDidAdd: function () {
+                if (buffer) {
+                    if (nextTick) {
+                        setTimeout(flush);
+                    }
+                    else {
+                        flush();
+                    }
+                }
+            },
+            onLastListenerRemove: function () {
+                listener.dispose();
+                listener = null;
+            }
+        });
+        return emitter.event;
+    }
+    exports.buffer = buffer;
+    /**
+     * Similar to `buffer` but it buffers indefinitely and repeats
+     * the buffered events to every new listener.
+     */
+    function echo(event, nextTick, buffer) {
+        if (nextTick === void 0) { nextTick = false; }
+        if (buffer === void 0) { buffer = []; }
+        buffer = buffer.slice();
+        event(function (e) {
+            buffer.push(e);
+            emitter.fire(e);
+        });
+        var flush = function (listener, thisArgs) { return buffer.forEach(function (e) { return listener.call(thisArgs, e); }); };
+        var emitter = new Emitter({
+            onListenerDidAdd: function (emitter, listener, thisArgs) {
+                if (nextTick) {
+                    setTimeout(function () { return flush(listener, thisArgs); });
+                }
+                else {
+                    flush(listener, thisArgs);
+                }
+            }
+        });
+        return emitter.event;
+    }
+    exports.echo = echo;
+});
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+define(__m[10/*vs/base/common/cancellation*/], __M([1/*require*/,0/*exports*/,8/*vs/base/common/event*/]), function (require, exports, event_1) {
+    'use strict';
+    Object.defineProperty(exports, "__esModule", { value: true });
+    var shortcutEvent = Object.freeze(function (callback, context) {
+        var handle = setTimeout(callback.bind(context), 0);
+        return { dispose: function () { clearTimeout(handle); } };
+    });
+    var CancellationToken;
+    (function (CancellationToken) {
+        CancellationToken.None = Object.freeze({
+            isCancellationRequested: false,
+            onCancellationRequested: event_1.default.None
+        });
+        CancellationToken.Cancelled = Object.freeze({
+            isCancellationRequested: true,
+            onCancellationRequested: shortcutEvent
+        });
+    })(CancellationToken = exports.CancellationToken || (exports.CancellationToken = {}));
+    var MutableToken = (function () {
+        function MutableToken() {
+            this._isCancelled = false;
+        }
+        MutableToken.prototype.cancel = function () {
+            if (!this._isCancelled) {
+                this._isCancelled = true;
+                if (this._emitter) {
+                    this._emitter.fire(undefined);
+                    this._emitter = undefined;
+                }
+            }
+        };
+        Object.defineProperty(MutableToken.prototype, "isCancellationRequested", {
+            get: function () {
+                return this._isCancelled;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(MutableToken.prototype, "onCancellationRequested", {
+            get: function () {
+                if (this._isCancelled) {
+                    return shortcutEvent;
+                }
+                if (!this._emitter) {
+                    this._emitter = new event_1.Emitter();
+                }
+                return this._emitter.event;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        return MutableToken;
+    }());
+    var CancellationTokenSource = (function () {
+        function CancellationTokenSource() {
+        }
+        Object.defineProperty(CancellationTokenSource.prototype, "token", {
+            get: function () {
+                if (!this._token) {
+                    // be lazy and create the token only when
+                    // actually needed
+                    this._token = new MutableToken();
+                }
+                return this._token;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        CancellationTokenSource.prototype.cancel = function () {
+            if (!this._token) {
+                // save an object by returning the default
+                // cancelled token when cancellation happens
+                // before someone asks for the token
+                this._token = CancellationToken.Cancelled;
+            }
+            else {
+                this._token.cancel();
+            }
+        };
+        CancellationTokenSource.prototype.dispose = function () {
+            this.cancel();
+        };
+        return CancellationTokenSource;
+    }());
+    exports.CancellationTokenSource = CancellationTokenSource;
+});
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -7685,7 +7791,7 @@ define(__m[2/*vs/base/common/winjs.base*/], __M([33/*vs/base/common/winjs.base.r
 
 
 
-define(__m[17/*vs/base/common/async*/], __M([0/*require*/,1/*exports*/,4/*vs/base/common/errors*/,3/*vs/base/common/platform*/,2/*vs/base/common/winjs.base*/,13/*vs/base/common/cancellation*/,8/*vs/base/common/lifecycle*/,6/*vs/base/common/event*/]), function (require, exports, errors, platform, winjs_base_1, cancellation_1, lifecycle_1, event_1) {
+define(__m[18/*vs/base/common/async*/], __M([1/*require*/,0/*exports*/,4/*vs/base/common/errors*/,3/*vs/base/common/platform*/,2/*vs/base/common/winjs.base*/,10/*vs/base/common/cancellation*/,7/*vs/base/common/lifecycle*/,8/*vs/base/common/event*/]), function (require, exports, errors, platform, winjs_base_1, cancellation_1, lifecycle_1, event_1) {
     'use strict';
     Object.defineProperty(exports, "__esModule", { value: true });
     function isThenable(obj) {
@@ -8281,7 +8387,7 @@ define(__m[17/*vs/base/common/async*/], __M([0/*require*/,1/*exports*/,4/*vs/bas
 
 
 
-define(__m[31/*vs/base/common/worker/simpleWorker*/], __M([0/*require*/,1/*exports*/,4/*vs/base/common/errors*/,8/*vs/base/common/lifecycle*/,2/*vs/base/common/winjs.base*/,17/*vs/base/common/async*/,3/*vs/base/common/platform*/]), function (require, exports, errors_1, lifecycle_1, winjs_base_1, async_1, platform_1) {
+define(__m[31/*vs/base/common/worker/simpleWorker*/], __M([1/*require*/,0/*exports*/,4/*vs/base/common/errors*/,7/*vs/base/common/lifecycle*/,2/*vs/base/common/winjs.base*/,18/*vs/base/common/async*/,3/*vs/base/common/platform*/]), function (require, exports, errors_1, lifecycle_1, winjs_base_1, async_1, platform_1) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -8584,7 +8690,7 @@ define(__m[31/*vs/base/common/worker/simpleWorker*/], __M([0/*require*/,1/*expor
     exports.create = create;
 });
 
-define(__m[7/*vs/editor/common/core/position*/], __M([0/*require*/,1/*exports*/]), function (require, exports) {
+define(__m[5/*vs/editor/common/core/position*/], __M([1/*require*/,0/*exports*/]), function (require, exports) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -8706,7 +8812,7 @@ define(__m[7/*vs/editor/common/core/position*/], __M([0/*require*/,1/*exports*/]
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-define(__m[5/*vs/editor/common/core/range*/], __M([0/*require*/,1/*exports*/,7/*vs/editor/common/core/position*/]), function (require, exports, position_1) {
+define(__m[9/*vs/editor/common/core/range*/], __M([1/*require*/,0/*exports*/,5/*vs/editor/common/core/position*/]), function (require, exports, position_1) {
     'use strict';
     Object.defineProperty(exports, "__esModule", { value: true });
     /**
@@ -8923,6 +9029,10 @@ define(__m[5/*vs/editor/common/core/range*/], __M([0/*require*/,1/*exports*/,7/*
             return new Range(range.startLineNumber, range.startColumn, range.startLineNumber, range.startColumn);
         };
         // ---
+        Range.fromPositions = function (start, end) {
+            if (end === void 0) { end = start; }
+            return new Range(start.lineNumber, start.column, end.lineNumber, end.column);
+        };
         /**
          * Create a `Range` from an `IRange`.
          */
@@ -9018,7 +9128,7 @@ define(__m[5/*vs/editor/common/core/range*/], __M([0/*require*/,1/*exports*/,7/*
 
 
 
-define(__m[20/*vs/editor/common/core/selection*/], __M([0/*require*/,1/*exports*/,5/*vs/editor/common/core/range*/]), function (require, exports, range_1) {
+define(__m[22/*vs/editor/common/core/selection*/], __M([1/*require*/,0/*exports*/,9/*vs/editor/common/core/range*/,5/*vs/editor/common/core/position*/]), function (require, exports, range_1, position_1) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -9099,6 +9209,12 @@ define(__m[20/*vs/editor/common/core/selection*/], __M([0/*require*/,1/*exports*
             return new Selection(endLineNumber, endColumn, this.startLineNumber, this.startColumn);
         };
         /**
+         * Get the position at `positionLineNumber` and `positionColumn`.
+         */
+        Selection.prototype.getPosition = function () {
+            return new position_1.Position(this.positionLineNumber, this.positionColumn);
+        };
+        /**
          * Create a new selection with a different `selectionStartLineNumber` and `selectionStartColumn`.
          */
         Selection.prototype.setStartPosition = function (startLineNumber, startColumn) {
@@ -9108,6 +9224,13 @@ define(__m[20/*vs/editor/common/core/selection*/], __M([0/*require*/,1/*exports*
             return new Selection(this.endLineNumber, this.endColumn, startLineNumber, startColumn);
         };
         // ----
+        /**
+         * Create a `Selection` from one or two positions
+         */
+        Selection.fromPositions = function (start, end) {
+            if (end === void 0) { end = start; }
+            return new Selection(start.lineNumber, start.column, end.lineNumber, end.column);
+        };
         /**
          * Create a `Selection` from an `ISelection`.
          */
@@ -9158,7 +9281,7 @@ define(__m[20/*vs/editor/common/core/selection*/], __M([0/*require*/,1/*exports*
     exports.Selection = Selection;
 });
 
-define(__m[21/*vs/editor/common/core/token*/], __M([0/*require*/,1/*exports*/]), function (require, exports) {
+define(__m[23/*vs/editor/common/core/token*/], __M([1/*require*/,0/*exports*/]), function (require, exports) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -9195,7 +9318,7 @@ define(__m[21/*vs/editor/common/core/token*/], __M([0/*require*/,1/*exports*/]),
     exports.TokenizationResult2 = TokenizationResult2;
 });
 
-define(__m[9/*vs/editor/common/core/uint*/], __M([0/*require*/,1/*exports*/]), function (require, exports) {
+define(__m[6/*vs/editor/common/core/uint*/], __M([1/*require*/,0/*exports*/]), function (require, exports) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -9281,7 +9404,7 @@ define(__m[9/*vs/editor/common/core/uint*/], __M([0/*require*/,1/*exports*/]), f
     exports.toUint32Array = toUint32Array;
 });
 
-define(__m[23/*vs/editor/common/core/characterClassifier*/], __M([0/*require*/,1/*exports*/,9/*vs/editor/common/core/uint*/]), function (require, exports, uint_1) {
+define(__m[25/*vs/editor/common/core/characterClassifier*/], __M([1/*require*/,0/*exports*/,6/*vs/editor/common/core/uint*/]), function (require, exports, uint_1) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -9355,7 +9478,7 @@ define(__m[23/*vs/editor/common/core/characterClassifier*/], __M([0/*require*/,1
 
 
 
-define(__m[24/*vs/editor/common/diff/diffComputer*/], __M([0/*require*/,1/*exports*/,11/*vs/base/common/diff/diff*/,14/*vs/base/common/strings*/]), function (require, exports, diff_1, strings) {
+define(__m[26/*vs/editor/common/diff/diffComputer*/], __M([1/*require*/,0/*exports*/,11/*vs/base/common/diff/diff*/,16/*vs/base/common/strings*/]), function (require, exports, diff_1, strings) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -9641,7 +9764,7 @@ define(__m[24/*vs/editor/common/diff/diffComputer*/], __M([0/*require*/,1/*expor
     exports.DiffComputer = DiffComputer;
 });
 
-define(__m[25/*vs/editor/common/model/wordHelper*/], __M([0/*require*/,1/*exports*/]), function (require, exports) {
+define(__m[27/*vs/editor/common/model/wordHelper*/], __M([1/*require*/,0/*exports*/]), function (require, exports) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -9750,7 +9873,7 @@ define(__m[25/*vs/editor/common/model/wordHelper*/], __M([0/*require*/,1/*export
     exports.getWordAtText = getWordAtText;
 });
 
-define(__m[26/*vs/editor/common/modes/linkComputer*/], __M([0/*require*/,1/*exports*/,23/*vs/editor/common/core/characterClassifier*/,9/*vs/editor/common/core/uint*/]), function (require, exports, characterClassifier_1, uint_1) {
+define(__m[28/*vs/editor/common/modes/linkComputer*/], __M([1/*require*/,0/*exports*/,25/*vs/editor/common/core/characterClassifier*/,6/*vs/editor/common/core/uint*/]), function (require, exports, characterClassifier_1, uint_1) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -9994,7 +10117,7 @@ define(__m[26/*vs/editor/common/modes/linkComputer*/], __M([0/*require*/,1/*expo
     exports.computeLinks = computeLinks;
 });
 
-define(__m[27/*vs/editor/common/modes/supports/inplaceReplaceSupport*/], __M([0/*require*/,1/*exports*/]), function (require, exports) {
+define(__m[29/*vs/editor/common/modes/supports/inplaceReplaceSupport*/], __M([1/*require*/,0/*exports*/]), function (require, exports) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -10084,7 +10207,7 @@ define(__m[27/*vs/editor/common/modes/supports/inplaceReplaceSupport*/], __M([0/
     exports.BasicInplaceReplace = BasicInplaceReplace;
 });
 
-define(__m[28/*vs/editor/common/standalone/standaloneBase*/], __M([0/*require*/,1/*exports*/,6/*vs/base/common/event*/,22/*vs/base/common/keyCodes*/,7/*vs/editor/common/core/position*/,5/*vs/editor/common/core/range*/,20/*vs/editor/common/core/selection*/,2/*vs/base/common/winjs.base*/,13/*vs/base/common/cancellation*/,21/*vs/editor/common/core/token*/,10/*vs/base/common/uri*/]), function (require, exports, event_1, keyCodes_1, position_1, range_1, selection_1, winjs_base_1, cancellation_1, token_1, uri_1) {
+define(__m[30/*vs/editor/common/standalone/standaloneBase*/], __M([1/*require*/,0/*exports*/,8/*vs/base/common/event*/,14/*vs/base/common/keyCodes*/,5/*vs/editor/common/core/position*/,9/*vs/editor/common/core/range*/,22/*vs/editor/common/core/selection*/,2/*vs/base/common/winjs.base*/,10/*vs/base/common/cancellation*/,23/*vs/editor/common/core/token*/,13/*vs/base/common/uri*/]), function (require, exports, event_1, keyCodes_1, position_1, range_1, selection_1, winjs_base_1, cancellation_1, token_1, uri_1) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -10093,6 +10216,7 @@ define(__m[28/*vs/editor/common/standalone/standaloneBase*/], __M([0/*require*/,
     Object.defineProperty(exports, "__esModule", { value: true });
     // --------------------------------------------
     // This is repeated here so it can be exported
+    // because TS inlines const enums
     // --------------------------------------------
     var Severity;
     (function (Severity) {
@@ -10103,6 +10227,7 @@ define(__m[28/*vs/editor/common/standalone/standaloneBase*/], __M([0/*require*/,
     })(Severity = exports.Severity || (exports.Severity = {}));
     // --------------------------------------------
     // This is repeated here so it can be exported
+    // because TS inlines const enums
     // --------------------------------------------
     var KeyMod = (function () {
         function KeyMod() {
@@ -10119,6 +10244,7 @@ define(__m[28/*vs/editor/common/standalone/standaloneBase*/], __M([0/*require*/,
     exports.KeyMod = KeyMod;
     // --------------------------------------------
     // This is repeated here so it can be exported
+    // because TS inlines const enums
     // --------------------------------------------
     /**
      * Virtual Key Codes, the value does not hold any inherent meaning.
@@ -10293,11 +10419,13 @@ define(__m[28/*vs/editor/common/standalone/standaloneBase*/], __M([0/*require*/,
          * Cover all key codes when IME is processing input.
          */
         KeyCode[KeyCode["KEY_IN_COMPOSITION"] = 109] = "KEY_IN_COMPOSITION";
+        KeyCode[KeyCode["ABNT_C1"] = 110] = "ABNT_C1";
+        KeyCode[KeyCode["ABNT_C2"] = 111] = "ABNT_C2";
         /**
          * Placed last to cover the length of the enum.
          * Please do not depend on this value!
          */
-        KeyCode[KeyCode["MAX_VALUE"] = 110] = "MAX_VALUE";
+        KeyCode[KeyCode["MAX_VALUE"] = 112] = "MAX_VALUE";
     })(KeyCode = exports.KeyCode || (exports.KeyCode = {}));
     function createMonacoBaseAPI() {
         return {
@@ -10320,7 +10448,7 @@ define(__m[28/*vs/editor/common/standalone/standaloneBase*/], __M([0/*require*/,
     exports.createMonacoBaseAPI = createMonacoBaseAPI;
 });
 
-define(__m[29/*vs/editor/common/viewModel/prefixSumComputer*/], __M([0/*require*/,1/*exports*/,9/*vs/editor/common/core/uint*/]), function (require, exports, uint_1) {
+define(__m[19/*vs/editor/common/viewModel/prefixSumComputer*/], __M([1/*require*/,0/*exports*/,6/*vs/editor/common/core/uint*/]), function (require, exports, uint_1) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -10527,7 +10655,7 @@ define(__m[29/*vs/editor/common/viewModel/prefixSumComputer*/], __M([0/*require*
     exports.PrefixSumComputerWithCache = PrefixSumComputerWithCache;
 });
 
-define(__m[30/*vs/editor/common/model/mirrorModel*/], __M([0/*require*/,1/*exports*/,29/*vs/editor/common/viewModel/prefixSumComputer*/]), function (require, exports, prefixSumComputer_1) {
+define(__m[15/*vs/editor/common/model/mirrorModel*/], __M([1/*require*/,0/*exports*/,19/*vs/editor/common/viewModel/prefixSumComputer*/]), function (require, exports, prefixSumComputer_1) {
     /*---------------------------------------------------------------------------------------------
      *  Copyright (c) Microsoft Corporation. All rights reserved.
      *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -10661,7 +10789,7 @@ define(__m[30/*vs/editor/common/model/mirrorModel*/], __M([0/*require*/,1/*expor
 
 
 
-define(__m[32/*vs/editor/common/services/editorSimpleWorker*/], __M([0/*require*/,1/*exports*/,10/*vs/base/common/uri*/,2/*vs/base/common/winjs.base*/,5/*vs/editor/common/core/range*/,24/*vs/editor/common/diff/diffComputer*/,11/*vs/base/common/diff/diff*/,7/*vs/editor/common/core/position*/,30/*vs/editor/common/model/mirrorModel*/,26/*vs/editor/common/modes/linkComputer*/,27/*vs/editor/common/modes/supports/inplaceReplaceSupport*/,25/*vs/editor/common/model/wordHelper*/,28/*vs/editor/common/standalone/standaloneBase*/]), function (require, exports, uri_1, winjs_base_1, range_1, diffComputer_1, diff_1, position_1, mirrorModel_1, linkComputer_1, inplaceReplaceSupport_1, wordHelper_1, standaloneBase_1) {
+define(__m[33/*vs/editor/common/services/editorSimpleWorker*/], __M([1/*require*/,0/*exports*/,13/*vs/base/common/uri*/,2/*vs/base/common/winjs.base*/,9/*vs/editor/common/core/range*/,26/*vs/editor/common/diff/diffComputer*/,11/*vs/base/common/diff/diff*/,5/*vs/editor/common/core/position*/,15/*vs/editor/common/model/mirrorModel*/,28/*vs/editor/common/modes/linkComputer*/,29/*vs/editor/common/modes/supports/inplaceReplaceSupport*/,27/*vs/editor/common/model/wordHelper*/,30/*vs/editor/common/standalone/standaloneBase*/]), function (require, exports, uri_1, winjs_base_1, range_1, diffComputer_1, diff_1, position_1, mirrorModel_1, linkComputer_1, inplaceReplaceSupport_1, wordHelper_1, standaloneBase_1) {
     'use strict';
     Object.defineProperty(exports, "__esModule", { value: true });
     /**

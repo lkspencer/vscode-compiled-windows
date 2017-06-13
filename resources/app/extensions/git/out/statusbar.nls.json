@@ -1,9 +1,9 @@
 {
 	"messages": [
 		"Checkout...",
-		"Synchronize changes",
-		"Publish changes",
-		"Synchronizing changes..."
+		"Synchronize Changes",
+		"Publish Changes",
+		"Synchronizing Changes..."
 	],
 	"keys": [
 		"checkout",
