@@ -36,4 +36,4 @@ function convertSimple2RegExpPattern(pattern) {
     return pattern.replace(/[\-\\\{\}\+\?\|\^\$\.\,\[\]\(\)\#\s]/g, '\\$&').replace(/[\*]/g, '.*');
 }
 exports.convertSimple2RegExpPattern = convertSimple2RegExpPattern;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/376c52b955428d205459bea6619fc161fc8faacf/extensions\json\server\out/utils\strings.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/379d2efb5539b09112c793d3d9a413017d736f89/extensions\json\server\out/utils\strings.js.map

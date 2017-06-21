@@ -83,4 +83,4 @@ class MergeConflictCodeLensProvider {
     }
 }
 exports.default = MergeConflictCodeLensProvider;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/376c52b955428d205459bea6619fc161fc8faacf/extensions\merge-conflict\out/codelensProvider.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/379d2efb5539b09112c793d3d9a413017d736f89/extensions\merge-conflict\out/codelensProvider.js.map

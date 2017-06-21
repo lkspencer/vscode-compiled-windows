@@ -39,4 +39,4 @@ function getRangesToReplace(document, selection, rootNode) {
     let textToReplaceWith = document.getText(rangeToReplace).replace(/\r\n|\n/g, '').replace(/>\s*</g, '><');
     return [rangeToReplace, textToReplaceWith];
 }
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/376c52b955428d205459bea6619fc161fc8faacf/extensions\emmet\out/mergeLines.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/379d2efb5539b09112c793d3d9a413017d736f89/extensions\emmet\out/mergeLines.js.map

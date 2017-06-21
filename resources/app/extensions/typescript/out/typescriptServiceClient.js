@@ -859,4 +859,4 @@ TypeScriptServiceClient.tsdkMigratedStorageKey = 'typescript.tsdkMigrated';
 TypeScriptServiceClient.WALK_THROUGH_SNIPPET_SCHEME = 'walkThroughSnippet';
 TypeScriptServiceClient.WALK_THROUGH_SNIPPET_SCHEME_COLON = `${TypeScriptServiceClient.WALK_THROUGH_SNIPPET_SCHEME}:`;
 exports.default = TypeScriptServiceClient;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/376c52b955428d205459bea6619fc161fc8faacf/extensions\typescript\out/typescriptServiceClient.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/379d2efb5539b09112c793d3d9a413017d736f89/extensions\typescript\out/typescriptServiceClient.js.map
