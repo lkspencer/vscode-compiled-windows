@@ -26,8 +26,7 @@ class TypeScriptHoverProvider {
                 return new vscode_1.Hover(TypeScriptHoverProvider.getContents(data), new vscode_1.Range(data.start.line - 1, data.start.offset - 1, data.end.line - 1, data.end.offset - 1));
             }
             return undefined;
-        }, (err) => {
-            this.client.error(`'quickinfo' request failed with error.`, err);
+        }, () => {
             return null;
         });
     }
@@ -40,4 +39,4 @@ class TypeScriptHoverProvider {
     }
 }
 exports.default = TypeScriptHoverProvider;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/379d2efb5539b09112c793d3d9a413017d736f89/extensions\typescript\out/features\hoverProvider.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/c887dd955170aebce0f6bb160b146f2e6e10a199/extensions\typescript\out/features\hoverProvider.js.map

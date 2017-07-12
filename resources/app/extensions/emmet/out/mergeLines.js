@@ -6,21 +6,21 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const vscode = require("vscode");
 const util_1 = require("./util");
-const html_matcher_1 = require("@emmetio/html-matcher");
 function mergeLines() {
     let editor = vscode.window.activeTextEditor;
-    if (!editor) {
-        vscode.window.showInformationMessage('No editor is active');
+    if (!util_1.validate(false)) {
         return;
     }
-    if (util_1.isStyleSheet(editor.document.languageId)) {
+    let rootNode = util_1.parse(editor.document);
+    if (!rootNode) {
         return;
     }
-    let rootNode = html_matcher_1.default(editor.document.getText());
     editor.edit(editBuilder => {
         editor.selections.reverse().forEach(selection => {
             let [rangeToReplace, textToReplaceWith] = getRangesToReplace(editor.document, selection, rootNode);
-            editBuilder.replace(rangeToReplace, textToReplaceWith);
+            if (rangeToReplace && textToReplaceWith) {
+                editBuilder.replace(rangeToReplace, textToReplaceWith);
+            }
         });
     });
 }
@@ -29,14 +29,17 @@ function getRangesToReplace(document, selection, rootNode) {
     let startNodeToUpdate;
     let endNodeToUpdate;
     if (selection.isEmpty) {
-        startNodeToUpdate = endNodeToUpdate = util_1.getNode(rootNode, document.offsetAt(selection.start));
+        startNodeToUpdate = endNodeToUpdate = util_1.getNode(rootNode, selection.start);
     }
     else {
-        startNodeToUpdate = util_1.getNode(rootNode, document.offsetAt(selection.start), true);
-        endNodeToUpdate = util_1.getNode(rootNode, document.offsetAt(selection.end), true);
+        startNodeToUpdate = util_1.getNode(rootNode, selection.start, true);
+        endNodeToUpdate = util_1.getNode(rootNode, selection.end, true);
     }
-    let rangeToReplace = new vscode.Range(document.positionAt(startNodeToUpdate.start), document.positionAt(endNodeToUpdate.end));
+    if (!startNodeToUpdate || !endNodeToUpdate) {
+        return [null, null];
+    }
+    let rangeToReplace = new vscode.Range(startNodeToUpdate.start, endNodeToUpdate.end);
     let textToReplaceWith = document.getText(rangeToReplace).replace(/\r\n|\n/g, '').replace(/>\s*</g, '><');
     return [rangeToReplace, textToReplaceWith];
 }
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/379d2efb5539b09112c793d3d9a413017d736f89/extensions\emmet\out/mergeLines.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/c887dd955170aebce0f6bb160b146f2e6e10a199/extensions\emmet\out/mergeLines.js.map

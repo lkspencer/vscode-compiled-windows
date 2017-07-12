@@ -1,10 +1,10 @@
 {
 	"name": "node-debug",
 	"displayName": "Node Debug",
-	"version": "1.13.10",
+	"version": "1.14.9",
 	"publisher": "ms-vscode",
 	"description": "%extension.description%",
-	"icon": "images/node-debug-icon.svg",
+	"icon": "images/node-debug-icon.png",
 	"categories": [
 		"Debuggers"
 	],
@@ -28,7 +28,7 @@
 		"ms-vscode.node-debug2"
 	],
 	"dependencies": {
-		"vscode-debugadapter": "^1.20.0",
+		"vscode-debugadapter": "^1.21.0",
 		"source-map": "0.5.6",
 		"vscode-nls": "^2.0.1",
 		"request-light": "^0.1.0",
@@ -65,13 +65,13 @@
 		"typescript": "^2.2.1",
 		"vscode": "^1.0.3",
 		"vscode-nls-dev": "^2.1.1",
-		"vscode-debugadapter-testsupport": "^1.20.0",
-		"vscode-debugprotocol": "^1.20.0",
+		"vscode-debugadapter-testsupport": "^1.21.0",
+		"vscode-debugprotocol": "^1.21.0",
 		"event-stream": "^3.3.4",
 		"nodemon": "^1.11.0",
 		"vsce": "^1.20.0"
 	},
-	"main": "./out/node/extension",
+	"main": "./out/node/extension/extension.js",
 	"activationEvents": [
 		"onCommand:extension.node-debug.toggleSkippingFile",
 		"onCommand:extension.node-debug.pickLoadedScript",
@@ -140,9 +140,6 @@
 					"request": "launch",
 					"name": "${1:Launch via NPM}",
 					"runtimeExecutable": "npm",
-					"windows": {
-						"runtimeExecutable": "npm.cmd"
-					},
 					"runtimeArgs": [
 						"run-script",
 						"debug"
@@ -176,9 +173,8 @@
 				"body": {
 					"type": "node",
 					"request": "attach",
-					"name": "${1:Attach to Process}",
-					"processId": "^\"\\${command:PickProcess}\"",
-					"port": 5858
+					"name": "${1:Attach by Process ID}",
+					"processId": "^\"\\${command:PickProcess}\""
 				}
 			}, {
 				"label": "%node.snippet.nodemon.label%",
@@ -188,12 +184,8 @@
 					"request": "launch",
 					"name": "nodemon",
 					"runtimeExecutable": "nodemon",
-					"runtimeArgs": [
-						"--debug=5858"
-					],
 					"program": "^\"\\${workspaceRoot}/${1:app.js}\"",
 					"restart": true,
-					"port": 5858,
 					"console": "integratedTerminal",
 					"internalConsoleOptions": "neverOpen"
 				}
@@ -249,9 +241,6 @@
 					"request": "launch",
 					"name": "Electron Main",
 					"runtimeExecutable": "^\"\\${workspaceRoot}/node_modules/.bin/electron\"",
-					"windows": {
-						"runtimeExecutable": "^\"\\${workspaceRoot}/node_modules/.bin/electron.cmd\""
-					},
 					"program": "^\"\\${workspaceRoot}/main.js\"",
 					"protocol": "legacy"
 				}

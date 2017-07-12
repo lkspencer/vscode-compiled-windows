@@ -7,11 +7,13 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var vscode = require("vscode");
 var ts = require("typescript");
 var packageDocumentHelper_1 = require("./packageDocumentHelper");
+var extensionLinter_1 = require("./extensionLinter");
 function activate(context) {
     var registration = vscode.languages.registerDocumentLinkProvider({ language: 'typescript', pattern: '**/vscode.d.ts' }, _linkProvider);
     context.subscriptions.push(registration);
     //package.json suggestions
     context.subscriptions.push(registerPackageDocumentCompletions());
+    context.subscriptions.push(new extensionLinter_1.ExtensionLinter(context));
 }
 exports.activate = activate;
 var _linkProvider = new (function () {
@@ -92,4 +94,4 @@ function registerPackageDocumentCompletions() {
         }
     });
 }
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/379d2efb5539b09112c793d3d9a413017d736f89/extensions\extension-editing\out/extension.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/c887dd955170aebce0f6bb160b146f2e6e10a199/extensions\extension-editing\out/extension.js.map

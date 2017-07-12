@@ -25,8 +25,9 @@ class MergeConflictContentProvider {
     provideTextDocumentContent(uri) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const [start, end] = JSON.parse(uri.query);
-                const document = yield vscode.workspace.openTextDocument(uri.with({ scheme: 'file', query: '' }));
+                const { scheme, range } = JSON.parse(uri.query);
+                const [start, end] = range;
+                const document = yield vscode.workspace.openTextDocument(uri.with({ scheme, query: '' }));
                 const text = document.getText(new vscode.Range(start.line, start.character, end.line, end.character));
                 return text;
             }
@@ -39,4 +40,4 @@ class MergeConflictContentProvider {
 }
 MergeConflictContentProvider.scheme = 'merge-conflict.conflict-diff';
 exports.default = MergeConflictContentProvider;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/379d2efb5539b09112c793d3d9a413017d736f89/extensions\merge-conflict\out/contentProvider.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/c887dd955170aebce0f6bb160b146f2e6e10a199/extensions\merge-conflict\out/contentProvider.js.map

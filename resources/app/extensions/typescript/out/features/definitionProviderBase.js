@@ -33,11 +33,10 @@ class TypeScriptDefinitionProviderBase {
                     return new vscode_1.Location(resource, new vscode_1.Range(location.start.line - 1, location.start.offset - 1, location.end.line - 1, location.end.offset - 1));
                 }
             }).filter(x => x !== null);
-        }, (error) => {
-            this.client.error(`'${definitionType}' request failed with error.`, error);
+        }, () => {
             return [];
         });
     }
 }
 exports.default = TypeScriptDefinitionProviderBase;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/379d2efb5539b09112c793d3d9a413017d736f89/extensions\typescript\out/features\definitionProviderBase.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/c887dd955170aebce0f6bb160b146f2e6e10a199/extensions\typescript\out/features\definitionProviderBase.js.map

@@ -116,4 +116,4 @@ function activateColorDecorations(decoratorProvider, supportedLanguages, isDecor
     return vscode_1.Disposable.from.apply(vscode_1.Disposable, disposables);
 }
 exports.activateColorDecorations = activateColorDecorations;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/379d2efb5539b09112c793d3d9a413017d736f89/extensions\html\client\out/colorDecorators.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/c887dd955170aebce0f6bb160b146f2e6e10a199/extensions\html\client\out/colorDecorators.js.map

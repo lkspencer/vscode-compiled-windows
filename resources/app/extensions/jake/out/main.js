@@ -38,12 +38,15 @@ function activate(_context) {
             taskProvider = undefined;
         }
         else if (!taskProvider && autoDetect === 'on') {
-            taskProvider = vscode.workspace.registerTaskProvider({
+            taskProvider = vscode.workspace.registerTaskProvider('jake', {
                 provideTasks: () => {
                     if (!jakePromise) {
                         jakePromise = getJakeTasks();
                     }
                     return jakePromise;
+                },
+                resolveTask(_task) {
+                    return undefined;
                 }
             });
         }
@@ -82,6 +85,24 @@ function getOutputChannel() {
     }
     return _channel;
 }
+const buildNames = ['build', 'compile', 'watch'];
+function isBuildTask(name) {
+    for (let buildName of buildNames) {
+        if (name.indexOf(buildName) !== -1) {
+            return true;
+        }
+    }
+    return false;
+}
+const testNames = ['test'];
+function isTestTask(name) {
+    for (let testName of testNames) {
+        if (name.indexOf(testName) !== -1) {
+            return true;
+        }
+    }
+    return false;
+}
 function getJakeTasks() {
     return __awaiter(this, void 0, void 0, function* () {
         let workspaceRoot = vscode.workspace.rootPath;
@@ -116,8 +137,6 @@ function getJakeTasks() {
             }
             let result = [];
             if (stdout) {
-                let buildTask = { task: undefined, rank: 0 };
-                let testTask = { task: undefined, rank: 0 };
                 let lines = stdout.split(/\r{0,1}\n/);
                 for (let line of lines) {
                     if (line.length === 0) {
@@ -127,29 +146,20 @@ function getJakeTasks() {
                     let matches = regExp.exec(line);
                     if (matches && matches.length === 2) {
                         let taskName = matches[1];
-                        let task = new vscode.ShellTask(taskName, `${jakeCommand} ${taskName}`);
-                        task.identifier = `jake.${taskName}`;
+                        let kind = {
+                            type: 'jake',
+                            task: taskName
+                        };
+                        let task = new vscode.Task(kind, taskName, 'jake', new vscode.ShellExecution(`${jakeCommand} ${taskName}`));
                         result.push(task);
                         let lowerCaseLine = line.toLowerCase();
-                        if (lowerCaseLine === 'build') {
-                            buildTask = { task, rank: 2 };
+                        if (isBuildTask(lowerCaseLine)) {
+                            task.group = vscode.TaskGroup.Build;
                         }
-                        else if (lowerCaseLine.indexOf('build') !== -1 && buildTask.rank < 1) {
-                            buildTask = { task, rank: 1 };
-                        }
-                        else if (lowerCaseLine === 'test') {
-                            testTask = { task, rank: 2 };
-                        }
-                        else if (lowerCaseLine.indexOf('test') !== -1 && testTask.rank < 1) {
-                            testTask = { task, rank: 1 };
+                        else if (isTestTask(lowerCaseLine)) {
+                            task.group = vscode.TaskGroup.Test;
                         }
                     }
-                }
-                if (buildTask.task) {
-                    buildTask.task.group = vscode.TaskGroup.Build;
-                }
-                if (testTask.task) {
-                    testTask.task.group = vscode.TaskGroup.Test;
                 }
             }
             return result;
@@ -168,4 +178,4 @@ function getJakeTasks() {
         }
     });
 }
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/379d2efb5539b09112c793d3d9a413017d736f89/extensions\jake\out/main.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/c887dd955170aebce0f6bb160b146f2e6e10a199/extensions\jake\out/main.js.map

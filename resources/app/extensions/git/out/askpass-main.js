@@ -17,8 +17,8 @@ function main(argv) {
     if (argv.length !== 5) {
         return fatal('Wrong number of arguments');
     }
-    if (!process.env['VSCODE_GIT_ASKPASS_PORT']) {
-        return fatal('Missing port');
+    if (!process.env['VSCODE_GIT_ASKPASS_HANDLE']) {
+        return fatal('Missing handle');
     }
     if (!process.env['VSCODE_GIT_ASKPASS_PIPE']) {
         return fatal('Missing pipe');
@@ -27,12 +27,11 @@ function main(argv) {
         return fatal('Skip fetch commands');
     }
     const output = process.env['VSCODE_GIT_ASKPASS_PIPE'];
-    const port = Number.parseInt(process.env['VSCODE_GIT_ASKPASS_PORT']);
+    const socketPath = process.env['VSCODE_GIT_ASKPASS_HANDLE'];
     const request = argv[2];
     const host = argv[4].substring(1, argv[4].length - 2);
     const opts = {
-        hostname: 'localhost',
-        port,
+        socketPath,
         path: '/',
         method: 'POST'
     };
@@ -60,4 +59,4 @@ function main(argv) {
     req.end();
 }
 main(process.argv);
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/379d2efb5539b09112c793d3d9a413017d736f89/extensions\git\out/askpass-main.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/c887dd955170aebce0f6bb160b146f2e6e10a199/extensions\git\out/askpass-main.js.map

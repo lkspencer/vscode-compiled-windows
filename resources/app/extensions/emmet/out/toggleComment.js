@@ -6,8 +6,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const vscode = require("vscode");
 const util_1 = require("./util");
-const html_matcher_1 = require("@emmetio/html-matcher");
-const css_parser_1 = require("@emmetio/css-parser");
+const vscode_emmet_helper_1 = require("vscode-emmet-helper");
 const startCommentStylesheet = '/*';
 const endCommentStylesheet = '*/';
 const startCommentHTML = '<!--';
@@ -21,56 +20,59 @@ function toggleComment() {
     let toggleCommentInternal;
     let startComment;
     let endComment;
-    let parseContent;
-    if (util_1.isStyleSheet(editor.document.languageId)) {
-        parseContent = css_parser_1.default;
+    if (vscode_emmet_helper_1.isStyleSheet(editor.document.languageId)) {
         toggleCommentInternal = toggleCommentStylesheet;
         startComment = startCommentStylesheet;
         endComment = endCommentStylesheet;
     }
     else {
-        parseContent = html_matcher_1.default;
         toggleCommentInternal = toggleCommentHTML;
         startComment = startCommentHTML;
         endComment = endCommentHTML;
     }
-    let rootNode = parseContent(editor.document.getText());
+    let rootNode = util_1.parse(editor.document);
+    if (!rootNode) {
+        return;
+    }
     editor.edit(editBuilder => {
         editor.selections.reverse().forEach(selection => {
-            let [rangesToUnComment, positionForCommentStart, positionForCommentEnd] = toggleCommentInternal(editor.document, selection, rootNode);
-            rangesToUnComment.forEach(rangeToDelete => {
-                editBuilder.delete(rangeToDelete);
+            let [rangesToUnComment, rangeToComment] = toggleCommentInternal(editor.document, selection, rootNode);
+            rangesToUnComment.forEach((rangeToUnComment) => {
+                editBuilder.delete(new vscode.Range(rangeToUnComment.start, rangeToUnComment.start.translate(0, startComment.length)));
+                editBuilder.delete(new vscode.Range(rangeToUnComment.end.translate(0, -endComment.length), rangeToUnComment.end));
             });
-            if (positionForCommentStart) {
-                editBuilder.insert(positionForCommentStart, startComment);
-            }
-            if (positionForCommentEnd) {
-                editBuilder.insert(positionForCommentEnd, endComment);
+            if (rangeToComment) {
+                editBuilder.insert(rangeToComment.start, startComment);
+                editBuilder.insert(rangeToComment.end, endComment);
             }
         });
     });
 }
 exports.toggleComment = toggleComment;
 function toggleCommentHTML(document, selection, rootNode) {
-    let offset = document.offsetAt(selection.start);
-    let nodeToUpdate = util_1.getNode(rootNode, offset);
-    if (!nodeToUpdate) {
-        return [[], null, null];
+    const selectionStart = selection.isReversed ? selection.active : selection.anchor;
+    const selectionEnd = selection.isReversed ? selection.anchor : selection.active;
+    let startNode = util_1.getNode(rootNode, selectionStart, true);
+    let endNode = util_1.getNode(rootNode, selectionEnd, true);
+    if (!startNode || !endNode) {
+        return [[], null];
     }
-    let rangesToUnComment = getRangesToUnCommentHTML(nodeToUpdate, document);
-    if (nodeToUpdate.type === 'comment') {
-        return [rangesToUnComment, null, null];
+    let allNodes = util_1.getNodesInBetween(startNode, endNode);
+    let rangesToUnComment = [];
+    allNodes.forEach(node => {
+        rangesToUnComment = rangesToUnComment.concat(getRangesToUnCommentHTML(node, document));
+    });
+    if (startNode.type === 'comment') {
+        return [rangesToUnComment, null];
     }
-    let positionForCommentStart = document.positionAt(nodeToUpdate.start);
-    let positionForCommentEnd = document.positionAt(nodeToUpdate.end);
-    return [rangesToUnComment, positionForCommentStart, positionForCommentEnd];
+    let rangeToComment = new vscode.Range(allNodes[0].start, allNodes[allNodes.length - 1].end);
+    return [rangesToUnComment, rangeToComment];
 }
 function getRangesToUnCommentHTML(node, document) {
     let rangesToUnComment = [];
     // If current node is commented, then uncomment and return
     if (node.type === 'comment') {
-        rangesToUnComment.push(new vscode.Range(document.positionAt(node.start), document.positionAt(node.start + startCommentHTML.length)));
-        rangesToUnComment.push(new vscode.Range(document.positionAt(node.end), document.positionAt(node.end - endCommentHTML.length)));
+        rangesToUnComment.push(new vscode.Range(node.start, node.end));
         return rangesToUnComment;
     }
     // All children of current node should be uncommented
@@ -80,42 +82,24 @@ function getRangesToUnCommentHTML(node, document) {
     return rangesToUnComment;
 }
 function toggleCommentStylesheet(document, selection, rootNode) {
-    let selectionStart = document.offsetAt(selection.anchor);
-    let selectionEnd = document.offsetAt(selection.active);
-    // If current node is commented, then uncomment and return
-    let rangesToUnComment = getRangesToUnCommentStylesheet(rootNode, selectionStart, selectionEnd, document, true);
-    if (rangesToUnComment.length > 0) {
-        return [rangesToUnComment, null, null];
-    }
-    // Find the node that needs to be commented
-    let nodeToComment = util_1.getNode(rootNode, selectionStart, true);
-    if (!nodeToComment) {
-        return [[], null, null];
-    }
-    // Uncomment children of current node and then comment the node
-    rangesToUnComment = getRangesToUnCommentStylesheet(rootNode, nodeToComment.start, nodeToComment.end, document, false);
-    let positionForCommentStart = document.positionAt(nodeToComment.start);
-    let positionForCommentEnd = document.positionAt(nodeToComment.end);
-    return [rangesToUnComment, positionForCommentStart, positionForCommentEnd];
-}
-function getRangesToUnCommentStylesheet(rootNode, selectionStart, selectionEnd, document, selectionInsideComment) {
-    if (!rootNode.comments || rootNode.comments.length === 0) {
-        return [];
-    }
+    const selectionStart = selection.isReversed ? selection.active : selection.anchor;
+    const selectionEnd = selection.isReversed ? selection.anchor : selection.active;
+    let startNode = util_1.getNode(rootNode, selectionStart, true);
+    let endNode = util_1.getNode(rootNode, selectionEnd, true);
     let rangesToUnComment = [];
+    let isFirstNodeCommented = false;
+    // Uncomment the comments that intersect with the selection.
     rootNode.comments.forEach(comment => {
-        let foundComment = false;
-        if (selectionInsideComment) {
-            foundComment = comment.start <= selectionStart && comment.end >= selectionEnd;
+        if (!isFirstNodeCommented) {
+            isFirstNodeCommented = (selectionStart.isAfterOrEqual(comment.start) && selectionEnd.isBefore(comment.end));
         }
-        else {
-            foundComment = selectionStart <= comment.start && selectionEnd >= comment.end;
-        }
-        if (foundComment) {
-            rangesToUnComment.push(new vscode.Range(document.positionAt(comment.start), document.positionAt(comment.start + startCommentStylesheet.length)));
-            rangesToUnComment.push(new vscode.Range(document.positionAt(comment.end), document.positionAt(comment.end - endCommentStylesheet.length)));
+        if (selection.contains(comment.start)
+            || selection.contains(comment.end)
+            || (selectionStart.isAfterOrEqual(comment.start) && selectionEnd.isBefore(comment.end))) {
+            rangesToUnComment.push(new vscode.Range(comment.start, comment.end));
         }
     });
-    return rangesToUnComment;
+    let rangeToComment = isFirstNodeCommented ? null : new vscode.Range(startNode ? startNode.start : selectionStart, endNode ? endNode.end : selectionEnd);
+    return [rangesToUnComment, rangeToComment];
 }
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/379d2efb5539b09112c793d3d9a413017d736f89/extensions\emmet\out/toggleComment.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/c887dd955170aebce0f6bb160b146f2e6e10a199/extensions\emmet\out/toggleComment.js.map

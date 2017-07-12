@@ -231,5 +231,24 @@ function isOnPath(program) {
     return false;
 }
 exports.isOnPath = isOnPath;
+function findExecutable(program) {
+    if (process.platform === 'win32' && !Path.extname(program)) {
+        const PATHEXT = process.env['PATHEXT'];
+        if (PATHEXT) {
+            const executableExtensions = PATHEXT.split(';');
+            for (const extension of executableExtensions) {
+                const path = program + extension;
+                if (FS.existsSync(path)) {
+                    return path;
+                }
+            }
+        }
+    }
+    if (FS.existsSync(program)) {
+        return program;
+    }
+    return undefined;
+}
+exports.findExecutable = findExecutable;
 
 //# sourceMappingURL=pathUtils.js.map

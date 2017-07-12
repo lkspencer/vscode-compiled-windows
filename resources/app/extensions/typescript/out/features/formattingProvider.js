@@ -8,6 +8,7 @@ const vscode_1 = require("vscode");
 var Configuration;
 (function (Configuration) {
     Configuration.insertSpaceAfterCommaDelimiter = 'insertSpaceAfterCommaDelimiter';
+    Configuration.insertSpaceAfterConstructor = 'insertSpaceAfterConstructor';
     Configuration.insertSpaceAfterSemicolonInForStatements = 'insertSpaceAfterSemicolonInForStatements';
     Configuration.insertSpaceBeforeAndAfterBinaryOperators = 'insertSpaceBeforeAndAfterBinaryOperators';
     Configuration.insertSpaceAfterKeywordsInControlFlowStatements = 'insertSpaceAfterKeywordsInControlFlowStatements';
@@ -18,6 +19,7 @@ var Configuration;
     Configuration.insertSpaceAfterOpeningAndBeforeClosingNonemptyBraces = 'insertSpaceAfterOpeningAndBeforeClosingNonemptyBraces';
     Configuration.insertSpaceAfterOpeningAndBeforeClosingTemplateStringBraces = 'insertSpaceAfterOpeningAndBeforeClosingTemplateStringBraces';
     Configuration.insertSpaceAfterOpeningAndBeforeClosingJsxExpressionBraces = 'insertSpaceAfterOpeningAndBeforeClosingJsxExpressionBraces';
+    Configuration.insertSpaceAfterTypeAssertion = 'insertSpaceAfterTypeAssertion';
     Configuration.placeOpenBraceOnNewLineForFunctions = 'placeOpenBraceOnNewLineForFunctions';
     Configuration.placeOpenBraceOnNewLineForControlBlocks = 'placeOpenBraceOnNewLineForControlBlocks';
     function equals(a, b) {
@@ -35,6 +37,7 @@ var Configuration;
         let result = Object.create(null);
         result.enable = true;
         result.insertSpaceAfterCommaDelimiter = true;
+        result.insertSpaceAfterConstructor = false;
         result.insertSpaceAfterSemicolonInForStatements = true;
         result.insertSpaceBeforeAndAfterBinaryOperators = true;
         result.insertSpaceAfterKeywordsInControlFlowStatements = true;
@@ -45,6 +48,7 @@ var Configuration;
         result.insertSpaceAfterOpeningAndBeforeClosingNonemptyBraces = true;
         result.insertSpaceAfterOpeningAndBeforeClosingTemplateStringBraces = false;
         result.insertSpaceAfterOpeningAndBeforeClosingJsxExpressionBraces = false;
+        result.insertSpaceAfterTypeAssertion = false;
         result.placeOpenBraceOnNewLineForFunctions = false;
         result.placeOpenBraceOnNewLineForControlBlocks = false;
         return result;
@@ -106,8 +110,7 @@ class TypeScriptFormattingProvider {
                 else {
                     return [];
                 }
-            }, (err) => {
-                this.client.error(`'format' request failed with error.`, err);
+            }, () => {
                 return [];
             });
         });
@@ -163,8 +166,7 @@ class TypeScriptFormattingProvider {
                     }
                 }
                 return result;
-            }, (err) => {
-                this.client.error(`'formatonkey' request failed with error.`, err);
+            }, () => {
                 return [];
             });
         });
@@ -180,6 +182,7 @@ class TypeScriptFormattingProvider {
             // We can use \n here since the editor normalizes later on to its line endings.
             newLineCharacter: '\n',
             insertSpaceAfterCommaDelimiter: this.config.insertSpaceAfterCommaDelimiter,
+            insertSpaceAfterConstructor: this.config.insertSpaceAfterConstructor,
             insertSpaceAfterSemicolonInForStatements: this.config.insertSpaceAfterSemicolonInForStatements,
             insertSpaceBeforeAndAfterBinaryOperators: this.config.insertSpaceBeforeAndAfterBinaryOperators,
             insertSpaceAfterKeywordsInControlFlowStatements: this.config.insertSpaceAfterKeywordsInControlFlowStatements,
@@ -190,10 +193,11 @@ class TypeScriptFormattingProvider {
             insertSpaceAfterOpeningAndBeforeClosingNonemptyBraces: this.config.insertSpaceAfterOpeningAndBeforeClosingNonemptyBraces,
             insertSpaceAfterOpeningAndBeforeClosingTemplateStringBraces: this.config.insertSpaceAfterOpeningAndBeforeClosingTemplateStringBraces,
             insertSpaceAfterOpeningAndBeforeClosingJsxExpressionBraces: this.config.insertSpaceAfterOpeningAndBeforeClosingJsxExpressionBraces,
+            insertSpaceAfterTypeAssertion: this.config.insertSpaceAfterTypeAssertion,
             placeOpenBraceOnNewLineForFunctions: this.config.placeOpenBraceOnNewLineForFunctions,
-            placeOpenBraceOnNewLineForControlBlocks: this.config.placeOpenBraceOnNewLineForControlBlocks
+            placeOpenBraceOnNewLineForControlBlocks: this.config.placeOpenBraceOnNewLineForControlBlocks,
         };
     }
 }
 exports.default = TypeScriptFormattingProvider;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/379d2efb5539b09112c793d3d9a413017d736f89/extensions\typescript\out/features\formattingProvider.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/c887dd955170aebce0f6bb160b146f2e6e10a199/extensions\typescript\out/features\formattingProvider.js.map

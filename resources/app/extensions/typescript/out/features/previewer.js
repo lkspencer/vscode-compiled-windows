@@ -35,8 +35,9 @@ function tagsPlainPreview(tags) {
         .join('\n\ngit');
 }
 function plainDocumentation(documentation, tags) {
-    const parts = [plain(documentation), tagsPlainPreview(tags)];
+    const processedDocumentation = plain(documentation).replace(/\n([ \t]*\n)?/gm, (x) => x.length >= 2 ? '\n\n' : ' ');
+    const parts = [processedDocumentation, tagsPlainPreview(tags)];
     return parts.filter(x => x).join('\n\n');
 }
 exports.plainDocumentation = plainDocumentation;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/379d2efb5539b09112c793d3d9a413017d736f89/extensions\typescript\out/features\previewer.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/c887dd955170aebce0f6bb160b146f2e6e10a199/extensions\typescript\out/features\previewer.js.map

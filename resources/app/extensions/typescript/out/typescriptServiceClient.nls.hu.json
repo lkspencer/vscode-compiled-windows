@@ -1,0 +1,21 @@
+[
+	"A(z) {0} elérési út nem egy érvényes tsserver-telepítésre mutat. A beépített TypeScript-verzió lesz használva.",
+	"A VSCode beépített TS-szerverét törölte egy másik alkalmazás, például egy hibásan viselkedő víruskereső eszköz. Telepítse újra a VSCode-ot! ",
+	"egyedi",
+	"Nem sikerült elindítani a TypeScript nyelvi szervert. Hibaüzenet: {0}",
+	"A VSCode verziójának használata",
+	"Jelenleg aktív",
+	"A munkaterület verziójának használata",
+	"Jelenleg aktív",
+	"További információ",
+	"Válassza ki a javascriptes és typescriptes nyelvi funkciókhoz használt TypeScript-verziót",
+	"A TS-szerver naplózáshoz TS 2.2.2+ szükséges",
+	"A TS-szervernaplózás ki van kapcsolva. Állítsa be a `typescript.tsserver.log` beállítást, majd indítsa újra a TS-szervert a naplózás engedélyezéséhez!",
+	"Naplózás engedélyezése és TS-szerver újraindítása",
+	"A TS-szerver nem kezdett el naplózni",
+	"A TS-szervernapló nem nyitható meg",
+	"A TypeScript nyelvi szolgáltatás öt alkalommal omlott össze rögtön azután, hogy el lett indítva. A szolgáltatás nem lesz újraindítva.",
+	"Probléma jelentése",
+	"A TypeScript nyelvi szolgáltatás öt alkalommal omlott össze az elmúlt öt percben.",
+	"Probléma jelentése"
+]

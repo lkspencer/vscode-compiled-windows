@@ -10,6 +10,7 @@ class DocumentMergeConflict {
         this.range = descriptor.range;
         this.current = descriptor.current;
         this.incoming = descriptor.incoming;
+        this.commonAncestors = descriptor.commonAncestors;
         this.splitter = descriptor.splitter;
     }
     commitEdit(type, editor, edit) {
@@ -59,4 +60,4 @@ class DocumentMergeConflict {
     }
 }
 exports.DocumentMergeConflict = DocumentMergeConflict;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/379d2efb5539b09112c793d3d9a413017d736f89/extensions\merge-conflict\out/documentMergeConflict.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/c887dd955170aebce0f6bb160b146f2e6e10a199/extensions\merge-conflict\out/documentMergeConflict.js.map

@@ -31,16 +31,17 @@ const bufferSyncSupport_1 = require("./features/bufferSyncSupport");
 const completionItemProvider_1 = require("./features/completionItemProvider");
 const workspaceSymbolProvider_1 = require("./features/workspaceSymbolProvider");
 const codeActionProvider_1 = require("./features/codeActionProvider");
+const refactorProvider_1 = require("./features/refactorProvider");
 const referencesCodeLensProvider_1 = require("./features/referencesCodeLensProvider");
 const jsDocCompletionProvider_1 = require("./features/jsDocCompletionProvider");
 const directiveCommentCompletionProvider_1 = require("./features/directiveCommentCompletionProvider");
 const taskProvider_1 = require("./features/taskProvider");
 const implementationsCodeLensProvider_1 = require("./features/implementationsCodeLensProvider");
-const BuildStatus = require("./utils/buildStatus");
 const ProjectStatus = require("./utils/projectStatus");
 const typingsStatus_1 = require("./utils/typingsStatus");
 const versionStatus_1 = require("./utils/versionStatus");
 const plugins_1 = require("./utils/plugins");
+const tsconfig_1 = require("./utils/tsconfig");
 var ProjectConfigAction;
 (function (ProjectConfigAction) {
     ProjectConfigAction[ProjectConfigAction["None"] = 0] = "None";
@@ -70,7 +71,7 @@ function activate(context) {
         let clientHost;
         return () => {
             if (!clientHost) {
-                clientHost = new TypeScriptServiceClientHost(standardLanguageDescriptions, context.storagePath, context.globalState, context.workspaceState, plugins);
+                clientHost = new TypeScriptServiceClientHost(standardLanguageDescriptions, context.workspaceState, plugins);
                 context.subscriptions.push(clientHost);
                 const host = clientHost;
                 clientHost.serviceClient.onReady().then(() => {
@@ -125,7 +126,6 @@ function activate(context) {
             break;
         }
     }
-    BuildStatus.update({ queueLength: 0 });
 }
 exports.activate = activate;
 const validateSetting = 'validate.enable';
@@ -200,6 +200,7 @@ class LanguageProvider {
         this.disposables.push(vscode_1.languages.registerSignatureHelpProvider(selector, new signatureHelpProvider_1.default(client), '(', ','));
         this.disposables.push(vscode_1.languages.registerRenameProvider(selector, new renameProvider_1.default(client)));
         this.disposables.push(vscode_1.languages.registerCodeActionsProvider(selector, new codeActionProvider_1.default(client, this.description.id)));
+        this.disposables.push(vscode_1.languages.registerCodeActionsProvider(selector, new refactorProvider_1.default(client, this.description.id)));
         this.registerVersionDependentProviders();
         this.description.modeIds.forEach(modeId => {
             this.disposables.push(vscode_1.languages.registerWorkspaceSymbolProvider(new workspaceSymbolProvider_1.default(client, modeId)));
@@ -214,9 +215,10 @@ class LanguageProvider {
             this.disposables.push(vscode_1.languages.setLanguageConfiguration(modeId, {
                 indentationRules: {
                     // ^(.*\*/)?\s*\}.*$
-                    decreaseIndentPattern: /^(.*\*\/)?\s*\}.*$/,
+                    decreaseIndentPattern: /^((?!.*?\/\*).*\*\/)?\s*[\}\]\)].*$/,
                     // ^.*\{[^}"']*$
-                    increaseIndentPattern: /^.*\{[^}"'`]*$/
+                    increaseIndentPattern: /^.*(\{[^}"'`]*|\([^)"'`]*|\[[^\]"'`]*)$/,
+                    indentNextLinePattern: /^\s*(for|while|if|else)\b(?!.*[;{}]\s*(\/\/.*|\/[*].*[*]\/\s*)?$)/
                 },
                 wordPattern: /(-?\d*\.\d\w*)|([^\`\~\!\@\#\%\^\&\*\(\)\-\=\+\[\{\]\}\\\|\;\:\'\"\,\.\<\>\/\?\s]+)/g,
                 onEnterRules: [
@@ -357,7 +359,7 @@ class LanguageProvider {
     }
 }
 class TypeScriptServiceClientHost {
-    constructor(descriptions, storagePath, globalState, workspaceState, plugins) {
+    constructor(descriptions, workspaceState, plugins) {
         this.languages = [];
         this.disposables = [];
         const handleProjectCreateOrDelete = () => {
@@ -376,13 +378,13 @@ class TypeScriptServiceClientHost {
         configFileWatcher.onDidChange(handleProjectChange, this, this.disposables);
         this.versionStatus = new versionStatus_1.default();
         this.disposables.push(this.versionStatus);
-        this.client = new typescriptServiceClient_1.default(this, storagePath, globalState, workspaceState, this.versionStatus, plugins, this.disposables);
-        this.languagePerId = Object.create(null);
+        this.client = new typescriptServiceClient_1.default(this, workspaceState, this.versionStatus, plugins, this.disposables);
+        this.languagePerId = new Map();
         for (const description of descriptions) {
             const manager = new LanguageProvider(this.client, description);
             this.languages.push(manager);
             this.disposables.push(manager);
-            this.languagePerId[description.id] = manager;
+            this.languagePerId.set(description.id, manager);
         }
         this.client.onReady().then(() => {
             if (!this.client.apiVersion.has230Features()) {
@@ -403,8 +405,11 @@ class TypeScriptServiceClientHost {
                 const manager = new LanguageProvider(this.client, description);
                 this.languages.push(manager);
                 this.disposables.push(manager);
-                this.languagePerId[description.id] = manager;
+                this.languagePerId.set(description.id, manager);
             }
+        });
+        this.client.onTsServerStarted(() => {
+            this.triggerAllDiagnostics();
         });
     }
     dispose() {
@@ -426,7 +431,7 @@ class TypeScriptServiceClientHost {
         return !!this.findLanguage(file);
     }
     goToProjectConfig(isTypeScriptProject, resource) {
-        const rootPath = vscode_1.workspace.rootPath;
+        const rootPath = this.client.getWorkspaceRootForResource(resource);
         if (!rootPath) {
             vscode_1.window.showInformationMessage(localize(0, null));
             return;
@@ -443,7 +448,7 @@ class TypeScriptServiceClientHost {
                     .then(() => void 0);
             }
             const { configFileName } = res.body;
-            if (configFileName && configFileName.indexOf('/dev/null/') !== 0) {
+            if (configFileName && !tsconfig_1.isImplicitProjectConfigFile(configFileName)) {
                 return vscode_1.workspace.openTextDocument(configFileName)
                     .then(doc => vscode_1.window.showTextDocument(doc, vscode_1.window.activeTextEditor ? vscode_1.window.activeTextEditor.viewColumn : undefined));
             }
@@ -460,16 +465,7 @@ class TypeScriptServiceClientHost {
             }).then(selected => {
                 switch (selected && selected.id) {
                     case ProjectConfigAction.CreateConfig:
-                        const configFile = vscode_1.Uri.file(path.join(rootPath, isTypeScriptProject ? 'tsconfig.json' : 'jsconfig.json'));
-                        const col = vscode_1.window.activeTextEditor ? vscode_1.window.activeTextEditor.viewColumn : undefined;
-                        return vscode_1.workspace.openTextDocument(configFile)
-                            .then(doc => {
-                            return vscode_1.window.showTextDocument(doc, col);
-                        }, _ => {
-                            return vscode_1.workspace.openTextDocument(configFile.with({ scheme: 'untitled' }))
-                                .then(doc => vscode_1.window.showTextDocument(doc, col))
-                                .then(editor => editor.insertSnippet(new vscode_1.SnippetString('{\n\t$0\n}')));
-                        });
+                        return tsconfig_1.openOrCreateConfigFile(isTypeScriptProject, rootPath);
                     case ProjectConfigAction.LearnMore:
                         if (isTypeScriptProject) {
                             vscode_1.commands.executeCommand('vscode.open', vscode_1.Uri.parse('https://go.microsoft.com/fwlink/?linkid=841896'));
@@ -495,12 +491,16 @@ class TypeScriptServiceClientHost {
         }, () => null);
     }
     triggerAllDiagnostics() {
-        Object.keys(this.languagePerId).forEach(key => this.languagePerId[key].triggerAllDiagnostics());
+        for (const language of this.languagePerId.values()) {
+            language.triggerAllDiagnostics();
+        }
     }
     /* internal */ populateService() {
         // See https://github.com/Microsoft/TypeScript/issues/5530
-        vscode_1.workspace.saveAll(false).then(_ => {
-            Object.keys(this.languagePerId).forEach(key => this.languagePerId[key].reInitialize());
+        vscode_1.workspace.saveAll(false).then(() => {
+            for (const language of this.languagePerId.values()) {
+                language.reInitialize();
+            }
         });
     }
     /* internal */ syntaxDiagnosticsReceived(event) {
@@ -522,11 +522,6 @@ class TypeScriptServiceClientHost {
                 }
             });
         }
-        /*
-        if (Is.defined(body.queueLength)) {
-            BuildStatus.update({ queueLength: body.queueLength });
-        }
-        */
     }
     /* internal */ configFileDiagnosticsReceived(event) {
         // See https://github.com/Microsoft/TypeScript/issues/10384
@@ -534,7 +529,9 @@ class TypeScriptServiceClientHost {
         if (!body || !body.diagnostics || !body.configFile) {
             return;
         }
-        (body.triggerFile ? this.findLanguage(body.triggerFile) : this.findLanguage(body.configFile)).then(language => {
+        // TODO: restore opening trigger file?
+        //     body.triggerFile ? this.findLanguage(body.triggerFile)
+        (this.findLanguage(body.configFile)).then(language => {
             if (!language) {
                 return;
             }
@@ -604,4 +601,4 @@ class TypeScriptServiceClientHost {
         }
     }
 }
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/379d2efb5539b09112c793d3d9a413017d736f89/extensions\typescript\out/typescriptMain.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/c887dd955170aebce0f6bb160b146f2e6e10a199/extensions\typescript\out/typescriptMain.js.map

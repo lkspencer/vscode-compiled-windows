@@ -4,6 +4,8 @@
  *--------------------------------------------------------------------------------------------*/
 'use strict';
 Object.defineProperty(exports, "__esModule", { value: true });
+var nls = require("vscode-nls");
+var localize = nls.config(process.env.VSCODE_NLS_CONFIG)(__filename);
 var vscode = require("vscode");
 var path = require("path");
 var vscode_extension_telemetry_1 = require("vscode-extension-telemetry");
@@ -14,8 +16,6 @@ var security_1 = require("./security");
 var previewContentProvider_1 = require("./previewContentProvider");
 var tableOfContentsProvider_1 = require("./tableOfContentsProvider");
 var logger_1 = require("./logger");
-var nls = require("vscode-nls");
-var localize = nls.loadMessageBundle(__filename);
 var resolveExtensionResources = function (extension, stylePath) {
     var resource = vscode.Uri.parse(stylePath);
     if (resource.scheme) {
@@ -189,7 +189,7 @@ function showPreview(uri, sideBySide) {
         // nothing found that could be shown or toggled
         return;
     }
-    var thenable = vscode.commands.executeCommand('vscode.previewHtml', previewContentProvider_1.getMarkdownUri(resource), getViewColumn(sideBySide), "Preview '" + path.basename(resource.fsPath) + "'");
+    var thenable = vscode.commands.executeCommand('vscode.previewHtml', previewContentProvider_1.getMarkdownUri(resource), getViewColumn(sideBySide), "Preview '" + path.basename(resource.fsPath) + "'", { allowScripts: true, allowSvgs: true });
     if (telemetryReporter) {
         telemetryReporter.sendTelemetryEvent('openPreview', {
             where: sideBySide ? 'sideBySide' : 'inPlace',
@@ -239,4 +239,4 @@ function getPackageInfo() {
     }
     return null;
 }
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/379d2efb5539b09112c793d3d9a413017d736f89/extensions\markdown\out/extension.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/c887dd955170aebce0f6bb160b146f2e6e10a199/extensions\markdown\out/extension.js.map

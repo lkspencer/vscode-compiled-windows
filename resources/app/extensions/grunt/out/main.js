@@ -38,12 +38,15 @@ function activate(_context) {
             taskProvider = undefined;
         }
         else if (!taskProvider && autoDetect === 'on') {
-            taskProvider = vscode.workspace.registerTaskProvider({
+            taskProvider = vscode.workspace.registerTaskProvider('grunt', {
                 provideTasks: () => {
                     if (!detectorPromise) {
                         detectorPromise = getGruntTasks();
                     }
                     return detectorPromise;
+                },
+                resolveTask(_task) {
+                    return undefined;
                 }
             });
         }
@@ -82,6 +85,24 @@ function getOutputChannel() {
     }
     return _channel;
 }
+const buildNames = ['build', 'compile', 'watch'];
+function isBuildTask(name) {
+    for (let buildName of buildNames) {
+        if (name.indexOf(buildName) !== -1) {
+            return true;
+        }
+    }
+    return false;
+}
+const testNames = ['test'];
+function isTestTask(name) {
+    for (let testName of testNames) {
+        if (name.indexOf(testName) !== -1) {
+            return true;
+        }
+    }
+    return false;
+}
 function getGruntTasks() {
     return __awaiter(this, void 0, void 0, function* () {
         let workspaceRoot = vscode.workspace.rootPath;
@@ -113,8 +134,6 @@ function getGruntTasks() {
             }
             let result = [];
             if (stdout) {
-                let buildTask = { task: undefined, rank: 0 };
-                let testTask = { task: undefined, rank: 0 };
                 // grunt lists tasks as follows (description is wrapped into a new line if too long):
                 // ...
                 // Available tasks
@@ -146,34 +165,26 @@ function getGruntTasks() {
                             let regExp = /^\s*(\S.*\S)  \S/g;
                             let matches = regExp.exec(line);
                             if (matches && matches.length === 2) {
-                                let taskName = matches[1];
-                                let task = taskName.indexOf(' ') === -1
-                                    ? new vscode.ShellTask(taskName, `${command} ${taskName}`)
-                                    : new vscode.ShellTask(taskName, `${command} "${taskName}"`);
-                                task.identifier = `grunt.${taskName}`;
+                                let name = matches[1];
+                                let kind = {
+                                    type: 'grunt',
+                                    task: name
+                                };
+                                let source = 'grunt';
+                                let task = name.indexOf(' ') === -1
+                                    ? new vscode.Task(kind, name, source, new vscode.ShellExecution(`${command} ${name}`))
+                                    : new vscode.Task(kind, name, source, new vscode.ShellExecution(`${command} "${name}"`));
                                 result.push(task);
-                                let lowerCaseTaskName = taskName.toLowerCase();
-                                if (lowerCaseTaskName === 'build') {
-                                    buildTask = { task, rank: 2 };
+                                let lowerCaseTaskName = name.toLowerCase();
+                                if (isBuildTask(lowerCaseTaskName)) {
+                                    task.group = vscode.TaskGroup.Build;
                                 }
-                                else if (lowerCaseTaskName.indexOf('build') !== -1 && buildTask.rank < 1) {
-                                    buildTask = { task, rank: 1 };
-                                }
-                                else if (lowerCaseTaskName === 'test') {
-                                    testTask = { task, rank: 2 };
-                                }
-                                else if (lowerCaseTaskName.indexOf('test') !== -1 && testTask.rank < 1) {
-                                    testTask = { task, rank: 1 };
+                                else if (isTestTask(lowerCaseTaskName)) {
+                                    task.group = vscode.TaskGroup.Test;
                                 }
                             }
                         }
                     }
-                }
-                if (buildTask.task) {
-                    buildTask.task.group = vscode.TaskGroup.Build;
-                }
-                if (testTask.task) {
-                    testTask.task.group = vscode.TaskGroup.Test;
                 }
             }
             return result;
@@ -192,4 +203,4 @@ function getGruntTasks() {
         }
     });
 }
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/379d2efb5539b09112c793d3d9a413017d736f89/extensions\grunt\out/main.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/c887dd955170aebce0f6bb160b146f2e6e10a199/extensions\grunt\out/main.js.map

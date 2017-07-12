@@ -6,7 +6,6 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const vscode = require("vscode");
 const util_1 = require("./util");
-const html_matcher_1 = require("@emmetio/html-matcher");
 function balanceOut() {
     balance(true);
 }
@@ -17,30 +16,32 @@ function balanceIn() {
 exports.balanceIn = balanceIn;
 function balance(out) {
     let editor = vscode.window.activeTextEditor;
-    if (!editor) {
-        vscode.window.showInformationMessage('No editor is active');
+    if (!util_1.validate(false)) {
         return;
     }
-    if (util_1.isStyleSheet(editor.document.languageId)) {
+    let rootNode = util_1.parse(editor.document);
+    if (!rootNode) {
         return;
     }
     let getRangeFunction = out ? getRangeToBalanceOut : getRangeToBalanceIn;
-    let rootNode = html_matcher_1.default(editor.document.getText());
     let newSelections = [];
     editor.selections.forEach(selection => {
         let range = getRangeFunction(editor.document, selection, rootNode);
-        if (range) {
-            newSelections.push(range);
-        }
+        newSelections.push(range ? range : selection);
     });
     editor.selection = newSelections[0];
     editor.selections = newSelections;
 }
 function getRangeToBalanceOut(document, selection, rootNode) {
-    let offset = document.offsetAt(selection.start);
-    let nodeToBalance = util_1.getNode(rootNode, offset);
-    let innerSelection = util_1.getNodeInnerSelection(document, nodeToBalance);
-    let outerSelection = util_1.getNodeOuterSelection(document, nodeToBalance);
+    let nodeToBalance = util_1.getNode(rootNode, selection.start);
+    if (!nodeToBalance) {
+        return;
+    }
+    if (!nodeToBalance.close) {
+        return new vscode.Selection(nodeToBalance.start, nodeToBalance.end);
+    }
+    let innerSelection = new vscode.Selection(nodeToBalance.open.end, nodeToBalance.close.start);
+    let outerSelection = new vscode.Selection(nodeToBalance.start, nodeToBalance.end);
     if (innerSelection.contains(selection) && !innerSelection.isEqual(selection)) {
         return innerSelection;
     }
@@ -50,14 +51,21 @@ function getRangeToBalanceOut(document, selection, rootNode) {
     return;
 }
 function getRangeToBalanceIn(document, selection, rootNode) {
-    let offset = document.offsetAt(selection.start);
-    let nodeToBalance = util_1.getNode(rootNode, offset);
+    let nodeToBalance = util_1.getNode(rootNode, selection.start);
+    if (!nodeToBalance) {
+        return;
+    }
     if (!nodeToBalance.firstChild) {
-        return selection;
+        if (nodeToBalance.close) {
+            return new vscode.Selection(nodeToBalance.open.end, nodeToBalance.close.start);
+        }
+        return;
     }
-    if (nodeToBalance.firstChild.start === offset && nodeToBalance.firstChild.end === document.offsetAt(selection.end)) {
-        return util_1.getNodeInnerSelection(document, nodeToBalance.firstChild);
+    if (selection.start.isEqual(nodeToBalance.firstChild.start)
+        && selection.end.isEqual(nodeToBalance.firstChild.end)
+        && nodeToBalance.firstChild.close) {
+        return new vscode.Selection(nodeToBalance.firstChild.open.end, nodeToBalance.firstChild.close.start);
     }
-    return new vscode.Selection(document.positionAt(nodeToBalance.firstChild.start), document.positionAt(nodeToBalance.firstChild.end));
+    return new vscode.Selection(nodeToBalance.firstChild.start, nodeToBalance.firstChild.end);
 }
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/379d2efb5539b09112c793d3d9a413017d736f89/extensions\emmet\out/balance.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/c887dd955170aebce0f6bb160b146f2e6e10a199/extensions\emmet\out/balance.js.map

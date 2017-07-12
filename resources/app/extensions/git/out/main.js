@@ -12,6 +12,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+const nls = require("vscode-nls");
+const localize = nls.config(process.env.VSCODE_NLS_CONFIG)(__filename);
 const vscode_1 = require("vscode");
 const git_1 = require("./git");
 const model_1 = require("./model");
@@ -23,8 +25,6 @@ const autofetch_1 = require("./autofetch");
 const askpass_1 = require("./askpass");
 const util_1 = require("./util");
 const vscode_extension_telemetry_1 = require("vscode-extension-telemetry");
-const nls = require("vscode-nls");
-const localize = nls.config(process.env.VSCODE_NLS_CONFIG)(__filename);
 function init(context, disposables) {
     return __awaiter(this, void 0, void 0, function* () {
         const { name, version, aiKey } = require(context.asAbsolutePath('./package.json'));
@@ -87,4 +87,4 @@ function checkGitVersion(info) {
         }
     });
 }
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/379d2efb5539b09112c793d3d9a413017d736f89/extensions\git\out/main.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/c887dd955170aebce0f6bb160b146f2e6e10a199/extensions\git\out/main.js.map

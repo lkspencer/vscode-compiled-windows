@@ -6,44 +6,48 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const vscode = require("vscode");
 const util_1 = require("./util");
-const html_matcher_1 = require("@emmetio/html-matcher");
 function splitJoinTag() {
     let editor = vscode.window.activeTextEditor;
-    if (!editor) {
-        vscode.window.showInformationMessage('No editor is active');
+    if (!util_1.validate(false)) {
         return;
     }
-    if (util_1.isStyleSheet(editor.document.languageId)) {
+    let rootNode = util_1.parse(editor.document);
+    if (!rootNode) {
         return;
     }
-    let rootNode = html_matcher_1.default(editor.document.getText());
     editor.edit(editBuilder => {
         editor.selections.reverse().forEach(selection => {
             let [rangeToReplace, textToReplaceWith] = getRangesToReplace(editor.document, selection, rootNode);
-            editBuilder.replace(rangeToReplace, textToReplaceWith);
+            if (rangeToReplace && textToReplaceWith) {
+                editBuilder.replace(rangeToReplace, textToReplaceWith);
+            }
         });
     });
 }
 exports.splitJoinTag = splitJoinTag;
 function getRangesToReplace(document, selection, rootNode) {
-    let offset = document.offsetAt(selection.start);
-    let nodeToUpdate = util_1.getNode(rootNode, offset);
+    let nodeToUpdate = util_1.getNode(rootNode, selection.start);
     let rangeToReplace;
     let textToReplaceWith;
+    if (!nodeToUpdate) {
+        return [null, null];
+    }
     if (!nodeToUpdate.close) {
         // Split Tag
-        let nodeText = document.getText(new vscode.Range(document.positionAt(nodeToUpdate.start), document.positionAt(nodeToUpdate.end)));
+        let nodeText = document.getText(new vscode.Range(nodeToUpdate.start, nodeToUpdate.end));
         let m = nodeText.match(/(\s*\/)?>$/);
-        let end = nodeToUpdate.open.end;
-        let start = m ? end - m[0].length : end;
-        rangeToReplace = new vscode.Range(document.positionAt(start), document.positionAt(end));
+        let end = nodeToUpdate.end;
+        let start = m ? end.translate(0, -m[0].length) : end;
+        rangeToReplace = new vscode.Range(start, end);
         textToReplaceWith = `></${nodeToUpdate.name}>`;
     }
     else {
         // Join Tag
-        rangeToReplace = new vscode.Range(document.positionAt(nodeToUpdate.open.end - 1), document.positionAt(nodeToUpdate.close.end));
+        let start = nodeToUpdate.open.end.translate(0, -1);
+        let end = nodeToUpdate.end;
+        rangeToReplace = new vscode.Range(start, end);
         textToReplaceWith = '/>';
     }
     return [rangeToReplace, textToReplaceWith];
 }
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/379d2efb5539b09112c793d3d9a413017d736f89/extensions\emmet\out/splitJoinTag.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/c887dd955170aebce0f6bb160b146f2e6e10a199/extensions\emmet\out/splitJoinTag.js.map

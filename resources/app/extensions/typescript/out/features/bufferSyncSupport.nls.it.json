@@ -1,5 +1,5 @@
 [
-	"TypeScript ({1}) è in uso per le funzionalità dell'editor. TypeScript ({0}) è installato sul computer. Possono verificarsi errori di compilazione",
+	"TypeScript ({1}) è in uso per le funzionalità dell'editor. TypeScript ({0}) è installato sul computer. Errori di VS Code possono differire dagli errori di TSC",
 	"Altre informazioni",
 	"Non eseguire più la verifica",
 	"Chiudi",

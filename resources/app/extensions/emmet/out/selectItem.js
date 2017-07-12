@@ -8,8 +8,7 @@ const vscode = require("vscode");
 const util_1 = require("./util");
 const selectItemHTML_1 = require("./selectItemHTML");
 const selectItemStylesheet_1 = require("./selectItemStylesheet");
-const css_parser_1 = require("@emmetio/css-parser");
-const html_matcher_1 = require("@emmetio/html-matcher");
+const vscode_emmet_helper_1 = require("vscode-emmet-helper");
 function fetchSelectItem(direction) {
     let editor = vscode.window.activeTextEditor;
     if (!util_1.validate()) {
@@ -17,25 +16,27 @@ function fetchSelectItem(direction) {
     }
     let nextItem;
     let prevItem;
-    let parseContent;
-    if (util_1.isStyleSheet(editor.document.languageId)) {
+    if (vscode_emmet_helper_1.isStyleSheet(editor.document.languageId)) {
         nextItem = selectItemStylesheet_1.nextItemStylesheet;
         prevItem = selectItemStylesheet_1.prevItemStylesheet;
-        parseContent = css_parser_1.default;
     }
     else {
         nextItem = selectItemHTML_1.nextItemHTML;
         prevItem = selectItemHTML_1.prevItemHTML;
-        parseContent = html_matcher_1.default;
     }
-    let rootNode = parseContent(editor.document.getText());
+    let rootNode = util_1.parse(editor.document);
+    if (!rootNode) {
+        return;
+    }
     let newSelections = [];
     editor.selections.forEach(selection => {
-        let updatedSelection = direction === 'next' ? nextItem(selection, editor, rootNode) : prevItem(selection, editor, rootNode);
+        const selectionStart = selection.isReversed ? selection.active : selection.anchor;
+        const selectionEnd = selection.isReversed ? selection.anchor : selection.active;
+        let updatedSelection = direction === 'next' ? nextItem(selectionStart, selectionEnd, editor, rootNode) : prevItem(selectionStart, selectionEnd, editor, rootNode);
         newSelections.push(updatedSelection ? updatedSelection : selection);
     });
     editor.selections = newSelections;
     editor.revealRange(editor.selections[editor.selections.length - 1]);
 }
 exports.fetchSelectItem = fetchSelectItem;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/379d2efb5539b09112c793d3d9a413017d736f89/extensions\emmet\out/selectItem.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/c887dd955170aebce0f6bb160b146f2e6e10a199/extensions\emmet\out/selectItem.js.map

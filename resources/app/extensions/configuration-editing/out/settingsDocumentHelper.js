@@ -40,9 +40,11 @@ var SettingsDocument = (function () {
         completions.push(this.newSimpleCompletionItem('${activeEditorLong}', range, localize(2, null)));
         completions.push(this.newSimpleCompletionItem('${rootName}', range, localize(3, null)));
         completions.push(this.newSimpleCompletionItem('${rootPath}', range, localize(4, null)));
-        completions.push(this.newSimpleCompletionItem('${appName}', range, localize(5, null)));
-        completions.push(this.newSimpleCompletionItem('${dirty}', range, localize(6, null)));
-        completions.push(this.newSimpleCompletionItem('${separator}', range, localize(7, null)));
+        completions.push(this.newSimpleCompletionItem('${folderName}', range, localize(5, null)));
+        completions.push(this.newSimpleCompletionItem('${folderPath}', range, localize(6, null)));
+        completions.push(this.newSimpleCompletionItem('${appName}', range, localize(7, null)));
+        completions.push(this.newSimpleCompletionItem('${dirty}', range, localize(8, null)));
+        completions.push(this.newSimpleCompletionItem('${separator}', range, localize(9, null)));
         return Promise.resolve(completions);
     };
     SettingsDocument.prototype.provideFilesAssociationsCompletionItems = function (location, range) {
@@ -50,14 +52,14 @@ var SettingsDocument = (function () {
         // Key
         if (location.path.length === 1) {
             completions.push(this.newSnippetCompletionItem({
-                label: localize(8, null),
-                documentation: localize(9, null),
+                label: localize(10, null),
+                documentation: localize(11, null),
                 snippet: location.isAtPropertyKey ? '"*.${1:extension}": "${2:language}"' : '{ "*.${1:extension}": "${2:language}" }',
                 range: range
             }));
             completions.push(this.newSnippetCompletionItem({
-                label: localize(10, null),
-                documentation: localize(11, null),
+                label: localize(12, null),
+                documentation: localize(13, null),
                 snippet: location.isAtPropertyKey ? '"/${1:path to file}/*.${2:extension}": "${3:language}"' : '{ "/${1:path to file}/*.${2:extension}": "${3:language}" }',
                 range: range
             }));
@@ -72,48 +74,48 @@ var SettingsDocument = (function () {
         // Key
         if (location.path.length === 1) {
             completions.push(this.newSnippetCompletionItem({
-                label: localize(12, null),
-                documentation: localize(13, null),
-                snippet: location.isAtPropertyKey ? '"**/*.${1:extension}": true' : '{ "**/*.${1:extension}": true }',
-                range: range
-            }));
-            completions.push(this.newSnippetCompletionItem({
                 label: localize(14, null),
                 documentation: localize(15, null),
-                snippet: location.isAtPropertyKey ? '"**/*.{ext1,ext2,ext3}": true' : '{ "**/*.{ext1,ext2,ext3}": true }',
+                snippet: location.isAtPropertyKey ? '"**/*.${1:extension}": true' : '{ "**/*.${1:extension}": true }',
                 range: range
             }));
             completions.push(this.newSnippetCompletionItem({
                 label: localize(16, null),
                 documentation: localize(17, null),
-                snippet: location.isAtPropertyKey ? '"**/*.${1:source-extension}": { "when": "$(basename).${2:target-extension}" }' : '{ "**/*.${1:source-extension}": { "when": "$(basename).${2:target-extension}" } }',
+                snippet: location.isAtPropertyKey ? '"**/*.{ext1,ext2,ext3}": true' : '{ "**/*.{ext1,ext2,ext3}": true }',
                 range: range
             }));
             completions.push(this.newSnippetCompletionItem({
                 label: localize(18, null),
                 documentation: localize(19, null),
-                snippet: location.isAtPropertyKey ? '"${1:name}": true' : '{ "${1:name}": true }',
+                snippet: location.isAtPropertyKey ? '"**/*.${1:source-extension}": { "when": "$(basename).${2:target-extension}" }' : '{ "**/*.${1:source-extension}": { "when": "$(basename).${2:target-extension}" } }',
                 range: range
             }));
             completions.push(this.newSnippetCompletionItem({
                 label: localize(20, null),
                 documentation: localize(21, null),
-                snippet: location.isAtPropertyKey ? '"{folder1,folder2,folder3}": true' : '{ "{folder1,folder2,folder3}": true }',
+                snippet: location.isAtPropertyKey ? '"${1:name}": true' : '{ "${1:name}": true }',
                 range: range
             }));
             completions.push(this.newSnippetCompletionItem({
                 label: localize(22, null),
                 documentation: localize(23, null),
+                snippet: location.isAtPropertyKey ? '"{folder1,folder2,folder3}": true' : '{ "{folder1,folder2,folder3}": true }',
+                range: range
+            }));
+            completions.push(this.newSnippetCompletionItem({
+                label: localize(24, null),
+                documentation: localize(25, null),
                 snippet: location.isAtPropertyKey ? '"**/${1:name}": true' : '{ "**/${1:name}": true }',
                 range: range
             }));
         }
         else {
-            completions.push(this.newSimpleCompletionItem('false', range, localize(24, null)));
-            completions.push(this.newSimpleCompletionItem('true', range, localize(25, null)));
+            completions.push(this.newSimpleCompletionItem('false', range, localize(26, null)));
+            completions.push(this.newSimpleCompletionItem('true', range, localize(27, null)));
             completions.push(this.newSnippetCompletionItem({
-                label: localize(26, null),
-                documentation: localize(27, null),
+                label: localize(28, null),
+                documentation: localize(29, null),
                 snippet: '{ "when": "$(basename).${1:extension}" }',
                 range: range
             }));
@@ -142,8 +144,8 @@ var SettingsDocument = (function () {
                 snippet = snippet.substring(1);
             }
             return Promise.resolve([this.newSnippetCompletionItem({
-                    label: localize(28, null),
-                    documentation: localize(29, null),
+                    label: localize(30, null),
+                    documentation: localize(31, null),
                     snippet: snippet,
                     range: range
                 })]);
@@ -174,4 +176,4 @@ var SettingsDocument = (function () {
     return SettingsDocument;
 }());
 exports.SettingsDocument = SettingsDocument;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/379d2efb5539b09112c793d3d9a413017d736f89/extensions\configuration-editing\out/settingsDocumentHelper.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/c887dd955170aebce0f6bb160b146f2e6e10a199/extensions\configuration-editing\out/settingsDocumentHelper.js.map

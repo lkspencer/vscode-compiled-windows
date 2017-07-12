@@ -4,13 +4,13 @@
  *--------------------------------------------------------------------------------------------*/
 'use strict';
 Object.defineProperty(exports, "__esModule", { value: true });
+var vscode = require("vscode");
+var nls = require("vscode-nls");
+nls.config({ locale: vscode.env.language });
 var completionItemProvider_1 = require("./features/completionItemProvider");
 var hoverProvider_1 = require("./features/hoverProvider");
 var signatureHelpProvider_1 = require("./features/signatureHelpProvider");
 var validationProvider_1 = require("./features/validationProvider");
-var vscode = require("vscode");
-var nls = require("vscode-nls");
-nls.config({ locale: vscode.env.language });
 function activate(context) {
     var validator = new validationProvider_1.default(context.workspaceState);
     validator.activate(context.subscriptions);
@@ -24,4 +24,4 @@ function activate(context) {
     });
 }
 exports.activate = activate;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/379d2efb5539b09112c793d3d9a413017d736f89/extensions\php\out/phpMain.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/c887dd955170aebce0f6bb160b146f2e6e10a199/extensions\php\out/phpMain.js.map

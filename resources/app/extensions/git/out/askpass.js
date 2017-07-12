@@ -13,20 +13,42 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const vscode_1 = require("vscode");
+const util_1 = require("./util");
 const path = require("path");
 const http = require("http");
+const os = require("os");
+const crypto = require("crypto");
+const randomBytes = util_1.denodeify(crypto.randomBytes);
+function getIPCHandlePath(nonce) {
+    if (process.platform === 'win32') {
+        return `\\\\.\\pipe\\vscode-git-askpass-${nonce}-sock`;
+    }
+    if (process.env['XDG_RUNTIME_DIR']) {
+        return path.join(process.env['XDG_RUNTIME_DIR'], `vscode-git-askpass-${nonce}.sock`);
+    }
+    return path.join(os.tmpdir(), `vscode-git-askpass-${nonce}.sock`);
+}
 class Askpass {
     constructor() {
         this.enabled = true;
         this.server = http.createServer((req, res) => this.onRequest(req, res));
-        try {
-            this.server.listen(0);
-            this.portPromise = new Promise(c => this.server.on('listening', () => c(this.server.address().port)));
-            this.server.on('error', err => console.error(err));
-        }
-        catch (err) {
-            this.enabled = false;
-        }
+        this.ipcHandlePathPromise = this.setup().catch(err => console.error(err));
+    }
+    setup() {
+        return __awaiter(this, void 0, void 0, function* () {
+            const buffer = yield randomBytes(20);
+            const nonce = buffer.toString('hex');
+            const ipcHandlePath = getIPCHandlePath(nonce);
+            try {
+                this.server.listen(ipcHandlePath);
+                this.server.on('error', err => console.error(err));
+            }
+            catch (err) {
+                console.error('Could not launch git askpass helper.');
+                this.enabled = false;
+            }
+            return ipcHandlePath;
+        });
     }
     onRequest(req, res) {
         const chunks = [];
@@ -66,7 +88,7 @@ class Askpass {
                 GIT_ASKPASS: path.join(__dirname, 'askpass.sh'),
                 VSCODE_GIT_ASKPASS_NODE: process.execPath,
                 VSCODE_GIT_ASKPASS_MAIN: path.join(__dirname, 'askpass-main.js'),
-                VSCODE_GIT_ASKPASS_PORT: String(yield this.portPromise)
+                VSCODE_GIT_ASKPASS_HANDLE: yield this.ipcHandlePathPromise
             };
         });
     }
@@ -75,4 +97,4 @@ class Askpass {
     }
 }
 exports.Askpass = Askpass;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/379d2efb5539b09112c793d3d9a413017d736f89/extensions\git\out/askpass.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/c887dd955170aebce0f6bb160b146f2e6e10a199/extensions\git\out/askpass.js.map

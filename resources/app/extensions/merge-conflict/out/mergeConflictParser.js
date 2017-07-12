@@ -6,9 +6,10 @@ Object.defineProperty(exports, "__esModule", { value: true });
  *--------------------------------------------------------------------------------------------*/
 const vscode = require("vscode");
 const documentMergeConflict_1 = require("./documentMergeConflict");
-const startHeaderMarker = '<<<<<<< ';
+const startHeaderMarker = '<<<<<<<';
+const commonAncestorsMarker = '|||||||';
 const splitterMarker = '=======';
-const endFooterMarker = '>>>>>>> ';
+const endFooterMarker = '>>>>>>>';
 class MergeConflictParser {
     static scanDocument(document) {
         // Scan each line in the document, we already know there is atleast a <<<<<<< and
@@ -34,9 +35,12 @@ class MergeConflictParser {
                     break;
                 }
                 // Create a new conflict starting at this line
-                currentConflict = { startHeader: line };
+                currentConflict = { startHeader: line, commonAncestors: [] };
             }
-            else if (currentConflict && line.text.startsWith(splitterMarker)) {
+            else if (currentConflict && !currentConflict.splitter && line.text.startsWith(commonAncestorsMarker)) {
+                currentConflict.commonAncestors.push(line);
+            }
+            else if (currentConflict && !currentConflict.splitter && line.text.startsWith(splitterMarker)) {
                 currentConflict.splitter = line;
             }
             else if (currentConflict && line.text.startsWith(endFooterMarker)) {
@@ -61,6 +65,7 @@ class MergeConflictParser {
         if (!scanned.startHeader || !scanned.splitter || !scanned.endFooter) {
             return null;
         }
+        let tokenAfterCurrentBlock = scanned.commonAncestors[0] || scanned.splitter;
         // Assume that descriptor.current.header, descriptor.incoming.header and descriptor.spliiter
         // have valid ranges, fill in content and total ranges from these parts.
         // NOTE: We need to shift the decortator range back one character so the splitter does not end up with
@@ -69,18 +74,29 @@ class MergeConflictParser {
         return {
             current: {
                 header: scanned.startHeader.range,
-                decoratorContent: new vscode.Range(scanned.startHeader.rangeIncludingLineBreak.end, MergeConflictParser.shiftBackOneCharacter(document, scanned.splitter.range.start)),
-                // Current content is range between header (shifted for linebreak) and splitter start
-                content: new vscode.Range(scanned.startHeader.rangeIncludingLineBreak.end, scanned.splitter.range.start),
-                name: scanned.startHeader.text.substring(startHeaderMarker.length)
+                decoratorContent: new vscode.Range(scanned.startHeader.rangeIncludingLineBreak.end, MergeConflictParser.shiftBackOneCharacter(document, tokenAfterCurrentBlock.range.start, scanned.startHeader.rangeIncludingLineBreak.end)),
+                // Current content is range between header (shifted for linebreak) and splitter or common ancestors mark start
+                content: new vscode.Range(scanned.startHeader.rangeIncludingLineBreak.end, tokenAfterCurrentBlock.range.start),
+                name: scanned.startHeader.text.substring(startHeaderMarker.length + 1)
             },
+            commonAncestors: scanned.commonAncestors.map((currentTokenLine, index, commonAncestors) => {
+                let nextTokenLine = commonAncestors[index + 1] || scanned.splitter;
+                return {
+                    header: currentTokenLine.range,
+                    decoratorContent: new vscode.Range(currentTokenLine.rangeIncludingLineBreak.end, MergeConflictParser.shiftBackOneCharacter(document, nextTokenLine.range.start, currentTokenLine.rangeIncludingLineBreak.end)),
+                    // Each common ancestors block is range between one common ancestors token
+                    // (shifted for linebreak) and start of next common ancestors token or splitter
+                    content: new vscode.Range(currentTokenLine.rangeIncludingLineBreak.end, nextTokenLine.range.start),
+                    name: currentTokenLine.text.substring(commonAncestorsMarker.length + 1)
+                };
+            }),
             splitter: scanned.splitter.range,
             incoming: {
                 header: scanned.endFooter.range,
-                decoratorContent: new vscode.Range(scanned.splitter.rangeIncludingLineBreak.end, MergeConflictParser.shiftBackOneCharacter(document, scanned.endFooter.range.start)),
+                decoratorContent: new vscode.Range(scanned.splitter.rangeIncludingLineBreak.end, MergeConflictParser.shiftBackOneCharacter(document, scanned.endFooter.range.start, scanned.splitter.rangeIncludingLineBreak.end)),
                 // Incoming content is range between splitter (shifted for linebreak) and footer start
                 content: new vscode.Range(scanned.splitter.rangeIncludingLineBreak.end, scanned.endFooter.range.start),
-                name: scanned.endFooter.text.substring(endFooterMarker.length)
+                name: scanned.endFooter.text.substring(endFooterMarker.length + 1)
             },
             // Entire range is between current header start and incoming header end (including line break)
             range: new vscode.Range(scanned.startHeader.range.start, scanned.endFooter.rangeIncludingLineBreak.end)
@@ -93,7 +109,10 @@ class MergeConflictParser {
         let text = document.getText();
         return text.includes(startHeaderMarker) && text.includes(endFooterMarker);
     }
-    static shiftBackOneCharacter(document, range) {
+    static shiftBackOneCharacter(document, range, unlessEqual) {
+        if (range.isEqual(unlessEqual)) {
+            return range;
+        }
         let line = range.line;
         let character = range.character - 1;
         if (character < 0) {
@@ -104,4 +123,4 @@ class MergeConflictParser {
     }
 }
 exports.MergeConflictParser = MergeConflictParser;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/379d2efb5539b09112c793d3d9a413017d736f89/extensions\merge-conflict\out/mergeConflictParser.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/c887dd955170aebce0f6bb160b146f2e6e10a199/extensions\merge-conflict\out/mergeConflictParser.js.map

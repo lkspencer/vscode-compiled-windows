@@ -16,6 +16,7 @@ const fs = require("fs");
 const path = require("path");
 const vscode = require("vscode");
 const tsconfigProvider_1 = require("../utils/tsconfigProvider");
+const tsconfig_1 = require("../utils/tsconfig");
 const exists = (file) => new Promise((resolve, _reject) => {
     fs.exists(file, (value) => {
         resolve(value);
@@ -42,12 +43,15 @@ class TscTaskProvider {
             const projects = yield this.getAllTsConfigs(token);
             return projects.map(configFile => {
                 const configFileName = path.relative(rootPath, configFile);
-                const buildTask = new vscode.ShellTask(`build ${configFileName}`, `${command} -p "${configFile}"`, '$tsc');
-                buildTask.source = 'tsc';
+                const identifier = { type: 'typescript', tsconfig: configFileName };
+                const buildTask = new vscode.Task(identifier, `build ${configFileName}`, 'tsc', new vscode.ShellExecution(`${command} -p "${configFile}"`), '$tsc');
                 buildTask.group = vscode.TaskGroup.Build;
                 return buildTask;
             });
         });
+    }
+    resolveTask(_task) {
+        return undefined;
     }
     getAllTsConfigs(token) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -78,7 +82,7 @@ class TscTaskProvider {
                 return [];
             }
             const { configFileName } = res.body;
-            if (configFileName && configFileName.indexOf('/dev/null/') !== 0) {
+            if (configFileName && !tsconfig_1.isImplicitProjectConfigFile(configFileName)) {
                 return [configFileName];
             }
             return [];
@@ -139,9 +143,9 @@ class TypeScriptTaskProviderManager {
             this.taskProviderSub = undefined;
         }
         else if (!this.taskProviderSub && autoDetect === 'on') {
-            this.taskProviderSub = vscode.workspace.registerTaskProvider(new TscTaskProvider(this.lazyClient));
+            this.taskProviderSub = vscode.workspace.registerTaskProvider('typescript', new TscTaskProvider(this.lazyClient));
         }
     }
 }
 exports.default = TypeScriptTaskProviderManager;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/379d2efb5539b09112c793d3d9a413017d736f89/extensions\typescript\out/features\taskProvider.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/c887dd955170aebce0f6bb160b146f2e6e10a199/extensions\typescript\out/features\taskProvider.js.map

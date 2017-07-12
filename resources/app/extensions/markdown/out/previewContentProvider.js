@@ -33,16 +33,21 @@ var MarkdownPreviewConfig = (function () {
     function MarkdownPreviewConfig() {
         var editorConfig = vscode.workspace.getConfiguration('editor');
         var markdownConfig = vscode.workspace.getConfiguration('markdown');
+        var markdownEditorConfig = vscode.workspace.getConfiguration('[markdown]');
         this.scrollBeyondLastLine = editorConfig.get('scrollBeyondLastLine', false);
         this.wordWrap = editorConfig.get('wordWrap', 'off') !== 'off';
+        if (markdownEditorConfig && markdownEditorConfig['editor.wordWrap']) {
+            this.wordWrap = markdownEditorConfig['editor.wordWrap'] !== 'off';
+        }
         this.previewFrontMatter = markdownConfig.get('previewFrontMatter', 'hide');
         this.scrollPreviewWithEditorSelection = !!markdownConfig.get('preview.scrollPreviewWithEditorSelection', true);
         this.scrollEditorWithPreview = !!markdownConfig.get('preview.scrollEditorWithPreview', true);
+        this.lineBreaks = !!markdownConfig.get('preview.breaks', false);
         this.doubleClickToSwitchToEditor = !!markdownConfig.get('preview.doubleClickToSwitchToEditor', true);
         this.markEditorSelection = !!markdownConfig.get('preview.markEditorSelection', true);
         this.fontFamily = markdownConfig.get('preview.fontFamily', undefined);
-        this.fontSize = +markdownConfig.get('preview.fontSize', NaN);
-        this.lineHeight = +markdownConfig.get('preview.lineHeight', NaN);
+        this.fontSize = Math.max(8, +markdownConfig.get('preview.fontSize', NaN));
+        this.lineHeight = Math.max(0.6, +markdownConfig.get('preview.lineHeight', NaN));
         this.styles = markdownConfig.get('styles', []);
     }
     MarkdownPreviewConfig.getCurrentConfig = function () {
@@ -121,7 +126,7 @@ var MDDocumentContentProvider = (function () {
         return '';
     };
     MDDocumentContentProvider.prototype.getSettingsOverrideStyles = function (nonce) {
-        return "<style nonce=\"" + nonce + "\">\n\t\t\tbody {\n\t\t\t\t" + (this.config.fontFamily ? "font-family: " + this.config.fontFamily + ";" : '') + "\n\t\t\t\t" + (this.config.fontSize > 0 ? "font-size: " + this.config.fontSize + "px;" : '') + "\n\t\t\t\t" + (this.config.lineHeight > 0 ? "line-height: " + this.config.lineHeight + ";" : '') + "\n\t\t\t}\n\t\t</style>";
+        return "<style nonce=\"" + nonce + "\">\n\t\t\tbody {\n\t\t\t\t" + (this.config.fontFamily ? "font-family: " + this.config.fontFamily + ";" : '') + "\n\t\t\t\t" + (isNaN(this.config.fontSize) ? '' : "font-size: " + this.config.fontSize + "px;") + "\n\t\t\t\t" + (isNaN(this.config.lineHeight) ? '' : "line-height: " + this.config.lineHeight + ";") + "\n\t\t\t}\n\t\t</style>";
     };
     MDDocumentContentProvider.prototype.getStyles = function (uri, nonce) {
         var baseStyles = [
@@ -198,4 +203,4 @@ var MDDocumentContentProvider = (function () {
     return MDDocumentContentProvider;
 }());
 exports.MDDocumentContentProvider = MDDocumentContentProvider;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/379d2efb5539b09112c793d3d9a413017d736f89/extensions\markdown\out/previewContentProvider.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/c887dd955170aebce0f6bb160b146f2e6e10a199/extensions\markdown\out/previewContentProvider.js.map

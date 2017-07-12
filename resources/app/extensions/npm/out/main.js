@@ -28,9 +28,12 @@ function activate(_context) {
             taskProvider = undefined;
         }
         else if (!taskProvider && autoDetect === 'on') {
-            taskProvider = vscode.workspace.registerTaskProvider({
+            taskProvider = vscode.workspace.registerTaskProvider('npm', {
                 provideTasks: () => {
                     return getNpmScriptsAsTasks();
+                },
+                resolveTask(_task) {
+                    return undefined;
                 }
             });
         }
@@ -66,6 +69,24 @@ function readFile(file) {
         });
     });
 }
+const buildNames = ['build', 'compile', 'watch'];
+function isBuildTask(name) {
+    for (let buildName of buildNames) {
+        if (name.indexOf(buildName) !== -1) {
+            return true;
+        }
+    }
+    return false;
+}
+const testNames = ['test'];
+function isTestTask(name) {
+    for (let testName of testNames) {
+        if (name === testName) {
+            return true;
+        }
+    }
+    return false;
+}
 function getNpmScriptsAsTasks() {
     return __awaiter(this, void 0, void 0, function* () {
         let workspaceRoot = vscode.workspace.rootPath;
@@ -85,18 +106,22 @@ function getNpmScriptsAsTasks() {
             }
             const result = [];
             Object.keys(json.scripts).forEach(each => {
-                const task = new vscode.ShellTask(`run ${each}`, `npm run ${each}`);
+                const kind = {
+                    type: 'npm',
+                    script: each
+                };
+                const task = new vscode.Task(kind, `run ${each}`, 'npm', new vscode.ShellExecution(`npm run ${each}`));
                 const lowerCaseTaskName = each.toLowerCase();
-                if (lowerCaseTaskName === 'build') {
+                if (isBuildTask(lowerCaseTaskName)) {
                     task.group = vscode.TaskGroup.Build;
                 }
-                else if (lowerCaseTaskName === 'test') {
+                else if (isTestTask(lowerCaseTaskName)) {
                     task.group = vscode.TaskGroup.Test;
                 }
                 result.push(task);
             });
             // add some 'well known' npm tasks
-            result.push(new vscode.ShellTask(`install`, `npm install`));
+            result.push(new vscode.Task({ type: 'npm', script: 'install' }, `install`, 'npm', new vscode.ShellExecution(`npm install`)));
             return Promise.resolve(result);
         }
         catch (e) {
@@ -104,4 +129,4 @@ function getNpmScriptsAsTasks() {
         }
     });
 }
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/379d2efb5539b09112c793d3d9a413017d736f89/extensions\npm\out/main.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/c887dd955170aebce0f6bb160b146f2e6e10a199/extensions\npm\out/main.js.map

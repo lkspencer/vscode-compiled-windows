@@ -37,8 +37,11 @@ class SyncedBuffer {
                 args.scriptKindName = scriptKind;
             }
         }
-        if (vscode_1.workspace.rootPath && this.client.apiVersion.has230Features()) {
-            args.projectRootPath = vscode_1.workspace.rootPath;
+        if (this.client.apiVersion.has230Features()) {
+            const root = this.client.getWorkspaceRootForResource(this.document.uri);
+            if (root) {
+                args.projectRootPath = root;
+            }
         }
         this.client.execute('open', args, false);
     }
@@ -76,13 +79,13 @@ const checkTscVersionSettingKey = 'check.tscVersion';
 class BufferSyncSupport {
     constructor(client, modeIds, diagnostics, validate = true) {
         this.disposables = [];
+        this.pendingDiagnostics = new Map();
         this.client = client;
         this.modeIds = new Set(modeIds);
         this.diagnostics = diagnostics;
         this._validate = validate;
-        this.pendingDiagnostics = Object.create(null);
         this.diagnosticDelayer = new async_1.Delayer(300);
-        this.syncedBuffers = Object.create(null);
+        this.syncedBuffers = new Map();
         const tsConfig = vscode_1.workspace.getConfiguration('typescript');
         this.checkGlobalTSCVersion = client.checkGlobalTSCVersion && this.modeIds.has('typescript') && tsConfig.get(checkTscVersionSettingKey, true);
     }
@@ -90,7 +93,6 @@ class BufferSyncSupport {
         vscode_1.workspace.onDidOpenTextDocument(this.onDidOpenTextDocument, this, this.disposables);
         vscode_1.workspace.onDidCloseTextDocument(this.onDidCloseTextDocument, this, this.disposables);
         vscode_1.workspace.onDidChangeTextDocument(this.onDidChangeTextDocument, this, this.disposables);
-        vscode_1.workspace.onDidSaveTextDocument(this.onDidSaveTextDocument, this, this.disposables);
         vscode_1.workspace.textDocuments.forEach(this.onDidOpenTextDocument, this);
     }
     get validate() {
@@ -100,12 +102,12 @@ class BufferSyncSupport {
         this._validate = value;
     }
     handles(file) {
-        return !!this.syncedBuffers[file];
+        return this.syncedBuffers.has(file);
     }
     reOpenDocuments() {
-        Object.keys(this.syncedBuffers).forEach(key => {
-            this.syncedBuffers[key].open();
-        });
+        for (const buffer of this.syncedBuffers.values()) {
+            buffer.open();
+        }
     }
     dispose() {
         while (this.disposables.length) {
@@ -119,13 +121,13 @@ class BufferSyncSupport {
         if (!this.modeIds.has(document.languageId)) {
             return;
         }
-        let resource = document.uri;
-        let filepath = this.client.normalizePath(resource);
+        const resource = document.uri;
+        const filepath = this.client.normalizePath(resource);
         if (!filepath) {
             return;
         }
-        let syncedBuffer = new SyncedBuffer(document, filepath, this, this.client);
-        this.syncedBuffers[filepath] = syncedBuffer;
+        const syncedBuffer = new SyncedBuffer(document, filepath, this, this.client);
+        this.syncedBuffers.set(filepath, syncedBuffer);
         syncedBuffer.open();
         this.requestDiagnostic(filepath);
         if (document.languageId === 'typescript' || document.languageId === 'typescriptreact') {
@@ -137,12 +139,12 @@ class BufferSyncSupport {
         if (!filepath) {
             return;
         }
-        let syncedBuffer = this.syncedBuffers[filepath];
+        const syncedBuffer = this.syncedBuffers.get(filepath);
         if (!syncedBuffer) {
             return;
         }
         this.diagnostics.delete(filepath);
-        delete this.syncedBuffers[filepath];
+        this.syncedBuffers.delete(filepath);
         syncedBuffer.close();
         if (!fs.existsSync(filepath)) {
             this.requestAllDiagnostics();
@@ -153,37 +155,29 @@ class BufferSyncSupport {
         if (!filepath) {
             return;
         }
-        let syncedBuffer = this.syncedBuffers[filepath];
+        let syncedBuffer = this.syncedBuffers.get(filepath);
         if (!syncedBuffer) {
             return;
         }
         syncedBuffer.onContentChanged(e.contentChanges);
     }
-    onDidSaveTextDocument(document) {
-        let filepath = this.client.normalizePath(document.uri);
-        if (!filepath) {
-            return;
-        }
-        let syncedBuffer = this.syncedBuffers[filepath];
-        if (!syncedBuffer) {
-            return;
-        }
-    }
     requestAllDiagnostics() {
         if (!this._validate) {
             return;
         }
-        Object.keys(this.syncedBuffers).forEach(filePath => this.pendingDiagnostics[filePath] = Date.now());
+        for (const filePath of this.syncedBuffers.keys()) {
+            this.pendingDiagnostics.set(filePath, Date.now());
+        }
         this.diagnosticDelayer.trigger(() => {
             this.sendPendingDiagnostics();
         }, 200);
     }
     requestDiagnostic(file) {
-        if (!this._validate || this.client.experimentalAutoBuild) {
+        if (!this._validate) {
             return;
         }
-        this.pendingDiagnostics[file] = Date.now();
-        let buffer = this.syncedBuffers[file];
+        this.pendingDiagnostics.set(file, Date.now());
+        const buffer = this.syncedBuffers.get(file);
         let delay = 300;
         if (buffer) {
             let lineCount = buffer.lineCount;
@@ -197,10 +191,10 @@ class BufferSyncSupport {
         if (!this._validate) {
             return;
         }
-        let files = Object.keys(this.pendingDiagnostics).map((key) => {
+        let files = Array.from(this.pendingDiagnostics.entries()).map(([key, value]) => {
             return {
                 file: key,
-                time: this.pendingDiagnostics[key]
+                time: value
             };
         }).sort((a, b) => {
             return a.time - b.time;
@@ -208,17 +202,19 @@ class BufferSyncSupport {
             return value.file;
         });
         // Add all open TS buffers to the geterr request. They might be visible
-        Object.keys(this.syncedBuffers).forEach((file) => {
-            if (!this.pendingDiagnostics[file]) {
+        for (const file of this.syncedBuffers.keys()) {
+            if (!this.pendingDiagnostics.get(file)) {
                 files.push(file);
             }
-        });
-        let args = {
-            delay: 0,
-            files: files
-        };
-        this.client.execute('geterr', args, false);
-        this.pendingDiagnostics = Object.create(null);
+        }
+        if (files.length) {
+            const args = {
+                delay: 0,
+                files: files
+            };
+            this.client.execute('geterr', args, false);
+        }
+        this.pendingDiagnostics.clear();
     }
     checkTSCVersion() {
         if (!this.checkGlobalTSCVersion) {
@@ -267,4 +263,4 @@ class BufferSyncSupport {
     }
 }
 exports.default = BufferSyncSupport;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/379d2efb5539b09112c793d3d9a413017d736f89/extensions\typescript\out/features\bufferSyncSupport.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/c887dd955170aebce0f6bb160b146f2e6e10a199/extensions\typescript\out/features\bufferSyncSupport.js.map

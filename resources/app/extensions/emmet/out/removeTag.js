@@ -8,8 +8,11 @@ const vscode = require("vscode");
 const util_1 = require("./util");
 function removeTag() {
     let editor = vscode.window.activeTextEditor;
-    if (!editor) {
-        vscode.window.showInformationMessage('No editor is active');
+    if (!util_1.validate(false)) {
+        return;
+    }
+    let rootNode = util_1.parse(editor.document);
+    if (!rootNode) {
         return;
     }
     let indentInSpaces = '';
@@ -18,7 +21,7 @@ function removeTag() {
     }
     let rangesToRemove = [];
     editor.selections.reverse().forEach(selection => {
-        rangesToRemove = rangesToRemove.concat(getRangeToRemove(editor, selection, indentInSpaces));
+        rangesToRemove = rangesToRemove.concat(getRangeToRemove(editor, rootNode, selection, indentInSpaces));
     });
     editor.edit(editBuilder => {
         rangesToRemove.forEach(range => {
@@ -27,9 +30,16 @@ function removeTag() {
     });
 }
 exports.removeTag = removeTag;
-function getRangeToRemove(editor, selection, indentInSpaces) {
-    let offset = editor.document.offsetAt(selection.start);
-    let [openRange, closeRange] = util_1.getOpenCloseRange(editor.document, offset);
+function getRangeToRemove(editor, rootNode, selection, indentInSpaces) {
+    let nodeToUpdate = util_1.getNode(rootNode, selection.start);
+    if (!nodeToUpdate) {
+        return [];
+    }
+    let openRange = new vscode.Range(nodeToUpdate.open.start, nodeToUpdate.open.end);
+    let closeRange = null;
+    if (nodeToUpdate.close) {
+        closeRange = new vscode.Range(nodeToUpdate.close.start, nodeToUpdate.close.end);
+    }
     if (!openRange.contains(selection.start) && !closeRange.contains(selection.start)) {
         return [];
     }
@@ -48,4 +58,4 @@ function getRangeToRemove(editor, selection, indentInSpaces) {
     }
     return ranges;
 }
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/379d2efb5539b09112c793d3d9a413017d736f89/extensions\emmet\out/removeTag.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/c887dd955170aebce0f6bb160b146f2e6e10a199/extensions\emmet\out/removeTag.js.map

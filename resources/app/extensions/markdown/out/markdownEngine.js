@@ -60,6 +60,7 @@ var MarkdownEngine = (function () {
                 this.addLinkNormalizer(this.md);
                 this.addLinkValidator(this.md);
             }
+            this.md.set({ breaks: vscode.workspace.getConfiguration('markdown').get('preview.breaks', false) });
             return this.md;
         },
         enumerable: true,
@@ -146,4 +147,4 @@ var MarkdownEngine = (function () {
     return MarkdownEngine;
 }());
 exports.MarkdownEngine = MarkdownEngine;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/379d2efb5539b09112c793d3d9a413017d736f89/extensions\markdown\out/markdownEngine.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/c887dd955170aebce0f6bb160b146f2e6e10a199/extensions\markdown\out/markdownEngine.js.map

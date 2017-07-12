@@ -60,6 +60,7 @@ class MergeDectorator {
         if (config.enableDecorations || config.enableEditorOverview) {
             this.decorations['current.content'] = vscode.window.createTextEditorDecorationType(this.generateBlockRenderOptions('merge.currentContentBackground', 'editorOverviewRuler.currentContentForeground', config));
             this.decorations['incoming.content'] = vscode.window.createTextEditorDecorationType(this.generateBlockRenderOptions('merge.incomingContentBackground', 'editorOverviewRuler.incomingContentForeground', config));
+            this.decorations['commonAncestors.content'] = vscode.window.createTextEditorDecorationType(this.generateBlockRenderOptions('merge.commonContentBackground', 'editorOverviewRuler.commonContentForeground', config));
         }
         if (config.enableDecorations) {
             this.decorations['current.header'] = vscode.window.createTextEditorDecorationType({
@@ -73,6 +74,14 @@ class MergeDectorator {
                     contentText: ' ' + localize(0, null),
                     color: new vscode.ThemeColor('descriptionForeground')
                 }
+            });
+            this.decorations['commonAncestors.header'] = vscode.window.createTextEditorDecorationType({
+                isWholeLine: this.decorationUsesWholeLine,
+                backgroundColor: new vscode.ThemeColor('merge.commonHeaderBackground'),
+                color: new vscode.ThemeColor('editor.foreground'),
+                outlineStyle: 'solid',
+                outlineWidth: '1pt',
+                outlineColor: new vscode.ThemeColor('merge.border')
             });
             this.decorations['splitter'] = vscode.window.createTextEditorDecorationType({
                 color: new vscode.ThemeColor('editor.foreground'),
@@ -153,12 +162,24 @@ class MergeDectorator {
                 };
                 conflicts.forEach(conflict => {
                     // TODO, this could be more effective, just call getMatchPositions once with a map of decoration to position
-                    pushDecoration('current.content', { range: conflict.current.decoratorContent });
-                    pushDecoration('incoming.content', { range: conflict.incoming.decoratorContent });
+                    if (!conflict.current.decoratorContent.isEmpty) {
+                        pushDecoration('current.content', { range: conflict.current.decoratorContent });
+                    }
+                    if (!conflict.incoming.decoratorContent.isEmpty) {
+                        pushDecoration('incoming.content', { range: conflict.incoming.decoratorContent });
+                    }
+                    conflict.commonAncestors.forEach(commonAncestorsRegion => {
+                        if (!commonAncestorsRegion.decoratorContent.isEmpty) {
+                            pushDecoration('commonAncestors.content', { range: commonAncestorsRegion.decoratorContent });
+                        }
+                    });
                     if (this.config.enableDecorations) {
                         pushDecoration('current.header', { range: conflict.current.header });
                         pushDecoration('splitter', { range: conflict.splitter });
                         pushDecoration('incoming.header', { range: conflict.incoming.header });
+                        conflict.commonAncestors.forEach(commonAncestorsRegion => {
+                            pushDecoration('commonAncestors.header', { range: commonAncestorsRegion.header });
+                        });
                     }
                 });
                 // For each match we've generated, apply the generated decoration with the matching decoration type to the
@@ -188,4 +209,4 @@ class MergeDectorator {
     }
 }
 exports.default = MergeDectorator;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/379d2efb5539b09112c793d3d9a413017d736f89/extensions\merge-conflict\out/mergeDecorator.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/c887dd955170aebce0f6bb160b146f2e6e10a199/extensions\merge-conflict\out/mergeDecorator.js.map

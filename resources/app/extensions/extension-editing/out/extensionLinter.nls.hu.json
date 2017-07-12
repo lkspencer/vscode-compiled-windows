@@ -1,0 +1,7 @@
+[
+	"A képek csak HTTPS-protokollt használhatnak.",
+	"Az SVG-k nem érvényes képforrások.",
+	"A beágyazott SVG-k nem érvényes képforrások.",
+	"A data URL-ek nem érvényes képforrások.",
+	"A relatív kép URL-ekhez egy HTTPS-protokollal rendelkező forráskódtárat kell megadni a package.json-ban."
+]

@@ -24,6 +24,7 @@ const util_1 = require("./util");
 const decorators_1 = require("./decorators");
 const path = require("path");
 const nls = require("vscode-nls");
+const fs = require("fs");
 const timeout = (millis) => new Promise(c => setTimeout(c, millis));
 const localize = nls.loadMessageBundle(__filename);
 const iconsRootPath = path.join(path.dirname(__dirname), 'resources', 'icons');
@@ -64,7 +65,7 @@ class Resource {
         this._renameResourceUri = _renameResourceUri;
     }
     get resourceUri() {
-        if (this.renameResourceUri && (this._type === Status.MODIFIED || this._type === Status.DELETED || this._type === Status.INDEX_RENAMED)) {
+        if (this.renameResourceUri && (this._type === Status.MODIFIED || this._type === Status.DELETED || this._type === Status.INDEX_RENAMED || this._type === Status.INDEX_COPIED)) {
             return this.renameResourceUri;
         }
         return this._resourceUri;
@@ -209,6 +210,8 @@ var Operation;
     Operation[Operation["Stage"] = 16384] = "Stage";
     Operation[Operation["GetCommitTemplate"] = 32768] = "GetCommitTemplate";
     Operation[Operation["DeleteBranch"] = 65536] = "DeleteBranch";
+    Operation[Operation["Merge"] = 131072] = "Merge";
+    Operation[Operation["Ignore"] = 262144] = "Ignore";
 })(Operation = exports.Operation || (exports.Operation = {}));
 // function getOperationName(operation: Operation): string {
 // 	switch (operation) {
@@ -404,6 +407,11 @@ class Model {
             yield this.run(Operation.DeleteBranch, () => this.repository.deleteBranch(name, force));
         });
     }
+    merge(ref) {
+        return __awaiter(this, void 0, void 0, function* () {
+            yield this.run(Operation.Merge, () => this.repository.merge(ref));
+        });
+    }
     checkout(treeish) {
         return __awaiter(this, void 0, void 0, function* () {
             yield this.run(Operation.Checkout, () => this.repository.checkout(treeish, []));
@@ -429,14 +437,29 @@ class Model {
             }
         });
     }
-    pull(rebase) {
+    pullWithRebase() {
         return __awaiter(this, void 0, void 0, function* () {
-            yield this.run(Operation.Pull, () => this.repository.pull(rebase));
+            yield this.run(Operation.Pull, () => this.repository.pull(true));
         });
     }
-    push(remote, name, options) {
+    pull(rebase, remote, name) {
         return __awaiter(this, void 0, void 0, function* () {
-            yield this.run(Operation.Push, () => this.repository.push(remote, name, options));
+            yield this.run(Operation.Pull, () => this.repository.pull(rebase, remote, name));
+        });
+    }
+    push() {
+        return __awaiter(this, void 0, void 0, function* () {
+            yield this.run(Operation.Push, () => this.repository.push());
+        });
+    }
+    pullFrom(rebase, remote, branch) {
+        return __awaiter(this, void 0, void 0, function* () {
+            yield this.run(Operation.Pull, () => this.repository.pull(rebase, remote, branch));
+        });
+    }
+    pushTo(remote, name, setUpstream = false) {
+        return __awaiter(this, void 0, void 0, function* () {
+            yield this.run(Operation.Push, () => this.repository.push(remote, name, setUpstream));
         });
     }
     sync() {
@@ -463,6 +486,25 @@ class Model {
     getCommitTemplate() {
         return __awaiter(this, void 0, void 0, function* () {
             return yield this.run(Operation.GetCommitTemplate, () => __awaiter(this, void 0, void 0, function* () { return this.repository.getCommitTemplate(); }));
+        });
+    }
+    ignore(files) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield this.run(Operation.Ignore, () => __awaiter(this, void 0, void 0, function* () {
+                const ignoreFile = `${this.repository.root}${path.sep}.gitignore`;
+                const textToAppend = files
+                    .map(uri => path.relative(this.repository.root, uri.fsPath).replace(/\\/g, '/'))
+                    .join('\n');
+                const document = (yield new Promise(c => fs.exists(ignoreFile, c)))
+                    ? yield vscode_1.workspace.openTextDocument(ignoreFile)
+                    : yield vscode_1.workspace.openTextDocument(vscode_1.Uri.file(ignoreFile).with({ scheme: 'untitled' }));
+                yield vscode_1.window.showTextDocument(document);
+                const edit = new vscode_1.WorkspaceEdit();
+                const lastLine = document.lineAt(document.lineCount - 1);
+                const text = lastLine.isEmptyOrWhitespace ? `${textToAppend}\n` : `\n${textToAppend}\n`;
+                edit.insert(document.uri, lastLine.range.end, text);
+                vscode_1.workspace.applyEdit(edit);
+            }));
         });
     }
     run(operation, runOperation = () => Promise.resolve(null)) {
@@ -532,11 +574,11 @@ class Model {
             const disposables = [];
             const repositoryRoot = yield this._git.getRepositoryRoot(this.workspaceRoot.fsPath);
             this.repository = this._git.open(repositoryRoot);
-            const onGitChange = util_1.filterEvent(this.onWorkspaceChange, uri => /\/\.git\//.test(uri.fsPath));
-            const onRelevantGitChange = util_1.filterEvent(onGitChange, uri => !/\/\.git\/index\.lock$/.test(uri.fsPath));
+            const onGitChange = util_1.filterEvent(this.onWorkspaceChange, uri => /\/\.git\//.test(uri.path));
+            const onRelevantGitChange = util_1.filterEvent(onGitChange, uri => !/\/\.git\/index\.lock$/.test(uri.path));
             onRelevantGitChange(this.onFSChange, this, disposables);
             onRelevantGitChange(this._onDidChangeRepository.fire, this._onDidChangeRepository, disposables);
-            const onNonGitChange = util_1.filterEvent(this.onWorkspaceChange, uri => !/\/\.git\//.test(uri.fsPath));
+            const onNonGitChange = util_1.filterEvent(this.onWorkspaceChange, uri => !/\/\.git\//.test(uri.path));
             onNonGitChange(this.onFSChange, this, disposables);
             this.repositoryDisposable = util_1.combinedDisposable(disposables);
             this.isRepositoryHuge = false;
@@ -612,7 +654,7 @@ class Model {
                         index.push(new Resource(this.workspaceRoot, this.indexGroup, uri, Status.INDEX_RENAMED, renameUri));
                         break;
                     case 'C':
-                        index.push(new Resource(this.workspaceRoot, this.indexGroup, uri, Status.INDEX_COPIED));
+                        index.push(new Resource(this.workspaceRoot, this.indexGroup, uri, Status.INDEX_COPIED, renameUri));
                         break;
                 }
                 switch (raw.y) {
@@ -683,6 +725,15 @@ __decorate([
 ], Model.prototype, "fetch", null);
 __decorate([
     decorators_1.throttle
+], Model.prototype, "pullWithRebase", null);
+__decorate([
+    decorators_1.throttle
+], Model.prototype, "pull", null);
+__decorate([
+    decorators_1.throttle
+], Model.prototype, "push", null);
+__decorate([
+    decorators_1.throttle
 ], Model.prototype, "sync", null);
 __decorate([
     decorators_1.throttle
@@ -694,4 +745,4 @@ __decorate([
     decorators_1.throttle
 ], Model.prototype, "updateWhenIdleAndWait", null);
 exports.Model = Model;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/379d2efb5539b09112c793d3d9a413017d736f89/extensions\git\out/model.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/c887dd955170aebce0f6bb160b146f2e6e10a199/extensions\git\out/model.js.map

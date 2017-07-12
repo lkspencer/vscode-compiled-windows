@@ -1,8 +1,8 @@
-"use strict";
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
+"use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var Path = require("path");
 var FS = require("fs");
@@ -126,43 +126,67 @@ function mkdirs(path) {
 }
 exports.mkdirs = mkdirs;
 /*
- * Is the given runtime executable on the PATH.
+ * Lookup the given program on the PATH and return its absolute path on success and undefined otherwise.
  */
-function isOnPath(program) {
-    if (process.platform === 'win32') {
-        return true;
-        /*
-        const WHERE = 'C:\\Windows\\System32\\where.exe';
-        try {
-            if (FS.existsSync(WHERE)) {
-                CP.execSync(`${WHERE} ${program}`);
-            } else {
-                // do not report error if 'where' doesn't exist
-            }
-            return true;
-        }
-        catch (Exception) {
-            // ignore
-        }
-        */
-    }
-    else {
-        var WHICH = '/usr/bin/which';
-        try {
-            if (FS.existsSync(WHICH)) {
-                CP.execSync(WHICH + " '" + program + "'");
+function findOnPath(program) {
+    var locator = process.platform === 'win32' ? 'C:\\Windows\\System32\\where.exe' : '/usr/bin/which';
+    try {
+        if (FS.existsSync(locator)) {
+            var lines = CP.execSync(locator + " " + program).toString().split(/\r?\n/);
+            if (process.platform === 'win32') {
+                // return the first path that has a executable extension
+                var executableExtensions = process.env['PATHEXT'].toUpperCase();
+                for (var _i = 0, lines_1 = lines; _i < lines_1.length; _i++) {
+                    var path = lines_1[_i];
+                    var ext = Path.extname(path).toUpperCase();
+                    if (ext && executableExtensions.indexOf(ext + ';') > 0) {
+                        return path;
+                    }
+                }
             }
             else {
-                // do not report error if 'which' doesn't exist
+                // return the first path
+                if (lines.length > 0) {
+                    return lines[0];
+                }
             }
-            return true;
+            return undefined;
         }
-        catch (Exception) {
+        else {
+            // do not report failure if 'locator' app doesn't exist
+        }
+        return program;
+    }
+    catch (err) {
+        // fall through
+    }
+    // fail
+    return undefined;
+}
+exports.findOnPath = findOnPath;
+/*
+ *
+ */
+function findExecutable(program) {
+    if (process.platform === 'win32' && !Path.extname(program)) {
+        var PATHEXT = process.env['PATHEXT'];
+        if (PATHEXT) {
+            var executableExtensions = PATHEXT.split(';');
+            for (var _i = 0, executableExtensions_1 = executableExtensions; _i < executableExtensions_1.length; _i++) {
+                var extension = executableExtensions_1[_i];
+                var path = program + extension;
+                if (FS.existsSync(path)) {
+                    return path;
+                }
+            }
         }
     }
-    return false;
+    if (FS.existsSync(program)) {
+        return program;
+    }
+    return undefined;
 }
-exports.isOnPath = isOnPath;
+exports.findExecutable = findExecutable;
 //---- the following functions work with Windows and Unix-style paths independent from the underlying OS.
 /**
  * Returns true if the Windows or Unix-style path is absolute.

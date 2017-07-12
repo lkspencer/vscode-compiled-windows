@@ -25,7 +25,7 @@ class TsConfigProvider extends vscode.Disposable {
     }
     getConfigsForWorkspace() {
         return __awaiter(this, void 0, void 0, function* () {
-            if (!vscode.workspace.rootPath) {
+            if (!vscode.workspace.rootPath && !vscode.workspace.workspaceFolders) {
                 return [];
             }
             yield this.ensureActivated();
@@ -59,4 +59,4 @@ class TsConfigProvider extends vscode.Disposable {
     }
 }
 exports.default = TsConfigProvider;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/379d2efb5539b09112c793d3d9a413017d736f89/extensions\typescript\out/utils\tsconfigProvider.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/c887dd955170aebce0f6bb160b146f2e6e10a199/extensions\typescript\out/utils\tsconfigProvider.js.map

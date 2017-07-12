@@ -7,6 +7,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const vscode = require("vscode");
 const vscode_nls_1 = require("vscode-nls");
 const path_1 = require("path");
+const tsconfig_1 = require("./tsconfig");
 const localize = vscode_nls_1.loadMessageBundle(__filename);
 const selector = ['javascript', 'javascriptreact'];
 const fileLimit = 500;
@@ -22,32 +23,15 @@ class ExcludeHintItem {
     hide() {
         this._item.hide();
     }
-    show(configFileName, largeRoots, onExecute) {
+    show(largeRoots) {
         this._currentHint = {
-            message: largeRoots.length > 0
+            message: largeRoots
                 ? localize(0, null, largeRoots)
-                : localize(1, null),
-            options: [{
-                    title: localize(2, null),
-                    execute: () => {
-                        this._client.logTelemetry('js.hintProjectExcludes.accepted');
-                        onExecute();
-                        this._item.hide();
-                        let configFileUri;
-                        if (vscode.workspace.rootPath && path_1.dirname(configFileName).indexOf(vscode.workspace.rootPath) === 0) {
-                            configFileUri = vscode.Uri.file(configFileName);
-                        }
-                        else {
-                            configFileUri = vscode.Uri.parse('untitled://' + path_1.join(vscode.workspace.rootPath || '', 'jsconfig.json'));
-                        }
-                        return vscode.workspace.openTextDocument(configFileName)
-                            .then(vscode.window.showTextDocument);
-                    }
-                }]
+                : localize(1, null)
         };
         this._item.tooltip = this._currentHint.message;
-        this._item.text = localize(3, null);
-        this._item.tooltip = localize(4, null);
+        this._item.text = localize(2, null);
+        this._item.tooltip = localize(3, null);
         this._item.color = '#A5DF3B';
         this._item.show();
         this._client.logTelemetry('js.hintProjectExcludes');
@@ -88,9 +72,8 @@ function createLargeProjectMonitorForProject(item, client, isOpen, memento) {
                 }
                 if (fileNames.length > fileLimit || res.body.languageServiceDisabled) {
                     let largeRoots = computeLargeRoots(configFileName, fileNames).map(f => `'/${f}/'`).join(', ');
-                    item.show(configFileName, largeRoots, () => {
-                        projectHinted[configFileName] = true;
-                    });
+                    item.show(largeRoots);
+                    projectHinted[configFileName] = true;
                 }
                 else {
                     item.hide();
@@ -113,7 +96,28 @@ function createLargeProjectMonitorFromTypeScript(item, client) {
             item.hide();
         }
         else {
-            item.show(body.projectName, '', () => { });
+            item.show();
+            const configFileName = body.projectName;
+            if (configFileName) {
+                vscode.window.showWarningMessage(item.getCurrentHint().message, {
+                    title: localize(4, null),
+                    index: 0
+                }).then(selected => {
+                    if (!selected || selected.index !== 0) {
+                        return;
+                    }
+                    if (!tsconfig_1.isImplicitProjectConfigFile(configFileName)) {
+                        vscode.workspace.openTextDocument(configFileName)
+                            .then(vscode.window.showTextDocument);
+                    }
+                    else {
+                        const root = client.getWorkspaceRootForResource(vscode.Uri.file(configFileName));
+                        if (root) {
+                            tsconfig_1.openOrCreateConfigFile(configFileName.match(/tsconfig\.?.*\.json/) !== null, root);
+                        }
+                    }
+                });
+            }
         }
     });
 }
@@ -121,12 +125,8 @@ function create(client, isOpen, memento) {
     const toDispose = [];
     let item = new ExcludeHintItem(client);
     toDispose.push(vscode.commands.registerCommand('js.projectStatus.command', () => {
-        let { message, options } = item.getCurrentHint();
-        return vscode.window.showInformationMessage(message, ...options).then(selection => {
-            if (selection) {
-                return selection.execute();
-            }
-        });
+        let { message } = item.getCurrentHint();
+        return vscode.window.showInformationMessage(message);
     }));
     if (client.apiVersion.has213Features()) {
         toDispose.push(createLargeProjectMonitorFromTypeScript(item, client));
@@ -168,4 +168,4 @@ function computeLargeRoots(configFileName, fileNames) {
     }
     return result;
 }
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/379d2efb5539b09112c793d3d9a413017d736f89/extensions\typescript\out/utils\projectStatus.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/c887dd955170aebce0f6bb160b146f2e6e10a199/extensions\typescript\out/utils\projectStatus.js.map

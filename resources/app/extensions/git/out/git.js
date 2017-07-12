@@ -106,6 +106,11 @@ function findGit(hint) {
 exports.findGit = findGit;
 function exec(child, options = {}) {
     return __awaiter(this, void 0, void 0, function* () {
+        if (!child.stdout || !child.stderr) {
+            throw new GitError({
+                message: 'Failed to get stdout or stderr from git process.'
+            });
+        }
         const disposables = [];
         const once = (ee, name, fn) => {
             ee.once(name, fn);
@@ -187,7 +192,8 @@ exports.GitErrorCodes = {
     CantAccessRemote: 'CantAccessRemote',
     RepositoryNotFound: 'RepositoryNotFound',
     RepositoryIsLocked: 'RepositoryIsLocked',
-    BranchNotFullyMerged: 'BranchNotFullyMerged'
+    BranchNotFullyMerged: 'BranchNotFullyMerged',
+    NoRemoteReference: 'NoRemoteReference'
 };
 function getGitErrorCode(stderr) {
     if (/Another git process seems to be running in this repository|If no other git process is currently running/.test(stderr)) {
@@ -213,6 +219,9 @@ function getGitErrorCode(stderr) {
     }
     else if (/branch '.+' is not fully merged/.test(stderr)) {
         return exports.GitErrorCodes.BranchNotFullyMerged;
+    }
+    else if (/Couldn\'t find remote ref/.test(stderr)) {
+        return exports.GitErrorCodes.NoRemoteReference;
     }
     return void 0;
 }
@@ -336,7 +345,7 @@ class GitStatusParser {
         };
         // space
         i++;
-        if (entry.x === 'R') {
+        if (entry.x === 'R' || entry.x === 'C') {
             lastIndex = raw.indexOf('\0', i);
             if (lastIndex === -1) {
                 return;
@@ -522,6 +531,20 @@ class Repository {
             yield this.run(args);
         });
     }
+    merge(ref) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const args = ['merge', ref];
+            try {
+                yield this.run(args);
+            }
+            catch (err) {
+                if (/^CONFLICT /m.test(err.stdout || '')) {
+                    err.gitErrorCode = exports.GitErrorCodes.Conflict;
+                }
+                throw err;
+            }
+        });
+    }
     clean(paths) {
         return __awaiter(this, void 0, void 0, function* () {
             const pathsByGroup = util_1.groupBy(paths, p => path.dirname(p));
@@ -602,11 +625,15 @@ class Repository {
             }
         });
     }
-    pull(rebase) {
+    pull(rebase, remote, branch) {
         return __awaiter(this, void 0, void 0, function* () {
             const args = ['pull'];
             if (rebase) {
                 args.push('-r');
+            }
+            if (remote && branch) {
+                args.push(remote);
+                args.push(branch);
             }
             try {
                 yield this.run(args);
@@ -628,10 +655,10 @@ class Repository {
             }
         });
     }
-    push(remote, name, options) {
+    push(remote, name, setUpstream = false) {
         return __awaiter(this, void 0, void 0, function* () {
             const args = ['push'];
-            if (options && options.setUpstream) {
+            if (setUpstream) {
                 args.push('-u');
             }
             if (remote) {
@@ -812,4 +839,4 @@ class Repository {
     }
 }
 exports.Repository = Repository;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/379d2efb5539b09112c793d3d9a413017d736f89/extensions\git\out/git.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/c887dd955170aebce0f6bb160b146f2e6e10a199/extensions\git\out/git.js.map

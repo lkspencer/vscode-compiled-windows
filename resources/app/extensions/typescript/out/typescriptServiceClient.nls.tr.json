@@ -1,0 +1,21 @@
+[
+	"{0} yolu geçerli bir tsserver kurulumuna işaret etmiyor. Paketlenmiş TypeScript sürümüne geri dönülüyor.",
+	"VSCode'un tsserver'ı hatalı bir virüs tespit aracı gibi bir uygulama tarafından silindi. Lütfen VS Code'u yeniden yükleyin",
+	"özel",
+	"TypeScript dil sunucusu başlatılamadı. Hata mesajı: {0}",
+	"VSCode'un Sürümünü Kullan",
+	"Şu an aktif",
+	"Çalışma Alanı Sürümünü Kullan",
+	"Şu an aktif",
+	"Daha Fazla Bilgi Edin",
+	"JavaScript ve TypeScript dil özellikleri için kullanılacak TypeScript sürümünü seçin",
+	"TS Sunucu günlüğü için TS 2.2.2+ gerekiyor",
+	"TS Sunucu günlüğü kapalı. Lütfen `typescript.tsserver.log` ögesini ayarlayın ve günlüğe yazmayı etkinleştirmek için TS sunucusunu yeniden başlatın",
+	"Günlüğe yazmayı etkinleştir ve TS sunucusunu yeniden başlat",
+	"TS sunucu günlüğe yazmaya başlamadı.",
+	"TS Sunucu günlük dosyası açılamadı",
+	"TypeScript dil hizmeti, başladıktan hemen sonra 5 kez kapandı. Hizmet yeniden başlatılmayacaktır.",
+	"Sorun Bildir",
+	"TypeScript dil hizmeti, son 5 dakikada 5 kez beklenmedik şekilde kapandı.",
+	"Sorun Bildir"
+]

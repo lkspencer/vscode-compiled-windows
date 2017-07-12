@@ -30,27 +30,33 @@ class CommandHandler {
         this.tracker = trackerService.createTracker('commands');
     }
     begin() {
-        this.disposables.push(vscode.commands.registerTextEditorCommand('merge-conflict.accept.current', this.acceptCurrent, this), vscode.commands.registerTextEditorCommand('merge-conflict.accept.incoming', this.acceptIncoming, this), vscode.commands.registerTextEditorCommand('merge-conflict.accept.selection', this.acceptSelection, this), vscode.commands.registerTextEditorCommand('merge-conflict.accept.both', this.acceptBoth, this), vscode.commands.registerTextEditorCommand('merge-conflict.accept.all-current', this.acceptAllCurrent, this), vscode.commands.registerTextEditorCommand('merge-conflict.accept.all-incoming', this.acceptAllIncoming, this), vscode.commands.registerTextEditorCommand('merge-conflict.accept.all-both', this.acceptAllBoth, this), vscode.commands.registerTextEditorCommand('merge-conflict.next', this.navigateNext, this), vscode.commands.registerTextEditorCommand('merge-conflict.previous', this.navigatePrevious, this), vscode.commands.registerTextEditorCommand('merge-conflict.compare', this.compare, this));
+        this.disposables.push(this.registerTextEditorCommand('merge-conflict.accept.current', this.acceptCurrent), this.registerTextEditorCommand('merge-conflict.accept.incoming', this.acceptIncoming), this.registerTextEditorCommand('merge-conflict.accept.selection', this.acceptSelection), this.registerTextEditorCommand('merge-conflict.accept.both', this.acceptBoth), this.registerTextEditorCommand('merge-conflict.accept.all-current', this.acceptAllCurrent), this.registerTextEditorCommand('merge-conflict.accept.all-incoming', this.acceptAllIncoming), this.registerTextEditorCommand('merge-conflict.accept.all-both', this.acceptAllBoth), this.registerTextEditorCommand('merge-conflict.next', this.navigateNext), this.registerTextEditorCommand('merge-conflict.previous', this.navigatePrevious), this.registerTextEditorCommand('merge-conflict.compare', this.compare));
     }
-    acceptCurrent(editor, edit, ...args) {
+    registerTextEditorCommand(command, cb) {
+        return vscode.commands.registerCommand(command, (...args) => {
+            const editor = vscode.window.activeTextEditor;
+            return editor && cb.call(this, editor, ...args);
+        });
+    }
+    acceptCurrent(editor, ...args) {
         return this.accept(interfaces.CommitType.Current, editor, ...args);
     }
-    acceptIncoming(editor, edit, ...args) {
+    acceptIncoming(editor, ...args) {
         return this.accept(interfaces.CommitType.Incoming, editor, ...args);
     }
-    acceptBoth(editor, edit, ...args) {
+    acceptBoth(editor, ...args) {
         return this.accept(interfaces.CommitType.Both, editor, ...args);
     }
-    acceptAllCurrent(editor, edit, ...args) {
+    acceptAllCurrent(editor, ...args) {
         return this.acceptAll(interfaces.CommitType.Current, editor);
     }
-    acceptAllIncoming(editor, edit, ...args) {
+    acceptAllIncoming(editor, ...args) {
         return this.acceptAll(interfaces.CommitType.Incoming, editor);
     }
-    acceptAllBoth(editor, edit, ...args) {
+    acceptAllBoth(editor, ...args) {
         return this.acceptAll(interfaces.CommitType.Both, editor);
     }
-    compare(editor, edit, conflict, ...args) {
+    compare(editor, conflict, ...args) {
         return __awaiter(this, void 0, void 0, function* () {
             const fileName = path.basename(editor.document.uri.fsPath);
             // No conflict, command executed from command palette
@@ -62,24 +68,25 @@ class CommandHandler {
                     return;
                 }
             }
+            const scheme = editor.document.uri.scheme;
             let range = conflict.current.content;
             const leftUri = editor.document.uri.with({
                 scheme: contentProvider_1.default.scheme,
-                query: JSON.stringify(range)
+                query: JSON.stringify({ scheme, range })
             });
             range = conflict.incoming.content;
-            const rightUri = leftUri.with({ query: JSON.stringify(range) });
+            const rightUri = leftUri.with({ query: JSON.stringify({ scheme, range }) });
             const title = localize(1, null, fileName);
             vscode.commands.executeCommand('vscode.diff', leftUri, rightUri, title);
         });
     }
-    navigateNext(editor, edit, ...args) {
+    navigateNext(editor, ...args) {
         return this.navigate(editor, NavigationDirection.Forwards);
     }
-    navigatePrevious(editor, edit, ...args) {
+    navigatePrevious(editor, ...args) {
         return this.navigate(editor, NavigationDirection.Backwards);
     }
-    acceptSelection(editor, edit, ...args) {
+    acceptSelection(editor, ...args) {
         return __awaiter(this, void 0, void 0, function* () {
             let conflict = yield this.findConflictContainingSelection(editor);
             if (!conflict) {
@@ -87,19 +94,27 @@ class CommandHandler {
                 return;
             }
             let typeToAccept;
+            let tokenAfterCurrentBlock = conflict.splitter;
+            if (conflict.commonAncestors.length > 0) {
+                tokenAfterCurrentBlock = conflict.commonAncestors[0].header;
+            }
             // Figure out if the cursor is in current or incoming, we do this by seeing if
-            // the active position is before or after the range of the splitter. We can
-            // use this trick as the previous check in findConflictByActiveSelection will
-            // ensure it's within the conflict range, so we don't falsely identify "current"
-            // or "incoming" if outside of a conflict range.
-            if (editor.selection.active.isBefore(conflict.splitter.start)) {
+            // the active position is before or after the range of the splitter or common
+            // ancesors marker. We can use this trick as the previous check in
+            // findConflictByActiveSelection will ensure it's within the conflict range, so
+            // we don't falsely identify "current" or "incoming" if outside of a conflict range.
+            if (editor.selection.active.isBefore(tokenAfterCurrentBlock.start)) {
                 typeToAccept = interfaces.CommitType.Current;
             }
             else if (editor.selection.active.isAfter(conflict.splitter.end)) {
                 typeToAccept = interfaces.CommitType.Incoming;
             }
-            else {
+            else if (editor.selection.active.isBefore(conflict.splitter.start)) {
                 vscode.window.showWarningMessage(localize(3, null));
+                return;
+            }
+            else {
+                vscode.window.showWarningMessage(localize(4, null));
                 return;
             }
             this.tracker.forget(editor.document);
@@ -114,11 +129,11 @@ class CommandHandler {
         return __awaiter(this, void 0, void 0, function* () {
             let navigationResult = yield this.findConflictForNavigation(editor, direction);
             if (!navigationResult) {
-                vscode.window.showWarningMessage(localize(4, null));
+                vscode.window.showWarningMessage(localize(5, null));
                 return;
             }
             else if (!navigationResult.canNavigate) {
-                vscode.window.showWarningMessage(localize(5, null));
+                vscode.window.showWarningMessage(localize(6, null));
                 return;
             }
             else if (!navigationResult.conflict) {
@@ -142,7 +157,7 @@ class CommandHandler {
                 conflict = yield this.findConflictContainingSelection(editor);
             }
             if (!conflict) {
-                vscode.window.showWarningMessage(localize(6, null));
+                vscode.window.showWarningMessage(localize(7, null));
                 return;
             }
             // Tracker can forget as we know we are going to do an edit
@@ -154,7 +169,7 @@ class CommandHandler {
         return __awaiter(this, void 0, void 0, function* () {
             let conflicts = yield this.tracker.getConflicts(editor.document);
             if (!conflicts || conflicts.length === 0) {
-                vscode.window.showWarningMessage(localize(7, null));
+                vscode.window.showWarningMessage(localize(8, null));
                 return;
             }
             // For get the current state of the document, as we know we are doing to do a large edit
@@ -231,4 +246,4 @@ class CommandHandler {
     }
 }
 exports.default = CommandHandler;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/379d2efb5539b09112c793d3d9a413017d736f89/extensions\merge-conflict\out/commandHandler.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/c887dd955170aebce0f6bb160b146f2e6e10a199/extensions\merge-conflict\out/commandHandler.js.map

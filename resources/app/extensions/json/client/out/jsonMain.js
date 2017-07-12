@@ -79,7 +79,11 @@ function activate(context) {
     // client can be deactivated on extension deactivation
     context.subscriptions.push(disposable);
     vscode_1.languages.setLanguageConfiguration('json', {
-        wordPattern: /("(?:[^\\\"]*(?:\\.)?)*"?)|[^\s{}\[\],:]+/
+        wordPattern: /("(?:[^\\\"]*(?:\\.)?)*"?)|[^\s{}\[\],:]+/,
+        indentationRules: {
+            increaseIndentPattern: /^.*(\{[^}]*|\[[^\]]*)$/,
+            decreaseIndentPattern: /^\s*[}\]],?\s*$/
+        }
     });
 }
 exports.activate = activate;
@@ -126,4 +130,4 @@ function getPackageInfo(context) {
     }
     return null;
 }
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/379d2efb5539b09112c793d3d9a413017d736f89/extensions\json\client\out/jsonMain.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/c887dd955170aebce0f6bb160b146f2e6e10a199/extensions\json\client\out/jsonMain.js.map

@@ -4,6 +4,7 @@
 		"If you want to provide a fix or improvement, please create a pull request against the original repository.",
 		"Once accepted there, we are happy to receive an update request."
 	],
+	"version": "https://github.com/Microsoft/TypeScript-TmLanguage/commit/9be58bc51f179fd4119dbd5caaa7693a381a13b5",
 	"name": "TypeScript",
 	"scopeName": "source.ts",
 	"fileTypes": [
@@ -199,7 +200,7 @@
 					"include": "#comment"
 				},
 				{
-					"begin": "(?=(([_$[:alpha:]][_$[:alnum:]]*)|(\\'[^']*\\')|(\\\"[^\"]*\\\")|(\\[([^\\[\\]]|\\[[^\\[\\]]*\\])+\\]))\\s*(:))",
+					"begin": "(?=(([_$[:alpha:]][_$[:alnum:]]*)|(\\'.*\\')|(\\\".*\\\")|(\\[([^\\[\\]]|\\[[^\\[\\]]*\\])+\\]))\\s*(:))",
 					"end": "(?=,|\\})",
 					"patterns": [
 						{
@@ -225,7 +226,7 @@
 			]
 		},
 		"object-binding-element-propertyName": {
-			"begin": "(?=(([_$[:alpha:]][_$[:alnum:]]*)|(\\'[^']*\\')|(\\\"[^\"]*\\\")|(\\[([^\\[\\]]|\\[[^\\[\\]]*\\])+\\]))\\s*(:))",
+			"begin": "(?=(([_$[:alpha:]][_$[:alnum:]]*)|(\\'.*\\')|(\\\".*\\\")|(\\[([^\\[\\]]|\\[[^\\[\\]]*\\])+\\]))\\s*(:))",
 			"end": "(:)",
 			"endCaptures": {
 				"0": {
@@ -579,7 +580,7 @@
 							]
 						},
 						{
-							"begin": "(?=((\\'[^']*\\')|(\\\"[^\"]*\\\")|(\\[([^\\[\\]]|\\[[^\\[\\]]*\\])+\\])))",
+							"begin": "(?=((\\'.*\\')|(\\\".*\\\")|(\\[([^\\[\\]]|\\[[^\\[\\]]*\\])+\\])))",
 							"end": "(?=,|\\}|$)",
 							"patterns": [
 								{
@@ -1134,20 +1135,20 @@
 		},
 		"field-declaration": {
 			"name": "meta.field.declaration.ts",
-			"begin": "(?<!\\()(?:(?<!\\.|\\$)\\b(readonly)\\s+)?(?=(([_$[:alpha:]][_$[:alnum:]]*)|(\\'[^']*\\')|(\\\"[^\"]*\\\")|(\\[([^\\[\\]]|\\[[^\\[\\]]*\\])+\\]))\\s*(\\?\\s*)?(=|:))",
+			"begin": "(?<!\\()(?:(?<!\\.|\\$)\\b(readonly)\\s+)?(?=(([_$[:alpha:]][_$[:alnum:]]*)|(\\'.*\\')|(\\\".*\\\")|(\\[([^\\[\\]]|\\[[^\\[\\]]*\\])+\\]))\\s*(\\?\\s*)?(=|:))",
 			"beginCaptures": {
 				"1": {
 					"name": "storage.modifier.ts"
 				}
 			},
-			"end": "(?=\\}|;|,|$|(^(?!(([_$[:alpha:]][_$[:alnum:]]*)|(\\'[^']*\\')|(\\\"[^\"]*\\\")|(\\[([^\\[\\]]|\\[[^\\[\\]]*\\])+\\]))\\s*(\\?\\s*)?(=|:))))|(?<=\\})",
+			"end": "(?=\\}|;|,|$|(^(?!(([_$[:alpha:]][_$[:alnum:]]*)|(\\'.*\\')|(\\\".*\\\")|(\\[([^\\[\\]]|\\[[^\\[\\]]*\\])+\\]))\\s*(\\?\\s*)?(=|:))))|(?<=\\})",
 			"patterns": [
 				{
 					"include": "#variable-initializer"
 				},
 				{
-					"begin": "(?=((?:[_$[:alpha:]][_$[:alnum:]]*)|(?:\\'[^']*\\')|(?:\\\"[^\"]*\\\")|(\\[([^\\[\\]]|\\[[^\\[\\]]*\\])+\\]))\\s*(\\?\\s*)?(=|:))",
-					"end": "(?=[};,=]|$|(^(?!(([_$[:alpha:]][_$[:alnum:]]*)|(\\'[^']*\\')|(\\\"[^\"]*\\\")|(\\[([^\\[\\]]|\\[[^\\[\\]]*\\])+\\]))\\s*(\\?\\s*)?(=|:))))|(?<=\\})",
+					"begin": "(?=((?:[_$[:alpha:]][_$[:alnum:]]*)|(?:\\'.*\\')|(?:\\\".*\\\")|(\\[([^\\[\\]]|\\[[^\\[\\]]*\\])+\\]))\\s*(\\?\\s*)?(=|:))",
+					"end": "(?=[};,=]|$|(^(?!(([_$[:alpha:]][_$[:alnum:]]*)|(\\'.*\\')|(\\\".*\\\")|(\\[([^\\[\\]]|\\[[^\\[\\]]*\\])+\\]))\\s*(\\?\\s*)?(=|:))))|(?<=\\})",
 					"patterns": [
 						{
 							"include": "#type-annotation"
@@ -1181,7 +1182,7 @@
 			"patterns": [
 				{
 					"name": "meta.method.declaration.ts",
-					"begin": "(?<!\\.|\\$)(?:\\b(public|private|protected)\\s+)?(?:\\b(abstract)\\s+)?(?:\\b(async)\\s+)?(?:\\b(get|set)\\s+)(?:(\\*)\\s*)?(?=((([_$[:alpha:]][_$[:alnum:]]*)|(\\'[^']*\\')|(\\\"[^\"]*\\\")|(\\[([^\\[\\]]|\\[[^\\[\\]]*\\])+\\]))\\s*(\\??))\\s*[\\(\\<])",
+					"begin": "(?<!\\.|\\$)(?:\\b(public|private|protected)\\s+)?(?:\\b(abstract)\\s+)?(?:\\b(async)\\s+)?(?:\\b(get|set)\\s+)(?:(\\*)\\s*)?(?=((([_$[:alpha:]][_$[:alnum:]]*)|(\\'.*\\')|(\\\".*\\\")|(\\[([^\\[\\]]|\\[[^\\[\\]]*\\])+\\]))\\s*(\\??))\\s*[\\(\\<])",
 					"beginCaptures": {
 						"1": {
 							"name": "storage.modifier.ts"
@@ -1223,7 +1224,7 @@
 				},
 				{
 					"name": "meta.method.declaration.ts",
-					"begin": "(?<!\\.|\\$)(?:\\b(public|private|protected)\\s+)?(?:\\b(abstract)\\s+)?(?:\\b(async)\\s+)?(?:(?:\\b(?:(new)|(constructor))\\b(?!\\$|\\.|:))|(?:(\\*)\\s*)?(?=((([_$[:alpha:]][_$[:alnum:]]*)|(\\'[^']*\\')|(\\\"[^\"]*\\\")|(\\[([^\\[\\]]|\\[[^\\[\\]]*\\])+\\]))\\s*(\\??))?\\s*[\\(\\<]))",
+					"begin": "(?<!\\.|\\$)(?:\\b(public|private|protected)\\s+)?(?:\\b(abstract)\\s+)?(?:\\b(async)\\s+)?(?:(?:\\b(?:(new)|(constructor))\\b(?!\\$|\\.|:))|(?:(\\*)\\s*)?(?=((([_$[:alpha:]][_$[:alnum:]]*)|(\\'.*\\')|(\\\".*\\\")|(\\[([^\\[\\]]|\\[[^\\[\\]]*\\])+\\]))\\s*(\\??))?\\s*[\\(\\<]))",
 					"beginCaptures": {
 						"1": {
 							"name": "storage.modifier.ts"
@@ -1269,7 +1270,7 @@
 			]
 		},
 		"method-declaration-name": {
-			"begin": "(?=(([_$[:alpha:]][_$[:alnum:]]*)|(\\'[^']*\\')|(\\\"[^\"]*\\\")|(\\[([^\\[\\]]|\\[[^\\[\\]]*\\])+\\]))\\s*(\\??)\\s*[\\(\\<])",
+			"begin": "(?=(([_$[:alpha:]][_$[:alnum:]]*)|(\\'.*\\')|(\\\".*\\\")|(\\[([^\\[\\]]|\\[[^\\[\\]]*\\])+\\]))\\s*(\\??)\\s*[\\(\\<])",
 			"end": "(?=\\(|\\<)",
 			"patterns": [
 				{
@@ -1290,7 +1291,7 @@
 		},
 		"object-literal-method-declaration": {
 			"name": "meta.method.declaration.ts",
-			"begin": "(?<!\\.|\\$)(?:\\b(async)\\s+)?(?:\\b(get|set)\\s+)?(?:(\\*)\\s*)?(?=((([_$[:alpha:]][_$[:alnum:]]*)|(\\'[^']*\\')|(\\\"[^\"]*\\\")|(\\[([^\\[\\]]|\\[[^\\[\\]]*\\])+\\]))\\s*(\\??))\\s*[\\(\\<])",
+			"begin": "(?<!\\.|\\$)(?:\\b(async)\\s+)?(?:\\b(get|set)\\s+)?(?:(\\*)\\s*)?(?=((([_$[:alpha:]][_$[:alnum:]]*)|(\\'.*\\')|(\\\".*\\\")|(\\[([^\\[\\]]|\\[[^\\[\\]]*\\])+\\]))\\s*(\\??))\\s*[\\(\\<])",
 			"beginCaptures": {
 				"1": {
 					"name": "storage.modifier.async.ts"
@@ -1328,7 +1329,7 @@
 			]
 		},
 		"object-literal-method-overload-declaration": {
-			"begin": "(?<!\\.|\\$)(?:\\b(async)\\s+)?(?:\\b(get|set)\\s+)?(?:(\\*)\\s*)?(?=((([_$[:alpha:]][_$[:alnum:]]*)|(\\'[^']*\\')|(\\\"[^\"]*\\\")|(\\[([^\\[\\]]|\\[[^\\[\\]]*\\])+\\]))\\s*(\\??))\\s*[\\(\\<])",
+			"begin": "(?<!\\.|\\$)(?:\\b(async)\\s+)?(?:\\b(get|set)\\s+)?(?:(\\*)\\s*)?(?=((([_$[:alpha:]][_$[:alnum:]]*)|(\\'.*\\')|(\\\".*\\\")|(\\[([^\\[\\]]|\\[[^\\[\\]]*\\])+\\]))\\s*(\\??))\\s*[\\(\\<])",
 			"beginCaptures": {
 				"1": {
 					"name": "storage.modifier.async.ts"
@@ -1554,7 +1555,7 @@
 					}
 				},
 				{
-					"match": "(?x)(?:\\s*\\b(public|private|protected|readonly)\\s+)?(\\.\\.\\.)?\\s*(?<!=|:)([_$[:alpha:]][_$[:alnum:]]*)\\s*(\\??)(?=\\s*\n  (=\\s*(\n    ((async\\s+)?(\n      (function\\s*[(<]) |\n      (function\\s+) |\n      ([_$[:alpha:]][_$[:alnum:]]*\\s*=>)\n    )) |\n    ((async\\s*)?(\n      ([(]\\s*(([)]\\s*:)|([_$[:alpha:]][_$[:alnum:]]*\\s*:)|(\\.\\.\\.) )) |\n      ([<]\\s*[_$[:alpha:]][_$[:alnum:]]*((\\s+extends\\s*[^=>])|(\\s*[,]))) |\n      ((<([^<>=]|=[^<]|\\<([^=<>]|=[^<])+\\>)+>\\s*)?\\(([^()]|\\([^()]*\\))*\\)(\\s*:\\s*(.)*)?\\s*=>)\n    ))\n  )) |\n  (:\\s*(\n    (<) |\n    ([(]\\s*(\n      ([)]) |\n      (\\.\\.\\.) |\n      ([_$[:alnum:]]+\\s*(\n        ([:,?=])|\n        ([)]\\s*=>)\n      ))\n    ))\n  ))\n)",
+					"match": "(?x)(?:\\s*\\b(public|private|protected|readonly)\\s+)?(\\.\\.\\.)?\\s*(?<!=|:)(?:(this)|([_$[:alpha:]][_$[:alnum:]]*))\\s*(\\??)(?=\\s*\n  (=\\s*(\n    ((async\\s+)?(\n      (function\\s*[(<]) |\n      (function\\s+) |\n      ([_$[:alpha:]][_$[:alnum:]]*\\s*=>)\n    )) |\n    ((async\\s*)?(\n      ([(]\\s*(([)]\\s*:)|([_$[:alpha:]][_$[:alnum:]]*\\s*:)|(\\.\\.\\.) )) |\n      ([<]\\s*[_$[:alpha:]][_$[:alnum:]]*((\\s+extends\\s*[^=>])|(\\s*[,]))) |\n      ((<([^<>=]|=[^<]|\\<([^=<>]|=[^<])+\\>)+>\\s*)?\\(([^()]|\\([^()]*\\))*\\)(\\s*:\\s*(.)*)?\\s*=>)\n    ))\n  )) |\n  (:\\s*(\n    (<) |\n    ([(]\\s*(\n      ([)]) |\n      (\\.\\.\\.) |\n      ([_$[:alnum:]]+\\s*(\n        ([:,?=])|\n        ([)]\\s*=>)\n      ))\n    ))\n  ))\n)",
 					"captures": {
 						"1": {
 							"name": "storage.modifier.ts"
@@ -1563,15 +1564,18 @@
 							"name": "keyword.operator.rest.ts"
 						},
 						"3": {
-							"name": "entity.name.function.ts"
+							"name": "entity.name.function.ts variable.language.this.ts"
 						},
 						"4": {
+							"name": "entity.name.function.ts"
+						},
+						"5": {
 							"name": "keyword.operator.optional.ts"
 						}
 					}
 				},
 				{
-					"match": "(?:\\s*\\b(public|private|protected|readonly)\\s+)?(\\.\\.\\.)?\\s*(?<!=|:)([_$[:alpha:]][_$[:alnum:]]*)\\s*(\\??)",
+					"match": "(?:\\s*\\b(public|private|protected|readonly)\\s+)?(\\.\\.\\.)?\\s*(?<!=|:)(?:((?<!\\.|\\$)\\bthis\\b(?!\\.|\\$))|([_$[:alpha:]][_$[:alnum:]]*))\\s*(\\??)",
 					"captures": {
 						"1": {
 							"name": "storage.modifier.ts"
@@ -1580,9 +1584,12 @@
 							"name": "keyword.operator.rest.ts"
 						},
 						"3": {
-							"name": "variable.parameter.ts"
+							"name": "variable.parameter.ts variable.language.this.ts"
 						},
 						"4": {
+							"name": "variable.parameter.ts"
+						},
+						"5": {
 							"name": "keyword.operator.optional.ts"
 						}
 					}
@@ -1642,7 +1649,7 @@
 					"include": "#comment"
 				},
 				{
-					"begin": "(?=(([_$[:alpha:]][_$[:alnum:]]*)|(\\'[^']*\\')|(\\\"[^\"]*\\\")|(\\[([^\\[\\]]|\\[[^\\[\\]]*\\])+\\]))\\s*(:))",
+					"begin": "(?=(([_$[:alpha:]][_$[:alnum:]]*)|(\\'.*\\')|(\\\".*\\\")|(\\[([^\\[\\]]|\\[[^\\[\\]]*\\])+\\]))\\s*(:))",
 					"end": "(?=,|\\})",
 					"patterns": [
 						{
@@ -1745,20 +1752,46 @@
 			]
 		},
 		"return-type": {
-			"name": "meta.return.type.ts",
-			"begin": "(?<=\\))\\s*(:)",
-			"beginCaptures": {
-				"1": {
-					"name": "keyword.operator.type.annotation.ts"
+			"patterns": [
+				{
+					"name": "meta.return.type.ts",
+					"begin": "(?<=\\))\\s*(:)(?=\\s*\\S)",
+					"beginCaptures": {
+						"1": {
+							"name": "keyword.operator.type.annotation.ts"
+						}
+					},
+					"end": "(?<![:|&])(?=$|^|[{};,]|//)",
+					"patterns": [
+						{
+							"include": "#return-type-core"
+						}
+					]
+				},
+				{
+					"name": "meta.return.type.ts",
+					"begin": "(?<=\\))\\s*(:)",
+					"beginCaptures": {
+						"1": {
+							"name": "keyword.operator.type.annotation.ts"
+						}
+					},
+					"end": "(?<![:|&])((?=[{};,]|//|^\\s*$)|((?<=\\S)(?=\\s*$)))",
+					"patterns": [
+						{
+							"include": "#return-type-core"
+						}
+					]
 				}
-			},
-			"end": "(?<![:|&])(?=$|^|[{};,]|//)",
+			]
+		},
+		"return-type-core": {
 			"patterns": [
 				{
 					"include": "#comment"
 				},
 				{
-					"begin": "(?<=[:])(?=\\s*\\{)",
+					"begin": "(?<=[:|&])(?=\\s*\\{)",
 					"end": "(?<=\\})",
 					"patterns": [
 						{
@@ -1779,20 +1812,36 @@
 			"match": "(?<!\\.|\\$)\\bis\\b(?!\\$|\\.)"
 		},
 		"type-annotation": {
-			"name": "meta.type.annotation.ts",
-			"begin": ":",
-			"beginCaptures": {
-				"0": {
-					"name": "keyword.operator.type.annotation.ts"
-				}
-			},
-			"end": "(?=$|^|[,);\\}\\]]|//)|(?==[^>])|(?<=[\\}>\\]\\)]|[_$[:alpha:]])\\s*(?=\\{)",
 			"patterns": [
 				{
-					"include": "#comment"
+					"name": "meta.type.annotation.ts",
+					"begin": "(:)(?=\\s*\\S)",
+					"beginCaptures": {
+						"1": {
+							"name": "keyword.operator.type.annotation.ts"
+						}
+					},
+					"end": "(?<![:|&])((?=$|^|[,);\\}\\]]|//)|(?==[^>])|((?<=[\\}>\\]\\)]|[_$[:alpha:]])\\s*(?=\\{)))",
+					"patterns": [
+						{
+							"include": "#type"
+						}
+					]
 				},
 				{
-					"include": "#type"
+					"name": "meta.type.annotation.ts",
+					"begin": "(:)",
+					"beginCaptures": {
+						"1": {
+							"name": "keyword.operator.type.annotation.ts"
+						}
+					},
+					"end": "(?<![:|&])((?=[,);\\}\\]]|//)|(?==[^>])|(?=^\\s*$)|((?<=\\S)(?=\\s*$))|((?<=[\\}>\\]\\)]|[_$[:alpha:]])\\s*(?=\\{)))",
+					"patterns": [
+						{
+							"include": "#type"
+						}
+					]
 				}
 			]
 		},
@@ -1982,14 +2031,40 @@
 			]
 		},
 		"type-function-return-type": {
-			"name": "meta.type.function.return.ts",
-			"begin": "=>",
-			"beginCaptures": {
-				"0": {
-					"name": "storage.type.function.arrow.ts"
+			"patterns": [
+				{
+					"name": "meta.type.function.return.ts",
+					"begin": "(=>)(?=\\s*\\S)",
+					"beginCaptures": {
+						"1": {
+							"name": "storage.type.function.arrow.ts"
+						}
+					},
+					"end": "(?<!=>)(?<![|&])(?=[,\\]\\)\\{\\}=;>]|//|$)",
+					"patterns": [
+						{
+							"include": "#type-function-return-type-core"
+						}
+					]
+				},
+				{
+					"name": "meta.type.function.return.ts",
+					"begin": "=>",
+					"beginCaptures": {
+						"0": {
+							"name": "storage.type.function.arrow.ts"
+						}
+					},
+					"end": "(?<!=>)(?<![|&])((?=[,\\]\\)\\{\\}=;>]|//|^\\s*$)|((?<=\\S)(?=\\s*$)))",
+					"patterns": [
+						{
+							"include": "#type-function-return-type-core"
+						}
+					]
 				}
-			},
-			"end": "(?<!=>)(?<![|&])(?=[,\\]\\)\\{\\}=;>]|//|$)",
+			]
+		},
+		"type-function-return-type-core": {
 			"patterns": [
 				{
 					"include": "#comment"
@@ -2110,7 +2185,7 @@
 							"name": "keyword.operator.assignment.ts"
 						}
 					},
-					"end": "(?=[,);}\\]])|(?=^\\s*$)",
+					"end": "(?=[,);}\\]])|(?=^\\s*$)|(?<=\\S)(?<!=)(?=\\s*$)",
 					"patterns": [
 						{
 							"include": "#expression"
@@ -2414,6 +2489,10 @@
 							"include": "#punctuation-accessor"
 						},
 						{
+							"name": "keyword.operator.expression.import.ts",
+							"match": "(?![\\.\\$])\\bimport(?=\\s*[\\(]\\s*[\\\"\\'\\`])"
+						},
+						{
 							"name": "entity.name.function.ts",
 							"match": "([_$[:alpha:]][_$[:alnum:]]*)"
 						}
@@ -2541,9 +2620,9 @@
 							"name": "meta.brace.angle.ts"
 						}
 					},
-					"end": "\\>",
+					"end": "(\\>)\\s*",
 					"endCaptures": {
-						"0": {
+						"1": {
 							"name": "meta.brace.angle.ts"
 						}
 					},
@@ -2561,9 +2640,9 @@
 							"name": "meta.brace.angle.ts"
 						}
 					},
-					"end": "\\>",
+					"end": "(\\>)\\s*",
 					"endCaptures": {
-						"0": {
+						"1": {
 							"name": "meta.brace.angle.ts"
 						}
 					},
@@ -2606,12 +2685,12 @@
 				},
 				{
 					"name": "meta.object.member.ts",
-					"begin": "(?=(?:(?:\\'[^']*\\')|(?:\\\"[^\"]*\\\")|(?:\\[([^\\[\\]]|\\[[^\\[\\]]*\\])+\\]))\\s*:)",
+					"begin": "(?=(?:(?:\\'.*\\')|(?:\\\".*\\\")|(?:\\[([^\\[\\]]|\\[[^\\[\\]]*\\])+\\]))\\s*:)",
 					"end": "(?=,|\\})",
 					"patterns": [
 						{
 							"name": "meta.object-literal.key.ts",
-							"begin": "(?=(?:(?:\\'[^']*\\')|(?:\\\"[^\"]*\\\")|(?:\\[([^\\[\\]]|\\[[^\\[\\]]*\\])+\\]))\\s*:)",
+							"begin": "(?=(?:(?:\\'.*\\')|(?:\\\".*\\\")|(?:\\[([^\\[\\]]|\\[[^\\[\\]]*\\])+\\]))\\s*:)",
 							"end": ":",
 							"endCaptures": {
 								"0": {
@@ -2887,7 +2966,7 @@
 							"name": "storage.type.function.arrow.ts"
 						}
 					},
-					"end": "(?<=\\})|((?!\\{)(?=\\S))",
+					"end": "(?<=\\}|\\S)(?<!=>)|((?!\\{)(?=\\S))",
 					"patterns": [
 						{
 							"include": "#decl-block"
@@ -3453,7 +3532,7 @@
 		},
 		"directives": {
 			"name": "comment.line.triple-slash.directive.ts",
-			"begin": "^(///)\\s*(?=<(reference|amd-dependency|amd-module)(\\s+(path|types|no-default-lib|name)\\s*=\\s*((\\'[^']*\\')|(\\\"[^\"]*\\\")))+\\s*/>\\s*$)",
+			"begin": "^(///)\\s*(?=<(reference|amd-dependency|amd-module)(\\s+(path|types|no-default-lib|name)\\s*=\\s*((\\'.*\\')|(\\\".*\\\")))+\\s*/>\\s*$)",
 			"beginCaptures": {
 				"1": {
 					"name": "punctuation.definition.comment.ts"

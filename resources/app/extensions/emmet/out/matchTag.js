@@ -6,17 +6,18 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const vscode = require("vscode");
 const util_1 = require("./util");
-const html_matcher_1 = require("@emmetio/html-matcher");
 function matchTag() {
     let editor = vscode.window.activeTextEditor;
-    if (!editor) {
-        vscode.window.showInformationMessage('No editor is active');
+    if (!util_1.validate(false)) {
         return;
     }
-    let rootNode = html_matcher_1.default(editor.document.getText());
+    let rootNode = util_1.parse(editor.document);
+    if (!rootNode) {
+        return;
+    }
     let updatedSelections = [];
     editor.selections.forEach(selection => {
-        let updatedSelection = getUpdatedSelections(editor, editor.document.offsetAt(selection.start), rootNode);
+        let updatedSelection = getUpdatedSelections(editor, selection.start, rootNode);
         if (updatedSelection) {
             updatedSelections.push(updatedSelection);
         }
@@ -27,19 +28,17 @@ function matchTag() {
     }
 }
 exports.matchTag = matchTag;
-function getUpdatedSelections(editor, offset, rootNode) {
-    let currentNode = util_1.getNode(rootNode, offset, true);
-    // If no closing tag or cursor is between open and close tag, then no-op
-    if (!currentNode.close || (currentNode.open.end < offset && currentNode.close.start > offset)) {
+function getUpdatedSelections(editor, position, rootNode) {
+    let currentNode = util_1.getNode(rootNode, position, true);
+    if (!currentNode) {
         return;
     }
-    if (offset <= currentNode.open.end) {
-        let matchingPosition = editor.document.positionAt(currentNode.close.start);
-        return new vscode.Selection(matchingPosition, matchingPosition);
+    // If no closing tag or cursor is between open and close tag, then no-op
+    if (!currentNode.close || (position.isAfter(currentNode.open.end) && position.isBefore(currentNode.close.start))) {
+        return;
     }
-    else {
-        let matchingPosition = editor.document.positionAt(currentNode.open.start);
-        return new vscode.Selection(matchingPosition, matchingPosition);
-    }
+    // Place cursor inside the close tag if cursor is inside the open tag, else place it inside the open tag
+    let finalPosition = position.isBeforeOrEqual(currentNode.open.end) ? currentNode.close.start.translate(0, 2) : currentNode.open.start.translate(0, 1);
+    return new vscode.Selection(finalPosition, finalPosition);
 }
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/379d2efb5539b09112c793d3d9a413017d736f89/extensions\emmet\out/matchTag.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/c887dd955170aebce0f6bb160b146f2e6e10a199/extensions\emmet\out/matchTag.js.map
