@@ -215,4 +215,4 @@ function getSyntaxFromArgs(args) {
     }
     return vscode_emmet_helper_1.getEmmetMode(mappedModes[parentMode] ? mappedModes[parentMode] : parentMode);
 }
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/c887dd955170aebce0f6bb160b146f2e6e10a199/extensions\emmet\out/abbreviationActions.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/2648980a697a4c8fb5777dcfb2ab110cec8a2f58/extensions\emmet\out/abbreviationActions.js.map

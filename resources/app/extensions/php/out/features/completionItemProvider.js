@@ -98,4 +98,4 @@ var PHPCompletionItemProvider = (function () {
     return PHPCompletionItemProvider;
 }());
 exports.default = PHPCompletionItemProvider;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/c887dd955170aebce0f6bb160b146f2e6e10a199/extensions\php\out/features\completionItemProvider.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/2648980a697a4c8fb5777dcfb2ab110cec8a2f58/extensions\php\out/features\completionItemProvider.js.map

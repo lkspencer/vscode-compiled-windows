@@ -21,7 +21,7 @@ const pathUtils = require("./pathUtils");
 const utils = require("./utils");
 const errors = require("./errors");
 const nls = require("vscode-nls");
-const localize = nls.config(process.env.VSCODE_NLS_CONFIG)(__filename);
+const localize = nls.config(process.env.VSCODE_NLS_CONFIG)();
 const DefaultSourceMapPathOverrides = {
     'webpack:///./*': '${cwd}/*',
     'webpack:///*': '*',
@@ -95,7 +95,7 @@ class NodeDebugAdapter extends vscode_chrome_debug_core_1.ChromeDebugAdapter {
                 }
                 programPath = path.normalize(programPath);
                 if (pathUtils.normalizeDriveLetter(programPath) !== pathUtils.realPath(programPath)) {
-                    vscode_chrome_debug_core_1.logger.warn(localize(0, null));
+                    vscode_chrome_debug_core_1.logger.warn(localize('program.path.case.mismatch.warning', "Program path uses differently cased character as file on disk; this might result in breakpoints not being hit."));
                 }
             }
             return this.resolveProgramPath(programPath, args.sourceMaps).then(resolvedProgramPath => {
@@ -133,7 +133,7 @@ class NodeDebugAdapter extends vscode_chrome_debug_core_1.ChromeDebugAdapter {
                 if (args.console === 'integratedTerminal' || args.console === 'externalTerminal') {
                     const termArgs = {
                         kind: args.console === 'integratedTerminal' ? 'integrated' : 'external',
-                        title: localize(1, null),
+                        title: localize('node.console.title', "Node Debug Console"),
                         cwd,
                         args: launchArgs,
                         env: envArgs
@@ -547,7 +547,7 @@ class NodeDebugAdapter extends vscode_chrome_debug_core_1.ChromeDebugAdapter {
     getNotExistErrorResponse(attribute, path) {
         return Promise.reject({
             id: 2007,
-            format: localize(2, null, attribute, '{path}'),
+            format: localize('attribute.path.not.exist', "Attribute '{0}' does not exist ('{1}').", attribute, '{path}'),
             variables: { path }
         });
     }
@@ -555,13 +555,13 @@ class NodeDebugAdapter extends vscode_chrome_debug_core_1.ChromeDebugAdapter {
      * 'Path not absolute' error with 'More Information' link.
      */
     getRelativePathErrorResponse(attribute, path) {
-        const format = localize(3, null, attribute, '{path}', '${workspaceRoot}/');
+        const format = localize('attribute.path.not.absolute', "Attribute '{0}' is not absolute ('{1}'); consider adding '{2}' as a prefix to make it absolute.", attribute, '{path}', '${workspaceRoot}/');
         return this.getErrorResponseWithInfoLink(2008, format, { path }, 20003);
     }
     getRuntimeNotOnPathErrorResponse(runtime) {
         return Promise.reject({
             id: 2001,
-            format: localize(4, null, '{_runtime}'),
+            format: localize('VSND2001', "Cannot find runtime '{0}' on PATH.", '{_runtime}'),
             variables: { _runtime: runtime }
         });
     }
@@ -575,13 +575,13 @@ class NodeDebugAdapter extends vscode_chrome_debug_core_1.ChromeDebugAdapter {
             variables,
             showUser: true,
             url: 'http://go.microsoft.com/fwlink/?linkID=534832#_' + infoId.toString(),
-            urlLabel: localize(5, null)
+            urlLabel: localize('more.information', "More Information")
         });
     }
     getReadonlyOrigin(aPath) {
         return path.isAbsolute(aPath) || aPath.startsWith(vscode_chrome_debug_core_1.ChromeDebugAdapter.EVAL_NAME_PREFIX) ?
-            localize(6, null) :
-            localize(7, null);
+            localize('origin.from.node', "read-only content from Node.js") :
+            localize('origin.core.module', "read-only core module");
     }
     /**
      * If realPath is an absolute path or a URL, return realPath. Otherwise, prepend the node_internals marker
