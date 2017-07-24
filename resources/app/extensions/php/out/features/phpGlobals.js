@@ -5698,4 +5698,4 @@ exports.keywords = {
     while: {},
     xor: {},
 };
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/2648980a697a4c8fb5777dcfb2ab110cec8a2f58/extensions\php\out/features\phpGlobals.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/cb82febafda0c8c199b9201ad274e25d9a76874e/extensions\php\out/features\phpGlobals.js.map
