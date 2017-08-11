@@ -1,6 +1,7 @@
 [
 	"Tag bei {0}",
 	"Remotebranch unter {0}",
+	"$(plus) Neuen Branch erstellen",
 	"Repository-URL",
 	"Übergeordnetes Verzeichnis",
 	"Git-Repository wird geklont...",

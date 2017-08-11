@@ -1,5 +1,5 @@
 [
-	"Bu belgede betikler devre dışı bırakıldı",
-	"Markdown önizlemesinde belgede betikler devre dışı bırakılmıştır. Betikleri etkinleştirmek için Markdown önizleme güvenlik ayarlarını değiştirin",
-	"Betikler Devre Dışı Güvenlik Uyarısı"
+	"Bu belgedeki bazı içerikler devre dışı bırakıldı",
+	"Markdown önizlemesinde potansiyel olarak tehlikeli veya güvenli olmayan içerik devre dışı bırakıldı. Güvenli olmayan içeriğe izin vermek veya betikleri etkinleştirmek için Markdown önizleme güvenlik ayarını değiştirin",
+	"İçerik Devre Dışı Güvenlik Uyarısı"
 ]

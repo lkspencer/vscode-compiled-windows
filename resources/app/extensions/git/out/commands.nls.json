@@ -2,6 +2,7 @@
 	"messages": [
 		"Tag at {0}",
 		"Remote branch at {0}",
+		"$(plus) Create new branch",
 		"Repository URL",
 		"Parent Directory",
 		"Cloning git repository...",
@@ -54,6 +55,7 @@
 	"keys": [
 		"tag at",
 		"remote branch at",
+		"create branch",
 		"repourl",
 		"parent",
 		"cloning",

@@ -1,7 +1,0 @@
-[
-	"Düzenleyici özellikleri için TypeScript ({1}) kullanılıyor. TypeScript ({0}) makinanızda global olarak yüklenmiş durumda. VS Code'daki hatalar TSC hatalarından farklı olabilir",
-	"Daha Fazla Bilgi",
-	"Tekrar Kontrol Etme",
-	"Kapat",
-	"Kullanıcı ayarı 'typescript.check.tscVersion', \"false\" olarak güncellendi"
-]

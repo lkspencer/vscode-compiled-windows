@@ -1,9 +1,9 @@
 [
-	"Cannot find runtime '{0}' on PATH.",
-	"Cannot launch debug target in terminal ({0}).",
-	"Cannot launch debug target ({0}).",
-	"Unknown console type '{0}'.",
-	"Cannot launch program '{0}'; configuring source maps might help.",
-	"Cannot launch program '{0}'; setting the '{1}' attribute might help.",
-	"Can't load environment variables from file ({0})."
+	"No se encuentra el sistema en tiempo de ejecución '{0}' en PATH.",
+	"No se puede iniciar el destino de depuración en el terminal ({0}).",
+	"No se puede iniciar el destino de depuración ({0}).",
+	"Tipo de consola desconocido: '{0}'.",
+	"No se puede iniciar el programa '{0}'. Configurar mapas de origen puede ser útil.",
+	"No se puede iniciar el programa '{0}'. Establecer el atributo '{1}' puede ayudar.",
+	"No se pueden cargar las variables de entorno desde el archivo ({0})."
 ]

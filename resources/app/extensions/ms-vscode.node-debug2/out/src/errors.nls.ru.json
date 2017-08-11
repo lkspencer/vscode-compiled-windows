@@ -1,9 +1,9 @@
 [
-	"Cannot find runtime '{0}' on PATH.",
-	"Cannot launch debug target in terminal ({0}).",
-	"Cannot launch debug target ({0}).",
-	"Unknown console type '{0}'.",
-	"Cannot launch program '{0}'; configuring source maps might help.",
-	"Cannot launch program '{0}'; setting the '{1}' attribute might help.",
-	"Can't load environment variables from file ({0})."
+	"Не удалось найти среду выполнения \"{0}\", заданную переменной PATH.",
+	"Не удается запустить цель отладки в терминале ({0}).",
+	"Не удается запустить цель отладки ({0}).",
+	"Неизвестный тип консоли: \"{0}\"",
+	"Не удается запустить программу \"{0}\". Попробуйте настроить исходное сопоставление.",
+	"Не удается запустить программу \"{0}\". Попробуйте настроить параметр \"{1}\".",
+	"Невозможно загрузить переменные среды из файла ({0})."
 ]

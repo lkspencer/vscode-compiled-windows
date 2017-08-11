@@ -9,12 +9,23 @@ var path_1 = require("path");
 var fs = require("fs");
 var utilities_1 = require("./utilities");
 var protocolDetection_1 = require("./protocolDetection");
+var loadedScripts_1 = require("./loadedScripts");
+var processPicker_1 = require("./processPicker");
+var loadedScriptsProvider;
 function activate(context) {
+    // launch config magic
+    context.subscriptions.push(vscode.commands.registerCommand('extension.node-debug.provideInitialConfigurations', function (folderUri) { return createInitialConfigurations(folderUri); }));
+    context.subscriptions.push(vscode.commands.registerCommand('extension.node-debug.startSession', function (config, folderUri) { return startSession(config, folderUri); }));
+    context.subscriptions.push(vscode.commands.registerCommand('extension.node-debug.ehStartSession', function (config, folderUri) { return ehStartSession(config, folderUri); }));
+    // toggle skipping file action
     context.subscriptions.push(vscode.commands.registerCommand('extension.node-debug.toggleSkippingFile', toggleSkippingFile));
-    context.subscriptions.push(vscode.commands.registerCommand('extension.node-debug.pickLoadedScript', function () { return pickLoadedScript(); }));
-    context.subscriptions.push(vscode.commands.registerCommand('extension.node-debug.provideInitialConfigurations', function () { return createInitialConfigurations(); }));
-    context.subscriptions.push(vscode.commands.registerCommand('extension.node-debug.startSession', function (config) { return startSession(config); }));
-    context.subscriptions.push(vscode.commands.registerCommand('extension.pickNodeProcess', function () { return pickProcess(); }));
+    // process quickpicker
+    context.subscriptions.push(vscode.commands.registerCommand('extension.pickNodeProcess', function () { return processPicker_1.pickProcess(); }));
+    // loaded scripts
+    loadedScriptsProvider = new loadedScripts_1.LoadedScriptsProvider(context);
+    vscode.window.registerTreeDataProvider('extension.node-debug.loadedScriptsExplorer', loadedScriptsProvider);
+    context.subscriptions.push(vscode.commands.registerCommand('extension.node-debug.pickLoadedScript', function () { return loadedScripts_1.pickLoadedScript(); }));
+    context.subscriptions.push(vscode.commands.registerCommand('extension.node-debug.openScript', function (session, path) { return loadedScripts_1.openScript(session, path); }));
 }
 exports.activate = activate;
 function deactivate() {
@@ -32,164 +43,10 @@ function toggleSkippingFile(res) {
         vscode.commands.executeCommand('workbench.customDebugRequest', 'toggleSkipFileStatus', args);
     }
 }
-function pickLoadedScript() {
-    return listLoadedScripts().then(function (items) {
-        var options = {
-            placeHolder: utilities_1.localize('select.script', "Select a script"),
-            matchOnDescription: true,
-            matchOnDetail: true,
-            ignoreFocusOut: true
-        };
-        if (items === undefined) {
-            items = [{ label: utilities_1.localize('no.loaded.scripts', "No loaded scripts available"), description: '' }];
-        }
-        vscode.window.showQuickPick(items, options).then(function (item) {
-            if (item && item.source) {
-                var uri = vscode.Uri.parse("debug:" + item.source.path);
-                vscode.workspace.openTextDocument(uri).then(function (doc) { return vscode.window.showTextDocument(doc); });
-            }
-        });
-    });
-}
-function listLoadedScripts() {
-    return vscode.commands.executeCommand('workbench.customDebugRequest', 'getLoadedScripts', {}).then(function (reply) {
-        if (reply && reply.success) {
-            return reply.body.loadedScripts;
-        }
-        else {
-            return undefined;
-        }
-    });
-}
-function pickProcess() {
-    return listProcesses().then(function (items) {
-        var options = {
-            placeHolder: utilities_1.localize('pickNodeProcess', "Pick the node.js or gulp process to attach to"),
-            matchOnDescription: true,
-            matchOnDetail: true,
-            ignoreFocusOut: true
-        };
-        return vscode.window.showQuickPick(items, options).then(function (item) {
-            return item ? item.pid : null;
-        });
-    });
-}
-function listProcesses() {
-    return new Promise(function (resolve, reject) {
-        var NODE = new RegExp('^(?:node|iojs|gulp)$', 'i');
-        if (process.platform === 'win32') {
-            var CMD_PID_1 = new RegExp('^(.+) ([0-9]+)$');
-            var EXECUTABLE_ARGS_1 = new RegExp('^(?:"([^"]+)"|([^ ]+))(?: (.+))?$');
-            var stdout_1 = '';
-            var stderr_1 = '';
-            var cmd = child_process_1.spawn('cmd');
-            cmd.stdout.on('data', function (data) {
-                stdout_1 += data.toString();
-            });
-            cmd.stderr.on('data', function (data) {
-                stderr_1 += data.toString();
-            });
-            cmd.on('exit', function () {
-                if (stderr_1.length > 0) {
-                    reject(stderr_1);
-                }
-                else {
-                    var items = [];
-                    var lines = stdout_1.split('\r\n');
-                    for (var _i = 0, lines_1 = lines; _i < lines_1.length; _i++) {
-                        var line = lines_1[_i];
-                        var matches = CMD_PID_1.exec(line.trim());
-                        if (matches && matches.length === 3) {
-                            var cmd_1 = matches[1].trim();
-                            var pid = matches[2];
-                            // remove leading device specifier
-                            if (cmd_1.indexOf('\\??\\') === 0) {
-                                cmd_1 = cmd_1.replace('\\??\\', '');
-                            }
-                            var executable_path = void 0;
-                            var args = void 0;
-                            var matches2 = EXECUTABLE_ARGS_1.exec(cmd_1);
-                            if (matches2 && matches2.length >= 2) {
-                                if (matches2.length >= 3) {
-                                    executable_path = matches2[1] || matches2[2];
-                                }
-                                else {
-                                    executable_path = matches2[1];
-                                }
-                                if (matches2.length === 4) {
-                                    args = matches2[3];
-                                }
-                            }
-                            if (executable_path) {
-                                var executable_name = path_1.basename(executable_path);
-                                executable_name = executable_name.split('.')[0];
-                                if (!NODE.test(executable_name)) {
-                                    continue;
-                                }
-                                items.push({
-                                    label: executable_name,
-                                    description: pid,
-                                    detail: cmd_1,
-                                    pid: pid
-                                });
-                            }
-                        }
-                    }
-                    resolve(items);
-                }
-            });
-            cmd.stdin.write('wmic process get ProcessId,CommandLine \n');
-            cmd.stdin.end();
-        }
-        else {
-            var PID_CMD_1 = new RegExp('^\\s*([0-9]+)\\s+(.+)$');
-            var MAC_APPS_1 = new RegExp('^.*/(.*).(?:app|bundle)/Contents/.*$');
-            child_process_1.exec('ps -ax -o pid=,command=', { maxBuffer: 1000 * 1024 }, function (err, stdout, stderr) {
-                if (err || stderr) {
-                    reject(err || stderr.toString());
-                }
-                else {
-                    var items = [];
-                    var lines = stdout.toString().split('\n');
-                    for (var _i = 0, lines_2 = lines; _i < lines_2.length; _i++) {
-                        var line = lines_2[_i];
-                        var matches = PID_CMD_1.exec(line);
-                        if (matches && matches.length === 3) {
-                            var pid = matches[1];
-                            var cmd = matches[2];
-                            var parts = cmd.split(' '); // this will break paths with spaces
-                            var executable_path = parts[0];
-                            var executable_name = path_1.basename(executable_path);
-                            if (!NODE.test(executable_name)) {
-                                continue;
-                            }
-                            var application = cmd;
-                            // try to show the correct name for OS X applications and bundles
-                            var matches2 = MAC_APPS_1.exec(cmd);
-                            if (matches2 && matches2.length === 2) {
-                                application = matches2[1];
-                            }
-                            else {
-                                application = executable_name;
-                            }
-                            items.unshift({
-                                label: application,
-                                description: pid,
-                                detail: cmd,
-                                pid: pid
-                            });
-                        }
-                    }
-                    resolve(items);
-                }
-            });
-        }
-    });
-}
 //---- extension.node-debug.provideInitialConfigurations
-function loadPackage(folderPath) {
+function loadPackage(folder) {
     try {
-        var packageJsonPath = path_1.join(folderPath, 'package.json');
+        var packageJsonPath = path_1.join(folder.uri.fsPath, 'package.json');
         var jsonContent = fs.readFileSync(packageJsonPath, 'utf8');
         return JSON.parse(jsonContent);
     }
@@ -201,8 +58,9 @@ function loadPackage(folderPath) {
 /**
  * returns an initial configuration json as a string
  */
-function createInitialConfigurations() {
-    var pkg = vscode.workspace.rootPath ? loadPackage(vscode.workspace.rootPath) : undefined;
+function createInitialConfigurations(folderUri) {
+    var folder = getFolder(folderUri);
+    var pkg = folder ? loadPackage(folder) : undefined;
     var config = {
         type: 'node',
         request: 'launch',
@@ -217,7 +75,7 @@ function createInitialConfigurations() {
         var program = undefined;
         // try to find a better value for 'program' by analysing package.json
         if (pkg) {
-            program = guessProgramFromPackage(pkg);
+            program = guessProgramFromPackage(folder, pkg);
             if (program) {
                 utilities_1.log(utilities_1.localize('program.guessed.from.package.json.explanation', "Launch configuration created based on 'package.json'."));
             }
@@ -252,9 +110,7 @@ function createInitialConfigurations() {
 function configureMern(config) {
     config.protocol = 'inspector';
     config.runtimeExecutable = 'nodemon';
-    config.runtimeArgs = ['--inspect=9222'];
     config.program = '${workspaceRoot}/index.js';
-    config.port = 9222;
     config.restart = true;
     config.env = {
         BABEL_DISABLE_CACHE: '1',
@@ -266,7 +122,7 @@ function configureMern(config) {
 /*
  * try to find the entry point ('main') from the package.json
  */
-function guessProgramFromPackage(jsonObject) {
+function guessProgramFromPackage(folder, jsonObject) {
     var program;
     try {
         if (jsonObject.main) {
@@ -282,7 +138,7 @@ function guessProgramFromPackage(jsonObject) {
                 path = program;
             }
             else {
-                path = path_1.join(vscode.workspace.rootPath, program);
+                path = path_1.join(folder.uri.fsPath, program);
                 program = path_1.join('${workspaceRoot}', program);
             }
             if (!fs.existsSync(path) && !fs.existsSync(path + '.js')) {
@@ -295,7 +151,7 @@ function guessProgramFromPackage(jsonObject) {
     }
     return program;
 }
-//---- extension.node-debug.startSession
+//---- extension.node-debug.startSession & extension.node-debug.eh_startSession
 /**
  * The result type of the startSession command.
  */
@@ -304,14 +160,32 @@ var StartSessionResult = (function () {
     }
     return StartSessionResult;
 }());
-function startSession(config) {
+function startSession(config, folderUri) {
+    var folder = getFolder(folderUri);
     if (Object.keys(config).length === 0) {
-        config = getFreshLaunchConfig();
+        config = getFreshLaunchConfig(folder);
+        if (!config.program) {
+            var message = utilities_1.localize('program.not.found.message', "Cannot find a program to debug");
+            var action_1 = utilities_1.localize('create.launch.json.action', "Create {0}", 'launch.json');
+            return vscode.window.showInformationMessage(message, action_1).then(function (a) {
+                if (a === action_1) {
+                    // let VS Code create an initial configuration
+                    return {
+                        status: 'initialConfiguration'
+                    };
+                }
+                else {
+                    return {
+                        status: 'ok'
+                    };
+                }
+            });
+        }
     }
     // make sure that 'launch' configs have a 'cwd' attribute set
     if (config.request === 'launch' && !config.cwd) {
-        if (vscode.workspace.rootPath) {
-            config.cwd = vscode.workspace.rootPath;
+        if (folder) {
+            config.cwd = folder.uri.fsPath;
         }
         else if (config.program) {
             // derive 'cwd' from 'program'
@@ -322,28 +196,58 @@ function startSession(config) {
     return determineDebugType(config).then(function (debugType) {
         if (debugType) {
             config.type = debugType;
-            vscode.commands.executeCommand('vscode.startDebug', config);
+            vscode.commands.executeCommand('vscode.startDebug', config, folder ? folder.uri : undefined);
         }
         return {
             status: 'ok'
         };
     });
 }
-function getFreshLaunchConfig() {
+function ehStartSession(config, folderUri) {
+    var folder = getFolder(folderUri);
+    if (config.protocol === 'inspector') {
+        config.type = 'extensionHost2'; // for Electron >= 1.7.4
+    }
+    vscode.commands.executeCommand('vscode.startDebug', config, folder ? folder.uri : undefined);
+    return Promise.resolve({
+        status: 'ok'
+    });
+}
+/**
+ * Tried to find a WorkspaceFolder for the given folderUri.
+ * If not found, the first WorkspaceFolder is returned.
+ * If the workspace has no folders, undefined is returned.
+ */
+function getFolder(folderUri) {
+    var folder;
+    var folders = vscode.workspace.workspaceFolders;
+    if (folders && folders.length > 0) {
+        folder = folders[0];
+        if (folderUri) {
+            var s_1 = folderUri.toString();
+            var found = folders.filter(function (f) { return f.uri.toString() === s_1; });
+            if (found.length > 0) {
+                folder = found[0];
+            }
+        }
+    }
+    return folder;
+}
+function getFreshLaunchConfig(folder) {
     var config = {
         type: 'node',
         name: 'Launch',
         request: 'launch'
     };
-    if (vscode.workspace.rootPath) {
+    if (folder) {
         // folder case: try to find more launch info in package.json
-        var pkg = loadPackage(vscode.workspace.rootPath);
+        var pkg = loadPackage(folder);
         if (pkg) {
             if (pkg.name === 'mern-starter') {
                 configureMern(config);
             }
             else {
-                config.program = guessProgramFromPackage(pkg);
+                config.program = guessProgramFromPackage(folder, pkg);
             }
         }
     }
@@ -352,11 +256,6 @@ function getFreshLaunchConfig() {
         var editor = vscode.window.activeTextEditor;
         if (editor && editor.document.languageId === 'javascript') {
             config.program = editor.document.fileName;
-        }
-        else {
-            return {
-                status: 'initialConfiguration' // let VS Code create an initial configuration
-            };
         }
     }
     return config;
@@ -378,7 +277,7 @@ function determineDebugType(config) {
 }
 function determineDebugTypeForPidConfig(config) {
     var getPidP = isPickProcessCommand(config.processId) ?
-        pickProcess() :
+        processPicker_1.pickProcess() :
         Promise.resolve(config.processId);
     return getPidP.then(function (pid) {
         if (pid && pid.match(/^[0-9]+$/)) {

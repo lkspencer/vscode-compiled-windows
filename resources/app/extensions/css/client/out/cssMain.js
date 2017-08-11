@@ -28,7 +28,7 @@ function activate(context) {
     };
     // Options to control the language client
     var clientOptions = {
-        documentSelector: ['css', 'less', 'scss'],
+        documentSelector: ['css', 'scss', 'less'],
         synchronize: {
             configurationSection: ['css', 'scss', 'less']
         },
@@ -47,8 +47,8 @@ function activate(context) {
         var isDecoratorEnabled = function (languageId) {
             return vscode_1.workspace.getConfiguration().get(languageId + '.colorDecorators.enable');
         };
-        disposable = colorDecorators_1.activateColorDecorations(colorRequestor, { css: true, scss: true, less: true }, isDecoratorEnabled);
-        context.subscriptions.push(disposable);
+        context.subscriptions.push(vscode_1.languages.registerColorProvider(['css', 'scss', 'less'], new colorDecorators_1.ColorProvider(colorRequestor)));
+        context.subscriptions.push(colorDecorators_1.activateColorDecorations(colorRequestor, { css: true, scss: true, less: true }, isDecoratorEnabled));
     });
     var indentationRules = {
         increaseIndentPattern: /(^.*\{[^}]*$)/,
@@ -87,4 +87,4 @@ function activate(context) {
     }
 }
 exports.activate = activate;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/cb82febafda0c8c199b9201ad274e25d9a76874e/extensions\css\client\out/cssMain.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/8b95971d8cccd3afd86b35d4a0e098c189294ff2/extensions\css\client\out/cssMain.js.map

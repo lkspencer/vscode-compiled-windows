@@ -1,7 +1,10 @@
 [
-	"Disabilita esecuzione di script in anteprime markdown per questa area di lavoro",
-	"Impostazione corrente",
-	"Abilita esecuzione di script in anteprime markdown per questa area di lavoro",
-	"Impostazione corrente",
-	"Modifica impostazioni di sicurezza per l'anteprima markdown"
+	"Strict",
+	"Only load secure content",
+	"Allow insecure content",
+	"Enable loading content over http",
+	"Disable",
+	"Allow all content and script execution. Not recommended",
+	"More Information",
+	"Seleziona impostazioni di protezione per le anteprime Markdown in questa area di lavoro"
 ]

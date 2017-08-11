@@ -21,10 +21,10 @@ var _linkProvider = new (function () {
         this._linkPattern = /[^!]\[.*?\]\(#(.*?)\)/g;
     }
     class_1.prototype.provideDocumentLinks = function (document, token) {
-        var version = document.version;
-        if (!this._cachedResult || this._cachedResult.version !== version) {
+        var key = document.uri.toString() + "@" + document.version;
+        if (!this._cachedResult || this._cachedResult.key !== key) {
             var links = this._computeDocumentLinks(document);
-            this._cachedResult = { version: version, links: links };
+            this._cachedResult = { key: key, links: links };
         }
         return this._cachedResult.links;
     };
@@ -94,4 +94,4 @@ function registerPackageDocumentCompletions() {
         }
     });
 }
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/cb82febafda0c8c199b9201ad274e25d9a76874e/extensions\extension-editing\out/extension.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/8b95971d8cccd3afd86b35d4a0e098c189294ff2/extensions\extension-editing\out/extension.js.map

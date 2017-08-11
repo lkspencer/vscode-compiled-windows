@@ -92,7 +92,7 @@ function detectProtocolForLaunch(config) {
     else {
         // only determine version if no runtimeExecutable is set (and 'node' on PATH is used)
         var result = cp.spawnSync('node', ['--version']);
-        var semVerString = result.stdout.toString();
+        var semVerString = result.stdout ? result.stdout.toString() : undefined;
         if (semVerString) {
             if (semVerStringToInt(semVerString) >= InspectorMinNodeVersionLaunch) {
                 utilities_1.log(utilities_1.localize('protocol.switch.inspector.version', "Debugging with inspector protocol because Node.js {0} was detected.", semVerString.trim()));
@@ -100,7 +100,6 @@ function detectProtocolForLaunch(config) {
             }
             else {
                 utilities_1.log(utilities_1.localize('protocol.switch.legacy.version', "Debugging with legacy protocol because Node.js {0} was detected.", semVerString.trim()));
-                return 'legacy';
             }
         }
         else {
@@ -133,8 +132,8 @@ function detectProtocolForPidWin(pid) {
 }
 /**
  * Netstat output is like:
-Proto  Local Address          Foreign Address        State           PID
-  TCP    0.0.0.0:135            0.0.0.0:0              LISTENING       812
+   Proto  Local Address          Foreign Address        State           PID
+   TCP    0.0.0.0:135            0.0.0.0:0              LISTENING       812
  */
 function getOpenPortsForPidWin(pid) {
     return new Promise(function (resolve) {

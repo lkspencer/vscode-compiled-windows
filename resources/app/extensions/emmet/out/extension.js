@@ -20,89 +20,129 @@ const evaluateMathExpression_1 = require("./evaluateMathExpression");
 const incrementDecrement_1 = require("./incrementDecrement");
 const util_1 = require("./util");
 const vscode_emmet_helper_1 = require("vscode-emmet-helper");
+const updateImageSize_1 = require("./updateImageSize");
+const reflectCssValue_1 = require("./reflectCssValue");
+const path = require("path");
 function activate(context) {
-    let completionProvider = new defaultCompletionProvider_1.DefaultCompletionItemProvider();
-    Object.keys(util_1.LANGUAGE_MODES).forEach(language => {
-        const provider = vscode.languages.registerCompletionItemProvider(language, completionProvider, ...util_1.LANGUAGE_MODES[language]);
-        context.subscriptions.push(provider);
-    });
-    let includedLanguages = util_1.getMappingForIncludedLanguages();
-    Object.keys(includedLanguages).forEach(language => {
-        const provider = vscode.languages.registerCompletionItemProvider(language, completionProvider, ...util_1.LANGUAGE_MODES[includedLanguages[language]]);
-        context.subscriptions.push(provider);
-    });
-    context.subscriptions.push(vscode.commands.registerCommand('emmet.wrapWithAbbreviation', (args) => {
+    registerCompletionProviders(context, true);
+    context.subscriptions.push(vscode.commands.registerCommand('editor.emmet.action.wrapWithAbbreviation', (args) => {
         abbreviationActions_1.wrapWithAbbreviation(args);
     }));
+    context.subscriptions.push(vscode.commands.registerCommand('editor.emmet.action.wrapIndividualLinesWithAbbreviation', (args) => {
+        abbreviationActions_1.wrapIndividualLinesWithAbbreviation(args);
+    }));
     context.subscriptions.push(vscode.commands.registerCommand('emmet.expandAbbreviation', (args) => {
-        abbreviationActions_1.expandAbbreviation(args);
+        abbreviationActions_1.expandEmmetAbbreviation(args);
     }));
-    context.subscriptions.push(vscode.commands.registerCommand('emmet.removeTag', () => {
-        removeTag_1.removeTag();
+    context.subscriptions.push(vscode.commands.registerCommand('editor.emmet.action.removeTag', () => {
+        return removeTag_1.removeTag();
     }));
-    context.subscriptions.push(vscode.commands.registerCommand('emmet.updateTag', () => {
-        vscode.window.showInputBox({ prompt: 'Enter Tag' }).then(tagName => {
-            updateTag_1.updateTag(tagName);
+    context.subscriptions.push(vscode.commands.registerCommand('editor.emmet.action.updateTag', (inputTag) => {
+        if (inputTag && typeof inputTag === 'string') {
+            return updateTag_1.updateTag(inputTag);
+        }
+        return vscode.window.showInputBox({ prompt: 'Enter Tag' }).then(tagName => {
+            return updateTag_1.updateTag(tagName);
         });
     }));
-    context.subscriptions.push(vscode.commands.registerCommand('emmet.matchTag', () => {
+    context.subscriptions.push(vscode.commands.registerCommand('editor.emmet.action.matchTag', () => {
         matchTag_1.matchTag();
     }));
-    context.subscriptions.push(vscode.commands.registerCommand('emmet.balanceOut', () => {
+    context.subscriptions.push(vscode.commands.registerCommand('editor.emmet.action.balanceOut', () => {
         balance_1.balanceOut();
     }));
-    context.subscriptions.push(vscode.commands.registerCommand('emmet.balanceIn', () => {
+    context.subscriptions.push(vscode.commands.registerCommand('editor.emmet.action.balanceIn', () => {
         balance_1.balanceIn();
     }));
-    context.subscriptions.push(vscode.commands.registerCommand('emmet.splitJoinTag', () => {
-        splitJoinTag_1.splitJoinTag();
+    context.subscriptions.push(vscode.commands.registerCommand('editor.emmet.action.splitJoinTag', () => {
+        return splitJoinTag_1.splitJoinTag();
     }));
-    context.subscriptions.push(vscode.commands.registerCommand('emmet.mergeLines', () => {
+    context.subscriptions.push(vscode.commands.registerCommand('editor.emmet.action.mergeLines', () => {
         mergeLines_1.mergeLines();
     }));
-    context.subscriptions.push(vscode.commands.registerCommand('emmet.toggleComment', () => {
+    context.subscriptions.push(vscode.commands.registerCommand('editor.emmet.action.toggleComment', () => {
         toggleComment_1.toggleComment();
     }));
-    context.subscriptions.push(vscode.commands.registerCommand('emmet.nextEditPoint', () => {
+    context.subscriptions.push(vscode.commands.registerCommand('editor.emmet.action.nextEditPoint', () => {
         editPoint_1.fetchEditPoint('next');
     }));
-    context.subscriptions.push(vscode.commands.registerCommand('emmet.prevEditPoint', () => {
+    context.subscriptions.push(vscode.commands.registerCommand('editor.emmet.action.prevEditPoint', () => {
         editPoint_1.fetchEditPoint('prev');
     }));
-    context.subscriptions.push(vscode.commands.registerCommand('emmet.selectNextItem', () => {
+    context.subscriptions.push(vscode.commands.registerCommand('editor.emmet.action.selectNextItem', () => {
         selectItem_1.fetchSelectItem('next');
     }));
-    context.subscriptions.push(vscode.commands.registerCommand('emmet.selectPrevItem', () => {
+    context.subscriptions.push(vscode.commands.registerCommand('editor.emmet.action.selectPrevItem', () => {
         selectItem_1.fetchSelectItem('prev');
     }));
-    context.subscriptions.push(vscode.commands.registerCommand('emmet.evaluateMathExpression', () => {
+    context.subscriptions.push(vscode.commands.registerCommand('editor.emmet.action.evaluateMathExpression', () => {
         evaluateMathExpression_1.evaluateMathExpression();
     }));
-    context.subscriptions.push(vscode.commands.registerCommand('emmet.incrementNumberByOneTenth', () => {
-        incrementDecrement_1.incrementDecrement(.1);
+    context.subscriptions.push(vscode.commands.registerCommand('editor.emmet.action.incrementNumberByOneTenth', () => {
+        return incrementDecrement_1.incrementDecrement(.1);
     }));
-    context.subscriptions.push(vscode.commands.registerCommand('emmet.incrementNumberByOne', () => {
-        incrementDecrement_1.incrementDecrement(1);
+    context.subscriptions.push(vscode.commands.registerCommand('editor.emmet.action.incrementNumberByOne', () => {
+        return incrementDecrement_1.incrementDecrement(1);
     }));
-    context.subscriptions.push(vscode.commands.registerCommand('emmet.incrementNumberByTen', () => {
-        incrementDecrement_1.incrementDecrement(10);
+    context.subscriptions.push(vscode.commands.registerCommand('editor.emmet.action.incrementNumberByTen', () => {
+        return incrementDecrement_1.incrementDecrement(10);
     }));
-    context.subscriptions.push(vscode.commands.registerCommand('emmet.decrementNumberByOneTenth', () => {
-        incrementDecrement_1.incrementDecrement(-0.1);
+    context.subscriptions.push(vscode.commands.registerCommand('editor.emmet.action.decrementNumberByOneTenth', () => {
+        return incrementDecrement_1.incrementDecrement(-0.1);
     }));
-    context.subscriptions.push(vscode.commands.registerCommand('emmet.decrementNumberByOne', () => {
-        incrementDecrement_1.incrementDecrement(-1);
+    context.subscriptions.push(vscode.commands.registerCommand('editor.emmet.action.decrementNumberByOne', () => {
+        return incrementDecrement_1.incrementDecrement(-1);
     }));
-    context.subscriptions.push(vscode.commands.registerCommand('emmet.decrementNumberByTen', () => {
-        incrementDecrement_1.incrementDecrement(-10);
+    context.subscriptions.push(vscode.commands.registerCommand('editor.emmet.action.decrementNumberByTen', () => {
+        return incrementDecrement_1.incrementDecrement(-10);
     }));
-    vscode_emmet_helper_1.updateExtensionsPath();
+    context.subscriptions.push(vscode.commands.registerCommand('editor.emmet.action.updateImageSize', () => {
+        return updateImageSize_1.updateImageSize();
+    }));
+    context.subscriptions.push(vscode.commands.registerCommand('editor.emmet.action.reflectCSSValue', () => {
+        return reflectCssValue_1.reflectCssValue();
+    }));
+    let currentExtensionsPath = undefined;
+    let resolveUpdateExtensionsPath = () => {
+        let extensionsPath = vscode.workspace.getConfiguration('emmet')['extensionsPath'];
+        if (extensionsPath && !path.isAbsolute(extensionsPath)) {
+            extensionsPath = path.join(vscode.workspace.rootPath, extensionsPath);
+        }
+        if (currentExtensionsPath !== extensionsPath) {
+            currentExtensionsPath = extensionsPath;
+            vscode_emmet_helper_1.updateExtensionsPath(currentExtensionsPath);
+        }
+    };
+    resolveUpdateExtensionsPath();
     context.subscriptions.push(vscode.workspace.onDidChangeConfiguration(() => {
-        vscode_emmet_helper_1.updateExtensionsPath();
+        registerCompletionProviders(context, false);
+        resolveUpdateExtensionsPath();
     }));
 }
 exports.activate = activate;
+/**
+ * Holds any registered completion providers by their language strings
+ */
+const registeredCompletionProviders = [];
+function registerCompletionProviders(context, isFirstStart) {
+    let completionProvider = new defaultCompletionProvider_1.DefaultCompletionItemProvider();
+    if (isFirstStart) {
+        Object.keys(util_1.LANGUAGE_MODES).forEach(language => {
+            const provider = vscode.languages.registerCompletionItemProvider(language, completionProvider, ...util_1.LANGUAGE_MODES[language]);
+            context.subscriptions.push(provider);
+        });
+    }
+    let includedLanguages = util_1.getMappingForIncludedLanguages();
+    Object.keys(includedLanguages).forEach(language => {
+        if (registeredCompletionProviders.includes(language)) {
+            return;
+        }
+        const provider = vscode.languages.registerCompletionItemProvider(language, completionProvider, ...util_1.LANGUAGE_MODES[includedLanguages[language]]);
+        context.subscriptions.push(provider);
+        registeredCompletionProviders.push(language);
+    });
+}
 function deactivate() {
 }
 exports.deactivate = deactivate;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/cb82febafda0c8c199b9201ad274e25d9a76874e/extensions\emmet\out/extension.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/8b95971d8cccd3afd86b35d4a0e098c189294ff2/extensions\emmet\out/extension.js.map

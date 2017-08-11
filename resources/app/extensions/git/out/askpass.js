@@ -32,7 +32,10 @@ class Askpass {
     constructor() {
         this.enabled = true;
         this.server = http.createServer((req, res) => this.onRequest(req, res));
-        this.ipcHandlePathPromise = this.setup().catch(err => console.error(err));
+        this.ipcHandlePathPromise = this.setup().catch(err => {
+            console.error(err);
+            return '';
+        });
     }
     setup() {
         return __awaiter(this, void 0, void 0, function* () {
@@ -97,4 +100,4 @@ class Askpass {
     }
 }
 exports.Askpass = Askpass;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/cb82febafda0c8c199b9201ad274e25d9a76874e/extensions\git\out/askpass.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/8b95971d8cccd3afd86b35d4a0e098c189294ff2/extensions\git\out/askpass.js.map

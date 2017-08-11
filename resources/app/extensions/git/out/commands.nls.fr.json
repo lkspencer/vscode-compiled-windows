@@ -1,6 +1,7 @@
 [
 	"Étiquette à {0}",
 	"Branche distante à {0}",
+	"$(plus) Créer nouvelle branche",
 	"URL du dépôt",
 	"Répertoire parent",
 	"Clonage du dépôt git...",

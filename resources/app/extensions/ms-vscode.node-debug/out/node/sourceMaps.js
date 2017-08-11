@@ -1,8 +1,8 @@
+"use strict";
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-"use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var Path = require("path");
 var FS = require("fs");
@@ -344,9 +344,9 @@ var SourceMaps = (function () {
     SourceMaps.prototype._log = function (message) {
         this._session.log('sm', message);
     };
+    SourceMaps.SOURCE_MAPPING_MATCHER = new RegExp('^//[#@] ?sourceMappingURL=(.+)$');
     return SourceMaps;
 }());
-SourceMaps.SOURCE_MAPPING_MATCHER = new RegExp('^//[#@] ?sourceMappingURL=(.+)$');
 exports.SourceMaps = SourceMaps;
 var SourceMap = (function () {
     function SourceMap(mapPath, generatedPath, json) {

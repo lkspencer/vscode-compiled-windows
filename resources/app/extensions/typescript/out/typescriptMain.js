@@ -31,7 +31,7 @@ const bufferSyncSupport_1 = require("./features/bufferSyncSupport");
 const completionItemProvider_1 = require("./features/completionItemProvider");
 const workspaceSymbolProvider_1 = require("./features/workspaceSymbolProvider");
 const codeActionProvider_1 = require("./features/codeActionProvider");
-//import RefactorProvider from './features/refactorProvider';
+const refactorProvider_1 = require("./features/refactorProvider");
 const referencesCodeLensProvider_1 = require("./features/referencesCodeLensProvider");
 const jsDocCompletionProvider_1 = require("./features/jsDocCompletionProvider");
 const directiveCommentCompletionProvider_1 = require("./features/directiveCommentCompletionProvider");
@@ -109,6 +109,21 @@ function activate(context) {
     context.subscriptions.push(vscode_1.commands.registerCommand('javascript.goToProjectConfig', goToProjectConfig.bind(null, false)));
     const jsDocCompletionCommand = new jsDocCompletionProvider_1.TryCompleteJsDocCommand(() => lazyClientHost().serviceClient);
     context.subscriptions.push(vscode_1.commands.registerCommand(jsDocCompletionProvider_1.TryCompleteJsDocCommand.COMMAND_NAME, jsDocCompletionCommand.tryCompleteJsDoc, jsDocCompletionCommand));
+    const EMPTY_ELEMENTS = ['area', 'base', 'br', 'col', 'embed', 'hr', 'img', 'input', 'keygen', 'link', 'menuitem', 'meta', 'param', 'source', 'track', 'wbr'];
+    context.subscriptions.push(vscode_1.languages.setLanguageConfiguration('jsx-tags', {
+        wordPattern: /(-?\d*\.\d\w*)|([^\`\~\!\@\$\^\&\*\(\)\=\+\[\{\]\}\\\|\;\:\'\"\,\.\<\>\/\s]+)/g,
+        onEnterRules: [
+            {
+                beforeText: new RegExp(`<(?!(?:${EMPTY_ELEMENTS.join('|')}))([_:\\w][_:\\w-.\\d]*)([^/>]*(?!/)>)[^<]*$`, 'i'),
+                afterText: /^<\/([_:\w][_:\w-.\d]*)\s*>$/i,
+                action: { indentAction: vscode_1.IndentAction.IndentOutdent }
+            },
+            {
+                beforeText: new RegExp(`<(?!(?:${EMPTY_ELEMENTS.join('|')}))(\\w[\\w\\d]*)([^/>]*(?!/)>)[^<]*$`, 'i'),
+                action: { indentAction: vscode_1.IndentAction.Indent }
+            }
+        ],
+    }));
     const supportedLanguage = [].concat.apply([], standardLanguageDescriptions.map(x => x.modeIds).concat(plugins.map(x => x.languages)));
     function didOpenTextDocument(textDocument) {
         if (supportedLanguage.indexOf(textDocument.languageId) >= 0) {
@@ -141,7 +156,7 @@ class LanguageProvider {
             delete: (file) => {
                 this.currentDiagnostics.delete(client.asUrl(file));
             }
-        });
+        }, this._validate);
         this.syntaxDiagnostics = Object.create(null);
         this.currentDiagnostics = vscode_1.languages.createDiagnosticCollection(description.id);
         this.typingsStatus = new typingsStatus_1.default(client);
@@ -156,9 +171,6 @@ class LanguageProvider {
         });
     }
     dispose() {
-        if (this.formattingProviderRegistration) {
-            this.formattingProviderRegistration.dispose();
-        }
         while (this.disposables.length) {
             const obj = this.disposables.pop();
             if (obj) {
@@ -183,12 +195,13 @@ class LanguageProvider {
         this.toUpdateOnConfigurationChanged.push(completionItemProvider);
         this.disposables.push(vscode_1.languages.registerCompletionItemProvider(selector, completionItemProvider, '.'));
         this.disposables.push(vscode_1.languages.registerCompletionItemProvider(selector, new directiveCommentCompletionProvider_1.DirectiveCommentCompletionProvider(client), '@'));
-        this.formattingProvider = new formattingProvider_1.default(client);
-        this.formattingProvider.updateConfiguration(config);
-        this.disposables.push(vscode_1.languages.registerOnTypeFormattingEditProvider(selector, this.formattingProvider, ';', '}', '\n'));
-        if (this.formattingProvider.isEnabled()) {
-            this.formattingProviderRegistration = vscode_1.languages.registerDocumentRangeFormattingEditProvider(selector, this.formattingProvider);
-        }
+        const formattingProvider = new formattingProvider_1.TypeScriptFormattingProvider(client);
+        formattingProvider.updateConfiguration(config);
+        this.disposables.push(vscode_1.languages.registerOnTypeFormattingEditProvider(selector, formattingProvider, ';', '}', '\n'));
+        const formattingProviderManager = new formattingProvider_1.FormattingProviderManager(this.description.id, formattingProvider, selector);
+        formattingProviderManager.updateConfiguration();
+        this.disposables.push(formattingProviderManager);
+        this.toUpdateOnConfigurationChanged.push(formattingProviderManager);
         const jsDocCompletionProvider = new jsDocCompletionProvider_1.JsDocCompletionProvider(client);
         jsDocCompletionProvider.updateConfiguration();
         this.disposables.push(vscode_1.languages.registerCompletionItemProvider(selector, jsDocCompletionProvider, '*'));
@@ -200,9 +213,9 @@ class LanguageProvider {
         this.disposables.push(vscode_1.languages.registerSignatureHelpProvider(selector, new signatureHelpProvider_1.default(client), '(', ','));
         this.disposables.push(vscode_1.languages.registerRenameProvider(selector, new renameProvider_1.default(client)));
         this.disposables.push(vscode_1.languages.registerCodeActionsProvider(selector, new codeActionProvider_1.default(client, this.description.id)));
-        //this.disposables.push(languages.registerCodeActionsProvider(selector, new RefactorProvider(client, this.description.id)));
+        this.disposables.push(vscode_1.languages.registerCodeActionsProvider(selector, new refactorProvider_1.default(client, this.description.id)));
         this.registerVersionDependentProviders();
-        this.description.modeIds.forEach(modeId => {
+        for (const modeId of this.description.modeIds) {
             this.disposables.push(vscode_1.languages.registerWorkspaceSymbolProvider(new workspaceSymbolProvider_1.default(client, modeId)));
             const referenceCodeLensProvider = new referencesCodeLensProvider_1.default(client, modeId);
             referenceCodeLensProvider.updateConfiguration();
@@ -212,71 +225,54 @@ class LanguageProvider {
             implementationCodeLensProvider.updateConfiguration();
             this.toUpdateOnConfigurationChanged.push(implementationCodeLensProvider);
             this.disposables.push(vscode_1.languages.registerCodeLensProvider(selector, implementationCodeLensProvider));
-            this.disposables.push(vscode_1.languages.setLanguageConfiguration(modeId, {
-                indentationRules: {
-                    // ^(.*\*/)?\s*\}.*$
-                    decreaseIndentPattern: /^((?!.*?\/\*).*\*\/)?\s*[\}\]\)].*$/,
-                    // ^.*\{[^}"']*$
-                    increaseIndentPattern: /^.*(\{[^}"'`]*|\([^)"'`]*|\[[^\]"'`]*)$/,
-                    indentNextLinePattern: /^\s*(for|while|if|else)\b(?!.*[;{}]\s*(\/\/.*|\/[*].*[*]\/\s*)?$)/
-                },
-                wordPattern: /(-?\d*\.\d\w*)|([^\`\~\!\@\#\%\^\&\*\(\)\-\=\+\[\{\]\}\\\|\;\:\'\"\,\.\<\>\/\?\s]+)/g,
-                onEnterRules: [
-                    {
-                        // e.g. /** | */
-                        beforeText: /^\s*\/\*\*(?!\/)([^\*]|\*(?!\/))*$/,
-                        afterText: /^\s*\*\/$/,
-                        action: { indentAction: vscode_1.IndentAction.IndentOutdent, appendText: ' * ' }
-                    }, {
-                        // e.g. /** ...|
-                        beforeText: /^\s*\/\*\*(?!\/)([^\*]|\*(?!\/))*$/,
-                        action: { indentAction: vscode_1.IndentAction.None, appendText: ' * ' }
-                    }, {
-                        // e.g.  * ...|
-                        beforeText: /^(\t|(\ \ ))*\ \*(\ ([^\*]|\*(?!\/))*)?$/,
-                        action: { indentAction: vscode_1.IndentAction.None, appendText: '* ' }
-                    }, {
-                        // e.g.  */|
-                        beforeText: /^(\t|(\ \ ))*\ \*\/\s*$/,
-                        action: { indentAction: vscode_1.IndentAction.None, removeText: 1 }
+            if (!this.description.isExternal) {
+                this.disposables.push(vscode_1.languages.setLanguageConfiguration(modeId, {
+                    indentationRules: {
+                        // ^(.*\*/)?\s*\}.*$
+                        decreaseIndentPattern: /^((?!.*?\/\*).*\*\/)?\s*[\}\]\)].*$/,
+                        // ^.*\{[^}"']*$
+                        increaseIndentPattern: /^((?!\/\/).)*(\{[^}"'`]*|\([^)"'`]*|\[[^\]"'`]*)$/,
+                        indentNextLinePattern: /^\s*(for|while|if|else)\b(?!.*[;{}]\s*(\/\/.*|\/[*].*[*]\/\s*)?$)/
                     },
-                    {
-                        // e.g.  *-----*/|
-                        beforeText: /^(\t|(\ \ ))*\ \*[^/]*\*\/\s*$/,
-                        action: { indentAction: vscode_1.IndentAction.None, removeText: 1 }
-                    }
-                ]
-            }));
-            const EMPTY_ELEMENTS = ['area', 'base', 'br', 'col', 'embed', 'hr', 'img', 'input', 'keygen', 'link', 'menuitem', 'meta', 'param', 'source', 'track', 'wbr'];
-            this.disposables.push(vscode_1.languages.setLanguageConfiguration('jsx-tags', {
-                wordPattern: /(-?\d*\.\d\w*)|([^\`\~\!\@\$\^\&\*\(\)\=\+\[\{\]\}\\\|\;\:\'\"\,\.\<\>\/\s]+)/g,
-                onEnterRules: [
-                    {
-                        beforeText: new RegExp(`<(?!(?:${EMPTY_ELEMENTS.join('|')}))([_:\\w][_:\\w-.\\d]*)([^/>]*(?!/)>)[^<]*$`, 'i'),
-                        afterText: /^<\/([_:\w][_:\w-.\d]*)\s*>$/i,
-                        action: { indentAction: vscode_1.IndentAction.IndentOutdent }
-                    },
-                    {
-                        beforeText: new RegExp(`<(?!(?:${EMPTY_ELEMENTS.join('|')}))(\\w[\\w\\d]*)([^/>]*(?!/)>)[^<]*$`, 'i'),
-                        action: { indentAction: vscode_1.IndentAction.Indent }
-                    }
-                ],
-            }));
-        });
+                    wordPattern: /(-?\d*\.\d\w*)|([^\`\~\!\@\#\%\^\&\*\(\)\-\=\+\[\{\]\}\\\|\;\:\'\"\,\.\<\>\/\?\s]+)/g,
+                    onEnterRules: [
+                        {
+                            // e.g. /** | */
+                            beforeText: /^\s*\/\*\*(?!\/)([^\*]|\*(?!\/))*$/,
+                            afterText: /^\s*\*\/$/,
+                            action: { indentAction: vscode_1.IndentAction.IndentOutdent, appendText: ' * ' }
+                        }, {
+                            // e.g. /** ...|
+                            beforeText: /^\s*\/\*\*(?!\/)([^\*]|\*(?!\/))*$/,
+                            action: { indentAction: vscode_1.IndentAction.None, appendText: ' * ' }
+                        }, {
+                            // e.g.  * ...|
+                            beforeText: /^(\t|(\ \ ))*\ \*(\ ([^\*]|\*(?!\/))*)?$/,
+                            action: { indentAction: vscode_1.IndentAction.None, appendText: '* ' }
+                        }, {
+                            // e.g.  */|
+                            beforeText: /^(\t|(\ \ ))*\ \*\/\s*$/,
+                            action: { indentAction: vscode_1.IndentAction.None, removeText: 1 }
+                        },
+                        {
+                            // e.g.  *-----*/|
+                            beforeText: /^(\t|(\ \ ))*\ \*[^/]*\*\/\s*$/,
+                            action: { indentAction: vscode_1.IndentAction.None, removeText: 1 }
+                        },
+                        {
+                            // e.g.  if (...) | {}
+                            beforeText: /^\s*(for|while|if|else)\s*/,
+                            afterText: /^\s*{/,
+                            action: { indentAction: vscode_1.IndentAction.None }
+                        }
+                    ]
+                }));
+            }
+        }
     }
     configurationChanged() {
         const config = vscode_1.workspace.getConfiguration(this.id);
         this.updateValidate(config.get(validateSetting, true));
-        if (this.formattingProvider) {
-            this.formattingProvider.updateConfiguration(config);
-            if (!this.formattingProvider.isEnabled() && this.formattingProviderRegistration) {
-                this.formattingProviderRegistration.dispose();
-                this.formattingProviderRegistration = null;
-            }
-            else if (this.formattingProvider.isEnabled() && !this.formattingProviderRegistration) {
-                this.formattingProviderRegistration = vscode_1.languages.registerDocumentRangeFormattingEditProvider(this.description.modeIds, this.formattingProvider);
-            }
-        }
         for (const toUpdate of this.toUpdateOnConfigurationChanged) {
             toUpdate.updateConfiguration();
         }
@@ -344,15 +340,19 @@ class LanguageProvider {
         this.bufferSyncSupport.requestAllDiagnostics();
     }
     syntaxDiagnosticsReceived(file, diagnostics) {
-        this.syntaxDiagnostics[file] = diagnostics;
+        if (this._validate) {
+            this.syntaxDiagnostics[file] = diagnostics;
+        }
     }
     semanticDiagnosticsReceived(file, diagnostics) {
-        const syntaxMarkers = this.syntaxDiagnostics[file];
-        if (syntaxMarkers) {
-            delete this.syntaxDiagnostics[file];
-            diagnostics = syntaxMarkers.concat(diagnostics);
+        if (this._validate) {
+            const syntaxMarkers = this.syntaxDiagnostics[file];
+            if (syntaxMarkers) {
+                delete this.syntaxDiagnostics[file];
+                diagnostics = syntaxMarkers.concat(diagnostics);
+            }
+            this.currentDiagnostics.set(this.client.asUrl(file), diagnostics);
         }
-        this.currentDiagnostics.set(this.client.asUrl(file), diagnostics);
     }
     configFileDiagnosticsReceived(file, diagnostics) {
         this.currentDiagnostics.set(this.client.asUrl(file), diagnostics);
@@ -378,7 +378,8 @@ class TypeScriptServiceClientHost {
         configFileWatcher.onDidChange(handleProjectChange, this, this.disposables);
         this.versionStatus = new versionStatus_1.default();
         this.disposables.push(this.versionStatus);
-        this.client = new typescriptServiceClient_1.default(this, workspaceState, this.versionStatus, plugins, this.disposables);
+        this.client = new typescriptServiceClient_1.default(this, workspaceState, this.versionStatus, plugins);
+        this.disposables.push(this.client);
         this.languagePerId = new Map();
         for (const description of descriptions) {
             const manager = new LanguageProvider(this.client, description);
@@ -400,7 +401,8 @@ class TypeScriptServiceClientHost {
                 const description = {
                     id: 'typescript-plugins',
                     modeIds: Array.from(langauges.values()),
-                    diagnosticSource: 'ts-plugins'
+                    diagnosticSource: 'ts-plugins',
+                    isExternal: true
                 };
                 const manager = new LanguageProvider(this.client, description);
                 this.languages.push(manager);
@@ -601,4 +603,4 @@ class TypeScriptServiceClientHost {
         }
     }
 }
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/cb82febafda0c8c199b9201ad274e25d9a76874e/extensions\typescript\out/typescriptMain.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/8b95971d8cccd3afd86b35d4a0e098c189294ff2/extensions\typescript\out/typescriptMain.js.map

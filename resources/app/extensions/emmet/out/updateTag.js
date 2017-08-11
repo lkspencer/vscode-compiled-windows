@@ -11,7 +11,7 @@ function updateTag(tagName) {
     if (!util_1.validate(false)) {
         return;
     }
-    let rootNode = util_1.parse(editor.document);
+    let rootNode = util_1.parseDocument(editor.document);
     if (!rootNode) {
         return;
     }
@@ -19,7 +19,7 @@ function updateTag(tagName) {
     editor.selections.reverse().forEach(selection => {
         rangesToUpdate = rangesToUpdate.concat(getRangesToUpdate(editor, selection, rootNode));
     });
-    editor.edit(editBuilder => {
+    return editor.edit(editBuilder => {
         rangesToUpdate.forEach(range => {
             editBuilder.replace(range, tagName);
         });
@@ -41,4 +41,4 @@ function getRangesToUpdate(editor, selection, rootNode) {
     }
     return ranges;
 }
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/cb82febafda0c8c199b9201ad274e25d9a76874e/extensions\emmet\out/updateTag.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/8b95971d8cccd3afd86b35d4a0e098c189294ff2/extensions\emmet\out/updateTag.js.map

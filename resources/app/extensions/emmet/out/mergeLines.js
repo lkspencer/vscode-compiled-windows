@@ -11,15 +11,15 @@ function mergeLines() {
     if (!util_1.validate(false)) {
         return;
     }
-    let rootNode = util_1.parse(editor.document);
+    let rootNode = util_1.parseDocument(editor.document);
     if (!rootNode) {
         return;
     }
-    editor.edit(editBuilder => {
+    return editor.edit(editBuilder => {
         editor.selections.reverse().forEach(selection => {
-            let [rangeToReplace, textToReplaceWith] = getRangesToReplace(editor.document, selection, rootNode);
-            if (rangeToReplace && textToReplaceWith) {
-                editBuilder.replace(rangeToReplace, textToReplaceWith);
+            let textEdit = getRangesToReplace(editor.document, selection, rootNode);
+            if (textEdit) {
+                editBuilder.replace(textEdit.range, textEdit.newText);
             }
         });
     });
@@ -35,11 +35,14 @@ function getRangesToReplace(document, selection, rootNode) {
         startNodeToUpdate = util_1.getNode(rootNode, selection.start, true);
         endNodeToUpdate = util_1.getNode(rootNode, selection.end, true);
     }
-    if (!startNodeToUpdate || !endNodeToUpdate) {
-        return [null, null];
+    if (!startNodeToUpdate || !endNodeToUpdate || startNodeToUpdate.start.line === endNodeToUpdate.end.line) {
+        return;
     }
     let rangeToReplace = new vscode.Range(startNodeToUpdate.start, endNodeToUpdate.end);
-    let textToReplaceWith = document.getText(rangeToReplace).replace(/\r\n|\n/g, '').replace(/>\s*</g, '><');
-    return [rangeToReplace, textToReplaceWith];
+    let textToReplaceWith = document.lineAt(startNodeToUpdate.start.line).text.substr(startNodeToUpdate.start.character);
+    for (let i = startNodeToUpdate.start.line + 1; i <= endNodeToUpdate.end.line; i++) {
+        textToReplaceWith += document.lineAt(i).text.trim();
+    }
+    return new vscode.TextEdit(rangeToReplace, textToReplaceWith);
 }
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/cb82febafda0c8c199b9201ad274e25d9a76874e/extensions\emmet\out/mergeLines.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/8b95971d8cccd3afd86b35d4a0e098c189294ff2/extensions\emmet\out/mergeLines.js.map

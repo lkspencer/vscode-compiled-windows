@@ -37,12 +37,15 @@ var MarkdownDocumentLinkProvider = (function () {
             return uri;
         }
         // assume it must be a file
-        var resourcePath;
+        var resourcePath = uri.path;
         if (!uri.path) {
             resourcePath = document.uri.path;
         }
         else if (uri.path[0] === '/') {
-            resourcePath = path.join(vscode.workspace.rootPath || '', uri.path);
+            var root = vscode.workspace.getWorkspaceFolder(document.uri);
+            if (root) {
+                resourcePath = path.join(root.uri.fsPath, uri.path);
+            }
         }
         else {
             resourcePath = path.join(base, uri.path);
@@ -52,4 +55,4 @@ var MarkdownDocumentLinkProvider = (function () {
     return MarkdownDocumentLinkProvider;
 }());
 exports.default = MarkdownDocumentLinkProvider;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/cb82febafda0c8c199b9201ad274e25d9a76874e/extensions\markdown\out/documentLinkProvider.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/8b95971d8cccd3afd86b35d4a0e098c189294ff2/extensions\markdown\out/documentLinkProvider.js.map

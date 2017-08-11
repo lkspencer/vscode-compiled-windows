@@ -54,6 +54,8 @@ var svgsNotValid = localize(1, null);
 var embeddedSvgsNotValid = localize(2, null);
 var dataUrlsNotValid = localize(3, null);
 var relativeUrlRequiresHttpsRepository = localize(4, null);
+var relativeIconUrlRequiresHttpsRepository = localize(5, null);
+var relativeBadgeUrlRequiresHttpsRepository = localize(6, null);
 var Context;
 (function (Context) {
     Context[Context["ICON"] = 0] = "ICON";
@@ -342,7 +344,14 @@ var ExtensionLinter = (function () {
         }
         if (!scheme && !info.hasHttpsRepository) {
             var range = new vscode_1.Range(document.positionAt(begin), document.positionAt(end));
-            diagnostics.push(new vscode_1.Diagnostic(range, relativeUrlRequiresHttpsRepository, vscode_1.DiagnosticSeverity.Warning));
+            var message = (function () {
+                switch (context) {
+                    case Context.ICON: return relativeIconUrlRequiresHttpsRepository;
+                    case Context.BADGE: return relativeBadgeUrlRequiresHttpsRepository;
+                    default: return relativeUrlRequiresHttpsRepository;
+                }
+            })();
+            diagnostics.push(new vscode_1.Diagnostic(range, message, vscode_1.DiagnosticSeverity.Warning));
         }
         if (endsWith(uri.path.toLowerCase(), '.svg') && allowedBadgeProviders.indexOf(uri.authority.toLowerCase()) === -1) {
             var range = new vscode_1.Range(document.positionAt(begin), document.positionAt(end));
@@ -400,4 +409,4 @@ function parseUri(src) {
         }
     }
 }
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/cb82febafda0c8c199b9201ad274e25d9a76874e/extensions\extension-editing\out/extensionLinter.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/8b95971d8cccd3afd86b35d4a0e098c189294ff2/extensions\extension-editing\out/extensionLinter.js.map

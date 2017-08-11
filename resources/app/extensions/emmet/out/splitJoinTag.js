@@ -11,15 +11,15 @@ function splitJoinTag() {
     if (!util_1.validate(false)) {
         return;
     }
-    let rootNode = util_1.parse(editor.document);
+    let rootNode = util_1.parseDocument(editor.document);
     if (!rootNode) {
         return;
     }
-    editor.edit(editBuilder => {
+    return editor.edit(editBuilder => {
         editor.selections.reverse().forEach(selection => {
-            let [rangeToReplace, textToReplaceWith] = getRangesToReplace(editor.document, selection, rootNode);
-            if (rangeToReplace && textToReplaceWith) {
-                editBuilder.replace(rangeToReplace, textToReplaceWith);
+            let textEdit = getRangesToReplace(editor.document, selection, rootNode);
+            if (textEdit) {
+                editBuilder.replace(textEdit.range, textEdit.newText);
             }
         });
     });
@@ -30,7 +30,7 @@ function getRangesToReplace(document, selection, rootNode) {
     let rangeToReplace;
     let textToReplaceWith;
     if (!nodeToUpdate) {
-        return [null, null];
+        return;
     }
     if (!nodeToUpdate.close) {
         // Split Tag
@@ -48,6 +48,6 @@ function getRangesToReplace(document, selection, rootNode) {
         rangeToReplace = new vscode.Range(start, end);
         textToReplaceWith = '/>';
     }
-    return [rangeToReplace, textToReplaceWith];
+    return new vscode.TextEdit(rangeToReplace, textToReplaceWith);
 }
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/cb82febafda0c8c199b9201ad274e25d9a76874e/extensions\emmet\out/splitJoinTag.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/8b95971d8cccd3afd86b35d4a0e098c189294ff2/extensions\emmet\out/splitJoinTag.js.map

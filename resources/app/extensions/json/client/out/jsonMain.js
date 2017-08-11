@@ -74,6 +74,7 @@ function activate(context) {
         };
         disposable = colorDecorators_1.activateColorDecorations(colorRequestor, { json: true }, isDecoratorEnabled);
         context.subscriptions.push(disposable);
+        context.subscriptions.push(vscode_1.languages.registerColorProvider('json', new colorDecorators_1.ColorProvider(colorRequestor)));
     });
     // Push the disposable to the context's subscriptions so that the
     // client can be deactivated on extension deactivation
@@ -102,6 +103,7 @@ function getSchemaAssociation(context) {
                         }
                         if (fileMatch[0] === '%') {
                             fileMatch = fileMatch.replace(/%APP_SETTINGS_HOME%/, '/User');
+                            fileMatch = fileMatch.replace(/%APP_WORKSPACES_HOME%/, '/Workspaces');
                         }
                         else if (fileMatch.charAt(0) !== '/' && !fileMatch.match(/\w+:\/\//)) {
                             fileMatch = '/' + fileMatch;
@@ -130,4 +132,4 @@ function getPackageInfo(context) {
     }
     return null;
 }
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/cb82febafda0c8c199b9201ad274e25d9a76874e/extensions\json\client\out/jsonMain.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/8b95971d8cccd3afd86b35d4a0e098c189294ff2/extensions\json\client\out/jsonMain.js.map

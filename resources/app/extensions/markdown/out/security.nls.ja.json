@@ -1,7 +1,10 @@
 [
-	"このワークスペースのマークダウン プレビューでのスクリプト実行を無効にする",
-	"現在の設定",
-	"このワークスペースのマークダウン プレビューでのスクリプト実行を有効にする",
-	"現在の設定",
-	"マークダウン プレビューのセキュリティ設定を変更する"
+	"Strict",
+	"Only load secure content",
+	"Allow insecure content",
+	"Enable loading content over http",
+	"Disable",
+	"Allow all content and script execution. Not recommended",
+	"More Information",
+	"ワークスペースのマークダウン プレビューに関するセキュリティ設定を選択 "
 ]

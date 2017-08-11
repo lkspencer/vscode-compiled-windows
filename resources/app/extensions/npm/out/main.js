@@ -2,6 +2,7 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
+//tslint:disable
 'use strict';
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -17,8 +18,7 @@ const fs = require("fs");
 const vscode = require("vscode");
 let taskProvider;
 function activate(_context) {
-    let workspaceRoot = vscode.workspace.rootPath;
-    if (!workspaceRoot) {
+    if (!vscode.workspace.workspaceFolders) {
         return;
     }
     function onConfigurationChanged() {
@@ -30,7 +30,7 @@ function activate(_context) {
         else if (!taskProvider && autoDetect === 'on') {
             taskProvider = vscode.workspace.registerTaskProvider('npm', {
                 provideTasks: () => {
-                    return getNpmScriptsAsTasks();
+                    return provideNpmScripts();
                 },
                 resolveTask(_task) {
                     return undefined;
@@ -87,14 +87,30 @@ function isTestTask(name) {
     }
     return false;
 }
-function getNpmScriptsAsTasks() {
+function isNotPreOrPostScript(script) {
+    return !(script.startsWith('pre') || script.startsWith('post'));
+}
+function provideNpmScripts() {
     return __awaiter(this, void 0, void 0, function* () {
-        let workspaceRoot = vscode.workspace.rootPath;
         let emptyTasks = [];
-        if (!workspaceRoot) {
+        let allTasks = [];
+        let folders = vscode.workspace.workspaceFolders;
+        if (!folders) {
             return emptyTasks;
         }
-        let packageJson = path.join(workspaceRoot, 'package.json');
+        const isSingleRoot = folders.length === 1;
+        for (let i = 0; i < folders.length; i++) {
+            let tasks = yield provideNpmScriptsForFolder(folders[i], isSingleRoot);
+            allTasks.push(...tasks);
+        }
+        return allTasks;
+    });
+}
+function provideNpmScriptsForFolder(folder, singleRoot) {
+    return __awaiter(this, void 0, void 0, function* () {
+        let rootPath = folder.uri.fsPath;
+        let emptyTasks = [];
+        let packageJson = path.join(rootPath, 'package.json');
         if (!(yield exists(packageJson))) {
             return emptyTasks;
         }
@@ -102,15 +118,11 @@ function getNpmScriptsAsTasks() {
             var contents = yield readFile(packageJson);
             var json = JSON.parse(contents);
             if (!json.scripts) {
-                return Promise.resolve(emptyTasks);
+                return emptyTasks;
             }
             const result = [];
-            Object.keys(json.scripts).forEach(each => {
-                const kind = {
-                    type: 'npm',
-                    script: each
-                };
-                const task = new vscode.Task(kind, `run ${each}`, 'npm', new vscode.ShellExecution(`npm run ${each}`));
+            Object.keys(json.scripts).filter(isNotPreOrPostScript).forEach(each => {
+                const task = createTask(each, `run ${each}`, rootPath, folder.name, singleRoot);
                 const lowerCaseTaskName = each.toLowerCase();
                 if (isBuildTask(lowerCaseTaskName)) {
                     task.group = vscode.TaskGroup.Build;
@@ -120,13 +132,33 @@ function getNpmScriptsAsTasks() {
                 }
                 result.push(task);
             });
-            // add some 'well known' npm tasks
-            result.push(new vscode.Task({ type: 'npm', script: 'install' }, `install`, 'npm', new vscode.ShellExecution(`npm install`)));
-            return Promise.resolve(result);
+            // always add npm install (without a problem matcher)
+            result.push(createTask('install', 'install', rootPath, folder.name, singleRoot, []));
+            return result;
         }
         catch (e) {
-            return Promise.resolve(emptyTasks);
+            return emptyTasks;
         }
     });
+}
+function createTask(script, cmd, rootPath, shortPath, singleRoot, matcher) {
+    function getTaskName(script, shortPath, singleRoot) {
+        if (singleRoot) {
+            return script;
+        }
+        return `${script} - ${shortPath}`;
+    }
+    function getNpmCommandLine(cmd) {
+        if (vscode.workspace.getConfiguration('npm').get('runSilent')) {
+            return `npm --silent ${cmd}`;
+        }
+        return `npm ${cmd}`;
+    }
+    let kind = {
+        type: 'npm',
+        script: script
+    };
+    let taskName = getTaskName(script, shortPath, singleRoot);
+    return new vscode.Task(kind, taskName, 'npm', new vscode.ShellExecution(getNpmCommandLine(cmd), { cwd: rootPath }), matcher);
 }
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/cb82febafda0c8c199b9201ad274e25d9a76874e/extensions\npm\out/main.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/8b95971d8cccd3afd86b35d4a0e098c189294ff2/extensions\npm\out/main.js.map

@@ -11,8 +11,10 @@ const util_1 = require("./util");
 class DefaultCompletionItemProvider {
     provideCompletionItems(document, position, token) {
         const mappedLanguages = util_1.getMappingForIncludedLanguages();
+        const emmetConfig = vscode.workspace.getConfiguration('emmet');
         let isSyntaxMapped = mappedLanguages[document.languageId] ? true : false;
-        let syntax = vscode_emmet_helper_1.getEmmetMode(isSyntaxMapped ? mappedLanguages[document.languageId] : document.languageId);
+        let excludedLanguages = emmetConfig['excludeLanguages'] ? emmetConfig['excludeLanguages'] : [];
+        let syntax = vscode_emmet_helper_1.getEmmetMode((isSyntaxMapped ? mappedLanguages[document.languageId] : document.languageId), excludedLanguages);
         if (document.languageId === 'html' || vscode_emmet_helper_1.isStyleSheet(document.languageId)) {
             // Document can be html/css parsed
             // Use syntaxHelper to parse file, validate location and update sytnax if needed
@@ -20,11 +22,25 @@ class DefaultCompletionItemProvider {
         }
         if (!syntax
             || ((isSyntaxMapped || syntax === 'jsx')
-                && vscode.workspace.getConfiguration('emmet')['showExpandedAbbreviation'] !== 'always')) {
+                && emmetConfig['showExpandedAbbreviation'] !== 'always')) {
             return;
         }
-        const emmetCompletionProvider = new vscode_emmet_helper_1.EmmetCompletionItemProvider(syntax);
-        return emmetCompletionProvider.provideCompletionItems(document, position, token);
+        let result = vscode_emmet_helper_1.doComplete(document, position, syntax, util_1.getEmmetConfiguration());
+        let newItems = [];
+        if (result.items) {
+            result.items.forEach(item => {
+                let newItem = new vscode.CompletionItem(item.label);
+                newItem.documentation = item.documentation;
+                newItem.detail = item.detail;
+                newItem.insertText = new vscode.SnippetString(item.textEdit.newText);
+                let oldrange = item.textEdit.range;
+                newItem.range = new vscode.Range(oldrange.start.line, oldrange.start.character, oldrange.end.line, oldrange.end.character);
+                newItem.filterText = item.filterText;
+                newItem.sortText = item.sortText;
+                newItems.push(newItem);
+            });
+        }
+        return Promise.resolve(new vscode.CompletionList(newItems, true));
     }
     /**
      * Parses given document to check whether given position is valid for emmet abbreviation and returns appropriate syntax
@@ -36,7 +52,7 @@ class DefaultCompletionItemProvider {
         if (!syntax) {
             return syntax;
         }
-        let rootNode = util_1.parse(document, false);
+        let rootNode = util_1.parseDocument(document, false);
         if (!rootNode) {
             return;
         }
@@ -57,4 +73,4 @@ class DefaultCompletionItemProvider {
     }
 }
 exports.DefaultCompletionItemProvider = DefaultCompletionItemProvider;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/cb82febafda0c8c199b9201ad274e25d9a76874e/extensions\emmet\out/defaultCompletionProvider.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/8b95971d8cccd3afd86b35d4a0e098c189294ff2/extensions\emmet\out/defaultCompletionProvider.js.map

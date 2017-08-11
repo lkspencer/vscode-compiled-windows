@@ -38,7 +38,7 @@ class DirectiveCommentCompletionProvider {
             return directives.map(directive => {
                 const item = new vscode_1.CompletionItem(directive.value, vscode_1.CompletionItemKind.Snippet);
                 item.detail = directive.description;
-                item.range = new vscode_1.Range(position.line, Math.max(0, position.character - match[1].length), position.line, position.character);
+                item.range = new vscode_1.Range(position.line, Math.max(0, position.character - (match[1] ? match[1].length : 0)), position.line, position.character);
                 return item;
             });
         }
@@ -49,4 +49,4 @@ class DirectiveCommentCompletionProvider {
     }
 }
 exports.DirectiveCommentCompletionProvider = DirectiveCommentCompletionProvider;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/cb82febafda0c8c199b9201ad274e25d9a76874e/extensions\typescript\out/features\directiveCommentCompletionProvider.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/8b95971d8cccd3afd86b35d4a0e098c189294ff2/extensions\typescript\out/features\directiveCommentCompletionProvider.js.map

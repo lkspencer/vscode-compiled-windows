@@ -1,7 +1,10 @@
 [
-	"Bu çalışma alanındaki Markdown önizlemelerinde betik çalıştırmayı devre dışı bırak",
-	"Geçerli ayar",
-	"Bu çalışma alanındaki Markdown önizlemelerinde betik çalıştırmayı etkinleştir",
-	"Geçerli ayar",
-	"Markdown önizlemesi için güvenlik ayarlarını değiştir"
+	"Strict",
+	"Only load secure content",
+	"Allow insecure content",
+	"Enable loading content over http",
+	"Disable",
+	"Allow all content and script execution. Not recommended",
+	"More Information",
+	"Bu çalışma alanında Markdown önizlemeleri için güvenlik ayarlarını seçin"
 ]

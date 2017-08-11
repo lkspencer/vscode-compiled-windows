@@ -3,5 +3,7 @@
 	"SVGs não são uma fonte de imagem válida.",
 	"SVGs embutidos não são uma fonte de imagem válida.",
 	"URLs de dados não são uma fonte de imagem válida.",
-	"URLs de imagens relativas exigem um repositório com protocolo HTTPS no pacote .json."
+	"URLs relativas de Imagem exigem um repositório com o protocolo HTTPS para serem especificadas no pacote .json.",
+	"Um ícone requer um repositório com o protocolo HTTPS para ser especificado neste package.json.",
+	"URLs relativas de crachá exigem um repositório com o protocolo HTTPS para ser especificado neste package.json."
 ]

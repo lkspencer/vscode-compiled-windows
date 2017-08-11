@@ -60,7 +60,7 @@ exports.getMappingForIncludedLanguages = getMappingForIncludedLanguages;
  * Parses the given document using emmet parsing modules
  * @param document
  */
-function parse(document, showError = true) {
+function parseDocument(document, showError = true) {
     let parseContent = vscode_emmet_helper_1.isStyleSheet(document.languageId) ? css_parser_1.default : html_matcher_1.default;
     let rootNode;
     try {
@@ -73,7 +73,7 @@ function parse(document, showError = true) {
     }
     return rootNode;
 }
-exports.parse = parse;
+exports.parseDocument = parseDocument;
 /**
  * Returns node corresponding to given position in the given root node
  * @param root
@@ -232,5 +232,64 @@ function sameNodes(node1, node2) {
     }
     return node1.start.isEqual(node2.start) && node1.end.isEqual(node2.end);
 }
-exports.sameNodes = sameNodes;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/cb82febafda0c8c199b9201ad274e25d9a76874e/extensions\emmet\out/util.js.map
+exports.sameNodes = sameNodes;
+function getEmmetConfiguration() {
+    const emmetConfig = vscode.workspace.getConfiguration('emmet');
+    return {
+        useNewEmmet: true,
+        showExpandedAbbreviation: emmetConfig['showExpandedAbbreviation'],
+        showAbbreviationSuggestions: emmetConfig['showAbbreviationSuggestions'],
+        syntaxProfiles: emmetConfig['syntaxProfiles'],
+        variables: emmetConfig['variables']
+    };
+}
+exports.getEmmetConfiguration = getEmmetConfiguration;
+/**
+ * Itereates by each child, as well as nested child’ children, in their order
+ * and invokes `fn` for each. If `fn` function returns `false`, iteration stops
+ * @param  {Token}    token
+ * @param  {Function} fn
+ */
+function iterateCSSToken(token, fn) {
+    for (let i = 0, il = token.size; i < il; i++) {
+        if (fn(token.item(i)) === false || iterateCSSToken(token.item(i), fn) === false) {
+            return false;
+        }
+    }
+}
+exports.iterateCSSToken = iterateCSSToken;
+/**
+ * Returns `name` CSS property from given `rule`
+ * @param  {Node} rule
+ * @param  {String} name
+ * @return {Property}
+ */
+function getCssPropertyFromRule(rule, name) {
+    return rule.children.find(node => node.type === 'property' && node.name === name);
+}
+exports.getCssPropertyFromRule = getCssPropertyFromRule;
+/**
+ * Returns css property under caret in given editor or `null` if such node cannot
+ * be found
+ * @param  {TextEditor}  editor
+ * @return {Property}
+ */
+function getCssPropertyFromDocument(editor, position) {
+    const rootNode = parseDocument(editor.document);
+    const node = getNode(rootNode, position);
+    if (vscode_emmet_helper_1.isStyleSheet(editor.document.languageId)) {
+        return node && node.type === 'property' ? node : null;
+    }
+    let htmlNode = node;
+    if (htmlNode
+        && htmlNode.name === 'style'
+        && htmlNode.open.end.isBefore(position)
+        && htmlNode.close.start.isAfter(position)) {
+        let buffer = new bufferStream_1.DocumentStreamReader(editor.document, htmlNode.start, new vscode.Range(htmlNode.start, htmlNode.end));
+        let rootNode = css_parser_1.default(buffer);
+        const node = getNode(rootNode, position);
+        return (node && node.type === 'property') ? node : null;
+    }
+}
+exports.getCssPropertyFromDocument = getCssPropertyFromDocument;
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/8b95971d8cccd3afd86b35d4a0e098c189294ff2/extensions\emmet\out/util.js.map

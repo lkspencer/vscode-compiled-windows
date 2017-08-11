@@ -3,5 +3,7 @@
 	"SVG'ler geçerli bir resim kaynağı değil.",
 	"Gömülü SVG'ler geçerli bir resim kaynağı değil.",
 	"Veri URL'leri geçerli bir resim kaynağı değil.",
-	"Göreli resim URL'leri, package.json'da HTTPS protokollü bir depo gerektirir."
+	"Göreli görüntü URL'leri, HTTPS protokollü bir deponun bu package.json'da belirtilmesini gerektiriyor.",
+	"Bir simge, HTTPS protokollü bir deponun bu package.json'da belirtilmesini gerektiriyor.",
+	"Göreli gösterge URL'leri, HTTPS protokollü bir deponun bu package.json'da belirtilmesini gerektiriyor."
 ]

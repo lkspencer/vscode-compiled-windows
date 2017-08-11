@@ -1,6 +1,7 @@
 [
 	"Etiqueta em {0}",
 	"Ramo remoto em {0}",
+	"$(plus) criar nova ramificação",
 	"URL do repositório",
 	"Diretório pai",
 	"Clonando repositório do Git...",

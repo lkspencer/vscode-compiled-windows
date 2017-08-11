@@ -1,5 +1,5 @@
 [
-	"Se han deshabilitado los scripts en este documento.",
-	"Los scripts están deshabilitados en la vista previa de Markdown. Cambie la configuración de seguridad de la vista previa de Markdown para habilitar los scripts.",
-	"Advertencia de seguridad de scripts deshabilitados"
+	"Parte del contenido ha sido deshabilitado en este documento",
+	"Se ha deshabilitado el contenido potencialmente inseguro en la previsualización de Markdown. Para permitir el contenido inseguro o habilitar scripts cambie la configuración de la previsualización de Markdown",
+	"Alerta de seguridad de contenido deshabilitado"
 ]

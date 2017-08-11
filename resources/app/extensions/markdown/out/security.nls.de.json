@@ -1,7 +1,10 @@
 [
-	"Skriptausführung in Markdown-Vorschauen für diesen Arbeitsbereich deaktivieren",
-	"Aktuelle Einstellung",
-	"Skriptausführung in Markdown-Vorschauen für diesen Arbeitsbereich aktivieren",
-	"Aktuelle Einstellung",
-	"Sicherheitseinstellungen für die Markdown-Vorschau ändern"
+	"Strict",
+	"Only load secure content",
+	"Allow insecure content",
+	"Enable loading content over http",
+	"Disable",
+	"Allow all content and script execution. Not recommended",
+	"More Information",
+	"Sicherheitseinstellungen für die Markdown-Vorschau in diesem Arbeitsbereich auswählen"
 ]

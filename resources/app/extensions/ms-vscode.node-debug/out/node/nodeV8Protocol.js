@@ -1,8 +1,8 @@
+"use strict";
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-"use strict";
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
         ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -289,10 +289,10 @@ var NodeV8Protocol = (function (_super) {
             break;
         }
     };
+    NodeV8Protocol.TIMEOUT = 10000;
+    NodeV8Protocol.TWO_CRLF = '\r\n\r\n';
     return NodeV8Protocol;
 }(EE.EventEmitter));
-NodeV8Protocol.TIMEOUT = 10000;
-NodeV8Protocol.TWO_CRLF = '\r\n\r\n';
 exports.NodeV8Protocol = NodeV8Protocol;
 
 //# sourceMappingURL=../../out/node/nodeV8Protocol.js.map

@@ -1,10 +1,10 @@
 [
-	"Program path uses differently cased character as file on disk; this might result in breakpoints not being hit.",
-	"Node Debug Console",
-	"Attribute '{0}' does not exist ('{1}').",
-	"Attribute '{0}' is not absolute ('{1}'); consider adding '{2}' as a prefix to make it absolute.",
-	"Cannot find runtime '{0}' on PATH.",
-	"More Information",
-	"read-only content from Node.js",
-	"read-only core module"
+	"程式路徑使用大小寫相異的字元作為磁碟上的文件，這可能導致無法叫用中斷點。",
+	"節點偵錯主控台",
+	"屬性 '{0}' 不存在 ('{1}')。",
+	"屬性 '{0}' 非絕對值 ('{1}')，請考慮加入 '{2}' 作為前置詞，使其成為絕對值。",
+	"在 PATH 找不到執行階段 '{0}'。",
+	"詳細資訊",
+	"Node.js 中的唯讀內容",
+	"唯讀核心模組"
 ]

@@ -1,10 +1,10 @@
 [
-	"Program path uses differently cased character as file on disk; this might result in breakpoints not being hit.",
-	"Node Debug Console",
-	"Attribute '{0}' does not exist ('{1}').",
-	"Attribute '{0}' is not absolute ('{1}'); consider adding '{2}' as a prefix to make it absolute.",
-	"Cannot find runtime '{0}' on PATH.",
-	"More Information",
-	"read-only content from Node.js",
-	"read-only core module"
+	"Le chemin du programme utilise un nom de fichier contenant des caractères avec des casses différentes, ce qui peut empêcher l'accès aux points d'arrêt.",
+	"Console de débogage de nœud",
+	"L'attribut '{0}' n'existe pas ('{1}').",
+	"L'attribut '{0}' n'est pas absolu ('{1}') ; songez à ajouter '{2}' comme préfixe pour le rendre absolu.",
+	"Runtime '{0}' introuvable dans PATH.",
+	"Informations",
+	"contenu en lecture seule à partir du code Node.js",
+	"module de base en lecture seule"
 ]

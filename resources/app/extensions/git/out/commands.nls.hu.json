@@ -1,6 +1,7 @@
 [
 	"Címke, a következőre mutat: {0}",
 	"Távoli ág, a következőre mutat: {0}",
+	"$(plus) Új ág létrehozása",
 	"Forráskódtár URL-címe",
 	"Szülőkönyvtár",
 	"Git-forráskódtár klónozása...",

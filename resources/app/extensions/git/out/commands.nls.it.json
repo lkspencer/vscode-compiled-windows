@@ -1,6 +1,7 @@
 [
 	"Tag in {0}",
 	"Ramo remoto in {0}",
+	"$(plus) Crea nuovo branch",
 	"URL del repository",
 	"Directory padre",
 	"Clonazione del repository GIT...",

@@ -1,8 +1,8 @@
+"use strict";
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-"use strict";
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
         ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -35,9 +35,9 @@ var Expander = (function () {
     Expander.prototype.SetValue = function (session, name, value) {
         return Promise.reject(new Error(Expander.SET_VALUE_ERROR));
     };
+    Expander.SET_VALUE_ERROR = localize(0, null);
     return Expander;
 }());
-Expander.SET_VALUE_ERROR = localize(0, null);
 exports.Expander = Expander;
 var PropertyContainer = (function () {
     function PropertyContainer(evalName, obj, ths) {
@@ -230,12 +230,14 @@ var NodeDebugSession = (function (_super) {
         });
         /*
         this._node.on('beforeCompile', (event: NodeV8Event) => {
-            this.outLine(`beforeCompile ${this._scriptToPath(event.body.script)}`);
-        });
-        this._node.on('afterCompile', (event: NodeV8Event) => {
-            this.outLine(`afterCompile ${this._scriptToPath(event.body.script)}`);
+            //this.outLine(`beforeCompile ${this._scriptToPath(event.body.script)}`);
+            this.sendEvent(new Event('customScriptLoad', { script: this._scriptToPath(event.body.script) }));
         });
         */
+        _this._node.on('afterCompile', function (event) {
+            //this.outLine(`afterCompile ${this._scriptToPath(event.body.script)}`);
+            _this.sendEvent(new vscode_debugadapter_1.Event('scriptLoaded', { path: _this._scriptToPath(event.body.script) }));
+        });
         _this._node.on('close', function (event) {
             _this._terminated('node v8protocol close');
         });
@@ -547,7 +549,7 @@ var NodeDebugSession = (function (_super) {
             return;
         }
         if (args.__restart && typeof args.__restart.port === 'number') {
-            this._attach(response, args.__restart.port, undefined, args.timeout);
+            this._attach(response, args, args.__restart.port, undefined, args.timeout);
             return;
         }
         this._noDebug = (typeof args.noDebug === 'boolean') && args.noDebug;
@@ -598,14 +600,14 @@ var NodeDebugSession = (function (_super) {
         var programArgs = args.args || [];
         // special code for 'extensionHost' debugging
         if (this._adapterID === 'extensionHost') {
-            // we always launch in 'debug-brk' mode, but we only show the break event if 'stopOnEntry' attribute is true.
             var launchArgs = [runtimeExecutable];
             if (!this._noDebug) {
-                //if (typeof args.stopOnEntry === 'boolean' && args.stopOnEntry || programArgs.some(a => a.indexOf('--extensionTestsPath=') === 0)) {
+                // we always launch in 'debug-brk' mode, but we only show the break event if 'stopOnEntry' attribute is true.
                 launchArgs.push("--debugBrkPluginHost=" + port);
-                //} else {
-                //	launchArgs.push(`--debugPluginHost=${port}`);
-                //}
+                // pass the debug session ID to the EH so that broadcast events know where they come from
+                if (args.__sessionId) {
+                    launchArgs.push("--debugId=" + args.__sessionId);
+                }
             }
             launchArgs = launchArgs.concat(runtimeArgs, programArgs);
             this.log('eh', "launchRequest: launching extensionhost");
@@ -712,10 +714,20 @@ var NodeDebugSession = (function (_super) {
             workingDirectory = Path.dirname(programPath);
             program = Path.basename(programPath);
         }
-        // we always break on entry (but if user did not request this, we will not stop in the UI).
+        // figure out when to add a '--debug-brk=nnnn'
         var launchArgs = [runtimeExecutable];
-        if (!this._noDebug && !args.port) {
-            launchArgs.push("--debug-brk=" + port);
+        if (!this._noDebug) {
+            if (args.port) {
+                // only if the default runtime 'node' is used without arguments
+                if (!args.runtimeExecutable && !args.runtimeArgs) {
+                    // use the specfied port
+                    launchArgs.push("--debug-brk=" + port);
+                }
+            }
+            else {
+                // use a random port
+                launchArgs.push("--debug-brk=" + port);
+            }
         }
         launchArgs = launchArgs.concat(runtimeArgs);
         if (program) {
@@ -762,12 +774,12 @@ var NodeDebugSession = (function (_super) {
                 if (runResponse.success) {
                     // since node starts in a terminal, we cannot track it with an 'exit' handler
                     // plan for polling after we have gotten the process pid.
-                    _this._pollForNodeProcess = true;
+                    _this._pollForNodeProcess = !args.runtimeExecutable; // only if no 'runtimeExecutable' is specified
                     if (_this._noDebug) {
                         _this.sendResponse(response);
                     }
                     else {
-                        _this._attach(response, port, address, timeout);
+                        _this._attach(response, args, port, address, timeout);
                     }
                 }
                 else {
@@ -802,7 +814,7 @@ var NodeDebugSession = (function (_super) {
                 this.sendResponse(response);
             }
             else {
-                this._attach(response, port, address, timeout);
+                this._attach(response, args, port, address, timeout);
             }
         }
     };
@@ -915,12 +927,12 @@ var NodeDebugSession = (function (_super) {
         else {
             this._attachMode = true;
         }
-        this._attach(response, args.port, args.address, args.timeout);
+        this._attach(response, args, args.port, args.address, args.timeout);
     };
     /*
      * shared 'attach' code used in launchRequest and attachRequest.
      */
-    NodeDebugSession.prototype._attach = function (response, port, address, timeout) {
+    NodeDebugSession.prototype._attach = function (response, args, port, address, timeout) {
         var _this = this;
         if (!port) {
             port = 5858;
@@ -983,11 +995,16 @@ var NodeDebugSession = (function (_super) {
                         }, 200); // retry after 200 ms
                     }
                     else {
-                        _this.sendErrorResponse(response, 2009, localize(25, null, '{_timeout}'), { _timeout: timeout });
+                        if (typeof args.port === 'number') {
+                            _this.sendErrorResponse(response, 2033, localize(25, null));
+                        }
+                        else {
+                            _this.sendErrorResponse(response, 2034, localize(26, null));
+                        }
                     }
                 }
                 else {
-                    _this.sendErrorResponse(response, 2010, localize(26, null, '{_error}'), { _error: err.message });
+                    _this.sendErrorResponse(response, 2010, localize(27, null, '{_error}'), { _error: err.message });
                 }
             }
         });
@@ -1269,7 +1286,7 @@ var NodeDebugSession = (function (_super) {
                 }
             }
             if (keepUnverified) {
-                var message = localize(27, null);
+                var message = localize(28, null);
                 for (var _d = 0, sbs_1 = sbs; _d < sbs_1.length; _d++) {
                     var ibp = sbs_1[_d];
                     ibp.verificationMessage = message;
@@ -1295,7 +1312,7 @@ var NodeDebugSession = (function (_super) {
                     _this._updateBreakpoints(response, null, scriptId, sbs);
                 }
                 else {
-                    _this.sendErrorResponse(response, 2019, localize(28, null, '{_module}'), { _module: sourcePath });
+                    _this.sendErrorResponse(response, 2019, localize(29, null, '{_module}'), { _module: sourcePath });
                 }
             });
             return;
@@ -1424,7 +1441,7 @@ var NodeDebugSession = (function (_super) {
         if (lb.line < 0) {
             // ignore this breakpoint because it couldn't be source mapped successfully
             var bp = new vscode_debugadapter_1.Breakpoint(false);
-            bp.message = localize(29, null);
+            bp.message = localize(30, null);
             return Promise.resolve(bp);
         }
         if (lb.line === 0) {
@@ -1709,14 +1726,14 @@ var NodeDebugSession = (function (_super) {
         }).catch(function (error) {
             if (error.message === 'no stack') {
                 if (_this._stoppedReason === 'pause') {
-                    _this.sendErrorResponse(response, 2022, localize(30, null));
+                    _this.sendErrorResponse(response, 2022, localize(31, null));
                 }
                 else {
-                    _this.sendErrorResponse(response, 2023, localize(31, null));
+                    _this.sendErrorResponse(response, 2023, localize(32, null));
                 }
             }
             else {
-                _this.sendErrorResponse(response, 2018, localize(32, null), { _command: error.command, _error: error.message });
+                _this.sendErrorResponse(response, 2018, localize(33, null), { _command: error.command, _error: error.message });
             }
         });
     };
@@ -1730,7 +1747,7 @@ var NodeDebugSession = (function (_super) {
             var line = frame.line;
             var column = _this._adjustColumn(line, frame.column);
             var src;
-            var origin = localize(33, null);
+            var origin = localize(34, null);
             var script_val = _this._getValueFromCache(frame.script);
             if (script_val) {
                 var name_2 = script_val.name;
@@ -1752,7 +1769,7 @@ var NodeDebugSession = (function (_super) {
                             var localPath_1 = _this._remoteToLocal(remotePath_1);
                             if (localPath_1 !== remotePath_1 && _this._attachMode) {
                                 // assume attached to remote node process
-                                origin = localize(34, null);
+                                origin = localize(35, null);
                             }
                             // source mapping is enabled
                             if (_this._sourceMaps) {
@@ -1765,7 +1782,7 @@ var NodeDebugSession = (function (_super) {
                         }
                         // if we end up here, 'name' is not a path and is an internal module
                         path = _this._scriptToPath(script_val);
-                        origin = localize(35, null);
+                        origin = localize(36, null);
                     }
                     else {
                         // do not map the script to a file in the workspace
@@ -1792,12 +1809,12 @@ var NodeDebugSession = (function (_super) {
         if (sourceHandle === void 0) { sourceHandle = 0; }
         var deemphasize = false;
         if (path && this.isSkipped(path)) {
-            var skipFiles = localize(36, null);
+            var skipFiles = localize(37, null);
             deemphasize = true;
             origin = origin ? origin + " (" + skipFiles + ")" : skipFiles;
         }
         else if (!hasSource && this._smartStep && this._sourceMaps) {
-            var smartStep = localize(37, null);
+            var smartStep = localize(38, null);
             deemphasize = true;
             origin = origin ? origin + " (" + smartStep + ")" : smartStep;
         }
@@ -1827,7 +1844,7 @@ var NodeDebugSession = (function (_super) {
                     if (mapresult.content) {
                         _this.log('sm', "_createStackFrameFromSourceMap: source '" + mapresult.path + "' doesn't exist -> use inlined source");
                         var sourceHandle = _this._getInlinedContentHandle(mapresult.content);
-                        origin = localize(38, null);
+                        origin = localize(39, null);
                         var src = _this._createSource(true, mapresult.path, undefined, sourceHandle, origin, { inlinePath: mapresult.path });
                         return _this._createStackFrameFromSource(frame, src, mapresult.line, mapresult.column);
                     }
@@ -1897,7 +1914,7 @@ var NodeDebugSession = (function (_super) {
             }
         }
         if (!func_name || func_name.length === 0) {
-            func_name = localize(39, null);
+            func_name = localize(40, null);
         }
         return func_name;
     };
@@ -1995,14 +2012,14 @@ var NodeDebugSession = (function (_super) {
                 if (type >= 0 && type < NodeDebugSession.SCOPE_NAMES.length) {
                     if (type === 1 && typeof scopesResponse.body.vscode_locals === 'number') {
                         expensive = true;
-                        scopeName = localize(40, null, scopesArgs.maxLocals, scopesResponse.body.vscode_locals);
+                        scopeName = localize(41, null, scopesArgs.maxLocals, scopesResponse.body.vscode_locals);
                     }
                     else {
                         scopeName = NodeDebugSession.SCOPE_NAMES[type];
                     }
                 }
                 else {
-                    scopeName = localize(41, null, type);
+                    scopeName = localize(42, null, type);
                 }
                 return _this._resolveValues([scope.object]).then(function (resolved) {
                     return new vscode_debugadapter_1.Scope(scopeName, _this._variableHandles.create(new ScopeContainer(scope, resolved[0], extra)), expensive);
@@ -2013,7 +2030,7 @@ var NodeDebugSession = (function (_super) {
         }).then(function (scopes) {
             // exception scope
             if (frameIx === 0 && _this._exception) {
-                var scopeName = localize(42, null);
+                var scopeName = localize(43, null);
                 scopes.unshift(new vscode_debugadapter_1.Scope(scopeName, _this._variableHandles.create(new PropertyContainer(undefined, _this._exception.exception))));
             }
             response.body = {
@@ -2733,7 +2750,7 @@ var NodeDebugSession = (function (_super) {
                     }
                     else {
                         response.success = false;
-                        response.message = localize(43, null);
+                        response.message = localize(44, null);
                     }
                     _this.sendResponse(response);
                 });
@@ -2741,11 +2758,11 @@ var NodeDebugSession = (function (_super) {
             else {
                 response.success = false;
                 if (resp.message.indexOf('ReferenceError: ') === 0 || resp.message === 'No frames') {
-                    response.message = localize(44, null);
+                    response.message = localize(45, null);
                 }
                 else if (resp.message.indexOf('SyntaxError: ') === 0) {
                     var m = resp.message.substring('SyntaxError: '.length).toLowerCase();
-                    response.message = localize(45, null, m);
+                    response.message = localize(46, null, m);
                 }
                 else {
                     response.message = resp.message;
@@ -2766,7 +2783,7 @@ var NodeDebugSession = (function (_super) {
                 };
                 _this.sendResponse(response);
             }).catch(function (err) {
-                _this.sendErrorResponse(response, 2026, localize(46, null));
+                _this.sendErrorResponse(response, 2026, localize(47, null));
             });
             return;
         }
@@ -2790,7 +2807,7 @@ var NodeDebugSession = (function (_super) {
                     };
                     _this.sendResponse(response);
                 }).catch(function (err) {
-                    _this.sendErrorResponse(response, 2026, localize(47, null));
+                    _this.sendErrorResponse(response, 2026, localize(48, null));
                 });
                 return;
             }
@@ -3047,19 +3064,8 @@ var NodeDebugSession = (function (_super) {
     NodeDebugSession.prototype.allLoadedScriptsRequest = function (response, args) {
         var _this = this;
         this._node.scripts({ types: 4 }).then(function (resp) {
-            var result = Array();
-            for (var _i = 0, _a = resp.body; _i < _a.length; _i++) {
-                var script = _a[_i];
-                var path = _this._scriptToPath(script);
-                var name_5 = Path.basename(path);
-                result.push({
-                    label: name_5,
-                    description: path,
-                    source: new vscode_debugadapter_1.Source(name_5, path)
-                });
-            }
-            result = result.sort(function (a, b) { return a.label.localeCompare(b.label); });
-            response.body = { loadedScripts: result };
+            var paths = resp.body.map(function (script) { return _this._scriptToPath(script); });
+            response.body = { paths: paths };
             _this.sendResponse(response);
         }).catch(function (err) {
             _this.sendErrorResponse(response, 9999, "scripts error: " + err);
@@ -3075,13 +3081,13 @@ var NodeDebugSession = (function (_super) {
      * 'Path does not exist' error
      */
     NodeDebugSession.prototype.sendNotExistErrorResponse = function (response, attribute, path) {
-        this.sendErrorResponse(response, 2007, localize(48, null, attribute, '{path}'), { path: path });
+        this.sendErrorResponse(response, 2007, localize(49, null, attribute, '{path}'), { path: path });
     };
     /**
      * 'Path not absolute' error with 'More Information' link.
      */
     NodeDebugSession.prototype.sendRelativePathErrorResponse = function (response, attribute, path) {
-        var format = localize(49, null, attribute, '{path}', '${workspaceRoot}/');
+        var format = localize(50, null, attribute, '{path}', '${workspaceRoot}/');
         this.sendErrorResponseWithInfoLink(response, 2008, format, { path: path }, 20003);
     };
     /**
@@ -3094,7 +3100,7 @@ var NodeDebugSession = (function (_super) {
             variables: variables,
             showUser: true,
             url: 'http://go.microsoft.com/fwlink/?linkID=534832#_' + infoId.toString(),
-            urlLabel: localize(50, null)
+            urlLabel: localize(51, null)
         });
     };
     /**
@@ -3146,10 +3152,10 @@ var NodeDebugSession = (function (_super) {
         else {
             var errmsg = nodeResponse.message;
             if (errmsg.indexOf('unresponsive') >= 0) {
-                this.sendErrorResponse(response, 2015, localize(51, null), { _request: nodeResponse.command });
+                this.sendErrorResponse(response, 2015, localize(52, null), { _request: nodeResponse.command });
             }
             else if (errmsg.indexOf('timeout') >= 0) {
-                this.sendErrorResponse(response, 2016, localize(52, null), { _request: nodeResponse.command });
+                this.sendErrorResponse(response, 2016, localize(53, null), { _request: nodeResponse.command });
             }
             else {
                 this.sendErrorResponse(response, 2013, 'Node.js request \'{_request}\' failed (reason: {_error}).', { _request: nodeResponse.command, _error: errmsg }, vscode_debugadapter_1.ErrorDestination.Telemetry);
@@ -3363,38 +3369,38 @@ var NodeDebugSession = (function (_super) {
             }
         }
     };
+    NodeDebugSession.MAX_STRING_LENGTH = 10000; // max string size to return in 'evaluate' request
+    NodeDebugSession.MAX_JSON_LENGTH = 500000; // max size of stringified object to return in 'evaluate' request
+    NodeDebugSession.NODE_TERMINATION_POLL_INTERVAL = 3000;
+    NodeDebugSession.ATTACH_TIMEOUT = 10000;
+    NodeDebugSession.RUNINTERMINAL_TIMEOUT = 5000;
+    NodeDebugSession.PREVIEW_PROPERTIES = 3; // maximum number of properties to show in object/array preview
+    NodeDebugSession.PREVIEW_MAX_STRING_LENGTH = 50; // truncate long strings for object/array preview
+    NodeDebugSession.NODE = 'node';
+    NodeDebugSession.DUMMY_THREAD_ID = 1;
+    NodeDebugSession.DUMMY_THREAD_NAME = 'Node';
+    NodeDebugSession.FIRST_LINE_OFFSET = 62;
+    NodeDebugSession.PROTO = '__proto__';
+    NodeDebugSession.DEBUG_INJECTION = 'debugInjection.js';
+    NodeDebugSession.NODE_INTERNALS = '<node_internals>';
+    NodeDebugSession.NODE_INTERNALS_PREFIX = /^<node_internals>[/\\]/;
+    NodeDebugSession.NODE_INTERNALS_VM = /^<node_internals>[/\\]VM([0-9]+)/;
+    NodeDebugSession.NODE_SHEBANG_MATCHER = new RegExp('#! */usr/bin/env +node');
+    NodeDebugSession.LONG_STRING_MATCHER = /\.\.\. \(length: [0-9]+\)$/;
+    NodeDebugSession.HITCOUNT_MATCHER = /(>|>=|=|==|<|<=|%)?\s*([0-9]+)/;
+    NodeDebugSession.PROPERTY_NAME_MATCHER = /^[$_\w][$_\w0-9]*$/;
+    //--- scopes request ------------------------------------------------------------------------------------------------------
+    NodeDebugSession.SCOPE_NAMES = [
+        localize(54, null),
+        localize(55, null),
+        localize(56, null),
+        localize(57, null),
+        localize(58, null),
+        localize(59, null),
+        localize(60, null)
+    ];
     return NodeDebugSession;
 }(vscode_debugadapter_1.LoggingDebugSession));
-NodeDebugSession.MAX_STRING_LENGTH = 10000; // max string size to return in 'evaluate' request
-NodeDebugSession.MAX_JSON_LENGTH = 500000; // max size of stringified object to return in 'evaluate' request
-NodeDebugSession.NODE_TERMINATION_POLL_INTERVAL = 3000;
-NodeDebugSession.ATTACH_TIMEOUT = 10000;
-NodeDebugSession.RUNINTERMINAL_TIMEOUT = 5000;
-NodeDebugSession.PREVIEW_PROPERTIES = 3; // maximum number of properties to show in object/array preview
-NodeDebugSession.PREVIEW_MAX_STRING_LENGTH = 50; // truncate long strings for object/array preview
-NodeDebugSession.NODE = 'node';
-NodeDebugSession.DUMMY_THREAD_ID = 1;
-NodeDebugSession.DUMMY_THREAD_NAME = 'Node';
-NodeDebugSession.FIRST_LINE_OFFSET = 62;
-NodeDebugSession.PROTO = '__proto__';
-NodeDebugSession.DEBUG_INJECTION = 'debugInjection.js';
-NodeDebugSession.NODE_INTERNALS = '<node_internals>';
-NodeDebugSession.NODE_INTERNALS_PREFIX = /^<node_internals>[/\\]/;
-NodeDebugSession.NODE_INTERNALS_VM = /^<node_internals>[/\\]VM([0-9]+)/;
-NodeDebugSession.NODE_SHEBANG_MATCHER = new RegExp('#! */usr/bin/env +node');
-NodeDebugSession.LONG_STRING_MATCHER = /\.\.\. \(length: [0-9]+\)$/;
-NodeDebugSession.HITCOUNT_MATCHER = /(>|>=|=|==|<|<=|%)?\s*([0-9]+)/;
-NodeDebugSession.PROPERTY_NAME_MATCHER = /^[$_\w][$_\w0-9]*$/;
-//--- scopes request ------------------------------------------------------------------------------------------------------
-NodeDebugSession.SCOPE_NAMES = [
-    localize(53, null),
-    localize(54, null),
-    localize(55, null),
-    localize(56, null),
-    localize(57, null),
-    localize(58, null),
-    localize(59, null)
-];
 exports.NodeDebugSession = NodeDebugSession;
 var INDEX_PATTERN = /^[0-9]+$/;
 function isIndex(name) {

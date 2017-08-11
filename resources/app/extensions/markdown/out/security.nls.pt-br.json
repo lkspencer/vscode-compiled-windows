@@ -1,7 +1,10 @@
 [
-	"Desabilitar a execução de scripts em pré-visualização de markdown para este espaço de trabalho",
-	"Configuração atual",
-	"Habilitar a execução de scripts em pré-visualizações de markdown para este espaço de trabalho",
-	"Configuração atual",
-	"Alterar configurações de segurança para a pré-visualização do Markdown"
+	"Strict",
+	"Only load secure content",
+	"Allow insecure content",
+	"Enable loading content over http",
+	"Disable",
+	"Allow all content and script execution. Not recommended",
+	"More Information",
+	"Selecione as configurações de segurança para visualizações de Markdown neste espaço de trabalho"
 ]

@@ -4,13 +4,17 @@
 		"SVGs are not a valid image source.",
 		"Embedded SVGs are not a valid image source.",
 		"Data URLs are not a valid image source.",
-		"Relative image URLs require a repository with HTTPS protocol in the package.json."
+		"Relative image URLs require a repository with HTTPS protocol to be specified in the package.json.",
+		"An icon requires a repository with HTTPS protocol to be specified in this package.json.",
+		"Relative badge URLs require a repository with HTTPS protocol to be specified in this package.json."
 	],
 	"keys": [
 		"httpsRequired",
 		"svgsNotValid",
 		"embeddedSvgsNotValid",
 		"dataUrlsNotValid",
-		"relativeUrlRequiresHttpsRepository"
+		"relativeUrlRequiresHttpsRepository",
+		"relativeIconUrlRequiresHttpsRepository",
+		"relativeBadgeUrlRequiresHttpsRepository"
 	]
 }

@@ -3,6 +3,41 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 'use strict';
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+var __generator = (this && this.__generator) || function (thisArg, body) {
+    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;
+    return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
+    function verb(n) { return function (v) { return step([n, v]); }; }
+    function step(op) {
+        if (f) throw new TypeError("Generator is already executing.");
+        while (_) try {
+            if (f = 1, y && (t = y[op[0] & 2 ? "return" : op[0] ? "throw" : "next"]) && !(t = t.call(y, op[1])).done) return t;
+            if (y = 0, t) op = [0, t.value];
+            switch (op[0]) {
+                case 0: case 1: t = op; break;
+                case 4: _.label++; return { value: op[1], done: false };
+                case 5: _.label++; y = op[1]; op = [0]; continue;
+                case 7: op = _.ops.pop(); _.trys.pop(); continue;
+                default:
+                    if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) { _ = 0; continue; }
+                    if (op[0] === 3 && (!t || (op[1] > t[0] && op[1] < t[3]))) { _.label = op[1]; break; }
+                    if (op[0] === 6 && _.label < t[1]) { _.label = t[1]; t = op; break; }
+                    if (t && _.label < t[2]) { _.label = t[2]; _.ops.push(op); break; }
+                    if (t[2]) _.ops.pop();
+                    _.trys.pop(); continue;
+            }
+            op = body.call(thisArg, _);
+        } catch (e) { op = [6, e]; y = 0; } finally { f = t = 0; }
+        if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
+    }
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 var vscode_1 = require("vscode");
 var MAX_DECORATORS = 500;
@@ -99,13 +134,13 @@ function activateColorDecorations(decoratorProvider, supportedLanguages, isDecor
                         var range = ranges[i];
                         var text = document.getText(range);
                         var value = JSON.parse(text);
-                        var color = hex2CSSColor(value);
-                        if (color) {
+                        var c = vscode_1.Color.fromHex(value);
+                        if (c) {
                             decorations.push({
                                 range: range,
                                 renderOptions: {
                                     before: {
-                                        backgroundColor: color
+                                        backgroundColor: "rgba(" + c.red + ", " + c.green + ", " + c.blue + ", " + c.alpha + ")"
                                     }
                                 }
                             });
@@ -119,33 +154,39 @@ function activateColorDecorations(decoratorProvider, supportedLanguages, isDecor
     return vscode_1.Disposable.from.apply(vscode_1.Disposable, disposables);
 }
 exports.activateColorDecorations = activateColorDecorations;
-var colorPattern = /^#[0-9A-Fa-f]{3,8}$/;
-function hex2CSSColor(hex) {
-    if (!hex || !colorPattern.test(hex)) {
-        return null;
+var ColorFormat_HEX = {
+    opaque: '#{red:X}{green:X}{blue:X}',
+    transparent: '#{red:X}{green:X}{blue:X}{alpha:X}'
+};
+var ColorProvider = (function () {
+    function ColorProvider(decoratorProvider) {
+        this.decoratorProvider = decoratorProvider;
     }
-    if (hex.length === 4 || hex.length === 7) {
-        // #RGB or #RRGGBB format
-        return hex;
-    }
-    if (hex.length === 5) {
-        // #RGBA format
-        var val = parseInt(hex.substr(1), 16);
-        var r = (val >> 12) & 0xF;
-        var g = (val >> 8) & 0xF;
-        var b = (val >> 4) & 0xF;
-        var a = val & 0xF;
-        return "rgba(" + (r + r * 16) + ", " + (g + g * 16) + ", " + (b + b + 16) + ", " + +(a / 16).toFixed(2) + ")";
-    }
-    if (hex.length === 9) {
-        // #RRGGBBAA format
-        var val = parseInt(hex.substr(1), 16);
-        var r = (val >> 24) & 0xFF;
-        var g = (val >> 16) & 0xFF;
-        var b = (val >> 8) & 0xFF;
-        var a = val & 0xFF;
-        return "rgba(" + r + ", " + g + ", " + b + ", " + +(a / 255).toFixed(2) + ")";
-    }
-    return null;
-}
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/cb82febafda0c8c199b9201ad274e25d9a76874e/extensions\json\client\out/colorDecorators.js.map
+    ColorProvider.prototype.provideDocumentColors = function (document) {
+        return __awaiter(this, void 0, void 0, function () {
+            var ranges, result, _i, ranges_1, range, text, value, color, r;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.decoratorProvider(document.uri.toString())];
+                    case 1:
+                        ranges = _a.sent();
+                        result = [];
+                        for (_i = 0, ranges_1 = ranges; _i < ranges_1.length; _i++) {
+                            range = ranges_1[_i];
+                            text = document.getText(range);
+                            value = JSON.parse(text);
+                            color = vscode_1.Color.fromHex(value);
+                            if (color) {
+                                r = new vscode_1.Range(range.start.line, range.start.character + 1, range.end.line, range.end.character - 1);
+                                result.push(new vscode_1.ColorInfo(r, color, ColorFormat_HEX, [ColorFormat_HEX]));
+                            }
+                        }
+                        return [2 /*return*/, result];
+                }
+            });
+        });
+    };
+    return ColorProvider;
+}());
+exports.ColorProvider = ColorProvider;
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/8b95971d8cccd3afd86b35d4a0e098c189294ff2/extensions\json\client\out/colorDecorators.js.map

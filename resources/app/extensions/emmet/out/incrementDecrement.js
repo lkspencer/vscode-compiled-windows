@@ -17,11 +17,11 @@ function incrementDecrement(delta) {
         vscode.window.showInformationMessage('No editor is active');
         return;
     }
-    editor.edit(editBuilder => {
+    return editor.edit(editBuilder => {
         editor.selections.forEach(selection => {
-            let rangeToReplace = selection;
-            if (selection.isEmpty) {
-                rangeToReplace = locate(editor.document, selection.isReversed ? selection.anchor : selection.active);
+            let rangeToReplace = locate(editor.document, selection.isReversed ? selection.anchor : selection.active);
+            if (!rangeToReplace) {
+                return;
             }
             const text = editor.document.getText(rangeToReplace);
             if (isValidNumber(text)) {
@@ -107,4 +107,4 @@ exports.locate = locate;
 function isValidNumber(str) {
     return str && !isNaN(parseFloat(str));
 }
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/cb82febafda0c8c199b9201ad274e25d9a76874e/extensions\emmet\out/incrementDecrement.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/8b95971d8cccd3afd86b35d4a0e098c189294ff2/extensions\emmet\out/incrementDecrement.js.map

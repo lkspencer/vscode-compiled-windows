@@ -1,10 +1,10 @@
 [
-	"Program path uses differently cased character as file on disk; this might result in breakpoints not being hit.",
-	"Node Debug Console",
-	"Attribute '{0}' does not exist ('{1}').",
-	"Attribute '{0}' is not absolute ('{1}'); consider adding '{2}' as a prefix to make it absolute.",
-	"Cannot find runtime '{0}' on PATH.",
-	"More Information",
-	"read-only content from Node.js",
-	"read-only core module"
+	"Der Programmpfad verwendet ein Zeichen mit anderer Groß-/Kleinschreibung als die Datei auf dem Datenträger. Dies kann dazu führen, dass Haltepunkte nicht erreicht werden.",
+	"Node-Debugging-Konsole",
+	"Das Attribut \"{0}\" ist nicht vorhanden (\"{1}\").",
+	"Das Attribut \"{0}\" ist nicht absolut (\"{1}\"). Fügen Sie ggf. \"{2}\" als Präfix hinzu, um es als absolut zu definieren.",
+	"Die Laufzeit \"{0}\" wurde in PATH nicht gefunden.",
+	"Weitere Informationen",
+	"Schreibgeschützter Inhalt aus Node.js.",
+	"Schreibgeschütztes Kernmodul"
 ]

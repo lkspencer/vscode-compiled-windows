@@ -199,5 +199,30 @@ class TypeScriptFormattingProvider {
         };
     }
 }
-exports.default = TypeScriptFormattingProvider;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/cb82febafda0c8c199b9201ad274e25d9a76874e/extensions\typescript\out/features\formattingProvider.js.map
+exports.TypeScriptFormattingProvider = TypeScriptFormattingProvider;
+class FormattingProviderManager {
+    constructor(modeId, formattingProvider, selector) {
+        this.modeId = modeId;
+        this.formattingProvider = formattingProvider;
+        this.selector = selector;
+    }
+    dispose() {
+        if (this.formattingProviderRegistration) {
+            this.formattingProviderRegistration.dispose();
+            this.formattingProviderRegistration = undefined;
+        }
+    }
+    updateConfiguration() {
+        const config = vscode_1.workspace.getConfiguration(this.modeId);
+        this.formattingProvider.updateConfiguration(config);
+        if (!this.formattingProvider.isEnabled() && this.formattingProviderRegistration) {
+            this.formattingProviderRegistration.dispose();
+            this.formattingProviderRegistration = undefined;
+        }
+        else if (this.formattingProvider.isEnabled() && !this.formattingProviderRegistration) {
+            this.formattingProviderRegistration = vscode_1.languages.registerDocumentRangeFormattingEditProvider(this.selector, this.formattingProvider);
+        }
+    }
+}
+exports.FormattingProviderManager = FormattingProviderManager;
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/8b95971d8cccd3afd86b35d4a0e098c189294ff2/extensions\typescript\out/features\formattingProvider.js.map

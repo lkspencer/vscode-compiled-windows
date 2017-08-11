@@ -1,7 +1,7 @@
 {
 	"name": "node-debug",
 	"displayName": "Node Debug",
-	"version": "1.14.9",
+	"version": "1.15.19",
 	"publisher": "ms-vscode",
 	"description": "%extension.description%",
 	"icon": "images/node-debug-icon.png",
@@ -21,14 +21,14 @@
 		"postinstall": "node ./node_modules/vscode/bin/install"
 	},
 	"engines": {
-		"vscode": "^1.13.0",
+		"vscode": "^1.15.0",
 		"node": "^7.4.0"
 	},
 	"extensionDependencies": [
 		"ms-vscode.node-debug2"
 	],
 	"dependencies": {
-		"vscode-debugadapter": "^1.21.0",
+		"vscode-debugadapter": "^1.22.0",
 		"source-map": "0.5.6",
 		"vscode-nls": "^2.0.1",
 		"request-light": "^0.1.0",
@@ -63,10 +63,10 @@
 		"tslint": "^5.2.0",
 		"tsutils": "^1.8.0",
 		"typescript": "^2.2.1",
-		"vscode": "^1.0.3",
+		"vscode": "^1.1.0",
 		"vscode-nls-dev": "^2.1.1",
-		"vscode-debugadapter-testsupport": "^1.21.0",
-		"vscode-debugprotocol": "^1.21.0",
+		"vscode-debugadapter-testsupport": "^1.22.0",
+		"vscode-debugprotocol": "^1.22.0",
 		"event-stream": "^3.3.4",
 		"nodemon": "^1.11.0",
 		"vsce": "^1.20.0"
@@ -77,9 +77,17 @@
 		"onCommand:extension.node-debug.pickLoadedScript",
 		"onCommand:extension.node-debug.provideInitialConfigurations",
 		"onCommand:extension.node-debug.startSession",
+		"onCommand:extension.node-debug.ehStartSession",
 		"onCommand:extension.pickNodeProcess"
 	],
 	"contributes": {
+		"views": {
+			"debug": [{
+				"id": "extension.node-debug.loadedScriptsExplorer",
+				"name": "Loaded Scripts",
+				"when": "inDebugMode && _isNodeDebugType"
+			}]
+		},
 		"menus": {
 			"debug/callstack/context": [{
 				"command": "extension.node-debug.toggleSkippingFile",
@@ -311,7 +319,7 @@
 								"null"
 							],
 							"description": "%node.launch.runtimeExecutable.description%",
-							"default": null
+							"default": "node"
 						},
 						"runtimeArgs": {
 							"type": "array",
@@ -538,6 +546,7 @@
 			"program": "./out/node/nodeDebug.js",
 			"runtime": "node",
 			"aiKey": "AIF-d9b70cd4-b9f9-4d70-929b-a071c400b217",
+			"startSessionCommand": "extension.node-debug.ehStartSession",
 			"configurationSnippets": [{
 				"label": "%extensionHost.snippet.launch.label%",
 				"description": "%extensionHost.snippet.launch.description%",
@@ -637,6 +646,14 @@
 							],
 							"description": "%trace.description%",
 							"default": true
+						},
+						"protocol": {
+							"type": "string",
+							"enum": [
+								"legacy",
+								"inspector"
+							],
+							"default": "legacy"
 						}
 					}
 				}

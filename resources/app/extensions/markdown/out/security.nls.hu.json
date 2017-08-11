@@ -1,7 +1,10 @@
 [
-	"Parancsfájlok futtatásának letiltása a markdown-előnézetben ezen a munkaterületen",
-	"Aktuális beállítás",
-	"Parancsfájlok futtatásának engedélyezése a markdown-előnézetben ezen a munkaterületen",
-	"Aktuális beállítás",
-	"A markdown-előnézet biztonsági beállításainak módosítása"
+	"Strict",
+	"Only load secure content",
+	"Allow insecure content",
+	"Enable loading content over http",
+	"Disable",
+	"Allow all content and script execution. Not recommended",
+	"More Information",
+	"Válassza ki a munkaterület Markdown-előnézeteinek biztonsági beállítását!"
 ]

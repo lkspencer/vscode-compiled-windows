@@ -1,7 +1,10 @@
 [
-	"Désactiver l'exécution des scripts dans les aperçus Markdown pour cet espace de travail",
-	"Paramètre actuel",
-	"Activer l'exécution des scripts dans les aperçus Markdown pour cet espace de travail",
-	"Paramètre actuel",
-	"Changer les paramètres de sécurité pour l'aperçu Markdown"
+	"Strict",
+	"Only load secure content",
+	"Allow insecure content",
+	"Enable loading content over http",
+	"Disable",
+	"Allow all content and script execution. Not recommended",
+	"More Information",
+	"Sélectionner les paramètres de sécurité pour les aperçus Markdown dans cet espace de travail"
 ]

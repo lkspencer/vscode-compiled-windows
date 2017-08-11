@@ -1,7 +1,7 @@
 {
   "name": "node-debug2",
   "displayName": "Node Debug 2",
-  "version": "1.14.5",
+  "version": "1.15.5",
   "publisher": "ms-vscode",
   "description": "%extension.description%",
   "icon": "images/node-debug-icon.png",
@@ -14,8 +14,8 @@
   "license": "MIT",
   "private": true,
   "dependencies": {
-    "vscode-chrome-debug-core": "^3.15.10",
-    "vscode-debugadapter": "^1.21.0-pre.2",
+    "vscode-chrome-debug-core": "^3.16.4",
+    "vscode-debugadapter": "^1.22.0",
     "vscode-nls": "^2.0.2"
   },
   "devDependencies": {
@@ -33,11 +33,11 @@
     "run-sequence": "^1.2.2",
     "tslint": "^3.15.1",
     "typescript": "^2.1.4",
-    "vsce": "^1.14.0",
+    "vsce": "^1.30.0",
     "vscode": "^1.0.0",
     "vscode-chrome-debug-core-testsupport": "^3.14.3",
     "vscode-debugadapter-testsupport": "1.19.0",
-    "vscode-debugprotocol": "^1.21.0-pre.1",
+    "vscode-debugprotocol": "^1.22.0",
     "vscode-nls-dev": "^2.1.3"
   },
   "main": "./out/src/extension",
@@ -49,7 +49,7 @@
     "build": "gulp build",
     "watch": "gulp watch",
     "test": "mocha --timeout 20000 -s 2000 -u tdd --colors --reporter node_modules/vscode-chrome-debug-core-testsupport/out/loggingReporter.js ./out/test/",
-    "vscode:prepublish": "gulp verify-no-linked-modules"
+    "vscode:prepublish": "gulp verify-no-linked-modules && gulp build"
   },
   "engines": {
     "vscode": "^1.14.0",
@@ -69,6 +69,12 @@
       "language": "javascriptreact"
     }],
     "debuggers": [{
+      "type": "extensionHost2",
+      "label": "VS Code Extension Development",
+      "program": "./out/src/nodeDebug.js",
+      "runtime": "node",
+      "aiKey": "AIF-d9b70cd4-b9f9-4d70-929b-a071c400b217"
+    }, {
       "type": "node2",
       "label": "Node.js v6.3+",
       "program": "./out/src/nodeDebug.js",
@@ -350,7 +356,7 @@
     },
     "commands": [{
       "command": "extension.node-debug2.toggleSkippingFile",
-      "title": "Toggle Skipping This File"
+      "title": "%toggle.skipping.this.file%"
     }],
     "keybindings": [{
       "command": "extension.node-debug.pickLoadedScript",

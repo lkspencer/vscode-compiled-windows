@@ -19,7 +19,7 @@ function balance(out) {
     if (!util_1.validate(false)) {
         return;
     }
-    let rootNode = util_1.parse(editor.document);
+    let rootNode = util_1.parseDocument(editor.document);
     if (!rootNode) {
         return;
     }
@@ -51,14 +51,16 @@ function getRangeToBalanceOut(document, selection, rootNode) {
     return;
 }
 function getRangeToBalanceIn(document, selection, rootNode) {
-    let nodeToBalance = util_1.getNode(rootNode, selection.start);
+    let nodeToBalance = util_1.getNode(rootNode, selection.start, true);
     if (!nodeToBalance) {
         return;
     }
+    if (selection.start.isEqual(nodeToBalance.start)
+        && selection.end.isEqual(nodeToBalance.end)
+        && nodeToBalance.close) {
+        return new vscode.Selection(nodeToBalance.open.end, nodeToBalance.close.start);
+    }
     if (!nodeToBalance.firstChild) {
-        if (nodeToBalance.close) {
-            return new vscode.Selection(nodeToBalance.open.end, nodeToBalance.close.start);
-        }
         return;
     }
     if (selection.start.isEqual(nodeToBalance.firstChild.start)
@@ -68,4 +70,4 @@ function getRangeToBalanceIn(document, selection, rootNode) {
     }
     return new vscode.Selection(nodeToBalance.firstChild.start, nodeToBalance.firstChild.end);
 }
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/cb82febafda0c8c199b9201ad274e25d9a76874e/extensions\emmet\out/balance.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/8b95971d8cccd3afd86b35d4a0e098c189294ff2/extensions\emmet\out/balance.js.map

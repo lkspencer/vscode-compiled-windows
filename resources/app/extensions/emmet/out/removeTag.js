@@ -11,7 +11,7 @@ function removeTag() {
     if (!util_1.validate(false)) {
         return;
     }
-    let rootNode = util_1.parse(editor.document);
+    let rootNode = util_1.parseDocument(editor.document);
     if (!rootNode) {
         return;
     }
@@ -23,7 +23,7 @@ function removeTag() {
     editor.selections.reverse().forEach(selection => {
         rangesToRemove = rangesToRemove.concat(getRangeToRemove(editor, rootNode, selection, indentInSpaces));
     });
-    editor.edit(editBuilder => {
+    return editor.edit(editBuilder => {
         rangesToRemove.forEach(range => {
             editBuilder.replace(range, '');
         });
@@ -40,9 +40,6 @@ function getRangeToRemove(editor, rootNode, selection, indentInSpaces) {
     if (nodeToUpdate.close) {
         closeRange = new vscode.Range(nodeToUpdate.close.start, nodeToUpdate.close.end);
     }
-    if (!openRange.contains(selection.start) && !closeRange.contains(selection.start)) {
-        return [];
-    }
     let ranges = [openRange];
     if (closeRange) {
         for (let i = openRange.start.line + 1; i <= closeRange.start.line; i++) {
@@ -58,4 +55,4 @@ function getRangeToRemove(editor, rootNode, selection, indentInSpaces) {
     }
     return ranges;
 }
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/cb82febafda0c8c199b9201ad274e25d9a76874e/extensions\emmet\out/removeTag.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/8b95971d8cccd3afd86b35d4a0e098c189294ff2/extensions\emmet\out/removeTag.js.map
