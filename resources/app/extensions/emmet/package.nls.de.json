@@ -28,5 +28,6 @@
 	"emmetShowExpandedAbbreviation": "Zeigt erweiterte Emmet-Abkürzungen als Vorschläge an.\nDie Option inMarkupAndStylesheetFilesOnly gilt für HTML, HAML, Jade, Slim, XML, XSL, CSS, SCSS, Sass, Less und Stylus.\nDie Option \"always\" gilt unabhängig vom Markup/CSS für alle Teile der Datei.",
 	"emmetShowAbbreviationSuggestions": "Zeigt mögliche Emmet-Abkürzungen als Vorschläge an. Diese Option gilt nicht in Stylesheets oder wenn emmet.showExpandedAbbreviation auf \"never\" festgelegt ist.",
 	"emmetIncludeLanguages": "Aktivieren Sie Emmet-Abkürzungen in Sprachen, die nicht standardmäßig unterstützt werden. Fügen Sie hier ein Mapping zwischen der Sprache und der von Emmet unterstützten Sprache hinzu.\nBeispiel: {\"vue-html\": \"html\", \"javascript\": \"javascriptreact\"}",
-	"emmetVariables": "In Emmet-Ausschnitten zu verwendende Variablen"
+	"emmetVariables": "In Emmet-Ausschnitten zu verwendende Variablen",
+	"emmetTriggerExpansionOnTab": "When enabled, emmet abbreviations are expanded when pressing TAB."
 }

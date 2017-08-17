@@ -28,5 +28,6 @@
 	"emmetShowExpandedAbbreviation": "显示扩展的 Emmet 缩写作为建议。\n\"inMarkupAndStylesheetFilesOnly\" 选项适用于 html、haml、jade、slim、xml、xsl、css、scss、sass、less 和 stylus。\n\"always\" 选项适用于 markup/css 文件的所有部分。",
 	"emmetShowAbbreviationSuggestions": "显示可能的 Emmet 缩写作为建议。在风格表中或将 emmet.showExpandedAbbreviation 设置为 \"never\" 时不适用。",
 	"emmetIncludeLanguages": "启用使用默认不支持的语言的 Emmet 缩写。在此添加该语言与支持 Emmet 的语言之间的映射。示例: {\"vue-html\": \"html\", \"javascript\": \"javascriptreact\"}",
-	"emmetVariables": "要用于 Emmet 代码片段的变量"
+	"emmetVariables": "要用于 Emmet 代码片段的变量",
+	"emmetTriggerExpansionOnTab": "When enabled, emmet abbreviations are expanded when pressing TAB."
 }

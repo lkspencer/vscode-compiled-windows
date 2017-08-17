@@ -69,4 +69,4 @@ __decorate([
     decorators_1.throttle
 ], AutoFetcher.prototype, "fetch", null);
 exports.AutoFetcher = AutoFetcher;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/8b95971d8cccd3afd86b35d4a0e098c189294ff2/extensions\git\out/autofetch.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/41abd21afdf7424c89319ee7cb0445cc6f376959/extensions\git\out/autofetch.js.map

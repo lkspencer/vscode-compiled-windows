@@ -28,5 +28,6 @@
 	"emmetShowExpandedAbbreviation": "확장된 emmet 약어를 제안으로 표시합니다.\n\"inMarkupAndStylesheetFilesOnly\" 옵션이 html, haml, jade, slim, xml, xsl, css, scss, sass, less 및 stylus에 적용됩니다.\n\"always\" 옵션이 마크업/css에 관계없이 파일의 모든 부분에 적용됩니다.",
 	"emmetShowAbbreviationSuggestions": "가능한 emmet 약어를 제안으로 표시합니다. 스타일시트에는 적용되지 않고 emmet.showExpandedAbbreviation이 \"never\"로 설정되어 있을 때도 적용되지 않습니다.",
 	"emmetIncludeLanguages": "기본 지원되지 않는 언어에서 emmet 약어를 사용합니다. 언어와 emmet 지원 언어 사이에 매핑을 추가합니다.\n예: {\"vue-html\": \"html\", \"javascript\": \"javascriptreact\"}",
-	"emmetVariables": "emmet 조각에 사용되는 변수"
+	"emmetVariables": "emmet 조각에 사용되는 변수",
+	"emmetTriggerExpansionOnTab": "When enabled, emmet abbreviations are expanded when pressing TAB."
 }

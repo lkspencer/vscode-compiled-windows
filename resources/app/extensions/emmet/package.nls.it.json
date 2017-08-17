@@ -28,5 +28,6 @@
 	"emmetShowExpandedAbbreviation": "Mostra le abbreviazioni emmet espanse come suggerimenti.\nL'opzione \"inMarkupAndStylesheetFilesOnly\" si applica a html, haml, jade, slim, xml, xsl, css, scss, sass, less e stylus.\nL'opzione \"sempre\" (always) si applica a tutte le parti del file indipendentemente dal markup/css.",
 	"emmetShowAbbreviationSuggestions": "Mostra possibili abbreviazioni emmet come suggerimenti. Non si applica a fogli di stile o quando emmet.showExpandedAbbreviation è impostata a \"mai\" (never).",
 	"emmetIncludeLanguages": "Abilita le abbreviazioni emmet in linguaggi che non sono normalmente supportati. Aggiungere un mapping tra il linguaggio ed il linguaggio supportato da emmet.\n Ad esempio: {\"vue-html\": \"html\", \"javascript\": \"javascriptreact\"}",
-	"emmetVariables": "Variabili da utilizzare nei frammenti di emmet"
+	"emmetVariables": "Variabili da utilizzare nei frammenti di emmet",
+	"emmetTriggerExpansionOnTab": "When enabled, emmet abbreviations are expanded when pressing TAB."
 }

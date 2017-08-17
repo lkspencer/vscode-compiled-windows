@@ -27,7 +27,7 @@ class DefaultCompletionItemProvider {
         }
         let result = vscode_emmet_helper_1.doComplete(document, position, syntax, util_1.getEmmetConfiguration());
         let newItems = [];
-        if (result.items) {
+        if (result && result.items) {
             result.items.forEach(item => {
                 let newItem = new vscode.CompletionItem(item.label);
                 newItem.documentation = item.documentation;
@@ -73,4 +73,4 @@ class DefaultCompletionItemProvider {
     }
 }
 exports.DefaultCompletionItemProvider = DefaultCompletionItemProvider;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/8b95971d8cccd3afd86b35d4a0e098c189294ff2/extensions\emmet\out/defaultCompletionProvider.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/41abd21afdf7424c89319ee7cb0445cc6f376959/extensions\emmet\out/defaultCompletionProvider.js.map

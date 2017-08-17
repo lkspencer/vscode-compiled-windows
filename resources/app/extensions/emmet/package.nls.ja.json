@@ -28,5 +28,6 @@
 	"emmetShowExpandedAbbreviation": "候補として、展開された Emmet 省略記法を表示します。\n\"inMarkupAndStylesheetFilesOnly\" オプションは、html、haml、jade、slim、xml、xsl、css、scss、sass、less、および stylus に適用されます。\n\"always\" オプションは、マークアップ / css に関係なく、ファイルのすべての部分に適用されます。",
 	"emmetShowAbbreviationSuggestions": "候補として考えられる Emmet 省略記法を表示します。 スタイルシートや emmet.showExpandedAbbreviation が \"never\" に設定されている場合は適用されません。",
 	"emmetIncludeLanguages": "既定でサポートされていない言語で Emmet 省略記法を有効にします。 言語と Emmet がサポートする言語の間にマッピングを追加します。\n例: {\"vue-html\": \"html\", \"javascript\": \"javascriptreact\"}",
-	"emmetVariables": "Emmet のスニペットで使用される変数 "
+	"emmetVariables": "Emmet のスニペットで使用される変数 ",
+	"emmetTriggerExpansionOnTab": "When enabled, emmet abbreviations are expanded when pressing TAB."
 }
