@@ -1,4 +1,4 @@
 [
-	"Could not load the TypeScript version at this path",
-	"Otra aplicación (por ejemplo, una herramienta de detección de virus con un comportamiento erróneo) eliminó el tsserver de VSCode. Debe reinstalar VS Code."
+	"No se pudo cargar la versión de TypeScript en esta ruta",
+	"Otra aplicación (por ejemplo, una herramienta de detección de virus con un comportamiento erróneo) eliminó el tsserver de VSCode. Debe reinstalar el VS Code."
 ]

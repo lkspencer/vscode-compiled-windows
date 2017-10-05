@@ -3,12 +3,6 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 'use strict';
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
@@ -20,14 +14,19 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 const vscode_1 = require("vscode");
 const git_1 = require("./git");
-const decorators_1 = require("./decorators");
+const util_1 = require("./util");
 class AutoFetcher {
     constructor(repository) {
         this.repository = repository;
+        this._onDidChange = new vscode_1.EventEmitter();
+        this.onDidChange = this._onDidChange.event;
+        this._enabled = false;
         this.disposables = [];
         vscode_1.workspace.onDidChangeConfiguration(this.onConfiguration, this, this.disposables);
         this.onConfiguration();
     }
+    get enabled() { return this._enabled; }
+    set enabled(enabled) { this._enabled = enabled; this._onDidChange.fire(enabled); }
     onConfiguration() {
         const gitConfig = vscode_1.workspace.getConfiguration('git');
         if (gitConfig.get('autofetch') === false) {
@@ -38,24 +37,36 @@ class AutoFetcher {
         }
     }
     enable() {
-        if (this.timer) {
+        if (this.enabled) {
             return;
         }
-        this.fetch();
-        this.timer = setInterval(() => this.fetch(), AutoFetcher.Period);
+        this.enabled = true;
+        this.run();
     }
     disable() {
-        clearInterval(this.timer);
+        this.enabled = false;
     }
-    fetch() {
+    run() {
         return __awaiter(this, void 0, void 0, function* () {
-            try {
-                yield this.repository.fetch();
-            }
-            catch (err) {
-                if (err.gitErrorCode === git_1.GitErrorCodes.AuthenticationFailed) {
-                    this.disable();
+            while (this.enabled) {
+                yield this.repository.whenIdleAndFocused();
+                if (!this.enabled) {
+                    return;
                 }
+                try {
+                    yield this.repository.fetch();
+                }
+                catch (err) {
+                    if (err.gitErrorCode === git_1.GitErrorCodes.AuthenticationFailed) {
+                        this.disable();
+                    }
+                }
+                if (!this.enabled) {
+                    return;
+                }
+                const timeout = new Promise(c => setTimeout(c, AutoFetcher.Period));
+                const whenDisabled = util_1.eventToPromise(util_1.filterEvent(this.onDidChange, enabled => !enabled));
+                yield Promise.race([timeout, whenDisabled]);
             }
         });
     }
@@ -65,8 +76,5 @@ class AutoFetcher {
     }
 }
 AutoFetcher.Period = 3 * 60 * 1000 /* three minutes */;
-__decorate([
-    decorators_1.throttle
-], AutoFetcher.prototype, "fetch", null);
 exports.AutoFetcher = AutoFetcher;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/aa42e6ef8184e8ab20ddaa5682b861bfb6f0b2ad/extensions\git\out/autofetch.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/be377c0faf7574a59f84940f593a6849f12e4de7/extensions\git\out/autofetch.js.map

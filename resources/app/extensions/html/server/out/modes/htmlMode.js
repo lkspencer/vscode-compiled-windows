@@ -39,12 +39,19 @@ function getHTMLMode(htmlLanguageService) {
         format: function (document, range, formatParams, settings) {
             if (settings === void 0) { settings = globalSettings; }
             var formatSettings = settings && settings.html && settings.html.format;
-            if (!formatSettings) {
-                formatSettings = formatParams;
+            if (formatSettings) {
+                formatSettings = merge(formatSettings, {});
             }
             else {
-                formatSettings = merge(formatParams, merge(formatSettings, {}));
+                formatSettings = {};
             }
+            if (formatSettings.contentUnformatted) {
+                formatSettings.contentUnformatted = formatSettings.contentUnformatted + ',script';
+            }
+            else {
+                formatSettings.contentUnformatted = 'script';
+            }
+            formatSettings = merge(formatParams, formatSettings);
             return htmlLanguageService.format(document, range, formatSettings);
         },
         doAutoClose: function (document, position) {
@@ -73,4 +80,4 @@ function merge(src, dst) {
     }
     return dst;
 }
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/aa42e6ef8184e8ab20ddaa5682b861bfb6f0b2ad/extensions\html\server\out/modes\htmlMode.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/be377c0faf7574a59f84940f593a6849f12e4de7/extensions\html\server\out/modes\htmlMode.js.map

@@ -26,6 +26,7 @@
 	"node.launch.runtimeArgs.description": "Optionale Argumente, die an die ausführbare Laufzeitdatei übergeben werden.",
 	"node.launch.env.description": "Umgebungsvariablen, die an das Programm übergeben werden.",
 	"node.launch.envFile.description": "Absoluter Pfad zu einer Datei mit Definitionen für Umgebungsvariablen.",
+	"node.launch.outputCapture.description": "Ort der Erfassung von Ausgabemeldungen: die Debug-API oder stdout/stderr-Streams.",
 	"node.launch.config.name": "Starten",
 	"node.attach.processId.description": "Die ID des Prozesses, an den die Anfügung erfolgen soll.",
 	"node.attach.localRoot.description": "Der lokale Quellstamm, der dem \"remoteRoot\" entspricht.",
@@ -33,11 +34,11 @@
 	"node.attach.config.name": "Anfügen",
 	"node.processattach.config.name": "An den Prozess anhängen",
 	"toggle.skipping.this.file": "Überspringen dieser Datei umschalten",
-	"extensionHost.label": "VS Code Extension Development",
-	"extensionHost.launch.runtimeExecutable.description": "Absolute path to VS Code.",
-	"extensionHost.launch.stopOnEntry.description": "Automatically stop the extension host after launch.",
-	"extensionHost.launch.env.description": "Environment variables passed to the extension host.",
-	"extensionHost.snippet.launch.label": "VS Code Extension Development",
-	"extensionHost.snippet.launch.description": "Launch a VS Code extension in debug mode",
-	"extensionHost.launch.config.name": "Launch Extension"
+	"extensionHost.label": "VSCode-Erweiterungsentwicklung",
+	"extensionHost.launch.runtimeExecutable.description": "Der absolute Pfad zu VS Code.",
+	"extensionHost.launch.stopOnEntry.description": "Beendet den Erweiterungshost nach dem Start automatisch.",
+	"extensionHost.launch.env.description": "Umgebungsvariablen wurden an den Erweiterungshost weitergegeben.",
+	"extensionHost.snippet.launch.label": "VSCode-Erweiterungsentwicklung",
+	"extensionHost.snippet.launch.description": "VS Code-Erweiterung im Debugmodus starten",
+	"extensionHost.launch.config.name": "Extension starten"
 }

@@ -34,6 +34,9 @@ class ExcludeHintItem {
         this._item.tooltip = localize(3, null);
         this._item.color = '#A5DF3B';
         this._item.show();
+        /* __GDPR__
+            "js.hintProjectExcludes" : {}
+        */
         this._client.logTelemetry('js.hintProjectExcludes');
     }
 }
@@ -174,4 +177,4 @@ function computeLargeRoots(configFileName, fileNames) {
     }
     return result;
 }
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/aa42e6ef8184e8ab20ddaa5682b861bfb6f0b2ad/extensions\typescript\out/utils\projectStatus.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/be377c0faf7574a59f84940f593a6849f12e4de7/extensions\typescript\out/utils\projectStatus.js.map

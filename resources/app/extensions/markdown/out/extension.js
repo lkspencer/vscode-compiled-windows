@@ -120,11 +120,20 @@ function activate(context) {
     context.subscriptions.push(vscode.commands.registerCommand('markdown.showPreview', function (uri) { return showPreview(cspArbiter, uri, false); }));
     context.subscriptions.push(vscode.commands.registerCommand('markdown.showPreviewToSide', function (uri) { return showPreview(cspArbiter, uri, true); }));
     context.subscriptions.push(vscode.commands.registerCommand('markdown.showSource', showSource));
+    context.subscriptions.push(vscode.commands.registerCommand('_markdown.moveCursorToPosition', function (line, character) {
+        if (!vscode.window.activeTextEditor) {
+            return;
+        }
+        var position = new vscode.Position(line, character);
+        var selection = new vscode.Selection(position, position);
+        vscode.window.activeTextEditor.revealRange(selection);
+        vscode.window.activeTextEditor.selection = selection;
+    }));
     context.subscriptions.push(vscode.commands.registerCommand('_markdown.revealLine', function (uri, line) {
         var sourceUri = vscode.Uri.parse(decodeURIComponent(uri));
         logger.log('revealLine', { uri: uri, sourceUri: sourceUri.toString(), line: line });
         vscode.window.visibleTextEditors
-            .filter(function (editor) { return previewContentProvider_1.isMarkdownFile(editor.document) && editor.document.uri.fsPath === sourceUri.fsPath; })
+            .filter(function (editor) { return previewContentProvider_1.isMarkdownFile(editor.document) && editor.document.uri.toString() === sourceUri.toString(); })
             .forEach(function (editor) {
             var sourceLine = Math.floor(line);
             var fraction = line - sourceLine;
@@ -252,11 +261,17 @@ function showPreview(cspArbiter, uri, sideBySide) {
         // nothing found that could be shown or toggled
         return;
     }
-    var thenable = vscode.commands.executeCommand('vscode.previewHtml', previewContentProvider_1.getMarkdownUri(resource), getViewColumn(sideBySide), "Preview '" + path.basename(resource.fsPath) + "'", {
+    var thenable = vscode.commands.executeCommand('vscode.previewHtml', previewContentProvider_1.getMarkdownUri(resource), getViewColumn(sideBySide), localize(1, null, path.basename(resource.fsPath)), {
         allowScripts: true,
         allowSvgs: cspArbiter.shouldAllowSvgsForResource(resource)
     });
     if (telemetryReporter) {
+        /* __GDPR__
+            "openPreview" : {
+                "where" : { "classification": "SystemMetaData", "purpose": "FeatureInsight" },
+                "how": { "classification": "SystemMetaData", "purpose": "FeatureInsight" }
+            }
+        */
         telemetryReporter.sendTelemetryEvent('openPreview', {
             where: sideBySide ? 'sideBySide' : 'inPlace',
             how: (uri instanceof vscode.Uri) ? 'action' : 'pallete'
@@ -287,7 +302,7 @@ function showSource(mdUri) {
     var docUri = vscode.Uri.parse(mdUri.query);
     for (var _i = 0, _a = vscode.window.visibleTextEditors; _i < _a.length; _i++) {
         var editor = _a[_i];
-        if (editor.document.uri.scheme === docUri.scheme && editor.document.uri.fsPath === docUri.fsPath) {
+        if (editor.document.uri.scheme === docUri.scheme && editor.document.uri.toString() === docUri.toString()) {
             return vscode.window.showTextDocument(editor.document, editor.viewColumn);
         }
     }
@@ -305,4 +320,4 @@ function getPackageInfo() {
     }
     return null;
 }
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/aa42e6ef8184e8ab20ddaa5682b861bfb6f0b2ad/extensions\markdown\out/extension.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/be377c0faf7574a59f84940f593a6849f12e4de7/extensions\markdown\out/extension.js.map

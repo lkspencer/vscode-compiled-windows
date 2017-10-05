@@ -35,7 +35,7 @@ function findSpecificGit(path) {
         const buffers = [];
         const child = cp.spawn(path, ['--version']);
         child.stdout.on('data', (b) => buffers.push(b));
-        child.on('error', e);
+        child.on('error', cpErrorHandler(e));
         child.on('exit', code => code ? e(new Error('Not found')) : c({ path, version: parseVersion(Buffer.concat(buffers).toString('utf8').trim()) }));
     });
 }
@@ -52,7 +52,7 @@ function findGitDarwin() {
                     if (err) {
                         return e('git not found');
                     }
-                    return c({ path, version: parseVersion(stdout.toString('utf8').trim()) });
+                    return c({ path, version: parseVersion(stdout.trim()) });
                 });
             }
             if (path !== '/usr/bin/git') {
@@ -95,15 +95,29 @@ function findGitWin32() {
 }
 function findGit(hint) {
     var first = hint ? findSpecificGit(hint) : Promise.reject(null);
-    return first.then(void 0, () => {
+    return first
+        .then(void 0, () => {
         switch (process.platform) {
             case 'darwin': return findGitDarwin();
             case 'win32': return findGitWin32();
             default: return findSpecificGit('git');
         }
-    });
+    })
+        .then(null, () => Promise.reject(new Error('Git installation not found.')));
 }
 exports.findGit = findGit;
+function cpErrorHandler(cb) {
+    return err => {
+        if (/ENOENT/.test(err.message)) {
+            err = new GitError({
+                error: err,
+                message: 'Failed to execute git (ENOENT)',
+                gitErrorCode: exports.GitErrorCodes.NotAGitRepository
+            });
+        }
+        cb(err);
+    };
+}
 function exec(child, options = {}) {
     return __awaiter(this, void 0, void 0, function* () {
         if (!child.stdout || !child.stderr) {
@@ -124,7 +138,7 @@ function exec(child, options = {}) {
         encoding = iconv.encodingExists(encoding) ? encoding : 'utf8';
         const [exitCode, stdout, stderr] = yield Promise.all([
             new Promise((c, e) => {
-                once(child, 'error', e);
+                once(child, 'error', cpErrorHandler(e));
                 once(child, 'exit', c);
             }),
             new Promise(c => {
@@ -254,10 +268,10 @@ class Git {
             return folderPath;
         });
     }
-    getRepositoryRoot(path) {
+    getRepositoryRoot(repositoryPath) {
         return __awaiter(this, void 0, void 0, function* () {
-            const result = yield this.exec(path, ['rev-parse', '--show-toplevel']);
-            return result.stdout.trim();
+            const result = yield this.exec(repositoryPath, ['rev-parse', '--show-toplevel']);
+            return path.normalize(result.stdout.trim());
         });
     }
     exec(cwd, args, options = {}) {
@@ -770,7 +784,7 @@ class Repository {
             const stderrData = [];
             child.stderr.setEncoding('utf8');
             child.stderr.on('data', raw => stderrData.push(raw));
-            child.on('error', e);
+            child.on('error', cpErrorHandler(e));
             child.on('exit', onExit);
         });
     }
@@ -909,4 +923,4 @@ class Repository {
     }
 }
 exports.Repository = Repository;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/aa42e6ef8184e8ab20ddaa5682b861bfb6f0b2ad/extensions\git\out/git.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/be377c0faf7574a59f84940f593a6849f12e4de7/extensions\git\out/git.js.map

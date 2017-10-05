@@ -1,6 +1,6 @@
 {
 	"messages": [
-		"Auto detecting Grunt failed with error: {0}"
+		"Auto detecting Grunt for folder {0} failed with error: {1}"
 	],
 	"keys": [
 		"execFailed"

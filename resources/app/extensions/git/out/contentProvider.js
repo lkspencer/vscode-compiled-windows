@@ -21,6 +21,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const vscode_1 = require("vscode");
 const decorators_1 = require("./decorators");
 const uri_1 = require("./uri");
+const util_1 = require("./util");
 const THREE_MINUTES = 1000 * 60 * 3;
 const FIVE_MINUTES = 1000 * 60 * 5;
 class GitContentProvider {
@@ -42,17 +43,23 @@ class GitContentProvider {
         this.fireChangeEvents();
     }
     fireChangeEvents() {
-        Object.keys(this.cache).forEach(key => {
-            const uri = this.cache[key].uri;
-            const fsPath = uri.fsPath;
-            for (const root of this.changedRepositoryRoots) {
-                if (fsPath.startsWith(root)) {
-                    this.onDidChangeEmitter.fire(uri);
-                    return;
-                }
+        return __awaiter(this, void 0, void 0, function* () {
+            if (!vscode_1.window.state.focused) {
+                const onDidFocusWindow = util_1.filterEvent(vscode_1.window.onDidChangeWindowState, e => e.focused);
+                yield util_1.eventToPromise(onDidFocusWindow);
             }
+            Object.keys(this.cache).forEach(key => {
+                const uri = this.cache[key].uri;
+                const fsPath = uri.fsPath;
+                for (const root of this.changedRepositoryRoots) {
+                    if (fsPath.startsWith(root)) {
+                        this.onDidChangeEmitter.fire(uri);
+                        return;
+                    }
+                }
+            });
+            this.changedRepositoryRoots.clear();
         });
-        this.changedRepositoryRoots.clear();
     }
     provideTextDocumentContent(uri) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -84,7 +91,7 @@ class GitContentProvider {
         const cache = Object.create(null);
         Object.keys(this.cache).forEach(key => {
             const row = this.cache[key];
-            const isOpen = vscode_1.window.visibleTextEditors.some(e => e.document.uri.fsPath === row.uri.fsPath);
+            const isOpen = vscode_1.window.visibleTextEditors.some(e => e.document.toString() === row.uri.toString());
             if (isOpen || now - row.timestamp < THREE_MINUTES) {
                 cache[row.uri.toString()] = row;
             }
@@ -98,5 +105,8 @@ class GitContentProvider {
 __decorate([
     decorators_1.debounce(1100)
 ], GitContentProvider.prototype, "eventuallyFireChangeEvents", null);
+__decorate([
+    decorators_1.throttle
+], GitContentProvider.prototype, "fireChangeEvents", null);
 exports.GitContentProvider = GitContentProvider;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/aa42e6ef8184e8ab20ddaa5682b861bfb6f0b2ad/extensions\git\out/contentProvider.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/be377c0faf7574a59f84940f593a6849f12e4de7/extensions\git\out/contentProvider.js.map

@@ -13,6 +13,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const vscode_1 = require("vscode");
+const convert_1 = require("../utils/convert");
 function getSymbolKind(item) {
     switch (item.kind) {
         case 'method': return vscode_1.SymbolKind.Method;
@@ -70,7 +71,7 @@ class TypeScriptWorkspaceSymbolProvider {
                     if (!item.containerName && item.kind === 'alias') {
                         continue;
                     }
-                    const range = new vscode_1.Range(item.start.line - 1, item.start.offset - 1, item.end.line - 1, item.end.offset - 1);
+                    const range = convert_1.tsTextSpanToVsRange(item);
                     let label = item.name;
                     if (item.kind === 'method' || item.kind === 'function') {
                         label += '()';
@@ -83,4 +84,4 @@ class TypeScriptWorkspaceSymbolProvider {
     }
 }
 exports.default = TypeScriptWorkspaceSymbolProvider;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/aa42e6ef8184e8ab20ddaa5682b861bfb6f0b2ad/extensions\typescript\out/features\workspaceSymbolProvider.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/be377c0faf7574a59f84940f593a6849f12e4de7/extensions\typescript\out/features\workspaceSymbolProvider.js.map

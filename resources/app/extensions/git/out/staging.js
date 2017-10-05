@@ -87,4 +87,4 @@ function invertLineChange(diff) {
     };
 }
 exports.invertLineChange = invertLineChange;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/aa42e6ef8184e8ab20ddaa5682b861bfb6f0b2ad/extensions\git\out/staging.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/be377c0faf7574a59f84940f593a6849f12e4de7/extensions\git\out/staging.js.map

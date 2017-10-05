@@ -1,7 +1,7 @@
 {
   "name": "node-debug2",
   "displayName": "Node Debug 2",
-  "version": "1.16.7",
+  "version": "1.17.6",
   "publisher": "ms-vscode",
   "description": "%extension.description%",
   "icon": "images/node-debug-icon.png",
@@ -14,8 +14,8 @@
   "license": "MIT",
   "private": true,
   "dependencies": {
-    "vscode-chrome-debug-core": "^3.17.1",
-    "vscode-debugadapter": "^1.22.0",
+    "vscode-chrome-debug-core": "^3.17.10",
+    "vscode-debugadapter": "^1.24.0",
     "vscode-nls": "^2.0.2"
   },
   "devDependencies": {
@@ -26,18 +26,18 @@
     "event-stream": "^3.3.4",
     "gulp": "^3.9.1",
     "gulp-sourcemaps": "^2.2.0",
-    "gulp-tslint": "^6.1.2",
+    "gulp-tslint": "^8.1.2",
     "gulp-typescript": "^3.1.3",
     "gulp-util": "^3.0.5",
     "mocha": "^3.1.1",
     "run-sequence": "^1.2.2",
-    "tslint": "^3.15.1",
+    "tslint": "^5.7.0",
     "typescript": "^2.1.4",
     "vsce": "^1.30.0",
     "vscode": "^1.0.0",
-    "vscode-chrome-debug-core-testsupport": "^3.16.0",
-    "vscode-debugadapter-testsupport": "1.22.0",
-    "vscode-debugprotocol": "^1.22.0",
+    "vscode-chrome-debug-core-testsupport": "^3.17.1",
+    "vscode-debugadapter-testsupport": "1.23.0",
+    "vscode-debugprotocol": "^1.24.0",
     "vscode-nls-dev": "^2.1.3"
   },
   "main": "./out/src/extension",
@@ -83,10 +83,10 @@
           "name": "%extensionHost.launch.config.name%",
           "runtimeExecutable": "^\"\\${execPath}\"",
           "args": [
-            "^\"--extensionDevelopmentPath=\\${workspaceRoot}\""
+            "^\"--extensionDevelopmentPath=\\${workspaceFolder}\""
           ],
           "outFiles": [
-            "^\"\\${workspaceRoot}/out/**/*.js\""
+            "^\"\\${workspaceFolder}/out/**/*.js\""
           ],
           "preLaunchTask": "npm"
         }
@@ -113,7 +113,7 @@
                 "type": "string"
               },
               "default": [
-                "--extensionDevelopmentPath=${workspaceRoot}"
+                "--extensionDevelopmentPath=${workspaceFolder}"
               ]
             },
             "env": {
@@ -140,7 +140,7 @@
                 "null"
               ],
               "deprecationMessage": "%outDir.deprecationMessage%",
-              "default": "${workspaceRoot}/out"
+              "default": "${workspaceFolder}/out"
             },
             "outFiles": {
               "type": "array",
@@ -149,7 +149,7 @@
                 "type": "string"
               },
               "default": [
-                "${workspaceRoot}/out/**/*.js"
+                "${workspaceFolder}/out/**/*.js"
               ]
             },
             "smartStep": {
@@ -172,14 +172,6 @@
               ],
               "description": "%node.trace.description%",
               "default": true
-            },
-            "protocol": {
-              "type": "string",
-              "enum": [
-                "legacy",
-                "inspector"
-              ],
-              "default": "inspector"
             }
           }
         }
@@ -230,7 +222,7 @@
             "cwd": {
               "type": "string",
               "description": "%node.launch.cwd.description%",
-              "default": "${workspaceRoot}"
+              "default": "${workspaceFolder}"
             },
             "runtimeExecutable": {
               "type": [
@@ -334,12 +326,20 @@
             "envFile": {
               "type": "string",
               "description": "%node.launch.envFile.description%",
-              "default": "${workspaceRoot}/.env"
+              "default": "${workspaceFolder}/.env"
             },
             "showAsyncStacks": {
               "type": "boolean",
               "description": "%node.showAsyncStacks.description%",
               "default": true
+            },
+            "outputCapture": {
+              "enum": [
+                "console",
+                "std"
+              ],
+              "description": "%node.launch.outputCapture.description%",
+              "default": "console"
             }
           }
         },

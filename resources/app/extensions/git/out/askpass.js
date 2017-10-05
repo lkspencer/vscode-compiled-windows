@@ -23,9 +23,6 @@ function getIPCHandlePath(nonce) {
     if (process.platform === 'win32') {
         return `\\\\.\\pipe\\vscode-git-askpass-${nonce}-sock`;
     }
-    if (process.env['XDG_RUNTIME_DIR']) {
-        return path.join(process.env['XDG_RUNTIME_DIR'], `vscode-git-askpass-${nonce}.sock`);
-    }
     return path.join(os.tmpdir(), `vscode-git-askpass-${nonce}.sock`);
 }
 class Askpass {
@@ -100,4 +97,4 @@ class Askpass {
     }
 }
 exports.Askpass = Askpass;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/aa42e6ef8184e8ab20ddaa5682b861bfb6f0b2ad/extensions\git\out/askpass.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/be377c0faf7574a59f84940f593a6849f12e4de7/extensions\git\out/askpass.js.map

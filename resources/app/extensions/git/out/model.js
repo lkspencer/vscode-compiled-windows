@@ -31,8 +31,14 @@ class RepositoryPick {
     constructor(repository) {
         this.repository = repository;
     }
-    get label() { return path.basename(this.repository.root); }
-    get description() { return path.dirname(this.repository.root); }
+    get label() {
+        return path.basename(this.repository.root);
+    }
+    get description() {
+        return [this.repository.headLabel, this.repository.syncLabel]
+            .filter(l => !!l)
+            .join(' ');
+    }
 }
 __decorate([
     decorators_1.memoize
@@ -40,6 +46,9 @@ __decorate([
 __decorate([
     decorators_1.memoize
 ], RepositoryPick.prototype, "description", null);
+function isParent(parent, child) {
+    return child.startsWith(parent);
+}
 class Model {
     constructor(git) {
         this.git = git;
@@ -131,7 +140,9 @@ class Model {
             const activeRepositories = new Set(activeRepositoriesList);
             const openRepositoriesToDispose = removed
                 .map(folder => this.getOpenRepository(folder.uri))
-                .filter(r => !!r && !activeRepositories.has(r.repository));
+                .filter(r => !!r)
+                .filter(r => !activeRepositories.has(r.repository))
+                .filter(r => !(vscode_1.workspace.workspaceFolders || []).some(f => isParent(f.uri.fsPath, r.repository.root)));
             possibleRepositoryFolders.forEach(p => this.tryOpenRepository(p.uri.fsPath));
             openRepositoriesToDispose.forEach(r => r.dispose());
         });
@@ -187,6 +198,13 @@ class Model {
         const openRepository = { repository, dispose };
         this.openRepositories.push(openRepository);
         this._onDidOpenRepository.fire(repository);
+    }
+    close(repository) {
+        const openRepository = this.getOpenRepository(repository);
+        if (!openRepository) {
+            return;
+        }
+        openRepository.dispose();
     }
     pickRepository() {
         return __awaiter(this, void 0, void 0, function* () {
@@ -246,4 +264,4 @@ __decorate([
     decorators_1.sequentialize
 ], Model.prototype, "tryOpenRepository", null);
 exports.Model = Model;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/aa42e6ef8184e8ab20ddaa5682b861bfb6f0b2ad/extensions\git\out/model.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/be377c0faf7574a59f84940f593a6849f12e4de7/extensions\git\out/model.js.map

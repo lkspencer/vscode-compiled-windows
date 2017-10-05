@@ -26,6 +26,7 @@
 	"node.launch.runtimeArgs.description": "선택적 인수가 런타임 실행 파일에 전달되었습니다.",
 	"node.launch.env.description": "환경 변수가 프로그램에 전달되었습니다.",
 	"node.launch.envFile.description": "환경 변수 정의가 포함된 파일의 절대 경로입니다.",
+	"node.launch.outputCapture.description": "출력 메시지를 캡처하는 위치: 디버그 API 또는 stdout/stderr 스트림",
 	"node.launch.config.name": "시작",
 	"node.attach.processId.description": "연결할 프로세스의 ID입니다.",
 	"node.attach.localRoot.description": "'remoteRoot'에 대응하는 로컬 소스 루트입니다.",
@@ -33,11 +34,11 @@
 	"node.attach.config.name": "연결",
 	"node.processattach.config.name": "프로세스에 연결",
 	"toggle.skipping.this.file": "이 파일에 대한 건너뛰기 토글",
-	"extensionHost.label": "VS Code Extension Development",
-	"extensionHost.launch.runtimeExecutable.description": "Absolute path to VS Code.",
-	"extensionHost.launch.stopOnEntry.description": "Automatically stop the extension host after launch.",
-	"extensionHost.launch.env.description": "Environment variables passed to the extension host.",
-	"extensionHost.snippet.launch.label": "VS Code Extension Development",
-	"extensionHost.snippet.launch.description": "Launch a VS Code extension in debug mode",
-	"extensionHost.launch.config.name": "Launch Extension"
+	"extensionHost.label": "VS Code 확장 개발",
+	"extensionHost.launch.runtimeExecutable.description": "VS Code의 절대 경로입니다.",
+	"extensionHost.launch.stopOnEntry.description": "시작한 후 자동으로 확장 호스트를 중지합니다.",
+	"extensionHost.launch.env.description": "확장 호스트에 전달된 환경 변수입니다.",
+	"extensionHost.snippet.launch.label": "VS Code 확장 개발",
+	"extensionHost.snippet.launch.description": "디버그 모드에서 VS Code 확장 시작",
+	"extensionHost.launch.config.name": "확장 시작"
 }

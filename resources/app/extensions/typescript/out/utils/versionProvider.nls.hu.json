@@ -1,4 +1,4 @@
 [
-	"Could not load the TypeScript version at this path",
-	"A VSCode beépített TS-szerverét törölte egy másik alkalmazás, például egy hibásan viselkedő víruskereső eszköz. Telepítse újra a VSCode-ot! "
+	"Nem sikerült meghatározni a TypeScript-verziót ezen az elérési úton",
+	"A VSCode beépített tsserverét törölte egy másik alkalmazás, például egy hibásan viselkedő víruskereső eszköz. Telepítse újra a VSCode-ot!"
 ]

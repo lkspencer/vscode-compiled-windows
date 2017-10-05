@@ -1,4 +1,4 @@
 [
-	"Could not load the TypeScript version at this path",
-	"適切に動作しないウイルス検出ツールなどの他のアプリケーションにより、VSCode の tsserver は削除されました。VS Code を再インストールしてください。"
+	"このパスでは TypeScript のバージョンを読み込むことができません",
+	"VS Code の tsserver が適切に動作しないウイルス検出ツールなどの他アプリケーションにより削除されました。VS Code を再インストールしてください。"
 ]

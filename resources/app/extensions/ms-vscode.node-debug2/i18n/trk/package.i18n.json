@@ -7,7 +7,6 @@
 	"extension.description": "Yeni, Denetçi Protokolü'nü kullanan; Node.js v6.3+ için Visual Studio Code hata ayıklama eklentisi",
 	"node.label": "Denetçi Protokolü ile Node.js v6.3+",
 	"node.sourceMaps.description": "JavaScript kaynak haritaları kullanın (varsa).",
-	"node.outDir.description": "Kaynak haritaları etkinleştirilmiş ise, oluşturulan kodun bu dizinde olması beklenir. Kullanım dışı: bunun yerine 'outFiles' özniteliğini kullanın.",
 	"outDir.deprecationMessage": "'outDir' özniteliği kullanım dışıdır, bunun yerine 'outFiles' özniteliğini kullanın.",
 	"node.outFiles.description": "Kaynak haritaları etkinleştirilmiş ise, bu glob desenleri oluşturulan JavaScript dosyalarını belirtir. '!' ile başlayan kalıpta dosyalar hariç tutulur. Eğer belirtilmemişse, oluşturulan kodun kaynağıyla aynı dizinde olması beklenir.",
 	"node.stopOnEntry.description": "Başlatıldıktan sonra programı otomatik olarak durdur.",
@@ -32,11 +31,19 @@
 	"node.launch.runtimeArgs.description": "Çalışma zamanı yürütülebilir dosyasına iletilecek isteğe bağlı argümanlar.",
 	"node.launch.env.description": "Programa iletilecek ortam değişkenleri.",
 	"node.launch.envFile.description": "Ortam değişkenleri tanımlamalarını içeren bir dosyanın mutlak yolu.",
+	"node.launch.outputCapture.description": "Çıktı mesajları nereden yakalanacak: Hata ayıklama API'si veya stdout/stderr akışları.",
 	"node.launch.config.name": "Başlat",
 	"node.attach.processId.description": "Bağlanacak işlem Id'si.",
 	"node.attach.localRoot.description": "'remoteRoot' ögesine karşılık gelen yerel kaynak kökü.",
 	"node.attach.remoteRoot.description": "Uzak sunucunun kaynak kökü.",
 	"node.attach.config.name": "Bağla",
 	"node.processattach.config.name": "İşleme Bağla",
-	"toggle.skipping.this.file": "Bu Dosyayı Atlamayı Aç/Kapa"
+	"toggle.skipping.this.file": "Bu Dosyayı Atlamayı Aç/Kapa",
+	"extensionHost.label": "VS Code Eklentisi Geliştirme",
+	"extensionHost.launch.runtimeExecutable.description": "VS Code'un mutlak yolu",
+	"extensionHost.launch.stopOnEntry.description": "Başlatıldıktan sonra eklenti sunucusunu otomatik olarak durdur.",
+	"extensionHost.launch.env.description": "Eklenti sunucusuna iletilecek ortam değişkenleri.",
+	"extensionHost.snippet.launch.label": "VS Code Eklentisi Geliştirme",
+	"extensionHost.snippet.launch.description": "Bir VS Code eklentisini hata ayıklama modunda çalıştır",
+	"extensionHost.launch.config.name": "Eklentiyi Başlat"
 }

@@ -68,4 +68,4 @@ function activateTagClosing(tagProvider, supportedLanguages, configName) {
     return vscode_1.Disposable.from.apply(vscode_1.Disposable, disposables);
 }
 exports.activateTagClosing = activateTagClosing;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/aa42e6ef8184e8ab20ddaa5682b861bfb6f0b2ad/extensions\html\client\out/tagClosing.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/be377c0faf7574a59f84940f593a6849f12e4de7/extensions\html\client\out/tagClosing.js.map

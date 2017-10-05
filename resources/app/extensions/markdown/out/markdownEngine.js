@@ -43,7 +43,7 @@ var vscode = require("vscode");
 var path = require("path");
 var tableOfContentsProvider_1 = require("./tableOfContentsProvider");
 var FrontMatterRegex = /^---\s*[^]*?(-{3}|\.{3})\s*/;
-var MarkdownEngine = (function () {
+var MarkdownEngine = /** @class */ (function () {
     function MarkdownEngine() {
         this.plugins = [];
     }
@@ -223,4 +223,4 @@ var MarkdownEngine = (function () {
     return MarkdownEngine;
 }());
 exports.MarkdownEngine = MarkdownEngine;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/aa42e6ef8184e8ab20ddaa5682b861bfb6f0b2ad/extensions\markdown\out/markdownEngine.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/be377c0faf7574a59f84940f593a6849f12e4de7/extensions\markdown\out/markdownEngine.js.map

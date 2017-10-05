@@ -5,7 +5,6 @@
 'use strict';
 Object.defineProperty(exports, "__esModule", { value: true });
 const vscode_1 = require("vscode");
-const git_1 = require("./git");
 const repository_1 = require("./repository");
 const util_1 = require("./util");
 const nls = require("vscode-nls");
@@ -19,18 +18,7 @@ class CheckoutStatusBar {
     }
     get onDidChange() { return this._onDidChange.event; }
     get command() {
-        const HEAD = this.repository.HEAD;
-        if (!HEAD) {
-            return undefined;
-        }
-        const tag = this.repository.refs.filter(iref => iref.type === git_1.RefType.Tag && iref.commit === HEAD.commit)[0];
-        const tagName = tag && tag.name;
-        const head = HEAD.name || tagName || (HEAD.commit || '').substr(0, 8);
-        const title = '$(git-branch) '
-            + head
-            + (this.repository.workingTreeGroup.resourceStates.length > 0 ? '*' : '')
-            + (this.repository.indexGroup.resourceStates.length > 0 ? '+' : '')
-            + (this.repository.mergeGroup.resourceStates.length > 0 ? '!' : '');
+        const title = `$(git-branch) ${this.repository.headLabel}`;
         return {
             command: 'git.checkout',
             tooltip: localize(0, null),
@@ -76,7 +64,7 @@ class SyncStatusBar {
         if (HEAD && HEAD.name && HEAD.commit) {
             if (HEAD.upstream) {
                 if (HEAD.ahead || HEAD.behind) {
-                    text += `${HEAD.behind}↓ ${HEAD.ahead}↑`;
+                    text += this.repository.syncLabel;
                 }
                 command = 'git.sync';
                 tooltip = localize(1, null);
@@ -140,4 +128,4 @@ class StatusBarCommands {
     }
 }
 exports.StatusBarCommands = StatusBarCommands;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/aa42e6ef8184e8ab20ddaa5682b861bfb6f0b2ad/extensions\git\out/statusbar.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/be377c0faf7574a59f84940f593a6849f12e4de7/extensions\git\out/statusbar.js.map

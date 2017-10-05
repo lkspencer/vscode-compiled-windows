@@ -19,8 +19,8 @@ function activate(context) {
     context.subscriptions.push(registerKeybindingsCompletions());
     //settings.json suggestions
     context.subscriptions.push(registerSettingsCompletions());
-    //extensions.json suggestions
-    context.subscriptions.push(registerExtensionsCompletions());
+    //extensions suggestions
+    (_a = context.subscriptions).push.apply(_a, registerExtensionsCompletions());
     // launch.json decorations
     context.subscriptions.push(vscode.window.onDidChangeActiveTextEditor(function (editor) { return updateLaunchJsonDecorations(editor); }, null, context.subscriptions));
     context.subscriptions.push(vscode.workspace.onDidChangeTextDocument(function (event) {
@@ -32,6 +32,7 @@ function activate(context) {
         }
     }, null, context.subscriptions));
     updateLaunchJsonDecorations(vscode.window.activeTextEditor);
+    var _a;
 }
 exports.activate = activate;
 function registerKeybindingsCompletions() {
@@ -54,42 +55,61 @@ function registerSettingsCompletions() {
     });
 }
 function registerExtensionsCompletions() {
+    return [registerExtensionsCompletionsInExtensionsDocument(), registerExtensionsCompletionsInWorkspaceConfigurationDocument()];
+}
+function registerExtensionsCompletionsInExtensionsDocument() {
     return vscode.languages.registerCompletionItemProvider({ pattern: '**/extensions.json' }, {
         provideCompletionItems: function (document, position, token) {
             var location = jsonc_parser_1.getLocation(document.getText(), document.offsetAt(position));
             var range = document.getWordRangeAtPosition(position) || new vscode.Range(position, position);
             if (location.path[0] === 'recommendations') {
-                var config = jsonc_parser_1.parse(document.getText());
-                var alreadyEnteredExtensions_1 = config && config.recommendations || [];
-                if (Array.isArray(alreadyEnteredExtensions_1)) {
-                    var knownExtensionProposals = vscode.extensions.all.filter(function (e) {
-                        return !(e.id.startsWith('vscode.')
-                            || e.id === 'Microsoft.vscode-markdown'
-                            || alreadyEnteredExtensions_1.indexOf(e.id) > -1);
-                    });
-                    if (knownExtensionProposals.length) {
-                        return knownExtensionProposals.map(function (e) {
-                            var item = new vscode.CompletionItem(e.id);
-                            var insertText = "\"" + e.id + "\"";
-                            item.kind = vscode.CompletionItemKind.Value;
-                            item.insertText = insertText;
-                            item.range = range;
-                            item.filterText = insertText;
-                            return item;
-                        });
-                    }
-                    else {
-                        var example = new vscode.CompletionItem(localize(0, null));
-                        example.insertText = '"vscode.csharp"';
-                        example.kind = vscode.CompletionItemKind.Value;
-                        example.range = range;
-                        return [example];
-                    }
-                }
+                var extensionsContent = jsonc_parser_1.parse(document.getText());
+                return provideInstalledExtensionProposals(extensionsContent, range);
             }
             return [];
         }
     });
+}
+function registerExtensionsCompletionsInWorkspaceConfigurationDocument() {
+    return vscode.languages.registerCompletionItemProvider({ pattern: '**/*.code-workspace' }, {
+        provideCompletionItems: function (document, position, token) {
+            var location = jsonc_parser_1.getLocation(document.getText(), document.offsetAt(position));
+            var range = document.getWordRangeAtPosition(position) || new vscode.Range(position, position);
+            if (location.path[0] === 'extensions' && location.path[1] === 'recommendations') {
+                var extensionsContent = jsonc_parser_1.parse(document.getText())['extensions'];
+                return provideInstalledExtensionProposals(extensionsContent, range);
+            }
+            return [];
+        }
+    });
+}
+function provideInstalledExtensionProposals(extensionsContent, range) {
+    var alreadyEnteredExtensions = extensionsContent && extensionsContent.recommendations || [];
+    if (Array.isArray(alreadyEnteredExtensions)) {
+        var knownExtensionProposals = vscode.extensions.all.filter(function (e) {
+            return !(e.id.startsWith('vscode.')
+                || e.id === 'Microsoft.vscode-markdown'
+                || alreadyEnteredExtensions.indexOf(e.id) > -1);
+        });
+        if (knownExtensionProposals.length) {
+            return knownExtensionProposals.map(function (e) {
+                var item = new vscode.CompletionItem(e.id);
+                var insertText = "\"" + e.id + "\"";
+                item.kind = vscode.CompletionItemKind.Value;
+                item.insertText = insertText;
+                item.range = range;
+                item.filterText = insertText;
+                return item;
+            });
+        }
+        else {
+            var example = new vscode.CompletionItem(localize(0, null));
+            example.insertText = '"vscode.csharp"';
+            example.kind = vscode.CompletionItemKind.Value;
+            example.range = range;
+            return [example];
+        }
+    }
 }
 function newSimpleCompletionItem(label, range, description, insertText) {
     var item = new vscode.CompletionItem(label);
@@ -161,4 +181,4 @@ vscode.languages.registerDocumentSymbolProvider({ pattern: '**/launch.json', lan
         return result;
     }
 });
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/aa42e6ef8184e8ab20ddaa5682b861bfb6f0b2ad/extensions\configuration-editing\out/extension.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/be377c0faf7574a59f84940f593a6849f12e4de7/extensions\configuration-editing\out/extension.js.map

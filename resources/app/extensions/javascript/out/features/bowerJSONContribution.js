@@ -8,7 +8,7 @@ var vscode_1 = require("vscode");
 var markedTextUtil_1 = require("./markedTextUtil");
 var nls = require("vscode-nls");
 var localize = nls.loadMessageBundle(__filename);
-var BowerJSONContribution = (function () {
+var BowerJSONContribution = /** @class */ (function () {
     function BowerJSONContribution(xhr) {
         this.xhr = xhr;
         this.topRanked = ['twitter', 'bootstrap', 'angular-1.1.6', 'angular-latest', 'angulerjs', 'd3', 'myjquery', 'jq', 'abcdef1234567890', 'jQuery', 'jquery-1.11.1', 'jquery',
@@ -172,4 +172,4 @@ var BowerJSONContribution = (function () {
     return BowerJSONContribution;
 }());
 exports.BowerJSONContribution = BowerJSONContribution;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/aa42e6ef8184e8ab20ddaa5682b861bfb6f0b2ad/extensions\javascript\out/features\bowerJSONContribution.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/be377c0faf7574a59f84940f593a6849f12e4de7/extensions\javascript\out/features\bowerJSONContribution.js.map

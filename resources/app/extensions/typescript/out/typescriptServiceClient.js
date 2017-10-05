@@ -289,6 +289,11 @@ class TypeScriptServiceClient {
                         this.lastError = err;
                         this.error('Starting TSServer failed with error.', err);
                         vscode_1.window.showErrorMessage(localize(1, null, err.message || err));
+                        /* __GDPR__
+                            "error" : {
+                                "message": { "classification": "CustomerContent", "purpose": "PerformanceAndHealth" }
+                            }
+                        */
                         this.logTelemetry('error', { message: err.message });
                         return;
                     }
@@ -299,6 +304,9 @@ class TypeScriptServiceClient {
                         if (this.tsServerLogFile) {
                             this.error(`TSServer log file: ${this.tsServerLogFile}`);
                         }
+                        /* __GDPR__
+                            "tsserver.error" : {}
+                        */
                         this.logTelemetry('tsserver.error');
                         this.serviceExited(false);
                     });
@@ -308,6 +316,11 @@ class TypeScriptServiceClient {
                         }
                         else {
                             this.error(`TSServer exited with code: ${code}`);
+                            /* __GDPR__
+                                "tsserver.exitWithCode" : {
+                                    "code" : { "classification": "SystemMetaData", "purpose": "PerformanceAndHealth" }
+                                }
+                            */
                             this.logTelemetry('tsserver.exitWithCode', { code: code });
                         }
                         if (this.tsServerLogFile) {
@@ -419,6 +432,9 @@ class TypeScriptServiceClient {
                         id: MessageAction.reportIssue,
                         isCloseAffordance: true
                     });
+                    /* __GDPR__
+                        "serviceExited" : {}
+                    */
                     this.logTelemetry('serviceExited');
                 }
                 else if (diff < 60 * 1000 /* 1 Minutes */) {
@@ -516,6 +532,8 @@ class TypeScriptServiceClient {
             }).catch((err) => {
                 if (!wasCancelled) {
                     this.error(`'${command}' request failed with error.`, err);
+                    const properties = this.parseErrorText(err && err.message, command);
+                    this.logTelemetry('languageServiceErrorResponse', properties);
                 }
                 throw err;
             });
@@ -524,6 +542,28 @@ class TypeScriptServiceClient {
         this.requestQueue.push(requestInfo);
         this.sendNextRequests();
         return result;
+    }
+    /**
+     * Given a `errorText` from a tsserver request indicating failure in handling a request,
+     * prepares a payload for telemetry-logging.
+     */
+    parseErrorText(errorText, command) {
+        const properties = Object.create(null);
+        properties['command'] = command;
+        if (errorText) {
+            properties['errorText'] = errorText;
+            const errorPrefix = 'Error processing request. ';
+            if (errorText.startsWith(errorPrefix)) {
+                const prefixFreeErrorText = errorText.substr(errorPrefix.length);
+                const newlineIndex = prefixFreeErrorText.indexOf('\n');
+                if (newlineIndex >= 0) {
+                    // Newline expected between message and stack.
+                    properties['message'] = prefixFreeErrorText.substring(0, newlineIndex);
+                    properties['stack'] = prefixFreeErrorText.substring(newlineIndex + 1);
+                }
+            }
+        }
+        return properties;
     }
     sendNextRequests() {
         while (this.callbacks.pendingResponses === 0 && this.requestQueue.length > 0) {
@@ -672,10 +712,18 @@ class TypeScriptServiceClient {
                 }
                 break;
         }
+        /* __GDPR__
+            "typingsInstalled" : {
+                "installedPackages" : { "classification": "PublicNonPersonalData", "purpose": "FeatureInsight" },
+                "installSuccess": { "classification": "SystemMetaData", "purpose": "PerformanceAndHealth" },
+                "typingsInstallerVersion": { "classification": "SystemMetaData", "purpose": "PerformanceAndHealth" }
+            }
+        */
+        // __GDPR__COMMENT__: Other events are defined by TypeScript.
         this.logTelemetry(telemetryData.telemetryEventName, properties);
     }
 }
 TypeScriptServiceClient.WALK_THROUGH_SNIPPET_SCHEME = 'walkThroughSnippet';
 TypeScriptServiceClient.WALK_THROUGH_SNIPPET_SCHEME_COLON = `${TypeScriptServiceClient.WALK_THROUGH_SNIPPET_SCHEME}:`;
 exports.default = TypeScriptServiceClient;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/aa42e6ef8184e8ab20ddaa5682b861bfb6f0b2ad/extensions\typescript\out/typescriptServiceClient.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/be377c0faf7574a59f84940f593a6849f12e4de7/extensions\typescript\out/typescriptServiceClient.js.map

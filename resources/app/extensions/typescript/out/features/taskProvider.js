@@ -43,7 +43,7 @@ class TscTaskProvider {
             for (const project of yield this.getAllTsConfigs(token)) {
                 if (!configPaths.has(project.path)) {
                     configPaths.add(project.path);
-                    tasks.push(yield this.getBuildTaskForProject(project));
+                    tasks.push(...(yield this.getTasksForProject(project)));
                 }
             }
             return tasks;
@@ -122,18 +122,6 @@ class TscTaskProvider {
             return 'tsc';
         });
     }
-    shouldUseWatchForBuild(configFile) {
-        try {
-            const config = JSON.parse(fs.readFileSync(configFile.path, 'utf-8'));
-            if (config) {
-                return !!config.compileOnSave;
-            }
-        }
-        catch (e) {
-            // noop
-        }
-        return false;
-    }
     getActiveTypeScriptFile() {
         const editor = vscode.window.activeTextEditor;
         if (editor) {
@@ -144,7 +132,7 @@ class TscTaskProvider {
         }
         return null;
     }
-    getBuildTaskForProject(project) {
+    getTasksForProject(project) {
         return __awaiter(this, void 0, void 0, function* () {
             const command = yield this.getCommand(project);
             let label = project.path;
@@ -165,16 +153,15 @@ class TscTaskProvider {
                     label = relativePath;
                 }
             }
-            const watch = false && this.shouldUseWatchForBuild(project);
-            const identifier = { type: 'typescript', tsconfig: label };
-            const buildTask = new vscode.Task(identifier, watch
-                ? localize(0, null, label)
-                : localize(1, null, label), 'tsc', new vscode.ShellExecution(`${command} ${watch ? '--watch' : ''} -p "${project.path}"`), watch
-                ? '$tsc-watch'
-                : '$tsc');
+            const buildTaskidentifier = { type: 'typescript', tsconfig: label };
+            const buildTask = new vscode.Task(buildTaskidentifier, localize(0, null, label), 'tsc', new vscode.ShellExecution(`${command} -p "${project.path}"`), '$tsc');
             buildTask.group = vscode.TaskGroup.Build;
-            buildTask.isBackground = watch;
-            return buildTask;
+            buildTask.isBackground = false;
+            const watchTaskidentifier = { type: 'typescript', tsconfig: label, option: 'watch' };
+            const watchTask = new vscode.Task(watchTaskidentifier, localize(1, null, label), 'tsc', new vscode.ShellExecution(`${command} --watch -p "${project.path}"`), '$tsc-watch');
+            watchTask.group = vscode.TaskGroup.Build;
+            watchTask.isBackground = true;
+            return [buildTask, watchTask];
         });
     }
 }
@@ -208,4 +195,4 @@ class TypeScriptTaskProviderManager {
     }
 }
 exports.default = TypeScriptTaskProviderManager;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/aa42e6ef8184e8ab20ddaa5682b861bfb6f0b2ad/extensions\typescript\out/features\taskProvider.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/be377c0faf7574a59f84940f593a6849f12e4de7/extensions\typescript\out/features\taskProvider.js.map

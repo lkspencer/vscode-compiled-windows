@@ -3,7 +3,7 @@
 	"SVGs não são uma fonte de imagem válida.",
 	"SVGs embutidos não são uma fonte de imagem válida.",
 	"URLs de dados não são uma fonte de imagem válida.",
-	"Relative image URLs require a repository with HTTPS protocol to be specified in the package.json.",
-	"An icon requires a repository with HTTPS protocol to be specified in this package.json.",
-	"Relative badge URLs require a repository with HTTPS protocol to be specified in this package.json."
+	"URLs relativas de Imagem exigem um repositório com o protocolo HTTPS para serem especificadas no pacote .json.",
+	"Um ícone requer um repositório com o protocolo HTTPS para ser especificado neste package.json.",
+	"URLs relativas de crachá exigem um repositório com o protocolo HTTPS para ser especificado neste package.json."
 ]

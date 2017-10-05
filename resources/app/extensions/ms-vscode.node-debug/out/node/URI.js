@@ -4,8 +4,8 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 Object.defineProperty(exports, "__esModule", { value: true });
-var URL = require("url");
-var PathUtils = require("./pathUtilities");
+const URL = require("url");
+const PathUtils = require("./pathUtilities");
 function isWindows(absPath) {
     return /^[a-zA-Z]\:\\/.test(absPath);
 }
@@ -15,15 +15,13 @@ function stripFirst(path, c) {
 function stripLast(path, c) {
     return path[path.length - 1] === c ? path.substr(0, path.length - 1) : path;
 }
-var URI = (function () {
-    function URI() {
-    }
+class URI {
     /**
      * Creates a file URI from the given file path.
      * If path is relative, an absolute base path must be provided as well.
      * If base is missing or if base is not absolute, an exception is thrown.
      */
-    URI.file = function (path, base) {
+    static file(path, base) {
         if (typeof path !== 'string') {
             throw new Error('string expected');
         }
@@ -55,7 +53,7 @@ var URI = (function () {
             path = '/' + path;
         }
         path = encodeURI('file://' + path);
-        var u = new URI();
+        const u = new URI();
         u._uri = path;
         try {
             u._u = URL.parse(path);
@@ -64,13 +62,13 @@ var URI = (function () {
             throw new Error(e);
         }
         return u;
-    };
+    }
     /**
      * Creates a URI from the given string.
      */
-    URI.parse = function (uri, base) {
+    static parse(uri, base) {
         if (uri.indexOf('http:') === 0 || uri.indexOf('https:') === 0 || uri.indexOf('file:') === 0 || uri.indexOf('data:') === 0) {
-            var u = new URI();
+            const u = new URI();
             u._uri = uri;
             try {
                 u._u = URL.parse(uri);
@@ -81,37 +79,38 @@ var URI = (function () {
             return u;
         }
         return URI.file(uri, base);
-    };
-    URI.prototype.uri = function () {
+    }
+    constructor() {
+    }
+    uri() {
         return this._uri;
-    };
-    URI.prototype.isFile = function () {
+    }
+    isFile() {
         return this._u.protocol === 'file:';
-    };
-    URI.prototype.filePath = function () {
-        var path = this._u.path;
+    }
+    filePath() {
+        let path = this._u.path;
         path = decodeURI(path);
         if (/^\/[a-zA-Z]\:\//.test(path)) {
             path = path.substr(1); // remove additional '/'
             path = path.replace(/\//g, '\\'); // convert slashes to backslashes
         }
         return path;
-    };
-    URI.prototype.isData = function () {
+    }
+    isData() {
         return this._u.protocol === 'data:' && this._uri.indexOf('application/json') > 0 && this._uri.indexOf('base64') > 0;
-    };
-    URI.prototype.data = function () {
-        var pos = this._uri.lastIndexOf(',');
+    }
+    data() {
+        const pos = this._uri.lastIndexOf(',');
         if (pos > 0) {
             return this._uri.substr(pos + 1);
         }
         return null;
-    };
-    URI.prototype.isHTTP = function () {
+    }
+    isHTTP() {
         return this._u.protocol === 'http:' || this._u.protocol === 'https:';
-    };
-    return URI;
-}());
+    }
+}
 exports.URI = URI;
 
 //# sourceMappingURL=../../out/node/URI.js.map

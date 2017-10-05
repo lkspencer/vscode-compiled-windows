@@ -75,5 +75,19 @@ function stripBOM(s) {
     return s;
 }
 exports.stripBOM = stripBOM;
+const semverRegex = /v?(\d+)\.(\d+)\.(\d+)/;
+function compareSemver(a, b) {
+    const aNum = versionStringToNumber(a);
+    const bNum = versionStringToNumber(b);
+    return aNum - bNum;
+}
+exports.compareSemver = compareSemver;
+function versionStringToNumber(str) {
+    const match = str.match(semverRegex);
+    if (!match) {
+        throw new Error('Invalid node version string: ' + str);
+    }
+    return parseInt(match[1], 10) * 10000 + parseInt(match[2], 10) * 100 + parseInt(match[3], 10);
+}
 
 //# sourceMappingURL=utils.js.map

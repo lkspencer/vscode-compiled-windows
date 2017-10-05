@@ -1,10 +1,10 @@
 {
 	"messages": [
-		"watch - {0}",
-		"build - {0}"
+		"build - {0}",
+		"watch - {0}"
 	],
 	"keys": [
-		"buildAndWatchTscLabel",
-		"buildTscLabel"
+		"buildTscLabel",
+		"buildAndWatchTscLabel"
 	]
 }

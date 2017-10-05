@@ -40,7 +40,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var vscode = require("vscode");
-var TableOfContentsProvider = (function () {
+var TableOfContentsProvider = /** @class */ (function () {
     function TableOfContentsProvider(engine, document) {
         this.engine = engine;
         this.document = document;
@@ -139,7 +139,7 @@ var TableOfContentsProvider = (function () {
         }
     };
     TableOfContentsProvider.getHeaderText = function (header) {
-        return header.replace(/^\s*#+\s*(.*?)\s*\1*$/, function (_, word) { return "" + word.trim(); });
+        return header.replace(/^\s*#+\s*(.*?)\s*#*$/, function (_, word) { return word.trim(); });
     };
     TableOfContentsProvider.slugify = function (header) {
         return encodeURI(header.trim()
@@ -152,4 +152,4 @@ var TableOfContentsProvider = (function () {
     return TableOfContentsProvider;
 }());
 exports.TableOfContentsProvider = TableOfContentsProvider;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/aa42e6ef8184e8ab20ddaa5682b861bfb6f0b2ad/extensions\markdown\out/tableOfContentsProvider.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/be377c0faf7574a59f84940f593a6849f12e4de7/extensions\markdown\out/tableOfContentsProvider.js.map

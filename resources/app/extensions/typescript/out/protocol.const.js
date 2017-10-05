@@ -39,4 +39,4 @@ class DiagnosticCategory {
 DiagnosticCategory.error = 'error';
 DiagnosticCategory.warning = 'warning';
 exports.DiagnosticCategory = DiagnosticCategory;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/aa42e6ef8184e8ab20ddaa5682b861bfb6f0b2ad/extensions\typescript\out/protocol.const.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/be377c0faf7574a59f84940f593a6849f12e4de7/extensions\typescript\out/protocol.const.js.map

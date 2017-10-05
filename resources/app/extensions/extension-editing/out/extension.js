@@ -50,7 +50,7 @@ function activate(context) {
     context.subscriptions.push(new extensionLinter_1.ExtensionLinter(context));
 }
 exports.activate = activate;
-var _linkProvider = new (function () {
+var _linkProvider = new /** @class */ (function () {
     function class_1() {
         this._linkPattern = /[^!]\[.*?\]\(#(.*?)\)/g;
     }
@@ -87,7 +87,7 @@ var _linkProvider = new (function () {
                         while ((match = this._linkPattern.exec(text))) {
                             offset = lookUp(match[1]);
                             if (offset === -1) {
-                                console.warn(match[1]);
+                                console.warn("Could not find symbol for link " + match[1]);
                                 continue;
                             }
                             targetPos = document.positionAt(offset);
@@ -157,4 +157,4 @@ function registerPackageDocumentCompletions() {
         }
     });
 }
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/aa42e6ef8184e8ab20ddaa5682b861bfb6f0b2ad/extensions\extension-editing\out/extension.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/be377c0faf7574a59f84940f593a6849f12e4de7/extensions\extension-editing\out/extension.js.map

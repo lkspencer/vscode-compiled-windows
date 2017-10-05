@@ -296,8 +296,7 @@ class Repository {
         onRelevantRepositoryChange(this.onFSChange, this, this.disposables);
         const onRelevantGitChange = util_1.filterEvent(onRelevantRepositoryChange, uri => /\/\.git\//.test(uri.path));
         onRelevantGitChange(this._onDidChangeRepository.fire, this._onDidChangeRepository, this.disposables);
-        const label = `${path.basename(repository.root)} (Git)`;
-        this._sourceControl = vscode_1.scm.createSourceControl('git', label);
+        this._sourceControl = vscode_1.scm.createSourceControl('git', 'Git', vscode_1.Uri.parse(repository.root));
         this._sourceControl.acceptInputCommand = { command: 'git.commitWithInput', title: localize(17, null), arguments: [this._sourceControl] };
         this._sourceControl.quickDiffProvider = this;
         this.disposables.push(this._sourceControl);
@@ -772,6 +771,29 @@ class Repository {
             }
         });
     }
+    get headLabel() {
+        const HEAD = this.HEAD;
+        if (!HEAD) {
+            return '';
+        }
+        const tag = this.refs.filter(iref => iref.type === git_1.RefType.Tag && iref.commit === HEAD.commit)[0];
+        const tagName = tag && tag.name;
+        const head = HEAD.name || tagName || (HEAD.commit || '').substr(0, 8);
+        return head
+            + (this.workingTreeGroup.resourceStates.length > 0 ? '*' : '')
+            + (this.indexGroup.resourceStates.length > 0 ? '+' : '')
+            + (this.mergeGroup.resourceStates.length > 0 ? '!' : '');
+    }
+    get syncLabel() {
+        if (!this.HEAD
+            || !this.HEAD.name
+            || !this.HEAD.commit
+            || !this.HEAD.upstream
+            || !(this.HEAD.ahead || this.HEAD.behind)) {
+            return '';
+        }
+        return `${this.HEAD.behind}↓ ${this.HEAD.ahead}↑`;
+    }
     dispose() {
         this.disposables = util_1.dispose(this.disposables);
     }
@@ -807,4 +829,4 @@ __decorate([
     decorators_1.throttle
 ], Repository.prototype, "updateWhenIdleAndWait", null);
 exports.Repository = Repository;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/aa42e6ef8184e8ab20ddaa5682b861bfb6f0b2ad/extensions\git\out/repository.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/be377c0faf7574a59f84940f593a6849f12e4de7/extensions\git\out/repository.js.map

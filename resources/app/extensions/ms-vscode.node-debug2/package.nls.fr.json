@@ -26,6 +26,7 @@
 	"node.launch.runtimeArgs.description": "Arguments facultatifs passés à l'exécutable du runtime.",
 	"node.launch.env.description": "Variables d'environnement passées au programme.",
 	"node.launch.envFile.description": "Chemin absolu d'un fichier contenant des définitions de variables d'environnement.",
+	"node.launch.outputCapture.description": "A partir de quelle source capturer les messages de sortie : l’API de débogage ou les flux stdout/stderr.",
 	"node.launch.config.name": "Lancer",
 	"node.attach.processId.description": "ID du processus auquel effectuer la jonction.",
 	"node.attach.localRoot.description": "Racine de la source locale qui correspond à 'remoteRoot'.",
@@ -33,11 +34,11 @@
 	"node.attach.config.name": "Attacher",
 	"node.processattach.config.name": "Attacher au processus",
 	"toggle.skipping.this.file": "Ignorer/Ne pas ignorer ce fichier",
-	"extensionHost.label": "VS Code Extension Development",
-	"extensionHost.launch.runtimeExecutable.description": "Absolute path to VS Code.",
-	"extensionHost.launch.stopOnEntry.description": "Automatically stop the extension host after launch.",
-	"extensionHost.launch.env.description": "Environment variables passed to the extension host.",
-	"extensionHost.snippet.launch.label": "VS Code Extension Development",
-	"extensionHost.snippet.launch.description": "Launch a VS Code extension in debug mode",
-	"extensionHost.launch.config.name": "Launch Extension"
+	"extensionHost.label": "Développement d'extension VS Code",
+	"extensionHost.launch.runtimeExecutable.description": "Chemin absolu de VS Code.",
+	"extensionHost.launch.stopOnEntry.description": "Arrêtez automatiquement l'hôte d'extension après le lancement.",
+	"extensionHost.launch.env.description": "Variables d'environnement passées à l'hôte d'extension.",
+	"extensionHost.snippet.launch.label": "Développement d'extension VS Code",
+	"extensionHost.snippet.launch.description": "Lancer une extension VS Code en mode débogage",
+	"extensionHost.launch.config.name": "Lancer l'extension"
 }

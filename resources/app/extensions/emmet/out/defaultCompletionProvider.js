@@ -8,6 +8,7 @@ const vscode = require("vscode");
 const vscode_emmet_helper_1 = require("vscode-emmet-helper");
 const abbreviationActions_1 = require("./abbreviationActions");
 const util_1 = require("./util");
+const allowedMimeTypesInScriptTag = ['text/html', 'text/plain', 'text/x-template'];
 class DefaultCompletionItemProvider {
     provideCompletionItems(document, position, token) {
         const mappedLanguages = util_1.getMappingForIncludedLanguages();
@@ -47,7 +48,7 @@ class DefaultCompletionItemProvider {
             if (noise) {
                 return;
             }
-            let result = vscode_emmet_helper_1.doComplete(document, position, syntax, util_1.getEmmetConfiguration());
+            let result = vscode_emmet_helper_1.doComplete(document, position, syntax, util_1.getEmmetConfiguration(syntax));
             let newItems = [];
             if (result && result.items) {
                 result.items.forEach(item => {
@@ -82,7 +83,7 @@ class DefaultCompletionItemProvider {
         if (!rootNode) {
             return;
         }
-        let currentNode = util_1.getNode(rootNode, position);
+        let currentNode = util_1.getNode(rootNode, position, true);
         if (!vscode_emmet_helper_1.isStyleSheet(syntax)) {
             const currentHtmlNode = currentNode;
             if (currentHtmlNode
@@ -92,6 +93,10 @@ class DefaultCompletionItemProvider {
                     return 'css';
                 }
                 if (currentHtmlNode.name === 'script') {
+                    if (currentHtmlNode.attributes
+                        && currentHtmlNode.attributes.some(x => x.name.toString() === 'type' && allowedMimeTypesInScriptTag.indexOf(x.value.toString()) > -1)) {
+                        return syntax;
+                    }
                     return;
                 }
             }
@@ -103,4 +108,4 @@ class DefaultCompletionItemProvider {
     }
 }
 exports.DefaultCompletionItemProvider = DefaultCompletionItemProvider;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/aa42e6ef8184e8ab20ddaa5682b861bfb6f0b2ad/extensions\emmet\out/defaultCompletionProvider.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/be377c0faf7574a59f84940f593a6849f12e4de7/extensions\emmet\out/defaultCompletionProvider.js.map

@@ -40,7 +40,7 @@ function getDocumentRegions(languageService, document) {
                     importedScripts.push(value);
                 }
                 else if (lastAttributeName === 'type' && lastTagName.toLowerCase() === 'script') {
-                    if (/["'](text|application)\/(java|ecma)script["']/.test(scanner.getTokenText())) {
+                    if (/["'](module|(text|application)\/(java|ecma)script)["']/.test(scanner.getTokenText())) {
                         languageIdFromType = 'javascript';
                     }
                     else {
@@ -213,4 +213,4 @@ function getAttributeLanguage(attributeName) {
     }
     return match[1] ? 'css' : 'javascript';
 }
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/aa42e6ef8184e8ab20ddaa5682b861bfb6f0b2ad/extensions\html\server\out/modes\embeddedSupport.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/be377c0faf7574a59f84940f593a6849f12e4de7/extensions\html\server\out/modes\embeddedSupport.js.map

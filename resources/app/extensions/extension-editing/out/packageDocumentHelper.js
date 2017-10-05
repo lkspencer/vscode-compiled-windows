@@ -8,7 +8,7 @@ var vscode = require("vscode");
 var jsonc_parser_1 = require("jsonc-parser");
 var nls = require("vscode-nls");
 var localize = nls.loadMessageBundle(__filename);
-var PackageDocument = (function () {
+var PackageDocument = /** @class */ (function () {
     function PackageDocument(document) {
         this.document = document;
     }
@@ -71,4 +71,4 @@ var PackageDocument = (function () {
     return PackageDocument;
 }());
 exports.PackageDocument = PackageDocument;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/aa42e6ef8184e8ab20ddaa5682b861bfb6f0b2ad/extensions\extension-editing\out/packageDocumentHelper.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/be377c0faf7574a59f84940f593a6849f12e4de7/extensions\extension-editing\out/packageDocumentHelper.js.map

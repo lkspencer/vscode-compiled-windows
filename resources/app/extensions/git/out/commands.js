@@ -92,11 +92,14 @@ class MergeItem {
     }
 }
 class CreateBranchItem {
+    constructor(cc) {
+        this.cc = cc;
+    }
     get label() { return localize(2, null); }
     get description() { return ''; }
     run(repository) {
         return __awaiter(this, void 0, void 0, function* () {
-            yield vscode_1.commands.executeCommand('git.branch');
+            yield this.cc.branch(repository);
         });
     }
 }
@@ -148,10 +151,10 @@ class CommandCenter {
             const opts = {
                 preserveFocus,
                 preview,
-                viewColumn: vscode_1.window.activeTextEditor && vscode_1.window.activeTextEditor.viewColumn || vscode_1.ViewColumn.One
+                viewColumn: vscode_1.ViewColumn.Active
             };
             const activeTextEditor = vscode_1.window.activeTextEditor;
-            if (preserveSelection && activeTextEditor && activeTextEditor.document.uri.fsPath === right.fsPath) {
+            if (preserveSelection && activeTextEditor && activeTextEditor.document.uri.toString() === right.toString()) {
                 opts.selection = activeTextEditor.selection;
             }
             if (!left) {
@@ -223,6 +226,11 @@ class CommandCenter {
                 ignoreFocusOut: true
             });
             if (!url) {
+                /* __GDPR__
+                    "clone" : {
+                        "outcome" : { "classification": "SystemMetaData", "purpose": "FeatureInsight" }
+                    }
+                */
                 this.telemetryReporter.sendTelemetryEvent('clone', { outcome: 'no_URL' });
                 return;
             }
@@ -234,6 +242,11 @@ class CommandCenter {
                 ignoreFocusOut: true
             });
             if (!parentPath) {
+                /* __GDPR__
+                    "clone" : {
+                        "outcome" : { "classification": "SystemMetaData", "purpose": "FeatureInsight" }
+                    }
+                */
                 this.telemetryReporter.sendTelemetryEvent('clone', { outcome: 'no_directory' });
                 return;
             }
@@ -245,6 +258,12 @@ class CommandCenter {
                 const open = localize(7, null);
                 const result = yield vscode_1.window.showInformationMessage(localize(8, null), open);
                 const openFolder = result === open;
+                /* __GDPR__
+                    "clone" : {
+                        "outcome" : { "classification": "SystemMetaData", "purpose": "FeatureInsight" },
+                        "openFolder": { "classification": "SystemMetaData", "purpose": "PerformanceAndHealth", "isMeasurement": true }
+                    }
+                */
                 this.telemetryReporter.sendTelemetryEvent('clone', { outcome: 'success' }, { openFolder: openFolder ? 1 : 0 });
                 if (openFolder) {
                     vscode_1.commands.executeCommand('vscode.openFolder', vscode_1.Uri.file(repositoryPath));
@@ -252,9 +271,19 @@ class CommandCenter {
             }
             catch (err) {
                 if (/already exists and is not an empty directory/.test(err && err.stderr || '')) {
+                    /* __GDPR__
+                        "clone" : {
+                            "outcome" : { "classification": "SystemMetaData", "purpose": "FeatureInsight" }
+                        }
+                    */
                     this.telemetryReporter.sendTelemetryEvent('clone', { outcome: 'directory_not_empty' });
                 }
                 else {
+                    /* __GDPR__
+                        "clone" : {
+                            "outcome" : { "classification": "SystemMetaData", "purpose": "FeatureInsight" }
+                        }
+                    */
                     this.telemetryReporter.sendTelemetryEvent('clone', { outcome: 'error' });
                 }
                 throw err;
@@ -277,6 +306,11 @@ class CommandCenter {
             }
             yield this.git.init(path);
             yield this.model.tryOpenRepository(path);
+        });
+    }
+    close(repository) {
+        return __awaiter(this, void 0, void 0, function* () {
+            this.model.close(repository);
         });
     }
     openFile(arg, ...resourceStates) {
@@ -310,9 +344,9 @@ class CommandCenter {
                 const opts = {
                     preserveFocus,
                     preview: preview,
-                    viewColumn: activeTextEditor && activeTextEditor.viewColumn || vscode_1.ViewColumn.One
+                    viewColumn: vscode_1.ViewColumn.Active
                 };
-                if (activeTextEditor && activeTextEditor.document.uri.fsPath === uri.fsPath) {
+                if (activeTextEditor && activeTextEditor.document.uri.toString() === uri.toString()) {
                     opts.selection = activeTextEditor.selection;
                 }
                 const document = yield vscode_1.workspace.openTextDocument(uri);
@@ -664,6 +698,7 @@ class CommandCenter {
             if (
             // no changes
             (noStagedChanges && noUnstagedChanges)
+                // or no staged changes and not `all`
                 || (!opts.all && noStagedChanges)) {
                 vscode_1.window.showInformationMessage(localize(43, null));
                 return false;
@@ -761,7 +796,7 @@ class CommandCenter {
             const checkoutType = config.get('checkoutType') || 'all';
             const includeTags = checkoutType === 'all' || checkoutType === 'tags';
             const includeRemotes = checkoutType === 'all' || checkoutType === 'remote';
-            const createBranch = new CreateBranchItem();
+            const createBranch = new CreateBranchItem(this);
             const heads = repository.refs.filter(ref => ref.type === git_1.RefType.Head)
                 .map(ref => new CheckoutItem(ref));
             const tags = (includeTags ? repository.refs.filter(ref => ref.type === git_1.RefType.Tag) : [])
@@ -983,6 +1018,17 @@ class CommandCenter {
             yield repository.sync();
         });
     }
+    syncAll() {
+        return __awaiter(this, void 0, void 0, function* () {
+            yield Promise.all(this.model.repositories.map((repository) => __awaiter(this, void 0, void 0, function* () {
+                const HEAD = repository.HEAD;
+                if (!HEAD || !HEAD.upstream) {
+                    return;
+                }
+                yield repository.sync();
+            })));
+        });
+    }
     publish(repository) {
         return __awaiter(this, void 0, void 0, function* () {
             const remotes = repository.remotes;
@@ -1003,22 +1049,22 @@ class CommandCenter {
     showOutput() {
         this.outputChannel.show();
     }
-    ignore(repository, ...resourceStates) {
+    ignore(...resourceStates) {
         return __awaiter(this, void 0, void 0, function* () {
             if (resourceStates.length === 0 || !(resourceStates[0].resourceUri instanceof vscode_1.Uri)) {
-                const uri = vscode_1.window.activeTextEditor && vscode_1.window.activeTextEditor.document.uri;
-                if (!uri) {
+                const resource = this.getSCMResource();
+                if (!resource) {
                     return;
                 }
-                return yield repository.ignore([uri]);
+                resourceStates = [resource];
             }
-            const uris = resourceStates
+            const resources = resourceStates
                 .filter(s => s instanceof repository_1.Resource)
                 .map(r => r.resourceUri);
-            if (!uris.length) {
+            if (!resources.length) {
                 return;
             }
-            yield repository.ignore(uris);
+            yield this.runByRepository(resources, (repository, resources) => __awaiter(this, void 0, void 0, function* () { return repository.ignore(resources); }));
         });
     }
     stash(repository) {
@@ -1089,6 +1135,11 @@ class CommandCenter {
                     return Promise.resolve(method.apply(this, [repository, ...args]));
                 });
             }
+            /* __GDPR__
+                "git.command" : {
+                    "command" : { "classification": "SystemMetaData", "purpose": "FeatureInsight" }
+                }
+            */
             this.telemetryReporter.sendTelemetryEvent('git.command', { command: id });
             return result.catch((err) => __awaiter(this, void 0, void 0, function* () {
                 let message;
@@ -1185,6 +1236,9 @@ __decorate([
 __decorate([
     command('git.init')
 ], CommandCenter.prototype, "init", null);
+__decorate([
+    command('git.close', { repository: true })
+], CommandCenter.prototype, "close", null);
 __decorate([
     command('git.openFile')
 ], CommandCenter.prototype, "openFile", null);
@@ -1285,13 +1339,16 @@ __decorate([
     command('git.sync', { repository: true })
 ], CommandCenter.prototype, "sync", null);
 __decorate([
+    command('git._syncAll')
+], CommandCenter.prototype, "syncAll", null);
+__decorate([
     command('git.publish', { repository: true })
 ], CommandCenter.prototype, "publish", null);
 __decorate([
     command('git.showOutput')
 ], CommandCenter.prototype, "showOutput", null);
 __decorate([
-    command('git.ignore', { repository: true })
+    command('git.ignore')
 ], CommandCenter.prototype, "ignore", null);
 __decorate([
     command('git.stash', { repository: true })
@@ -1303,4 +1360,4 @@ __decorate([
     command('git.stashPopLatest', { repository: true })
 ], CommandCenter.prototype, "stashPopLatest", null);
 exports.CommandCenter = CommandCenter;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/aa42e6ef8184e8ab20ddaa5682b861bfb6f0b2ad/extensions\git\out/commands.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/be377c0faf7574a59f84940f593a6849f12e4de7/extensions\git\out/commands.js.map

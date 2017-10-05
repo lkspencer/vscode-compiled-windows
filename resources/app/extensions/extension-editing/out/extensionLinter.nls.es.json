@@ -3,7 +3,7 @@
 	"Los SVG no son un origen de imagen válido.",
 	"Los SGV insertados no son un origen de imagen válido.",
 	"Las direcciones URL de datos no son un origen de imagen válido.",
-	"Relative image URLs require a repository with HTTPS protocol to be specified in the package.json.",
-	"An icon requires a repository with HTTPS protocol to be specified in this package.json.",
-	"Relative badge URLs require a repository with HTTPS protocol to be specified in this package.json."
+	"Las direcciones URL relativas de imágenes requieren un repositorio con el protocolo HTTPS especificado en el archivo package.json.",
+	"Un icono requiere un repositorio con el protocolo HTTPS especificado en este archivo package.json.",
+	"Las direcciones URL relativas de distintivos requieren un repositorio con el protocolo HTTPS especificado en este archivo package.json."
 ]

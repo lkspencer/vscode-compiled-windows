@@ -44,17 +44,23 @@ class TypeScriptVersion {
         if (!fs.existsSync(serverPath)) {
             return undefined;
         }
-        let p = serverPath.split(path.sep);
+        const p = serverPath.split(path.sep);
         if (p.length <= 2) {
             return undefined;
         }
-        let p2 = p.slice(0, -2);
-        let modulePath = p2.join(path.sep);
+        const p2 = p.slice(0, -2);
+        const modulePath = p2.join(path.sep);
         let fileName = path.join(modulePath, 'package.json');
+        if (!fs.existsSync(fileName)) {
+            // Special case for ts dev versions
+            if (path.basename(modulePath) === 'built') {
+                fileName = path.join(modulePath, '..', 'package.json');
+            }
+        }
         if (!fs.existsSync(fileName)) {
             return undefined;
         }
-        let contents = fs.readFileSync(fileName).toString();
+        const contents = fs.readFileSync(fileName).toString();
         let desc = null;
         try {
             desc = JSON.parse(contents);
@@ -162,4 +168,4 @@ class TypeScriptVersionProvider {
     }
 }
 exports.TypeScriptVersionProvider = TypeScriptVersionProvider;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/aa42e6ef8184e8ab20ddaa5682b861bfb6f0b2ad/extensions\typescript\out/utils\versionProvider.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/be377c0faf7574a59f84940f593a6849f12e4de7/extensions\typescript\out/utils\versionProvider.js.map

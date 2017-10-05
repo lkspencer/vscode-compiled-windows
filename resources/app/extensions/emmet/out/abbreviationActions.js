@@ -119,7 +119,7 @@ function expandEmmetAbbreviation(args) {
         if (!vscode_emmet_helper_1.isAbbreviationValid(syntax, abbreviation)) {
             return;
         }
-        let currentNode = util_1.getNode(rootNode, position);
+        let currentNode = util_1.getNode(rootNode, position, true);
         if (!isValidLocationForEmmetAbbreviation(currentNode, syntax, position)) {
             return;
         }
@@ -228,8 +228,7 @@ function expandAbbreviationInRange(editor, expandAbbrList, insertSameSnippet) {
  * Expands abbreviation as detailed in given input.
  */
 function expandAbbr(input) {
-    const emmetConfig = vscode.workspace.getConfiguration('emmet');
-    const expandOptions = vscode_emmet_helper_1.getExpandOptions(input.syntax, emmetConfig, input.filter);
+    const expandOptions = vscode_emmet_helper_1.getExpandOptions(input.syntax, util_1.getEmmetConfiguration(input.syntax), input.filter);
     if (input.textToWrap) {
         if (input.filter && input.filter.indexOf('t') > -1) {
             input.textToWrap = input.textToWrap.map(line => {
@@ -278,4 +277,4 @@ function getSyntaxFromArgs(args) {
     }
     return syntax;
 }
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/aa42e6ef8184e8ab20ddaa5682b861bfb6f0b2ad/extensions\emmet\out/abbreviationActions.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/be377c0faf7574a59f84940f593a6849f12e4de7/extensions\emmet\out/abbreviationActions.js.map

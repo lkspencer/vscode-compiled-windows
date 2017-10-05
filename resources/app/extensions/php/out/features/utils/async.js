@@ -34,7 +34,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
  * 			throttler.queue(() => { return makeTheTrip(); });
  * 		}
  */
-var Throttler = (function () {
+var Throttler = /** @class */ (function () {
     function Throttler() {
         this.activePromise = null;
         this.queuedPromise = null;
@@ -96,7 +96,7 @@ exports.Throttler = Throttler;
  * 			delayer.trigger(() => { return makeTheTrip(); });
  * 		}
  */
-var Delayer = (function () {
+var Delayer = /** @class */ (function () {
     function Delayer(defaultDelay) {
         this.defaultDelay = defaultDelay;
         this.timeout = null;
@@ -151,7 +151,7 @@ exports.Delayer = Delayer;
  * Simply combine the two mail man strategies from the Throttler and Delayer
  * helpers, for an analogy.
  */
-var ThrottledDelayer = (function (_super) {
+var ThrottledDelayer = /** @class */ (function (_super) {
     __extends(ThrottledDelayer, _super);
     function ThrottledDelayer(defaultDelay) {
         var _this = _super.call(this, defaultDelay) || this;
@@ -165,4 +165,4 @@ var ThrottledDelayer = (function (_super) {
     return ThrottledDelayer;
 }(Delayer));
 exports.ThrottledDelayer = ThrottledDelayer;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/aa42e6ef8184e8ab20ddaa5682b861bfb6f0b2ad/extensions\php\out/features\utils\async.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/be377c0faf7574a59f84940f593a6849f12e4de7/extensions\php\out/features\utils\async.js.map

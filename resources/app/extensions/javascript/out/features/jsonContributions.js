@@ -20,7 +20,7 @@ function addJSONProviders(xhr) {
     return vscode_1.Disposable.from.apply(vscode_1.Disposable, subscriptions);
 }
 exports.addJSONProviders = addJSONProviders;
-var JSONHoverProvider = (function () {
+var JSONHoverProvider = /** @class */ (function () {
     function JSONHoverProvider(jsonContribution) {
         this.jsonContribution = jsonContribution;
     }
@@ -47,7 +47,7 @@ var JSONHoverProvider = (function () {
     return JSONHoverProvider;
 }());
 exports.JSONHoverProvider = JSONHoverProvider;
-var JSONCompletionItemProvider = (function () {
+var JSONCompletionItemProvider = /** @class */ (function () {
     function JSONCompletionItemProvider(jsonContribution) {
         this.jsonContribution = jsonContribution;
     }
@@ -132,4 +132,4 @@ var JSONCompletionItemProvider = (function () {
     return JSONCompletionItemProvider;
 }());
 exports.JSONCompletionItemProvider = JSONCompletionItemProvider;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/aa42e6ef8184e8ab20ddaa5682b861bfb6f0b2ad/extensions\javascript\out/features\jsonContributions.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/be377c0faf7574a59f84940f593a6849f12e4de7/extensions\javascript\out/features\jsonContributions.js.map

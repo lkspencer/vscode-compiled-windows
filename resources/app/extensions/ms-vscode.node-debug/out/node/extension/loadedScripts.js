@@ -2,128 +2,121 @@
  * Copyright (C) Microsoft Corporation. All rights reserved.
  *--------------------------------------------------------*/
 'use strict';
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
 Object.defineProperty(exports, "__esModule", { value: true });
-var vscode = require("vscode");
-var vscode_1 = require("vscode");
-var utilities_1 = require("./utilities");
-var path_1 = require("path");
+const vscode = require("vscode");
+const vscode_1 = require("vscode");
+const utilities_1 = require("./utilities");
+const path_1 = require("path");
 //---- loaded script explorer
-var URL_REGEXP = /^(https?:\/\/[^/]+)(\/.*)$/;
-var LoadedScriptsProvider = (function () {
-    function LoadedScriptsProvider(context) {
-        var _this = this;
+const URL_REGEXP = /^(https?:\/\/[^/]+)(\/.*)$/;
+class Source {
+    constructor(path) {
+        this.name = path_1.basename(path);
+        this.path = path;
+    }
+}
+class LoadedScriptItem {
+    constructor(source) {
+        this.label = path_1.basename(source.path);
+        this.description = source.path;
+        this.source = source;
+    }
+}
+class LoadedScriptsProvider {
+    constructor(context) {
         this._onDidChangeTreeData = new vscode_1.EventEmitter();
         this.onDidChangeTreeData = this._onDidChangeTreeData.event;
         this._root = new RootTreeItem();
-        context.subscriptions.push(vscode.debug.onDidStartDebugSession(function (session) {
-            if (session && (session.type === 'node' || session.type === 'node2')) {
-                _this._root.add(session);
-                _this._onDidChangeTreeData.fire(undefined);
+        context.subscriptions.push(vscode.debug.onDidStartDebugSession(session => {
+            const t = session ? session.type : undefined;
+            if (t === 'node' || t === 'node2' || t === 'extensionHost' || t === 'chrome') {
+                this._root.add(session);
+                this._onDidChangeTreeData.fire(undefined);
             }
         }));
-        var timeout;
-        context.subscriptions.push(vscode.debug.onDidReceiveDebugSessionCustomEvent(function (event) {
-            if (event.event === 'scriptLoaded' && (event.session.type === 'node' || event.session.type === 'node2' || event.session.type === 'extensionHost' || event.session.type === 'chrome')) {
-                var sessionRoot = _this._root.add(event.session);
-                sessionRoot.addPath(event.body.path);
+        let timeout;
+        context.subscriptions.push(vscode.debug.onDidReceiveDebugSessionCustomEvent(event => {
+            const t = (event.event === 'loadedSource' && event.session) ? event.session.type : undefined;
+            if (t === 'node' || t === 'node2' || t === 'extensionHost' || t === 'chrome') {
+                const sessionRoot = this._root.add(event.session);
+                sessionRoot.addPath(event.body.source);
                 clearTimeout(timeout);
-                timeout = setTimeout(function () {
-                    _this._onDidChangeTreeData.fire(undefined);
+                timeout = setTimeout(() => {
+                    this._onDidChangeTreeData.fire(undefined);
                 }, 300);
             }
         }));
-        context.subscriptions.push(vscode.debug.onDidTerminateDebugSession(function (session) {
-            _this._root.remove(session.id);
-            _this._onDidChangeTreeData.fire(undefined);
+        context.subscriptions.push(vscode.debug.onDidTerminateDebugSession(session => {
+            this._root.remove(session.id);
+            this._onDidChangeTreeData.fire(undefined);
         }));
     }
-    LoadedScriptsProvider.prototype.getChildren = function (node) {
+    getChildren(node) {
         return (node || this._root).getChildren();
-    };
-    LoadedScriptsProvider.prototype.getTreeItem = function (node) {
-        return node;
-    };
-    return LoadedScriptsProvider;
-}());
-exports.LoadedScriptsProvider = LoadedScriptsProvider;
-var BaseTreeItem = (function (_super) {
-    __extends(BaseTreeItem, _super);
-    function BaseTreeItem(label, state) {
-        if (state === void 0) { state = vscode.TreeItemCollapsibleState.Collapsed; }
-        var _this = _super.call(this, label, state) || this;
-        _this._children = {};
-        return _this;
     }
-    BaseTreeItem.prototype.setPath = function (session, path) {
+    getTreeItem(node) {
+        return node;
+    }
+}
+exports.LoadedScriptsProvider = LoadedScriptsProvider;
+class BaseTreeItem extends vscode_1.TreeItem {
+    constructor(label, state = vscode.TreeItemCollapsibleState.Collapsed) {
+        super(label, state);
+        this._children = {};
+    }
+    setSource(session, source) {
         this.command = {
             command: 'extension.node-debug.openScript',
-            arguments: [session, path],
+            arguments: [session, source],
             title: ''
         };
-    };
-    BaseTreeItem.prototype.getChildren = function () {
-        var _this = this;
+    }
+    getChildren() {
         this.collapsibleState = vscode.TreeItemCollapsibleState.Expanded;
-        var array = Object.keys(this._children).map(function (key) { return _this._children[key]; });
-        return array.sort(function (a, b) { return _this.compare(a, b); });
-    };
-    BaseTreeItem.prototype.createIfNeeded = function (key, factory) {
-        var child = this._children[key];
+        const array = Object.keys(this._children).map(key => this._children[key]);
+        return array.sort((a, b) => this.compare(a, b));
+    }
+    createIfNeeded(key, factory) {
+        let child = this._children[key];
         if (!child) {
             child = factory(key);
             this._children[key] = child;
         }
         return child;
-    };
-    BaseTreeItem.prototype.remove = function (key) {
-        delete this._children[key];
-    };
-    BaseTreeItem.prototype.compare = function (a, b) {
-        return a.label.localeCompare(b.label);
-    };
-    return BaseTreeItem;
-}(vscode_1.TreeItem));
-var RootTreeItem = (function (_super) {
-    __extends(RootTreeItem, _super);
-    function RootTreeItem() {
-        var _this = _super.call(this, 'Root', vscode.TreeItemCollapsibleState.Expanded) || this;
-        _this._showedMoreThanOne = false;
-        return _this;
     }
-    RootTreeItem.prototype.getChildren = function () {
+    remove(key) {
+        delete this._children[key];
+    }
+    compare(a, b) {
+        return a.label.localeCompare(b.label);
+    }
+}
+class RootTreeItem extends BaseTreeItem {
+    constructor() {
+        super('Root', vscode.TreeItemCollapsibleState.Expanded);
+        this._showedMoreThanOne = false;
+    }
+    getChildren() {
         // skip sessions if there is only one
-        var children = _super.prototype.getChildren.call(this);
+        const children = super.getChildren();
         if (Array.isArray(children)) {
-            var size = children.length;
+            const size = children.length;
             if (!this._showedMoreThanOne && size === 1) {
                 return children[0].getChildren();
             }
             this._showedMoreThanOne = size > 1;
         }
         return children;
-    };
-    RootTreeItem.prototype.add = function (session) {
-        return this.createIfNeeded(session.id, function () { return new SessionTreeItem(session); });
-    };
-    return RootTreeItem;
-}(BaseTreeItem));
-var SessionTreeItem = (function (_super) {
-    __extends(SessionTreeItem, _super);
-    function SessionTreeItem(session) {
-        var _this = _super.call(this, session.name, vscode.TreeItemCollapsibleState.Expanded) || this;
-        _this._initialized = false;
-        _this._session = session;
-        return _this;
+    }
+    add(session) {
+        return this.createIfNeeded(session.id, () => new SessionTreeItem(session));
+    }
+}
+class SessionTreeItem extends BaseTreeItem {
+    constructor(session) {
+        super(session.name, vscode.TreeItemCollapsibleState.Expanded);
+        this._initialized = false;
+        this._session = session;
         /*
         const dir = dirname(__filename);
         this.iconPath = {
@@ -132,31 +125,30 @@ var SessionTreeItem = (function (_super) {
         };
         */
     }
-    SessionTreeItem.prototype.getChildren = function () {
-        var _this = this;
+    getChildren() {
         if (!this._initialized) {
             this._initialized = true;
-            return listLoadedScripts(this._session).then(function (paths) {
+            return listLoadedScripts(this._session).then(paths => {
                 if (paths) {
-                    paths.forEach(function (path) { return _this.addPath(path); });
+                    paths.forEach(path => this.addPath(path));
                 }
-                return _super.prototype.getChildren.call(_this);
+                return super.getChildren();
             });
         }
-        return _super.prototype.getChildren.call(this);
-    };
-    SessionTreeItem.prototype.compare = function (a, b) {
-        var acat = this.category(a);
-        var bcat = this.category(b);
+        return super.getChildren();
+    }
+    compare(a, b) {
+        const acat = this.category(a);
+        const bcat = this.category(b);
         if (acat !== bcat) {
             return acat - bcat;
         }
-        return _super.prototype.compare.call(this, a, b);
-    };
+        return super.compare(a, b);
+    }
     /**
      * Return an ordinal number for folders
      */
-    SessionTreeItem.prototype.category = function (item) {
+    category(item) {
         // workspace scripts come at the beginning in "folder" order
         if (item instanceof FolderTreeItem) {
             return item.folder.index;
@@ -167,12 +159,13 @@ var SessionTreeItem = (function (_super) {
         }
         // everything else in between
         return 999;
-    };
-    SessionTreeItem.prototype.addPath = function (path) {
-        var folder;
-        var url;
-        var p;
-        var match = URL_REGEXP.exec(path);
+    }
+    addPath(source) {
+        let folder;
+        let url;
+        let p;
+        let path = source.path;
+        const match = URL_REGEXP.exec(path);
         if (match && match.length === 3) {
             url = match[1];
             p = decodeURI(match[2]);
@@ -181,66 +174,57 @@ var SessionTreeItem = (function (_super) {
             folder = vscode.workspace.getWorkspaceFolder(vscode.Uri.file(path));
             p = trim(path);
         }
-        var x = this;
-        p.split(/[\/\\]/).forEach(function (segment, i) {
+        let x = this;
+        p.split(/[\/\\]/).forEach((segment, i) => {
             if (segment.length === 0) {
                 segment = '/';
             }
             if (i === 0 && folder) {
-                x = x.createIfNeeded(folder.name, function () { return new FolderTreeItem(folder); });
+                x = x.createIfNeeded(folder.name, () => new FolderTreeItem(folder));
             }
             else if (i === 0 && url) {
-                x = x.createIfNeeded(url, function () { return new BaseTreeItem(url); });
+                x = x.createIfNeeded(url, () => new BaseTreeItem(url));
             }
             else {
-                x = x.createIfNeeded(segment, function () { return new BaseTreeItem(segment); });
+                x = x.createIfNeeded(segment, () => new BaseTreeItem(segment));
             }
         });
         x.collapsibleState = vscode.TreeItemCollapsibleState.None;
-        x.setPath(this._session, path);
-    };
-    return SessionTreeItem;
-}(BaseTreeItem));
-var FolderTreeItem = (function (_super) {
-    __extends(FolderTreeItem, _super);
-    function FolderTreeItem(folder) {
-        var _this = _super.call(this, folder.name, vscode.TreeItemCollapsibleState.Collapsed) || this;
-        _this.folder = folder;
-        return _this;
+        x.setSource(this._session, source);
     }
-    return FolderTreeItem;
-}(BaseTreeItem));
+}
+class FolderTreeItem extends BaseTreeItem {
+    constructor(folder) {
+        super(folder.name, vscode.TreeItemCollapsibleState.Collapsed);
+        this.folder = folder;
+    }
+}
 //---- loaded script picker
 function pickLoadedScript() {
-    var session = vscode.debug.activeDebugSession;
-    return listLoadedScripts(session).then(function (paths) {
-        var options = {
+    const session = vscode.debug.activeDebugSession;
+    return listLoadedScripts(session).then(sources => {
+        let options = {
             placeHolder: utilities_1.localize('select.script', "Select a script"),
             matchOnDescription: true,
             matchOnDetail: true,
             ignoreFocusOut: true
         };
-        var items;
-        if (paths === undefined) {
+        let items;
+        if (sources === undefined) {
             items = [{ label: utilities_1.localize('no.loaded.scripts', "No loaded scripts available"), description: '' }];
         }
         else {
-            items = paths.map(function (path) {
-                return {
-                    label: path_1.basename(path),
-                    description: trim(path)
-                };
-            }).sort(function (a, b) { return a.label.localeCompare(b.label); });
+            items = sources.map(source => new LoadedScriptItem(source)).sort((a, b) => a.label.localeCompare(b.label));
         }
-        vscode.window.showQuickPick(items, options).then(function (item) {
-            if (item && item.description) {
-                openScript(session, item.description);
+        vscode.window.showQuickPick(items, options).then(item => {
+            if (item && item.source) {
+                openScript(session, item.source);
             }
         });
     });
 }
 exports.pickLoadedScript = pickLoadedScript;
-var USERHOME;
+let USERHOME;
 function getUserHome() {
     if (!USERHOME) {
         USERHOME = require('os').homedir();
@@ -259,9 +243,9 @@ function trim(path) {
 }
 function listLoadedScripts(session) {
     if (session) {
-        return session.customRequest('getLoadedScripts').then(function (reply) {
-            return reply.paths;
-        }, function (err) {
+        return session.customRequest('loadedSources').then(reply => {
+            return reply.sources;
+        }, err => {
             return undefined;
         });
     }
@@ -269,9 +253,18 @@ function listLoadedScripts(session) {
         return Promise.resolve(undefined);
     }
 }
-function openScript(session, path) {
-    var uri = vscode.Uri.parse("debug:" + path + "?session=" + session.id);
-    vscode.workspace.openTextDocument(uri).then(function (doc) { return vscode.window.showTextDocument(doc); });
+function openScript(session, source) {
+    let debug = `debug:${encodeURIComponent(source.path)}`;
+    let sep = '?';
+    if (session) {
+        debug += `${sep}session=${encodeURIComponent(session.id)}`;
+        sep = '&';
+    }
+    if (source.sourceReference) {
+        debug += `${sep}ref=${source.sourceReference}`;
+    }
+    let uri = vscode.Uri.parse(debug);
+    vscode.workspace.openTextDocument(uri).then(doc => vscode.window.showTextDocument(doc));
 }
 exports.openScript = openScript;
 

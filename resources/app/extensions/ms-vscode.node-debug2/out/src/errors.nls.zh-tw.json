@@ -5,5 +5,6 @@
 	"未知的主控台類型 '{0}'。",
 	"無法啟動程式 '{0}'; 設定來源對應可有所幫助。",
 	"無法啟動程式 '{0}'。設定 '{1}' 屬性可能會有幫助。",
+	"Cannot launch program '{0}' because corresponding JavaScript cannot be found.",
 	"無法從檔案 ({0}) 載入環境變數。"
 ]

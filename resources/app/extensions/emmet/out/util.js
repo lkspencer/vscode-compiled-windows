@@ -10,19 +10,19 @@ const css_parser_1 = require("@emmetio/css-parser");
 const bufferStream_1 = require("./bufferStream");
 const vscode_emmet_helper_1 = require("vscode-emmet-helper");
 exports.LANGUAGE_MODES = {
-    'html': ['!', '.', '}', ':', '*', '$', ']'],
-    'jade': ['!', '.', '}', ':', '*', '$', ']'],
-    'slim': ['!', '.', '}', ':', '*', '$', ']'],
-    'haml': ['!', '.', '}', ':', '*', '$', ']'],
-    'xml': ['.', '}', '*', '$', ']'],
-    'xsl': ['!', '.', '}', '*', '$', ']'],
-    'css': [':', ';'],
-    'scss': [':', ';'],
-    'sass': [':'],
-    'less': [':', ';'],
-    'stylus': [':'],
-    'javascriptreact': ['.', '}', '*', '$'],
-    'typescriptreact': ['.', '}', '*', '$']
+    'html': ['!', '.', '}', ':', '*', '$', ']', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9'],
+    'jade': ['!', '.', '}', ':', '*', '$', ']', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9'],
+    'slim': ['!', '.', '}', ':', '*', '$', ']', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9'],
+    'haml': ['!', '.', '}', ':', '*', '$', ']', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9'],
+    'xml': ['.', '}', '*', '$', ']', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9'],
+    'xsl': ['!', '.', '}', '*', '$', ']', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9'],
+    'css': [':', ';', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9'],
+    'scss': [':', ';', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9'],
+    'sass': [':', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9'],
+    'less': [':', ';', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9'],
+    'stylus': [':', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9'],
+    'javascriptreact': ['.', '}', '*', '$', ']', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9'],
+    'typescriptreact': ['.', '}', '*', '$', ']', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9']
 };
 // Explicitly map languages that have built-in grammar in VS Code to their parent language
 // to get emmet completion support
@@ -236,13 +236,24 @@ function sameNodes(node1, node2) {
     return node1.start.isEqual(node2.start) && node1.end.isEqual(node2.end);
 }
 exports.sameNodes = sameNodes;
-function getEmmetConfiguration() {
+function getEmmetConfiguration(syntax) {
     const emmetConfig = vscode.workspace.getConfiguration('emmet');
+    const syntaxProfiles = Object.assign({}, emmetConfig['syntaxProfiles'] || {});
+    // jsx, xml and xsl syntaxes need to have self closing tags unless otherwise configured by user
+    if (syntax === 'jsx' || syntax === 'xml' || syntax === 'xsl') {
+        syntaxProfiles[syntax] = syntaxProfiles[syntax] || {};
+        if (typeof syntaxProfiles[syntax] === 'object'
+            && !syntaxProfiles[syntax].hasOwnProperty('self_closing_tag') // Old Emmet format
+            && !syntaxProfiles[syntax].hasOwnProperty('selfClosingStyle') // Emmet 2.0 format
+        ) {
+            syntaxProfiles[syntax]['selfClosingStyle'] = 'xml';
+        }
+    }
     return {
         preferences: emmetConfig['preferences'],
         showExpandedAbbreviation: emmetConfig['showExpandedAbbreviation'],
         showAbbreviationSuggestions: emmetConfig['showAbbreviationSuggestions'],
-        syntaxProfiles: emmetConfig['syntaxProfiles'],
+        syntaxProfiles,
         variables: emmetConfig['variables']
     };
 }
@@ -295,4 +306,4 @@ function getCssPropertyFromDocument(editor, position) {
     }
 }
 exports.getCssPropertyFromDocument = getCssPropertyFromDocument;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/aa42e6ef8184e8ab20ddaa5682b861bfb6f0b2ad/extensions\emmet\out/util.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/be377c0faf7574a59f84940f593a6849f12e4de7/extensions\emmet\out/util.js.map

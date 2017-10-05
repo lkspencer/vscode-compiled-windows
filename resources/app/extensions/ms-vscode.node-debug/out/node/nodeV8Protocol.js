@@ -3,98 +3,76 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
 Object.defineProperty(exports, "__esModule", { value: true });
-var EE = require("events");
-var nls = require("vscode-nls");
-var localize = nls.loadMessageBundle(__filename);
-var NodeV8Message = (function () {
-    function NodeV8Message(type) {
+const EE = require("events");
+const nls = require("vscode-nls");
+const localize = nls.loadMessageBundle(__filename);
+class NodeV8Message {
+    constructor(type) {
         this.seq = 0;
         this.type = type;
     }
-    return NodeV8Message;
-}());
+}
 exports.NodeV8Message = NodeV8Message;
-var NodeV8Response = (function (_super) {
-    __extends(NodeV8Response, _super);
-    function NodeV8Response(request, message) {
-        var _this = _super.call(this, 'response') || this;
-        _this.request_seq = request.seq;
-        _this.command = request.command;
+class NodeV8Response extends NodeV8Message {
+    constructor(request, message) {
+        super('response');
+        this.request_seq = request.seq;
+        this.command = request.command;
         if (message) {
-            _this.success = false;
-            _this.message = message;
+            this.success = false;
+            this.message = message;
         }
         else {
-            _this.success = true;
+            this.success = true;
         }
-        return _this;
     }
-    return NodeV8Response;
-}(NodeV8Message));
+}
 exports.NodeV8Response = NodeV8Response;
-var NodeV8Event = (function (_super) {
-    __extends(NodeV8Event, _super);
-    function NodeV8Event(event, body) {
-        var _this = _super.call(this, 'event') || this;
-        _this.event = event;
+class NodeV8Event extends NodeV8Message {
+    constructor(event, body) {
+        super('event');
+        this.event = event;
         if (body) {
-            _this.body = body;
+            this.body = body;
         }
-        return _this;
     }
-    return NodeV8Event;
-}(NodeV8Message));
+}
 exports.NodeV8Event = NodeV8Event;
 //---- the protocol implementation
-var NodeV8Protocol = (function (_super) {
-    __extends(NodeV8Protocol, _super);
-    function NodeV8Protocol(responseHook) {
-        var _this = _super.call(this) || this;
-        _this._pendingRequests = new Map();
-        _this.embeddedHostVersion = -1;
-        _this._responseHook = responseHook;
-        return _this;
+class NodeV8Protocol extends EE.EventEmitter {
+    constructor(responseHook) {
+        super();
+        this._pendingRequests = new Map();
+        this.embeddedHostVersion = -1;
+        this._responseHook = responseHook;
     }
-    NodeV8Protocol.prototype.startDispatch = function (inStream, outStream) {
-        var _this = this;
+    startDispatch(inStream, outStream) {
         this._sequence = 1;
         this._writableStream = outStream;
-        inStream.on('data', function (data) { return _this.execute(data); });
-        inStream.on('close', function () {
-            _this.emitEvent(new NodeV8Event('close'));
+        inStream.on('data', (data) => this.execute(data));
+        inStream.on('close', () => {
+            this.emitEvent(new NodeV8Event('close'));
         });
-        inStream.on('error', function (error) {
-            _this.emitEvent(new NodeV8Event('error'));
+        inStream.on('error', (error) => {
+            this.emitEvent(new NodeV8Event('error'));
         });
-        outStream.on('error', function (error) {
-            _this.emitEvent(new NodeV8Event('error'));
+        outStream.on('error', (error) => {
+            this.emitEvent(new NodeV8Event('error'));
         });
         inStream.resume();
-    };
-    NodeV8Protocol.prototype.stop = function () {
+    }
+    stop() {
         if (this._writableStream) {
             this._writableStream.end();
         }
-    };
-    NodeV8Protocol.prototype.command = function (command, args, cb) {
+    }
+    command(command, args, cb) {
         this._command(command, args, NodeV8Protocol.TIMEOUT, cb);
-    };
-    NodeV8Protocol.prototype.command2 = function (command, args, timeout) {
-        var _this = this;
-        if (timeout === void 0) { timeout = NodeV8Protocol.TIMEOUT; }
-        return new Promise(function (resolve, reject) {
-            _this._command(command, args, timeout, function (response) {
+    }
+    command2(command, args, timeout = NodeV8Protocol.TIMEOUT) {
+        return new Promise((resolve, reject) => {
+            this._command(command, args, timeout, response => {
                 if (response.success) {
                     resolve(response);
                 }
@@ -107,62 +85,51 @@ var NodeV8Protocol = (function (_super) {
                 }
             });
         });
-    };
-    NodeV8Protocol.prototype.backtrace = function (args, timeout) {
-        if (timeout === void 0) { timeout = NodeV8Protocol.TIMEOUT; }
+    }
+    backtrace(args, timeout = NodeV8Protocol.TIMEOUT) {
         return this.command2('backtrace', args);
-    };
-    NodeV8Protocol.prototype.restartFrame = function (args, timeout) {
-        if (timeout === void 0) { timeout = NodeV8Protocol.TIMEOUT; }
+    }
+    restartFrame(args, timeout = NodeV8Protocol.TIMEOUT) {
         return this.command2('restartframe', args);
-    };
-    NodeV8Protocol.prototype.evaluate = function (args, timeout) {
-        if (timeout === void 0) { timeout = NodeV8Protocol.TIMEOUT; }
+    }
+    evaluate(args, timeout = NodeV8Protocol.TIMEOUT) {
         return this.command2('evaluate', args);
-    };
-    NodeV8Protocol.prototype.scripts = function (args, timeout) {
-        if (timeout === void 0) { timeout = NodeV8Protocol.TIMEOUT; }
+    }
+    scripts(args, timeout = NodeV8Protocol.TIMEOUT) {
         return this.command2('scripts', args);
-    };
-    NodeV8Protocol.prototype.setVariableValue = function (args, timeout) {
-        if (timeout === void 0) { timeout = NodeV8Protocol.TIMEOUT; }
+    }
+    setVariableValue(args, timeout = NodeV8Protocol.TIMEOUT) {
         return this.command2('setvariablevalue', args);
-    };
-    NodeV8Protocol.prototype.frame = function (args, timeout) {
-        if (timeout === void 0) { timeout = NodeV8Protocol.TIMEOUT; }
+    }
+    frame(args, timeout = NodeV8Protocol.TIMEOUT) {
         return this.command2('frame', args);
-    };
-    NodeV8Protocol.prototype.setBreakpoint = function (args, timeout) {
-        if (timeout === void 0) { timeout = NodeV8Protocol.TIMEOUT; }
+    }
+    setBreakpoint(args, timeout = NodeV8Protocol.TIMEOUT) {
         return this.command2('setbreakpoint', args);
-    };
-    NodeV8Protocol.prototype.setExceptionBreak = function (args, timeout) {
-        if (timeout === void 0) { timeout = NodeV8Protocol.TIMEOUT; }
+    }
+    setExceptionBreak(args, timeout = NodeV8Protocol.TIMEOUT) {
         return this.command2('setexceptionbreak', args);
-    };
-    NodeV8Protocol.prototype.clearBreakpoint = function (args, timeout) {
-        if (timeout === void 0) { timeout = NodeV8Protocol.TIMEOUT; }
+    }
+    clearBreakpoint(args, timeout = NodeV8Protocol.TIMEOUT) {
         return this.command2('clearbreakpoint', args);
-    };
-    NodeV8Protocol.prototype.listBreakpoints = function (timeout) {
-        if (timeout === void 0) { timeout = NodeV8Protocol.TIMEOUT; }
+    }
+    listBreakpoints(timeout = NodeV8Protocol.TIMEOUT) {
         return this.command2('listbreakpoints');
-    };
-    NodeV8Protocol.prototype.sendEvent = function (event) {
+    }
+    sendEvent(event) {
         this.send('event', event);
-    };
-    NodeV8Protocol.prototype.sendResponse = function (response) {
+    }
+    sendResponse(response) {
         if (response.seq > 0) {
             // console.error('attempt to send more than one response for command {0}', response.command);
         }
         else {
             this.send('response', response);
         }
-    };
+    }
     // ---- private ------------------------------------------------------------
-    NodeV8Protocol.prototype._command = function (command, args, timeout, cb) {
-        var _this = this;
-        var request = {
+    _command(command, args, timeout, cb) {
+        const request = {
             command: command
         };
         if (args && Object.keys(args).length > 0) {
@@ -183,34 +150,34 @@ var NodeV8Protocol = (function (_super) {
         this.send('request', request);
         if (cb) {
             this._pendingRequests.set(request.seq, cb);
-            var timer_1 = setTimeout(function () {
-                clearTimeout(timer_1);
-                var clb = _this._pendingRequests.get(request.seq);
+            const timer = setTimeout(() => {
+                clearTimeout(timer);
+                const clb = this._pendingRequests.get(request.seq);
                 if (clb) {
-                    _this._pendingRequests.delete(request.seq);
+                    this._pendingRequests.delete(request.seq);
                     clb(new NodeV8Response(request, localize(2, null, timeout)));
-                    _this._unresponsiveMode = true;
-                    _this.emitEvent(new NodeV8Event('diagnostic', { reason: "request '" + command + "' timed out'" }));
+                    this._unresponsiveMode = true;
+                    this.emitEvent(new NodeV8Event('diagnostic', { reason: `request '${command}' timed out'` }));
                 }
             }, timeout);
         }
-    };
-    NodeV8Protocol.prototype.emitEvent = function (event) {
+    }
+    emitEvent(event) {
         this.emit(event.event, event);
-    };
-    NodeV8Protocol.prototype.send = function (typ, message) {
+    }
+    send(typ, message) {
         message.type = typ;
         message.seq = this._sequence++;
-        var json = JSON.stringify(message);
-        var data = 'Content-Length: ' + Buffer.byteLength(json, 'utf8') + '\r\n\r\n' + json;
+        const json = JSON.stringify(message);
+        const data = 'Content-Length: ' + Buffer.byteLength(json, 'utf8') + '\r\n\r\n' + json;
         if (this._writableStream) {
             this._writableStream.write(data);
         }
-    };
-    NodeV8Protocol.prototype.internalDispatch = function (message) {
+    }
+    internalDispatch(message) {
         switch (message.type) {
             case 'event':
-                var e = message;
+                const e = message;
                 this.emitEvent(e);
                 break;
             case 'response':
@@ -218,8 +185,8 @@ var NodeV8Protocol = (function (_super) {
                     this._unresponsiveMode = false;
                     this.emitEvent(new NodeV8Event('diagnostic', { reason: 'responsive' }));
                 }
-                var response = message;
-                var clb = this._pendingRequests.get(response.request_seq);
+                const response = message;
+                const clb = this._pendingRequests.get(response.request_seq);
                 if (clb) {
                     this._pendingRequests.delete(response.request_seq);
                     if (this._responseHook) {
@@ -231,13 +198,13 @@ var NodeV8Protocol = (function (_super) {
             default:
                 break;
         }
-    };
-    NodeV8Protocol.prototype.execute = function (data) {
+    }
+    execute(data) {
         this._rawData = this._rawData ? Buffer.concat([this._rawData, data]) : data;
         while (true) {
             if (this._contentLength >= 0) {
                 if (this._rawData.length >= this._contentLength) {
-                    var message = this._rawData.toString('utf8', 0, this._contentLength);
+                    const message = this._rawData.toString('utf8', 0, this._contentLength);
                     this._rawData = this._rawData.slice(this._contentLength);
                     this._contentLength = -1;
                     if (message.length > 0) {
@@ -251,28 +218,28 @@ var NodeV8Protocol = (function (_super) {
                 }
             }
             else {
-                var idx = this._rawData.indexOf(NodeV8Protocol.TWO_CRLF);
+                const idx = this._rawData.indexOf(NodeV8Protocol.TWO_CRLF);
                 if (idx !== -1) {
-                    var header = this._rawData.toString('utf8', 0, idx);
-                    var lines = header.split('\r\n');
-                    for (var i = 0; i < lines.length; i++) {
-                        var pair = lines[i].split(/: +/);
+                    const header = this._rawData.toString('utf8', 0, idx);
+                    const lines = header.split('\r\n');
+                    for (let i = 0; i < lines.length; i++) {
+                        const pair = lines[i].split(/: +/);
                         switch (pair[0]) {
                             case 'V8-Version':
-                                var match0 = pair[1].match(/(\d+(?:\.\d+)+)/);
+                                const match0 = pair[1].match(/(\d+(?:\.\d+)+)/);
                                 if (match0 && match0.length === 2) {
                                     this.v8Version = match0[1];
                                 }
                                 break;
                             case 'Embedding-Host':
-                                var match = pair[1].match(/node\sv(\d+)\.(\d+)\.(\d+)/);
+                                const match = pair[1].match(/node\sv(\d+)\.(\d+)\.(\d+)/);
                                 if (match && match.length === 4) {
                                     this.embeddedHostVersion = (parseInt(match[1]) * 100 + parseInt(match[2])) * 100 + parseInt(match[3]);
                                 }
                                 else if (pair[1] === 'Electron') {
                                     this.embeddedHostVersion = 60500; // TODO this needs to be detected in a smarter way by looking at the V8 version in Electron
                                 }
-                                var match1 = pair[1].match(/node\s(v\d+\.\d+\.\d+)/);
+                                const match1 = pair[1].match(/node\s(v\d+\.\d+\.\d+)/);
                                 if (match1 && match1.length === 2) {
                                     this.hostVersion = match1[1];
                                 }
@@ -288,11 +255,10 @@ var NodeV8Protocol = (function (_super) {
             }
             break;
         }
-    };
-    NodeV8Protocol.TIMEOUT = 10000;
-    NodeV8Protocol.TWO_CRLF = '\r\n\r\n';
-    return NodeV8Protocol;
-}(EE.EventEmitter));
+    }
+}
+NodeV8Protocol.TIMEOUT = 10000;
+NodeV8Protocol.TWO_CRLF = '\r\n\r\n';
 exports.NodeV8Protocol = NodeV8Protocol;
 
 //# sourceMappingURL=../../out/node/nodeV8Protocol.js.map

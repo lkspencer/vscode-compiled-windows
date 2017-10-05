@@ -26,6 +26,7 @@
 	"node.launch.runtimeArgs.description": "传递给运行时可执行文件的可选参数。",
 	"node.launch.env.description": "传递给程序的环境变量。",
 	"node.launch.envFile.description": "包含环境变量定义的文件的绝对路径。",
+	"node.launch.outputCapture.description": "捕获输出信息的位置: 调试 API 或者 stdout/stderr 流。",
 	"node.launch.config.name": "启动",
 	"node.attach.processId.description": "要附加到的进程 ID。",
 	"node.attach.localRoot.description": "与 \"remoteRoot\" 对应的本地源根目录。",
@@ -33,11 +34,11 @@
 	"node.attach.config.name": "附加",
 	"node.processattach.config.name": "附加到进程",
 	"toggle.skipping.this.file": "切换是否跳过此文件",
-	"extensionHost.label": "VS Code Extension Development",
-	"extensionHost.launch.runtimeExecutable.description": "Absolute path to VS Code.",
-	"extensionHost.launch.stopOnEntry.description": "Automatically stop the extension host after launch.",
-	"extensionHost.launch.env.description": "Environment variables passed to the extension host.",
-	"extensionHost.snippet.launch.label": "VS Code Extension Development",
-	"extensionHost.snippet.launch.description": "Launch a VS Code extension in debug mode",
-	"extensionHost.launch.config.name": "Launch Extension"
+	"extensionHost.label": "VS Code 扩展开发",
+	"extensionHost.launch.runtimeExecutable.description": "VS Code 的绝对路径。",
+	"extensionHost.launch.stopOnEntry.description": "启动后自动停止扩展主机。",
+	"extensionHost.launch.env.description": "传递到扩展主机的环境变量。",
+	"extensionHost.snippet.launch.label": "VS Code 扩展开发",
+	"extensionHost.snippet.launch.description": "在调试模式下启动 VS Code 扩展",
+	"extensionHost.launch.config.name": "启动扩展"
 }

@@ -10,7 +10,7 @@ var vscode = require("vscode");
 var async_1 = require("./utils/async");
 var nls = require("vscode-nls");
 var localize = nls.loadMessageBundle(__filename);
-var LineDecoder = (function () {
+var LineDecoder = /** @class */ (function () {
     function LineDecoder(encoding) {
         if (encoding === void 0) { encoding = 'utf8'; }
         this.stringDecoder = new string_decoder_1.StringDecoder(encoding);
@@ -73,7 +73,7 @@ var RunTrigger;
     };
 })(RunTrigger || (RunTrigger = {}));
 var CheckedExecutablePath = 'php.validate.checkedExecutablePath';
-var PHPValidationProvider = (function () {
+var PHPValidationProvider = /** @class */ (function () {
     function PHPValidationProvider(workspaceStore) {
         this.workspaceStore = workspaceStore;
         this.executable = null;
@@ -273,4 +273,4 @@ var PHPValidationProvider = (function () {
     return PHPValidationProvider;
 }());
 exports.default = PHPValidationProvider;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/aa42e6ef8184e8ab20ddaa5682b861bfb6f0b2ad/extensions\php\out/features\validationProvider.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/be377c0faf7574a59f84940f593a6849f12e4de7/extensions\php\out/features\validationProvider.js.map

@@ -9,7 +9,7 @@ var markedTextUtil_1 = require("./markedTextUtil");
 var nls = require("vscode-nls");
 var localize = nls.loadMessageBundle(__filename);
 var LIMIT = 40;
-var PackageJSONContribution = (function () {
+var PackageJSONContribution = /** @class */ (function () {
     function PackageJSONContribution(xhr) {
         this.xhr = xhr;
         this.mostDependedOn = ['lodash', 'async', 'underscore', 'request', 'commander', 'express', 'debug', 'chalk', 'colors', 'q', 'coffee-script',
@@ -212,4 +212,4 @@ var PackageJSONContribution = (function () {
     return PackageJSONContribution;
 }());
 exports.PackageJSONContribution = PackageJSONContribution;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/aa42e6ef8184e8ab20ddaa5682b861bfb6f0b2ad/extensions\javascript\out/features\packageJSONContribution.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/be377c0faf7574a59f84940f593a6849f12e4de7/extensions\javascript\out/features\packageJSONContribution.js.map

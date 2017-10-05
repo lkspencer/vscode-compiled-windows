@@ -7,5 +7,5 @@
 	"json.format.enable.desc": "기본 JSON 포맷터 사용/사용 안 함(다시 시작해야 함)",
 	"json.tracing.desc": "VS Code와 JSON 언어 서버 간 통신을 추적합니다.",
 	"json.colorDecorators.enable.desc": "색 데코레이터 사용 또는 사용 안 함",
-	"json.colorDecorators.enable.deprecationMessage": "The setting `json.colorDecorators.enable` has been deprecated in favor of `editor.colorDecorators`."
+	"json.colorDecorators.enable.deprecationMessage": "`json.colorDecorators.enable` 설정은 `editor.colorDecorators`를 위해 사용되지 않습니다."
 }

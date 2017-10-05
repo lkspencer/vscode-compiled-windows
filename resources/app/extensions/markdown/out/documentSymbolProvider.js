@@ -41,7 +41,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var vscode = require("vscode");
 var tableOfContentsProvider_1 = require("./tableOfContentsProvider");
-var MDDocumentSymbolProvider = (function () {
+var MDDocumentSymbolProvider = /** @class */ (function () {
     function MDDocumentSymbolProvider(engine) {
         this.engine = engine;
     }
@@ -63,4 +63,4 @@ var MDDocumentSymbolProvider = (function () {
     return MDDocumentSymbolProvider;
 }());
 exports.default = MDDocumentSymbolProvider;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/aa42e6ef8184e8ab20ddaa5682b861bfb6f0b2ad/extensions\markdown\out/documentSymbolProvider.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/be377c0faf7574a59f84940f593a6849f12e4de7/extensions\markdown\out/documentSymbolProvider.js.map

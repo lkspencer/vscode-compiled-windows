@@ -26,6 +26,7 @@
 	"node.launch.runtimeArgs.description": "Argumentos opcionales pasados al ejecutable del entorno de ejecución.",
 	"node.launch.env.description": "Variables de entorno pasadas al programa.",
 	"node.launch.envFile.description": "Ruta de acceso absoluta a un archivo que contiene definiciones de variables de entorno.",
+	"node.launch.outputCapture.description": "Capturar los mensajes de salida desde el API de depuración o desde los canales stdout/stderr.",
 	"node.launch.config.name": "Iniciar",
 	"node.attach.processId.description": "Id. de proceso para asociar.",
 	"node.attach.localRoot.description": "La raíz de origen local que corresponde con la 'remoteRoot'.",
@@ -33,11 +34,11 @@
 	"node.attach.config.name": "Asociar",
 	"node.processattach.config.name": "Asociar al proceso",
 	"toggle.skipping.this.file": "Alternando omitir este archivo ",
-	"extensionHost.label": "VS Code Extension Development",
-	"extensionHost.launch.runtimeExecutable.description": "Absolute path to VS Code.",
-	"extensionHost.launch.stopOnEntry.description": "Automatically stop the extension host after launch.",
-	"extensionHost.launch.env.description": "Environment variables passed to the extension host.",
-	"extensionHost.snippet.launch.label": "VS Code Extension Development",
-	"extensionHost.snippet.launch.description": "Launch a VS Code extension in debug mode",
-	"extensionHost.launch.config.name": "Launch Extension"
+	"extensionHost.label": "Desarrollo de extensiones de VS Code",
+	"extensionHost.launch.runtimeExecutable.description": "Ruta de acceso absoluta a VS Code.",
+	"extensionHost.launch.stopOnEntry.description": "El host de extensiones se detiene automáticamente tras el inicio.",
+	"extensionHost.launch.env.description": "Variables de entorno pasadas al host de extensiones.",
+	"extensionHost.snippet.launch.label": "Desarrollo de extensiones de VS Code",
+	"extensionHost.snippet.launch.description": "Iniciar una extensión de VS Code en modo de depuración",
+	"extensionHost.launch.config.name": "Extensión de inicio"
 }

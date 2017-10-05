@@ -49,15 +49,23 @@ exports.cannotLaunchBecauseSourceMaps = cannotLaunchBecauseSourceMaps;
 function cannotLaunchBecauseOutFiles(programPath) {
     return {
         id: 2003,
-        format: localize(5, null, '{path}', 'outDir or outFiles'),
+        format: localize(5, null, '{path}', 'outFiles'),
         variables: { path: programPath }
     };
 }
 exports.cannotLaunchBecauseOutFiles = cannotLaunchBecauseOutFiles;
+function cannotLaunchBecauseJsNotFound(programPath) {
+    return {
+        id: 2009,
+        format: localize(6, null, '{path}'),
+        variables: { path: programPath }
+    };
+}
+exports.cannotLaunchBecauseJsNotFound = cannotLaunchBecauseJsNotFound;
 function cannotLoadEnvVarsFromFile(error) {
     return {
         id: 2029,
-        format: localize(6, null, '{_error}'),
+        format: localize(7, null, '{_error}'),
         variables: { _error: error }
     };
 }

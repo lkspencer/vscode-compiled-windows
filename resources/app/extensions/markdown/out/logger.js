@@ -27,7 +27,7 @@ var Trace;
 function isString(value) {
     return Object.prototype.toString.call(value) === '[object String]';
 }
-var Logger = (function () {
+var Logger = /** @class */ (function () {
     function Logger() {
         this.updateConfiguration();
     }
@@ -70,4 +70,4 @@ var Logger = (function () {
     return Logger;
 }());
 exports.Logger = Logger;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/aa42e6ef8184e8ab20ddaa5682b861bfb6f0b2ad/extensions\markdown\out/logger.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/be377c0faf7574a59f84940f593a6849f12e4de7/extensions\markdown\out/logger.js.map

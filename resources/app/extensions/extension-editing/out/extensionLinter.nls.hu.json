@@ -3,7 +3,7 @@
 	"Az SVG-k nem érvényes képforrások.",
 	"A beágyazott SVG-k nem érvényes képforrások.",
 	"A data URL-ek nem érvényes képforrások.",
-	"Relative image URLs require a repository with HTTPS protocol to be specified in the package.json.",
-	"An icon requires a repository with HTTPS protocol to be specified in this package.json.",
-	"Relative badge URLs require a repository with HTTPS protocol to be specified in this package.json."
+	"A relatív kép URL-ekhez egy HTTPS-protokollal rendelkező forráskódtárat kell megadni a package.json-ban.",
+	"Az ikonhoz egy HTTPS-protokollal rendelkező forráskódtárat kell megadni a package.json-ban.",
+	"A relatív jelvény URL-ekhez egy HTTPS-protokollal rendelkező forráskódtárat kell megadni a package.json-ban."
 ]

@@ -35,6 +35,13 @@ class NodeDebugAdapter extends vscode_chrome_debug_core_1.ChromeDebugAdapter {
         this._waitingForEntryPauseEvent = true;
         this._finishedConfig = false;
         this._handlingEarlyNodeMsgs = true;
+        this._captureFromStd = false;
+    }
+    /**
+     * Returns whether this is a non-EH attach scenario
+     */
+    get normalAttachMode() {
+        return this._attachMode && !this.isExtensionHost();
     }
     initialize(args) {
         this._adapterID = args.adapterID;
@@ -107,6 +114,7 @@ class NodeDebugAdapter extends vscode_chrome_debug_core_1.ChromeDebugAdapter {
                     vscode_chrome_debug_core_1.logger.warn(localize(0, null));
                 }
             }
+            this._captureFromStd = args.outputCapture === 'std';
             return this.resolveProgramPath(programPath, args.sourceMaps).then(resolvedProgramPath => {
                 let program;
                 let cwd = args.cwd;
@@ -129,11 +137,17 @@ class NodeDebugAdapter extends vscode_chrome_debug_core_1.ChromeDebugAdapter {
                 }
                 const runtimeArgs = args.runtimeArgs || [];
                 const programArgs = args.args || [];
+                const debugArgs = detectSupportedDebugArgsForLaunch(args);
                 let launchArgs = [runtimeExecutable];
                 if (!args.noDebug && !args.port) {
-                    launchArgs.push(`--inspect=${port}`);
                     // Always stop on entry to set breakpoints
-                    launchArgs.push('--debug-brk');
+                    if (debugArgs === DebugArgs.Inspect_DebugBrk) {
+                        launchArgs.push(`--inspect=${port}`);
+                        launchArgs.push('--debug-brk');
+                    }
+                    else {
+                        launchArgs.push(`--inspect-brk=${port}`);
+                    }
                 }
                 launchArgs = launchArgs.concat(runtimeArgs, program ? [program] : [], programArgs);
                 const envArgs = this.collectEnvFileArgs(args) || args.env;
@@ -168,9 +182,6 @@ class NodeDebugAdapter extends vscode_chrome_debug_core_1.ChromeDebugAdapter {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 yield _super("attach").call(this, args);
-                if (this.isExtensionHost()) {
-                    this._attachMode = false;
-                }
             }
             catch (err) {
                 if (err.format && err.format.indexOf('Cannot connect to runtime process') >= 0) {
@@ -252,8 +263,7 @@ class NodeDebugAdapter extends vscode_chrome_debug_core_1.ChromeDebugAdapter {
             this.captureStderr(nodeProcess, noDebugMode);
             // Must attach a listener to stdout or process will hang on Windows
             nodeProcess.stdout.on('data', (data) => {
-                // If only running, use stdout/stderr instead of debug protocol logs
-                if (noDebugMode) {
+                if (noDebugMode || this._captureFromStd) {
                     let msg = data.toString();
                     this._session.sendEvent(new vscode_debugadapter_1.OutputEvent(msg, 'stdout'));
                 }
@@ -286,7 +296,7 @@ class NodeDebugAdapter extends vscode_chrome_debug_core_1.ChromeDebugAdapter {
                 const helpMsg = /For help see https:\/\/nodejs.org\/en\/docs\/inspector\s*/;
                 msg = msg.replace(helpMsg, '');
             }
-            if (this._handlingEarlyNodeMsgs || noDebugMode) {
+            if (this._handlingEarlyNodeMsgs || noDebugMode || this._captureFromStd) {
                 this._session.sendEvent(new vscode_debugadapter_1.OutputEvent(msg, 'stderr'));
             }
             if (isLastEarlyNodeMsg) {
@@ -297,6 +307,9 @@ class NodeDebugAdapter extends vscode_chrome_debug_core_1.ChromeDebugAdapter {
     onConsoleAPICalled(params) {
         // Once any console API message is received, we are done listening to initial stderr output
         this._handlingEarlyNodeMsgs = false;
+        if (this._captureFromStd) {
+            return;
+        }
         // Strip the --debug-brk deprecation message which is printed at startup
         if (!params.args || params.args.length !== 1 || typeof params.args[0].value !== 'string' || !params.args[0].value.match(NodeDebugAdapter.DEBUG_BRK_DEP_MSG)) {
             super.onConsoleAPICalled(params);
@@ -354,7 +367,7 @@ class NodeDebugAdapter extends vscode_chrome_debug_core_1.ChromeDebugAdapter {
         return super.configurationDone();
     }
     killNodeProcess() {
-        if (this._nodeProcessId && !this._attachMode) {
+        if (this._nodeProcessId && !this.normalAttachMode) {
             vscode_chrome_debug_core_1.logger.log('Killing process with id: ' + this._nodeProcessId);
             utils.killTree(this._nodeProcessId);
             this._nodeProcessId = 0;
@@ -375,7 +388,7 @@ class NodeDebugAdapter extends vscode_chrome_debug_core_1.ChromeDebugAdapter {
             this._expectingStopReason = 'entry';
             this._entryPauseEvent = notification;
             this._waitingForEntryPauseEvent = false;
-            if (this._attachMode) {
+            if (this.normalAttachMode) {
                 // In attach mode, and we did pause right away,
                 // so assume --debug-brk was set and we should show paused
                 this._continueAfterConfigDone = false;
@@ -419,7 +432,12 @@ class NodeDebugAdapter extends vscode_chrome_debug_core_1.ChromeDebugAdapter {
                 }
                 return this._sourceMapTransformer.getGeneratedPathFromAuthoredPath(programPath).then(generatedPath => {
                     if (!generatedPath) {
-                        return Promise.reject(errors.cannotLaunchBecauseOutFiles(programPath));
+                        if (this._launchAttachArgs.outFiles || this._launchAttachArgs.outDir) {
+                            return Promise.reject(errors.cannotLaunchBecauseJsNotFound(programPath));
+                        }
+                        else {
+                            return Promise.reject(errors.cannotLaunchBecauseOutFiles(programPath));
+                        }
                     }
                     vscode_chrome_debug_core_1.logger.log(`Launch: program '${programPath}' seems to be the source; launch the generated file '${generatedPath}' instead`);
                     return generatedPath;
@@ -428,11 +446,12 @@ class NodeDebugAdapter extends vscode_chrome_debug_core_1.ChromeDebugAdapter {
         });
     }
     /**
-     * Wait 500ms for the entry pause event, and if it doesn't come, move on with life.
+     * Wait 500-1000ms for the entry pause event, and if it doesn't come, move on with life.
      * During attach, we don't know whether it's paused when attaching.
      */
     beginWaitingForDebuggerPaused() {
-        let count = 10;
+        // Wait longer in launch mode - it definitely should be paused.
+        let count = this._attachMode ? 10 : 20;
         const id = setInterval(() => {
             if (this._entryPauseEvent || this._isTerminated) {
                 // Got the entry pause, stop waiting
@@ -459,19 +478,17 @@ class NodeDebugAdapter extends vscode_chrome_debug_core_1.ChromeDebugAdapter {
         return super.addBreakpoints(url, breakpoints).then(responses => {
             if (this._entryPauseEvent && !this._finishedConfig) {
                 const entryLocation = this._entryPauseEvent.callFrames[0].location;
-                if (this._continueAfterConfigDone) {
-                    const bpAtEntryLocation = responses.some(response => {
-                        // Don't compare column location, because you can have a bp at col 0, then break at some other column
-                        return response && response.actualLocation && response.actualLocation.lineNumber === entryLocation.lineNumber &&
-                            response.actualLocation.scriptId === entryLocation.scriptId;
-                    });
-                    if (bpAtEntryLocation) {
-                        // There is some initial breakpoint being set to the location where we stopped on entry, so need to pause even if
-                        // the stopOnEntry flag is not set
-                        vscode_chrome_debug_core_1.logger.log('Got a breakpoint set in the entry location, so will stop even though stopOnEntry is not set');
-                        this._continueAfterConfigDone = false;
-                        this._expectingStopReason = 'breakpoint';
-                    }
+                const bpAtEntryLocation = responses.some(response => {
+                    // Don't compare column location, because you can have a bp at col 0, then break at some other column
+                    return response && response.actualLocation && response.actualLocation.lineNumber === entryLocation.lineNumber &&
+                        response.actualLocation.scriptId === entryLocation.scriptId;
+                });
+                if (bpAtEntryLocation) {
+                    // There is some initial breakpoint being set to the location where we stopped on entry, so need to pause even if
+                    // the stopOnEntry flag is not set
+                    vscode_chrome_debug_core_1.logger.log('Got a breakpoint set in the entry location, so will stop even though stopOnEntry is not set');
+                    this._continueAfterConfigDone = false;
+                    this._expectingStopReason = 'breakpoint';
                 }
             }
             return responses;
@@ -507,15 +524,17 @@ class NodeDebugAdapter extends vscode_chrome_debug_core_1.ChromeDebugAdapter {
             }
             else {
                 const [pid, version, arch] = response.result.value;
+                this._nodeProcessId = pid;
                 if (this._pollForNodeProcess) {
-                    this._nodeProcessId = pid;
                     this.startPollingForNodeTermination();
-                }
-                else if (this.isExtensionHost()) {
-                    this._nodeProcessId = pid;
                 }
                 this._loggedTargetVersion = true;
                 vscode_chrome_debug_core_1.logger.log(`Target node version: ${version} ${arch}`);
+                /* __GDPR__
+                   "nodeVersion" : {
+                      "version" : { "classification": "SystemMetaData", "purpose": "FeatureInsight" }
+                   }
+                 */
                 telemetry.reportEvent('nodeVersion', { version });
             }
         }, error => vscode_chrome_debug_core_1.logger.error('Error evaluating `process.pid`: ' + error.message));
@@ -572,7 +591,7 @@ class NodeDebugAdapter extends vscode_chrome_debug_core_1.ChromeDebugAdapter {
      * 'Path not absolute' error with 'More Information' link.
      */
     getRelativePathErrorResponse(attribute, path) {
-        const format = localize(3, null, attribute, '{path}', '${workspaceRoot}/');
+        const format = localize(3, null, attribute, '{path}', '${workspaceFolder}/');
         return this.getErrorResponseWithInfoLink(2008, format, { path }, 20003);
     }
     getRuntimeNotOnPathErrorResponse(runtime) {
@@ -677,6 +696,50 @@ function resolveCwdPattern(cwd, sourceMapPathOverrides, warnOnMissing) {
         }
     }
     return resolvedOverrides;
+}
+var DebugArgs;
+(function (DebugArgs) {
+    DebugArgs[DebugArgs["InspectBrk"] = 0] = "InspectBrk";
+    DebugArgs[DebugArgs["Inspect_DebugBrk"] = 1] = "Inspect_DebugBrk";
+})(DebugArgs = exports.DebugArgs || (exports.DebugArgs = {}));
+const defaultDebugArgs = DebugArgs.Inspect_DebugBrk;
+function detectSupportedDebugArgsForLaunch(config) {
+    if (config.__nodeVersion) {
+        return getSupportedDebugArgsForVersion(config.__nodeVersion);
+    }
+    else if (config.runtimeExecutable) {
+        vscode_chrome_debug_core_1.logger.log('Using --inspect --debug-brk because a runtimeExecutable is set');
+        return defaultDebugArgs;
+    }
+    else {
+        // only determine version if no runtimeExecutable is set (and 'node' on PATH is used)
+        vscode_chrome_debug_core_1.logger.log('Spawning `node --version` to determine supported debug args');
+        let result;
+        try {
+            result = cp.spawnSync('node', ['--version']);
+        }
+        catch (e) {
+            vscode_chrome_debug_core_1.logger.error('Node version detection failed: ' + (e && e.message));
+        }
+        const semVerString = result.stdout ? result.stdout.toString().trim() : undefined;
+        if (semVerString) {
+            return getSupportedDebugArgsForVersion(semVerString);
+        }
+        else {
+            vscode_chrome_debug_core_1.logger.log('Using --inspect --debug-brk because we couldn\'t get a version from node');
+            return defaultDebugArgs;
+        }
+    }
+}
+function getSupportedDebugArgsForVersion(semVerString) {
+    if (utils.compareSemver(semVerString, 'v7.6.0') >= 0) {
+        vscode_chrome_debug_core_1.logger.log(`Using --inspect-brk, Node version ${semVerString} detected`);
+        return DebugArgs.InspectBrk;
+    }
+    else {
+        vscode_chrome_debug_core_1.logger.log(`Using --inspect --debug-brk, Node version ${semVerString} detected`);
+        return DebugArgs.Inspect_DebugBrk;
+    }
 }
 
 //# sourceMappingURL=nodeDebugAdapter.js.map

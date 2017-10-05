@@ -6,7 +6,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 var vscode_1 = require("vscode");
 var phpGlobals = require("./phpGlobals");
-var PHPCompletionItemProvider = (function () {
+var PHPCompletionItemProvider = /** @class */ (function () {
     function PHPCompletionItemProvider() {
         this.triggerCharacters = ['.', ':', '$'];
     }
@@ -98,4 +98,4 @@ var PHPCompletionItemProvider = (function () {
     return PHPCompletionItemProvider;
 }());
 exports.default = PHPCompletionItemProvider;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/aa42e6ef8184e8ab20ddaa5682b861bfb6f0b2ad/extensions\php\out/features\completionItemProvider.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/be377c0faf7574a59f84940f593a6849f12e4de7/extensions\php\out/features\completionItemProvider.js.map

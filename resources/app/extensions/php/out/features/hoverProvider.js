@@ -7,7 +7,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var vscode_1 = require("vscode");
 var phpGlobals = require("./phpGlobals");
 var markedTextUtil_1 = require("./utils/markedTextUtil");
-var PHPHoverProvider = (function () {
+var PHPHoverProvider = /** @class */ (function () {
     function PHPHoverProvider() {
     }
     PHPHoverProvider.prototype.provideHover = function (document, position, token) {
@@ -30,4 +30,4 @@ var PHPHoverProvider = (function () {
     return PHPHoverProvider;
 }());
 exports.default = PHPHoverProvider;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/aa42e6ef8184e8ab20ddaa5682b861bfb6f0b2ad/extensions\php\out/features\hoverProvider.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/be377c0faf7574a59f84940f593a6849f12e4de7/extensions\php\out/features\hoverProvider.js.map

@@ -1,6 +1,6 @@
 {
 	"messages": [
-		"Auto detecting gulp failed with error: {0}"
+		"Auto detecting gulp for folder {0} failed with error: {1}"
 	],
 	"keys": [
 		"execFailed"

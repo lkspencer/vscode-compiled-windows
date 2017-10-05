@@ -3,7 +3,7 @@
 	"SVG は無効な画像のソースです。",
 	"埋め込み SVG は無効な画像のソースです。",
 	"Data URL は無効な画像のソースです。",
-	"Relative image URLs require a repository with HTTPS protocol to be specified in the package.json.",
-	"An icon requires a repository with HTTPS protocol to be specified in this package.json.",
-	"Relative badge URLs require a repository with HTTPS protocol to be specified in this package.json."
+	"相対的な画像 URL では、HTTPS プロトコルのリポジトリが package.json で指定されている必要があります。",
+	"アイコンは、HTTPS プロトコルのリポジトリがこの package.json で指定されている必要があります。 ",
+	"相対的なバッジ URL では、HTTPS プロトコルのリポジトリが package.json で指定されている必要があります。"
 ]

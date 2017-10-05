@@ -65,7 +65,7 @@ function getMarkdownUri(uri) {
     });
 }
 exports.getMarkdownUri = getMarkdownUri;
-var MarkdownPreviewConfig = (function () {
+var MarkdownPreviewConfig = /** @class */ (function () {
     function MarkdownPreviewConfig() {
         var editorConfig = vscode.workspace.getConfiguration('editor');
         var markdownConfig = vscode.workspace.getConfiguration('markdown');
@@ -110,7 +110,7 @@ var MarkdownPreviewConfig = (function () {
     };
     return MarkdownPreviewConfig;
 }());
-var MDDocumentContentProvider = (function () {
+var MDDocumentContentProvider = /** @class */ (function () {
     function MDDocumentContentProvider(engine, context, cspArbiter, logger) {
         this.engine = engine;
         this.context = context;
@@ -186,7 +186,7 @@ var MDDocumentContentProvider = (function () {
                         sourceUri = vscode.Uri.parse(uri.query);
                         initialLine = undefined;
                         editor = vscode.window.activeTextEditor;
-                        if (editor && editor.document.uri.fsPath === sourceUri.fsPath) {
+                        if (editor && editor.document.uri.toString() === sourceUri.toString()) {
                             initialLine = editor.selection.active.line;
                         }
                         return [4 /*yield*/, vscode.workspace.openTextDocument(sourceUri)];
@@ -256,4 +256,4 @@ var MDDocumentContentProvider = (function () {
     return MDDocumentContentProvider;
 }());
 exports.MDDocumentContentProvider = MDDocumentContentProvider;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/aa42e6ef8184e8ab20ddaa5682b861bfb6f0b2ad/extensions\markdown\out/previewContentProvider.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/be377c0faf7574a59f84940f593a6849f12e4de7/extensions\markdown\out/previewContentProvider.js.map

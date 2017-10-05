@@ -11,6 +11,7 @@ const abbreviationActions_1 = require("../abbreviationActions");
 const cssContents = `
 .boo {
 	margin: 20px 10px;
+	m10
 	background-image: url('tryme.png');
 	m10
 }
@@ -165,9 +166,9 @@ suite('Tests for Expand Abbreviations (CSS)', () => {
     teardown(testUtils_1.closeAllEditors);
     test('Expand abbreviation (CSS)', () => {
         return testUtils_1.withRandomFileEditor(cssContents, 'css', (editor, doc) => {
-            editor.selection = new vscode_1.Selection(4, 1, 4, 4);
+            editor.selections = [new vscode_1.Selection(3, 1, 3, 4), new vscode_1.Selection(5, 1, 5, 4)];
             return abbreviationActions_1.expandEmmetAbbreviation(null).then(() => {
-                assert.equal(editor.document.getText(), cssContents.replace('m10', 'margin: 10px;'));
+                assert.equal(editor.document.getText(), cssContents.replace(/m10/g, 'margin: 10px;'));
                 return Promise.resolve();
             });
         });
@@ -182,6 +183,27 @@ suite('Tests for Expand Abbreviations (CSS)', () => {
             ];
             return abbreviationActions_1.expandEmmetAbbreviation(null).then(() => {
                 assert.equal(editor.document.getText(), scssContents.replace(/p(\d\d)/g, 'padding: $1px;'));
+                return Promise.resolve();
+            });
+        });
+    });
+    test('Invalid locations for abbreviations in css', () => {
+        const scssContentsNoExpand = `
+m10
+		.boo {
+			margin: 10px;
+			.hoo {
+				background:
+			}
+		}		
+		`;
+        return testUtils_1.withRandomFileEditor(scssContentsNoExpand, 'scss', (editor, doc) => {
+            editor.selections = [
+                new vscode_1.Selection(1, 3, 1, 3),
+                new vscode_1.Selection(5, 15, 5, 15) // in the value part of property value				
+            ];
+            return abbreviationActions_1.expandEmmetAbbreviation(null).then(() => {
+                assert.equal(editor.document.getText(), scssContentsNoExpand);
                 return Promise.resolve();
             });
         });
@@ -275,6 +297,45 @@ suite('Tests for Wrap with Abbreviations', () => {
         });
     });
 });
+suite('Tests for jsx, xml and xsl', () => {
+    teardown(testUtils_1.closeAllEditors);
+    test('Expand abbreviation with className instead of class in jsx', () => {
+        return testUtils_1.withRandomFileEditor('ul.nav', 'javascriptreact', (editor, doc) => {
+            editor.selection = new vscode_1.Selection(0, 6, 0, 6);
+            return abbreviationActions_1.expandEmmetAbbreviation({ language: 'javascriptreact' }).then(() => {
+                assert.equal(editor.document.getText(), '<ul className="nav"></ul>');
+                return Promise.resolve();
+            });
+        });
+    });
+    test('Expand abbreviation with self closing tags for jsx', () => {
+        return testUtils_1.withRandomFileEditor('img', 'javascriptreact', (editor, doc) => {
+            editor.selection = new vscode_1.Selection(0, 6, 0, 6);
+            return abbreviationActions_1.expandEmmetAbbreviation({ language: 'javascriptreact' }).then(() => {
+                assert.equal(editor.document.getText(), '<img src="" alt=""/>');
+                return Promise.resolve();
+            });
+        });
+    });
+    test('Expand abbreviation with self closing tags for xml', () => {
+        return testUtils_1.withRandomFileEditor('img', 'xml', (editor, doc) => {
+            editor.selection = new vscode_1.Selection(0, 6, 0, 6);
+            return abbreviationActions_1.expandEmmetAbbreviation({ language: 'xml' }).then(() => {
+                assert.equal(editor.document.getText(), '<img src="" alt=""/>');
+                return Promise.resolve();
+            });
+        });
+    });
+    test('Expand abbreviation with no self closing tags for html', () => {
+        return testUtils_1.withRandomFileEditor('img', 'html', (editor, doc) => {
+            editor.selection = new vscode_1.Selection(0, 6, 0, 6);
+            return abbreviationActions_1.expandEmmetAbbreviation({ language: 'html' }).then(() => {
+                assert.equal(editor.document.getText(), '<img src="" alt="">');
+                return Promise.resolve();
+            });
+        });
+    });
+});
 function testHtmlExpandAbbreviation(selection, abbreviation, expandedText, shouldFail) {
     return testUtils_1.withRandomFileEditor(htmlContents, 'html', (editor, doc) => {
         editor.selection = selection;
@@ -300,4 +361,4 @@ function testWrapWithAbbreviation(selections, abbreviation, expectedContents) {
         });
     });
 }
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/aa42e6ef8184e8ab20ddaa5682b861bfb6f0b2ad/extensions\emmet\out/test\abbreviationAction.test.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/be377c0faf7574a59f84940f593a6849f12e4de7/extensions\emmet\out/test\abbreviationAction.test.js.map

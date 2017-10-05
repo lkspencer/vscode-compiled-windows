@@ -7,6 +7,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const vscode_1 = require("vscode");
 const PConst = require("../protocol.const");
 const Previewer = require("./previewer");
+const convert_1 = require("../utils/convert");
 const nls = require("vscode-nls");
 let localize = nls.loadMessageBundle(__filename);
 class MyCompletionItem extends vscode_1.CompletionItem {
@@ -22,7 +23,7 @@ class MyCompletionItem extends vscode_1.CompletionItem {
             let span = entry.replacementSpan;
             // The indexing for the range returned by the server uses 1-based indexing.
             // We convert to 0-based indexing.
-            this.textEdit = vscode_1.TextEdit.replace(new vscode_1.Range(span.start.line - 1, span.start.offset - 1, span.end.line - 1, span.end.offset - 1), entry.name);
+            this.textEdit = vscode_1.TextEdit.replace(convert_1.tsTextSpanToVsRange(span), entry.name);
         }
         else {
             // Try getting longer, prefix based range for completions that span words
@@ -81,11 +82,6 @@ class MyCompletionItem extends vscode_1.CompletionItem {
     }
     static getCommitCharacters(enableDotCompletions, enableCallCompletions, kind) {
         switch (kind) {
-            case PConst.Kind.externalModuleName:
-                return ['"', '\''];
-            case PConst.Kind.file:
-            case PConst.Kind.directory:
-                return ['"', '\''];
             case PConst.Kind.memberGetAccessor:
             case PConst.Kind.memberSetAccessor:
             case PConst.Kind.constructSignature:
@@ -130,7 +126,7 @@ class TypeScriptCompletionItemProvider {
         const jsConfig = vscode_1.workspace.getConfiguration('javascript');
         this.config.nameSuggestions = jsConfig.get(Configuration.nameSuggestions, true);
     }
-    provideCompletionItems(document, position, token) {
+    provideCompletionItems(document, position, token, context) {
         if (this.typingsStatus.isAcquiringTypings) {
             return Promise.reject({
                 label: localize(0, null),
@@ -141,11 +137,28 @@ class TypeScriptCompletionItemProvider {
         if (!file) {
             return Promise.resolve([]);
         }
-        const args = {
-            file: file,
-            line: position.line + 1,
-            offset: position.character + 1
-        };
+        if (context.triggerCharacter === '"' || context.triggerCharacter === '\'') {
+            // make sure we are in something that looks like the start of an import
+            const line = document.lineAt(position.line).text.slice(0, position.character);
+            if (!line.match(/\bfrom\s*["']$/) && !line.match(/\b(import|require)\(['"]$/)) {
+                return Promise.resolve([]);
+            }
+        }
+        if (context.triggerCharacter === '/') {
+            // make sure we are in something that looks like an import path
+            const line = document.lineAt(position.line).text.slice(0, position.character);
+            if (!line.match(/\bfrom\s*["'][^'"]*$/) && !line.match(/\b(import|require)\(['"][^'"]*$/)) {
+                return Promise.resolve([]);
+            }
+        }
+        if (context.triggerCharacter === '@') {
+            // make sure we are in something that looks like the start of a jsdoc comment
+            const line = document.lineAt(position.line).text.slice(0, position.character);
+            if (!line.match(/^\s*\*[ ]?@/) && !line.match(/\/\*\*+[ ]?@/)) {
+                return Promise.resolve([]);
+            }
+        }
+        const args = convert_1.vsPositionToTsFileLocation(file, position);
         return this.client.execute('completions', args, token).then((msg) => {
             // This info has to come from the tsserver. See https://github.com/Microsoft/TypeScript/issues/2831
             // let isMemberCompletion = false;
@@ -195,12 +208,7 @@ class TypeScriptCompletionItemProvider {
         if (!filepath) {
             return null;
         }
-        const args = {
-            file: filepath,
-            line: item.position.line + 1,
-            offset: item.position.character + 1,
-            entryNames: [item.label]
-        };
+        const args = Object.assign({}, convert_1.vsPositionToTsFileLocation(filepath, item.position), { entryNames: [item.label] });
         return this.client.execute('completionEntryDetails', args, token).then((response) => {
             const details = response.body;
             if (!details || !details.length || !details[0]) {
@@ -208,7 +216,7 @@ class TypeScriptCompletionItemProvider {
             }
             const detail = details[0];
             item.detail = Previewer.plain(detail.displayParts);
-            item.documentation = Previewer.plainDocumentation(detail.documentation, detail.tags);
+            item.documentation = Previewer.markdownDocumentation(detail.documentation, detail.tags);
             if (detail && this.config.useCodeSnippetsOnMethodSuggest && (item.kind === vscode_1.CompletionItemKind.Function || item.kind === vscode_1.CompletionItemKind.Method)) {
                 return this.isValidFunctionCompletionContext(filepath, item.position).then(shouldCompleteFunction => {
                     if (shouldCompleteFunction) {
@@ -223,11 +231,7 @@ class TypeScriptCompletionItemProvider {
         });
     }
     isValidFunctionCompletionContext(filepath, position) {
-        const args = {
-            file: filepath,
-            line: position.line + 1,
-            offset: position.character + 1
-        };
+        const args = convert_1.vsPositionToTsFileLocation(filepath, position);
         // Workaround for https://github.com/Microsoft/TypeScript/issues/12677
         // Don't complete function calls inside of destructive assigments or imports
         return this.client.execute('quickinfo', args).then(infoResponse => {
@@ -274,4 +278,4 @@ class TypeScriptCompletionItemProvider {
     }
 }
 exports.default = TypeScriptCompletionItemProvider;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/aa42e6ef8184e8ab20ddaa5682b861bfb6f0b2ad/extensions\typescript\out/features\completionItemProvider.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/be377c0faf7574a59f84940f593a6849f12e4de7/extensions\typescript\out/features\completionItemProvider.js.map

@@ -26,7 +26,7 @@ var _Z = 'Z'.charCodeAt(0);
 var _0 = '0'.charCodeAt(0);
 var _9 = '9'.charCodeAt(0);
 var BOF = 0;
-var BackwardIterator = (function () {
+var BackwardIterator = /** @class */ (function () {
     function BackwardIterator(model, offset, lineNumber) {
         this.lineNumber = lineNumber;
         this.offset = offset;
@@ -53,7 +53,7 @@ var BackwardIterator = (function () {
     };
     return BackwardIterator;
 }());
-var PHPSignatureHelpProvider = (function () {
+var PHPSignatureHelpProvider = /** @class */ (function () {
     function PHPSignatureHelpProvider() {
     }
     PHPSignatureHelpProvider.prototype.provideSignatureHelp = function (document, position, token) {
@@ -132,10 +132,10 @@ var PHPSignatureHelpProvider = (function () {
         return -1;
     };
     PHPSignatureHelpProvider.prototype.isIdentPart = function (ch) {
-        if (ch === _USC ||
-            ch >= _a && ch <= _z ||
-            ch >= _A && ch <= _Z ||
-            ch >= _0 && ch <= _9 ||
+        if (ch === _USC || // _
+            ch >= _a && ch <= _z || // a-z
+            ch >= _A && ch <= _Z || // A-Z
+            ch >= _0 && ch <= _9 || // 0/9
             ch >= 0x80 && ch <= 0xFFFF) {
             return true;
         }
@@ -162,4 +162,4 @@ var PHPSignatureHelpProvider = (function () {
     return PHPSignatureHelpProvider;
 }());
 exports.default = PHPSignatureHelpProvider;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/aa42e6ef8184e8ab20ddaa5682b861bfb6f0b2ad/extensions\php\out/features\signatureHelpProvider.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/be377c0faf7574a59f84940f593a6849f12e4de7/extensions\php\out/features\signatureHelpProvider.js.map

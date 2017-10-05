@@ -1,10 +1,10 @@
 [
-	"Strict",
-	"Only load secure content",
-	"Allow insecure content",
-	"Enable loading content over http",
-	"Disable",
-	"Allow all content and script execution. Not recommended",
-	"More Information",
-	"Select security settings for Markdown previews in this workspace"
+	"Строгий",
+	"Загружать только безопасное содержимое",
+	"Разрешить небезопасное содержимое",
+	"Включить загрузку содержимого через HTTP",
+	"Отключить",
+	"Разрешить все содержимое и выполнение сценариев. Не рекомендуется",
+	"Дополнительные сведения",
+	"Установите параметры безопасности для предварительного просмотра Markdown в этой рабочей области"
 ]

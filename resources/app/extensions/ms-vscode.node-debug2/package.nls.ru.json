@@ -26,6 +26,7 @@
 	"node.launch.runtimeArgs.description": "Необязательные аргументы, переданные исполняемому файлу среды выполнения.",
 	"node.launch.env.description": "Переменные окружения, переданные в программу.",
 	"node.launch.envFile.description": "Абсолютный путь к файлу с определениями переменных среды.",
+	"node.launch.outputCapture.description": "Источник для получения выходных сообщений: API отладки, стандартный поток вывода или стандартный поток ошибок.",
 	"node.launch.config.name": "Запустить",
 	"node.attach.processId.description": "Идентификатор процесса, к которому необходимо подключиться.",
 	"node.attach.localRoot.description": "Локальный корневой каталог исходных файлов, который соответствует 'remoteRoot'.",
@@ -33,11 +34,11 @@
 	"node.attach.config.name": "Подключить",
 	"node.processattach.config.name": "Подключение к процессу",
 	"toggle.skipping.this.file": "Отключить пропуск для этого файла",
-	"extensionHost.label": "VS Code Extension Development",
-	"extensionHost.launch.runtimeExecutable.description": "Absolute path to VS Code.",
-	"extensionHost.launch.stopOnEntry.description": "Automatically stop the extension host after launch.",
-	"extensionHost.launch.env.description": "Environment variables passed to the extension host.",
-	"extensionHost.snippet.launch.label": "VS Code Extension Development",
-	"extensionHost.snippet.launch.description": "Launch a VS Code extension in debug mode",
-	"extensionHost.launch.config.name": "Launch Extension"
+	"extensionHost.label": "Разработка расширения VS Code",
+	"extensionHost.launch.runtimeExecutable.description": "Абсолютный путь к VS Code.",
+	"extensionHost.launch.stopOnEntry.description": "Автоматически остановить хост-процесс для расширений после запуска.",
+	"extensionHost.launch.env.description": "Переменные среды переданы в хост-процесс для расширений.",
+	"extensionHost.snippet.launch.label": "Разработка расширения VS Code",
+	"extensionHost.snippet.launch.description": "Запуск расширения VS Code в режиме отладки",
+	"extensionHost.launch.config.name": "Запуск расширения"
 }

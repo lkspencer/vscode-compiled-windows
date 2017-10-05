@@ -6,6 +6,7 @@
 		"Unknown console type '{0}'.",
 		"Cannot launch program '{0}'; configuring source maps might help.",
 		"Cannot launch program '{0}'; setting the '{1}' attribute might help.",
+		"Cannot launch program '{0}' because corresponding JavaScript cannot be found.",
 		"Can't load environment variables from file ({0})."
 	],
 	"keys": [
@@ -15,6 +16,7 @@
 		"VSND2028",
 		"VSND2002",
 		"VSND2003",
+		"VSND2009",
 		"VSND2029"
 	]
 }

@@ -78,7 +78,7 @@ function getDocumentSettings(textDocument) {
         var promise = documentSettings[textDocument.uri];
         if (!promise) {
             var configRequestParam = { items: [{ scopeUri: textDocument.uri, section: textDocument.languageId }] };
-            promise = connection.sendRequest(protocol_configuration_proposed_1.GetConfigurationRequest.type, configRequestParam).then(function (s) { return s[0]; });
+            promise = connection.sendRequest(protocol_configuration_proposed_1.ConfigurationRequest.type, configRequestParam).then(function (s) { return s[0]; });
             documentSettings[textDocument.uri] = promise;
         }
         return promise;
@@ -176,6 +176,14 @@ connection.onRequest(protocol_colorProvider_proposed_1.DocumentColorRequest.type
     }
     return [];
 });
+connection.onRequest(protocol_colorProvider_proposed_1.ColorPresentationRequest.type, function (params) {
+    var document = documents.get(params.textDocument.uri);
+    if (document) {
+        var stylesheet = stylesheets.get(document);
+        return getLanguageService(document).getColorPresentations(document, stylesheet, params.colorInfo);
+    }
+    return [];
+});
 connection.onRenameRequest(function (renameParameters) {
     var document = documents.get(renameParameters.textDocument.uri);
     var stylesheet = stylesheets.get(document);
@@ -183,4 +191,4 @@ connection.onRenameRequest(function (renameParameters) {
 });
 // Listen on the connection
 connection.listen();
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/aa42e6ef8184e8ab20ddaa5682b861bfb6f0b2ad/extensions\css\server\out/cssServerMain.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/be377c0faf7574a59f84940f593a6849f12e4de7/extensions\css\server\out/cssServerMain.js.map

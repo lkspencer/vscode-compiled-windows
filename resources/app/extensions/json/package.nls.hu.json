@@ -7,5 +7,5 @@
 	"json.format.enable.desc": "Alapértelmezett JSON-formázó engedélyezése vagy letiltása (újraindítást igényel)",
 	"json.tracing.desc": "A VS Code és a JSON nyelvi szerver közötti kommunikáció naplózása.",
 	"json.colorDecorators.enable.desc": "Színdekorátorok engedélyezése vagy letiltása",
-	"json.colorDecorators.enable.deprecationMessage": "The setting `json.colorDecorators.enable` has been deprecated in favor of `editor.colorDecorators`."
+	"json.colorDecorators.enable.deprecationMessage": "A `json.colorDecorators.enable` beállítás elavult az `editor.colorDecorators` bevezetése miatt."
 }

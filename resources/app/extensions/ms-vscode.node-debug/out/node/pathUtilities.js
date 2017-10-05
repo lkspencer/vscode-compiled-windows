@@ -4,11 +4,11 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 Object.defineProperty(exports, "__esModule", { value: true });
-var Path = require("path");
-var FS = require("fs");
-var CP = require("child_process");
-var glob = require('glob');
-var minimatch = require('minimatch');
+const Path = require("path");
+const FS = require("fs");
+const CP = require("child_process");
+const glob = require('glob');
+const minimatch = require('minimatch');
 /**
   * The input paths must use the path syntax of the underlying operating system.
  */
@@ -21,12 +21,12 @@ exports.makePathAbsolute = makePathAbsolute;
  * The input paths must use the path syntax of the underlying operating system.
  */
 function makeRelative(target, path) {
-    var t = target.split(Path.sep);
-    var p = path.split(Path.sep);
-    var i = 0;
+    const t = target.split(Path.sep);
+    const p = path.split(Path.sep);
+    let i = 0;
     for (; i < Math.min(t.length, p.length) && t[i] === p[i]; i++) {
     }
-    var result = '';
+    let result = '';
     for (; i < p.length; i++) {
         result = Path.join(result, p[i]);
     }
@@ -37,9 +37,9 @@ exports.makeRelative = makeRelative;
  * Returns a path with a lower case drive letter.
  */
 function normalizeDriveLetter(path) {
-    var regex = /^([A-Z])(\:[\\\/].*)$/;
+    const regex = /^([A-Z])(\:[\\\/].*)$/;
     if (regex.test(path)) {
-        path = path.replace(regex, function (s, s1, s2) { return s1.toLowerCase() + s2; });
+        path = path.replace(regex, (s, s1, s2) => s1.toLowerCase() + s2);
     }
     return path;
 }
@@ -79,7 +79,7 @@ exports.pathCompare = pathCompare;
  * Since a drive letter of a Windows path cannot be looked up, realPath normalizes the drive letter to lower case.
  */
 function realPath(path) {
-    var dir = Path.dirname(path);
+    let dir = Path.dirname(path);
     if (path === dir) {
         // is this an upper case drive letter?
         if (/^[A-Z]\:\\$/.test(path)) {
@@ -87,22 +87,22 @@ function realPath(path) {
         }
         return path;
     }
-    var name = Path.basename(path).toLowerCase();
+    let name = Path.basename(path).toLowerCase();
     try {
-        var entries = FS.readdirSync(dir);
-        var found = entries.filter(function (e) { return e.toLowerCase() === name; }); // use a case insensitive search
+        let entries = FS.readdirSync(dir);
+        let found = entries.filter(e => e.toLowerCase() === name); // use a case insensitive search
         if (found.length === 1) {
             // on a case sensitive filesystem we cannot determine here, whether the file exists or not, hence we need the 'file exists' precondition
-            var prefix = realPath(dir); // recurse
+            let prefix = realPath(dir); // recurse
             if (prefix) {
                 return Path.join(prefix, found[0]);
             }
         }
         else if (found.length > 1) {
             // must be a case sensitive $filesystem
-            var ix = found.indexOf(name);
+            const ix = found.indexOf(name);
             if (ix >= 0) {
-                var prefix = realPath(dir); // recurse
+                let prefix = realPath(dir); // recurse
                 if (prefix) {
                     return Path.join(prefix, found[ix]);
                 }
@@ -129,9 +129,9 @@ exports.mkdirs = mkdirs;
  * Lookup the given program on the PATH and return its absolute path on success and undefined otherwise.
  */
 function findOnPath(program) {
-    var locator;
+    let locator;
     if (process.platform === 'win32') {
-        var windir = process.env['WINDIR'] || 'C:\\Windows';
+        const windir = process.env['WINDIR'] || 'C:\\Windows';
         locator = Path.join(windir, 'System32', 'where.exe');
     }
     else {
@@ -139,13 +139,12 @@ function findOnPath(program) {
     }
     try {
         if (FS.existsSync(locator)) {
-            var lines = CP.execSync(locator + " " + program).toString().split(/\r?\n/);
+            const lines = CP.execSync(`${locator} ${program}`).toString().split(/\r?\n/);
             if (process.platform === 'win32') {
                 // return the first path that has a executable extension
-                var executableExtensions = process.env['PATHEXT'].toUpperCase();
-                for (var _i = 0, lines_1 = lines; _i < lines_1.length; _i++) {
-                    var path = lines_1[_i];
-                    var ext = Path.extname(path).toUpperCase();
+                const executableExtensions = process.env['PATHEXT'].toUpperCase();
+                for (const path of lines) {
+                    const ext = Path.extname(path).toUpperCase();
                     if (ext && executableExtensions.indexOf(ext + ';') > 0) {
                         return path;
                     }
@@ -176,12 +175,11 @@ exports.findOnPath = findOnPath;
  */
 function findExecutable(program) {
     if (process.platform === 'win32' && !Path.extname(program)) {
-        var PATHEXT = process.env['PATHEXT'];
+        const PATHEXT = process.env['PATHEXT'];
         if (PATHEXT) {
-            var executableExtensions = PATHEXT.split(';');
-            for (var _i = 0, executableExtensions_1 = executableExtensions; _i < executableExtensions_1.length; _i++) {
-                var extension = executableExtensions_1[_i];
-                var path = program + extension;
+            const executableExtensions = PATHEXT.split(';');
+            for (const extension of executableExtensions) {
+                const path = program + extension;
                 if (FS.existsSync(path)) {
                     return path;
                 }
@@ -258,13 +256,13 @@ exports.join = join;
 function makeRelative2(from, to) {
     from = normalize(from);
     to = normalize(to);
-    var froms = from.substr(1).split('/');
-    var tos = to.substr(1).split('/');
+    const froms = from.substr(1).split('/');
+    const tos = to.substr(1).split('/');
     while (froms.length > 0 && tos.length > 0 && froms[0] === tos[0]) {
         froms.shift();
         tos.shift();
     }
-    var l = froms.length - tos.length;
+    let l = froms.length - tos.length;
     if (l === 0) {
         l = tos.length - 1;
     }
@@ -276,7 +274,7 @@ function makeRelative2(from, to) {
 }
 exports.makeRelative2 = makeRelative2;
 function multiGlob(patterns, opts) {
-    var globTasks = new Array();
+    const globTasks = new Array();
     opts = extendObject({
         cache: Object.create(null),
         statCache: Object.create(null),
@@ -284,13 +282,13 @@ function multiGlob(patterns, opts) {
         symlinks: Object.create(null),
         ignore: []
     }, opts);
-    var isExclude = function (pattern) { return pattern[0] === '!'; };
+    const isExclude = pattern => pattern[0] === '!';
     try {
-        patterns.forEach(function (pattern, i) {
+        patterns.forEach((pattern, i) => {
             if (isExclude(pattern)) {
                 return;
             }
-            var ignore = patterns.slice(i).filter(isExclude).map(function (pattern) { return pattern.slice(1); });
+            const ignore = patterns.slice(i).filter(isExclude).map(pattern => pattern.slice(1));
             globTasks.push({
                 pattern: pattern,
                 opts: extendObject(extendObject({}, opts), {
@@ -302,9 +300,9 @@ function multiGlob(patterns, opts) {
     catch (err) {
         return Promise.reject(err);
     }
-    return Promise.all(globTasks.map(function (task) {
-        return new Promise(function (c, e) {
-            glob(task.pattern, task.opts, function (err, files) {
+    return Promise.all(globTasks.map(task => {
+        return new Promise((c, e) => {
+            glob(task.pattern, task.opts, (err, files) => {
                 if (err) {
                     e(err);
                 }
@@ -313,26 +311,23 @@ function multiGlob(patterns, opts) {
                 }
             });
         });
-    })).then(function (results) {
-        var set = new Set();
-        for (var _i = 0, results_1 = results; _i < results_1.length; _i++) {
-            var paths = results_1[_i];
-            for (var _a = 0, paths_1 = paths; _a < paths_1.length; _a++) {
-                var p = paths_1[_a];
+    })).then(results => {
+        const set = new Set();
+        for (let paths of results) {
+            for (let p of paths) {
                 set.add(p);
             }
         }
-        var array = new Array();
-        set.forEach(function (v) { return array.push(Path.posix.normalize(v)); });
+        let array = new Array();
+        set.forEach(v => array.push(Path.posix.normalize(v)));
         return array;
     });
 }
 exports.multiGlob = multiGlob;
 function multiGlobMatches(patterns, path) {
-    var matched = false;
-    for (var _i = 0, patterns_1 = patterns; _i < patterns_1.length; _i++) {
-        var p = patterns_1[_i];
-        var isExclude = p[0] === '!';
+    let matched = false;
+    for (const p of patterns) {
+        const isExclude = p[0] === '!';
         if (matched !== isExclude) {
             break;
         }
@@ -346,7 +341,7 @@ exports.multiGlobMatches = multiGlobMatches;
  * Copy attributes from fromObject to toObject.
  */
 function extendObject(toObject, fromObject) {
-    for (var key in fromObject) {
+    for (let key in fromObject) {
         if (fromObject.hasOwnProperty(key)) {
             toObject[key] = fromObject[key];
         }

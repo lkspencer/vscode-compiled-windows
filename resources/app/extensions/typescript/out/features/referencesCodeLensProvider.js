@@ -7,6 +7,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const vscode_1 = require("vscode");
 const PConst = require("../protocol.const");
 const baseCodeLensProvider_1 = require("./baseCodeLensProvider");
+const convert_1 = require("../utils/convert");
 const nls = require("vscode-nls");
 const localize = nls.loadMessageBundle(__filename);
 class TypeScriptReferencesCodeLensProvider extends baseCodeLensProvider_1.TypeScriptBaseCodeLensProvider {
@@ -26,20 +27,16 @@ class TypeScriptReferencesCodeLensProvider extends baseCodeLensProvider_1.TypeSc
     }
     resolveCodeLens(inputCodeLens, token) {
         const codeLens = inputCodeLens;
-        const args = {
-            file: codeLens.file,
-            line: codeLens.range.start.line + 1,
-            offset: codeLens.range.start.character + 1
-        };
+        const args = convert_1.vsPositionToTsFileLocation(codeLens.file, codeLens.range.start);
         return this.client.execute('references', args, token).then(response => {
             if (!response || !response.body) {
                 throw codeLens;
             }
             const locations = response.body.refs
-                .map(reference => new vscode_1.Location(this.client.asUrl(reference.file), new vscode_1.Range(reference.start.line - 1, reference.start.offset - 1, reference.end.line - 1, reference.end.offset - 1)))
+                .map(reference => new vscode_1.Location(this.client.asUrl(reference.file), convert_1.tsTextSpanToVsRange(reference)))
                 .filter(location => 
             // Exclude original definition from references
-            !(location.uri.fsPath === codeLens.document.fsPath &&
+            !(location.uri.toString() === codeLens.document.toString() &&
                 location.range.start.isEqual(codeLens.range.start)));
             codeLens.command = {
                 title: locations.length === 1
@@ -90,4 +87,4 @@ class TypeScriptReferencesCodeLensProvider extends baseCodeLensProvider_1.TypeSc
     }
 }
 exports.default = TypeScriptReferencesCodeLensProvider;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/aa42e6ef8184e8ab20ddaa5682b861bfb6f0b2ad/extensions\typescript\out/features\referencesCodeLensProvider.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/be377c0faf7574a59f84940f593a6849f12e4de7/extensions\typescript\out/features\referencesCodeLensProvider.js.map

@@ -7,5 +7,5 @@
 	"json.format.enable.desc": "Habilitar/desabilitar o formatador JSON padrão (requer reinicialização)",
 	"json.tracing.desc": "Loga a comunicação entre o VS Code e o servidor de linguagem JSON.",
 	"json.colorDecorators.enable.desc": "Habilita ou desabilita os decoradores de cor",
-	"json.colorDecorators.enable.deprecationMessage": "The setting `json.colorDecorators.enable` has been deprecated in favor of `editor.colorDecorators`."
+	"json.colorDecorators.enable.deprecationMessage": "A configuração 'json.colorDecorators.enable' foi descontinuada em favor de 'editor.colorDecorators'."
 }

@@ -49,7 +49,7 @@ var MarkdownPreviewSecurityLevel;
     MarkdownPreviewSecurityLevel[MarkdownPreviewSecurityLevel["AllowInsecureContent"] = 1] = "AllowInsecureContent";
     MarkdownPreviewSecurityLevel[MarkdownPreviewSecurityLevel["AllowScriptsAndAllContent"] = 2] = "AllowScriptsAndAllContent";
 })(MarkdownPreviewSecurityLevel = exports.MarkdownPreviewSecurityLevel || (exports.MarkdownPreviewSecurityLevel = {}));
-var ExtensionContentSecurityPolicyArbiter = (function () {
+var ExtensionContentSecurityPolicyArbiter = /** @class */ (function () {
     function ExtensionContentSecurityPolicyArbiter(globalState) {
         this.globalState = globalState;
         this.old_trusted_workspace_key = 'trusted_preview_workspace:';
@@ -89,7 +89,7 @@ var ExtensionContentSecurityPolicyArbiter = (function () {
     return ExtensionContentSecurityPolicyArbiter;
 }());
 exports.ExtensionContentSecurityPolicyArbiter = ExtensionContentSecurityPolicyArbiter;
-var PreviewSecuritySelector = (function () {
+var PreviewSecuritySelector = /** @class */ (function () {
     function PreviewSecuritySelector(cspArbiter, contentProvider) {
         this.cspArbiter = cspArbiter;
         this.contentProvider = contentProvider;
@@ -153,4 +153,4 @@ var PreviewSecuritySelector = (function () {
     return PreviewSecuritySelector;
 }());
 exports.PreviewSecuritySelector = PreviewSecuritySelector;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/aa42e6ef8184e8ab20ddaa5682b861bfb6f0b2ad/extensions\markdown\out/security.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/be377c0faf7574a59f84940f593a6849f12e4de7/extensions\markdown\out/security.js.map

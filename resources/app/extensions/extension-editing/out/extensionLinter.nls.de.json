@@ -3,7 +3,7 @@
 	"SVGs sind keine gültige Bildquelle.",
 	"Eingebettete SVGs sind keine gültige Bildquelle.",
 	"Daten-URLs sind keine gültige Bildquelle.",
-	"Relative image URLs require a repository with HTTPS protocol to be specified in the package.json.",
-	"An icon requires a repository with HTTPS protocol to be specified in this package.json.",
-	"Relative badge URLs require a repository with HTTPS protocol to be specified in this package.json."
+	"Relative Bild-URLs erfordern die Angabe eines Repositorys mit dem HTTPS-Protokoll in der Datei \"package.json\".",
+	"Ein Symbol erfordert die Angabe eines Repositorys mit dem HTTPS-Protokoll in dieser Datei \"package.json\".",
+	"Relative Badge-URLs erfordern die Angabe eines Repositorys mit dem HTTPS-Protokoll in dieser Datei \"package.json\"."
 ]
