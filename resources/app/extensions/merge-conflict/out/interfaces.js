@@ -6,4 +6,4 @@ var CommitType;
     CommitType[CommitType["Incoming"] = 1] = "Incoming";
     CommitType[CommitType["Both"] = 2] = "Both";
 })(CommitType = exports.CommitType || (exports.CommitType = {}));
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/be377c0faf7574a59f84940f593a6849f12e4de7/extensions\merge-conflict\out/interfaces.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/b813d12980308015bcd2b3a2f6efa5c810c33ba5/extensions\merge-conflict\out/interfaces.js.map

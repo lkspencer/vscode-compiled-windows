@@ -1,8 +1,8 @@
 {
   "name": "Code - OSS",
-  "version": "1.17.0",
+  "version": "1.17.2",
   "electronVersion": "1.7.7",
-  "distro": "59a68f7780bb6571a1460ea00ca7b994126baeda",
+  "distro": "c2baeca34f80f25032ae9aa14ce1373f83bd22ef",
   "author": {
     "name": "Microsoft Corporation"
   },

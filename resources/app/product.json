@@ -15,13 +15,13 @@
 	"darwinBundleIdentifier": "com.visualstudio.code.oss",
 	"reportIssueUrl": "https://github.com/Microsoft/vscode/issues/new",
 	"urlProtocol": "code-oss",
-	"commit": "be377c0faf7574a59f84940f593a6849f12e4de7",
-	"date": "2017-10-05T19:53:22.731Z",
+	"commit": "b813d12980308015bcd2b3a2f6efa5c810c33ba5",
+	"date": "2017-10-25T13:32:56.317Z",
 	"checksums": {
-		"vs/workbench/workbench.main.js": "9EfOIam8nYyWbZ2XLHp3KQ",
+		"vs/workbench/workbench.main.js": "gYnyELKaU4XyjcbJd0Ikxw",
 		"vs/workbench/workbench.main.css": "FoMiANepunky6oNEQaqhNA",
 		"vs/workbench/electron-browser/bootstrap/index.html": "/Tgz9oebstmTGvDlTpbgpg",
-		"vs/workbench/electron-browser/bootstrap/index.js": "6yjjQTuSPEmuX8b7lSfVbw",
-		"vs/workbench/electron-browser/bootstrap/preload.js": "SRKLjZO/H8Fj3KWWvKrDZw"
+		"vs/workbench/electron-browser/bootstrap/index.js": "ye09Uwl9XLSp0OoFpK5WrQ",
+		"vs/workbench/electron-browser/bootstrap/preload.js": "ZVZhfp8845RdtBVm/r/USg"
 	}
 }

@@ -91,7 +91,10 @@ class GitContentProvider {
         const cache = Object.create(null);
         Object.keys(this.cache).forEach(key => {
             const row = this.cache[key];
-            const isOpen = vscode_1.window.visibleTextEditors.some(e => e.document.toString() === row.uri.toString());
+            const { path } = uri_1.fromGitUri(row.uri);
+            const isOpen = vscode_1.workspace.textDocuments
+                .filter(d => d.uri.scheme === 'file')
+                .some(d => d.uri.fsPath === path);
             if (isOpen || now - row.timestamp < THREE_MINUTES) {
                 cache[row.uri.toString()] = row;
             }
@@ -109,4 +112,4 @@ __decorate([
     decorators_1.throttle
 ], GitContentProvider.prototype, "fireChangeEvents", null);
 exports.GitContentProvider = GitContentProvider;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/be377c0faf7574a59f84940f593a6849f12e4de7/extensions\git\out/contentProvider.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/b813d12980308015bcd2b3a2f6efa5c810c33ba5/extensions\git\out/contentProvider.js.map
