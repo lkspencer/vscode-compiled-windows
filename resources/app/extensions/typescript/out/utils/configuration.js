@@ -46,22 +46,26 @@ class TypeScriptServiceConfiguration {
     constructor() {
         this.tsServerLogLevel = TsServerLogLevel.Off;
         const configuration = vscode_1.workspace.getConfiguration();
+        this.locale = TypeScriptServiceConfiguration.extractLocale(configuration);
         this.globalTsdk = TypeScriptServiceConfiguration.extractGlobalTsdk(configuration);
         this.localTsdk = TypeScriptServiceConfiguration.extractLocalTsdk(configuration);
         this.npmLocation = TypeScriptServiceConfiguration.readNpmLocation(configuration);
         this.tsServerLogLevel = TypeScriptServiceConfiguration.readTsServerLogLevel(configuration);
         this.checkJs = TypeScriptServiceConfiguration.readCheckJs(configuration);
+        this.experimentalDecorators = TypeScriptServiceConfiguration.readExperimentalDecorators(configuration);
         this.disableAutomaticTypeAcquisition = TypeScriptServiceConfiguration.readDisableAutomaticTypeAcquisition(configuration);
     }
     static loadFromWorkspace() {
         return new TypeScriptServiceConfiguration();
     }
     isEqualTo(other) {
-        return this.globalTsdk === other.globalTsdk
+        return this.locale === other.locale
+            && this.globalTsdk === other.globalTsdk
             && this.localTsdk === other.localTsdk
             && this.npmLocation === other.npmLocation
             && this.tsServerLogLevel === other.tsServerLogLevel
             && this.checkJs === other.checkJs
+            && this.experimentalDecorators === other.experimentalDecorators
             && this.disableAutomaticTypeAcquisition === other.disableAutomaticTypeAcquisition;
     }
     static extractGlobalTsdk(configuration) {
@@ -85,12 +89,18 @@ class TypeScriptServiceConfiguration {
     static readCheckJs(configuration) {
         return configuration.get('javascript.implicitProjectConfig.checkJs', false);
     }
+    static readExperimentalDecorators(configuration) {
+        return configuration.get('javascript.implicitProjectConfig.experimentalDecorators', false);
+    }
     static readNpmLocation(configuration) {
         return configuration.get('typescript.npm', null);
     }
     static readDisableAutomaticTypeAcquisition(configuration) {
         return configuration.get('typescript.disableAutomaticTypeAcquisition', false);
     }
+    static extractLocale(configuration) {
+        return configuration.get('typescript.locale', null);
+    }
 }
 exports.TypeScriptServiceConfiguration = TypeScriptServiceConfiguration;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/b813d12980308015bcd2b3a2f6efa5c810c33ba5/extensions\typescript\out/utils\configuration.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/816be6780ca8bd0ab80314e11478c48c70d09383/extensions\typescript\out/utils\configuration.js.map

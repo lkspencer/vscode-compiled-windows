@@ -56,7 +56,7 @@ var BackwardIterator = /** @class */ (function () {
 var PHPSignatureHelpProvider = /** @class */ (function () {
     function PHPSignatureHelpProvider() {
     }
-    PHPSignatureHelpProvider.prototype.provideSignatureHelp = function (document, position, token) {
+    PHPSignatureHelpProvider.prototype.provideSignatureHelp = function (document, position, _token) {
         var enable = vscode_1.workspace.getConfiguration('php').get('suggest.basic', true);
         if (!enable) {
             return null;
@@ -162,4 +162,4 @@ var PHPSignatureHelpProvider = /** @class */ (function () {
     return PHPSignatureHelpProvider;
 }());
 exports.default = PHPSignatureHelpProvider;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/b813d12980308015bcd2b3a2f6efa5c810c33ba5/extensions\php\out/features\signatureHelpProvider.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/816be6780ca8bd0ab80314e11478c48c70d09383/extensions\php\out/features\signatureHelpProvider.js.map

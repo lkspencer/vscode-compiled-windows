@@ -7,10 +7,10 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const vscode = require("vscode");
 const util_1 = require("./util");
 function updateTag(tagName) {
-    let editor = vscode.window.activeTextEditor;
-    if (!util_1.validate(false)) {
+    if (!util_1.validate(false) || !vscode.window.activeTextEditor) {
         return;
     }
+    let editor = vscode.window.activeTextEditor;
     let rootNode = util_1.parseDocument(editor.document);
     if (!rootNode) {
         return;
@@ -41,4 +41,4 @@ function getRangesToUpdate(editor, selection, rootNode) {
     }
     return ranges;
 }
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/b813d12980308015bcd2b3a2f6efa5c810c33ba5/extensions\emmet\out/updateTag.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/816be6780ca8bd0ab80314e11478c48c70d09383/extensions\emmet\out/updateTag.js.map

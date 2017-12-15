@@ -36,6 +36,19 @@ function startsWith(haystack, needle) {
     return true;
 }
 exports.startsWith = startsWith;
+function endsWith(haystack, needle) {
+    var diff = haystack.length - needle.length;
+    if (diff > 0) {
+        return haystack.indexOf(needle, diff) === diff;
+    }
+    else if (diff === 0) {
+        return haystack === needle;
+    }
+    else {
+        return false;
+    }
+}
+exports.endsWith = endsWith;
 function repeat(value, count) {
     var s = '';
     while (count > 0) {
@@ -62,4 +75,4 @@ function isNewlineCharacter(charCode) {
     return charCode === CR || charCode === NL;
 }
 exports.isNewlineCharacter = isNewlineCharacter;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/b813d12980308015bcd2b3a2f6efa5c810c33ba5/extensions\html\server\out/utils\strings.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/816be6780ca8bd0ab80314e11478c48c70d09383/extensions\html\server\out/utils\strings.js.map

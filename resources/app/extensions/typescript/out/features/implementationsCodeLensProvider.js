@@ -19,7 +19,7 @@ class TypeScriptImplementationsCodeLensProvider extends baseCodeLensProvider_1.T
         const config = vscode_1.workspace.getConfiguration(this.language);
         this.setEnabled(config.get('implementationsCodeLens.enabled', false));
     }
-    provideCodeLenses(document, token) {
+    async provideCodeLenses(document, token) {
         if (!this.client.apiVersion.has220Features()) {
             return [];
         }
@@ -75,4 +75,4 @@ class TypeScriptImplementationsCodeLensProvider extends baseCodeLensProvider_1.T
     }
 }
 exports.default = TypeScriptImplementationsCodeLensProvider;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/b813d12980308015bcd2b3a2f6efa5c810c33ba5/extensions\typescript\out/features\implementationsCodeLensProvider.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/816be6780ca8bd0ab80314e11478c48c70d09383/extensions\typescript\out/features\implementationsCodeLensProvider.js.map

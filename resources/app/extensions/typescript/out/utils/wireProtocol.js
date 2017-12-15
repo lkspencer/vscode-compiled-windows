@@ -78,10 +78,10 @@ class ProtocolBuffer {
 }
 class Reader {
     constructor(readable, callback, onError = () => ({})) {
-        this.onError = onError;
         this.readable = readable;
-        this.buffer = new ProtocolBuffer();
         this.callback = callback;
+        this.onError = onError;
+        this.buffer = new ProtocolBuffer();
         this.nextMessageLength = -1;
         this.readable.on('data', (data) => {
             this.onLengthData(data);
@@ -112,4 +112,4 @@ class Reader {
     }
 }
 exports.Reader = Reader;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/b813d12980308015bcd2b3a2f6efa5c810c33ba5/extensions\typescript\out/utils\wireProtocol.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/816be6780ca8bd0ab80314e11478c48c70d09383/extensions\typescript\out/utils\wireProtocol.js.map

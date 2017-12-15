@@ -65,10 +65,11 @@ var ResourceGroupType;
     ResourceGroupType[ResourceGroupType["WorkingTree"] = 2] = "WorkingTree";
 })(ResourceGroupType = exports.ResourceGroupType || (exports.ResourceGroupType = {}));
 class Resource {
-    constructor(_resourceGroupType, _resourceUri, _type, _renameResourceUri) {
+    constructor(_resourceGroupType, _resourceUri, _type, _useIcons, _renameResourceUri) {
         this._resourceGroupType = _resourceGroupType;
         this._resourceUri = _resourceUri;
         this._type = _type;
+        this._useIcons = _useIcons;
         this._renameResourceUri = _renameResourceUri;
     }
     get resourceUri() {
@@ -149,12 +150,97 @@ class Resource {
         // return this.resourceUri.fsPath.substr(0, workspaceRootPath.length) !== workspaceRootPath;
     }
     get decorations() {
-        const light = { iconPath: this.getIconPath('light') };
-        const dark = { iconPath: this.getIconPath('dark') };
+        const light = this._useIcons ? { iconPath: this.getIconPath('light') } : undefined;
+        const dark = this._useIcons ? { iconPath: this.getIconPath('dark') } : undefined;
         const tooltip = this.tooltip;
         const strikeThrough = this.strikeThrough;
         const faded = this.faded;
-        return { strikeThrough, faded, tooltip, light, dark };
+        const letter = this.letter;
+        const color = this.color;
+        return { strikeThrough, faded, tooltip, light, dark, letter, color, source: 'git.resource' /*todo@joh*/ };
+    }
+    get letter() {
+        switch (this.type) {
+            case Status.INDEX_MODIFIED:
+            case Status.MODIFIED:
+                return 'M';
+            case Status.INDEX_ADDED:
+                return 'A';
+            case Status.INDEX_DELETED:
+            case Status.DELETED:
+                return 'D';
+            case Status.INDEX_RENAMED:
+                return 'R';
+            case Status.UNTRACKED:
+                return 'U';
+            case Status.IGNORED:
+                return 'I';
+            case Status.INDEX_COPIED:
+            case Status.BOTH_DELETED:
+            case Status.ADDED_BY_US:
+            case Status.DELETED_BY_THEM:
+            case Status.ADDED_BY_THEM:
+            case Status.DELETED_BY_US:
+            case Status.BOTH_ADDED:
+            case Status.BOTH_MODIFIED:
+                return 'C';
+            default:
+                return undefined;
+        }
+    }
+    get color() {
+        switch (this.type) {
+            case Status.INDEX_MODIFIED:
+            case Status.MODIFIED:
+                return new vscode_1.ThemeColor('gitDecoration.modifiedResourceForeground');
+            case Status.INDEX_DELETED:
+            case Status.DELETED:
+                return new vscode_1.ThemeColor('gitDecoration.deletedResourceForeground');
+            case Status.INDEX_ADDED: // todo@joh - special color?
+            case Status.INDEX_RENAMED: // todo@joh - special color?
+            case Status.UNTRACKED:
+                return new vscode_1.ThemeColor('gitDecoration.untrackedResourceForeground');
+            case Status.IGNORED:
+                return new vscode_1.ThemeColor('gitDecoration.ignoredResourceForeground');
+            case Status.INDEX_COPIED:
+            case Status.BOTH_DELETED:
+            case Status.ADDED_BY_US:
+            case Status.DELETED_BY_THEM:
+            case Status.ADDED_BY_THEM:
+            case Status.DELETED_BY_US:
+            case Status.BOTH_ADDED:
+            case Status.BOTH_MODIFIED:
+                return new vscode_1.ThemeColor('gitDecoration.conflictingResourceForeground');
+            default:
+                return undefined;
+        }
+    }
+    get priority() {
+        switch (this.type) {
+            case Status.INDEX_MODIFIED:
+            case Status.MODIFIED:
+                return 2;
+            case Status.IGNORED:
+                return 3;
+            case Status.INDEX_COPIED:
+            case Status.BOTH_DELETED:
+            case Status.ADDED_BY_US:
+            case Status.DELETED_BY_THEM:
+            case Status.ADDED_BY_THEM:
+            case Status.DELETED_BY_US:
+            case Status.BOTH_ADDED:
+            case Status.BOTH_MODIFIED:
+                return 4;
+            default:
+                return 1;
+        }
+    }
+    get resourceDecoration() {
+        const title = this.tooltip;
+        const abbreviation = this.letter;
+        const color = this.color;
+        const priority = this.priority;
+        return { bubble: true, source: 'git.resource', title, abbreviation, color, priority };
     }
 }
 Resource.Icons = {
@@ -191,52 +277,36 @@ __decorate([
 exports.Resource = Resource;
 var Operation;
 (function (Operation) {
-    Operation[Operation["Status"] = 1] = "Status";
-    Operation[Operation["Add"] = 2] = "Add";
-    Operation[Operation["RevertFiles"] = 4] = "RevertFiles";
-    Operation[Operation["Commit"] = 8] = "Commit";
-    Operation[Operation["Clean"] = 16] = "Clean";
-    Operation[Operation["Branch"] = 32] = "Branch";
-    Operation[Operation["Checkout"] = 64] = "Checkout";
-    Operation[Operation["Reset"] = 128] = "Reset";
-    Operation[Operation["Fetch"] = 256] = "Fetch";
-    Operation[Operation["Pull"] = 512] = "Pull";
-    Operation[Operation["Push"] = 1024] = "Push";
-    Operation[Operation["Sync"] = 2048] = "Sync";
-    Operation[Operation["Show"] = 4096] = "Show";
-    Operation[Operation["Stage"] = 8192] = "Stage";
-    Operation[Operation["GetCommitTemplate"] = 16384] = "GetCommitTemplate";
-    Operation[Operation["DeleteBranch"] = 32768] = "DeleteBranch";
-    Operation[Operation["Merge"] = 65536] = "Merge";
-    Operation[Operation["Ignore"] = 131072] = "Ignore";
-    Operation[Operation["Tag"] = 262144] = "Tag";
-    Operation[Operation["Stash"] = 524288] = "Stash";
+    Operation["Status"] = "Status";
+    Operation["Add"] = "Add";
+    Operation["RevertFiles"] = "RevertFiles";
+    Operation["Commit"] = "Commit";
+    Operation["Clean"] = "Clean";
+    Operation["Branch"] = "Branch";
+    Operation["Checkout"] = "Checkout";
+    Operation["Reset"] = "Reset";
+    Operation["Fetch"] = "Fetch";
+    Operation["Pull"] = "Pull";
+    Operation["Push"] = "Push";
+    Operation["Sync"] = "Sync";
+    Operation["Show"] = "Show";
+    Operation["Stage"] = "Stage";
+    Operation["GetCommitTemplate"] = "GetCommitTemplate";
+    Operation["DeleteBranch"] = "DeleteBranch";
+    Operation["RenameBranch"] = "RenameBranch";
+    Operation["Merge"] = "Merge";
+    Operation["Ignore"] = "Ignore";
+    Operation["Tag"] = "Tag";
+    Operation["Stash"] = "Stash";
+    Operation["CheckIgnore"] = "CheckIgnore";
+    Operation["LSTree"] = "LSTree";
 })(Operation = exports.Operation || (exports.Operation = {}));
-// function getOperationName(operation: Operation): string {
-// 	switch (operation) {
-// 		case Operation.Status: return 'Status';
-// 		case Operation.Add: return 'Add';
-// 		case Operation.RevertFiles: return 'RevertFiles';
-// 		case Operation.Commit: return 'Commit';
-// 		case Operation.Clean: return 'Clean';
-// 		case Operation.Branch: return 'Branch';
-// 		case Operation.Checkout: return 'Checkout';
-// 		case Operation.Reset: return 'Reset';
-// 		case Operation.Fetch: return 'Fetch';
-// 		case Operation.Pull: return 'Pull';
-// 		case Operation.Push: return 'Push';
-// 		case Operation.Sync: return 'Sync';
-// 		case Operation.Init: return 'Init';
-// 		case Operation.Show: return 'Show';
-// 		case Operation.Stage: return 'Stage';
-// 		case Operation.GetCommitTemplate: return 'GetCommitTemplate';
-// 		default: return 'unknown';
-// 	}
-// }
 function isReadOnly(operation) {
     switch (operation) {
         case Operation.Show:
         case Operation.GetCommitTemplate:
+        case Operation.CheckIgnore:
+        case Operation.LSTree:
             return true;
         default:
             return false;
@@ -245,38 +315,54 @@ function isReadOnly(operation) {
 function shouldShowProgress(operation) {
     switch (operation) {
         case Operation.Fetch:
+        case Operation.CheckIgnore:
+        case Operation.LSTree:
+        case Operation.Show:
             return false;
         default:
             return true;
     }
 }
 class OperationsImpl {
-    constructor(operations = 0) {
-        this.operations = operations;
-        // noop
+    constructor() {
+        this.operations = new Map();
     }
     start(operation) {
-        return new OperationsImpl(this.operations | operation);
+        this.operations.set(operation, (this.operations.get(operation) || 0) + 1);
     }
     end(operation) {
-        return new OperationsImpl(this.operations & ~operation);
+        const count = (this.operations.get(operation) || 0) - 1;
+        if (count <= 0) {
+            this.operations.delete(operation);
+        }
+        else {
+            this.operations.set(operation, count);
+        }
     }
     isRunning(operation) {
-        return (this.operations & operation) !== 0;
+        return this.operations.has(operation);
     }
     isIdle() {
-        return this.operations === 0;
+        const operations = this.operations.keys();
+        for (const operation of operations) {
+            if (!isReadOnly(operation)) {
+                return false;
+            }
+        }
+        return true;
     }
 }
 class Repository {
-    constructor(repository) {
+    constructor(repository, globalState) {
         this.repository = repository;
         this._onDidChangeRepository = new vscode_1.EventEmitter();
         this.onDidChangeRepository = this._onDidChangeRepository.event;
         this._onDidChangeState = new vscode_1.EventEmitter();
         this.onDidChangeState = this._onDidChangeState.event;
         this._onDidChangeStatus = new vscode_1.EventEmitter();
-        this.onDidChangeStatus = this._onDidChangeStatus.event;
+        this.onDidRunGitStatus = this._onDidChangeStatus.event;
+        this._onDidChangeOriginalResource = new vscode_1.EventEmitter();
+        this.onDidChangeOriginalResource = this._onDidChangeOriginalResource.event;
         this._onRunOperation = new vscode_1.EventEmitter();
         this.onRunOperation = this._onRunOperation.event;
         this._onDidRunOperation = new vscode_1.EventEmitter();
@@ -291,24 +377,25 @@ class Repository {
         const fsWatcher = vscode_1.workspace.createFileSystemWatcher('**');
         this.disposables.push(fsWatcher);
         const onWorkspaceChange = util_1.anyEvent(fsWatcher.onDidChange, fsWatcher.onDidCreate, fsWatcher.onDidDelete);
-        const onRepositoryChange = util_1.filterEvent(onWorkspaceChange, uri => !/^\.\./.test(path.relative(repository.root, uri.fsPath)));
+        const onRepositoryChange = util_1.filterEvent(onWorkspaceChange, uri => util_1.isDescendant(repository.root, uri.fsPath));
         const onRelevantRepositoryChange = util_1.filterEvent(onRepositoryChange, uri => !/\/\.git\/index\.lock$/.test(uri.path));
         onRelevantRepositoryChange(this.onFSChange, this, this.disposables);
         const onRelevantGitChange = util_1.filterEvent(onRelevantRepositoryChange, uri => /\/\.git\//.test(uri.path));
         onRelevantGitChange(this._onDidChangeRepository.fire, this._onDidChangeRepository, this.disposables);
-        this._sourceControl = vscode_1.scm.createSourceControl('git', 'Git', vscode_1.Uri.parse(repository.root));
-        this._sourceControl.acceptInputCommand = { command: 'git.commitWithInput', title: localize(17, null), arguments: [this._sourceControl] };
+        this._sourceControl = vscode_1.scm.createSourceControl('git', 'Git', vscode_1.Uri.file(repository.root));
+        this._sourceControl.inputBox.placeholder = localize(17, null);
+        this._sourceControl.acceptInputCommand = { command: 'git.commitWithInput', title: localize(18, null), arguments: [this._sourceControl] };
         this._sourceControl.quickDiffProvider = this;
         this.disposables.push(this._sourceControl);
-        this._mergeGroup = this._sourceControl.createResourceGroup('merge', localize(18, null));
-        this._indexGroup = this._sourceControl.createResourceGroup('index', localize(19, null));
-        this._workingTreeGroup = this._sourceControl.createResourceGroup('workingTree', localize(20, null));
+        this._mergeGroup = this._sourceControl.createResourceGroup('merge', localize(19, null));
+        this._indexGroup = this._sourceControl.createResourceGroup('index', localize(20, null));
+        this._workingTreeGroup = this._sourceControl.createResourceGroup('workingTree', localize(21, null));
         this.mergeGroup.hideWhenEmpty = true;
         this.indexGroup.hideWhenEmpty = true;
         this.disposables.push(this.mergeGroup);
         this.disposables.push(this.indexGroup);
         this.disposables.push(this.workingTreeGroup);
-        this.disposables.push(new autofetch_1.AutoFetcher(this));
+        this.disposables.push(new autofetch_1.AutoFetcher(this, globalState));
         const statusBar = new statusbar_1.StatusBarCommands(this);
         this.disposables.push(statusBar);
         statusBar.onDidChange(() => this._sourceControl.statusBarCommands = statusBar.commands, null, this.disposables);
@@ -387,6 +474,7 @@ class Repository {
         return __awaiter(this, void 0, void 0, function* () {
             const relativePath = path.relative(this.repository.root, resource.fsPath).replace(/\\/g, '/');
             yield this.run(Operation.Stage, () => this.repository.stage(relativePath, contents));
+            this._onDidChangeOriginalResource.fire(resource);
         });
     }
     revert(resources) {
@@ -446,6 +534,11 @@ class Repository {
             yield this.run(Operation.DeleteBranch, () => this.repository.deleteBranch(name, force));
         });
     }
+    renameBranch(name) {
+        return __awaiter(this, void 0, void 0, function* () {
+            yield this.run(Operation.RenameBranch, () => this.repository.renameBranch(name));
+        });
+    }
     merge(ref) {
         return __awaiter(this, void 0, void 0, function* () {
             yield this.run(Operation.Merge, () => this.repository.merge(ref));
@@ -473,12 +566,7 @@ class Repository {
     }
     fetch() {
         return __awaiter(this, void 0, void 0, function* () {
-            try {
-                yield this.run(Operation.Fetch, () => this.repository.fetch());
-            }
-            catch (err) {
-                // noop
-            }
+            yield this.run(Operation.Fetch, () => this.repository.fetch());
         });
     }
     pullWithRebase() {
@@ -511,10 +599,10 @@ class Repository {
             yield this.run(Operation.Push, () => this.repository.push(remote, undefined, false, true));
         });
     }
-    sync() {
+    _sync(rebase) {
         return __awaiter(this, void 0, void 0, function* () {
             yield this.run(Operation.Sync, () => __awaiter(this, void 0, void 0, function* () {
-                yield this.repository.pull();
+                yield this.repository.pull(rebase);
                 const shouldPush = this.HEAD && typeof this.HEAD.ahead === 'number' ? this.HEAD.ahead > 0 : true;
                 if (shouldPush) {
                     yield this.repository.push();
@@ -522,24 +610,50 @@ class Repository {
             }));
         });
     }
+    sync() {
+        return this._sync(false);
+    }
+    syncRebase() {
+        return __awaiter(this, void 0, void 0, function* () {
+            return this._sync(true);
+        });
+    }
     show(ref, filePath) {
         return __awaiter(this, void 0, void 0, function* () {
             return yield this.run(Operation.Show, () => __awaiter(this, void 0, void 0, function* () {
                 const relativePath = path.relative(this.repository.root, filePath).replace(/\\/g, '/');
-                const configFiles = vscode_1.workspace.getConfiguration('files');
+                const configFiles = vscode_1.workspace.getConfiguration('files', vscode_1.Uri.file(filePath));
                 const encoding = configFiles.get('encoding');
-                return yield this.repository.buffer(`${ref}:${relativePath}`, encoding);
+                // TODO@joao: Resource config api
+                return yield this.repository.bufferString(`${ref}:${relativePath}`, encoding);
             }));
         });
+    }
+    buffer(ref, filePath) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield this.run(Operation.Show, () => __awaiter(this, void 0, void 0, function* () {
+                const relativePath = path.relative(this.repository.root, filePath).replace(/\\/g, '/');
+                const configFiles = vscode_1.workspace.getConfiguration('files', vscode_1.Uri.file(filePath));
+                const encoding = configFiles.get('encoding');
+                // TODO@joao: REsource config api
+                return yield this.repository.buffer(`${ref}:${relativePath}`);
+            }));
+        });
+    }
+    lstree(ref, filePath) {
+        return this.run(Operation.LSTree, () => this.repository.lstree(ref, filePath));
+    }
+    detectObjectType(object) {
+        return this.run(Operation.Show, () => this.repository.detectObjectType(object));
     }
     getStashes() {
         return __awaiter(this, void 0, void 0, function* () {
             return yield this.repository.getStashes();
         });
     }
-    createStash(message) {
+    createStash(message, includeUntracked) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield this.run(Operation.Stash, () => this.repository.createStash(message));
+            return yield this.run(Operation.Stash, () => this.repository.createStash(message, includeUntracked));
         });
     }
     popStash(index) {
@@ -571,13 +685,53 @@ class Repository {
             }));
         });
     }
+    checkIgnore(filePaths) {
+        return this.run(Operation.CheckIgnore, () => {
+            return new Promise((resolve, reject) => {
+                filePaths = filePaths
+                    .filter(filePath => util_1.isDescendant(this.root, filePath));
+                if (filePaths.length === 0) {
+                    // nothing left
+                    return resolve(new Set());
+                }
+                // https://git-scm.com/docs/git-check-ignore#git-check-ignore--z
+                const child = this.repository.stream(['check-ignore', '-z', '--stdin'], { stdio: [null, null, null] });
+                child.stdin.end(filePaths.join('\0'), 'utf8');
+                const onExit = (exitCode) => {
+                    if (exitCode === 1) {
+                        // nothing ignored
+                        resolve(new Set());
+                    }
+                    else if (exitCode === 0) {
+                        // paths are separated by the null-character
+                        resolve(new Set(data.split('\0')));
+                    }
+                    else {
+                        reject(new git_1.GitError({ stdout: data, stderr, exitCode }));
+                    }
+                };
+                let data = '';
+                const onStdoutData = (raw) => {
+                    data += raw;
+                };
+                child.stdout.setEncoding('utf8');
+                child.stdout.on('data', onStdoutData);
+                let stderr = '';
+                child.stderr.setEncoding('utf8');
+                child.stderr.on('data', raw => stderr += raw);
+                child.on('error', reject);
+                child.on('exit', onExit);
+            });
+        });
+    }
     run(operation, runOperation = () => Promise.resolve(null)) {
         return __awaiter(this, void 0, void 0, function* () {
             if (this.state !== RepositoryState.Idle) {
                 throw new Error('Repository not initialized');
             }
             const run = () => __awaiter(this, void 0, void 0, function* () {
-                this._operations = this._operations.start(operation);
+                let error = null;
+                this._operations.start(operation);
                 this._onRunOperation.fire(operation);
                 try {
                     const result = yield this.retryRun(runOperation);
@@ -587,14 +741,15 @@ class Repository {
                     return result;
                 }
                 catch (err) {
+                    error = err;
                     if (err.gitErrorCode === git_1.GitErrorCodes.NotAGitRepository) {
                         this.state = RepositoryState.Disposed;
                     }
                     throw err;
                 }
                 finally {
-                    this._operations = this._operations.end(operation);
-                    this._onDidRunOperation.fire(operation);
+                    this._operations.end(operation);
+                    this._onDidRunOperation.fire({ operation, error });
                 }
             });
             return shouldShowProgress(operation)
@@ -627,11 +782,12 @@ class Repository {
             const { status, didHitLimit } = yield this.repository.getStatus();
             const config = vscode_1.workspace.getConfiguration('git');
             const shouldIgnore = config.get('ignoreLimitWarning') === true;
+            const useIcons = !config.get('decorations.enabled', true);
             this.isRepositoryHuge = didHitLimit;
             if (didHitLimit && !shouldIgnore && !this.didWarnAboutLimit) {
-                const ok = { title: localize(21, null), isCloseAffordance: true };
-                const neverAgain = { title: localize(22, null) };
-                vscode_1.window.showWarningMessage(localize(23, null, this.repository.root), ok, neverAgain).then(result => {
+                const ok = { title: localize(22, null), isCloseAffordance: true };
+                const neverAgain = { title: localize(23, null) };
+                vscode_1.window.showWarningMessage(localize(24, null, this.repository.root), ok, neverAgain).then(result => {
                     if (result === neverAgain) {
                         config.update('ignoreLimitWarning', true, false);
                     }
@@ -664,41 +820,41 @@ class Repository {
                 const uri = vscode_1.Uri.file(path.join(this.repository.root, raw.path));
                 const renameUri = raw.rename ? vscode_1.Uri.file(path.join(this.repository.root, raw.rename)) : undefined;
                 switch (raw.x + raw.y) {
-                    case '??': return workingTree.push(new Resource(ResourceGroupType.WorkingTree, uri, Status.UNTRACKED));
-                    case '!!': return workingTree.push(new Resource(ResourceGroupType.WorkingTree, uri, Status.IGNORED));
-                    case 'DD': return merge.push(new Resource(ResourceGroupType.Merge, uri, Status.BOTH_DELETED));
-                    case 'AU': return merge.push(new Resource(ResourceGroupType.Merge, uri, Status.ADDED_BY_US));
-                    case 'UD': return merge.push(new Resource(ResourceGroupType.Merge, uri, Status.DELETED_BY_THEM));
-                    case 'UA': return merge.push(new Resource(ResourceGroupType.Merge, uri, Status.ADDED_BY_THEM));
-                    case 'DU': return merge.push(new Resource(ResourceGroupType.Merge, uri, Status.DELETED_BY_US));
-                    case 'AA': return merge.push(new Resource(ResourceGroupType.Merge, uri, Status.BOTH_ADDED));
-                    case 'UU': return merge.push(new Resource(ResourceGroupType.Merge, uri, Status.BOTH_MODIFIED));
+                    case '??': return workingTree.push(new Resource(ResourceGroupType.WorkingTree, uri, Status.UNTRACKED, useIcons));
+                    case '!!': return workingTree.push(new Resource(ResourceGroupType.WorkingTree, uri, Status.IGNORED, useIcons));
+                    case 'DD': return merge.push(new Resource(ResourceGroupType.Merge, uri, Status.BOTH_DELETED, useIcons));
+                    case 'AU': return merge.push(new Resource(ResourceGroupType.Merge, uri, Status.ADDED_BY_US, useIcons));
+                    case 'UD': return merge.push(new Resource(ResourceGroupType.Merge, uri, Status.DELETED_BY_THEM, useIcons));
+                    case 'UA': return merge.push(new Resource(ResourceGroupType.Merge, uri, Status.ADDED_BY_THEM, useIcons));
+                    case 'DU': return merge.push(new Resource(ResourceGroupType.Merge, uri, Status.DELETED_BY_US, useIcons));
+                    case 'AA': return merge.push(new Resource(ResourceGroupType.Merge, uri, Status.BOTH_ADDED, useIcons));
+                    case 'UU': return merge.push(new Resource(ResourceGroupType.Merge, uri, Status.BOTH_MODIFIED, useIcons));
                 }
                 let isModifiedInIndex = false;
                 switch (raw.x) {
                     case 'M':
-                        index.push(new Resource(ResourceGroupType.Index, uri, Status.INDEX_MODIFIED));
+                        index.push(new Resource(ResourceGroupType.Index, uri, Status.INDEX_MODIFIED, useIcons));
                         isModifiedInIndex = true;
                         break;
                     case 'A':
-                        index.push(new Resource(ResourceGroupType.Index, uri, Status.INDEX_ADDED));
+                        index.push(new Resource(ResourceGroupType.Index, uri, Status.INDEX_ADDED, useIcons));
                         break;
                     case 'D':
-                        index.push(new Resource(ResourceGroupType.Index, uri, Status.INDEX_DELETED));
+                        index.push(new Resource(ResourceGroupType.Index, uri, Status.INDEX_DELETED, useIcons));
                         break;
                     case 'R':
-                        index.push(new Resource(ResourceGroupType.Index, uri, Status.INDEX_RENAMED, renameUri));
+                        index.push(new Resource(ResourceGroupType.Index, uri, Status.INDEX_RENAMED, useIcons, renameUri));
                         break;
                     case 'C':
-                        index.push(new Resource(ResourceGroupType.Index, uri, Status.INDEX_COPIED, renameUri));
+                        index.push(new Resource(ResourceGroupType.Index, uri, Status.INDEX_COPIED, useIcons, renameUri));
                         break;
                 }
                 switch (raw.y) {
                     case 'M':
-                        workingTree.push(new Resource(ResourceGroupType.WorkingTree, uri, Status.MODIFIED, renameUri));
+                        workingTree.push(new Resource(ResourceGroupType.WorkingTree, uri, Status.MODIFIED, useIcons, renameUri));
                         break;
                     case 'D':
-                        workingTree.push(new Resource(ResourceGroupType.WorkingTree, uri, Status.DELETED, renameUri));
+                        workingTree.push(new Resource(ResourceGroupType.WorkingTree, uri, Status.DELETED, useIcons, renameUri));
                         break;
                 }
             });
@@ -821,6 +977,9 @@ __decorate([
 ], Repository.prototype, "sync", null);
 __decorate([
     decorators_1.throttle
+], Repository.prototype, "syncRebase", null);
+__decorate([
+    decorators_1.throttle
 ], Repository.prototype, "updateModelState", null);
 __decorate([
     decorators_1.debounce(1000)
@@ -829,4 +988,4 @@ __decorate([
     decorators_1.throttle
 ], Repository.prototype, "updateWhenIdleAndWait", null);
 exports.Repository = Repository;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/b813d12980308015bcd2b3a2f6efa5c810c33ba5/extensions\git\out/repository.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/816be6780ca8bd0ab80314e11478c48c70d09383/extensions\git\out/repository.js.map

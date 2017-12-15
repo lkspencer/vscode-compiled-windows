@@ -9,6 +9,8 @@ var markedTextUtil_1 = require("./markedTextUtil");
 var nls = require("vscode-nls");
 var localize = nls.loadMessageBundle(__filename);
 var LIMIT = 40;
+var SCOPED_LIMIT = 250;
+var USER_AGENT = 'Visual Studio Code';
 var PackageJSONContribution = /** @class */ (function () {
     function PackageJSONContribution(xhr) {
         this.xhr = xhr;
@@ -18,11 +20,12 @@ var PackageJSONContribution = /** @class */ (function () {
             'grunt', 'connect', 'yosay', 'underscore', 'string', 'xml2js', 'ejs', 'mongoose', 'marked', 'extend', 'mocha', 'superagent', 'js-yaml', 'xtend',
             'shelljs', 'gulp', 'yargs', 'browserify', 'minimatch', 'react', 'less', 'prompt', 'inquirer', 'ws', 'event-stream', 'inherits', 'mysql', 'esprima',
             'jsdom', 'stylus', 'when', 'readable-stream', 'aws-sdk', 'concat-stream', 'chai', 'Thenable', 'wrench'];
+        this.knownScopes = ['@types', '@angular'];
     }
     PackageJSONContribution.prototype.getDocumentSelector = function () {
         return [{ language: 'json', pattern: '**/package.json' }];
     };
-    PackageJSONContribution.prototype.collectDefaultSuggestions = function (fileName, result) {
+    PackageJSONContribution.prototype.collectDefaultSuggestions = function (_fileName, result) {
         var defaultValue = {
             'name': '${1:name}',
             'description': '${2:description}',
@@ -37,13 +40,17 @@ var PackageJSONContribution = /** @class */ (function () {
         result.add(proposal);
         return Promise.resolve(null);
     };
-    PackageJSONContribution.prototype.collectPropertySuggestions = function (resource, location, currentWord, addValue, isLast, collector) {
+    PackageJSONContribution.prototype.collectPropertySuggestions = function (_resource, location, currentWord, addValue, isLast, collector) {
         if ((location.matches(['dependencies']) || location.matches(['devDependencies']) || location.matches(['optionalDependencies']) || location.matches(['peerDependencies']))) {
             var queryUrl = void 0;
             if (currentWord.length > 0) {
-                queryUrl = 'https://skimdb.npmjs.com/registry/_design/app/_view/browseAll?group_level=1&limit=' + LIMIT + '&start_key=%5B%22' + encodeURIComponent(currentWord) + '%22%5D&end_key=%5B%22' + encodeURIComponent(currentWord + 'z') + '%22,%7B%7D%5D';
+                if (currentWord[0] === '@') {
+                    return this.collectScopedPackages(currentWord, addValue, isLast, collector);
+                }
+                queryUrl = 'https://skimdb.npmjs.com/registry/_design/app/_view/browseAll?group_level=2&limit=' + LIMIT + '&start_key=%5B%22' + encodeURIComponent(currentWord) + '%22%5D&end_key=%5B%22' + encodeURIComponent(currentWord + 'z') + '%22,%7B%7D%5D';
                 return this.xhr({
-                    url: queryUrl
+                    url: queryUrl,
+                    agent: USER_AGENT
                 }).then(function (success) {
                     if (success.status === 200) {
                         try {
@@ -65,7 +72,7 @@ var PackageJSONContribution = /** @class */ (function () {
                                         proposal.kind = vscode_1.CompletionItemKind.Property;
                                         proposal.insertText = insertText;
                                         proposal.filterText = JSON.stringify(name);
-                                        proposal.documentation = '';
+                                        proposal.documentation = keys[1];
                                         collector.add(proposal);
                                     }
                                 }
@@ -82,6 +89,7 @@ var PackageJSONContribution = /** @class */ (function () {
                         collector.error(localize(1, null, success.responseText));
                         return 0;
                     }
+                    return undefined;
                 }, function (error) {
                     collector.error(localize(2, null, error.responseText));
                     return 0;
@@ -103,19 +111,93 @@ var PackageJSONContribution = /** @class */ (function () {
                     proposal.documentation = '';
                     collector.add(proposal);
                 });
+                this.collectScopedPackages(currentWord, addValue, isLast, collector);
                 collector.setAsIncomplete();
                 return Promise.resolve(null);
             }
         }
         return null;
     };
-    PackageJSONContribution.prototype.collectValueSuggestions = function (fileName, location, result) {
+    PackageJSONContribution.prototype.collectScopedPackages = function (currentWord, addValue, isLast, collector) {
+        var segments = currentWord.split('/');
+        if (segments.length === 1) {
+            for (var _i = 0, _a = this.knownScopes; _i < _a.length; _i++) {
+                var scope = _a[_i];
+                var proposal = new vscode_1.CompletionItem(scope);
+                proposal.kind = vscode_1.CompletionItemKind.Property;
+                proposal.insertText = new vscode_1.SnippetString().appendText("\"" + scope + "/").appendTabstop().appendText('"');
+                proposal.filterText = JSON.stringify(scope);
+                proposal.documentation = '';
+                proposal.command = {
+                    title: '',
+                    command: 'editor.action.triggerSuggest'
+                };
+                collector.add(proposal);
+            }
+        }
+        else if (segments.length === 2 && segments[0].length > 1) {
+            var scope = segments[0].substr(1);
+            var queryUrl = "https://registry.npmjs.org/-/v1/search?text=scope:" + scope + "%20" + segments[1] + "&size=" + SCOPED_LIMIT + "&popularity=1.0";
+            return this.xhr({
+                url: queryUrl,
+                agent: USER_AGENT
+            }).then(function (success) {
+                if (success.status === 200) {
+                    try {
+                        var obj = JSON.parse(success.responseText);
+                        if (obj && Array.isArray(obj.objects)) {
+                            var objects = obj.objects;
+                            for (var _i = 0, objects_1 = objects; _i < objects_1.length; _i++) {
+                                var object = objects_1[_i];
+                                if (object.package && object.package.name) {
+                                    var name = object.package.name;
+                                    var insertText = new vscode_1.SnippetString().appendText(JSON.stringify(name));
+                                    if (addValue) {
+                                        insertText.appendText(': "');
+                                        if (object.package.version) {
+                                            insertText.appendVariable('version', object.package.version);
+                                        }
+                                        else {
+                                            insertText.appendTabstop();
+                                        }
+                                        insertText.appendText('"');
+                                        if (!isLast) {
+                                            insertText.appendText(',');
+                                        }
+                                    }
+                                    var proposal = new vscode_1.CompletionItem(name);
+                                    proposal.kind = vscode_1.CompletionItemKind.Property;
+                                    proposal.insertText = insertText;
+                                    proposal.filterText = JSON.stringify(name);
+                                    proposal.documentation = object.package.description || '';
+                                    collector.add(proposal);
+                                }
+                            }
+                            if (objects.length === SCOPED_LIMIT) {
+                                collector.setAsIncomplete();
+                            }
+                        }
+                    }
+                    catch (e) {
+                        // ignore
+                    }
+                }
+                else {
+                    collector.error(localize(3, null, success.responseText));
+                }
+                return null;
+            });
+        }
+        return Promise.resolve(null);
+    };
+    PackageJSONContribution.prototype.collectValueSuggestions = function (_fileName, location, result) {
         if ((location.matches(['dependencies', '*']) || location.matches(['devDependencies', '*']) || location.matches(['optionalDependencies', '*']) || location.matches(['peerDependencies', '*']))) {
             var currentKey = location.path[location.path.length - 1];
             if (typeof currentKey === 'string') {
                 var queryUrl = 'http://registry.npmjs.org/' + encodeURIComponent(currentKey).replace('%40', '@');
                 return this.xhr({
-                    url: queryUrl
+                    url: queryUrl,
+                    agent: USER_AGENT
                 }).then(function (success) {
                     try {
                         var obj = JSON.parse(success.responseText);
@@ -125,19 +207,19 @@ var PackageJSONContribution = /** @class */ (function () {
                             var proposal = new vscode_1.CompletionItem(name);
                             proposal.kind = vscode_1.CompletionItemKind.Property;
                             proposal.insertText = name;
-                            proposal.documentation = localize(3, null);
+                            proposal.documentation = localize(4, null);
                             result.add(proposal);
                             name = JSON.stringify('^' + latest);
                             proposal = new vscode_1.CompletionItem(name);
                             proposal.kind = vscode_1.CompletionItemKind.Property;
                             proposal.insertText = name;
-                            proposal.documentation = localize(4, null);
+                            proposal.documentation = localize(5, null);
                             result.add(proposal);
                             name = JSON.stringify('~' + latest);
                             proposal = new vscode_1.CompletionItem(name);
                             proposal.kind = vscode_1.CompletionItemKind.Property;
                             proposal.insertText = name;
-                            proposal.documentation = localize(5, null);
+                            proposal.documentation = localize(6, null);
                             result.add(proposal);
                         }
                     }
@@ -145,7 +227,7 @@ var PackageJSONContribution = /** @class */ (function () {
                         // ignore
                     }
                     return 0;
-                }, function (error) {
+                }, function () {
                     return 0;
                 });
             }
@@ -165,13 +247,13 @@ var PackageJSONContribution = /** @class */ (function () {
                 return null;
             });
         }
-        ;
         return null;
     };
     PackageJSONContribution.prototype.getInfo = function (pack) {
         var queryUrl = 'http://registry.npmjs.org/' + encodeURIComponent(pack).replace('%40', '@');
         return this.xhr({
-            url: queryUrl
+            url: queryUrl,
+            agent: USER_AGENT
         }).then(function (success) {
             try {
                 var obj = JSON.parse(success.responseText);
@@ -182,7 +264,7 @@ var PackageJSONContribution = /** @class */ (function () {
                     }
                     var latest = obj && obj['dist-tags'] && obj['dist-tags']['latest'];
                     if (latest) {
-                        result.push(localize(6, null, latest));
+                        result.push(localize(7, null, latest));
                     }
                     return result;
                 }
@@ -191,11 +273,11 @@ var PackageJSONContribution = /** @class */ (function () {
                 // ignore
             }
             return [];
-        }, function (error) {
+        }, function () {
             return [];
         });
     };
-    PackageJSONContribution.prototype.getInfoContribution = function (fileName, location) {
+    PackageJSONContribution.prototype.getInfoContribution = function (_fileName, location) {
         if ((location.matches(['dependencies', '*']) || location.matches(['devDependencies', '*']) || location.matches(['optionalDependencies', '*']) || location.matches(['peerDependencies', '*']))) {
             var pack = location.path[location.path.length - 1];
             if (typeof pack === 'string') {
@@ -212,4 +294,4 @@ var PackageJSONContribution = /** @class */ (function () {
     return PackageJSONContribution;
 }());
 exports.PackageJSONContribution = PackageJSONContribution;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/b813d12980308015bcd2b3a2f6efa5c810c33ba5/extensions\javascript\out/features\packageJSONContribution.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/816be6780ca8bd0ab80314e11478c48c70d09383/extensions\javascript\out/features\packageJSONContribution.js.map

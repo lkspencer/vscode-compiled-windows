@@ -7,10 +7,10 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const vscode = require("vscode");
 const util_1 = require("./util");
 function mergeLines() {
-    let editor = vscode.window.activeTextEditor;
-    if (!util_1.validate(false)) {
+    if (!util_1.validate(false) || !vscode.window.activeTextEditor) {
         return;
     }
+    const editor = vscode.window.activeTextEditor;
     let rootNode = util_1.parseDocument(editor.document);
     if (!rootNode) {
         return;
@@ -45,4 +45,4 @@ function getRangesToReplace(document, selection, rootNode) {
     }
     return new vscode.TextEdit(rangeToReplace, textToReplaceWith);
 }
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/b813d12980308015bcd2b3a2f6efa5c810c33ba5/extensions\emmet\out/mergeLines.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/816be6780ca8bd0ab80314e11478c48c70d09383/extensions\emmet\out/mergeLines.js.map

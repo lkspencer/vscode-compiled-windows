@@ -38,24 +38,6 @@ class Delayer {
         }
         return this.completionPromise;
     }
-    forceDelivery() {
-        if (!this.completionPromise) {
-            return null;
-        }
-        this.cancelTimeout();
-        let result = this.completionPromise;
-        if (this.onSuccess) {
-            this.onSuccess(undefined);
-        }
-        return result;
-    }
-    isTriggered() {
-        return this.timeout !== null;
-    }
-    cancel() {
-        this.cancelTimeout();
-        this.completionPromise = null;
-    }
     cancelTimeout() {
         if (this.timeout !== null) {
             clearTimeout(this.timeout);
@@ -64,4 +46,4 @@ class Delayer {
     }
 }
 exports.Delayer = Delayer;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/b813d12980308015bcd2b3a2f6efa5c810c33ba5/extensions\typescript\out/utils\async.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/816be6780ca8bd0ab80314e11478c48c70d09383/extensions\typescript\out/utils\async.js.map

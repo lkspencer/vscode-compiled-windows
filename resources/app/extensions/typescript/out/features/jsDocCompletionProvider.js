@@ -3,14 +3,6 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 const vscode_1 = require("vscode");
 const nls = require("vscode-nls");
@@ -40,74 +32,106 @@ class JsDocCompletionItem extends vscode_1.CompletionItem {
     }
 }
 class JsDocCompletionProvider {
-    constructor(client) {
+    constructor(client, commandManager) {
         this.client = client;
-        this.config = { enabled: true };
+        commandManager.register(new TryCompleteJsDocCommand(client));
     }
-    updateConfiguration() {
-        const jsDocCompletionConfig = vscode_1.workspace.getConfiguration(configurationNamespace);
-        this.config.enabled = jsDocCompletionConfig.get(Configuration.enabled, true);
-    }
-    provideCompletionItems(document, position, _token) {
+    async provideCompletionItems(document, position, token) {
         const file = this.client.normalizePath(document.uri);
         if (!file) {
+            return [];
+        }
+        // TODO: unregister provider when disabled
+        const enableJsDocCompletions = vscode_1.workspace.getConfiguration(configurationNamespace, document.uri).get(Configuration.enabled, true);
+        if (!enableJsDocCompletions) {
             return [];
         }
         // Only show the JSdoc completion when the everything before the cursor is whitespace
         // or could be the opening of a comment
         const line = document.lineAt(position.line).text;
         const prefix = line.slice(0, position.character);
-        if (prefix.match(/^\s*$|\/\*\*\s*$|^\s*\/\*\*+\s*$/)) {
-            return [new JsDocCompletionItem(document, position, this.config.enabled)];
+        if (prefix.match(/^\s*$|\/\*\*\s*$|^\s*\/\*\*+\s*$/) === null) {
+            return [];
         }
-        return [];
+        const args = {
+            file
+        };
+        const response = await Promise.race([
+            this.client.execute('navtree', args, token),
+            new Promise((resolve) => setTimeout(resolve, 250))
+        ]);
+        if (!response || !response.body) {
+            return [];
+        }
+        const body = response.body;
+        function matchesPosition(tree) {
+            if (!tree.spans.length) {
+                return false;
+            }
+            const span = convert_1.tsTextSpanToVsRange(tree.spans[0]);
+            if (position.line === span.start.line - 1 || position.line === span.start.line) {
+                return true;
+            }
+            return tree.childItems ? tree.childItems.some(matchesPosition) : false;
+        }
+        if (!matchesPosition(body)) {
+            return [];
+        }
+        return [new JsDocCompletionItem(document, position, enableJsDocCompletions)];
     }
     resolveCompletionItem(item, _token) {
         return item;
     }
 }
-exports.JsDocCompletionProvider = JsDocCompletionProvider;
+exports.default = JsDocCompletionProvider;
 class TryCompleteJsDocCommand {
-    constructor(lazyClient) {
-        this.lazyClient = lazyClient;
+    constructor(client) {
+        this.client = client;
+        this.id = TryCompleteJsDocCommand.COMMAND_NAME;
     }
     /**
      * Try to insert a jsdoc comment, using a template provide by typescript
      * if possible, otherwise falling back to a default comment format.
      */
-    tryCompleteJsDoc(resource, start, shouldGetJSDocFromTSServer) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const file = this.lazyClient().normalizePath(resource);
-            if (!file) {
-                return false;
-            }
-            const editor = vscode_1.window.activeTextEditor;
-            if (!editor || editor.document.uri.fsPath !== resource.fsPath) {
-                return false;
-            }
-            if (!shouldGetJSDocFromTSServer) {
-                return this.tryInsertDefaultDoc(editor, start);
-            }
-            const didInsertFromTemplate = yield this.tryInsertJsDocFromTemplate(editor, file, start);
-            if (didInsertFromTemplate) {
-                return true;
-            }
+    async execute(resource, start, shouldGetJSDocFromTSServer) {
+        const file = this.client.normalizePath(resource);
+        if (!file) {
+            return false;
+        }
+        const editor = vscode_1.window.activeTextEditor;
+        if (!editor || editor.document.uri.fsPath !== resource.fsPath) {
+            return false;
+        }
+        if (!shouldGetJSDocFromTSServer) {
             return this.tryInsertDefaultDoc(editor, start);
-        });
+        }
+        const didInsertFromTemplate = await this.tryInsertJsDocFromTemplate(editor, file, start);
+        if (didInsertFromTemplate) {
+            return true;
+        }
+        return this.tryInsertDefaultDoc(editor, start);
     }
-    tryInsertJsDocFromTemplate(editor, file, position) {
+    async tryInsertJsDocFromTemplate(editor, file, position) {
+        const snippet = await TryCompleteJsDocCommand.getSnippetTemplate(this.client, file, position);
+        if (!snippet) {
+            return false;
+        }
+        return editor.insertSnippet(snippet, position, { undoStopBefore: false, undoStopAfter: true });
+    }
+    static getSnippetTemplate(client, file, position) {
         const args = convert_1.vsPositionToTsFileLocation(file, position);
         return Promise.race([
-            this.lazyClient().execute('docCommentTemplate', args),
+            client.execute('docCommentTemplate', args),
             new Promise((_, reject) => setTimeout(reject, 250))
         ]).then((res) => {
             if (!res || !res.body) {
-                return false;
+                return undefined;
             }
-            return editor.insertSnippet(this.templateToSnippet(res.body.newText), position, { undoStopBefore: false, undoStopAfter: true });
-        }, () => false);
+            return TryCompleteJsDocCommand.templateToSnippet(res.body.newText);
+        }, () => undefined);
     }
-    templateToSnippet(template) {
+    static templateToSnippet(template) {
+        // TODO: use append placeholder
         let snippetIndex = 1;
         template = template.replace(/^\s*(?=(\/|[ ]\*))/gm, '');
         template = template.replace(/^(\/\*\*\s*\*[ ]*)$/m, (x) => x + `\$0`);
@@ -132,6 +156,5 @@ class TryCompleteJsDocCommand {
         return editor.insertSnippet(snippet, position, { undoStopBefore: false, undoStopAfter: true });
     }
 }
-TryCompleteJsDocCommand.COMMAND_NAME = '_typeScript.tryCompleteJsDoc';
-exports.TryCompleteJsDocCommand = TryCompleteJsDocCommand;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/b813d12980308015bcd2b3a2f6efa5c810c33ba5/extensions\typescript\out/features\jsDocCompletionProvider.js.map
+TryCompleteJsDocCommand.COMMAND_NAME = '_typeScript.tryCompleteJsDoc';
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/816be6780ca8bd0ab80314e11478c48c70d09383/extensions\typescript\out/features\jsDocCompletionProvider.js.map

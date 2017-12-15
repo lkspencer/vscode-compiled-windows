@@ -11,12 +11,12 @@ var nls = require("vscode-nls");
 function activate(context) {
     nls.config({ locale: vscode_1.env.language });
     configureHttpRequest();
-    vscode_1.workspace.onDidChangeConfiguration(function (e) { return configureHttpRequest(); });
+    vscode_1.workspace.onDidChangeConfiguration(function () { return configureHttpRequest(); });
     context.subscriptions.push(jsonContributions_1.addJSONProviders(httpRequest.xhr));
 }
 exports.activate = activate;
 function configureHttpRequest() {
     var httpSettings = vscode_1.workspace.getConfiguration('http');
-    httpRequest.configure(httpSettings.get('proxy'), httpSettings.get('proxyStrictSSL'));
+    httpRequest.configure(httpSettings.get('proxy', ''), httpSettings.get('proxyStrictSSL', true));
 }
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/b813d12980308015bcd2b3a2f6efa5c810c33ba5/extensions\javascript\out/javascriptMain.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/816be6780ca8bd0ab80314e11478c48c70d09383/extensions\javascript\out/javascriptMain.js.map

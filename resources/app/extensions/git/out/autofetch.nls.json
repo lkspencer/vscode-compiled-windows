@@ -1,0 +1,14 @@
+{
+	"messages": [
+		"Yes",
+		"No",
+		"Not Now",
+		"Would you like to enable auto fetching of Git repositories?"
+	],
+	"keys": [
+		"yes",
+		"no",
+		"not now",
+		"suggest auto fetch"
+	]
+}

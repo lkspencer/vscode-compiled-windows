@@ -8,12 +8,13 @@ const vscode = require("vscode");
 const vscode_nls_1 = require("vscode-nls");
 const path_1 = require("path");
 const tsconfig_1 = require("./tsconfig");
+const languageModeIds = require("../utils/languageModeIds");
 const localize = vscode_nls_1.loadMessageBundle(__filename);
-const selector = ['javascript', 'javascriptreact'];
+const selector = [languageModeIds.javascript, languageModeIds.javascriptreact];
 const fileLimit = 500;
 class ExcludeHintItem {
-    constructor(client) {
-        this._client = client;
+    constructor(telemetryReporter) {
+        this.telemetryReporter = telemetryReporter;
         this._item = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, Number.MIN_VALUE);
         this._item.command = 'js.projectStatus.command';
     }
@@ -37,7 +38,7 @@ class ExcludeHintItem {
         /* __GDPR__
             "js.hintProjectExcludes" : {}
         */
-        this._client.logTelemetry('js.hintProjectExcludes');
+        this.telemetryReporter.logTelemetry('js.hintProjectExcludes');
     }
 }
 function createLargeProjectMonitorForProject(item, client, isOpen, memento) {
@@ -83,7 +84,7 @@ function createLargeProjectMonitorForProject(item, client, isOpen, memento) {
                 }
             });
         }).catch(err => {
-            client.warn(err);
+            client.logger.warn(err);
         });
     }
     toDispose.push(vscode.workspace.onDidChangeTextDocument(e => {
@@ -123,13 +124,13 @@ function onConfigureExcludesSelected(client, configFileName) {
     else {
         const root = client.getWorkspaceRootForResource(vscode.Uri.file(configFileName));
         if (root) {
-            tsconfig_1.openOrCreateConfigFile(configFileName.match(/tsconfig\.?.*\.json/) !== null, root);
+            tsconfig_1.openOrCreateConfigFile(configFileName.match(/tsconfig\.?.*\.json/) !== null, root, client.configuration);
         }
     }
 }
-function create(client, isOpen, memento) {
+function create(client, telemetryReporter, isOpen, memento) {
     const toDispose = [];
-    const item = new ExcludeHintItem(client);
+    const item = new ExcludeHintItem(telemetryReporter);
     toDispose.push(vscode.commands.registerCommand('js.projectStatus.command', () => {
         if (item.configFileName) {
             onConfigureExcludesSelected(client, item.configFileName);
@@ -177,4 +178,4 @@ function computeLargeRoots(configFileName, fileNames) {
     }
     return result;
 }
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/b813d12980308015bcd2b3a2f6efa5c810c33ba5/extensions\typescript\out/utils\projectStatus.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/816be6780ca8bd0ab80314e11478c48c70d09383/extensions\typescript\out/utils\projectStatus.js.map

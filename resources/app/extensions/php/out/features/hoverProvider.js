@@ -10,14 +10,14 @@ var markedTextUtil_1 = require("./utils/markedTextUtil");
 var PHPHoverProvider = /** @class */ (function () {
     function PHPHoverProvider() {
     }
-    PHPHoverProvider.prototype.provideHover = function (document, position, token) {
+    PHPHoverProvider.prototype.provideHover = function (document, position, _token) {
         var enable = vscode_1.workspace.getConfiguration('php').get('suggest.basic', true);
         if (!enable) {
-            return null;
+            return undefined;
         }
         var wordRange = document.getWordRangeAtPosition(position);
         if (!wordRange) {
-            return;
+            return undefined;
         }
         var name = document.getText(wordRange);
         var entry = phpGlobals.globalfunctions[name] || phpGlobals.compiletimeconstants[name] || phpGlobals.globalvariables[name] || phpGlobals.keywords[name];
@@ -26,8 +26,9 @@ var PHPHoverProvider = /** @class */ (function () {
             var contents = [markedTextUtil_1.textToMarkedString(entry.description), { language: 'php', value: signature }];
             return new vscode_1.Hover(contents, wordRange);
         }
+        return undefined;
     };
     return PHPHoverProvider;
 }());
 exports.default = PHPHoverProvider;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/b813d12980308015bcd2b3a2f6efa5c810c33ba5/extensions\php\out/features\hoverProvider.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/816be6780ca8bd0ab80314e11478c48c70d09383/extensions\php\out/features\hoverProvider.js.map

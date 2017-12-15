@@ -15,7 +15,7 @@ function getLanguageModes(supportedLanguages) {
     var documentRegions = languageModelCache_1.getLanguageModelCache(10, 60, function (document) { return embeddedSupport_1.getDocumentRegions(htmlLanguageService, document); });
     var modelCaches = [];
     modelCaches.push(documentRegions);
-    var modes = {};
+    var modes = Object.create(null);
     modes['html'] = htmlMode_1.getHTMLMode(htmlLanguageService);
     if (supportedLanguages['css']) {
         modes['css'] = cssMode_1.getCSSMode(documentRegions);
@@ -29,14 +29,14 @@ function getLanguageModes(supportedLanguages) {
             if (languageId) {
                 return modes[languageId];
             }
-            return null;
+            return void 0;
         },
         getModesInRange: function (document, range) {
             return documentRegions.get(document).getLanguageRanges(range).map(function (r) {
                 return {
                     start: r.start,
                     end: r.end,
-                    mode: modes[r.languageId],
+                    mode: r.languageId && modes[r.languageId],
                     attributeValue: r.attributeValue
                 };
             });
@@ -82,4 +82,4 @@ function getLanguageModes(supportedLanguages) {
     };
 }
 exports.getLanguageModes = getLanguageModes;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/b813d12980308015bcd2b3a2f6efa5c810c33ba5/extensions\html\server\out/modes\languageModes.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/816be6780ca8bd0ab80314e11478c48c70d09383/extensions\html\server\out/modes\languageModes.js.map

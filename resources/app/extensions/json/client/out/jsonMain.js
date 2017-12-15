@@ -33,14 +33,14 @@ function activate(context) {
     // The server is implemented in node
     var serverModule = context.asAbsolutePath(path.join('server', 'out', 'jsonServerMain.js'));
     // The debug options for the server
-    var debugOptions = { execArgv: ['--nolazy', '--inspect=6004'] };
+    var debugOptions = { execArgv: ['--nolazy', '--inspect'] };
     // If the extension is launch in debug mode the debug server options are use
     // Otherwise the run options are used
     var serverOptions = {
         run: { module: serverModule, transport: vscode_languageclient_1.TransportKind.ipc },
         debug: { module: serverModule, transport: vscode_languageclient_1.TransportKind.ipc, options: debugOptions }
     };
-    var documentSelector = ['json'];
+    var documentSelector = ['json', 'jsonc'];
     // Options to control the language client
     var clientOptions = {
         // Register the server for json documents
@@ -98,10 +98,11 @@ function activate(context) {
                     });
                 });
             },
-            provideColorPresentations: function (document, colorInfo) {
+            provideColorPresentations: function (color, context) {
                 var params = {
-                    textDocument: client.code2ProtocolConverter.asTextDocumentIdentifier(document),
-                    colorInfo: { range: client.code2ProtocolConverter.asRange(colorInfo.range), color: colorInfo.color }
+                    textDocument: client.code2ProtocolConverter.asTextDocumentIdentifier(context.document),
+                    color: color,
+                    range: client.code2ProtocolConverter.asRange(context.range)
                 };
                 return client.sendRequest(protocol_colorProvider_proposed_1.ColorPresentationRequest.type, params).then(function (presentations) {
                     return presentations.map(function (p) {
@@ -114,13 +115,15 @@ function activate(context) {
             }
         }));
     });
-    vscode_1.languages.setLanguageConfiguration('json', {
+    var languageConfiguration = {
         wordPattern: /("(?:[^\\\"]*(?:\\.)?)*"?)|[^\s{}\[\],:]+/,
         indentationRules: {
             increaseIndentPattern: /^.*(\{[^}]*|\[[^\]]*)$/,
             decreaseIndentPattern: /^\s*[}\]],?\s*$/
         }
-    });
+    };
+    vscode_1.languages.setLanguageConfiguration('json', languageConfiguration);
+    vscode_1.languages.setLanguageConfiguration('jsonc', languageConfiguration);
 }
 exports.activate = activate;
 function getSchemaAssociation(context) {
@@ -158,14 +161,13 @@ function getSchemaAssociation(context) {
 }
 function getSettings() {
     var httpSettings = vscode_1.workspace.getConfiguration('http');
-    var jsonSettings = vscode_1.workspace.getConfiguration('json');
     var settings = {
         http: {
             proxy: httpSettings.get('proxy'),
             proxyStrictSSL: httpSettings.get('proxyStrictSSL')
         },
         json: {
-            format: jsonSettings.get('format'),
+            format: vscode_1.workspace.getConfiguration('json').get('format'),
             schemas: [],
         }
     };
@@ -196,7 +198,7 @@ function getSettings() {
         var _a;
     };
     // merge global and folder settings. Qualify all file matches with the folder path.
-    var globalSettings = jsonSettings.get('schemas');
+    var globalSettings = vscode_1.workspace.getConfiguration('json', null).get('schemas');
     if (Array.isArray(globalSettings)) {
         collectSchemaSettings(globalSettings, vscode_1.workspace.rootPath);
     }
@@ -214,9 +216,7 @@ function getSettings() {
                 }
                 collectSchemaSettings(folderSchemas, folderUri.fsPath, folderPath + '*');
             }
-            ;
         }
-        ;
     }
     return settings;
 }
@@ -243,4 +243,4 @@ function getPackageInfo(context) {
     }
     return null;
 }
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/b813d12980308015bcd2b3a2f6efa5c810c33ba5/extensions\json\client\out/jsonMain.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/816be6780ca8bd0ab80314e11478c48c70d09383/extensions\json\client\out/jsonMain.js.map

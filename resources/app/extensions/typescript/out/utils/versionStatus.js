@@ -5,9 +5,10 @@
  *--------------------------------------------------------------------------------------------*/
 Object.defineProperty(exports, "__esModule", { value: true });
 const vscode = require("vscode");
-class VersionStatus extends vscode.Disposable {
-    constructor() {
-        super(() => this.dispose());
+const languageModeIds = require("./languageModeIds");
+class VersionStatus {
+    constructor(normalizePath) {
+        this.normalizePath = normalizePath;
         this.versionBarEntry = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, Number.MIN_VALUE);
         this.onChangeEditorSub = vscode.window.onDidChangeActiveTextEditor(this.showHideStatus, this);
     }
@@ -15,31 +16,31 @@ class VersionStatus extends vscode.Disposable {
         this.versionBarEntry.dispose();
         this.onChangeEditorSub.dispose();
     }
+    onDidChangeTypeScriptVersion(version) {
+        this.showHideStatus();
+        this.versionBarEntry.text = version.versionString;
+        this.versionBarEntry.tooltip = version.path;
+        this.versionBarEntry.command = 'typescript.selectTypeScriptVersion';
+    }
     showHideStatus() {
-        if (!this.versionBarEntry) {
-            return;
-        }
         if (!vscode.window.activeTextEditor) {
             this.versionBarEntry.hide();
             return;
         }
-        let doc = vscode.window.activeTextEditor.document;
-        if (vscode.languages.match('typescript', doc) || vscode.languages.match('typescriptreact', doc)) {
-            this.versionBarEntry.show();
-            return;
+        const doc = vscode.window.activeTextEditor.document;
+        if (vscode.languages.match([languageModeIds.typescript, languageModeIds.typescriptreact], doc)) {
+            if (this.normalizePath(doc.uri)) {
+                this.versionBarEntry.show();
+                return;
+            }
         }
         if (!vscode.window.activeTextEditor.viewColumn) {
             // viewColumn is undefined for the debug/output panel, but we still want
-            // to show the version info
+            // to show the version info in the existing editor
             return;
         }
         this.versionBarEntry.hide();
     }
-    setInfo(message, tooltip) {
-        this.versionBarEntry.text = message;
-        this.versionBarEntry.tooltip = tooltip;
-        this.versionBarEntry.command = 'typescript.selectTypeScriptVersion';
-    }
 }
 exports.default = VersionStatus;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/b813d12980308015bcd2b3a2f6efa5c810c33ba5/extensions\typescript\out/utils\versionStatus.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/816be6780ca8bd0ab80314e11478c48c70d09383/extensions\typescript\out/utils\versionStatus.js.map

@@ -16,6 +16,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const path = require("path");
 const fs = require("fs");
 const vscode = require("vscode");
+const nls = require("vscode-nls");
+let localize = nls.loadMessageBundle(__filename);
 let taskProvider;
 function activate(_context) {
     if (!vscode.workspace.workspaceFolders) {
@@ -87,13 +89,18 @@ function provideNpmScripts() {
         if (!folders) {
             return emptyTasks;
         }
-        for (let i = 0; i < folders.length; i++) {
-            if (isEnabled(folders[i])) {
-                let tasks = yield provideNpmScriptsForFolder(folders[i]);
-                allTasks.push(...tasks);
+        try {
+            for (let i = 0; i < folders.length; i++) {
+                if (isEnabled(folders[i])) {
+                    let tasks = yield provideNpmScriptsForFolder(folders[i]);
+                    allTasks.push(...tasks);
+                }
             }
+            return allTasks;
         }
-        return allTasks;
+        catch (error) {
+            return Promise.reject(error);
+        }
     });
 }
 function isEnabled(folder) {
@@ -129,11 +136,12 @@ function provideNpmScriptsForFolder(folder) {
                 result.push(task);
             });
             // always add npm install (without a problem matcher)
-            result.push(createTask('install', 'install', rootPath, folder, []));
+            // result.push(createTask('install', 'install', rootPath, folder, []));
             return result;
         }
         catch (e) {
-            return emptyTasks;
+            let localizedParseError = localize(0, null, packageJson);
+            throw new Error(localizedParseError);
         }
     });
 }
@@ -141,17 +149,18 @@ function createTask(script, cmd, rootPath, folder, matcher) {
     function getTaskName(script) {
         return script;
     }
-    function getNpmCommandLine(folder, cmd) {
+    function getCommandLine(folder, cmd) {
+        let packageManager = vscode.workspace.getConfiguration('npm', folder.uri).get('packageManager', 'npm');
         if (vscode.workspace.getConfiguration('npm', folder.uri).get('runSilent')) {
-            return `npm --silent ${cmd}`;
+            return `${packageManager} --silent ${cmd}`;
         }
-        return `npm ${cmd}`;
+        return `${packageManager} ${cmd}`;
     }
     let kind = {
         type: 'npm',
         script: script
     };
     let taskName = getTaskName(script);
-    return new vscode.Task(kind, folder, taskName, 'npm', new vscode.ShellExecution(getNpmCommandLine(folder, cmd), { cwd: rootPath }), matcher);
+    return new vscode.Task(kind, folder, taskName, 'npm', new vscode.ShellExecution(getCommandLine(folder, cmd), { cwd: rootPath }), matcher);
 }
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/b813d12980308015bcd2b3a2f6efa5c810c33ba5/extensions\npm\out/main.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/816be6780ca8bd0ab80314e11478c48c70d09383/extensions\npm\out/main.js.map

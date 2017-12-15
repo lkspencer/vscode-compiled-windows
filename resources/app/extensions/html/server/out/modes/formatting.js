@@ -31,9 +31,10 @@ function format(languageModes, document, formatRange, formattingOptions, setting
     var allRanges = languageModes.getModesInRange(document, formatRange);
     var i = 0;
     var startPos = formatRange.start;
-    while (i < allRanges.length && allRanges[i].mode.getId() !== 'html') {
+    var isHTML = function (range) { return range.mode && range.mode.getId() === 'html'; };
+    while (i < allRanges.length && !isHTML(allRanges[i])) {
         var range = allRanges[i];
-        if (!range.attributeValue && range.mode.format) {
+        if (!range.attributeValue && range.mode && range.mode.format) {
             var edits = range.mode.format(document, vscode_languageserver_types_1.Range.create(startPos, range.end), formattingOptions, settings);
             arrays_1.pushAll(result, edits);
         }
@@ -67,7 +68,6 @@ function format(languageModes, document, formatRange, formattingOptions, setting
                 }
             }
         }
-        ;
         if (embeddedEdits.length === 0) {
             arrays_1.pushAll(result, htmlEdits);
             return result;
@@ -83,4 +83,4 @@ function format(languageModes, document, formatRange, formattingOptions, setting
     }
 }
 exports.format = format;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/b813d12980308015bcd2b3a2f6efa5c810c33ba5/extensions\html\server\out/modes\formatting.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/816be6780ca8bd0ab80314e11478c48c70d09383/extensions\html\server\out/modes\formatting.js.map

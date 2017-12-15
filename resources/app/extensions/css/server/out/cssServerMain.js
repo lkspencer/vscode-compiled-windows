@@ -43,7 +43,7 @@ connection.onInitialize(function (params) {
     var capabilities = {
         // Tell the client that the server works in FULL text document sync mode
         textDocumentSync: documents.syncKind,
-        completionProvider: snippetSupport ? { resolveProvider: false } : null,
+        completionProvider: snippetSupport ? { resolveProvider: false } : undefined,
         hoverProvider: true,
         documentSymbolProvider: true,
         referencesProvider: true,
@@ -83,7 +83,7 @@ function getDocumentSettings(textDocument) {
         }
         return promise;
     }
-    return void 0;
+    return Promise.resolve(void 0);
 }
 // The settings have changed. Is send on server activation as well.
 connection.onDidChangeConfiguration(function (change) {
@@ -126,8 +126,8 @@ function triggerValidation(textDocument) {
 }
 function validateTextDocument(textDocument) {
     var settingsPromise = getDocumentSettings(textDocument);
-    var stylesheet = stylesheets.get(textDocument);
     settingsPromise.then(function (settings) {
+        var stylesheet = stylesheets.get(textDocument);
         var diagnostics = getLanguageService(textDocument).doValidation(textDocument, stylesheet, settings);
         // Send the computed diagnostics to VSCode.
         connection.sendDiagnostics({ uri: textDocument.uri, diagnostics: diagnostics });
@@ -136,12 +136,12 @@ function validateTextDocument(textDocument) {
 connection.onCompletion(function (textDocumentPosition) {
     var document = documents.get(textDocumentPosition.textDocument.uri);
     var stylesheet = stylesheets.get(document);
-    return getLanguageService(document).doComplete(document, textDocumentPosition.position, stylesheet);
+    return getLanguageService(document).doComplete(document, textDocumentPosition.position, stylesheet); /* TODO: remove ! once LS has null annotations */
 });
 connection.onHover(function (textDocumentPosition) {
     var document = documents.get(textDocumentPosition.textDocument.uri);
     var styleSheet = stylesheets.get(document);
-    return getLanguageService(document).doHover(document, textDocumentPosition.position, styleSheet);
+    return getLanguageService(document).doHover(document, textDocumentPosition.position, styleSheet); /* TODO: remove ! once LS has null annotations */
 });
 connection.onDocumentSymbol(function (documentSymbolParams) {
     var document = documents.get(documentSymbolParams.textDocument.uri);
@@ -180,7 +180,7 @@ connection.onRequest(protocol_colorProvider_proposed_1.ColorPresentationRequest.
     var document = documents.get(params.textDocument.uri);
     if (document) {
         var stylesheet = stylesheets.get(document);
-        return getLanguageService(document).getColorPresentations(document, stylesheet, params.colorInfo);
+        return getLanguageService(document).getColorPresentations(document, stylesheet, params.color, params.range);
     }
     return [];
 });
@@ -191,4 +191,4 @@ connection.onRenameRequest(function (renameParameters) {
 });
 // Listen on the connection
 connection.listen();
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/b813d12980308015bcd2b3a2f6efa5c810c33ba5/extensions\css\server\out/cssServerMain.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/816be6780ca8bd0ab80314e11478c48c70d09383/extensions\css\server\out/cssServerMain.js.map

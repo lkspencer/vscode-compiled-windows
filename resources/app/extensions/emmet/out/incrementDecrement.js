@@ -9,14 +9,13 @@ const vscode = require("vscode");
 const reNumber = /[0-9]/;
 /**
  * Incerement number under caret of given editor
- * @param  {Number}     delta
  */
 function incrementDecrement(delta) {
-    let editor = vscode.window.activeTextEditor;
-    if (!editor) {
+    if (!vscode.window.activeTextEditor) {
         vscode.window.showInformationMessage('No editor is active');
         return;
     }
+    const editor = vscode.window.activeTextEditor;
     return editor.edit(editBuilder => {
         editor.selections.forEach(selection => {
             let rangeToReplace = locate(editor.document, selection.isReversed ? selection.anchor : selection.active);
@@ -34,9 +33,6 @@ exports.incrementDecrement = incrementDecrement;
 /**
  * Updates given number with `delta` and returns string formatted according
  * to original string format
- * @param  {String} numString
- * @param  {Number} delta
- * @return {String}
  */
 function update(numString, delta) {
     let m;
@@ -44,7 +40,7 @@ function update(numString, delta) {
     let output = String((parseFloat(numString) + delta).toFixed(decimals)).replace(/\.0+$/, '');
     if (m = numString.match(/^\-?(0\d+)/)) {
         // padded number: preserve padding
-        output = output.replace(/^(\-?)(\d+)/, (str, minus, prefix) => minus + '0'.repeat(Math.max(0, m[1].length - prefix.length)) + prefix);
+        output = output.replace(/^(\-?)(\d+)/, (str, minus, prefix) => minus + '0'.repeat(Math.max(0, (m ? m[1].length : 0) - prefix.length)) + prefix);
     }
     if (/^\-?\./.test(numString)) {
         // omit integer part
@@ -55,9 +51,8 @@ function update(numString, delta) {
 exports.update = update;
 /**
  * Locates number from given position in the document
- * @param  {document} Textdocument
- * @param  {Point}      pos
- * @return {Range}      Range of number or `undefined` if not found
+ *
+ * @return Range of number or `undefined` if not found
  */
 function locate(document, pos) {
     const line = document.lineAt(pos.line).text;
@@ -101,10 +96,8 @@ function locate(document, pos) {
 exports.locate = locate;
 /**
  * Check if given string contains valid number
- * @param  {String}  str
- * @return {Boolean}
  */
 function isValidNumber(str) {
-    return str && !isNaN(parseFloat(str));
+    return str ? !isNaN(parseFloat(str)) : false;
 }
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/b813d12980308015bcd2b3a2f6efa5c810c33ba5/extensions\emmet\out/incrementDecrement.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/816be6780ca8bd0ab80314e11478c48c70d09383/extensions\emmet\out/incrementDecrement.js.map

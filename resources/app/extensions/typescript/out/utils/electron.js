@@ -66,6 +66,7 @@ function fork(modulePath, args, options, logger, callback) {
     const stdOutPipeName = generatePipeName();
     const stdErrPipeName = generatePipeName();
     const newEnv = generatePatchedEnv(process.env, stdInPipeName, stdOutPipeName, stdErrPipeName);
+    newEnv['NODE_PATH'] = path.join(modulePath, '..', '..', '..');
     let childProcess;
     // Begin listening to stderr pipe
     let stdErrServer = net.createServer((stdErrStream) => {
@@ -113,4 +114,4 @@ function fork(modulePath, args, options, logger, callback) {
     });
 }
 exports.fork = fork;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/b813d12980308015bcd2b3a2f6efa5c810c33ba5/extensions\typescript\out/utils\electron.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/816be6780ca8bd0ab80314e11478c48c70d09383/extensions\typescript\out/utils\electron.js.map

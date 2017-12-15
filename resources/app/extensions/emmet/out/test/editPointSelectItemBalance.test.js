@@ -4,6 +4,7 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 Object.defineProperty(exports, "__esModule", { value: true });
+require("mocha");
 const assert = require("assert");
 const vscode_1 = require("vscode");
 const testUtils_1 = require("./testUtils");
@@ -203,4 +204,4 @@ function testSelection(selection, startChar, startline, endChar, endLine) {
         assert.equal(selection.active.character, endChar);
     }
 }
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/b813d12980308015bcd2b3a2f6efa5c810c33ba5/extensions\emmet\out/test\editPointSelectItemBalance.test.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/816be6780ca8bd0ab80314e11478c48c70d09383/extensions\emmet\out/test\editPointSelectItemBalance.test.js.map

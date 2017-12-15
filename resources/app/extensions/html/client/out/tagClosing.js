@@ -50,14 +50,16 @@ function activateTagClosing(tagProvider, supportedLanguages, configName) {
             tagProvider(document, position).then(function (text) {
                 if (text && isEnabled) {
                     var activeEditor = vscode_1.window.activeTextEditor;
-                    var activeDocument_1 = activeEditor && activeEditor.document;
-                    if (document === activeDocument_1 && activeDocument_1.version === version) {
-                        var selections = activeEditor.selections;
-                        if (selections.length && selections.some(function (s) { return s.active.isEqual(position); })) {
-                            activeEditor.insertSnippet(new vscode_1.SnippetString(text), selections.map(function (s) { return s.active; }));
-                        }
-                        else {
-                            activeEditor.insertSnippet(new vscode_1.SnippetString(text), position);
+                    if (activeEditor) {
+                        var activeDocument_1 = activeEditor.document;
+                        if (document === activeDocument_1 && activeDocument_1.version === version) {
+                            var selections = activeEditor.selections;
+                            if (selections.length && selections.some(function (s) { return s.active.isEqual(position); })) {
+                                activeEditor.insertSnippet(new vscode_1.SnippetString(text), selections.map(function (s) { return s.active; }));
+                            }
+                            else {
+                                activeEditor.insertSnippet(new vscode_1.SnippetString(text), position);
+                            }
                         }
                     }
                 }
@@ -68,4 +70,4 @@ function activateTagClosing(tagProvider, supportedLanguages, configName) {
     return vscode_1.Disposable.from.apply(vscode_1.Disposable, disposables);
 }
 exports.activateTagClosing = activateTagClosing;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/b813d12980308015bcd2b3a2f6efa5c810c33ba5/extensions\html\client\out/tagClosing.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/816be6780ca8bd0ab80314e11478c48c70d09383/extensions\html\client\out/tagClosing.js.map

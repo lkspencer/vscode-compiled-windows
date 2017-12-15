@@ -6,13 +6,12 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 var vscode_html_languageservice_1 = require("vscode-html-languageservice");
 exports.CSS_STYLE_RULE = '__';
-;
 function getDocumentRegions(languageService, document) {
     var regions = [];
     var scanner = languageService.createScanner(document.getText());
-    var lastTagName;
-    var lastAttributeName;
-    var languageIdFromType;
+    var lastTagName = '';
+    var lastAttributeName = null;
+    var languageIdFromType = undefined;
     var importedScripts = [];
     var token = scanner.scan();
     while (token !== vscode_html_languageservice_1.TokenType.EOS) {
@@ -213,4 +212,4 @@ function getAttributeLanguage(attributeName) {
     }
     return match[1] ? 'css' : 'javascript';
 }
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/b813d12980308015bcd2b3a2f6efa5c810c33ba5/extensions\html\server\out/modes\embeddedSupport.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/816be6780ca8bd0ab80314e11478c48c70d09383/extensions\html\server\out/modes\embeddedSupport.js.map

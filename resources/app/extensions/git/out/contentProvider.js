@@ -27,17 +27,23 @@ const FIVE_MINUTES = 1000 * 60 * 5;
 class GitContentProvider {
     constructor(model) {
         this.model = model;
-        this.onDidChangeEmitter = new vscode_1.EventEmitter();
+        this._onDidChange = new vscode_1.EventEmitter();
         this.changedRepositoryRoots = new Set();
         this.cache = Object.create(null);
         this.disposables = [];
-        this.disposables.push(model.onDidChangeRepository(this.onDidChangeRepository, this), vscode_1.workspace.registerTextDocumentContentProvider('git', this));
+        this.disposables.push(model.onDidChangeRepository(this.onDidChangeRepository, this), model.onDidChangeOriginalResource(this.onDidChangeOriginalResource, this), vscode_1.workspace.registerTextDocumentContentProvider('git', this));
         setInterval(() => this.cleanup(), FIVE_MINUTES);
     }
-    get onDidChange() { return this.onDidChangeEmitter.event; }
+    get onDidChange() { return this._onDidChange.event; }
     onDidChangeRepository({ repository }) {
         this.changedRepositoryRoots.add(repository.root);
         this.eventuallyFireChangeEvents();
+    }
+    onDidChangeOriginalResource({ uri }) {
+        if (uri.scheme !== 'file') {
+            return;
+        }
+        this._onDidChange.fire(uri_1.toGitUri(uri, '', true));
     }
     eventuallyFireChangeEvents() {
         this.fireChangeEvents();
@@ -52,8 +58,8 @@ class GitContentProvider {
                 const uri = this.cache[key].uri;
                 const fsPath = uri.fsPath;
                 for (const root of this.changedRepositoryRoots) {
-                    if (fsPath.startsWith(root)) {
-                        this.onDidChangeEmitter.fire(uri);
+                    if (util_1.isDescendant(root, fsPath)) {
+                        this._onDidChange.fire(uri);
                         return;
                     }
                 }
@@ -75,7 +81,7 @@ class GitContentProvider {
             if (ref === '~') {
                 const fileUri = vscode_1.Uri.file(path);
                 const uriString = fileUri.toString();
-                const [indexStatus] = repository.indexGroup.resourceStates.filter(r => r.original.toString() === uriString);
+                const [indexStatus] = repository.indexGroup.resourceStates.filter(r => r.resourceUri.toString() === uriString);
                 ref = indexStatus ? '' : 'HEAD';
             }
             try {
@@ -112,4 +118,4 @@ __decorate([
     decorators_1.throttle
 ], GitContentProvider.prototype, "fireChangeEvents", null);
 exports.GitContentProvider = GitContentProvider;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/b813d12980308015bcd2b3a2f6efa5c810c33ba5/extensions\git\out/contentProvider.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/816be6780ca8bd0ab80314e11478c48c70d09383/extensions\git\out/contentProvider.js.map

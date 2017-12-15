@@ -8,7 +8,7 @@ const vscode = require("vscode");
 const util_1 = require("./util");
 function nextItemHTML(selectionStart, selectionEnd, editor, rootNode) {
     let currentNode = util_1.getNode(rootNode, selectionEnd);
-    let nextNode;
+    let nextNode = undefined;
     if (!currentNode) {
         return;
     }
@@ -44,12 +44,12 @@ function nextItemHTML(selectionStart, selectionEnd, editor, rootNode) {
             currentNode = currentNode.parent;
         }
     }
-    return getSelectionFromNode(nextNode, editor.document);
+    return nextNode && getSelectionFromNode(nextNode, editor.document);
 }
 exports.nextItemHTML = nextItemHTML;
 function prevItemHTML(selectionStart, selectionEnd, editor, rootNode) {
     let currentNode = util_1.getNode(rootNode, selectionStart);
-    let prevNode;
+    let prevNode = undefined;
     if (!currentNode) {
         return;
     }
@@ -60,7 +60,7 @@ function prevItemHTML(selectionStart, selectionEnd, editor, rootNode) {
         else {
             // Select the child that appears just before the cursor and is not a comment
             prevNode = currentNode.firstChild;
-            let oldOption;
+            let oldOption = undefined;
             while (prevNode.nextSibling && selectionStart.isAfterOrEqual(prevNode.nextSibling.end)) {
                 if (prevNode && prevNode.type !== 'comment') {
                     oldOption = prevNode;
@@ -84,6 +84,9 @@ function prevItemHTML(selectionStart, selectionEnd, editor, rootNode) {
             prevNode = currentNode.parent;
         }
     }
+    if (!prevNode) {
+        return undefined;
+    }
     let attrSelection = getPrevAttribute(selectionStart, selectionEnd, editor.document, prevNode);
     return attrSelection ? attrSelection : getSelectionFromNode(prevNode, editor.document);
 }
@@ -94,6 +97,7 @@ function getSelectionFromNode(node, document) {
         let selectionEnd = selectionStart.translate(0, node.name.length);
         return new vscode.Selection(selectionStart, selectionEnd);
     }
+    return undefined;
 }
 function getNextAttribute(selectionStart, selectionEnd, document, node) {
     if (!node.attributes || node.attributes.length === 0 || node.type === 'comment') {
@@ -166,4 +170,4 @@ function getPrevAttribute(selectionStart, selectionEnd, document, node) {
         }
     }
 }
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/b813d12980308015bcd2b3a2f6efa5c810c33ba5/extensions\emmet\out/selectItemHTML.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/816be6780ca8bd0ab80314e11478c48c70d09383/extensions\emmet\out/selectItemHTML.js.map

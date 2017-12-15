@@ -44,8 +44,10 @@ var vscode_languageserver_1 = require("vscode-languageserver");
 var languageModes_1 = require("./modes/languageModes");
 var protocol_configuration_proposed_1 = require("vscode-languageserver-protocol/lib/protocol.configuration.proposed");
 var protocol_colorProvider_proposed_1 = require("vscode-languageserver-protocol/lib/protocol.colorProvider.proposed");
+var protocol_workspaceFolders_proposed_1 = require("vscode-languageserver-protocol/lib/protocol.workspaceFolders.proposed");
 var formatting_1 = require("./modes/formatting");
 var arrays_1 = require("./utils/arrays");
+var strings_1 = require("./utils/strings");
 var url = require("url");
 var path = require("path");
 var vscode_uri_1 = require("vscode-uri");
@@ -66,10 +68,12 @@ var documents = new vscode_languageserver_1.TextDocuments();
 // for open, change and close text document events
 documents.listen(connection);
 var workspacePath;
+var workspaceFolders;
 var languageModes;
 var clientSnippetSupport = false;
 var clientDynamicRegisterSupport = false;
 var scopedSettingsSupport = false;
+var workspaceFoldersSupport = false;
 var globalSettings = {};
 var documentSettings = {};
 // remove document settings on close
@@ -94,6 +98,7 @@ function getDocumentSettings(textDocument, needsDocumentSettings) {
 connection.onInitialize(function (params) {
     var initializationOptions = params.initializationOptions;
     workspacePath = params.rootPath;
+    workspaceFolders = params.workspaceFolders;
     languageModes = languageModes_1.getLanguageModes(initializationOptions ? initializationOptions.embeddedLanguages : { css: true, javascript: true });
     documents.onDidClose(function (e) {
         languageModes.onDocumentRemoved(e.document);
@@ -115,10 +120,11 @@ connection.onInitialize(function (params) {
     clientSnippetSupport = hasClientCapability('textDocument', 'completion', 'completionItem', 'snippetSupport');
     clientDynamicRegisterSupport = hasClientCapability('workspace', 'symbol', 'dynamicRegistration');
     scopedSettingsSupport = hasClientCapability('workspace', 'configuration');
+    workspaceFoldersSupport = hasClientCapability('workspace', 'workspaceFolders');
     var capabilities = {
         // Tell the client that the server works in FULL text document sync mode
         textDocumentSync: documents.syncKind,
-        completionProvider: clientSnippetSupport ? { resolveProvider: true, triggerCharacters: ['.', ':', '<', '"', '=', '/', '>'] } : null,
+        completionProvider: clientSnippetSupport ? { resolveProvider: true, triggerCharacters: ['.', ':', '<', '"', '=', '/'] } : undefined,
         hoverProvider: true,
         documentHighlightProvider: true,
         documentRangeFormattingProvider: false,
@@ -130,6 +136,28 @@ connection.onInitialize(function (params) {
         colorProvider: true
     };
     return { capabilities: capabilities };
+});
+connection.onInitialized(function (p) {
+    if (workspaceFoldersSupport) {
+        connection.client.register(protocol_workspaceFolders_proposed_1.DidChangeWorkspaceFoldersNotification.type);
+        connection.onNotification(protocol_workspaceFolders_proposed_1.DidChangeWorkspaceFoldersNotification.type, function (e) {
+            var toAdd = e.event.added;
+            var toRemove = e.event.removed;
+            var updatedFolders = [];
+            if (workspaceFolders) {
+                var _loop_1 = function (folder) {
+                    if (!toRemove.some(function (r) { return r.uri === folder.uri; }) && !toAdd.some(function (r) { return r.uri === folder.uri; })) {
+                        updatedFolders.push(folder);
+                    }
+                };
+                for (var _i = 0, workspaceFolders_1 = workspaceFolders; _i < workspaceFolders_1.length; _i++) {
+                    var folder = workspaceFolders_1[_i];
+                    _loop_1(folder);
+                }
+            }
+            workspaceFolders = updatedFolders.concat(toAdd);
+        });
+    }
 });
 var formatterRegistration = null;
 // The settings have changed. Is send on server activation as well.
@@ -217,20 +245,21 @@ function validateTextDocument(textDocument) {
     });
 }
 connection.onCompletion(function (textDocumentPosition) { return __awaiter(_this, void 0, void 0, function () {
-    var document, mode, settings;
+    var document, mode, doComplete_1, settings;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
                 document = documents.get(textDocumentPosition.textDocument.uri);
                 mode = languageModes.getModeAtPosition(document, textDocumentPosition.position);
                 if (!(mode && mode.doComplete)) return [3 /*break*/, 2];
+                doComplete_1 = mode.doComplete;
                 if (mode.getId() !== 'html') {
                     connection.telemetry.logEvent({ key: 'html.embbedded.complete', value: { languageId: mode.getId() } });
                 }
-                return [4 /*yield*/, getDocumentSettings(document, function () { return mode.doComplete.length > 2; })];
+                return [4 /*yield*/, getDocumentSettings(document, function () { return doComplete_1.length > 2; })];
             case 1:
                 settings = _a.sent();
-                return [2 /*return*/, mode.doComplete(document, textDocumentPosition.position, settings)];
+                return [2 /*return*/, doComplete_1(document, textDocumentPosition.position, settings)];
             case 2: return [2 /*return*/, { isIncomplete: true, items: [] }];
         }
     });
@@ -311,8 +340,11 @@ connection.onDocumentLinks(function (documentLinkParam) {
             if (base) {
                 ref = url.resolve(base, ref);
             }
-            if (workspacePath && ref[0] === '/') {
-                return vscode_uri_1.default.file(path.join(workspacePath, ref)).toString();
+            if (ref[0] === '/') {
+                var root = getRootFolder(document.uri);
+                if (root) {
+                    return vscode_uri_1.default.file(path.join(root, ref)).toString();
+                }
             }
             return url.resolve(document.uri, ref);
         },
@@ -325,6 +357,22 @@ connection.onDocumentLinks(function (documentLinkParam) {
     });
     return links;
 });
+function getRootFolder(docUri) {
+    if (workspaceFolders) {
+        for (var _i = 0, workspaceFolders_2 = workspaceFolders; _i < workspaceFolders_2.length; _i++) {
+            var folder = workspaceFolders_2[_i];
+            var folderURI = folder.uri;
+            if (!strings_1.endsWith(folderURI, '/')) {
+                folderURI = folderURI + '/';
+            }
+            if (strings_1.startsWith(docUri, folderURI)) {
+                return folderURI;
+            }
+        }
+        return void 0;
+    }
+    return workspacePath;
+}
 connection.onDocumentSymbol(function (documentSymbolParms) {
     var document = documents.get(documentSymbolParms.textDocument.uri);
     var symbols = [];
@@ -350,9 +398,9 @@ connection.onRequest(protocol_colorProvider_proposed_1.DocumentColorRequest.type
 connection.onRequest(protocol_colorProvider_proposed_1.ColorPresentationRequest.type, function (params) {
     var document = documents.get(params.textDocument.uri);
     if (document) {
-        var mode = languageModes.getModeAtPosition(document, params.colorInfo.range.start);
+        var mode = languageModes.getModeAtPosition(document, params.range.start);
         if (mode && mode.getColorPresentations) {
-            return mode.getColorPresentations(document, params.colorInfo);
+            return mode.getColorPresentations(document, params.color, params.range);
         }
     }
     return [];
@@ -372,4 +420,4 @@ connection.onRequest(TagCloseRequest.type, function (params) {
 });
 // Listen on the connection
 connection.listen();
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/b813d12980308015bcd2b3a2f6efa5c810c33ba5/extensions\html\server\out/htmlServerMain.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/816be6780ca8bd0ab80314e11478c48c70d09383/extensions\html\server\out/htmlServerMain.js.map

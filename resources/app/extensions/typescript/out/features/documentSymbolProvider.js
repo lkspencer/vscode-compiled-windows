@@ -3,14 +3,6 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 const vscode_1 = require("vscode");
 const PConst = require("../protocol.const");
@@ -34,40 +26,38 @@ class TypeScriptDocumentSymbolProvider {
     constructor(client) {
         this.client = client;
     }
-    provideDocumentSymbols(resource, token) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const filepath = this.client.normalizePath(resource.uri);
-            if (!filepath) {
-                return [];
-            }
-            const args = {
-                file: filepath
-            };
-            try {
-                const result = [];
-                if (this.client.apiVersion.has206Features()) {
-                    const response = yield this.client.execute('navtree', args, token);
-                    if (response.body) {
-                        // The root represents the file. Ignore this when showing in the UI
-                        let tree = response.body;
-                        if (tree.childItems) {
-                            tree.childItems.forEach(item => TypeScriptDocumentSymbolProvider.convertNavTree(resource.uri, result, item));
-                        }
+    async provideDocumentSymbols(resource, token) {
+        const filepath = this.client.normalizePath(resource.uri);
+        if (!filepath) {
+            return [];
+        }
+        const args = {
+            file: filepath
+        };
+        try {
+            const result = [];
+            if (this.client.apiVersion.has206Features()) {
+                const response = await this.client.execute('navtree', args, token);
+                if (response.body) {
+                    // The root represents the file. Ignore this when showing in the UI
+                    let tree = response.body;
+                    if (tree.childItems) {
+                        tree.childItems.forEach(item => TypeScriptDocumentSymbolProvider.convertNavTree(resource.uri, result, item));
                     }
                 }
-                else {
-                    const response = yield this.client.execute('navbar', args, token);
-                    if (response.body) {
-                        let foldingMap = Object.create(null);
-                        response.body.forEach(item => TypeScriptDocumentSymbolProvider.convertNavBar(resource.uri, 0, foldingMap, result, item));
-                    }
+            }
+            else {
+                const response = await this.client.execute('navbar', args, token);
+                if (response.body) {
+                    let foldingMap = Object.create(null);
+                    response.body.forEach(item => TypeScriptDocumentSymbolProvider.convertNavBar(resource.uri, 0, foldingMap, result, item));
                 }
-                return result;
             }
-            catch (e) {
-                return [];
-            }
-        });
+            return result;
+        }
+        catch (e) {
+            return [];
+        }
     }
     static convertNavBar(resource, indent, foldingMap, bucket, item, containerLabel) {
         let realIndent = indent + item.indent;
@@ -99,4 +89,4 @@ class TypeScriptDocumentSymbolProvider {
     }
 }
 exports.default = TypeScriptDocumentSymbolProvider;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/b813d12980308015bcd2b3a2f6efa5c810c33ba5/extensions\typescript\out/features\documentSymbolProvider.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/816be6780ca8bd0ab80314e11478c48c70d09383/extensions\typescript\out/features\documentSymbolProvider.js.map

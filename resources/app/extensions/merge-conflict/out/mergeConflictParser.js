@@ -58,7 +58,7 @@ class MergeConflictParser {
         }
         return conflictDescriptors
             .filter(Boolean)
-            .map(descriptor => new documentMergeConflict_1.DocumentMergeConflict(document, descriptor));
+            .map(descriptor => new documentMergeConflict_1.DocumentMergeConflict(descriptor));
     }
     static scanItemTolMergeConflictDescriptor(document, scanned) {
         // Validate we have all the required lines within the scan item.
@@ -123,4 +123,4 @@ class MergeConflictParser {
     }
 }
 exports.MergeConflictParser = MergeConflictParser;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/b813d12980308015bcd2b3a2f6efa5c810c33ba5/extensions\merge-conflict\out/mergeConflictParser.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/816be6780ca8bd0ab80314e11478c48c70d09383/extensions\merge-conflict\out/mergeConflictParser.js.map

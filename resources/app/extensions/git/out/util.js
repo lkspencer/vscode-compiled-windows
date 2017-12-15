@@ -14,6 +14,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 const path_1 = require("path");
 const fs = require("fs");
+const byline = require("byline");
 function log(...args) {
     console.log.apply(console, ['git:', ...args]);
 }
@@ -171,5 +172,88 @@ function find(array, fn) {
     });
     return result;
 }
-exports.find = find;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/b813d12980308015bcd2b3a2f6efa5c810c33ba5/extensions\git\out/util.js.map
+exports.find = find;
+function grep(filename, pattern) {
+    return __awaiter(this, void 0, void 0, function* () {
+        return new Promise((c, e) => {
+            const fileStream = fs.createReadStream(filename, { encoding: 'utf8' });
+            const stream = byline(fileStream);
+            stream.on('data', (line) => {
+                if (pattern.test(line)) {
+                    fileStream.close();
+                    c(true);
+                }
+            });
+            stream.on('error', e);
+            stream.on('end', () => c(false));
+        });
+    });
+}
+exports.grep = grep;
+function readBytes(stream, bytes) {
+    return new Promise((complete, error) => {
+        let done = false;
+        let buffer = new Buffer(bytes);
+        let bytesRead = 0;
+        stream.on('data', (data) => {
+            let bytesToRead = Math.min(bytes - bytesRead, data.length);
+            data.copy(buffer, bytesRead, 0, bytesToRead);
+            bytesRead += bytesToRead;
+            if (bytesRead === bytes) {
+                stream.destroy(); // Will trigger the close event eventually
+            }
+        });
+        stream.on('error', (e) => {
+            if (!done) {
+                done = true;
+                error(e);
+            }
+        });
+        stream.on('close', () => {
+            if (!done) {
+                done = true;
+                complete(buffer.slice(0, bytesRead));
+            }
+        });
+    });
+}
+exports.readBytes = readBytes;
+var Encoding;
+(function (Encoding) {
+    Encoding["UTF8"] = "utf8";
+    Encoding["UTF16be"] = "utf16be";
+    Encoding["UTF16le"] = "utf16le";
+})(Encoding = exports.Encoding || (exports.Encoding = {}));
+function detectUnicodeEncoding(buffer) {
+    if (buffer.length < 2) {
+        return null;
+    }
+    const b0 = buffer.readUInt8(0);
+    const b1 = buffer.readUInt8(1);
+    if (b0 === 0xFE && b1 === 0xFF) {
+        return Encoding.UTF16be;
+    }
+    if (b0 === 0xFF && b1 === 0xFE) {
+        return Encoding.UTF16le;
+    }
+    if (buffer.length < 3) {
+        return null;
+    }
+    const b2 = buffer.readUInt8(2);
+    if (b0 === 0xEF && b1 === 0xBB && b2 === 0xBF) {
+        return Encoding.UTF8;
+    }
+    return null;
+}
+exports.detectUnicodeEncoding = detectUnicodeEncoding;
+function isDescendant(parent, descendant) {
+    if (parent === descendant) {
+        return true;
+    }
+    if (parent.charAt(parent.length - 1) !== path_1.sep) {
+        parent += path_1.sep;
+    }
+    return descendant.startsWith(parent);
+}
+exports.isDescendant = isDescendant;
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/816be6780ca8bd0ab80314e11478c48c70d09383/extensions\git\out/util.js.map

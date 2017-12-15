@@ -6,7 +6,6 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const vscode = require("vscode");
 const util_1 = require("./util");
-const vscode_emmet_helper_1 = require("vscode-emmet-helper");
 const css_parser_1 = require("@emmetio/css-parser");
 const bufferStream_1 = require("./bufferStream");
 const startCommentStylesheet = '/*';
@@ -14,13 +13,12 @@ const endCommentStylesheet = '*/';
 const startCommentHTML = '<!--';
 const endCommentHTML = '-->';
 function toggleComment() {
-    let editor = vscode.window.activeTextEditor;
-    if (!editor) {
-        vscode.window.showInformationMessage('No editor is active');
+    if (!util_1.validate() || !vscode.window.activeTextEditor) {
         return;
     }
+    const editor = vscode.window.activeTextEditor;
     let toggleCommentInternal;
-    if (vscode_emmet_helper_1.isStyleSheet(editor.document.languageId)) {
+    if (util_1.isStyleSheet(editor.document.languageId)) {
         toggleCommentInternal = toggleCommentStylesheet;
     }
     else {
@@ -86,9 +84,14 @@ function toggleCommentStylesheet(document, selection, rootNode) {
     let selectionEnd = selection.isReversed ? selection.anchor : selection.active;
     let startNode = util_1.getNode(rootNode, selectionStart, true);
     let endNode = util_1.getNode(rootNode, selectionEnd, true);
-    if (!selection.isEmpty || startNode) {
-        selectionStart = selection.isEmpty ? startNode.start : adjustStartNodeCss(startNode, selectionStart, rootNode);
-        selectionEnd = selection.isEmpty ? startNode.end : adjustEndNodeCss(endNode, selectionEnd, rootNode);
+    if (!selection.isEmpty) {
+        selectionStart = adjustStartNodeCss(startNode, selectionStart, rootNode);
+        selectionEnd = adjustEndNodeCss(endNode, selectionEnd, rootNode);
+        selection = new vscode.Selection(selectionStart, selectionEnd);
+    }
+    else if (startNode) {
+        selectionStart = startNode.start;
+        selectionEnd = startNode.end;
         selection = new vscode.Selection(selectionStart, selectionEnd);
     }
     // Uncomment the comments that intersect with the selection.
@@ -162,4 +165,4 @@ function adjustEndNodeCss(node, pos, rootNode) {
     }
     return newEndNode.end;
 }
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/b813d12980308015bcd2b3a2f6efa5c810c33ba5/extensions\emmet\out/toggleComment.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/816be6780ca8bd0ab80314e11478c48c70d09383/extensions\emmet\out/toggleComment.js.map

@@ -54,10 +54,11 @@ function activate(context) {
                     });
                 });
             },
-            provideColorPresentations: function (document, colorInfo) {
+            provideColorPresentations: function (color, context) {
                 var params = {
-                    textDocument: client.code2ProtocolConverter.asTextDocumentIdentifier(document),
-                    colorInfo: { range: client.code2ProtocolConverter.asRange(colorInfo.range), color: colorInfo.color }
+                    textDocument: client.code2ProtocolConverter.asTextDocumentIdentifier(context.document),
+                    color: color,
+                    range: client.code2ProtocolConverter.asRange(context.range)
                 };
                 return client.sendRequest(protocol_colorProvider_proposed_1.ColorPresentationRequest.type, params).then(function (presentations) {
                     return presentations.map(function (p) {
@@ -86,6 +87,31 @@ function activate(context) {
         wordPattern: /(#?-?\d*\.\d\w*%?)|(::?[\w-]*(?=[^,{;]*[,{]))|(([@$#.!])?[\w-?]+%?|[@#!$.])/g,
         indentationRules: indentationRules
     });
+    var regionCompletionRegExpr = /^(\s*)(\/(\*\s*(#\w*)?)?)?/;
+    vscode_1.languages.registerCompletionItemProvider(documentSelector, {
+        provideCompletionItems: function (doc, pos) {
+            var lineUntilPos = doc.getText(new vscode_1.Range(new vscode_1.Position(pos.line, 0), pos));
+            var match = lineUntilPos.match(regionCompletionRegExpr);
+            if (match) {
+                var range = new vscode_1.Range(new vscode_1.Position(pos.line, match[1].length), pos);
+                var beginProposal = new vscode_1.CompletionItem('#region', vscode_1.CompletionItemKind.Snippet);
+                beginProposal.range = range;
+                vscode_1.TextEdit.replace(range, '/* #region */');
+                beginProposal.insertText = new vscode_1.SnippetString('/* #region $1*/');
+                beginProposal.documentation = localize(1, null);
+                beginProposal.filterText = match[2];
+                beginProposal.sortText = 'za';
+                var endProposal = new vscode_1.CompletionItem('#endregion', vscode_1.CompletionItemKind.Snippet);
+                endProposal.range = range;
+                endProposal.insertText = '/* #endregion */';
+                endProposal.documentation = localize(2, null);
+                endProposal.sortText = 'zb';
+                endProposal.filterText = match[2];
+                return [beginProposal, endProposal];
+            }
+            return null;
+        }
+    });
     vscode_1.commands.registerCommand('_css.applyCodeAction', applyCodeAction);
     function applyCodeAction(uri, documentVersion, edits) {
         var textEditor = vscode_1.window.activeTextEditor;
@@ -107,4 +133,4 @@ function activate(context) {
     }
 }
 exports.activate = activate;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/b813d12980308015bcd2b3a2f6efa5c810c33ba5/extensions\css\client\out/cssMain.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/816be6780ca8bd0ab80314e11478c48c70d09383/extensions\css\client\out/cssMain.js.map

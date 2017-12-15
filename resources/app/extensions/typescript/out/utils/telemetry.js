@@ -6,10 +6,9 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const path = require("path");
 const vscode_extension_telemetry_1 = require("vscode-extension-telemetry");
-const vscode_1 = require("vscode");
-class TelemetryReporter extends vscode_1.Disposable {
-    constructor() {
-        super(() => this.dispose());
+class TelemetryReporter {
+    constructor(clientVersionDelegate) {
+        this.clientVersionDelegate = clientVersionDelegate;
     }
     dispose() {
         if (this._reporter) {
@@ -19,6 +18,10 @@ class TelemetryReporter extends vscode_1.Disposable {
     }
     logTelemetry(eventName, properties) {
         if (this.reporter) {
+            if (!properties) {
+                properties = {};
+            }
+            properties['version'] = this.clientVersionDelegate();
             this.reporter.sendTelemetryEvent(eventName, properties);
         }
     }
@@ -38,8 +41,8 @@ class TelemetryReporter extends vscode_1.Disposable {
         if (this._packageInfo !== undefined) {
             return this._packageInfo;
         }
-        let packagePath = path.join(__dirname, '..', '..', 'package.json');
-        let extensionPackage = require(packagePath);
+        const packagePath = path.join(__dirname, '..', '..', 'package.json');
+        const extensionPackage = require(packagePath);
         if (extensionPackage) {
             this._packageInfo = {
                 name: extensionPackage.name,
@@ -54,4 +57,4 @@ class TelemetryReporter extends vscode_1.Disposable {
     }
 }
 exports.default = TelemetryReporter;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/b813d12980308015bcd2b3a2f6efa5c810c33ba5/extensions\typescript\out/utils\telemetry.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/816be6780ca8bd0ab80314e11478c48c70d09383/extensions\typescript\out/utils\telemetry.js.map

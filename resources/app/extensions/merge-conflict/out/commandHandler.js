@@ -24,8 +24,7 @@ var NavigationDirection;
     NavigationDirection[NavigationDirection["Backwards"] = 1] = "Backwards";
 })(NavigationDirection || (NavigationDirection = {}));
 class CommandHandler {
-    constructor(context, trackerService) {
-        this.context = context;
+    constructor(trackerService) {
         this.disposables = [];
         this.tracker = trackerService.createTracker('commands');
     }
@@ -47,16 +46,16 @@ class CommandHandler {
     acceptBoth(editor, ...args) {
         return this.accept(interfaces.CommitType.Both, editor, ...args);
     }
-    acceptAllCurrent(editor, ...args) {
+    acceptAllCurrent(editor) {
         return this.acceptAll(interfaces.CommitType.Current, editor);
     }
-    acceptAllIncoming(editor, ...args) {
+    acceptAllIncoming(editor) {
         return this.acceptAll(interfaces.CommitType.Incoming, editor);
     }
-    acceptAllBoth(editor, ...args) {
+    acceptAllBoth(editor) {
         return this.acceptAll(interfaces.CommitType.Both, editor);
     }
-    compare(editor, conflict, ...args) {
+    compare(editor, conflict) {
         return __awaiter(this, void 0, void 0, function* () {
             const fileName = path.basename(editor.document.uri.fsPath);
             // No conflict, command executed from command palette
@@ -80,13 +79,13 @@ class CommandHandler {
             vscode.commands.executeCommand('vscode.diff', leftUri, rightUri, title);
         });
     }
-    navigateNext(editor, ...args) {
+    navigateNext(editor) {
         return this.navigate(editor, NavigationDirection.Forwards);
     }
-    navigatePrevious(editor, ...args) {
+    navigatePrevious(editor) {
         return this.navigate(editor, NavigationDirection.Backwards);
     }
-    acceptSelection(editor, ...args) {
+    acceptSelection(editor) {
         return __awaiter(this, void 0, void 0, function* () {
             let conflict = yield this.findConflictContainingSelection(editor);
             if (!conflict) {
@@ -246,4 +245,4 @@ class CommandHandler {
     }
 }
 exports.default = CommandHandler;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/b813d12980308015bcd2b3a2f6efa5c810c33ba5/extensions\merge-conflict\out/commandHandler.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/816be6780ca8bd0ab80314e11478c48c70d09383/extensions\merge-conflict\out/commandHandler.js.map

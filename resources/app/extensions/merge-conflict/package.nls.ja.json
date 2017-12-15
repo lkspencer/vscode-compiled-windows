@@ -1,5 +1,6 @@
 {
 	"command.category": "マージの競合",
+	"command.accept.all-current": "現在の方をすべて取り込む",
 	"command.accept.all-incoming": "入力側のすべてを取り込む",
 	"command.accept.all-both": "両方をすべて取り込む",
 	"command.accept.current": "現在の方を取り込む",

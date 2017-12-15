@@ -8,7 +8,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const vscode_1 = require("vscode");
 const path = require("path");
 const imageSizeHelper_1 = require("./imageSizeHelper");
-const vscode_emmet_helper_1 = require("vscode-emmet-helper");
 const util_1 = require("./util");
 const locateFile_1 = require("./locateFile");
 const css_parser_1 = require("@emmetio/css-parser");
@@ -17,14 +16,13 @@ const bufferStream_1 = require("./bufferStream");
  * Updates size of context image in given editor
  */
 function updateImageSize() {
-    let editor = vscode_1.window.activeTextEditor;
-    if (!editor) {
-        vscode_1.window.showInformationMessage('No editor is active.');
+    if (!util_1.validate() || !vscode_1.window.activeTextEditor) {
         return;
     }
+    const editor = vscode_1.window.activeTextEditor;
     let allUpdatesPromise = editor.selections.reverse().map(selection => {
         let position = selection.isReversed ? selection.active : selection.anchor;
-        if (!vscode_emmet_helper_1.isStyleSheet(editor.document.languageId)) {
+        if (!util_1.isStyleSheet(editor.document.languageId)) {
             return updateImageSizeHTML(editor, position);
         }
         else {
@@ -46,7 +44,8 @@ exports.updateImageSize = updateImageSize;
  * Updates image size of context tag of HTML model
  */
 function updateImageSizeHTML(editor, position) {
-    const src = getImageSrcHTML(getImageHTMLNode(editor, position));
+    const imageNode = getImageHTMLNode(editor, position);
+    const src = imageNode && getImageSrcHTML(imageNode);
     if (!src) {
         return updateImageSizeStyleTag(editor, position);
     }
@@ -56,14 +55,14 @@ function updateImageSizeHTML(editor, position) {
         // since this action is asynchronous, we have to ensure that editor wasn’t
         // changed and user didn’t moved caret outside <img> node
         const img = getImageHTMLNode(editor, position);
-        if (getImageSrcHTML(img) === src) {
+        if (img && getImageSrcHTML(img) === src) {
             return updateHTMLTag(editor, img, size.width, size.height);
         }
     })
         .catch(err => { console.warn('Error while updating image size:', err); return []; });
 }
 function updateImageSizeStyleTag(editor, position) {
-    let getPropertyInsiderStyleTag = (editor) => {
+    const getPropertyInsiderStyleTag = (editor) => {
         const rootNode = util_1.parseDocument(editor.document);
         const currentNode = util_1.getNode(rootNode, position);
         if (currentNode && currentNode.name === 'style'
@@ -74,6 +73,7 @@ function updateImageSizeStyleTag(editor, position) {
             const node = util_1.getNode(rootNode, position);
             return (node && node.type === 'property') ? node : null;
         }
+        return null;
     };
     return updateImageSizeCSS(editor, position, getPropertyInsiderStyleTag);
 }
@@ -84,7 +84,8 @@ function updateImageSizeCSSFile(editor, position) {
  * Updates image size of context rule of stylesheet model
  */
 function updateImageSizeCSS(editor, position, fetchNode) {
-    const src = getImageSrcCSS(fetchNode(editor, position), position);
+    const node = fetchNode(editor, position);
+    const src = node && getImageSrcCSS(node, position);
     if (!src) {
         return Promise.reject(new Error('No valid image source'));
     }
@@ -94,7 +95,7 @@ function updateImageSizeCSS(editor, position, fetchNode) {
         // since this action is asynchronous, we have to ensure that editor wasn’t
         // changed and user didn’t moved caret outside <img> node
         const prop = fetchNode(editor, position);
-        if (getImageSrcCSS(prop, position) === src) {
+        if (prop && getImageSrcCSS(prop, position) === src) {
             return updateCSSNode(editor, prop, size.width, size.height);
         }
     })
@@ -103,8 +104,6 @@ function updateImageSizeCSS(editor, position, fetchNode) {
 /**
  * Returns <img> node under caret in given editor or `null` if such node cannot
  * be found
- * @param  {TextEditor}  editor
- * @return {HtmlNode}
  */
 function getImageHTMLNode(editor, position) {
     const rootNode = util_1.parseDocument(editor.document);
@@ -114,8 +113,6 @@ function getImageHTMLNode(editor, position) {
 /**
  * Returns css property under caret in given editor or `null` if such node cannot
  * be found
- * @param  {TextEditor}  editor
- * @return {Property}
  */
 function getImageCSSNode(editor, position) {
     const rootNode = util_1.parseDocument(editor.document);
@@ -124,8 +121,6 @@ function getImageCSSNode(editor, position) {
 }
 /**
  * Returns image source from given <img> node
- * @param  {HtmlNode} node
- * @return {string}
  */
 function getImageSrcHTML(node) {
     const srcAttr = getAttribute(node, 'src');
@@ -136,9 +131,6 @@ function getImageSrcHTML(node) {
 }
 /**
  * Returns image source from given `url()` token
- * @param  {Property} node
- * @param {Position}
- * @return {string}
  */
 function getImageSrcCSS(node, position) {
     if (!node) {
@@ -157,10 +149,6 @@ function getImageSrcCSS(node, position) {
 }
 /**
  * Updates size of given HTML node
- * @param  {TextEditor} editor
- * @param  {HtmlNode}   node
- * @param  {number}     width
- * @param  {number}     height
  */
 function updateHTMLTag(editor, node, width, height) {
     const srcAttr = getAttribute(node, 'src');
@@ -189,10 +177,6 @@ function updateHTMLTag(editor, node, width, height) {
 }
 /**
  * Updates size of given CSS rule
- * @param  {TextEditor} editor
- * @param  {Property}   srcProp
- * @param  {number}     width
- * @param  {number}     height
  */
 function updateCSSNode(editor, srcProp, width, height) {
     const rule = srcProp.parent;
@@ -225,20 +209,15 @@ function updateCSSNode(editor, srcProp, width, height) {
 }
 /**
  * Returns attribute object with `attrName` name from given HTML node
- * @param  {Node} node
- * @param  {String} attrName
- * @return {Object}
  */
 function getAttribute(node, attrName) {
     attrName = attrName.toLowerCase();
-    return node && node.open.attributes.find(attr => attr.name.value.toLowerCase() === attrName);
+    return node && node.open.attributes.find((attr) => attr.name.value.toLowerCase() === attrName);
 }
 /**
  * Returns quote character, used for value of given attribute. May return empty
  * string if attribute wasn’t quoted
- * @param  {TextEditor} editor
- * @param  {Object} attr
- * @return {String}
+
  */
 function getAttributeQuote(editor, attr) {
     const range = new vscode_1.Range(attr.value ? attr.value.end : attr.end, attr.end);
@@ -246,9 +225,6 @@ function getAttributeQuote(editor, attr) {
 }
 /**
  * Finds 'url' token for given `pos` point in given CSS property `node`
- * @param  {Node}  node
- * @param  {Position} pos
- * @return {Token}
  */
 function findUrlToken(node, pos) {
     for (let i = 0, il = node.parsedValue.length, url; i < il; i++) {
@@ -265,9 +241,6 @@ function findUrlToken(node, pos) {
 }
 /**
  * Returns a string that is used to delimit properties in current node’s rule
- * @param  {TextEditor} editor
- * @param  {Property}       node
- * @return {String}
  */
 function getPropertyDelimitor(editor, node) {
     let anchor;
@@ -279,4 +252,4 @@ function getPropertyDelimitor(editor, node) {
     }
     return '';
 }
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/b813d12980308015bcd2b3a2f6efa5c810c33ba5/extensions\emmet\out/updateImageSize.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/816be6780ca8bd0ab80314e11478c48c70d09383/extensions\emmet\out/updateImageSize.js.map

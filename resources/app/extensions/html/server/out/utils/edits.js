@@ -13,12 +13,10 @@ function applyEdits(document, edits) {
         }
         return startDiff;
     });
-    var lastOffset = text.length;
     sortedEdits.forEach(function (e) {
         var startOffset = document.offsetAt(e.range.start);
         var endOffset = document.offsetAt(e.range.end);
         text = text.substring(0, startOffset) + e.newText + text.substring(endOffset, text.length);
-        lastOffset = startOffset;
     });
     return text;
 }
@@ -30,4 +28,4 @@ function comparePositions(p1, p2) {
     }
     return diff;
 }
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/b813d12980308015bcd2b3a2f6efa5c810c33ba5/extensions\html\server\out/utils\edits.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/816be6780ca8bd0ab80314e11478c48c70d09383/extensions\html\server\out/utils\edits.js.map

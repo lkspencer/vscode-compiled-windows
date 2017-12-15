@@ -6,5 +6,8 @@
 	"Desabilitar",
 	"Permitir a execução de conteúdo e scripts. Não recomendado",
 	"Mais informações",
+	"Habilitar a visualização de avisos de segurança neste espaço de trabalho",
+	"Desabilitar a visualização de avisos de segurança neste espaço de trabalho",
+	"Não afeta o nível de segurança do conteúdo",
 	"Selecione as configurações de segurança para visualizações de Markdown neste espaço de trabalho"
 ]

@@ -51,7 +51,7 @@ var Throttler = /** @class */ (function () {
                     _this.queuedPromiseFactory = null;
                     return result;
                 };
-                this.queuedPromise = new Promise(function (resolve, reject) {
+                this.queuedPromise = new Promise(function (resolve) {
                     _this.activePromise.then(onComplete, onComplete).then(resolve);
                 });
             }
@@ -110,7 +110,7 @@ var Delayer = /** @class */ (function () {
         this.task = task;
         this.cancelTimeout();
         if (!this.completionPromise) {
-            this.completionPromise = new Promise(function (resolve, reject) {
+            this.completionPromise = new Promise(function (resolve) {
                 _this.onResolve = resolve;
             }).then(function () {
                 _this.completionPromise = null;
@@ -122,7 +122,7 @@ var Delayer = /** @class */ (function () {
         }
         this.timeout = setTimeout(function () {
             _this.timeout = null;
-            _this.onResolve(null);
+            _this.onResolve(undefined);
         }, delay);
         return this.completionPromise;
     };
@@ -165,4 +165,4 @@ var ThrottledDelayer = /** @class */ (function (_super) {
     return ThrottledDelayer;
 }(Delayer));
 exports.ThrottledDelayer = ThrottledDelayer;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/b813d12980308015bcd2b3a2f6efa5c810c33ba5/extensions\php\out/features\utils\async.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/816be6780ca8bd0ab80314e11478c48c70d09383/extensions\php\out/features\utils\async.js.map

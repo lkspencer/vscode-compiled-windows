@@ -12,9 +12,8 @@ const reAbsolute = /^\/+/;
 /**
  * Locates given `filePath` on user’s file system and returns absolute path to it.
  * This method expects either URL, or relative/absolute path to resource
- * @param  {String} basePath Base path to use if filePath is not absoulte
- * @param  {String} filePath File to locate.
- * @return {Promise}
+ * @param basePath Base path to use if filePath is not absoulte
+ * @param filePath File to locate.
  */
 function locateFile(base, filePath) {
     if (/^\w+:/.test(filePath)) {
@@ -29,9 +28,6 @@ function locateFile(base, filePath) {
 exports.locateFile = locateFile;
 /**
  * Resolves relative file path
- * @param  {TextEditor|String} base
- * @param  {String}            filePath
- * @return {Promise}
  */
 function resolveRelative(basePath, filePath) {
     return tryFile(path.resolve(basePath, filePath));
@@ -39,14 +35,11 @@ function resolveRelative(basePath, filePath) {
 /**
  * Resolves absolute file path agaist given editor: tries to find file in every
  * parent of editor’s file
- * @param  {TextEditor|String} base
- * @param  {String}            filePath
- * @return {Promise}
  */
 function resolveAbsolute(basePath, filePath) {
     return new Promise((resolve, reject) => {
         filePath = filePath.replace(reAbsolute, '');
-        const next = ctx => {
+        const next = (ctx) => {
             tryFile(path.resolve(ctx, filePath))
                 .then(resolve, err => {
                 const dir = path.dirname(ctx);
@@ -61,8 +54,6 @@ function resolveAbsolute(basePath, filePath) {
 }
 /**
  * Check if given file exists and it’s a file, not directory
- * @param  {String} file
- * @return {Promise}
  */
 function tryFile(file) {
     return new Promise((resolve, reject) => {
@@ -77,4 +68,4 @@ function tryFile(file) {
         });
     });
 }
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/b813d12980308015bcd2b3a2f6efa5c810c33ba5/extensions\emmet\out/locateFile.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/816be6780ca8bd0ab80314e11478c48c70d09383/extensions\emmet\out/locateFile.js.map

@@ -10,22 +10,21 @@ class TypeScriptReferenceSupport {
     constructor(client) {
         this.client = client;
     }
-    provideReferences(document, position, options, token) {
+    async provideReferences(document, position, options, token) {
         const filepath = this.client.normalizePath(document.uri);
         if (!filepath) {
-            return Promise.resolve([]);
+            return [];
         }
         const args = convert_1.vsPositionToTsFileLocation(filepath, position);
-        const apiVersion = this.client.apiVersion;
-        return this.client.execute('references', args, token).then((msg) => {
-            const result = [];
+        try {
+            const msg = await this.client.execute('references', args, token);
             if (!msg.body) {
-                return result;
+                return [];
             }
-            const refs = msg.body.refs;
-            for (let i = 0; i < refs.length; i++) {
-                const ref = refs[i];
-                if (!options.includeDeclaration && apiVersion.has203Features() && ref.isDefinition) {
+            const result = [];
+            const has203Features = this.client.apiVersion.has203Features();
+            for (const ref of msg.body.refs) {
+                if (!options.includeDeclaration && has203Features && ref.isDefinition) {
                     continue;
                 }
                 const url = this.client.asUrl(ref.file);
@@ -33,10 +32,11 @@ class TypeScriptReferenceSupport {
                 result.push(location);
             }
             return result;
-        }, () => {
+        }
+        catch (_a) {
             return [];
-        });
+        }
     }
 }
 exports.default = TypeScriptReferenceSupport;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/b813d12980308015bcd2b3a2f6efa5c810c33ba5/extensions\typescript\out/features\referenceProvider.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/816be6780ca8bd0ab80314e11478c48c70d09383/extensions\typescript\out/features\referenceProvider.js.map

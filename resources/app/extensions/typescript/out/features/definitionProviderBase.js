@@ -10,30 +10,29 @@ class TypeScriptDefinitionProviderBase {
     constructor(client) {
         this.client = client;
     }
-    getSymbolLocations(definitionType, document, position, token) {
+    async getSymbolLocations(definitionType, document, position, token) {
         const filepath = this.client.normalizePath(document.uri);
         if (!filepath) {
-            return Promise.resolve(null);
+            return undefined;
         }
         const args = convert_1.vsPositionToTsFileLocation(filepath, position);
-        return this.client.execute(definitionType, args, token).then(response => {
+        try {
+            const response = await this.client.execute(definitionType, args, token);
             const locations = (response && response.body) || [];
             if (!locations || locations.length === 0) {
                 return [];
             }
             return locations.map(location => {
                 const resource = this.client.asUrl(location.file);
-                if (resource === null) {
-                    return null;
-                }
-                else {
-                    return new vscode_1.Location(resource, convert_1.tsTextSpanToVsRange(location));
-                }
-            }).filter(x => x !== null);
-        }, () => {
+                return resource
+                    ? new vscode_1.Location(resource, convert_1.tsTextSpanToVsRange(location))
+                    : undefined;
+            }).filter(x => x);
+        }
+        catch (_a) {
             return [];
-        });
+        }
     }
 }
 exports.default = TypeScriptDefinitionProviderBase;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/b813d12980308015bcd2b3a2f6efa5c810c33ba5/extensions\typescript\out/features\definitionProviderBase.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/816be6780ca8bd0ab80314e11478c48c70d09383/extensions\typescript\out/features\definitionProviderBase.js.map

@@ -91,7 +91,7 @@ class DocumentMergeConflictTracker {
     dispose() {
         this.cache.clear();
     }
-    getConflictsOrEmpty(document, origins) {
+    getConflictsOrEmpty(document, _origins) {
         const containsConflict = mergeConflictParser_1.MergeConflictParser.containsConflict(document);
         if (!containsConflict) {
             return [];
@@ -107,4 +107,4 @@ class DocumentMergeConflictTracker {
     }
 }
 exports.default = DocumentMergeConflictTracker;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/b813d12980308015bcd2b3a2f6efa5c810c33ba5/extensions\merge-conflict\out/documentTracker.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/816be6780ca8bd0ab80314e11478c48c70d09383/extensions\merge-conflict\out/documentTracker.js.map

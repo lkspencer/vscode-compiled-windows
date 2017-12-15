@@ -10,14 +10,15 @@ class TypeScriptDocumentHighlightProvider {
     constructor(client) {
         this.client = client;
     }
-    provideDocumentHighlights(resource, position, token) {
+    async provideDocumentHighlights(resource, position, token) {
         const filepath = this.client.normalizePath(resource.uri);
         if (!filepath) {
-            return Promise.resolve([]);
+            return [];
         }
         const args = convert_1.vsPositionToTsFileLocation(filepath, position);
-        return this.client.execute('occurrences', args, token).then((response) => {
-            let data = response.body;
+        try {
+            const response = await this.client.execute('occurrences', args, token);
+            const data = response.body;
             if (data && data.length) {
                 // Workaround for https://github.com/Microsoft/TypeScript/issues/12780
                 // Don't highlight string occurrences
@@ -33,10 +34,11 @@ class TypeScriptDocumentHighlightProvider {
                 return data.map(item => new vscode_1.DocumentHighlight(convert_1.tsTextSpanToVsRange(item), item.isWriteAccess ? vscode_1.DocumentHighlightKind.Write : vscode_1.DocumentHighlightKind.Read));
             }
             return [];
-        }, () => {
+        }
+        catch (_a) {
             return [];
-        });
+        }
     }
 }
 exports.default = TypeScriptDocumentHighlightProvider;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/b813d12980308015bcd2b3a2f6efa5c810c33ba5/extensions\typescript\out/features\documentHighlightProvider.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/816be6780ca8bd0ab80314e11478c48c70d09383/extensions\typescript\out/features\documentHighlightProvider.js.map

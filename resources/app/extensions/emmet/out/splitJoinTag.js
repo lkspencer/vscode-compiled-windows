@@ -7,31 +7,28 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const vscode = require("vscode");
 const util_1 = require("./util");
 function splitJoinTag() {
-    let editor = vscode.window.activeTextEditor;
-    if (!util_1.validate(false)) {
+    if (!util_1.validate(false) || !vscode.window.activeTextEditor) {
         return;
     }
+    const editor = vscode.window.activeTextEditor;
     let rootNode = util_1.parseDocument(editor.document);
     if (!rootNode) {
         return;
     }
     return editor.edit(editBuilder => {
         editor.selections.reverse().forEach(selection => {
-            let textEdit = getRangesToReplace(editor.document, selection, rootNode);
-            if (textEdit) {
+            let nodeToUpdate = util_1.getNode(rootNode, selection.start);
+            if (nodeToUpdate) {
+                let textEdit = getRangesToReplace(editor.document, nodeToUpdate);
                 editBuilder.replace(textEdit.range, textEdit.newText);
             }
         });
     });
 }
 exports.splitJoinTag = splitJoinTag;
-function getRangesToReplace(document, selection, rootNode) {
-    let nodeToUpdate = util_1.getNode(rootNode, selection.start);
+function getRangesToReplace(document, nodeToUpdate) {
     let rangeToReplace;
     let textToReplaceWith;
-    if (!nodeToUpdate) {
-        return;
-    }
     if (!nodeToUpdate.close) {
         // Split Tag
         let nodeText = document.getText(new vscode.Range(nodeToUpdate.start, nodeToUpdate.end));
@@ -50,4 +47,4 @@ function getRangesToReplace(document, selection, rootNode) {
     }
     return new vscode.TextEdit(rangeToReplace, textToReplaceWith);
 }
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/b813d12980308015bcd2b3a2f6efa5c810c33ba5/extensions\emmet\out/splitJoinTag.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/816be6780ca8bd0ab80314e11478c48c70d09383/extensions\emmet\out/splitJoinTag.js.map

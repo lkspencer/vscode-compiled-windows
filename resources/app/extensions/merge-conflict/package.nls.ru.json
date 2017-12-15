@@ -1,5 +1,6 @@
 {
 	"command.category": "Объединить конфликт",
+	"command.accept.all-current": "Принять все текущие",
 	"command.accept.all-incoming": "Принять все входящие",
 	"command.accept.all-both": "Принять все входящие и текущие",
 	"command.accept.current": "Принять текущее",

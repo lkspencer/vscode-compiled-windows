@@ -6,7 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
  *--------------------------------------------------------------------------------------------*/
 const interfaces = require("./interfaces");
 class DocumentMergeConflict {
-    constructor(document, descriptor) {
+    constructor(descriptor) {
         this.range = descriptor.range;
         this.current = descriptor.current;
         this.incoming = descriptor.incoming;
@@ -18,7 +18,6 @@ class DocumentMergeConflict {
             this.applyEdit(type, editor, edit);
             return Promise.resolve(true);
         }
-        ;
         return editor.edit((edit) => this.applyEdit(type, editor, edit));
     }
     applyEdit(type, editor, edit) {
@@ -60,4 +59,4 @@ class DocumentMergeConflict {
     }
 }
 exports.DocumentMergeConflict = DocumentMergeConflict;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/b813d12980308015bcd2b3a2f6efa5c810c33ba5/extensions\merge-conflict\out/documentMergeConflict.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/816be6780ca8bd0ab80314e11478c48c70d09383/extensions\merge-conflict\out/documentMergeConflict.js.map

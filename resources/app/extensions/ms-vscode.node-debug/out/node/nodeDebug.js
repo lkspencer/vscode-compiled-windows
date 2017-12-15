@@ -488,7 +488,6 @@ class NodeDebugSession extends vscode_debugadapter_1.LoggingDebugSession {
     //---- initialize request -------------------------------------------------------------------------------------------------
     initializeRequest(response, args) {
         this.log('la', `initializeRequest: adapterID: ${args.adapterID}`);
-        this._adapterID = args.adapterID;
         if (args.locale) {
             localize = nls.config({ locale: args.locale })(__filename);
         }
@@ -566,7 +565,6 @@ class NodeDebugSession extends vscode_debugadapter_1.LoggingDebugSession {
             this.sendErrorResponse(response, 2007, localize(15, null));
             return;
         }
-        const port = args.port || random(3000, 50000);
         let runtimeExecutable = args.runtimeExecutable;
         if (args.useWSL) {
             runtimeExecutable = runtimeExecutable || NodeDebugSession.NODE;
@@ -636,7 +634,7 @@ class NodeDebugSession extends vscode_debugadapter_1.LoggingDebugSession {
                         else {
                             this.log('sm', `launchRequest: program '${programPath}' seems to be the generated file`);
                         }
-                        this.launchRequest2(response, args, programPath, programArgs, runtimeExecutable, runtimeArgs, port);
+                        this.launchRequest2(response, args, programPath, programArgs, runtimeExecutable, runtimeArgs);
                     });
                     return;
                 }
@@ -659,14 +657,14 @@ class NodeDebugSession extends vscode_debugadapter_1.LoggingDebugSession {
                     }
                     this.log('sm', `launchRequest: program '${programPath}' seems to be the source; launch the generated file '${generatedPath}' instead`);
                     programPath = generatedPath;
-                    this.launchRequest2(response, args, programPath, programArgs, runtimeExecutable, runtimeArgs, port);
+                    this.launchRequest2(response, args, programPath, programArgs, runtimeExecutable, runtimeArgs);
                 });
                 return;
             }
         }
-        this.launchRequest2(response, args, programPath, programArgs, runtimeExecutable, runtimeArgs, port);
+        this.launchRequest2(response, args, programPath, programArgs, runtimeExecutable, runtimeArgs);
     }
-    launchRequest2(response, args, programPath, programArgs, runtimeExecutable, runtimeArgs, port) {
+    launchRequest2(response, args, programPath, programArgs, runtimeExecutable, runtimeArgs) {
         let program;
         let workingDirectory = args.cwd;
         if (workingDirectory) {
@@ -689,7 +687,8 @@ class NodeDebugSession extends vscode_debugadapter_1.LoggingDebugSession {
             program = Path.basename(programPath);
         }
         // figure out when to add a '--debug-brk=nnnn'
-        let launchArgs = [runtimeExecutable];
+        let port = args.port;
+        let launchArgs = [runtimeExecutable].concat(runtimeArgs);
         if (!this._noDebug) {
             if (args.port) {
                 // only if the default runtime 'node' is used without arguments
@@ -700,10 +699,10 @@ class NodeDebugSession extends vscode_debugadapter_1.LoggingDebugSession {
             }
             else {
                 // use a random port
+                port = random(3000, 50000);
                 launchArgs.push(`--debug-brk=${port}`);
             }
         }
-        launchArgs = launchArgs.concat(runtimeArgs);
         if (program) {
             launchArgs.push(program);
         }
@@ -773,6 +772,11 @@ class NodeDebugSession extends vscode_debugadapter_1.LoggingDebugSession {
             this._sendLaunchCommandToConsole(launchArgs);
             // merge environment variables into a copy of the process.env
             envVars = PathUtils.extendObject(PathUtils.extendObject({}, process.env), envVars);
+            // delete all variables that have a 'null' value
+            if (envVars) {
+                const e = envVars; // without this tsc complains about envVars potentially undefined
+                Object.keys(e).filter(v => e[v] === null).forEach(key => delete e[key]);
+            }
             const options = {
                 cwd: workingDirectory,
                 env: envVars
@@ -3203,8 +3207,8 @@ class NodeDebugSession extends vscode_debugadapter_1.LoggingDebugSession {
     }
     //---- private static ---------------------------------------------------------------
     static isJavaScript(path) {
-        const name = Path.basename(path).toLowerCase();
-        if (endsWith(name, '.js')) {
+        const name = Path.extname(path).toLowerCase();
+        if (NodeDebugSession.JS_EXTENSIONS.indexOf(name) >= 0) {
             return true;
         }
         try {
@@ -3293,6 +3297,7 @@ NodeDebugSession.DEBUG_INJECTION = 'debugInjection.js';
 NodeDebugSession.NODE_INTERNALS = '<node_internals>';
 NodeDebugSession.NODE_INTERNALS_PREFIX = /^<node_internals>[/\\]/;
 NodeDebugSession.NODE_INTERNALS_VM = /^<node_internals>[/\\]VM([0-9]+)/;
+NodeDebugSession.JS_EXTENSIONS = ['.js', '.es6', '.jsx', '.mjs'];
 NodeDebugSession.NODE_SHEBANG_MATCHER = new RegExp('#! */usr/bin/env +node');
 NodeDebugSession.LONG_STRING_MATCHER = /\.\.\. \(length: [0-9]+\)$/;
 NodeDebugSession.HITCOUNT_MATCHER = /(>|>=|=|==|<|<=|%)?\s*([0-9]+)/;
@@ -3318,9 +3323,6 @@ function isIndex(name) {
         default:
             return false;
     }
-}
-function endsWith(str, suffix) {
-    return str.indexOf(suffix, str.length - suffix.length) !== -1;
 }
 function random(low, high) {
     return Math.floor(Math.random() * (high - low) + low);

@@ -1,5 +1,6 @@
 {
 	"command.category": "Összeolvasztási konfliktus",
+	"command.accept.all-current": "Összes aktuális elfogadása",
 	"command.accept.all-incoming": "Összes beérkező változás elfogadása",
 	"command.accept.all-both": "Változások elfogadása mindkét oldalról",
 	"command.accept.current": "Helyi változtatás elfogadása",

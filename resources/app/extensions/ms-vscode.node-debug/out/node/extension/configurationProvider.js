@@ -76,23 +76,25 @@ function createLaunchConfigFromContext(folder, resolve) {
     else {
         let program;
         let useSourceMaps = false;
-        // try to find a better value for 'program' by analysing package.json
         if (pkg) {
-            program = guessProgramFromPackage(folder, pkg);
+            // try to find a value for 'program' by analysing package.json
+            program = guessProgramFromPackage(folder, pkg, resolve);
             if (program && resolve) {
                 utilities_1.log(utilities_1.localize('program.guessed.from.package.json.explanation', "Launch configuration created based on 'package.json'."));
             }
         }
-        // use file open in editor
-        if (!program && folder) {
+        if (!program) {
+            // try to use file open in editor
             const editor = vscode.window.activeTextEditor;
             if (editor) {
                 const languageId = editor.document.languageId;
                 if (languageId === 'javascript' || isTranspiledLanguage(languageId)) {
                     const wf = vscode.workspace.getWorkspaceFolder(editor.document.uri);
                     if (wf === folder) {
-                        const path = vscode.workspace.asRelativePath(editor.document.uri);
-                        program = '${workspaceFolder}/' + path;
+                        program = vscode.workspace.asRelativePath(editor.document.uri);
+                        if (!path_1.isAbsolute(program)) {
+                            program = '${workspaceFolder}/' + program;
+                        }
                     }
                 }
                 useSourceMaps = isTranspiledLanguage(languageId);
@@ -161,7 +163,7 @@ function isTranspiledLanguage(languagId) {
 /*
  * try to find the entry point ('main') from the package.json
  */
-function guessProgramFromPackage(folder, packageJson) {
+function guessProgramFromPackage(folder, packageJson, resolve) {
     let program;
     try {
         if (packageJson.main) {
@@ -180,7 +182,7 @@ function guessProgramFromPackage(folder, packageJson) {
                 path = folder ? path_1.join(folder.uri.fsPath, program) : undefined;
                 program = path_1.join('${workspaceFolder}', program);
             }
-            if (path && !fs.existsSync(path) && !fs.existsSync(path + '.js')) {
+            if (resolve && path && !fs.existsSync(path) && !fs.existsSync(path + '.js')) {
                 return undefined;
             }
         }

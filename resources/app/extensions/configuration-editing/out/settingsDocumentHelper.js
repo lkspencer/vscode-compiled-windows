@@ -123,18 +123,33 @@ var SettingsDocument = /** @class */ (function () {
         return Promise.resolve(completions);
     };
     SettingsDocument.prototype.provideLanguageCompletionItems = function (location, range, formatFunc) {
-        var _this = this;
         if (formatFunc === void 0) { formatFunc = function (l) { return JSON.stringify(l); }; }
         return vscode.languages.getLanguages().then(function (languages) {
-            return languages.map(function (l) {
-                return _this.newSimpleCompletionItem(formatFunc(l), range);
-            });
+            var completionItems = [];
+            var configuration = vscode.workspace.getConfiguration();
+            for (var _i = 0, languages_1 = languages; _i < languages_1.length; _i++) {
+                var language = languages_1[_i];
+                var inspect = configuration.inspect("[" + language + "]");
+                if (!inspect || !inspect.defaultValue) {
+                    var item = new vscode.CompletionItem(formatFunc(language));
+                    item.kind = vscode.CompletionItemKind.Property;
+                    item.range = range;
+                    completionItems.push(item);
+                }
+            }
+            return completionItems;
         });
     };
     SettingsDocument.prototype.provideLanguageOverridesCompletionItems = function (location, position) {
-        var range = this.document.getWordRangeAtPosition(position) || new vscode.Range(position, position);
-        var text = this.document.getText(range);
         if (location.path.length === 0) {
+            var range = this.document.getWordRangeAtPosition(position, /^\s*\[.*]?/) || new vscode.Range(position, position);
+            var text = this.document.getText(range);
+            if (text && text.trim().startsWith('[')) {
+                range = new vscode.Range(new vscode.Position(range.start.line, range.start.character + text.indexOf('[')), range.end);
+                return this.provideLanguageCompletionItems(location, range, function (language) { return "\"[" + language + "]\""; });
+            }
+            range = this.document.getWordRangeAtPosition(position) || new vscode.Range(position, position);
+            text = this.document.getText(range);
             var snippet = '"[${1:language}]": {\n\t"$0"\n}';
             // Suggestion model word matching includes quotes,
             // hence exclude the starting quote from the snippet and the range
@@ -153,6 +168,7 @@ var SettingsDocument = /** @class */ (function () {
         if (location.path.length === 1 && location.previousNode && typeof location.previousNode.value === 'string' && location.previousNode.value.startsWith('[')) {
             // Suggestion model word matching includes closed sqaure bracket and ending quote
             // Hence include them in the proposal to replace
+            var range = this.document.getWordRangeAtPosition(position) || new vscode.Range(position, position);
             return this.provideLanguageCompletionItems(location, range, function (language) { return "\"[" + language + "]\""; });
         }
         return Promise.resolve([]);
@@ -176,4 +192,4 @@ var SettingsDocument = /** @class */ (function () {
     return SettingsDocument;
 }());
 exports.SettingsDocument = SettingsDocument;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/b813d12980308015bcd2b3a2f6efa5c810c33ba5/extensions\configuration-editing\out/settingsDocumentHelper.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/816be6780ca8bd0ab80314e11478c48c70d09383/extensions\configuration-editing\out/settingsDocumentHelper.js.map

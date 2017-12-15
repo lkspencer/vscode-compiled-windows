@@ -1,7 +1,7 @@
 {
 	"name": "node-debug",
 	"displayName": "Node Debug",
-	"version": "1.17.18",
+	"version": "1.19.8",
 	"publisher": "ms-vscode",
 	"description": "%extension.description%",
 	"icon": "images/node-debug-icon.png",
@@ -21,16 +21,19 @@
 		"nodemon": "nodemon --debug --nolazy ./out/node/nodeDebug.js --server=4711",
 		"prepublish": "gulp build"
 	},
+	"keywords": [
+		"multi-root ready"
+	],
 	"engines": {
-		"vscode": "^1.17.0",
+		"vscode": "^1.19.0",
 		"node": "^7.4.0"
 	},
 	"extensionDependencies": [
 		"ms-vscode.node-debug2"
 	],
 	"dependencies": {
-		"vscode-debugadapter": "1.24.0",
-		"source-map": "0.5.7",
+		"vscode-debugadapter": "1.25.0",
+		"source-map": "0.6.1",
 		"vscode-nls": "2.0.2",
 		"request-light": "0.2.1",
 		"glob": "7.1.2",
@@ -44,9 +47,9 @@
 		"url": "https://github.com/Microsoft/vscode-node-debug/issues"
 	},
 	"devDependencies": {
-		"@types/mocha": "2.2.42",
-		"@types/node": "6.0.52",
-		"@types/source-map": "0.5.1",
+		"@types/mocha": "2.2.44",
+		"@types/node": "7.0.43",
+		"@types/source-map": "0.5.2",
 		"gulp": "3.9.1",
 		"gulp-util": "3.0.8",
 		"gulp-typescript": "3.2.2",
@@ -57,22 +60,23 @@
 		"gulp-uglify": "2.0.0",
 		"tslint-microsoft-contrib": "5.0.1",
 		"del": "3.0.0",
-		"run-sequence": "2.1.0",
-		"mocha": "3.5.0",
-		"tslint": "5.7.0",
-		"tsutils": "2.8.2",
-		"typescript": "2.5.2",
-		"vscode": "1.1.5",
-		"vscode-nls-dev": "2.1.3",
-		"vscode-debugadapter-testsupport": "1.24.0",
-		"vscode-debugprotocol": "1.24.0",
+		"run-sequence": "2.2.0",
+		"mocha": "4.0.1",
+		"tslint": "5.8.0",
+		"tsutils": "2.12.2",
+		"typescript": "2.6.1",
+		"vscode": "1.1.8",
+		"vscode-nls-dev": "2.1.6",
+		"vscode-debugadapter-testsupport": "1.25.0",
+		"vscode-debugprotocol": "1.25.0",
 		"event-stream": "3.3.4",
-		"nodemon": "1.12.0",
-		"vsce": "1.30.0"
+		"nodemon": "1.12.1",
+		"vsce": "1.33.2"
 	},
 	"main": "./out/node/extension/extension.js",
 	"activationEvents": [
-		"onDebug",
+		"onDebugInitialConfigurations",
+		"onDebugResolve:node",
 		"onCommand:extension.node-debug.toggleSkippingFile",
 		"onCommand:extension.node-debug.pickLoadedScript",
 		"onCommand:extension.pickNodeProcess"
@@ -339,7 +343,10 @@
 						"env": {
 							"type": "object",
 							"additionalProperties": {
-								"type": "string"
+								"type": [
+									"string",
+									"null"
+								]
 							},
 							"description": "%node.launch.env.description%",
 							"default": {}
@@ -444,6 +451,15 @@
 							],
 							"description": "%node.launch.outputCapture.description%",
 							"default": "console"
+						},
+						"sourceMapPathOverrides": {
+							"type": "object",
+							"description": "%node.sourceMapPathOverrides.description%",
+							"default": {
+								"webpack:///./~/*": "${workspaceRoot}/node_modules/*",
+								"webpack:///./*": "${workspaceRoot}/*",
+								"webpack:///*": "*"
+							}
 						}
 					}
 				},
@@ -561,6 +577,15 @@
 							],
 							"description": "%trace.description%",
 							"default": true
+						},
+						"sourceMapPathOverrides": {
+							"type": "object",
+							"description": "%node.sourceMapPathOverrides.description%",
+							"default": {
+								"webpack:///./~/*": "${workspaceRoot}/node_modules/*",
+								"webpack:///./*": "${workspaceRoot}/*",
+								"webpack:///*": "*"
+							}
 						}
 					}
 				}

@@ -91,7 +91,7 @@ function getSelectionFromProperty(node, document, selectionStart, selectionEnd, 
     if (selectFullValue) {
         return new vscode.Selection(propertyNode.valueToken.start, propertyNode.valueToken.end);
     }
-    let pos;
+    let pos = -1;
     if (direction === 'prev') {
         if (selectionStart.isEqual(propertyNode.valueToken.start)) {
             return;
@@ -112,4 +112,4 @@ function getSelectionFromProperty(node, document, selectionStart, selectionEnd, 
     const newSelectionEnd = propertyNode.valueToken.start.translate(0, newSelectionEndOffset);
     return new vscode.Selection(newSelectionStart, newSelectionEnd);
 }
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/b813d12980308015bcd2b3a2f6efa5c810c33ba5/extensions\emmet\out/selectItemStylesheet.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/816be6780ca8bd0ab80314e11478c48c70d09383/extensions\emmet\out/selectItemStylesheet.js.map

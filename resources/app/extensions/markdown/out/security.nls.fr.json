@@ -6,5 +6,8 @@
 	"Désactiver",
 	"Autorisez tout le contenu et l’exécution des scripts. Non recommandé",
 	"Informations",
+	"Activer l'aperçu d'avertissements de sécurité pour cet espace de travail",
+	"Désactiver l'aperçu d'avertissements de sécurité pour cet espace de travail",
+	"N'affecte pas le niveau de sécurité du contenu",
 	"Sélectionner les paramètres de sécurité pour les aperçus Markdown dans cet espace de travail"
 ]

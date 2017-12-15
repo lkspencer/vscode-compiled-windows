@@ -19,10 +19,8 @@ const selectItem_1 = require("./selectItem");
 const evaluateMathExpression_1 = require("./evaluateMathExpression");
 const incrementDecrement_1 = require("./incrementDecrement");
 const util_1 = require("./util");
-const vscode_emmet_helper_1 = require("vscode-emmet-helper");
 const updateImageSize_1 = require("./updateImageSize");
 const reflectCssValue_1 = require("./reflectCssValue");
-const path = require("path");
 function activate(context) {
     registerCompletionProviders(context);
     context.subscriptions.push(vscode.commands.registerCommand('editor.emmet.action.wrapWithAbbreviation', (args) => {
@@ -42,7 +40,11 @@ function activate(context) {
             return updateTag_1.updateTag(inputTag);
         }
         return vscode.window.showInputBox({ prompt: 'Enter Tag' }).then(tagName => {
-            return updateTag_1.updateTag(tagName);
+            if (tagName) {
+                const update = updateTag_1.updateTag(tagName);
+                return update ? update : false;
+            }
+            return false;
         });
     }));
     context.subscriptions.push(vscode.commands.registerCommand('editor.emmet.action.matchTag', () => {
@@ -102,21 +104,10 @@ function activate(context) {
     context.subscriptions.push(vscode.commands.registerCommand('editor.emmet.action.reflectCSSValue', () => {
         return reflectCssValue_1.reflectCssValue();
     }));
-    let currentExtensionsPath = undefined;
-    let resolveUpdateExtensionsPath = () => {
-        let extensionsPath = vscode.workspace.getConfiguration('emmet')['extensionsPath'];
-        if (extensionsPath && !path.isAbsolute(extensionsPath)) {
-            extensionsPath = path.join(vscode.workspace.rootPath, extensionsPath);
-        }
-        if (currentExtensionsPath !== extensionsPath) {
-            currentExtensionsPath = extensionsPath;
-            vscode_emmet_helper_1.updateExtensionsPath(currentExtensionsPath).then(null, err => vscode.window.showErrorMessage(err));
-        }
-    };
-    resolveUpdateExtensionsPath();
+    util_1.resolveUpdateExtensionsPath();
     context.subscriptions.push(vscode.workspace.onDidChangeConfiguration(() => {
         registerCompletionProviders(context);
-        resolveUpdateExtensionsPath();
+        util_1.resolveUpdateExtensionsPath();
     }));
 }
 exports.activate = activate;
@@ -133,7 +124,10 @@ function registerCompletionProviders(context) {
             return;
         }
         if (languageMappingForCompletionProviders.has(language)) {
-            completionProvidersMapping.get(language).dispose();
+            const mapping = completionProvidersMapping.get(language);
+            if (mapping) {
+                mapping.dispose();
+            }
             languageMappingForCompletionProviders.delete(language);
             completionProvidersMapping.delete(language);
         }
@@ -154,4 +148,4 @@ function registerCompletionProviders(context) {
 function deactivate() {
 }
 exports.deactivate = deactivate;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/b813d12980308015bcd2b3a2f6efa5c810c33ba5/extensions\emmet\out/extension.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/816be6780ca8bd0ab80314e11478c48c70d09383/extensions\emmet\out/extension.js.map

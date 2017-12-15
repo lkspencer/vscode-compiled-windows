@@ -47,7 +47,7 @@ function activate(context) {
     context.subscriptions.push(registration);
     //package.json suggestions
     context.subscriptions.push(registerPackageDocumentCompletions());
-    context.subscriptions.push(new extensionLinter_1.ExtensionLinter(context));
+    context.subscriptions.push(new extensionLinter_1.ExtensionLinter());
 }
 exports.activate = activate;
 var _linkProvider = new /** @class */ (function () {
@@ -157,4 +157,4 @@ function registerPackageDocumentCompletions() {
         }
     });
 }
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/b813d12980308015bcd2b3a2f6efa5c810c33ba5/extensions\extension-editing\out/extension.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/816be6780ca8bd0ab80314e11478c48c70d09383/extensions\extension-editing\out/extension.js.map

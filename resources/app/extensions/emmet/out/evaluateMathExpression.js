@@ -9,11 +9,11 @@ const vscode = require("vscode");
 const math_expression_1 = require("@emmetio/math-expression");
 const bufferStream_1 = require("./bufferStream");
 function evaluateMathExpression() {
-    let editor = vscode.window.activeTextEditor;
-    if (!editor) {
+    if (!vscode.window.activeTextEditor) {
         vscode.window.showInformationMessage('No editor is active');
         return;
     }
+    const editor = vscode.window.activeTextEditor;
     const stream = new bufferStream_1.DocumentStreamReader(editor.document);
     editor.edit(editBuilder => {
         editor.selections.forEach(selection => {
@@ -32,4 +32,4 @@ function evaluateMathExpression() {
     });
 }
 exports.evaluateMathExpression = evaluateMathExpression;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/b813d12980308015bcd2b3a2f6efa5c810c33ba5/extensions\emmet\out/evaluateMathExpression.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/816be6780ca8bd0ab80314e11478c48c70d09383/extensions\emmet\out/evaluateMathExpression.js.map

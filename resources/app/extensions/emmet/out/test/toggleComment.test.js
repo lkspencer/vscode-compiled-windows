@@ -4,10 +4,16 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 Object.defineProperty(exports, "__esModule", { value: true });
+require("mocha");
 const assert = require("assert");
 const vscode_1 = require("vscode");
 const testUtils_1 = require("./testUtils");
 const toggleComment_1 = require("../toggleComment");
+function toggleComment(...args) {
+    const result = toggleComment_1.toggleComment(...args);
+    assert.ok(result);
+    return result;
+}
 suite('Tests for Toggle Comment action from Emmet (HTML)', () => {
     teardown(testUtils_1.closeAllEditors);
     const contents = `
@@ -68,7 +74,7 @@ suite('Tests for Toggle Comment action from Emmet (HTML)', () => {
                 new vscode_1.Selection(14, 8, 14, 8),
                 new vscode_1.Selection(18, 3, 18, 3) // cursor inside the css rule inside the style tag
             ];
-            return toggleComment_1.toggleComment().then(() => {
+            return toggleComment().then(() => {
                 assert.equal(doc.getText(), expectedContents);
                 return Promise.resolve();
             });
@@ -107,7 +113,7 @@ suite('Tests for Toggle Comment action from Emmet (HTML)', () => {
                 new vscode_1.Selection(14, 4, 14, 17),
                 new vscode_1.Selection(17, 3, 20, 4) // the css rule inside the style tag
             ];
-            return toggleComment_1.toggleComment().then(() => {
+            return toggleComment().then(() => {
                 assert.equal(doc.getText(), expectedContents);
                 return Promise.resolve();
             });
@@ -143,7 +149,7 @@ suite('Tests for Toggle Comment action from Emmet (HTML)', () => {
                 new vscode_1.Selection(3, 4, 4, 30),
                 new vscode_1.Selection(14, 4, 15, 18) // 2 css properties inside the style tag
             ];
-            return toggleComment_1.toggleComment().then(() => {
+            return toggleComment().then(() => {
                 assert.equal(doc.getText(), expectedContents);
                 return Promise.resolve();
             });
@@ -179,7 +185,7 @@ suite('Tests for Toggle Comment action from Emmet (HTML)', () => {
                 new vscode_1.Selection(3, 24, 4, 20),
                 new vscode_1.Selection(7, 2, 9, 10) // The <ul> one of of whose children is already commented
             ];
-            return toggleComment_1.toggleComment().then(() => {
+            return toggleComment().then(() => {
                 assert.equal(doc.getText(), expectedContents);
                 return Promise.resolve();
             });
@@ -218,9 +224,9 @@ suite('Tests for Toggle Comment action from Emmet (CSS)', () => {
                 new vscode_1.Selection(2, 5, 2, 5),
                 new vscode_1.Selection(5, 4, 5, 4),
             ];
-            return toggleComment_1.toggleComment().then(() => {
+            return toggleComment().then(() => {
                 assert.equal(doc.getText(), expectedContents);
-                return toggleComment_1.toggleComment().then(() => {
+                return toggleComment().then(() => {
                     assert.equal(doc.getText(), contents);
                     return Promise.resolve();
                 });
@@ -246,7 +252,7 @@ suite('Tests for Toggle Comment action from Emmet (CSS)', () => {
                 new vscode_1.Selection(3, 0, 3, 16),
                 new vscode_1.Selection(5, 1, 8, 2),
             ];
-            return toggleComment_1.toggleComment().then(() => {
+            return toggleComment().then(() => {
                 assert.equal(doc.getText(), expectedContents);
                 //return toggleComment().then(() => {
                 //assert.equal(doc.getText(), contents);
@@ -273,9 +279,9 @@ suite('Tests for Toggle Comment action from Emmet (CSS)', () => {
                 new vscode_1.Selection(2, 0, 3, 16),
                 new vscode_1.Selection(5, 1, 11, 2),
             ];
-            return toggleComment_1.toggleComment().then(() => {
+            return toggleComment().then(() => {
                 assert.equal(doc.getText(), expectedContents);
-                return toggleComment_1.toggleComment().then(() => {
+                return toggleComment().then(() => {
                     assert.equal(doc.getText(), contents);
                     return Promise.resolve();
                 });
@@ -299,9 +305,9 @@ suite('Tests for Toggle Comment action from Emmet (CSS)', () => {
             editor.selections = [
                 new vscode_1.Selection(3, 7, 6, 6)
             ];
-            return toggleComment_1.toggleComment().then(() => {
+            return toggleComment().then(() => {
                 assert.equal(doc.getText(), expectedContents);
-                return toggleComment_1.toggleComment().then(() => {
+                return toggleComment().then(() => {
                     assert.equal(doc.getText(), contents);
                     return Promise.resolve();
                 });
@@ -325,9 +331,9 @@ suite('Tests for Toggle Comment action from Emmet (CSS)', () => {
             editor.selections = [
                 new vscode_1.Selection(3, 0, 6, 6)
             ];
-            return toggleComment_1.toggleComment().then(() => {
+            return toggleComment().then(() => {
                 assert.equal(doc.getText(), expectedContents);
-                return toggleComment_1.toggleComment().then(() => {
+                return toggleComment().then(() => {
                     assert.equal(doc.getText(), contents);
                     return Promise.resolve();
                 });
@@ -351,9 +357,9 @@ suite('Tests for Toggle Comment action from Emmet (CSS)', () => {
             editor.selections = [
                 new vscode_1.Selection(3, 7, 7, 0)
             ];
-            return toggleComment_1.toggleComment().then(() => {
+            return toggleComment().then(() => {
                 assert.equal(doc.getText(), expectedContents);
-                return toggleComment_1.toggleComment().then(() => {
+                return toggleComment().then(() => {
                     assert.equal(doc.getText(), contents);
                     return Promise.resolve();
                 });
@@ -377,9 +383,9 @@ suite('Tests for Toggle Comment action from Emmet (CSS)', () => {
             editor.selections = [
                 new vscode_1.Selection(3, 0, 7, 0)
             ];
-            return toggleComment_1.toggleComment().then(() => {
+            return toggleComment().then(() => {
                 assert.equal(doc.getText(), expectedContents);
-                return toggleComment_1.toggleComment().then(() => {
+                return toggleComment().then(() => {
                     assert.equal(doc.getText(), contents);
                     return Promise.resolve();
                 });
@@ -404,9 +410,9 @@ suite('Tests for Toggle Comment action from Emmet (CSS)', () => {
                 new vscode_1.Selection(2, 7, 3, 10),
                 new vscode_1.Selection(5, 2, 11, 0),
             ];
-            return toggleComment_1.toggleComment().then(() => {
+            return toggleComment().then(() => {
                 assert.equal(doc.getText(), expectedContents);
-                return toggleComment_1.toggleComment().then(() => {
+                return toggleComment().then(() => {
                     assert.equal(doc.getText(), contents);
                     return Promise.resolve();
                 });
@@ -447,7 +453,7 @@ suite('Tests for Toggle Comment action from Emmet in nested css (SCSS)', () => {
                 new vscode_1.Selection(4, 4, 4, 4),
                 new vscode_1.Selection(9, 5, 9, 5) // cursor inside a property inside a nested rule
             ];
-            return toggleComment_1.toggleComment().then(() => {
+            return toggleComment().then(() => {
                 assert.equal(doc.getText(), expectedContents);
                 //return toggleComment().then(() => {
                 //	assert.equal(doc.getText(), contents);
@@ -475,9 +481,9 @@ suite('Tests for Toggle Comment action from Emmet in nested css (SCSS)', () => {
                 new vscode_1.Selection(4, 2, 6, 3),
                 new vscode_1.Selection(9, 3, 9, 17) // A property inside a nested rule completely selected
             ];
-            return toggleComment_1.toggleComment().then(() => {
+            return toggleComment().then(() => {
                 assert.equal(doc.getText(), expectedContents);
-                return toggleComment_1.toggleComment().then(() => {
+                return toggleComment().then(() => {
                     assert.equal(doc.getText(), contents);
                     return Promise.resolve();
                 });
@@ -501,9 +507,9 @@ suite('Tests for Toggle Comment action from Emmet in nested css (SCSS)', () => {
             editor.selections = [
                 new vscode_1.Selection(2, 2, 6, 3),
             ];
-            return toggleComment_1.toggleComment().then(() => {
+            return toggleComment().then(() => {
                 assert.equal(doc.getText(), expectedContents);
-                return toggleComment_1.toggleComment().then(() => {
+                return toggleComment().then(() => {
                     assert.equal(doc.getText(), contents);
                     return Promise.resolve();
                 });
@@ -527,9 +533,9 @@ suite('Tests for Toggle Comment action from Emmet in nested css (SCSS)', () => {
             editor.selections = [
                 new vscode_1.Selection(2, 6, 6, 1),
             ];
-            return toggleComment_1.toggleComment().then(() => {
+            return toggleComment().then(() => {
                 assert.equal(doc.getText(), expectedContents);
-                return toggleComment_1.toggleComment().then(() => {
+                return toggleComment().then(() => {
                     assert.equal(doc.getText(), contents);
                     return Promise.resolve();
                 });
@@ -537,4 +543,4 @@ suite('Tests for Toggle Comment action from Emmet in nested css (SCSS)', () => {
         });
     });
 });
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/b813d12980308015bcd2b3a2f6efa5c810c33ba5/extensions\emmet\out/test\toggleComment.test.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/816be6780ca8bd0ab80314e11478c48c70d09383/extensions\emmet\out/test\toggleComment.test.js.map

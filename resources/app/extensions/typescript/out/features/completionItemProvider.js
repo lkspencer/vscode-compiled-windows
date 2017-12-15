@@ -6,19 +6,23 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const vscode_1 = require("vscode");
 const PConst = require("../protocol.const");
-const Previewer = require("./previewer");
+const Previewer = require("../utils/previewer");
 const convert_1 = require("../utils/convert");
 const nls = require("vscode-nls");
+const codeAction_1 = require("../utils/codeAction");
+const languageModeIds = require("../utils/languageModeIds");
 let localize = nls.loadMessageBundle(__filename);
 class MyCompletionItem extends vscode_1.CompletionItem {
-    constructor(position, document, entry, enableDotCompletions, enableCallCompletions) {
+    constructor(position, document, entry, enableDotCompletions, useCodeSnippetsOnMethodSuggest) {
         super(entry.name);
         this.position = position;
         this.document = document;
+        this.useCodeSnippetsOnMethodSuggest = useCodeSnippetsOnMethodSuggest;
+        this.source = entry.source;
         this.sortText = entry.sortText;
         this.kind = MyCompletionItem.convertKind(entry.kind);
         this.position = position;
-        this.commitCharacters = MyCompletionItem.getCommitCharacters(enableDotCompletions, enableCallCompletions, entry.kind);
+        this.commitCharacters = MyCompletionItem.getCommitCharacters(enableDotCompletions, !useCodeSnippetsOnMethodSuggest, entry.kind);
         if (entry.replacementSpan) {
             let span = entry.replacementSpan;
             // The indexing for the range returned by the server uses 1-based indexing.
@@ -105,61 +109,91 @@ class MyCompletionItem extends vscode_1.CompletionItem {
         return undefined;
     }
 }
+class ApplyCompletionCodeActionCommand {
+    constructor(client) {
+        this.client = client;
+        this.id = ApplyCompletionCodeActionCommand.ID;
+    }
+    async execute(_file, codeActions) {
+        if (codeActions.length === 0) {
+            return true;
+        }
+        if (codeActions.length === 1) {
+            return codeAction_1.applyCodeAction(this.client, codeActions[0]);
+        }
+        const selection = await vscode_1.window.showQuickPick(codeActions.map((action, i) => ({
+            label: action.description,
+            description: '',
+            index: i
+        })), {
+            placeHolder: localize(0, null)
+        });
+        if (!selection) {
+            return false;
+        }
+        const action = codeActions[selection.index];
+        if (!action) {
+            return false;
+        }
+        return codeAction_1.applyCodeAction(this.client, action);
+    }
+}
+ApplyCompletionCodeActionCommand.ID = '_typescript.applyCompletionCodeAction';
 var Configuration;
 (function (Configuration) {
     Configuration.useCodeSnippetsOnMethodSuggest = 'useCodeSnippetsOnMethodSuggest';
     Configuration.nameSuggestions = 'nameSuggestions';
+    Configuration.quickSuggestionsForPaths = 'quickSuggestionsForPaths';
+    Configuration.autoImportSuggestions = 'autoImportSuggestions.enabled';
 })(Configuration || (Configuration = {}));
 class TypeScriptCompletionItemProvider {
-    constructor(client, typingsStatus) {
+    constructor(client, typingsStatus, commandManager) {
         this.client = client;
         this.typingsStatus = typingsStatus;
-        this.config = {
-            useCodeSnippetsOnMethodSuggest: false,
-            nameSuggestions: true
-        };
+        commandManager.register(new ApplyCompletionCodeActionCommand(this.client));
     }
-    updateConfiguration() {
-        // Use shared setting for js and ts
-        const typeScriptConfig = vscode_1.workspace.getConfiguration('typescript');
-        this.config.useCodeSnippetsOnMethodSuggest = typeScriptConfig.get(Configuration.useCodeSnippetsOnMethodSuggest, false);
-        const jsConfig = vscode_1.workspace.getConfiguration('javascript');
-        this.config.nameSuggestions = jsConfig.get(Configuration.nameSuggestions, true);
-    }
-    provideCompletionItems(document, position, token, context) {
+    async provideCompletionItems(document, position, token, context) {
         if (this.typingsStatus.isAcquiringTypings) {
             return Promise.reject({
-                label: localize(0, null),
-                detail: localize(1, null)
+                label: localize(1, null),
+                detail: localize(2, null)
             });
         }
         const file = this.client.normalizePath(document.uri);
         if (!file) {
-            return Promise.resolve([]);
+            return [];
         }
+        const config = this.getConfiguration(document.uri);
         if (context.triggerCharacter === '"' || context.triggerCharacter === '\'') {
+            if (!config.quickSuggestionsForPaths) {
+                return [];
+            }
             // make sure we are in something that looks like the start of an import
             const line = document.lineAt(position.line).text.slice(0, position.character);
-            if (!line.match(/\bfrom\s*["']$/) && !line.match(/\b(import|require)\(['"]$/)) {
-                return Promise.resolve([]);
+            if (!line.match(/\b(from|import)\s*["']$/) && !line.match(/\b(import|require)\(['"]$/)) {
+                return [];
             }
         }
         if (context.triggerCharacter === '/') {
+            if (!config.quickSuggestionsForPaths) {
+                return [];
+            }
             // make sure we are in something that looks like an import path
             const line = document.lineAt(position.line).text.slice(0, position.character);
-            if (!line.match(/\bfrom\s*["'][^'"]*$/) && !line.match(/\b(import|require)\(['"][^'"]*$/)) {
-                return Promise.resolve([]);
+            if (!line.match(/\b(from|import)\s*["'][^'"]*$/) && !line.match(/\b(import|require)\(['"][^'"]*$/)) {
+                return [];
             }
         }
         if (context.triggerCharacter === '@') {
             // make sure we are in something that looks like the start of a jsdoc comment
             const line = document.lineAt(position.line).text.slice(0, position.character);
             if (!line.match(/^\s*\*[ ]?@/) && !line.match(/\/\*\*+[ ]?@/)) {
-                return Promise.resolve([]);
+                return [];
             }
         }
-        const args = convert_1.vsPositionToTsFileLocation(file, position);
-        return this.client.execute('completions', args, token).then((msg) => {
+        try {
+            const args = Object.assign({}, convert_1.vsPositionToTsFileLocation(file, position), { includeExternalModuleExports: config.autoImportSuggestions });
+            const msg = await this.client.execute('completions', args, token);
             // This info has to come from the tsserver. See https://github.com/Microsoft/TypeScript/issues/2831
             // let isMemberCompletion = false;
             // let requestColumn = position.character;
@@ -179,26 +213,30 @@ class TypeScriptCompletionItemProvider {
             const body = msg.body;
             if (body) {
                 // Only enable dot completions in TS files for now
-                let enableDotCompletions = document && (document.languageId === 'typescript' || document.languageId === 'typescriptreact');
+                let enableDotCompletions = document && (document.languageId === languageModeIds.typescript || document.languageId === languageModeIds.typescriptreact);
                 // TODO: Workaround for https://github.com/Microsoft/TypeScript/issues/13456
                 // Only enable dot completions when previous character is an identifier.
                 // Prevents incorrectly completing while typing spread operators.
-                if (position.character > 0) {
+                if (position.character > 1) {
                     const preText = document.getText(new vscode_1.Range(position.line, 0, position.line, position.character - 1));
                     enableDotCompletions = preText.match(/[a-z_$\)\]\}]\s*$/ig) !== null;
                 }
                 for (const element of body) {
-                    if (element.kind === PConst.Kind.warning && !this.config.nameSuggestions) {
+                    if (element.kind === PConst.Kind.warning && !config.nameSuggestions) {
                         continue;
                     }
-                    const item = new MyCompletionItem(position, document, element, enableDotCompletions, !this.config.useCodeSnippetsOnMethodSuggest);
+                    if (!config.autoImportSuggestions && element.hasAction) {
+                        continue;
+                    }
+                    const item = new MyCompletionItem(position, document, element, enableDotCompletions, config.useCodeSnippetsOnMethodSuggest);
                     completionItems.push(item);
                 }
             }
             return completionItems;
-        }, () => {
+        }
+        catch (_a) {
             return [];
-        });
+        }
     }
     resolveCompletionItem(item, token) {
         if (!(item instanceof MyCompletionItem)) {
@@ -208,7 +246,9 @@ class TypeScriptCompletionItemProvider {
         if (!filepath) {
             return null;
         }
-        const args = Object.assign({}, convert_1.vsPositionToTsFileLocation(filepath, item.position), { entryNames: [item.label] });
+        const args = Object.assign({}, convert_1.vsPositionToTsFileLocation(filepath, item.position), { entryNames: [
+                item.source ? { name: item.label, source: item.source } : item.label
+            ] });
         return this.client.execute('completionEntryDetails', args, token).then((response) => {
             const details = response.body;
             if (!details || !details.length || !details[0]) {
@@ -216,8 +256,40 @@ class TypeScriptCompletionItemProvider {
             }
             const detail = details[0];
             item.detail = Previewer.plain(detail.displayParts);
-            item.documentation = Previewer.markdownDocumentation(detail.documentation, detail.tags);
-            if (detail && this.config.useCodeSnippetsOnMethodSuggest && (item.kind === vscode_1.CompletionItemKind.Function || item.kind === vscode_1.CompletionItemKind.Method)) {
+            const documentation = new vscode_1.MarkdownString();
+            if (detail.source) {
+                let importPath = `'${Previewer.plain(detail.source)}'`;
+                if (this.client.apiVersion.has260Features() && !this.client.apiVersion.has262Features()) {
+                    // Try to resolve the real import name that will be added
+                    if (detail.codeActions && detail.codeActions[0]) {
+                        const action = detail.codeActions[0];
+                        if (action.changes[0] && action.changes[0].textChanges[0]) {
+                            const textChange = action.changes[0].textChanges[0];
+                            const matchedImport = textChange.newText.match(/(['"])(.+?)\1/);
+                            if (matchedImport) {
+                                importPath = matchedImport[0];
+                                item.detail += ` — from ${matchedImport[0]}`;
+                            }
+                        }
+                    }
+                    documentation.appendMarkdown(localize(3, null, importPath));
+                }
+                else {
+                    const autoImportLabel = localize(4, null, importPath);
+                    item.detail = `${autoImportLabel}\n${item.detail}`;
+                }
+                documentation.appendMarkdown('\n\n');
+            }
+            Previewer.addmarkdownDocumentation(documentation, detail.documentation, detail.tags);
+            item.documentation = documentation;
+            if (detail.codeActions && detail.codeActions.length) {
+                item.command = {
+                    title: '',
+                    command: ApplyCompletionCodeActionCommand.ID,
+                    arguments: [filepath, detail.codeActions]
+                };
+            }
+            if (detail && item.useCodeSnippetsOnMethodSuggest && (item.kind === vscode_1.CompletionItemKind.Function || item.kind === vscode_1.CompletionItemKind.Method)) {
                 return this.isValidFunctionCompletionContext(filepath, item.position).then(shouldCompleteFunction => {
                     if (shouldCompleteFunction) {
                         item.insertText = this.snippetForFunctionCall(detail);
@@ -230,11 +302,11 @@ class TypeScriptCompletionItemProvider {
             return item;
         });
     }
-    isValidFunctionCompletionContext(filepath, position) {
-        const args = convert_1.vsPositionToTsFileLocation(filepath, position);
+    async isValidFunctionCompletionContext(filepath, position) {
         // Workaround for https://github.com/Microsoft/TypeScript/issues/12677
         // Don't complete function calls inside of destructive assigments or imports
-        return this.client.execute('quickinfo', args).then(infoResponse => {
+        try {
+            const infoResponse = await this.client.execute('quickinfo', convert_1.vsPositionToTsFileLocation(filepath, position));
             const info = infoResponse.body;
             switch (info && info.kind) {
                 case 'var':
@@ -245,18 +317,27 @@ class TypeScriptCompletionItemProvider {
                 default:
                     return true;
             }
-        }, () => {
+        }
+        catch (e) {
             return true;
-        });
+        }
     }
     snippetForFunctionCall(detail) {
         const suggestionArgumentNames = [];
+        let hasOptionalParemeters = false;
         let parenCount = 0;
-        for (let i = 0; i < detail.displayParts.length; ++i) {
+        let i = 0;
+        for (; i < detail.displayParts.length; ++i) {
             const part = detail.displayParts[i];
             // Only take top level paren names
             if (part.kind === 'parameterName' && parenCount === 1) {
-                suggestionArgumentNames.push(`\${${i + 1}:${part.text}}`);
+                const next = detail.displayParts[i + 1];
+                // Skip optional parameters
+                const nameIsFollowedByOptionalIndicator = next && next.text === '?';
+                if (!nameIsFollowedByOptionalIndicator) {
+                    suggestionArgumentNames.push(`\${${i + 1}:${part.text}}`);
+                }
+                hasOptionalParemeters = hasOptionalParemeters || nameIsFollowedByOptionalIndicator;
             }
             else if (part.kind === 'punctuation') {
                 if (part.text === '(') {
@@ -265,17 +346,26 @@ class TypeScriptCompletionItemProvider {
                 else if (part.text === ')') {
                     --parenCount;
                 }
+                else if (part.text === '...' && parenCount === 1) {
+                    // Found rest parmeter. Do not fill in any further arguments
+                    hasOptionalParemeters = true;
+                    break;
+                }
             }
         }
-        let codeSnippet = detail.name;
-        if (suggestionArgumentNames.length > 0) {
-            codeSnippet += '(' + suggestionArgumentNames.join(', ') + ')$0';
-        }
-        else {
-            codeSnippet += '()';
-        }
+        const codeSnippet = `${detail.name}(${suggestionArgumentNames.join(', ')}${hasOptionalParemeters ? '${' + i + '}' : ''})$0`;
         return new vscode_1.SnippetString(codeSnippet);
+    }
+    getConfiguration(resource) {
+        // Use shared setting for js and ts
+        const typeScriptConfig = vscode_1.workspace.getConfiguration('typescript', resource);
+        return {
+            useCodeSnippetsOnMethodSuggest: typeScriptConfig.get(Configuration.useCodeSnippetsOnMethodSuggest, false),
+            quickSuggestionsForPaths: typeScriptConfig.get(Configuration.quickSuggestionsForPaths, true),
+            autoImportSuggestions: typeScriptConfig.get(Configuration.autoImportSuggestions, true),
+            nameSuggestions: vscode_1.workspace.getConfiguration('javascript', resource).get(Configuration.nameSuggestions, true)
+        };
     }
 }
 exports.default = TypeScriptCompletionItemProvider;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/b813d12980308015bcd2b3a2f6efa5c810c33ba5/extensions\typescript\out/features\completionItemProvider.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/816be6780ca8bd0ab80314e11478c48c70d09383/extensions\typescript\out/features\completionItemProvider.js.map

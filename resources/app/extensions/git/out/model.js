@@ -46,49 +46,26 @@ __decorate([
 __decorate([
     decorators_1.memoize
 ], RepositoryPick.prototype, "description", null);
-function isParent(parent, child) {
-    return child.startsWith(parent);
-}
 class Model {
-    constructor(git) {
+    constructor(git, globalState) {
         this.git = git;
+        this.globalState = globalState;
         this._onDidOpenRepository = new vscode_1.EventEmitter();
         this.onDidOpenRepository = this._onDidOpenRepository.event;
         this._onDidCloseRepository = new vscode_1.EventEmitter();
         this.onDidCloseRepository = this._onDidCloseRepository.event;
         this._onDidChangeRepository = new vscode_1.EventEmitter();
         this.onDidChangeRepository = this._onDidChangeRepository.event;
+        this._onDidChangeOriginalResource = new vscode_1.EventEmitter();
+        this.onDidChangeOriginalResource = this._onDidChangeOriginalResource.event;
         this.openRepositories = [];
         this.possibleGitRepositoryPaths = new Set();
-        this.enabled = false;
         this.disposables = [];
-        const config = vscode_1.workspace.getConfiguration('git');
-        this.enabled = config.get('enabled') === true;
-        this.configurationChangeDisposable = vscode_1.workspace.onDidChangeConfiguration(this.onDidChangeConfiguration, this);
-        if (this.enabled) {
-            this.enable();
-        }
-    }
-    get repositories() { return this.openRepositories.map(r => r.repository); }
-    onDidChangeConfiguration() {
-        const config = vscode_1.workspace.getConfiguration('git');
-        const enabled = config.get('enabled') === true;
-        if (enabled === this.enabled) {
-            return;
-        }
-        this.enabled = enabled;
-        if (enabled) {
-            this.enable();
-        }
-        else {
-            this.disable();
-        }
-    }
-    enable() {
         vscode_1.workspace.onDidChangeWorkspaceFolders(this.onDidChangeWorkspaceFolders, this, this.disposables);
         this.onDidChangeWorkspaceFolders({ added: vscode_1.workspace.workspaceFolders || [], removed: [] });
         vscode_1.window.onDidChangeVisibleTextEditors(this.onDidChangeVisibleTextEditors, this, this.disposables);
         this.onDidChangeVisibleTextEditors(vscode_1.window.visibleTextEditors);
+        vscode_1.workspace.onDidChangeConfiguration(this.onDidChangeConfiguration, this, this.disposables);
         const fsWatcher = vscode_1.workspace.createFileSystemWatcher('**');
         this.disposables.push(fsWatcher);
         const onWorkspaceChange = util_1.anyEvent(fsWatcher.onDidChange, fsWatcher.onDidCreate, fsWatcher.onDidDelete);
@@ -97,13 +74,7 @@ class Model {
         onPossibleGitRepositoryChange(this.onPossibleGitRepositoryChange, this, this.disposables);
         this.scanWorkspaceFolders();
     }
-    disable() {
-        const openRepositories = [...this.openRepositories];
-        openRepositories.forEach(r => r.dispose());
-        this.openRepositories = [];
-        this.possibleGitRepositoryPaths.clear();
-        this.disposables = util_1.dispose(this.disposables);
-    }
+    get repositories() { return this.openRepositories.map(r => r.repository); }
     /**
      * Scans the first level of each workspace folder, looking
      * for git repositories.
@@ -142,10 +113,21 @@ class Model {
                 .map(folder => this.getOpenRepository(folder.uri))
                 .filter(r => !!r)
                 .filter(r => !activeRepositories.has(r.repository))
-                .filter(r => !(vscode_1.workspace.workspaceFolders || []).some(f => isParent(f.uri.fsPath, r.repository.root)));
+                .filter(r => !(vscode_1.workspace.workspaceFolders || []).some(f => util_1.isDescendant(f.uri.fsPath, r.repository.root)));
             possibleRepositoryFolders.forEach(p => this.tryOpenRepository(p.uri.fsPath));
             openRepositoriesToDispose.forEach(r => r.dispose());
         });
+    }
+    onDidChangeConfiguration() {
+        const possibleRepositoryFolders = (vscode_1.workspace.workspaceFolders || [])
+            .filter(folder => vscode_1.workspace.getConfiguration('git', folder.uri).get('enabled') === true)
+            .filter(folder => !this.getOpenRepository(folder.uri));
+        const openRepositoriesToDispose = this.openRepositories
+            .map(repository => ({ repository, root: vscode_1.Uri.file(repository.repository.root) }))
+            .filter(({ root }) => vscode_1.workspace.getConfiguration('git', root).get('enabled') !== true)
+            .map(({ repository }) => repository);
+        possibleRepositoryFolders.forEach(p => this.tryOpenRepository(p.uri.fsPath));
+        openRepositoriesToDispose.forEach(r => r.dispose());
     }
     onDidChangeVisibleTextEditors(editors) {
         editors.forEach(editor => {
@@ -165,6 +147,11 @@ class Model {
             if (this.getRepository(path)) {
                 return;
             }
+            const config = vscode_1.workspace.getConfiguration('git', vscode_1.Uri.file(path));
+            const enabled = config.get('enabled') === true;
+            if (!enabled) {
+                return;
+            }
             try {
                 const repositoryRoot = yield this.git.getRepositoryRoot(path);
                 // This can happen whenever `path` has the wrong case sensitivity in
@@ -173,7 +160,7 @@ class Model {
                 if (this.getRepository(repositoryRoot)) {
                     return;
                 }
-                const repository = new repository_1.Repository(this.git.open(repositoryRoot));
+                const repository = new repository_1.Repository(this.git.open(repositoryRoot), this.globalState);
                 this.open(repository);
             }
             catch (err) {
@@ -188,9 +175,11 @@ class Model {
         const onDidDisappearRepository = util_1.filterEvent(repository.onDidChangeState, state => state === repository_1.RepositoryState.Disposed);
         const disappearListener = onDidDisappearRepository(() => dispose());
         const changeListener = repository.onDidChangeRepository(uri => this._onDidChangeRepository.fire({ repository, uri }));
+        const originalResourceChangeListener = repository.onDidChangeOriginalResource(uri => this._onDidChangeOriginalResource.fire({ repository, uri }));
         const dispose = () => {
             disappearListener.dispose();
             changeListener.dispose();
+            originalResourceChangeListener.dispose();
             repository.dispose();
             this.openRepositories = this.openRepositories.filter(e => e !== openRepository);
             this._onDidCloseRepository.fire(repository);
@@ -235,7 +224,7 @@ class Model {
             const resourcePath = hint.fsPath;
             for (const liveRepository of this.openRepositories) {
                 const relativePath = path.relative(liveRepository.repository.root, resourcePath);
-                if (!/^\.\./.test(relativePath)) {
+                if (util_1.isDescendant(liveRepository.repository.root, resourcePath)) {
                     return liveRepository;
                 }
             }
@@ -253,8 +242,11 @@ class Model {
         return undefined;
     }
     dispose() {
-        this.disable();
-        this.configurationChangeDisposable.dispose();
+        const openRepositories = [...this.openRepositories];
+        openRepositories.forEach(r => r.dispose());
+        this.openRepositories = [];
+        this.possibleGitRepositoryPaths.clear();
+        this.disposables = util_1.dispose(this.disposables);
     }
 }
 __decorate([
@@ -264,4 +256,4 @@ __decorate([
     decorators_1.sequentialize
 ], Model.prototype, "tryOpenRepository", null);
 exports.Model = Model;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/b813d12980308015bcd2b3a2f6efa5c810c33ba5/extensions\git\out/model.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/816be6780ca8bd0ab80314e11478c48c70d09383/extensions\git\out/model.js.map

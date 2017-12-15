@@ -1,5 +1,6 @@
 {
 	"command.category": "Fusionar conflicto",
+	"command.accept.all-current": "Aceptar todo actual",
 	"command.accept.all-incoming": "Aceptar todos los entrantes",
 	"command.accept.all-both": "Aceptar ambos",
 	"command.accept.current": "Aceptar actuales",

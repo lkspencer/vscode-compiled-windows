@@ -15,7 +15,7 @@ function activate(context) {
     var validator = new validationProvider_1.default(context.workspaceState);
     validator.activate(context.subscriptions);
     // add providers
-    context.subscriptions.push(vscode.languages.registerCompletionItemProvider('php', new completionItemProvider_1.default(), '.', '$'));
+    context.subscriptions.push(vscode.languages.registerCompletionItemProvider('php', new completionItemProvider_1.default(), '>', '$'));
     context.subscriptions.push(vscode.languages.registerHoverProvider('php', new hoverProvider_1.default()));
     context.subscriptions.push(vscode.languages.registerSignatureHelpProvider('php', new signatureHelpProvider_1.default(), '(', ','));
     // need to set in the extension host as well as the completion provider uses it.
@@ -52,4 +52,4 @@ function activate(context) {
     });
 }
 exports.activate = activate;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/b813d12980308015bcd2b3a2f6efa5c810c33ba5/extensions\php\out/phpMain.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/816be6780ca8bd0ab80314e11478c48c70d09383/extensions\php\out/phpMain.js.map

@@ -11,6 +11,7 @@ var fs = require("fs");
 var vscode_uri_1 = require("vscode-uri");
 var URL = require("url");
 var Strings = require("./utils/strings");
+var errors_1 = require("./utils/errors");
 var vscode_json_languageservice_1 = require("vscode-json-languageservice");
 var languageModelCache_1 = require("./languageModelCache");
 var nls = require("vscode-nls");
@@ -29,6 +30,9 @@ var SchemaContentChangeNotification;
 })(SchemaContentChangeNotification || (SchemaContentChangeNotification = {}));
 // Create a connection for the server
 var connection = vscode_languageserver_1.createConnection();
+process.on('unhandledRejection', function (e) {
+    connection.console.error(errors_1.formatError("Unhandled exception", e));
+});
 console.log = connection.console.log.bind(connection.console);
 console.error = connection.console.error.bind(connection.console);
 // Create a simple text document manager. The text document manager
@@ -122,7 +126,7 @@ connection.onDidChangeConfiguration(function (change) {
         var enableFormatter = settings && settings.json && settings.json.format && settings.json.format.enable;
         if (enableFormatter) {
             if (!formatterRegistration) {
-                formatterRegistration = connection.client.register(vscode_languageserver_1.DocumentRangeFormattingRequest.type, { documentSelector: [{ language: 'json' }] });
+                formatterRegistration = connection.client.register(vscode_languageserver_1.DocumentRangeFormattingRequest.type, { documentSelector: [{ language: 'json' }, { language: 'jsonc' }] });
             }
         }
         else if (formatterRegistration) {
@@ -203,11 +207,17 @@ function validateTextDocument(textDocument) {
         connection.sendDiagnostics({ uri: textDocument.uri, diagnostics: [] });
         return;
     }
-    var jsonDocument = getJSONDocument(textDocument);
-    languageService.doValidation(textDocument, jsonDocument).then(function (diagnostics) {
-        // Send the computed diagnostics to VSCode.
-        connection.sendDiagnostics({ uri: textDocument.uri, diagnostics: diagnostics });
-    });
+    try {
+        var jsonDocument = getJSONDocument(textDocument);
+        var documentSettings = textDocument.languageId === 'jsonc' ? { comments: 'ignore', trailingCommas: 'ignore' } : { comments: 'error', trailingCommas: 'error' };
+        languageService.doValidation(textDocument, jsonDocument, documentSettings).then(function (diagnostics) {
+            // Send the computed diagnostics to VSCode.
+            connection.sendDiagnostics({ uri: textDocument.uri, diagnostics: diagnostics });
+        });
+    }
+    catch (e) {
+        connection.console.error(errors_1.formatError("Error while validating " + textDocument.uri, e));
+    }
 }
 connection.onDidChangeWatchedFiles(function (change) {
     // Monitored files have changed in VSCode
@@ -232,43 +242,57 @@ function getJSONDocument(document) {
     return jsonDocuments.get(document);
 }
 connection.onCompletion(function (textDocumentPosition) {
-    var document = documents.get(textDocumentPosition.textDocument.uri);
-    var jsonDocument = getJSONDocument(document);
-    return languageService.doComplete(document, textDocumentPosition.position, jsonDocument);
+    return errors_1.runSafe(function () {
+        var document = documents.get(textDocumentPosition.textDocument.uri);
+        var jsonDocument = getJSONDocument(document);
+        return languageService.doComplete(document, textDocumentPosition.position, jsonDocument);
+    }, null, "Error while computing completions for " + textDocumentPosition.textDocument.uri);
 });
 connection.onCompletionResolve(function (completionItem) {
-    return languageService.doResolve(completionItem);
+    return errors_1.runSafe(function () {
+        return languageService.doResolve(completionItem);
+    }, null, "Error while resolving completion proposal");
 });
 connection.onHover(function (textDocumentPositionParams) {
-    var document = documents.get(textDocumentPositionParams.textDocument.uri);
-    var jsonDocument = getJSONDocument(document);
-    return languageService.doHover(document, textDocumentPositionParams.position, jsonDocument);
+    return errors_1.runSafe(function () {
+        var document = documents.get(textDocumentPositionParams.textDocument.uri);
+        var jsonDocument = getJSONDocument(document);
+        return languageService.doHover(document, textDocumentPositionParams.position, jsonDocument);
+    }, null, "Error while computing hover for " + textDocumentPositionParams.textDocument.uri);
 });
 connection.onDocumentSymbol(function (documentSymbolParams) {
-    var document = documents.get(documentSymbolParams.textDocument.uri);
-    var jsonDocument = getJSONDocument(document);
-    return languageService.findDocumentSymbols(document, jsonDocument);
+    return errors_1.runSafe(function () {
+        var document = documents.get(documentSymbolParams.textDocument.uri);
+        var jsonDocument = getJSONDocument(document);
+        return languageService.findDocumentSymbols(document, jsonDocument);
+    }, [], "Error while computing document symbols for " + documentSymbolParams.textDocument.uri);
 });
 connection.onDocumentRangeFormatting(function (formatParams) {
-    var document = documents.get(formatParams.textDocument.uri);
-    return languageService.format(document, formatParams.range, formatParams.options);
+    return errors_1.runSafe(function () {
+        var document = documents.get(formatParams.textDocument.uri);
+        return languageService.format(document, formatParams.range, formatParams.options);
+    }, [], "Error while formatting range for " + formatParams.textDocument.uri);
 });
 connection.onRequest(protocol_colorProvider_proposed_1.DocumentColorRequest.type, function (params) {
-    var document = documents.get(params.textDocument.uri);
-    if (document) {
-        var jsonDocument = getJSONDocument(document);
-        return languageService.findDocumentColors(document, jsonDocument);
-    }
-    return [];
+    return errors_1.runSafe(function () {
+        var document = documents.get(params.textDocument.uri);
+        if (document) {
+            var jsonDocument = getJSONDocument(document);
+            return languageService.findDocumentColors(document, jsonDocument);
+        }
+        return [];
+    }, [], "Error while computing document colors for " + params.textDocument.uri);
 });
 connection.onRequest(protocol_colorProvider_proposed_1.ColorPresentationRequest.type, function (params) {
-    var document = documents.get(params.textDocument.uri);
-    if (document) {
-        var jsonDocument = getJSONDocument(document);
-        return languageService.getColorPresentations(document, jsonDocument, params.colorInfo);
-    }
-    return [];
+    return errors_1.runSafe(function () {
+        var document = documents.get(params.textDocument.uri);
+        if (document) {
+            var jsonDocument = getJSONDocument(document);
+            return languageService.getColorPresentations(document, jsonDocument, params.color, params.range);
+        }
+        return [];
+    }, [], "Error while computing color presentationsd for " + params.textDocument.uri);
 });
 // Listen on the connection
 connection.listen();
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/b813d12980308015bcd2b3a2f6efa5c810c33ba5/extensions\json\server\out/jsonServerMain.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/816be6780ca8bd0ab80314e11478c48c70d09383/extensions\json\server\out/jsonServerMain.js.map

@@ -1,5 +1,6 @@
 {
 	"command.category": "충돌 병합",
+	"command.accept.all-current": "모든 현재 사항 수락",
 	"command.accept.all-incoming": "수신 모두 수락",
 	"command.accept.all-both": "둘 다 모두 수락",
 	"command.accept.current": "현재 수락",

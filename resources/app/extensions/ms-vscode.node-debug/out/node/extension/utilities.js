@@ -7,7 +7,7 @@ const vscode = require("vscode");
 const nls = require("vscode-nls");
 exports.localize = nls.config(process.env.VSCODE_NLS_CONFIG)(__filename);
 function log(message) {
-    vscode.commands.executeCommand('debug.logToDebugConsole', message + '\n');
+    vscode.debug.activeDebugConsole.appendLine(message);
 }
 exports.log = log;
 

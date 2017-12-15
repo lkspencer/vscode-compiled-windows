@@ -8,7 +8,31 @@ const vscode = require("vscode");
 const html_matcher_1 = require("@emmetio/html-matcher");
 const css_parser_1 = require("@emmetio/css-parser");
 const bufferStream_1 = require("./bufferStream");
-const vscode_emmet_helper_1 = require("vscode-emmet-helper");
+const path = require("path");
+let _emmetHelper;
+let _currentExtensionsPath = undefined;
+function getEmmetHelper() {
+    if (!_emmetHelper) {
+        _emmetHelper = require('vscode-emmet-helper');
+    }
+    resolveUpdateExtensionsPath();
+    return _emmetHelper;
+}
+exports.getEmmetHelper = getEmmetHelper;
+function resolveUpdateExtensionsPath() {
+    if (!_emmetHelper) {
+        return;
+    }
+    let extensionsPath = vscode.workspace.getConfiguration('emmet')['extensionsPath'];
+    if (extensionsPath && !path.isAbsolute(extensionsPath)) {
+        extensionsPath = path.join(vscode.workspace.rootPath || '', extensionsPath);
+    }
+    if (_currentExtensionsPath !== extensionsPath) {
+        _currentExtensionsPath = extensionsPath;
+        _emmetHelper.updateExtensionsPath(_currentExtensionsPath).then(null, (err) => vscode.window.showErrorMessage(err));
+    }
+}
+exports.resolveUpdateExtensionsPath = resolveUpdateExtensionsPath;
 exports.LANGUAGE_MODES = {
     'html': ['!', '.', '}', ':', '*', '$', ']', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9'],
     'jade': ['!', '.', '}', ':', '*', '$', ']', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9'],
@@ -24,6 +48,7 @@ exports.LANGUAGE_MODES = {
     'javascriptreact': ['.', '}', '*', '$', ']', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9'],
     'typescriptreact': ['.', '}', '*', '$', ']', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9']
 };
+const emmetModes = ['html', 'pug', 'slim', 'haml', 'xml', 'xsl', 'jsx', 'css', 'scss', 'sass', 'less', 'stylus'];
 // Explicitly map languages that have built-in grammar in VS Code to their parent language
 // to get emmet completion support
 // For other languages, users will have to use `emmet.includeLanguages` or
@@ -32,20 +57,25 @@ exports.MAPPED_MODES = {
     'handlebars': 'html',
     'php': 'html'
 };
+function isStyleSheet(syntax) {
+    let stylesheetSyntaxes = ['css', 'scss', 'sass', 'less', 'stylus'];
+    return (stylesheetSyntaxes.indexOf(syntax) > -1);
+}
+exports.isStyleSheet = isStyleSheet;
 function validate(allowStylesheet = true) {
     let editor = vscode.window.activeTextEditor;
     if (!editor) {
         vscode.window.showInformationMessage('No editor is active');
         return false;
     }
-    if (!allowStylesheet && vscode_emmet_helper_1.isStyleSheet(editor.document.languageId)) {
+    if (!allowStylesheet && isStyleSheet(editor.document.languageId)) {
         return false;
     }
     return true;
 }
 exports.validate = validate;
 function getMappingForIncludedLanguages() {
-    let finalMappedModes = {};
+    const finalMappedModes = Object.create(null);
     let includeLanguagesConfig = vscode.workspace.getConfiguration('emmet')['includeLanguages'];
     let includeLanguages = Object.assign({}, exports.MAPPED_MODES, includeLanguagesConfig ? includeLanguagesConfig : {});
     Object.keys(includeLanguages).forEach(syntax => {
@@ -57,28 +87,50 @@ function getMappingForIncludedLanguages() {
 }
 exports.getMappingForIncludedLanguages = getMappingForIncludedLanguages;
 /**
+* Get the corresponding emmet mode for given vscode language mode
+* Eg: jsx for typescriptreact/javascriptreact or pug for jade
+* If the language is not supported by emmet or has been exlcuded via `exlcudeLanguages` setting,
+* then nothing is returned
+*
+* @param language
+* @param exlcudedLanguages Array of language ids that user has chosen to exlcude for emmet
+*/
+function getEmmetMode(language, excludedLanguages) {
+    if (!language || excludedLanguages.indexOf(language) > -1) {
+        return;
+    }
+    if (/\b(typescriptreact|javascriptreact|jsx-tags)\b/.test(language)) {
+        return 'jsx';
+    }
+    if (language === 'sass-indented') {
+        return 'sass';
+    }
+    if (language === 'jade') {
+        return 'pug';
+    }
+    if (emmetModes.indexOf(language) > -1) {
+        return language;
+    }
+}
+exports.getEmmetMode = getEmmetMode;
+/**
  * Parses the given document using emmet parsing modules
- * @param document
  */
 function parseDocument(document, showError = true) {
-    let parseContent = vscode_emmet_helper_1.isStyleSheet(document.languageId) ? css_parser_1.default : html_matcher_1.default;
-    let rootNode;
+    let parseContent = isStyleSheet(document.languageId) ? css_parser_1.default : html_matcher_1.default;
     try {
-        rootNode = parseContent(new bufferStream_1.DocumentStreamReader(document));
+        return parseContent(new bufferStream_1.DocumentStreamReader(document));
     }
     catch (e) {
         if (showError) {
             vscode.window.showErrorMessage('Emmet: Failed to parse the file');
         }
     }
-    return rootNode;
+    return undefined;
 }
 exports.parseDocument = parseDocument;
 /**
  * Returns node corresponding to given position in the given root node
- * @param root
- * @param position
- * @param includeNodeBoundary
  */
 function getNode(root, position, includeNodeBoundary = false) {
     if (!root) {
@@ -108,7 +160,7 @@ exports.getNode = getNode;
  */
 function getInnerRange(currentNode) {
     if (!currentNode.close) {
-        return;
+        return undefined;
     }
     return new vscode.Range(currentNode.open.end, currentNode.close.start);
 }
@@ -122,6 +174,7 @@ function getDeepestNode(node) {
             return getDeepestNode(node.children[i]);
         }
     }
+    return undefined;
 }
 exports.getDeepestNode = getDeepestNode;
 function findNextWord(propertyValue, pos) {
@@ -261,8 +314,6 @@ exports.getEmmetConfiguration = getEmmetConfiguration;
 /**
  * Itereates by each child, as well as nested child’ children, in their order
  * and invokes `fn` for each. If `fn` function returns `false`, iteration stops
- * @param  {Token}    token
- * @param  {Function} fn
  */
 function iterateCSSToken(token, fn) {
     for (let i = 0, il = token.size; i < il; i++) {
@@ -274,9 +325,6 @@ function iterateCSSToken(token, fn) {
 exports.iterateCSSToken = iterateCSSToken;
 /**
  * Returns `name` CSS property from given `rule`
- * @param  {Node} rule
- * @param  {String} name
- * @return {Property}
  */
 function getCssPropertyFromRule(rule, name) {
     return rule.children.find(node => node.type === 'property' && node.name === name);
@@ -285,13 +333,11 @@ exports.getCssPropertyFromRule = getCssPropertyFromRule;
 /**
  * Returns css property under caret in given editor or `null` if such node cannot
  * be found
- * @param  {TextEditor}  editor
- * @return {Property}
  */
 function getCssPropertyFromDocument(editor, position) {
     const rootNode = parseDocument(editor.document);
     const node = getNode(rootNode, position);
-    if (vscode_emmet_helper_1.isStyleSheet(editor.document.languageId)) {
+    if (isStyleSheet(editor.document.languageId)) {
         return node && node.type === 'property' ? node : null;
     }
     let htmlNode = node;
@@ -306,4 +352,4 @@ function getCssPropertyFromDocument(editor, position) {
     }
 }
 exports.getCssPropertyFromDocument = getCssPropertyFromDocument;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/b813d12980308015bcd2b3a2f6efa5c810c33ba5/extensions\emmet\out/util.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/816be6780ca8bd0ab80314e11478c48c70d09383/extensions\emmet\out/util.js.map

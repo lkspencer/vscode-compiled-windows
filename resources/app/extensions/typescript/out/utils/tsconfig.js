@@ -3,14 +3,6 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 const vscode = require("vscode");
 const path = require("path");
@@ -18,30 +10,43 @@ function isImplicitProjectConfigFile(configFileName) {
     return configFileName.indexOf('/dev/null/') === 0;
 }
 exports.isImplicitProjectConfigFile = isImplicitProjectConfigFile;
-const emptyConfig = new vscode.SnippetString(`{
+function getEmptyConfig(isTypeScriptProject, config) {
+    const compilerOptions = [
+        '"target": "ES6"',
+        '"module": "commonjs"',
+        '"jsx": "preserve"',
+    ];
+    if (!isTypeScriptProject && config.checkJs) {
+        compilerOptions.push('"checkJs": true');
+    }
+    if (!isTypeScriptProject && config.experimentalDecorators) {
+        compilerOptions.push('"experimentalDecorators": true');
+    }
+    return new vscode.SnippetString(`{
 	"compilerOptions": {
-		"target": "ES6"$0
+		${compilerOptions.join(',\n\t\t')}$0
 	},
 	"exclude": [
 		"node_modules",
 		"**/node_modules/*"
 	]
 }`);
-function openOrCreateConfigFile(isTypeScriptProject, rootPath) {
+}
+async function openOrCreateConfigFile(isTypeScriptProject, rootPath, config) {
     const configFile = vscode.Uri.file(path.join(rootPath, isTypeScriptProject ? 'tsconfig.json' : 'jsconfig.json'));
     const col = vscode.window.activeTextEditor ? vscode.window.activeTextEditor.viewColumn : undefined;
-    return vscode.workspace.openTextDocument(configFile)
-        .then(doc => {
+    try {
+        const doc = await vscode.workspace.openTextDocument(configFile);
         return vscode.window.showTextDocument(doc, col);
-    }, () => __awaiter(this, void 0, void 0, function* () {
-        const doc = yield vscode.workspace.openTextDocument(configFile.with({ scheme: 'untitled' }));
-        const editor = yield vscode.window.showTextDocument(doc, col);
+    }
+    catch (_a) {
+        const doc = await vscode.workspace.openTextDocument(configFile.with({ scheme: 'untitled' }));
+        const editor = await vscode.window.showTextDocument(doc, col);
         if (editor.document.getText().length === 0) {
-            yield editor.insertSnippet(emptyConfig);
-            return editor;
+            await editor.insertSnippet(getEmptyConfig(isTypeScriptProject, config));
         }
         return editor;
-    }));
+    }
 }
 exports.openOrCreateConfigFile = openOrCreateConfigFile;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/b813d12980308015bcd2b3a2f6efa5c810c33ba5/extensions\typescript\out/utils\tsconfig.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/816be6780ca8bd0ab80314e11478c48c70d09383/extensions\typescript\out/utils\tsconfig.js.map

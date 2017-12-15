@@ -18,8 +18,8 @@ const os = require("os");
 const cp = require("child_process");
 const events_1 = require("events");
 const iconv = require("iconv-lite");
+const filetype = require("file-type");
 const util_1 = require("./util");
-const readdir = util_1.denodeify(fs.readdir);
 const readfile = util_1.denodeify(fs.readFile);
 var RefType;
 (function (RefType) {
@@ -30,8 +30,9 @@ var RefType;
 function parseVersion(raw) {
     return raw.replace(/^git version /, '');
 }
-function findSpecificGit(path) {
+function findSpecificGit(path, onLookup) {
     return new Promise((c, e) => {
+        onLookup(path);
         const buffers = [];
         const child = cp.spawn(path, ['--version']);
         child.stdout.on('data', (b) => buffers.push(b));
@@ -39,7 +40,7 @@ function findSpecificGit(path) {
         child.on('exit', code => code ? e(new Error('Not found')) : c({ path, version: parseVersion(Buffer.concat(buffers).toString('utf8').trim()) }));
     });
 }
-function findGitDarwin() {
+function findGitDarwin(onLookup) {
     return new Promise((c, e) => {
         cp.exec('which git', (err, gitPathBuffer) => {
             if (err) {
@@ -47,6 +48,7 @@ function findGitDarwin() {
             }
             const path = gitPathBuffer.toString().replace(/^\s+|\s+$/g, '');
             function getVersion(path) {
+                onLookup(path);
                 // make sure git executes
                 cp.exec('git --version', (err, stdout) => {
                     if (err) {
@@ -70,37 +72,25 @@ function findGitDarwin() {
         });
     });
 }
-function findSystemGitWin32(base) {
+function findSystemGitWin32(base, onLookup) {
     if (!base) {
         return Promise.reject('Not found');
     }
-    return findSpecificGit(path.join(base, 'Git', 'cmd', 'git.exe'));
+    return findSpecificGit(path.join(base, 'Git', 'cmd', 'git.exe'), onLookup);
 }
-function findGitHubGitWin32() {
-    const github = path.join(process.env['LOCALAPPDATA'], 'GitHub');
-    return readdir(github).then(children => {
-        const git = children.filter(child => /^PortableGit/.test(child))[0];
-        if (!git) {
-            return Promise.reject('Not found');
-        }
-        return findSpecificGit(path.join(github, git, 'cmd', 'git.exe'));
-    });
+function findGitWin32(onLookup) {
+    return findSystemGitWin32(process.env['ProgramW6432'], onLookup)
+        .then(void 0, () => findSystemGitWin32(process.env['ProgramFiles(x86)'], onLookup))
+        .then(void 0, () => findSystemGitWin32(process.env['ProgramFiles'], onLookup));
 }
-function findGitWin32() {
-    return findSystemGitWin32(process.env['ProgramW6432'])
-        .then(void 0, () => findSystemGitWin32(process.env['ProgramFiles(x86)']))
-        .then(void 0, () => findSystemGitWin32(process.env['ProgramFiles']))
-        .then(void 0, () => findSpecificGit('git'))
-        .then(void 0, () => findGitHubGitWin32());
-}
-function findGit(hint) {
-    var first = hint ? findSpecificGit(hint) : Promise.reject(null);
+function findGit(hint, onLookup) {
+    const first = hint ? findSpecificGit(hint, onLookup) : Promise.reject(null);
     return first
         .then(void 0, () => {
         switch (process.platform) {
-            case 'darwin': return findGitDarwin();
-            case 'win32': return findGitWin32();
-            default: return findSpecificGit('git');
+            case 'darwin': return findGitDarwin(onLookup);
+            case 'win32': return findGitWin32(onLookup);
+            default: return findSpecificGit('git', onLookup);
         }
     })
         .then(null, () => Promise.reject(new Error('Git installation not found.')));
@@ -118,12 +108,13 @@ function cpErrorHandler(cb) {
         cb(err);
     };
 }
-function exec(child, options = {}) {
+function exec(child, cancellationToken) {
     return __awaiter(this, void 0, void 0, function* () {
         if (!child.stdout || !child.stderr) {
-            throw new GitError({
-                message: 'Failed to get stdout or stderr from git process.'
-            });
+            throw new GitError({ message: 'Failed to get stdout or stderr from git process.' });
+        }
+        if (cancellationToken && cancellationToken.isCancellationRequested) {
+            throw new GitError({ message: 'Cancelled' });
         }
         const disposables = [];
         const once = (ee, name, fn) => {
@@ -134,26 +125,43 @@ function exec(child, options = {}) {
             ee.on(name, fn);
             disposables.push(util_1.toDisposable(() => ee.removeListener(name, fn)));
         };
-        let encoding = options.encoding || 'utf8';
-        encoding = iconv.encodingExists(encoding) ? encoding : 'utf8';
-        const [exitCode, stdout, stderr] = yield Promise.all([
+        let result = Promise.all([
             new Promise((c, e) => {
                 once(child, 'error', cpErrorHandler(e));
                 once(child, 'exit', c);
             }),
             new Promise(c => {
                 const buffers = [];
-                on(child.stdout, 'data', b => buffers.push(b));
-                once(child.stdout, 'close', () => c(iconv.decode(Buffer.concat(buffers), encoding)));
+                on(child.stdout, 'data', (b) => buffers.push(b));
+                once(child.stdout, 'close', () => c(Buffer.concat(buffers)));
             }),
             new Promise(c => {
                 const buffers = [];
-                on(child.stderr, 'data', b => buffers.push(b));
+                on(child.stderr, 'data', (b) => buffers.push(b));
                 once(child.stderr, 'close', () => c(Buffer.concat(buffers).toString('utf8')));
             })
         ]);
-        util_1.dispose(disposables);
-        return { exitCode, stdout, stderr };
+        if (cancellationToken) {
+            const cancellationPromise = new Promise((_, e) => {
+                util_1.onceEvent(cancellationToken.onCancellationRequested)(() => {
+                    try {
+                        child.kill();
+                    }
+                    catch (err) {
+                        // noop
+                    }
+                    e(new GitError({ message: 'Cancelled' }));
+                });
+            });
+            result = Promise.race([result, cancellationPromise]);
+        }
+        try {
+            const [exitCode, stdout, stderr] = yield result;
+            return { exitCode, stdout, stderr };
+        }
+        finally {
+            util_1.dispose(disposables);
+        }
     });
 }
 class GitError {
@@ -179,7 +187,7 @@ class GitError {
             gitCommand: this.gitCommand,
             stdout: this.stdout,
             stderr: this.stderr
-        }, [], 2);
+        }, null, 2);
         if (this.error) {
             result += this.error.stack;
         }
@@ -208,6 +216,8 @@ exports.GitErrorCodes = {
     RepositoryIsLocked: 'RepositoryIsLocked',
     BranchNotFullyMerged: 'BranchNotFullyMerged',
     NoRemoteReference: 'NoRemoteReference',
+    InvalidBranchName: 'InvalidBranchName',
+    BranchAlreadyExists: 'BranchAlreadyExists',
     NoLocalChanges: 'NoLocalChanges',
     NoStashFound: 'NoStashFound',
     LocalChangesOverwritten: 'LocalChangesOverwritten'
@@ -240,6 +250,12 @@ function getGitErrorCode(stderr) {
     else if (/Couldn\'t find remote ref/.test(stderr)) {
         return exports.GitErrorCodes.NoRemoteReference;
     }
+    else if (/A branch named '.+' already exists/.test(stderr)) {
+        return exports.GitErrorCodes.BranchAlreadyExists;
+    }
+    else if (/'.+' is not a valid branch name/.test(stderr)) {
+        return exports.GitErrorCodes.InvalidBranchName;
+    }
     return void 0;
 }
 class Git {
@@ -259,12 +275,12 @@ class Git {
             return;
         });
     }
-    clone(url, parentPath) {
+    clone(url, parentPath, cancellationToken) {
         return __awaiter(this, void 0, void 0, function* () {
             const folderName = decodeURI(url).replace(/^.*\//, '').replace(/\.git$/, '') || 'repository';
             const folderPath = path.join(parentPath, folderName);
             yield util_1.mkdirp(parentPath);
-            yield this.exec(parentPath, ['clone', url, folderPath]);
+            yield this.exec(parentPath, ['clone', url, folderPath], { cancellationToken });
             return folderPath;
         });
     }
@@ -290,11 +306,18 @@ class Git {
             if (options.input) {
                 child.stdin.end(options.input, 'utf8');
             }
-            const result = yield exec(child, options);
-            if (options.log !== false && result.stderr.length > 0) {
-                this.log(`${result.stderr}\n`);
+            const bufferResult = yield exec(child, options.cancellationToken);
+            if (options.log !== false && bufferResult.stderr.length > 0) {
+                this.log(`${bufferResult.stderr}\n`);
             }
-            if (result.exitCode) {
+            let encoding = options.encoding || 'utf8';
+            encoding = iconv.encodingExists(encoding) ? encoding : 'utf8';
+            const result = {
+                exitCode: bufferResult.exitCode,
+                stdout: iconv.decode(bufferResult.stdout, encoding),
+                stderr: bufferResult.stderr
+            };
+            if (bufferResult.exitCode) {
                 return Promise.reject(new GitError({
                     message: 'Failed to execute git',
                     stdout: result.stdout,
@@ -420,13 +443,19 @@ class Repository {
             return result.stdout;
         });
     }
-    buffer(object, encoding = 'utf8') {
+    bufferString(object, encoding = 'utf8') {
+        return __awaiter(this, void 0, void 0, function* () {
+            const stdout = yield this.buffer(object);
+            return iconv.decode(stdout, iconv.encodingExists(encoding) ? encoding : 'utf8');
+        });
+    }
+    buffer(object) {
         return __awaiter(this, void 0, void 0, function* () {
             const child = this.stream(['show', object]);
             if (!child.stdout) {
                 return Promise.reject('Can\'t open file from git');
             }
-            const { exitCode, stdout } = yield exec(child, { encoding });
+            const { exitCode, stdout } = yield exec(child);
             if (exitCode) {
                 return Promise.reject(new GitError({
                     message: 'Could not show object.',
@@ -434,21 +463,66 @@ class Repository {
                 }));
             }
             return stdout;
-            // TODO@joao
-            // return new Promise((c, e) => {
-            // detectMimesFromStream(child.stdout, null, (err, result) => {
-            // 	if (err) {
-            // 		e(err);
-            // 	} else if (isBinaryMime(result.mimes)) {
-            // 		e(<IFileOperationResult>{
-            // 			message: localize('fileBinaryError', "File seems to be binary and cannot be opened as text"),
-            // 			fileOperationResult: FileOperationResult.FILE_IS_BINARY
-            // 		});
-            // 	} else {
-            // c(this.doBuffer(object));
-            // 	}
-            // });
-            // });
+        });
+    }
+    lstree(treeish, path) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (!treeish) {
+                const { stdout } = yield this.run(['ls-files', '--stage', '--', path]);
+                const match = /^(\d+)\s+([0-9a-f]{40})\s+(\d+)/.exec(stdout);
+                if (!match) {
+                    throw new GitError({ message: 'Error running ls-files' });
+                }
+                const [, mode, object] = match;
+                const catFile = yield this.run(['cat-file', '-s', object]);
+                const size = parseInt(catFile.stdout);
+                return { mode: parseInt(mode), object, size };
+            }
+            const { stdout } = yield this.run(['ls-tree', '-l', treeish, '--', path]);
+            const match = /^(\d+)\s+(\w+)\s+([0-9a-f]{40})\s+(\d+)/.exec(stdout);
+            if (!match) {
+                throw new GitError({ message: 'Error running ls-tree' });
+            }
+            const [, mode, , object, size] = match;
+            return { mode: parseInt(mode), object, size: parseInt(size) };
+        });
+    }
+    detectObjectType(object) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const child = yield this.stream(['show', object]);
+            const buffer = yield util_1.readBytes(child.stdout, 4100);
+            try {
+                child.kill();
+            }
+            catch (err) {
+                // noop
+            }
+            const encoding = util_1.detectUnicodeEncoding(buffer);
+            let isText = true;
+            if (encoding !== util_1.Encoding.UTF16be && encoding !== util_1.Encoding.UTF16le) {
+                for (let i = 0; i < buffer.length; i++) {
+                    if (buffer.readInt8(i) === 0) {
+                        isText = false;
+                        break;
+                    }
+                }
+            }
+            if (!isText) {
+                const result = filetype(buffer);
+                if (!result) {
+                    return { mimetype: 'application/octet-stream' };
+                }
+                else {
+                    return { mimetype: result.mime };
+                }
+            }
+            if (encoding) {
+                return { mimetype: 'text/plain', encoding };
+            }
+            else {
+                // TODO@JOAO: read the setting OUTSIDE!
+                return { mimetype: 'text/plain' };
+            }
         });
     }
     add(paths) {
@@ -468,13 +542,14 @@ class Repository {
             const child = this.stream(['hash-object', '--stdin', '-w', '--path', path], { stdio: [null, null, null] });
             child.stdin.end(data, 'utf8');
             const { exitCode, stdout } = yield exec(child);
+            const hash = stdout.toString('utf8');
             if (exitCode) {
                 throw new GitError({
                     message: 'Could not hash object.',
                     exitCode: exitCode
                 });
             }
-            yield this.run(['update-index', '--cacheinfo', '100644', stdout, path]);
+            yield this.run(['update-index', '--cacheinfo', '100644', hash, path]);
         });
     }
     checkout(treeish, paths) {
@@ -548,6 +623,12 @@ class Repository {
     deleteBranch(name, force) {
         return __awaiter(this, void 0, void 0, function* () {
             const args = ['branch', force ? '-D' : '-d', name];
+            yield this.run(args);
+        });
+    }
+    renameBranch(name) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const args = ['branch', '-m', name];
             yield this.run(args);
         });
     }
@@ -716,10 +797,13 @@ class Repository {
             }
         });
     }
-    createStash(message) {
+    createStash(message, includeUntracked) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const args = ['stash', 'save'];
+                if (includeUntracked) {
+                    args.push('-u');
+                }
                 if (message) {
                     args.push('--', message);
                 }
@@ -737,7 +821,7 @@ class Repository {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const args = ['stash', 'pop'];
-                if (typeof index === 'string') {
+                if (typeof index === 'number') {
                     args.push(`stash@{${index}}`);
                 }
                 yield this.run(args);
@@ -756,8 +840,9 @@ class Repository {
     getStatus(limit = 5000) {
         return new Promise((c, e) => {
             const parser = new GitStatusParser();
-            const child = this.stream(['status', '-z', '-u']);
-            const onExit = exitCode => {
+            const env = { GIT_OPTIONAL_LOCKS: '0' };
+            const child = this.stream(['status', '-z', '-u'], { env });
+            const onExit = (exitCode) => {
                 if (exitCode !== 0) {
                     const stderr = stderrData.join('');
                     return e(new GitError({
@@ -772,11 +857,11 @@ class Repository {
             };
             const onStdoutData = (raw) => {
                 parser.update(raw);
-                if (parser.status.length > 5000) {
+                if (parser.status.length > limit) {
                     child.removeListener('exit', onExit);
                     child.stdout.removeListener('data', onStdoutData);
                     child.kill();
-                    c({ status: parser.status.slice(0, 5000), didHitLimit: true });
+                    c({ status: parser.status.slice(0, limit), didHitLimit: true });
                 }
             };
             child.stdout.setEncoding('utf8');
@@ -923,4 +1008,4 @@ class Repository {
     }
 }
 exports.Repository = Repository;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/b813d12980308015bcd2b3a2f6efa5c810c33ba5/extensions\git\out/git.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/816be6780ca8bd0ab80314e11478c48c70d09383/extensions\git\out/git.js.map

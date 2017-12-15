@@ -69,6 +69,7 @@ function getJavascriptMode(documentRegions) {
                 return {
                     range: convertRange(currentTextDocument, diag),
                     severity: vscode_languageserver_types_1.DiagnosticSeverity.Error,
+                    source: 'js',
                     message: ts.flattenDiagnosticMessageText(diag.messageText, '\n')
                 };
             });
@@ -76,7 +77,7 @@ function getJavascriptMode(documentRegions) {
         doComplete: function (document, position) {
             updateCurrentTextDocument(document);
             var offset = currentTextDocument.offsetAt(position);
-            var completions = jsLanguageService.getCompletionsAtPosition(FILE_NAME, offset);
+            var completions = jsLanguageService.getCompletionsAtPosition(FILE_NAME, offset, { includeExternalModuleExports: false });
             if (!completions) {
                 return { isIncomplete: false, items: [] };
             }
@@ -102,7 +103,7 @@ function getJavascriptMode(documentRegions) {
         },
         doResolve: function (document, item) {
             updateCurrentTextDocument(document);
-            var details = jsLanguageService.getCompletionEntryDetails(FILE_NAME, item.data.offset, item.label);
+            var details = jsLanguageService.getCompletionEntryDetails(FILE_NAME, item.data.offset, item.label, undefined, undefined);
             if (details) {
                 item.detail = ts.displayPartsToString(details.displayParts);
                 item.documentation = ts.displayPartsToString(details.documentation);
@@ -134,7 +135,7 @@ function getJavascriptMode(documentRegions) {
                 signHelp.items.forEach(function (item) {
                     var signature = {
                         label: '',
-                        documentation: null,
+                        documentation: undefined,
                         parameters: []
                     };
                     signature.label += ts.displayPartsToString(item.prefixDisplayParts);
@@ -155,7 +156,6 @@ function getJavascriptMode(documentRegions) {
                 });
                 return ret_1;
             }
-            ;
             return null;
         },
         findDocumentHighlight: function (document, position) {
@@ -169,15 +169,14 @@ function getJavascriptMode(documentRegions) {
                     };
                 });
             }
-            ;
-            return null;
+            return [];
         },
         findDocumentSymbols: function (document) {
             updateCurrentTextDocument(document);
             var items = jsLanguageService.getNavigationBarItems(FILE_NAME);
             if (items) {
                 var result_1 = [];
-                var existing_1 = {};
+                var existing_1 = Object.create(null);
                 var collectSymbols_1 = function (item, containerLabel) {
                     var sig = item.text + item.kind + item.spans[0].start;
                     if (item.kind !== 'script' && !existing_1[sig]) {
@@ -204,7 +203,7 @@ function getJavascriptMode(documentRegions) {
                 items.forEach(function (item) { return collectSymbols_1(item); });
                 return result_1;
             }
-            return null;
+            return [];
         },
         findDefinition: function (document, position) {
             updateCurrentTextDocument(document);
@@ -230,7 +229,7 @@ function getJavascriptMode(documentRegions) {
                     };
                 });
             }
-            return null;
+            return [];
         },
         format: function (document, range, formatParams, settings) {
             if (settings === void 0) { settings = globalSettings; }
@@ -242,7 +241,7 @@ function getJavascriptMode(documentRegions) {
             var start = currentTextDocument.offsetAt(range.start);
             var end = currentTextDocument.offsetAt(range.end);
             var lastLineRange = null;
-            if (range.end.character === 0 || strings_1.isWhitespaceOnly(currentTextDocument.getText().substr(end - range.end.character, range.end.character))) {
+            if (range.end.line > range.start.line && (range.end.character === 0 || strings_1.isWhitespaceOnly(currentTextDocument.getText().substr(end - range.end.character, range.end.character)))) {
                 end -= range.end.character;
                 lastLineRange = vscode_languageserver_types_1.Range.create(vscode_languageserver_types_1.Position.create(range.end.line, 0), range.end);
             }
@@ -266,7 +265,7 @@ function getJavascriptMode(documentRegions) {
                 }
                 return result;
             }
-            return null;
+            return [];
         },
         onDocumentRemoved: function (document) {
             jsDocuments.onDocumentRemoved(document);
@@ -278,10 +277,13 @@ function getJavascriptMode(documentRegions) {
     };
 }
 exports.getJavascriptMode = getJavascriptMode;
-;
 function convertRange(document, span) {
+    if (typeof span.start === 'undefined') {
+        var pos = document.positionAt(0);
+        return vscode_languageserver_types_1.Range.create(pos, pos);
+    }
     var startPosition = document.positionAt(span.start);
-    var endPosition = document.positionAt(span.start + span.length);
+    var endPosition = document.positionAt(span.start + (span.length || 0));
     return vscode_languageserver_types_1.Range.create(startPosition, endPosition);
 }
 function convertKind(kind) {
@@ -391,4 +393,4 @@ function generateIndent(level, options) {
         return strings_1.repeat('\t', level);
     }
 }
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/b813d12980308015bcd2b3a2f6efa5c810c33ba5/extensions\html\server\out/modes\javascriptMode.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/816be6780ca8bd0ab80314e11478c48c70d09383/extensions\html\server\out/modes\javascriptMode.js.map

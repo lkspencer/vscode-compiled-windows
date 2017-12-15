@@ -15,8 +15,6 @@ const reUrl = /^https?:/;
 /**
  * Get size of given image file. Supports files from local filesystem,
  * as well as URLs
- * @param  {String} file Path to local file or URL
- * @return {Promise}
  */
 function getImageSize(file) {
     file = file.replace(/^file:\/\//, '');
@@ -25,8 +23,6 @@ function getImageSize(file) {
 exports.getImageSize = getImageSize;
 /**
  * Get image size from file on local file system
- * @param  {String} file
- * @return {Promise}
  */
 function getImageSizeFromFile(file) {
     return new Promise((resolve, reject) => {
@@ -53,28 +49,30 @@ function getImageSizeFromFile(file) {
 }
 /**
  * Get image size from given remove URL
- * @param  {String} url
- * @return {Promise}
  */
-function getImageSizeFromURL(url) {
+function getImageSizeFromURL(urlStr) {
     return new Promise((resolve, reject) => {
-        url = url_1.parse(url);
+        const url = url_1.parse(urlStr);
         const getTransport = url.protocol === 'https:' ? https.get : http.get;
+        if (!url.pathname) {
+            return reject('Given url doesnt have pathname property');
+        }
+        const urlPath = url.pathname;
         getTransport(url, resp => {
             const chunks = [];
             let bufSize = 0;
-            const trySize = chunks => {
+            const trySize = (chunks) => {
                 try {
                     const size = sizeOf(Buffer.concat(chunks, bufSize));
                     resp.removeListener('data', onData);
                     resp.destroy(); // no need to read further
-                    resolve(sizeForFileName(path.basename(url.pathname), size));
+                    resolve(sizeForFileName(path.basename(urlPath), size));
                 }
                 catch (err) {
                     // might not have enough data, skip error
                 }
             };
-            const onData = chunk => {
+            const onData = (chunk) => {
                 bufSize += chunk.length;
                 chunks.push(chunk);
                 trySize(chunks);
@@ -93,9 +91,6 @@ function getImageSizeFromURL(url) {
 /**
  * Returns size object for given file name. If file name contains `@Nx` token,
  * the final dimentions will be downscaled by N
- * @param  {String} fileName
- * @param  {Object} size
- * @return {Object}
  */
 function sizeForFileName(fileName, size) {
     const m = fileName.match(/@(\d+)x\./);
@@ -107,4 +102,4 @@ function sizeForFileName(fileName, size) {
         height: Math.floor(size.height / scale)
     };
 }
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/b813d12980308015bcd2b3a2f6efa5c810c33ba5/extensions\emmet\out/imageSizeHelper.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/816be6780ca8bd0ab80314e11478c48c70d09383/extensions\emmet\out/imageSizeHelper.js.map

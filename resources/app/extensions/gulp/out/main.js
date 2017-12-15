@@ -71,7 +71,7 @@ class FolderDetector {
         return vscode.workspace.getConfiguration('gulp', this._workspaceFolder.uri).get('autoDetect') === 'on';
     }
     start() {
-        let pattern = path.join(this._workspaceFolder.uri.fsPath, 'gulpfile{.babel.js,.js}');
+        let pattern = path.join(this._workspaceFolder.uri.fsPath, 'gulpfile{.babel.js,.js,.ts}');
         this.fileWatcher = vscode.workspace.createFileSystemWatcher(pattern);
         this.fileWatcher.onDidChange(() => this.promise = undefined);
         this.fileWatcher.onDidCreate(() => this.promise = undefined);
@@ -273,4 +273,4 @@ function deactivate() {
     detector.dispose();
 }
 exports.deactivate = deactivate;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/b813d12980308015bcd2b3a2f6efa5c810c33ba5/extensions\gulp\out/main.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/816be6780ca8bd0ab80314e11478c48c70d09383/extensions\gulp\out/main.js.map

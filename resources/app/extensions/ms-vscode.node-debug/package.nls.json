@@ -30,6 +30,7 @@
 	"node.localRoot.description": "Path to the local directory containing the program.",
 	"node.remoteRoot.description": "Absolute path to the remote directory containing the program.",
 	"node.showAsyncStacks.description": "Show the async calls that led to the current call stack. 'inspector' protocol only.",
+	"node.sourceMapPathOverrides.description": "A set of mappings for rewriting the locations of source files from what the sourcemap says, to their locations on disk.",
 
 	"node.launch.program.description": "Absolute path to the program. Generated value is guessed by looking at package.json and opened files. Edit this attribute.",
 	"node.launch.externalConsole.deprecationMessage": "Attribute 'externalConsole' is deprecated, use 'console' instead.",
@@ -41,7 +42,7 @@
 	"node.launch.cwd.description": "Absolute path to the working directory of the program being debugged.",
 	"node.launch.runtimeExecutable.description": "Runtime to use. Either an absolute path or the name of a runtime available on the PATH. If omitted 'node' is assumed.",
 	"node.launch.runtimeArgs.description": "Optional arguments passed to the runtime executable.",
-	"node.launch.env.description": "Environment variables passed to the program.",
+	"node.launch.env.description": "Environment variables passed to the program. The value 'null' removes the variable from the environment.",
 	"node.launch.envFile.description": "Absolute path to a file containing environment variable definitions.",
 	"node.launch.useWSL.description": "Use Windows Subsystem Linux.",
 	"node.launch.outputCapture.description": "From where to capture output messages: The debug API, or stdout/stderr streams.",

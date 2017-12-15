@@ -11,7 +11,7 @@ var settingsDocumentHelper_1 = require("./settingsDocumentHelper");
 var nls = require("vscode-nls");
 var localize = nls.loadMessageBundle(__filename);
 var decoration = vscode.window.createTextEditorDecorationType({
-    color: '#b1b1b1'
+    color: '#9e9e9e'
 });
 var pendingLaunchJsonDecoration;
 function activate(context) {
@@ -48,7 +48,7 @@ function registerKeybindingsCompletions() {
     });
 }
 function registerSettingsCompletions() {
-    return vscode.languages.registerCompletionItemProvider({ language: 'json', pattern: '**/settings.json' }, {
+    return vscode.languages.registerCompletionItemProvider({ language: 'jsonc', pattern: '**/settings.json' }, {
         provideCompletionItems: function (document, position, token) {
             return new settingsDocumentHelper_1.SettingsDocument(document).provideCompletionItems(position, token);
         }
@@ -149,7 +149,7 @@ function updateLaunchJsonDecorations(editor) {
     });
     editor.setDecorations(decoration, ranges);
 }
-vscode.languages.registerDocumentSymbolProvider({ pattern: '**/launch.json', language: 'json' }, {
+vscode.languages.registerDocumentSymbolProvider({ pattern: '**/launch.json', language: 'jsonc' }, {
     provideDocumentSymbols: function (document, token) {
         var result = [];
         var name = '';
@@ -181,4 +181,4 @@ vscode.languages.registerDocumentSymbolProvider({ pattern: '**/launch.json', lan
         return result;
     }
 });
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/b813d12980308015bcd2b3a2f6efa5c810c33ba5/extensions\configuration-editing\out/extension.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/816be6780ca8bd0ab80314e11478c48c70d09383/extensions\configuration-editing\out/extension.js.map

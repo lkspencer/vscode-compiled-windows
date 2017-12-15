@@ -8,15 +8,14 @@ const vscode = require("vscode");
 const util_1 = require("./util");
 const selectItemHTML_1 = require("./selectItemHTML");
 const selectItemStylesheet_1 = require("./selectItemStylesheet");
-const vscode_emmet_helper_1 = require("vscode-emmet-helper");
 function fetchSelectItem(direction) {
-    let editor = vscode.window.activeTextEditor;
-    if (!util_1.validate()) {
+    if (!util_1.validate() || !vscode.window.activeTextEditor) {
         return;
     }
+    const editor = vscode.window.activeTextEditor;
     let nextItem;
     let prevItem;
-    if (vscode_emmet_helper_1.isStyleSheet(editor.document.languageId)) {
+    if (util_1.isStyleSheet(editor.document.languageId)) {
         nextItem = selectItemStylesheet_1.nextItemStylesheet;
         prevItem = selectItemStylesheet_1.prevItemStylesheet;
     }
@@ -39,4 +38,4 @@ function fetchSelectItem(direction) {
     editor.revealRange(editor.selections[editor.selections.length - 1]);
 }
 exports.fetchSelectItem = fetchSelectItem;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/b813d12980308015bcd2b3a2f6efa5c810c33ba5/extensions\emmet\out/selectItem.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/816be6780ca8bd0ab80314e11478c48c70d09383/extensions\emmet\out/selectItem.js.map

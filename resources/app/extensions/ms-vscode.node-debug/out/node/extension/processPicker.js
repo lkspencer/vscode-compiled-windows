@@ -53,7 +53,6 @@ function listProcesses() {
                                 cmd = cmd.replace('\\??\\', '');
                             }
                             let executable_path;
-                            let args;
                             const matches2 = EXECUTABLE_ARGS.exec(cmd);
                             if (matches2 && matches2.length >= 2) {
                                 if (matches2.length >= 3) {
@@ -61,9 +60,6 @@ function listProcesses() {
                                 }
                                 else {
                                     executable_path = matches2[1];
-                                }
-                                if (matches2.length === 4) {
-                                    args = matches2[3];
                                 }
                             }
                             if (executable_path) {

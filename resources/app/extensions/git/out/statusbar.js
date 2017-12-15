@@ -14,7 +14,7 @@ class CheckoutStatusBar {
         this.repository = repository;
         this._onDidChange = new vscode_1.EventEmitter();
         this.disposables = [];
-        repository.onDidChangeStatus(this._onDidChange.fire, this._onDidChange, this.disposables);
+        repository.onDidRunGitStatus(this._onDidChange.fire, this._onDidChange, this.disposables);
     }
     get onDidChange() { return this._onDidChange.event; }
     get command() {
@@ -36,7 +36,7 @@ class SyncStatusBar {
         this._onDidChange = new vscode_1.EventEmitter();
         this.disposables = [];
         this._state = SyncStatusBar.StartState;
-        repository.onDidChangeStatus(this.onModelChange, this, this.disposables);
+        repository.onDidRunGitStatus(this.onModelChange, this, this.disposables);
         repository.onDidChangeOperations(this.onOperationsChange, this, this.disposables);
         this._onDidChange.fire();
     }
@@ -128,4 +128,4 @@ class StatusBarCommands {
     }
 }
 exports.StatusBarCommands = StatusBarCommands;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/b813d12980308015bcd2b3a2f6efa5c810c33ba5/extensions\git\out/statusbar.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/816be6780ca8bd0ab80314e11478c48c70d09383/extensions\git\out/statusbar.js.map

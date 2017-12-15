@@ -4,10 +4,16 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 Object.defineProperty(exports, "__esModule", { value: true });
+require("mocha");
 const assert = require("assert");
 const vscode_1 = require("vscode");
 const testUtils_1 = require("./testUtils");
 const reflectCssValue_1 = require("../reflectCssValue");
+function reflectCssValue() {
+    const result = reflectCssValue_1.reflectCssValue();
+    assert.ok(result);
+    return result;
+}
 suite('Tests for Emmet: Reflect CSS Value command', () => {
     teardown(testUtils_1.closeAllEditors);
     const cssContents = `
@@ -39,7 +45,7 @@ suite('Tests for Emmet: Reflect CSS Value command', () => {
     test('Reflect Css Value in css file', function () {
         return testUtils_1.withRandomFileEditor(cssContents, '.css', (editor, doc) => {
             editor.selections = [new vscode_1.Selection(5, 10, 5, 10)];
-            return reflectCssValue_1.reflectCssValue().then(() => {
+            return reflectCssValue().then(() => {
                 assert.equal(doc.getText(), cssContents.replace(/\(50deg\)/g, '(20deg)'));
                 return Promise.resolve();
             });
@@ -48,11 +54,11 @@ suite('Tests for Emmet: Reflect CSS Value command', () => {
     test('Reflect Css Value in html file', function () {
         return testUtils_1.withRandomFileEditor(htmlContents, '.html', (editor, doc) => {
             editor.selections = [new vscode_1.Selection(7, 20, 7, 20)];
-            return reflectCssValue_1.reflectCssValue().then(() => {
+            return reflectCssValue().then(() => {
                 assert.equal(doc.getText(), htmlContents.replace(/\(50deg\)/g, '(20deg)'));
                 return Promise.resolve();
             });
         });
     });
 });
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/b813d12980308015bcd2b3a2f6efa5c810c33ba5/extensions\emmet\out/test\reflectCssValue.test.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/816be6780ca8bd0ab80314e11478c48c70d09383/extensions\emmet\out/test\reflectCssValue.test.js.map

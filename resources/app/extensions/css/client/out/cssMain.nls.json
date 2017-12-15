@@ -1,8 +1,12 @@
 {
 	"messages": [
-		"CSS Language Server"
+		"CSS Language Server",
+		"Folding Region Start",
+		"Folding Region End"
 	],
 	"keys": [
-		"cssserver.name"
+		"cssserver.name",
+		"folding.start",
+		"folding.end"
 	]
 }

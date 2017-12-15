@@ -10,7 +10,6 @@ var vscode_languageclient_1 = require("vscode-languageclient");
 var htmlEmptyTagsShared_1 = require("./htmlEmptyTagsShared");
 var tagClosing_1 = require("./tagClosing");
 var vscode_extension_telemetry_1 = require("vscode-extension-telemetry");
-var configuration_proposed_1 = require("vscode-languageclient/lib/configuration.proposed");
 var protocol_colorProvider_proposed_1 = require("vscode-languageserver-protocol/lib/protocol.colorProvider.proposed");
 var nls = require("vscode-nls");
 var localize = nls.loadMessageBundle(__filename);
@@ -49,7 +48,7 @@ function activate(context) {
     };
     // Create the language client and start the client.
     var client = new vscode_languageclient_1.LanguageClient('html', localize(0, null), serverOptions, clientOptions);
-    client.registerFeature(new configuration_proposed_1.ConfigurationFeature(client));
+    client.registerProposedFeatures();
     var disposable = client.start();
     toDispose.push(disposable);
     client.onReady().then(function () {
@@ -66,10 +65,11 @@ function activate(context) {
                     });
                 });
             },
-            provideColorPresentations: function (document, colorInfo) {
+            provideColorPresentations: function (color, context) {
                 var params = {
-                    textDocument: client.code2ProtocolConverter.asTextDocumentIdentifier(document),
-                    colorInfo: { range: client.code2ProtocolConverter.asRange(colorInfo.range), color: colorInfo.color }
+                    textDocument: client.code2ProtocolConverter.asTextDocumentIdentifier(context.document),
+                    color: color,
+                    range: client.code2ProtocolConverter.asRange(context.range)
                 };
                 return client.sendRequest(protocol_colorProvider_proposed_1.ColorPresentationRequest.type, params).then(function (presentations) {
                     return presentations.map(function (p) {
@@ -104,7 +104,7 @@ function activate(context) {
         onEnterRules: [
             {
                 beforeText: new RegExp("<(?!(?:" + htmlEmptyTagsShared_1.EMPTY_ELEMENTS.join('|') + "))([_:\\w][_:\\w-.\\d]*)([^/>]*(?!/)>)[^<]*$", 'i'),
-                afterText: /^<\/([_:\w][_:\w-.\d]*)\s*>$/i,
+                afterText: /^<\/([_:\w][_:\w-.\d]*)\s*>/i,
                 action: { indentAction: vscode_1.IndentAction.IndentOutdent }
             },
             {
@@ -118,7 +118,7 @@ function activate(context) {
         onEnterRules: [
             {
                 beforeText: new RegExp("<(?!(?:" + htmlEmptyTagsShared_1.EMPTY_ELEMENTS.join('|') + "))([_:\\w][_:\\w-.\\d]*)([^/>]*(?!/)>)[^<]*$", 'i'),
-                afterText: /^<\/([_:\w][_:\w-.\d]*)\s*>$/i,
+                afterText: /^<\/([_:\w][_:\w-.\d]*)\s*>/i,
                 action: { indentAction: vscode_1.IndentAction.IndentOutdent }
             },
             {
@@ -132,7 +132,7 @@ function activate(context) {
         onEnterRules: [
             {
                 beforeText: new RegExp("<(?!(?:" + htmlEmptyTagsShared_1.EMPTY_ELEMENTS.join('|') + "))([_:\\w][_:\\w-.\\d]*)([^/>]*(?!/)>)[^<]*$", 'i'),
-                afterText: /^<\/([_:\w][_:\w-.\d]*)\s*>$/i,
+                afterText: /^<\/([_:\w][_:\w-.\d]*)\s*>/i,
                 action: { indentAction: vscode_1.IndentAction.IndentOutdent }
             },
             {
@@ -140,6 +140,30 @@ function activate(context) {
                 action: { indentAction: vscode_1.IndentAction.Indent }
             }
         ],
+    });
+    var regionCompletionRegExpr = /^(\s*)(<(!(-(-\s*(#\w*)?)?)?)?)?/;
+    vscode_1.languages.registerCompletionItemProvider(documentSelector, {
+        provideCompletionItems: function (doc, pos) {
+            var lineUntilPos = doc.getText(new vscode_1.Range(new vscode_1.Position(pos.line, 0), pos));
+            var match = lineUntilPos.match(regionCompletionRegExpr);
+            if (match) {
+                var range = new vscode_1.Range(new vscode_1.Position(pos.line, match[1].length), pos);
+                var beginProposal = new vscode_1.CompletionItem('#region', vscode_1.CompletionItemKind.Snippet);
+                beginProposal.range = range;
+                beginProposal.insertText = new vscode_1.SnippetString('<!-- #region $1-->');
+                beginProposal.documentation = localize(1, null);
+                beginProposal.filterText = match[2];
+                beginProposal.sortText = 'za';
+                var endProposal = new vscode_1.CompletionItem('#endregion', vscode_1.CompletionItemKind.Snippet);
+                endProposal.range = range;
+                endProposal.insertText = new vscode_1.SnippetString('<!-- #endregion -->');
+                endProposal.documentation = localize(2, null);
+                endProposal.filterText = match[2];
+                endProposal.sortText = 'zb';
+                return [beginProposal, endProposal];
+            }
+            return null;
+        }
     });
 }
 exports.activate = activate;
@@ -154,4 +178,4 @@ function getPackageInfo(context) {
     }
     return null;
 }
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/b813d12980308015bcd2b3a2f6efa5c810c33ba5/extensions\html\client\out/htmlMain.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/816be6780ca8bd0ab80314e11478c48c70d09383/extensions\html\client\out/htmlMain.js.map

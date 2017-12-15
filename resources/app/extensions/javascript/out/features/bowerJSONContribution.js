@@ -8,6 +8,7 @@ var vscode_1 = require("vscode");
 var markedTextUtil_1 = require("./markedTextUtil");
 var nls = require("vscode-nls");
 var localize = nls.loadMessageBundle(__filename);
+var USER_AGENT = 'Visual Studio Code';
 var BowerJSONContribution = /** @class */ (function () {
     function BowerJSONContribution(xhr) {
         this.xhr = xhr;
@@ -22,7 +23,7 @@ var BowerJSONContribution = /** @class */ (function () {
     BowerJSONContribution.prototype.getDocumentSelector = function () {
         return [{ language: 'json', pattern: '**/bower.json' }, { language: 'json', pattern: '**/.bower.json' }];
     };
-    BowerJSONContribution.prototype.collectDefaultSuggestions = function (resource, collector) {
+    BowerJSONContribution.prototype.collectDefaultSuggestions = function (_resource, collector) {
         var defaultValue = {
             'name': '${1:name}',
             'description': '${2:description}',
@@ -37,12 +38,13 @@ var BowerJSONContribution = /** @class */ (function () {
         collector.add(proposal);
         return Promise.resolve(null);
     };
-    BowerJSONContribution.prototype.collectPropertySuggestions = function (resource, location, currentWord, addValue, isLast, collector) {
+    BowerJSONContribution.prototype.collectPropertySuggestions = function (_resource, location, currentWord, addValue, isLast, collector) {
         if ((location.matches(['dependencies']) || location.matches(['devDependencies']))) {
             if (currentWord.length > 0) {
-                var queryUrl = 'https://bower.herokuapp.com/packages/search/' + encodeURIComponent(currentWord);
+                var queryUrl = 'https://registry.bower.io/packages/search/' + encodeURIComponent(currentWord);
                 return this.xhr({
-                    url: queryUrl
+                    url: queryUrl,
+                    agent: USER_AGENT
                 }).then(function (success) {
                     if (success.status === 200) {
                         try {
@@ -77,6 +79,7 @@ var BowerJSONContribution = /** @class */ (function () {
                         collector.error(localize(1, null, success.responseText));
                         return 0;
                     }
+                    return undefined;
                 }, function (error) {
                     collector.error(localize(2, null, error.responseText));
                     return 0;
@@ -104,7 +107,7 @@ var BowerJSONContribution = /** @class */ (function () {
         }
         return null;
     };
-    BowerJSONContribution.prototype.collectValueSuggestions = function (resource, location, collector) {
+    BowerJSONContribution.prototype.collectValueSuggestions = function (_resource, location, collector) {
         if ((location.matches(['dependencies', '*']) || location.matches(['devDependencies', '*']))) {
             // not implemented. Could be do done calling the bower command. Waiting for web API: https://github.com/bower/registry/issues/26
             var proposal = new vscode_1.CompletionItem(localize(3, null));
@@ -126,13 +129,13 @@ var BowerJSONContribution = /** @class */ (function () {
                 return null;
             });
         }
-        ;
         return null;
     };
     BowerJSONContribution.prototype.getInfo = function (pack) {
-        var queryUrl = 'https://bower.herokuapp.com/packages/' + encodeURIComponent(pack);
+        var queryUrl = 'https://registry.bower.io/packages/' + encodeURIComponent(pack);
         return this.xhr({
-            url: queryUrl
+            url: queryUrl,
+            agent: USER_AGENT
         }).then(function (success) {
             try {
                 var obj = JSON.parse(success.responseText);
@@ -151,11 +154,11 @@ var BowerJSONContribution = /** @class */ (function () {
                 // ignore
             }
             return void 0;
-        }, function (error) {
+        }, function () {
             return void 0;
         });
     };
-    BowerJSONContribution.prototype.getInfoContribution = function (resource, location) {
+    BowerJSONContribution.prototype.getInfoContribution = function (_resource, location) {
         if ((location.matches(['dependencies', '*']) || location.matches(['devDependencies', '*']))) {
             var pack = location.path[location.path.length - 1];
             if (typeof pack === 'string') {
@@ -172,4 +175,4 @@ var BowerJSONContribution = /** @class */ (function () {
     return BowerJSONContribution;
 }());
 exports.BowerJSONContribution = BowerJSONContribution;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/b813d12980308015bcd2b3a2f6efa5c810c33ba5/extensions\javascript\out/features\bowerJSONContribution.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/816be6780ca8bd0ab80314e11478c48c70d09383/extensions\javascript\out/features\bowerJSONContribution.js.map

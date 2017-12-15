@@ -61,9 +61,8 @@ var Context;
     Context[Context["MARKDOWN"] = 2] = "MARKDOWN";
 })(Context || (Context = {}));
 var ExtensionLinter = /** @class */ (function () {
-    function ExtensionLinter(context) {
+    function ExtensionLinter() {
         var _this = this;
-        this.context = context;
         this.diagnosticsCollection = vscode_1.languages.createDiagnosticCollection('extension-editing');
         this.fileWatcher = vscode_1.workspace.createFileSystemWatcher('**/package.json');
         this.disposables = [this.diagnosticsCollection, this.fileWatcher];
@@ -289,9 +288,7 @@ var ExtensionLinter = /** @class */ (function () {
                     case 3:
                         _i++;
                         return [3 /*break*/, 1];
-                    case 4:
-                        ;
-                        return [2 /*return*/];
+                    case 4: return [2 /*return*/];
                 }
             });
         });
@@ -436,4 +433,4 @@ function parseUri(src) {
         }
     }
 }
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/b813d12980308015bcd2b3a2f6efa5c810c33ba5/extensions\extension-editing\out/extensionLinter.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/816be6780ca8bd0ab80314e11478c48c70d09383/extensions\extension-editing\out/extensionLinter.js.map

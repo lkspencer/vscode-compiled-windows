@@ -71,7 +71,6 @@ function getHTMLMode(htmlLanguageService) {
     };
 }
 exports.getHTMLMode = getHTMLMode;
-;
 function merge(src, dst) {
     for (var key in src) {
         if (src.hasOwnProperty(key)) {
@@ -80,4 +79,4 @@ function merge(src, dst) {
     }
     return dst;
 }
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/b813d12980308015bcd2b3a2f6efa5c810c33ba5/extensions\html\server\out/modes\htmlMode.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/816be6780ca8bd0ab80314e11478c48c70d09383/extensions\html\server\out/modes\htmlMode.js.map

@@ -17,7 +17,7 @@ class API {
         if (!version) {
             return new API(localize(0, null), '1.0.0');
         }
-        // Cut of any prerelease tag since we sometimes consume those on purpose.
+        // Cut off any prerelease tag since we sometimes consume those on purpose.
         const index = versionString.indexOf('-');
         if (index >= 0) {
             version = version.substr(0, index);
@@ -54,7 +54,13 @@ class API {
     has250Features() {
         return semver.gte(this.version, '2.5.0');
     }
+    has260Features() {
+        return semver.gte(this.version, '2.6.0');
+    }
+    has262Features() {
+        return semver.gte(this.version, '2.6.2');
+    }
 }
 API.defaultVersion = new API('1.0.0', '1.0.0');
 exports.default = API;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/b813d12980308015bcd2b3a2f6efa5c810c33ba5/extensions\typescript\out/utils\api.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/816be6780ca8bd0ab80314e11478c48c70d09383/extensions\typescript\out/utils\api.js.map

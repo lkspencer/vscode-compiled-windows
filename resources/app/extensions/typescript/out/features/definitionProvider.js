@@ -6,12 +6,9 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const definitionProviderBase_1 = require("./definitionProviderBase");
 class TypeScriptDefinitionProvider extends definitionProviderBase_1.default {
-    constructor(client) {
-        super(client);
-    }
     provideDefinition(document, position, token) {
         return this.getSymbolLocations('definition', document, position, token);
     }
 }
 exports.default = TypeScriptDefinitionProvider;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/b813d12980308015bcd2b3a2f6efa5c810c33ba5/extensions\typescript\out/features\definitionProvider.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/816be6780ca8bd0ab80314e11478c48c70d09383/extensions\typescript\out/features\definitionProvider.js.map

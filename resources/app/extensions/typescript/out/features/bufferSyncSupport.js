@@ -7,12 +7,13 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const fs = require("fs");
 const vscode_1 = require("vscode");
 const async_1 = require("../utils/async");
+const languageModeIds = require("../utils/languageModeIds");
 function mode2ScriptKind(mode) {
     switch (mode) {
-        case 'typescript': return 'TS';
-        case 'typescriptreact': return 'TSX';
-        case 'javascript': return 'JS';
-        case 'javascriptreact': return 'JSX';
+        case languageModeIds.typescript: return 'TS';
+        case languageModeIds.typescriptreact: return 'TSX';
+        case languageModeIds.javascript: return 'JS';
+        case languageModeIds.javascriptreact: return 'JSX';
     }
     return undefined;
 }
@@ -213,4 +214,4 @@ class BufferSyncSupport {
     }
 }
 exports.default = BufferSyncSupport;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/b813d12980308015bcd2b3a2f6efa5c810c33ba5/extensions\typescript\out/features\bufferSyncSupport.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/816be6780ca8bd0ab80314e11478c48c70d09383/extensions\typescript\out/features\bufferSyncSupport.js.map

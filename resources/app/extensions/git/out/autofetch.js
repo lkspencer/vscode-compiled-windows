@@ -14,19 +14,53 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 const vscode_1 = require("vscode");
 const git_1 = require("./git");
+const repository_1 = require("./repository");
 const util_1 = require("./util");
+const nls = require("vscode-nls");
+const localize = nls.loadMessageBundle(__filename);
+function isRemoteOperation(operation) {
+    return operation === repository_1.Operation.Pull || operation === repository_1.Operation.Push || operation === repository_1.Operation.Sync || operation === repository_1.Operation.Fetch;
+}
 class AutoFetcher {
-    constructor(repository) {
+    constructor(repository, globalState) {
         this.repository = repository;
+        this.globalState = globalState;
         this._onDidChange = new vscode_1.EventEmitter();
         this.onDidChange = this._onDidChange.event;
         this._enabled = false;
         this.disposables = [];
         vscode_1.workspace.onDidChangeConfiguration(this.onConfiguration, this, this.disposables);
         this.onConfiguration();
+        const onGoodRemoteOperation = util_1.filterEvent(repository.onDidRunOperation, ({ operation, error }) => !error && isRemoteOperation(operation));
+        const onFirstGoodRemoteOperation = util_1.onceEvent(onGoodRemoteOperation);
+        onFirstGoodRemoteOperation(this.onFirstGoodRemoteOperation, this, this.disposables);
     }
     get enabled() { return this._enabled; }
     set enabled(enabled) { this._enabled = enabled; this._onDidChange.fire(enabled); }
+    onFirstGoodRemoteOperation() {
+        return __awaiter(this, void 0, void 0, function* () {
+            const didInformUser = !this.globalState.get(AutoFetcher.DidInformUser);
+            if (this.enabled && !didInformUser) {
+                this.globalState.update(AutoFetcher.DidInformUser, true);
+            }
+            const shouldInformUser = !this.enabled && didInformUser;
+            if (!shouldInformUser) {
+                return;
+            }
+            const yes = { title: localize(0, null) };
+            const no = { isCloseAffordance: true, title: localize(1, null) };
+            const askLater = { title: localize(2, null) };
+            const result = yield vscode_1.window.showInformationMessage(localize(3, null), yes, no, askLater);
+            if (result === askLater) {
+                return;
+            }
+            if (result === yes) {
+                const gitConfig = vscode_1.workspace.getConfiguration('git');
+                gitConfig.update('autofetch', true, vscode_1.ConfigurationTarget.Global);
+            }
+            this.globalState.update(AutoFetcher.DidInformUser, true);
+        });
+    }
     onConfiguration() {
         const gitConfig = vscode_1.workspace.getConfiguration('git');
         if (gitConfig.get('autofetch') === false) {
@@ -76,5 +110,6 @@ class AutoFetcher {
     }
 }
 AutoFetcher.Period = 3 * 60 * 1000 /* three minutes */;
+AutoFetcher.DidInformUser = 'autofetch.didInformUser';
 exports.AutoFetcher = AutoFetcher;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/b813d12980308015bcd2b3a2f6efa5c810c33ba5/extensions\git\out/autofetch.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/816be6780ca8bd0ab80314e11478c48c70d09383/extensions\git\out/autofetch.js.map

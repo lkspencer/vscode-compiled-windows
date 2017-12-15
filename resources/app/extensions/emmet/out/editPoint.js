@@ -7,34 +7,36 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const vscode = require("vscode");
 const util_1 = require("./util");
 function fetchEditPoint(direction) {
-    let editor = vscode.window.activeTextEditor;
-    if (!util_1.validate()) {
+    if (!util_1.validate() || !vscode.window.activeTextEditor) {
         return;
     }
+    const editor = vscode.window.activeTextEditor;
     let newSelections = [];
     editor.selections.forEach(selection => {
-        let updatedSelection = direction === 'next' ? nextEditPoint(selection.anchor, editor) : prevEditPoint(selection.anchor, editor);
-        newSelections.push(updatedSelection ? updatedSelection : selection);
+        let updatedSelection = direction === 'next' ? nextEditPoint(selection, editor) : prevEditPoint(selection, editor);
+        newSelections.push(updatedSelection);
     });
     editor.selections = newSelections;
     editor.revealRange(editor.selections[editor.selections.length - 1]);
 }
 exports.fetchEditPoint = fetchEditPoint;
-function nextEditPoint(position, editor) {
-    for (let lineNum = position.line; lineNum < editor.document.lineCount; lineNum++) {
-        let updatedSelection = findEditPoint(lineNum, editor, position, 'next');
+function nextEditPoint(selection, editor) {
+    for (let lineNum = selection.anchor.line; lineNum < editor.document.lineCount; lineNum++) {
+        let updatedSelection = findEditPoint(lineNum, editor, selection.anchor, 'next');
         if (updatedSelection) {
             return updatedSelection;
         }
     }
+    return selection;
 }
-function prevEditPoint(position, editor) {
-    for (let lineNum = position.line; lineNum >= 0; lineNum--) {
-        let updatedSelection = findEditPoint(lineNum, editor, position, 'prev');
+function prevEditPoint(selection, editor) {
+    for (let lineNum = selection.anchor.line; lineNum >= 0; lineNum--) {
+        let updatedSelection = findEditPoint(lineNum, editor, selection.anchor, 'prev');
         if (updatedSelection) {
             return updatedSelection;
         }
     }
+    return selection;
 }
 function findEditPoint(lineNum, editor, position, direction) {
     let line = editor.document.lineAt(lineNum);
@@ -61,4 +63,4 @@ function findEditPoint(lineNum, editor, position, direction) {
         return new vscode.Selection(lineNum, winner + 1, lineNum, winner + 1);
     }
 }
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/b813d12980308015bcd2b3a2f6efa5c810c33ba5/extensions\emmet\out/editPoint.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/816be6780ca8bd0ab80314e11478c48c70d09383/extensions\emmet\out/editPoint.js.map

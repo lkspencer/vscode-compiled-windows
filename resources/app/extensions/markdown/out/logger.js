@@ -4,7 +4,7 @@
  *--------------------------------------------------------------------------------------------*/
 'use strict';
 Object.defineProperty(exports, "__esModule", { value: true });
-var vscode_1 = require("vscode");
+const vscode_1 = require("vscode");
 var Trace;
 (function (Trace) {
     Trace[Trace["Off"] = 0] = "Off";
@@ -27,35 +27,31 @@ var Trace;
 function isString(value) {
     return Object.prototype.toString.call(value) === '[object String]';
 }
-var Logger = /** @class */ (function () {
-    function Logger() {
+class Logger {
+    constructor() {
         this.updateConfiguration();
     }
-    Logger.prototype.log = function (message, data) {
+    log(message, data) {
         if (this.trace === Trace.Verbose) {
-            this.output.appendLine("[Log - " + (new Date().toLocaleTimeString()) + "] " + message);
+            this.output.appendLine(`[Log - ${(new Date().toLocaleTimeString())}] ${message}`);
             if (data) {
                 this.output.appendLine(this.data2String(data));
             }
         }
-    };
-    Logger.prototype.updateConfiguration = function () {
+    }
+    updateConfiguration() {
         this.trace = this.readTrace();
-    };
-    Object.defineProperty(Logger.prototype, "output", {
-        get: function () {
-            if (!this._output) {
-                this._output = vscode_1.window.createOutputChannel('Markdown');
-            }
-            return this._output;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Logger.prototype.readTrace = function () {
+    }
+    get output() {
+        if (!this._output) {
+            this._output = vscode_1.window.createOutputChannel('Markdown');
+        }
+        return this._output;
+    }
+    readTrace() {
         return Trace.fromString(vscode_1.workspace.getConfiguration().get('markdown.trace', 'off'));
-    };
-    Logger.prototype.data2String = function (data) {
+    }
+    data2String(data) {
         if (data instanceof Error) {
             if (isString(data.stack)) {
                 return data.stack;
@@ -66,8 +62,7 @@ var Logger = /** @class */ (function () {
             return data;
         }
         return JSON.stringify(data, undefined, 2);
-    };
-    return Logger;
-}());
+    }
+}
 exports.Logger = Logger;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/b813d12980308015bcd2b3a2f6efa5c810c33ba5/extensions\markdown\out/logger.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/816be6780ca8bd0ab80314e11478c48c70d09383/extensions\markdown\out/logger.js.map

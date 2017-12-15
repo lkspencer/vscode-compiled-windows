@@ -11,11 +11,6 @@ const vscode_1 = require("vscode");
  * Based on @emmetio/stream-reader and @emmetio/atom-plugin
  */
 class DocumentStreamReader {
-    /**
-     * @param  {TextDocument} buffer
-     * @param  {Position}      pos
-     * @param  {Range}        limit
-     */
     constructor(document, pos, limit) {
         this.document = document;
         this.start = this.pos = pos ? pos : new vscode_1.Position(0, 0);
@@ -24,16 +19,12 @@ class DocumentStreamReader {
     }
     /**
      * Returns true only if the stream is at the end of the file.
-     * @returns {Boolean}
      */
     eof() {
         return this.pos.isAfterOrEqual(this._eof);
     }
     /**
      * Creates a new stream instance which is limited to given range for given document
-     * @param  {Position} start
-     * @param  {Position} end
-     * @return {DocumentStreamReader}
      */
     limit(start, end) {
         return new DocumentStreamReader(this.document, start, new vscode_1.Range(start, end));
@@ -41,7 +32,6 @@ class DocumentStreamReader {
     /**
      * Returns the next character code in the stream without advancing it.
      * Will return NaN at the end of the file.
-     * @returns {Number}
      */
     peek() {
         if (this.eof()) {
@@ -53,7 +43,6 @@ class DocumentStreamReader {
     /**
      * Returns the next character in the stream and advances it.
      * Also returns NaN when no more characters are available.
-     * @returns {Number}
      */
     next() {
         if (this.eof()) {
@@ -78,7 +67,6 @@ class DocumentStreamReader {
     /**
      * Backs up the stream n characters. Backing it up further than the
      * start of the current token will cause things to break, so be careful.
-     * @param {Number} n
      */
     backUp(n) {
         let row = this.pos.line;
@@ -96,24 +84,18 @@ class DocumentStreamReader {
     /**
      * Get the string between the start of the current token and the
      * current stream position.
-     * @returns {String}
      */
     current() {
         return this.substring(this.start, this.pos);
     }
     /**
      * Returns contents for given range
-     * @param  {Position} from
-     * @param  {Position} to
-     * @return {String}
      */
     substring(from, to) {
         return this.document.getText(new vscode_1.Range(from, to));
     }
     /**
      * Creates error object with current stream state
-     * @param {String} message
-     * @return {Error}
      */
     error(message) {
         const err = new Error(`${message} at row ${this.pos.line}, column ${this.pos.character}`);
@@ -121,8 +103,6 @@ class DocumentStreamReader {
     }
     /**
      * Returns line length of given row, including line ending
-     * @param  {Number} row
-     * @return {Number}
      */
     _lineLength(row) {
         if (row === this.document.lineCount - 1) {
@@ -135,8 +115,6 @@ class DocumentStreamReader {
      * and returns a boolean. If the next character in the stream 'matches'
      * the given argument, it is consumed and returned.
      * Otherwise, `false` is returned.
-     * @param {Number|Function} match
-     * @returns {Boolean}
      */
     eat(match) {
         const ch = this.peek();
@@ -149,8 +127,6 @@ class DocumentStreamReader {
     /**
      * Repeatedly calls <code>eat</code> with the given argument, until it
      * fails. Returns <code>true</code> if any characters were eaten.
-     * @param {Object} match
-     * @returns {Boolean}
      */
     eatWhile(match) {
         const start = this.pos;
@@ -159,4 +135,4 @@ class DocumentStreamReader {
     }
 }
 exports.DocumentStreamReader = DocumentStreamReader;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/b813d12980308015bcd2b3a2f6efa5c810c33ba5/extensions\emmet\out/bufferStream.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/816be6780ca8bd0ab80314e11478c48c70d09383/extensions\emmet\out/bufferStream.js.map

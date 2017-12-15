@@ -24,10 +24,13 @@ var JSONHoverProvider = /** @class */ (function () {
     function JSONHoverProvider(jsonContribution) {
         this.jsonContribution = jsonContribution;
     }
-    JSONHoverProvider.prototype.provideHover = function (document, position, token) {
+    JSONHoverProvider.prototype.provideHover = function (document, position, _token) {
         var fileName = path_1.basename(document.fileName);
         var offset = document.offsetAt(position);
         var location = jsonc_parser_1.getLocation(document.getText(), offset);
+        if (!location.previousNode) {
+            return null;
+        }
         var node = location.previousNode;
         if (node && node.offset <= offset && offset <= node.offset + node.length) {
             var promise = this.jsonContribution.getInfoContribution(fileName, location);
@@ -35,7 +38,7 @@ var JSONHoverProvider = /** @class */ (function () {
                 return promise.then(function (htmlContent) {
                     var range = new vscode_1.Range(document.positionAt(node.offset), document.positionAt(node.offset + node.length));
                     var result = {
-                        contents: htmlContent,
+                        contents: htmlContent || [],
                         range: range
                     };
                     return result;
@@ -51,7 +54,7 @@ var JSONCompletionItemProvider = /** @class */ (function () {
     function JSONCompletionItemProvider(jsonContribution) {
         this.jsonContribution = jsonContribution;
     }
-    JSONCompletionItemProvider.prototype.resolveCompletionItem = function (item, token) {
+    JSONCompletionItemProvider.prototype.resolveCompletionItem = function (item, _token) {
         if (this.jsonContribution.resolveSuggestion) {
             var resolver = this.jsonContribution.resolveSuggestion(item);
             if (resolver) {
@@ -60,7 +63,7 @@ var JSONCompletionItemProvider = /** @class */ (function () {
         }
         return Promise.resolve(item);
     };
-    JSONCompletionItemProvider.prototype.provideCompletionItems = function (document, position, token) {
+    JSONCompletionItemProvider.prototype.provideCompletionItems = function (document, position, _token) {
         var fileName = path_1.basename(document.fileName);
         var currentWord = this.getCurrentWord(document, position);
         var overwriteRange;
@@ -132,4 +135,4 @@ var JSONCompletionItemProvider = /** @class */ (function () {
     return JSONCompletionItemProvider;
 }());
 exports.JSONCompletionItemProvider = JSONCompletionItemProvider;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/b813d12980308015bcd2b3a2f6efa5c810c33ba5/extensions\javascript\out/features\jsonContributions.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/816be6780ca8bd0ab80314e11478c48c70d09383/extensions\javascript\out/features\jsonContributions.js.map

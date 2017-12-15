@@ -15,10 +15,10 @@ function balanceIn() {
 }
 exports.balanceIn = balanceIn;
 function balance(out) {
-    let editor = vscode.window.activeTextEditor;
-    if (!util_1.validate(false)) {
+    if (!util_1.validate(false) || !vscode.window.activeTextEditor) {
         return;
     }
+    const editor = vscode.window.activeTextEditor;
     let rootNode = util_1.parseDocument(editor.document);
     if (!rootNode) {
         return;
@@ -27,7 +27,7 @@ function balance(out) {
     let newSelections = [];
     editor.selections.forEach(selection => {
         let range = getRangeFunction(editor.document, selection, rootNode);
-        newSelections.push(range ? range : selection);
+        newSelections.push(range);
     });
     editor.selection = newSelections[0];
     editor.selections = newSelections;
@@ -35,7 +35,7 @@ function balance(out) {
 function getRangeToBalanceOut(document, selection, rootNode) {
     let nodeToBalance = util_1.getNode(rootNode, selection.start);
     if (!nodeToBalance) {
-        return;
+        return selection;
     }
     if (!nodeToBalance.close) {
         return new vscode.Selection(nodeToBalance.start, nodeToBalance.end);
@@ -48,12 +48,12 @@ function getRangeToBalanceOut(document, selection, rootNode) {
     if (outerSelection.contains(selection) && !outerSelection.isEqual(selection)) {
         return outerSelection;
     }
-    return;
+    return selection;
 }
 function getRangeToBalanceIn(document, selection, rootNode) {
     let nodeToBalance = util_1.getNode(rootNode, selection.start, true);
     if (!nodeToBalance) {
-        return;
+        return selection;
     }
     if (selection.start.isEqual(nodeToBalance.start)
         && selection.end.isEqual(nodeToBalance.end)
@@ -61,7 +61,7 @@ function getRangeToBalanceIn(document, selection, rootNode) {
         return new vscode.Selection(nodeToBalance.open.end, nodeToBalance.close.start);
     }
     if (!nodeToBalance.firstChild) {
-        return;
+        return selection;
     }
     if (selection.start.isEqual(nodeToBalance.firstChild.start)
         && selection.end.isEqual(nodeToBalance.firstChild.end)
@@ -70,4 +70,4 @@ function getRangeToBalanceIn(document, selection, rootNode) {
     }
     return new vscode.Selection(nodeToBalance.firstChild.start, nodeToBalance.firstChild.end);
 }
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/b813d12980308015bcd2b3a2f6efa5c810c33ba5/extensions\emmet\out/balance.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/816be6780ca8bd0ab80314e11478c48c70d09383/extensions\emmet\out/balance.js.map

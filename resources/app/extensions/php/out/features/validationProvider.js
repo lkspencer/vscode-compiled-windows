@@ -76,7 +76,7 @@ var CheckedExecutablePath = 'php.validate.checkedExecutablePath';
 var PHPValidationProvider = /** @class */ (function () {
     function PHPValidationProvider(workspaceStore) {
         this.workspaceStore = workspaceStore;
-        this.executable = null;
+        this.executable = undefined;
         this.validationEnabled = true;
         this.trigger = RunTrigger.onSave;
         this.pauseValidation = false;
@@ -193,7 +193,7 @@ var PHPValidationProvider = /** @class */ (function () {
     };
     PHPValidationProvider.prototype.doValidate = function (textDocument) {
         var _this = this;
-        return new Promise(function (resolve, reject) {
+        return new Promise(function (resolve) {
             var executable = _this.executable || 'php';
             var decoder = new LineDecoder();
             var diagnostics = [];
@@ -265,7 +265,9 @@ var PHPValidationProvider = /** @class */ (function () {
         else {
             message = error.message ? error.message : localize(5, null, executable);
         }
-        vscode.window.showInformationMessage(message);
+        if (message) {
+            vscode.window.showInformationMessage(message);
+        }
     };
     PHPValidationProvider.MatchExpression = /(?:(?:Parse|Fatal) error): (.*)(?: in )(.*?)(?: on line )(\d+)/;
     PHPValidationProvider.BufferArgs = ['-l', '-n', '-d', 'display_errors=On', '-d', 'log_errors=Off'];
@@ -273,4 +275,4 @@ var PHPValidationProvider = /** @class */ (function () {
     return PHPValidationProvider;
 }());
 exports.default = PHPValidationProvider;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/b813d12980308015bcd2b3a2f6efa5c810c33ba5/extensions\php\out/features\validationProvider.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/816be6780ca8bd0ab80314e11478c48c70d09383/extensions\php\out/features\validationProvider.js.map

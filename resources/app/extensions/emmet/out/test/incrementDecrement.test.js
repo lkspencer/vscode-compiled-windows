@@ -4,10 +4,16 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 Object.defineProperty(exports, "__esModule", { value: true });
+require("mocha");
 const assert = require("assert");
 const vscode_1 = require("vscode");
 const testUtils_1 = require("./testUtils");
 const incrementDecrement_1 = require("../incrementDecrement");
+function incrementDecrement(delta) {
+    const result = incrementDecrement_1.incrementDecrement(delta);
+    assert.ok(result);
+    return result;
+}
 suite('Tests for Increment/Decrement Emmet Commands', () => {
     teardown(testUtils_1.closeAllEditors);
     const contents = `
@@ -18,7 +24,7 @@ suite('Tests for Increment/Decrement Emmet Commands', () => {
     test('incrementNumberByOne', function () {
         return testUtils_1.withRandomFileEditor(contents, 'txt', (editor, doc) => {
             editor.selections = [new vscode_1.Selection(1, 7, 1, 10), new vscode_1.Selection(2, 7, 2, 10)];
-            return incrementDecrement_1.incrementDecrement(1).then(() => {
+            return incrementDecrement(1).then(() => {
                 assert.equal(doc.getText(), contents.replace('123', '124').replace('999', '1000'));
                 return Promise.resolve();
             });
@@ -27,7 +33,7 @@ suite('Tests for Increment/Decrement Emmet Commands', () => {
     test('incrementNumberByTen', function () {
         return testUtils_1.withRandomFileEditor(contents, 'txt', (editor, doc) => {
             editor.selections = [new vscode_1.Selection(1, 7, 1, 10), new vscode_1.Selection(2, 7, 2, 10)];
-            return incrementDecrement_1.incrementDecrement(10).then(() => {
+            return incrementDecrement(10).then(() => {
                 assert.equal(doc.getText(), contents.replace('123', '133').replace('999', '1009'));
                 return Promise.resolve();
             });
@@ -36,7 +42,7 @@ suite('Tests for Increment/Decrement Emmet Commands', () => {
     test('incrementNumberByOneTenth', function () {
         return testUtils_1.withRandomFileEditor(contents, 'txt', (editor, doc) => {
             editor.selections = [new vscode_1.Selection(1, 7, 1, 13), new vscode_1.Selection(2, 7, 2, 12)];
-            return incrementDecrement_1.incrementDecrement(0.1).then(() => {
+            return incrementDecrement(0.1).then(() => {
                 assert.equal(doc.getText(), contents.replace('123.43', '123.53').replace('999.9', '1000'));
                 return Promise.resolve();
             });
@@ -45,7 +51,7 @@ suite('Tests for Increment/Decrement Emmet Commands', () => {
     test('decrementNumberByOne', function () {
         return testUtils_1.withRandomFileEditor(contents, 'txt', (editor, doc) => {
             editor.selections = [new vscode_1.Selection(1, 7, 1, 10), new vscode_1.Selection(3, 7, 3, 10)];
-            return incrementDecrement_1.incrementDecrement(-1).then(() => {
+            return incrementDecrement(-1).then(() => {
                 assert.equal(doc.getText(), contents.replace('123', '122').replace('100', '99'));
                 return Promise.resolve();
             });
@@ -54,7 +60,7 @@ suite('Tests for Increment/Decrement Emmet Commands', () => {
     test('decrementNumberByTen', function () {
         return testUtils_1.withRandomFileEditor(contents, 'txt', (editor, doc) => {
             editor.selections = [new vscode_1.Selection(1, 7, 1, 10), new vscode_1.Selection(3, 7, 3, 10)];
-            return incrementDecrement_1.incrementDecrement(-10).then(() => {
+            return incrementDecrement(-10).then(() => {
                 assert.equal(doc.getText(), contents.replace('123', '113').replace('100', '90'));
                 return Promise.resolve();
             });
@@ -63,11 +69,11 @@ suite('Tests for Increment/Decrement Emmet Commands', () => {
     test('decrementNumberByOneTenth', function () {
         return testUtils_1.withRandomFileEditor(contents, 'txt', (editor, doc) => {
             editor.selections = [new vscode_1.Selection(1, 7, 1, 13), new vscode_1.Selection(3, 7, 3, 10)];
-            return incrementDecrement_1.incrementDecrement(-0.1).then(() => {
+            return incrementDecrement(-0.1).then(() => {
                 assert.equal(doc.getText(), contents.replace('123.43', '123.33').replace('100', '99.9'));
                 return Promise.resolve();
             });
         });
     });
 });
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/b813d12980308015bcd2b3a2f6efa5c810c33ba5/extensions\emmet\out/test\incrementDecrement.test.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/816be6780ca8bd0ab80314e11478c48c70d09383/extensions\emmet\out/test\incrementDecrement.test.js.map
