@@ -16,6 +16,7 @@ const fs = require("fs");
 const path = require("path");
 const os = require("os");
 const cp = require("child_process");
+const which = require("which");
 const events_1 = require("events");
 const iconv = require("iconv-lite");
 const filetype = require("file-type");
@@ -78,10 +79,16 @@ function findSystemGitWin32(base, onLookup) {
     }
     return findSpecificGit(path.join(base, 'Git', 'cmd', 'git.exe'), onLookup);
 }
+function findGitWin32InPath(onLookup) {
+    const whichPromise = new Promise((c, e) => which('git.exe', (err, path) => err ? e(err) : c(path)));
+    return whichPromise.then(path => findSpecificGit(path, onLookup));
+}
 function findGitWin32(onLookup) {
     return findSystemGitWin32(process.env['ProgramW6432'], onLookup)
         .then(void 0, () => findSystemGitWin32(process.env['ProgramFiles(x86)'], onLookup))
-        .then(void 0, () => findSystemGitWin32(process.env['ProgramFiles'], onLookup));
+        .then(void 0, () => findSystemGitWin32(process.env['ProgramFiles'], onLookup))
+        .then(void 0, () => findSystemGitWin32(path.join(process.env['LocalAppData'], 'Programs'), onLookup))
+        .then(void 0, () => findGitWin32InPath(onLookup));
 }
 function findGit(hint, onLookup) {
     const first = hint ? findSpecificGit(hint, onLookup) : Promise.reject(null);
@@ -1008,4 +1015,4 @@ class Repository {
     }
 }
 exports.Repository = Repository;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/816be6780ca8bd0ab80314e11478c48c70d09383/extensions\git\out/git.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/554a9c6dcd8b0636ace6f1c64e13e12adf0fcd1d/extensions\git\out/git.js.map

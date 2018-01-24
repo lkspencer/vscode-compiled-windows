@@ -295,4 +295,4 @@ connection.onRequest(protocol_colorProvider_proposed_1.ColorPresentationRequest.
 });
 // Listen on the connection
 connection.listen();
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/816be6780ca8bd0ab80314e11478c48c70d09383/extensions\json\server\out/jsonServerMain.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/554a9c6dcd8b0636ace6f1c64e13e12adf0fcd1d/extensions\json\server\out/jsonServerMain.js.map

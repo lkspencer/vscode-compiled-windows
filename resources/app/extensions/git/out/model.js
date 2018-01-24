@@ -26,6 +26,7 @@ const git_1 = require("./git");
 const path = require("path");
 const fs = require("fs");
 const nls = require("vscode-nls");
+const uri_1 = require("./uri");
 const localize = nls.loadMessageBundle(__filename);
 class RepositoryPick {
     constructor(repository) {
@@ -221,7 +222,13 @@ class Model {
             hint = vscode_1.Uri.file(hint);
         }
         if (hint instanceof vscode_1.Uri) {
-            const resourcePath = hint.fsPath;
+            let resourcePath;
+            if (hint.scheme === 'git') {
+                resourcePath = uri_1.fromGitUri(hint).path;
+            }
+            else {
+                resourcePath = hint.fsPath;
+            }
             for (const liveRepository of this.openRepositories) {
                 const relativePath = path.relative(liveRepository.repository.root, resourcePath);
                 if (util_1.isDescendant(liveRepository.repository.root, resourcePath)) {
@@ -256,4 +263,4 @@ __decorate([
     decorators_1.sequentialize
 ], Model.prototype, "tryOpenRepository", null);
 exports.Model = Model;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/816be6780ca8bd0ab80314e11478c48c70d09383/extensions\git\out/model.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/554a9c6dcd8b0636ace6f1c64e13e12adf0fcd1d/extensions\git\out/model.js.map

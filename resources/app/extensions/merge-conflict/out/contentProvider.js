@@ -14,6 +14,12 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 const vscode = require("vscode");
 class MergeConflictContentProvider {
+    constructor(context) {
+        this.context = context;
+    }
+    begin() {
+        this.context.subscriptions.push(vscode.workspace.registerTextDocumentContentProvider(MergeConflictContentProvider.scheme, this));
+    }
     dispose() {
     }
     provideTextDocumentContent(uri) {
@@ -34,4 +40,4 @@ class MergeConflictContentProvider {
 }
 MergeConflictContentProvider.scheme = 'merge-conflict.conflict-diff';
 exports.default = MergeConflictContentProvider;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/816be6780ca8bd0ab80314e11478c48c70d09383/extensions\merge-conflict\out/contentProvider.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/554a9c6dcd8b0636ace6f1c64e13e12adf0fcd1d/extensions\merge-conflict\out/contentProvider.js.map

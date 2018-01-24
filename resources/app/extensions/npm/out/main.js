@@ -163,4 +163,4 @@ function createTask(script, cmd, rootPath, folder, matcher) {
     let taskName = getTaskName(script);
     return new vscode.Task(kind, folder, taskName, 'npm', new vscode.ShellExecution(getCommandLine(folder, cmd), { cwd: rootPath }), matcher);
 }
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/816be6780ca8bd0ab80314e11478c48c70d09383/extensions\npm\out/main.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/554a9c6dcd8b0636ace6f1c64e13e12adf0fcd1d/extensions\npm\out/main.js.map
