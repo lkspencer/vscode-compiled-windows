@@ -7,9 +7,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var jsonContributions_1 = require("./features/jsonContributions");
 var httpRequest = require("request-light");
 var vscode_1 = require("vscode");
-var nls = require("vscode-nls");
 function activate(context) {
-    nls.config({ locale: vscode_1.env.language });
     configureHttpRequest();
     vscode_1.workspace.onDidChangeConfiguration(function () { return configureHttpRequest(); });
     context.subscriptions.push(jsonContributions_1.addJSONProviders(httpRequest.xhr));
@@ -19,4 +17,4 @@ function configureHttpRequest() {
     var httpSettings = vscode_1.workspace.getConfiguration('http');
     httpRequest.configure(httpSettings.get('proxy', ''), httpSettings.get('proxyStrictSSL', true));
 }
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/554a9c6dcd8b0636ace6f1c64e13e12adf0fcd1d/extensions\javascript\out/javascriptMain.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/1633d0959a33c1ba0169618280a0edb30d1ddcc3/extensions\javascript\out/javascriptMain.js.map

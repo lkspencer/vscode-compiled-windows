@@ -14,8 +14,6 @@ var Strings = require("./utils/strings");
 var errors_1 = require("./utils/errors");
 var vscode_json_languageservice_1 = require("vscode-json-languageservice");
 var languageModelCache_1 = require("./languageModelCache");
-var nls = require("vscode-nls");
-nls.config(process.env['VSCODE_NLS_CONFIG']);
 var SchemaAssociationNotification;
 (function (SchemaAssociationNotification) {
     SchemaAssociationNotification.type = new vscode_languageserver_1.NotificationType('json/schemaAssociations');
@@ -62,7 +60,7 @@ connection.onInitialize(function (params) {
     var capabilities = {
         // Tell the client that the server works in FULL text document sync mode
         textDocumentSync: documents.syncKind,
-        completionProvider: clientSnippetSupport ? { resolveProvider: true, triggerCharacters: ['"', ':'] } : null,
+        completionProvider: clientSnippetSupport ? { resolveProvider: true, triggerCharacters: ['"', ':'] } : void 0,
         hoverProvider: true,
         documentSymbolProvider: true,
         documentRangeFormattingProvider: false,
@@ -88,7 +86,7 @@ var schemaRequestService = function (uri) {
         return connection.sendRequest(VSCodeContentRequest.type, uri).then(function (responseText) {
             return responseText;
         }, function (error) {
-            return error.message;
+            return Promise.reject(error.message);
         });
     }
     if (uri.indexOf('//schema.management.azure.com/') !== -1) {
@@ -148,7 +146,7 @@ function updateConfiguration() {
     var languageSettings = {
         validate: true,
         allowComments: true,
-        schemas: []
+        schemas: new Array()
     };
     if (schemaAssociations) {
         for (var pattern in schemaAssociations) {
@@ -186,7 +184,7 @@ documents.onDidClose(function (event) {
     connection.sendDiagnostics({ uri: event.document.uri, diagnostics: [] });
 });
 var pendingValidationRequests = {};
-var validationDelayMs = 200;
+var validationDelayMs = 500;
 function cleanPendingValidation(textDocument) {
     var request = pendingValidationRequests[textDocument.uri];
     if (request) {
@@ -242,19 +240,19 @@ function getJSONDocument(document) {
     return jsonDocuments.get(document);
 }
 connection.onCompletion(function (textDocumentPosition) {
-    return errors_1.runSafe(function () {
+    return errors_1.runSafeAsync(function () {
         var document = documents.get(textDocumentPosition.textDocument.uri);
         var jsonDocument = getJSONDocument(document);
         return languageService.doComplete(document, textDocumentPosition.position, jsonDocument);
     }, null, "Error while computing completions for " + textDocumentPosition.textDocument.uri);
 });
 connection.onCompletionResolve(function (completionItem) {
-    return errors_1.runSafe(function () {
+    return errors_1.runSafeAsync(function () {
         return languageService.doResolve(completionItem);
-    }, null, "Error while resolving completion proposal");
+    }, completionItem, "Error while resolving completion proposal");
 });
 connection.onHover(function (textDocumentPositionParams) {
-    return errors_1.runSafe(function () {
+    return errors_1.runSafeAsync(function () {
         var document = documents.get(textDocumentPositionParams.textDocument.uri);
         var jsonDocument = getJSONDocument(document);
         return languageService.doHover(document, textDocumentPositionParams.position, jsonDocument);
@@ -274,13 +272,13 @@ connection.onDocumentRangeFormatting(function (formatParams) {
     }, [], "Error while formatting range for " + formatParams.textDocument.uri);
 });
 connection.onRequest(protocol_colorProvider_proposed_1.DocumentColorRequest.type, function (params) {
-    return errors_1.runSafe(function () {
+    return errors_1.runSafeAsync(function () {
         var document = documents.get(params.textDocument.uri);
         if (document) {
             var jsonDocument = getJSONDocument(document);
             return languageService.findDocumentColors(document, jsonDocument);
         }
-        return [];
+        return Promise.resolve([]);
     }, [], "Error while computing document colors for " + params.textDocument.uri);
 });
 connection.onRequest(protocol_colorProvider_proposed_1.ColorPresentationRequest.type, function (params) {
@@ -295,4 +293,4 @@ connection.onRequest(protocol_colorProvider_proposed_1.ColorPresentationRequest.
 });
 // Listen on the connection
 connection.listen();
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/554a9c6dcd8b0636ace6f1c64e13e12adf0fcd1d/extensions\json\server\out/jsonServerMain.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/1633d0959a33c1ba0169618280a0edb30d1ddcc3/extensions\json\server\out/jsonServerMain.js.map

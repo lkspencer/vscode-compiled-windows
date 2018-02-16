@@ -26,6 +26,9 @@ function getCSSMode(documentRegions) {
             var embedded = embeddedCSSDocuments.get(document);
             return cssLanguageService.doComplete(embedded, position, cssStylesheets.get(embedded));
         },
+        setCompletionParticipants: function (registeredCompletionParticipants) {
+            cssLanguageService.setCompletionParticipants(registeredCompletionParticipants);
+        },
         doHover: function (document, position) {
             var embedded = embeddedCSSDocuments.get(document);
             return cssLanguageService.doHover(embedded, position, cssStylesheets.get(embedded));
@@ -65,4 +68,4 @@ function getCSSMode(documentRegions) {
     };
 }
 exports.getCSSMode = getCSSMode;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/554a9c6dcd8b0636ace6f1c64e13e12adf0fcd1d/extensions\html\server\out/modes\cssMode.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/1633d0959a33c1ba0169618280a0edb30d1ddcc3/extensions\html\server\out/modes\cssMode.js.map

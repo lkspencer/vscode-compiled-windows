@@ -2,7 +2,16 @@
  * Copyright (C) Microsoft Corporation. All rights reserved.
  *--------------------------------------------------------*/
 'use strict';
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 Object.defineProperty(exports, "__esModule", { value: true });
+const nls = require("vscode-nls");
 const vscode = require("vscode");
 const child_process_1 = require("child_process");
 const path_1 = require("path");
@@ -10,8 +19,13 @@ const fs = require("fs");
 const utilities_1 = require("./utilities");
 const protocolDetection_1 = require("./protocolDetection");
 const processPicker_1 = require("./processPicker");
+const childProcesses_1 = require("./childProcesses");
+const localize = nls.loadMessageBundle(__filename);
 //---- NodeConfigurationProvider
 class NodeConfigurationProvider {
+    constructor(_extensionContext) {
+        this._extensionContext = _extensionContext;
+    }
     /**
      * Returns an initial debug configuration based on contextual information, e.g. package.json or folder.
      */
@@ -24,9 +38,9 @@ class NodeConfigurationProvider {
     resolveDebugConfiguration(folder, config, token) {
         // if launch.json is missing or empty
         if (!config.type && !config.request && !config.name) {
-            config = createLaunchConfigFromContext(folder, true);
+            config = createLaunchConfigFromContext(folder, true, config);
             if (!config.program) {
-                const message = utilities_1.localize('program.not.found.message', "Cannot find a program to debug");
+                const message = localize(0, null);
                 return vscode.window.showInformationMessage(message).then(_ => {
                     return undefined; // abort launch
                 });
@@ -42,17 +56,78 @@ class NodeConfigurationProvider {
                 config.cwd = path_1.dirname(config.program);
             }
         }
-        // if we detect that VS Code was launched for WSL, we add the 'useWSL' attribute on the fly
-        if (process.platform === 'win32' && config.request === 'launch' && typeof config.useWSL !== 'boolean') {
-            const HOME = process.env.HOME;
-            if (HOME && HOME.indexOf('/home/') === 0) {
-                config.useWSL = true;
+        // remove 'useWSL' on all platforms but Windows
+        if (process.platform !== 'win32' && config.useWSL) {
+            this._extensionContext.logger.debug('useWSL attribute ignored on non-Windows OS.');
+            delete config.useWSL;
+        }
+        // "nvm" support
+        if (config.runtimeVersion && config.runtimeVersion !== 'default') {
+            // if a runtime version is specified we prepend env.PATH with the folder that corresponds to the version
+            if (process.platform === 'win32') {
+                const home = process.env['NVM_HOME'];
+                if (home) {
+                    const bin = path_1.join(home, `v${config.runtimeVersion}`);
+                    if (fs.existsSync(bin)) {
+                        if (!config.env) {
+                            config.env = {};
+                        }
+                        config.env['Path'] = `${bin};${process.env['Path']}`;
+                    }
+                    else {
+                        return vscode.window.showErrorMessage(localize(1, null, config.runtimeVersion)).then(_ => {
+                            return undefined; // abort launch
+                        });
+                    }
+                }
+                else {
+                    return vscode.window.showErrorMessage(localize(2, null)).then(_ => {
+                        return undefined; // abort launch
+                    });
+                }
+            }
+            else {
+                const dir = process.env['NVM_DIR'];
+                if (dir) {
+                    const bin = path_1.join(dir, 'versions', 'node', `v${config.runtimeVersion}`, 'bin');
+                    if (fs.existsSync(bin)) {
+                        if (!config.env) {
+                            config.env = {};
+                        }
+                        config.env['PATH'] = `${bin}:${process.env['PATH']}`;
+                    }
+                    else {
+                        return vscode.window.showErrorMessage(localize(3, null, config.runtimeVersion)).then(_ => {
+                            return undefined; // abort launch
+                        });
+                    }
+                }
+                else {
+                    return vscode.window.showErrorMessage(localize(4, null)).then(_ => {
+                        return undefined; // abort launch
+                    });
+                }
             }
         }
+        // is "auto attach child process" mode enabled?
+        if (config.autoAttachChildProcesses) {
+            childProcesses_1.prepareAutoAttachChildProcesses(config);
+        }
         // determine which protocol to use
-        return determineDebugType(config).then(debugType => {
+        return determineDebugType(config, this._extensionContext.logger).then(debugType => {
             if (debugType) {
                 config.type = debugType;
+            }
+            return this.fixupLogParameters(config);
+        });
+    }
+    fixupLogParameters(config) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (config.trace && !config.logFilePath) {
+                const fileName = config.type === 'node' ?
+                    'debugadapter-legacy.txt' :
+                    'debugadapter.txt';
+                config.logFilePath = path_1.join(yield this._extensionContext.logger.logDirectory, fileName);
             }
             return config;
         });
@@ -60,16 +135,19 @@ class NodeConfigurationProvider {
 }
 exports.NodeConfigurationProvider = NodeConfigurationProvider;
 //---- helpers ----------------------------------------------------------------------------------------------------------------
-function createLaunchConfigFromContext(folder, resolve) {
+function createLaunchConfigFromContext(folder, resolve, existingConfig) {
     const config = {
         type: 'node',
         request: 'launch',
-        name: utilities_1.localize('node.launch.config.name', "Launch Program")
+        name: localize(5, null)
     };
+    if (existingConfig && existingConfig.noDebug) {
+        config['noDebug'] = true;
+    }
     const pkg = loadJSON(folder, 'package.json');
     if (pkg && pkg.name === 'mern-starter') {
         if (resolve) {
-            utilities_1.log(utilities_1.localize({ key: 'mern.starter.explanation', comment: ['argument contains product name without translation'] }, "Launch configuration for '{0}' project created.", 'Mern Starter'));
+            utilities_1.writeToConsole(localize(6, null, 'Mern Starter'));
         }
         configureMern(config);
     }
@@ -80,7 +158,7 @@ function createLaunchConfigFromContext(folder, resolve) {
             // try to find a value for 'program' by analysing package.json
             program = guessProgramFromPackage(folder, pkg, resolve);
             if (program && resolve) {
-                utilities_1.log(utilities_1.localize('program.guessed.from.package.json.explanation', "Launch configuration created based on 'package.json'."));
+                utilities_1.writeToConsole(localize(7, null));
             }
         }
         if (!program) {
@@ -110,7 +188,7 @@ function createLaunchConfigFromContext(folder, resolve) {
         // prepare for source maps by adding 'outFiles' if typescript or coffeescript is detected
         if (useSourceMaps || vscode.workspace.textDocuments.some(document => isTranspiledLanguage(document.languageId))) {
             if (resolve) {
-                utilities_1.log(utilities_1.localize('outFiles.explanation', "Adjust glob pattern(s) in the 'outFiles' attribute so that they cover the generated JavaScript."));
+                utilities_1.writeToConsole(localize(8, null));
             }
             let dir = '';
             const tsConfig = loadJSON(folder, 'tsconfig.json');
@@ -193,7 +271,7 @@ function guessProgramFromPackage(folder, packageJson, resolve) {
     return program;
 }
 //---- debug type -------------------------------------------------------------------------------------------------------------
-function determineDebugType(config) {
+function determineDebugType(config, logger) {
     if (config.request === 'attach' && typeof config.processId === 'string') {
         return determineDebugTypeForPidConfig(config);
     }
@@ -205,7 +283,7 @@ function determineDebugType(config) {
     }
     else {
         // 'auto', or unspecified
-        return protocolDetection_1.detectDebugType(config);
+        return protocolDetection_1.detectDebugType(config, logger);
     }
 }
 function determineDebugTypeForPidConfig(config) {
@@ -219,7 +297,7 @@ function determineDebugTypeForPidConfig(config) {
             return determineDebugTypeForPidInDebugMode(config, pidNum);
         }
         else {
-            throw new Error(utilities_1.localize('VSND2006', "Attach to process: '{0}' doesn't look like a process id.", pid));
+            throw new Error(localize(9, null, pid));
         }
     }).then(debugType => {
         if (debugType) {
@@ -249,7 +327,7 @@ function putPidInDebugMode(pid) {
         }
     }
     catch (e) {
-        throw new Error(utilities_1.localize('VSND2021', "Attach to process: cannot enable debug mode for process '{0}' ({1}).", pid, e));
+        throw new Error(localize(10, null, pid, e));
     }
 }
 function determineDebugTypeForPidInDebugMode(config, pid) {

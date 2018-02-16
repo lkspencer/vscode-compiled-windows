@@ -179,6 +179,7 @@ class GitError {
         }
         else {
             this.error = void 0;
+            this.message = '';
         }
         this.message = this.message || data.message || 'Git error';
         this.stdout = data.stdout;
@@ -227,7 +228,9 @@ exports.GitErrorCodes = {
     BranchAlreadyExists: 'BranchAlreadyExists',
     NoLocalChanges: 'NoLocalChanges',
     NoStashFound: 'NoStashFound',
-    LocalChangesOverwritten: 'LocalChangesOverwritten'
+    LocalChangesOverwritten: 'LocalChangesOverwritten',
+    NoUpstreamBranch: 'NoUpstreamBranch',
+    IsInSubmodule: 'IsInSubmodule'
 };
 function getGitErrorCode(stderr) {
     if (/Another git process seems to be running in this repository|If no other git process is currently running/.test(stderr)) {
@@ -413,6 +416,52 @@ class GitStatusParser {
     }
 }
 exports.GitStatusParser = GitStatusParser;
+function parseGitmodules(raw) {
+    const regex = /\r?\n/g;
+    let position = 0;
+    let match = null;
+    const result = [];
+    let submodule = {};
+    function parseLine(line) {
+        const sectionMatch = /^\s*\[submodule "([^"]+)"\]\s*$/.exec(line);
+        if (sectionMatch) {
+            if (submodule.name && submodule.path && submodule.url) {
+                result.push(submodule);
+            }
+            const name = sectionMatch[1];
+            if (name) {
+                submodule = { name };
+                return;
+            }
+        }
+        if (!submodule) {
+            return;
+        }
+        const propertyMatch = /^\s*(\w+) = (.*)$/.exec(line);
+        if (!propertyMatch) {
+            return;
+        }
+        const [, key, value] = propertyMatch;
+        switch (key) {
+            case 'path':
+                submodule.path = value;
+                break;
+            case 'url':
+                submodule.url = value;
+                break;
+        }
+    }
+    while (match = regex.exec(raw)) {
+        parseLine(raw.substring(position, match.index));
+        position = match.index + match[0].length;
+    }
+    parseLine(raw.substring(position));
+    if (submodule.name && submodule.path && submodule.url) {
+        result.push(submodule);
+    }
+    return result;
+}
+exports.parseGitmodules = parseGitmodules;
 class Repository {
     constructor(_git, repositoryRoot) {
         this._git = _git;
@@ -483,7 +532,7 @@ class Repository {
                 const [, mode, object] = match;
                 const catFile = yield this.run(['cat-file', '-s', object]);
                 const size = parseInt(catFile.stdout);
-                return { mode: parseInt(mode), object, size };
+                return { mode, object, size };
             }
             const { stdout } = yield this.run(['ls-tree', '-l', treeish, '--', path]);
             const match = /^(\d+)\s+(\w+)\s+([0-9a-f]{40})\s+(\d+)/.exec(stdout);
@@ -491,7 +540,7 @@ class Repository {
                 throw new GitError({ message: 'Error running ls-tree' });
             }
             const [, mode, , object, size] = match;
-            return { mode: parseInt(mode), object, size: parseInt(size) };
+            return { mode, object, size: parseInt(size) };
         });
     }
     detectObjectType(object) {
@@ -532,6 +581,17 @@ class Repository {
             }
         });
     }
+    diff(path, options = {}) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const args = ['diff'];
+            if (options.cached) {
+                args.push('--cached');
+            }
+            args.push('--', path);
+            const result = yield this.run(args);
+            return result.stdout;
+        });
+    }
     add(paths) {
         return __awaiter(this, void 0, void 0, function* () {
             const args = ['add', '-A', '--'];
@@ -556,7 +616,15 @@ class Repository {
                     exitCode: exitCode
                 });
             }
-            yield this.run(['update-index', '--cacheinfo', '100644', hash, path]);
+            let mode;
+            try {
+                const details = yield this.lstree('HEAD', path);
+                mode = details.mode;
+            }
+            catch (err) {
+                mode = '100644';
+            }
+            yield this.run(['update-index', '--cacheinfo', mode, hash, path]);
         });
     }
     checkout(treeish, paths) {
@@ -800,6 +868,9 @@ class Repository {
                 else if (/Could not read from remote repository/.test(err.stderr || '')) {
                     err.gitErrorCode = exports.GitErrorCodes.RemoteConnectionError;
                 }
+                else if (/^fatal: The current branch .* has no upstream branch/.test(err.stderr || '')) {
+                    err.gitErrorCode = exports.GitErrorCodes.NoUpstreamBranch;
+                }
                 throw err;
             }
         });
@@ -900,7 +971,7 @@ class Repository {
     }
     getRefs() {
         return __awaiter(this, void 0, void 0, function* () {
-            const result = yield this.run(['for-each-ref', '--format', '%(refname) %(objectname)']);
+            const result = yield this.run(['for-each-ref', '--format', '%(refname) %(objectname)', '--sort', '-committerdate']);
             const fn = (line) => {
                 let match;
                 if (match = /^refs\/heads\/([^ ]+) ([0-9a-f]{40})$/.exec(line)) {
@@ -1013,6 +1084,27 @@ class Repository {
             return { hash: match[1], message: match[2] };
         });
     }
+    updateSubmodules(paths) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const args = ['submodule', 'update', '--', ...paths];
+            yield this.run(args);
+        });
+    }
+    getSubmodules() {
+        return __awaiter(this, void 0, void 0, function* () {
+            const gitmodulesPath = path.join(this.root, '.gitmodules');
+            try {
+                const gitmodulesRaw = yield readfile(gitmodulesPath, 'utf8');
+                return parseGitmodules(gitmodulesRaw);
+            }
+            catch (err) {
+                if (/ENOENT/.test(err.message)) {
+                    return [];
+                }
+                throw err;
+            }
+        });
+    }
 }
 exports.Repository = Repository;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/554a9c6dcd8b0636ace6f1c64e13e12adf0fcd1d/extensions\git\out/git.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/1633d0959a33c1ba0169618280a0edb30d1ddcc3/extensions\git\out/git.js.map

@@ -17,7 +17,7 @@ const path = require("path");
 const fs = require("fs");
 const vscode = require("vscode");
 const nls = require("vscode-nls");
-let localize = nls.loadMessageBundle(__filename);
+const localize = nls.loadMessageBundle(__filename);
 let taskProvider;
 function activate(_context) {
     if (!vscode.workspace.workspaceFolders) {
@@ -163,4 +163,4 @@ function createTask(script, cmd, rootPath, folder, matcher) {
     let taskName = getTaskName(script);
     return new vscode.Task(kind, folder, taskName, 'npm', new vscode.ShellExecution(getCommandLine(folder, cmd), { cwd: rootPath }), matcher);
 }
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/554a9c6dcd8b0636ace6f1c64e13e12adf0fcd1d/extensions\npm\out/main.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/1633d0959a33c1ba0169618280a0edb30d1ddcc3/extensions\npm\out/main.js.map

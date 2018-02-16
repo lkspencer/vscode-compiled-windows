@@ -4,12 +4,12 @@
  *--------------------------------------------------------------------------------------------*/
 'use strict';
 Object.defineProperty(exports, "__esModule", { value: true });
+var nls = require("vscode-nls");
+var localize = nls.loadMessageBundle(__filename);
 var vscode = require("vscode");
 var jsonc_parser_1 = require("jsonc-parser");
 var path = require("path");
 var settingsDocumentHelper_1 = require("./settingsDocumentHelper");
-var nls = require("vscode-nls");
-var localize = nls.loadMessageBundle(__filename);
 var decoration = vscode.window.createTextEditorDecorationType({
     color: '#9e9e9e'
 });
@@ -32,9 +32,40 @@ function activate(context) {
         }
     }, null, context.subscriptions));
     updateLaunchJsonDecorations(vscode.window.activeTextEditor);
+    context.subscriptions.push(vscode.workspace.onWillSaveTextDocument(function (e) {
+        if (!e.document.fileName.endsWith('/settings.json')) {
+            return;
+        }
+        autoFixSettingsJSON(e);
+    }));
     var _a;
 }
 exports.activate = activate;
+function autoFixSettingsJSON(willSaveEvent) {
+    var document = willSaveEvent.document;
+    var text = document.getText();
+    var edit = new vscode.WorkspaceEdit();
+    var lastEndOfSomething = -1;
+    jsonc_parser_1.visit(text, {
+        onArrayEnd: function (offset, length) {
+            lastEndOfSomething = offset + length;
+        },
+        onLiteralValue: function (value, offset, length) {
+            lastEndOfSomething = offset + length;
+        },
+        onObjectEnd: function (offset, length) {
+            lastEndOfSomething = offset + length;
+        },
+        onError: function (error, offset, length) {
+            if (error === jsonc_parser_1.ParseErrorCode.CommaExpected && lastEndOfSomething > -1) {
+                var errorPosition = document.positionAt(offset);
+                var fixPosition = document.positionAt(lastEndOfSomething);
+                edit.insert(document.uri, fixPosition, ',');
+            }
+        }
+    });
+    willSaveEvent.waitUntil(vscode.workspace.applyEdit(edit));
+}
 function registerKeybindingsCompletions() {
     var commands = vscode.commands.getCommands(true);
     return vscode.languages.registerCompletionItemProvider({ pattern: '**/keybindings.json' }, {
@@ -52,6 +83,30 @@ function registerSettingsCompletions() {
         provideCompletionItems: function (document, position, token) {
             return new settingsDocumentHelper_1.SettingsDocument(document).provideCompletionItems(position, token);
         }
+    });
+}
+function provideContributedLocalesProposals(range) {
+    var contributedLocales = [];
+    for (var _i = 0, _a = vscode.extensions.all; _i < _a.length; _i++) {
+        var extension = _a[_i];
+        if (extension.packageJSON && extension.packageJSON['contributes'] && extension.packageJSON['contributes']['localizations'] && extension.packageJSON['contributes']['localizations'].length) {
+            var localizations = extension.packageJSON['contributes']['localizations'];
+            for (var _b = 0, localizations_1 = localizations; _b < localizations_1.length; _b++) {
+                var localization = localizations_1[_b];
+                if (contributedLocales.indexOf(localization.languageId) === -1) {
+                    contributedLocales.push(localization.languageId);
+                }
+            }
+        }
+    }
+    return contributedLocales.map(function (locale) {
+        var text = "\"" + locale + "\"";
+        var item = new vscode.CompletionItem(text);
+        item.kind = vscode.CompletionItemKind.Value;
+        item.insertText = text;
+        item.range = range;
+        item.filterText = text;
+        return item;
     });
 }
 function registerExtensionsCompletions() {
@@ -181,4 +236,4 @@ vscode.languages.registerDocumentSymbolProvider({ pattern: '**/launch.json', lan
         return result;
     }
 });
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/554a9c6dcd8b0636ace6f1c64e13e12adf0fcd1d/extensions\configuration-editing\out/extension.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/1633d0959a33c1ba0169618280a0edb30d1ddcc3/extensions\configuration-editing\out/extension.js.map

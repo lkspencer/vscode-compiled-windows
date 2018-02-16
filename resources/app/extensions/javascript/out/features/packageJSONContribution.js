@@ -194,7 +194,7 @@ var PackageJSONContribution = /** @class */ (function () {
         if ((location.matches(['dependencies', '*']) || location.matches(['devDependencies', '*']) || location.matches(['optionalDependencies', '*']) || location.matches(['peerDependencies', '*']))) {
             var currentKey = location.path[location.path.length - 1];
             if (typeof currentKey === 'string') {
-                var queryUrl = 'http://registry.npmjs.org/' + encodeURIComponent(currentKey).replace('%40', '@');
+                var queryUrl = 'https://registry.npmjs.org/' + encodeURIComponent(currentKey).replace('%40', '@');
                 return this.xhr({
                     url: queryUrl,
                     agent: USER_AGENT
@@ -250,7 +250,7 @@ var PackageJSONContribution = /** @class */ (function () {
         return null;
     };
     PackageJSONContribution.prototype.getInfo = function (pack) {
-        var queryUrl = 'http://registry.npmjs.org/' + encodeURIComponent(pack).replace('%40', '@');
+        var queryUrl = 'https://registry.npmjs.org/' + encodeURIComponent(pack).replace('%40', '@');
         return this.xhr({
             url: queryUrl,
             agent: USER_AGENT
@@ -294,4 +294,4 @@ var PackageJSONContribution = /** @class */ (function () {
     return PackageJSONContribution;
 }());
 exports.PackageJSONContribution = PackageJSONContribution;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/554a9c6dcd8b0636ace6f1c64e13e12adf0fcd1d/extensions\javascript\out/features\packageJSONContribution.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/1633d0959a33c1ba0169618280a0edb30d1ddcc3/extensions\javascript\out/features\packageJSONContribution.js.map

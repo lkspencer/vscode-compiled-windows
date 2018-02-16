@@ -10,19 +10,24 @@
 	"win32NameVersion": "Microsoft Code OSS",
 	"win32RegValueName": "CodeOSS",
 	"win32AppId": "{{E34003BB-9E10-4501-8C11-BE3FAA83F23F}",
+	"win32x64AppId": "{{D77B7E06-80BA-4137-BCF4-654B95CCEBC5}",
 	"win32AppUserModelId": "Microsoft.CodeOSS",
 	"win32ShellNameShort": "C&ode - OSS",
 	"darwinBundleIdentifier": "com.visualstudio.code.oss",
 	"reportIssueUrl": "https://github.com/Microsoft/vscode/issues/new",
 	"urlProtocol": "code-oss",
-	"commit": "554a9c6dcd8b0636ace6f1c64e13e12adf0fcd1d",
-	"date": "2018-01-24T19:47:25.171Z",
+	"extensionAllowedProposedApi": [
+		"ms-vscode.node-debug",
+		"ms-vscode.node-debug2"
+	],
+	"commit": "1633d0959a33c1ba0169618280a0edb30d1ddcc3",
+	"date": "2018-02-16T14:46:56.455Z",
 	"checksums": {
-		"vs/workbench/workbench.main.js": "ZuSTSOfadKHaCrkCtQy3VA",
-		"vs/workbench/workbench.main.css": "fCw3UUJqp00JstITURYxFQ",
-		"vs/workbench/electron-browser/bootstrap/index.html": "/Tgz9oebstmTGvDlTpbgpg",
-		"vs/workbench/electron-browser/bootstrap/index.js": "DLY5lKDSfXOBZuHvMzQMzg",
-		"vs/workbench/electron-browser/bootstrap/preload.js": "0YfFX3yf4b8pgiUTW5ZV/Q"
+		"vs/workbench/workbench.main.js": "4zL8j8T2EiACBVMF9i9l0g",
+		"vs/workbench/workbench.main.css": "FD5XqoZzN03yvicCNcNM1g",
+		"vs/workbench/electron-browser/bootstrap/index.html": "M9OnViac9eah2jD0a+lT7Q",
+		"vs/workbench/electron-browser/bootstrap/index.js": "GJJJbgqGKmQkIvIbbZxtZA",
+		"vs/workbench/electron-browser/bootstrap/preload.js": "dwID/TZB+21KuyTDb9gnKg"
 	},
-	"settingsSearchBuildId": 119030009
+	"settingsSearchBuildId": 121000418
 }

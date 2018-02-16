@@ -13,7 +13,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const nls = require("vscode-nls");
-const localize = nls.config(process.env.VSCODE_NLS_CONFIG)(__filename);
+const localize = nls.loadMessageBundle(__filename);
 const vscode_1 = require("vscode");
 const git_1 = require("./git");
 const model_1 = require("./model");
@@ -24,11 +24,9 @@ const askpass_1 = require("./askpass");
 const util_1 = require("./util");
 const vscode_extension_telemetry_1 = require("vscode-extension-telemetry");
 const api_1 = require("./api");
+let telemetryReporter;
 function init(context, outputChannel, disposables) {
     return __awaiter(this, void 0, void 0, function* () {
-        const { name, version, aiKey } = require(context.asAbsolutePath('./package.json'));
-        const telemetryReporter = new vscode_extension_telemetry_1.default(name, version, aiKey);
-        disposables.push(telemetryReporter);
         const pathHint = vscode_1.workspace.getConfiguration('git').get('path');
         const info = yield git_1.findGit(pathHint, path => outputChannel.appendLine(localize(0, null, path)));
         const askpass = new askpass_1.Askpass();
@@ -82,10 +80,24 @@ function _activate(context, disposables) {
     });
 }
 function activate(context) {
+    const config = vscode_1.workspace.getConfiguration('git', null);
+    const enabled = config.get('enabled');
     const disposables = [];
     context.subscriptions.push(new vscode_1.Disposable(() => vscode_1.Disposable.from(...disposables).dispose()));
-    const activatePromise = _activate(context, disposables);
-    const modelPromise = activatePromise.then(model => model || Promise.reject('Git model not found'));
+    const { name, version, aiKey } = require(context.asAbsolutePath('./package.json'));
+    telemetryReporter = new vscode_extension_telemetry_1.default(name, version, aiKey);
+    let activatePromise;
+    if (enabled) {
+        activatePromise = _activate(context, disposables);
+    }
+    else {
+        const onConfigChange = util_1.filterEvent(vscode_1.workspace.onDidChangeConfiguration, e => e.affectsConfiguration('git'));
+        const onEnabled = util_1.filterEvent(onConfigChange, () => vscode_1.workspace.getConfiguration('git', null).get('enabled') === true);
+        activatePromise = util_1.eventToPromise(onEnabled)
+            .then(() => _activate(context, disposables));
+    }
+    const modelPromise = activatePromise
+        .then(model => model || Promise.reject('Git model not found'));
     activatePromise.catch(err => console.error(err));
     return api_1.createApi(modelPromise);
 }
@@ -110,5 +122,9 @@ function checkGitVersion(info) {
             yield config.update('ignoreLegacyWarning', true, true);
         }
     });
-}
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/554a9c6dcd8b0636ace6f1c64e13e12adf0fcd1d/extensions\git\out/main.js.map
+}
+function deactivate() {
+    return telemetryReporter ? telemetryReporter.dispose() : Promise.resolve(null);
+}
+exports.deactivate = deactivate;
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/1633d0959a33c1ba0169618280a0edb30d1ddcc3/extensions\git\out/main.js.map

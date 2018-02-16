@@ -15,7 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const vscode = require("vscode");
 const vscode_nls_1 = require("vscode-nls");
 const localize = vscode_nls_1.loadMessageBundle(__filename);
-class MergeDectorator {
+class MergeDecorator {
     constructor(context, trackerService) {
         this.context = context;
         this.decorations = {};
@@ -208,5 +208,5 @@ class MergeDectorator {
         });
     }
 }
-exports.default = MergeDectorator;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/554a9c6dcd8b0636ace6f1c64e13e12adf0fcd1d/extensions\merge-conflict\out/mergeDecorator.js.map
+exports.default = MergeDecorator;
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/1633d0959a33c1ba0169618280a0edb30d1ddcc3/extensions\merge-conflict\out/mergeDecorator.js.map

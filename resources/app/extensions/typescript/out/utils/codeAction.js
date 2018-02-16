@@ -5,18 +5,11 @@
  *--------------------------------------------------------------------------------------------*/
 Object.defineProperty(exports, "__esModule", { value: true });
 const vscode_1 = require("vscode");
-const convert_1 = require("./convert");
+const workspaceEdit_1 = require("./workspaceEdit");
 function getEditForCodeAction(client, action) {
-    if (action.changes && action.changes.length) {
-        const workspaceEdit = new vscode_1.WorkspaceEdit();
-        for (const change of action.changes) {
-            for (const textChange of change.textChanges) {
-                workspaceEdit.replace(client.asUrl(change.fileName), convert_1.tsTextSpanToVsRange(textChange), textChange.newText);
-            }
-        }
-        return workspaceEdit;
-    }
-    return undefined;
+    return action.changes && action.changes.length
+        ? workspaceEdit_1.createWorkspaceEditFromFileCodeEdits(client, action.changes)
+        : undefined;
 }
 exports.getEditForCodeAction = getEditForCodeAction;
 async function applyCodeAction(client, action) {
@@ -41,4 +34,4 @@ async function applyCodeActionCommands(client, action) {
     return true;
 }
 exports.applyCodeActionCommands = applyCodeActionCommands;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/554a9c6dcd8b0636ace6f1c64e13e12adf0fcd1d/extensions\typescript\out/utils\codeAction.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/1633d0959a33c1ba0169618280a0edb30d1ddcc3/extensions\typescript\out/utils\codeAction.js.map

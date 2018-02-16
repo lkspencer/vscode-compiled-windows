@@ -41,12 +41,12 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var fs = require("fs");
 var path = require("path");
-var jsonc_parser_1 = require("jsonc-parser");
 var nls = require("vscode-nls");
+var localize = nls.loadMessageBundle(__filename);
+var jsonc_parser_1 = require("jsonc-parser");
 var vscode_1 = require("vscode");
 var product = require('../../../product.json');
 var allowedBadgeProviders = (product.extensionAllowedBadgeProviders || []).map(function (s) { return s.toLowerCase(); });
-var localize = nls.loadMessageBundle(__filename);
 var httpsRequired = localize(0, null);
 var svgsNotValid = localize(1, null);
 var embeddedSvgsNotValid = localize(2, null);
@@ -433,4 +433,4 @@ function parseUri(src) {
         }
     }
 }
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/554a9c6dcd8b0636ace6f1c64e13e12adf0fcd1d/extensions\extension-editing\out/extensionLinter.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/1633d0959a33c1ba0169618280a0edb30d1ddcc3/extensions\extension-editing\out/extensionLinter.js.map

@@ -6,6 +6,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const vscode_1 = require("vscode");
 const convert_1 = require("../utils/convert");
+const stringDelimiters = ['"', '\'', '`'];
 class TypeScriptDocumentHighlightProvider {
     constructor(client) {
         this.client = client;
@@ -26,7 +27,6 @@ class TypeScriptDocumentHighlightProvider {
                 if (this.client.apiVersion.has213Features() && firstOccurrence.start.offset > 1) {
                     // Check to see if contents around first occurrence are string delimiters
                     const contents = resource.getText(new vscode_1.Range(firstOccurrence.start.line - 1, firstOccurrence.start.offset - 1 - 1, firstOccurrence.end.line - 1, firstOccurrence.end.offset - 1 + 1));
-                    const stringDelimiters = ['"', '\'', '`'];
                     if (contents && contents.length > 2 && stringDelimiters.indexOf(contents[0]) >= 0 && contents[0] === contents[contents.length - 1]) {
                         return [];
                     }
@@ -41,4 +41,4 @@ class TypeScriptDocumentHighlightProvider {
     }
 }
 exports.default = TypeScriptDocumentHighlightProvider;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/554a9c6dcd8b0636ace6f1c64e13e12adf0fcd1d/extensions\typescript\out/features\documentHighlightProvider.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/1633d0959a33c1ba0169618280a0edb30d1ddcc3/extensions\typescript\out/features\documentHighlightProvider.js.map

@@ -107,7 +107,6 @@ class Resource {
             case Status.DELETED_BY_US: return Resource.Icons[theme].Conflict;
             case Status.BOTH_ADDED: return Resource.Icons[theme].Conflict;
             case Status.BOTH_MODIFIED: return Resource.Icons[theme].Conflict;
-            default: return void 0;
         }
     }
     get tooltip() {
@@ -184,8 +183,6 @@ class Resource {
             case Status.BOTH_ADDED:
             case Status.BOTH_MODIFIED:
                 return 'C';
-            default:
-                return undefined;
         }
     }
     get color() {
@@ -211,8 +208,6 @@ class Resource {
             case Status.BOTH_ADDED:
             case Status.BOTH_MODIFIED:
                 return new vscode_1.ThemeColor('gitDecoration.conflictingResourceForeground');
-            default:
-                return undefined;
         }
     }
     get priority() {
@@ -278,6 +273,7 @@ exports.Resource = Resource;
 var Operation;
 (function (Operation) {
     Operation["Status"] = "Status";
+    Operation["Diff"] = "Diff";
     Operation["Add"] = "Add";
     Operation["RevertFiles"] = "RevertFiles";
     Operation["Commit"] = "Commit";
@@ -300,6 +296,7 @@ var Operation;
     Operation["Stash"] = "Stash";
     Operation["CheckIgnore"] = "CheckIgnore";
     Operation["LSTree"] = "LSTree";
+    Operation["SubmoduleUpdate"] = "SubmoduleUpdate";
 })(Operation = exports.Operation || (exports.Operation = {}));
 function isReadOnly(operation) {
     switch (operation) {
@@ -351,6 +348,33 @@ class OperationsImpl {
         }
         return true;
     }
+    shouldShowProgress() {
+        const operations = this.operations.keys();
+        for (const operation of operations) {
+            if (shouldShowProgress(operation)) {
+                return true;
+            }
+        }
+        return false;
+    }
+}
+class ProgressManager {
+    constructor(repository) {
+        this.repository = repository;
+        this.disposable = util_1.EmptyDisposable;
+        const start = util_1.onceEvent(util_1.filterEvent(repository.onDidChangeOperations, () => repository.operations.shouldShowProgress()));
+        const end = util_1.onceEvent(util_1.filterEvent(util_1.debounceEvent(repository.onDidChangeOperations, 300), () => !repository.operations.shouldShowProgress()));
+        const setup = () => {
+            this.disposable = start(() => {
+                const promise = util_1.eventToPromise(end).then(() => setup());
+                vscode_1.window.withProgress({ location: vscode_1.ProgressLocation.SourceControl }, () => promise);
+            });
+        };
+        setup();
+    }
+    dispose() {
+        this.disposable.dispose();
+    }
 }
 class Repository {
     constructor(repository, globalState) {
@@ -369,6 +393,7 @@ class Repository {
         this.onDidRunOperation = this._onDidRunOperation.event;
         this._refs = [];
         this._remotes = [];
+        this._submodules = [];
         this._operations = new OperationsImpl();
         this._state = RepositoryState.Idle;
         this.isRepositoryHuge = false;
@@ -386,6 +411,7 @@ class Repository {
         this._sourceControl.inputBox.placeholder = localize(17, null);
         this._sourceControl.acceptInputCommand = { command: 'git.commitWithInput', title: localize(18, null), arguments: [this._sourceControl] };
         this._sourceControl.quickDiffProvider = this;
+        this._sourceControl.inputBox.validateInput = this.validateInput.bind(this);
         this.disposables.push(this._sourceControl);
         this._mergeGroup = this._sourceControl.createResourceGroup('merge', localize(19, null));
         this._indexGroup = this._sourceControl.createResourceGroup('index', localize(20, null));
@@ -400,6 +426,8 @@ class Repository {
         this.disposables.push(statusBar);
         statusBar.onDidChange(() => this._sourceControl.statusBarCommands = statusBar.commands, null, this.disposables);
         this._sourceControl.statusBarCommands = statusBar.commands;
+        const progressManager = new ProgressManager(this);
+        this.disposables.push(progressManager);
         this.updateCommitTemplate();
         this.status();
     }
@@ -420,6 +448,9 @@ class Repository {
     get remotes() {
         return this._remotes;
     }
+    get submodules() {
+        return this._submodules;
+    }
     get operations() { return this._operations; }
     get state() { return this._state; }
     set state(state) {
@@ -436,11 +467,41 @@ class Repository {
     get root() {
         return this.repository.root;
     }
+    validateInput(text, position) {
+        const config = vscode_1.workspace.getConfiguration('git');
+        const setting = config.get('inputValidation');
+        if (setting === 'off') {
+            return;
+        }
+        let start = 0, end;
+        let match;
+        const regex = /\r?\n/g;
+        while ((match = regex.exec(text)) && position > match.index) {
+            start = match.index + match[0].length;
+        }
+        end = match ? match.index : text.length;
+        const line = text.substring(start, end);
+        if (line.length <= Repository.InputValidationLength) {
+            if (setting !== 'always') {
+                return;
+            }
+            return {
+                message: localize(22, null, Repository.InputValidationLength - line.length),
+                type: vscode_1.SourceControlInputBoxValidationType.Information
+            };
+        }
+        else {
+            return {
+                message: localize(23, null, line.length - Repository.InputValidationLength, Repository.InputValidationLength),
+                type: vscode_1.SourceControlInputBoxValidationType.Warning
+            };
+        }
+    }
     provideOriginalResource(uri) {
         if (uri.scheme !== 'file') {
             return;
         }
-        return uri_1.toGitUri(uri, '', true);
+        return uri_1.toGitUri(uri, '', { replaceFileExtension: true });
     }
     updateCommitTemplate() {
         return __awaiter(this, void 0, void 0, function* () {
@@ -452,18 +513,13 @@ class Repository {
             }
         });
     }
-    // @throttle
-    // async init(): Promise<void> {
-    // 	if (this.state !== State.NotAGitRepository) {
-    // 		return;
-    // 	}
-    // 	await this.git.init(this.workspaceRoot.fsPath);
-    // 	await this.status();
-    // }
     status() {
         return __awaiter(this, void 0, void 0, function* () {
             yield this.run(Operation.Status);
         });
+    }
+    diff(path, options = {}) {
+        return this.run(Operation.Diff, () => this.repository.diff(path, options));
     }
     add(resources) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -497,7 +553,15 @@ class Repository {
             yield this.run(Operation.Clean, () => __awaiter(this, void 0, void 0, function* () {
                 const toClean = [];
                 const toCheckout = [];
+                const submodulesToUpdate = [];
                 resources.forEach(r => {
+                    const fsPath = r.fsPath;
+                    for (const submodule of this.submodules) {
+                        if (path.join(this.root, submodule.path) === fsPath) {
+                            submodulesToUpdate.push(fsPath);
+                            return;
+                        }
+                    }
                     const raw = r.toString();
                     const scmResource = util_1.find(this.workingTreeGroup.resourceStates, sr => sr.resourceUri.toString() === raw);
                     if (!scmResource) {
@@ -506,10 +570,10 @@ class Repository {
                     switch (scmResource.type) {
                         case Status.UNTRACKED:
                         case Status.IGNORED:
-                            toClean.push(r.fsPath);
+                            toClean.push(fsPath);
                             break;
                         default:
-                            toCheckout.push(r.fsPath);
+                            toCheckout.push(fsPath);
                             break;
                     }
                 });
@@ -519,6 +583,9 @@ class Repository {
                 }
                 if (toCheckout.length > 0) {
                     promises.push(this.repository.checkout('', toCheckout));
+                }
+                if (submodulesToUpdate.length > 0) {
+                    promises.push(this.repository.updateSubmodules(submodulesToUpdate));
                 }
                 yield Promise.all(promises);
             }));
@@ -707,7 +774,12 @@ class Repository {
                         resolve(new Set(data.split('\0')));
                     }
                     else {
-                        reject(new git_1.GitError({ stdout: data, stderr, exitCode }));
+                        if (/ is in submodule /.test(stderr)) {
+                            reject(new git_1.GitError({ stdout: data, stderr, exitCode, gitErrorCode: git_1.GitErrorCodes.IsInSubmodule }));
+                        }
+                        else {
+                            reject(new git_1.GitError({ stdout: data, stderr, exitCode }));
+                        }
                     }
                 };
                 let data = '';
@@ -729,32 +801,27 @@ class Repository {
             if (this.state !== RepositoryState.Idle) {
                 throw new Error('Repository not initialized');
             }
-            const run = () => __awaiter(this, void 0, void 0, function* () {
-                let error = null;
-                this._operations.start(operation);
-                this._onRunOperation.fire(operation);
-                try {
-                    const result = yield this.retryRun(runOperation);
-                    if (!isReadOnly(operation)) {
-                        yield this.updateModelState();
-                    }
-                    return result;
+            let error = null;
+            this._operations.start(operation);
+            this._onRunOperation.fire(operation);
+            try {
+                const result = yield this.retryRun(runOperation);
+                if (!isReadOnly(operation)) {
+                    yield this.updateModelState();
                 }
-                catch (err) {
-                    error = err;
-                    if (err.gitErrorCode === git_1.GitErrorCodes.NotAGitRepository) {
-                        this.state = RepositoryState.Disposed;
-                    }
-                    throw err;
+                return result;
+            }
+            catch (err) {
+                error = err;
+                if (err.gitErrorCode === git_1.GitErrorCodes.NotAGitRepository) {
+                    this.state = RepositoryState.Disposed;
                 }
-                finally {
-                    this._operations.end(operation);
-                    this._onDidRunOperation.fire({ operation, error });
-                }
-            });
-            return shouldShowProgress(operation)
-                ? vscode_1.window.withProgress({ location: vscode_1.ProgressLocation.SourceControl }, run)
-                : run();
+                throw err;
+            }
+            finally {
+                this._operations.end(operation);
+                this._onDidRunOperation.fire({ operation, error });
+            }
         });
     }
     retryRun(runOperation = () => Promise.resolve(null)) {
@@ -785,9 +852,9 @@ class Repository {
             const useIcons = !config.get('decorations.enabled', true);
             this.isRepositoryHuge = didHitLimit;
             if (didHitLimit && !shouldIgnore && !this.didWarnAboutLimit) {
-                const ok = { title: localize(22, null), isCloseAffordance: true };
-                const neverAgain = { title: localize(23, null) };
-                vscode_1.window.showWarningMessage(localize(24, null, this.repository.root), ok, neverAgain).then(result => {
+                const ok = { title: localize(24, null), isCloseAffordance: true };
+                const neverAgain = { title: localize(25, null) };
+                vscode_1.window.showWarningMessage(localize(26, null, this.repository.root), ok, neverAgain).then(result => {
                     if (result === neverAgain) {
                         config.update('ignoreLimitWarning', true, false);
                     }
@@ -809,10 +876,11 @@ class Repository {
             catch (err) {
                 // noop
             }
-            const [refs, remotes] = yield Promise.all([this.repository.getRefs(), this.repository.getRemotes()]);
+            const [refs, remotes, submodules] = yield Promise.all([this.repository.getRefs(), this.repository.getRemotes(), this.repository.getSubmodules()]);
             this._HEAD = HEAD;
             this._refs = refs;
             this._remotes = remotes;
+            this._submodules = submodules;
             const index = [];
             const workingTree = [];
             const merge = [];
@@ -874,16 +942,9 @@ class Repository {
                     break;
             }
             this._sourceControl.count = count;
-            // set context key
-            let stateContextKey = '';
-            switch (this.state) {
-                case RepositoryState.Idle:
-                    stateContextKey = 'idle';
-                    break;
-                case RepositoryState.Disposed:
-                    stateContextKey = 'norepo';
-                    break;
-            }
+            // Disable `Discard All Changes` for "fresh" repositories
+            // https://github.com/Microsoft/vscode/issues/43066
+            vscode_1.commands.executeCommand('setContext', 'gitFreshRepository', !this._HEAD || !this._HEAD.commit);
             this._onDidChangeStatus.fire();
         });
     }
@@ -954,6 +1015,7 @@ class Repository {
         this.disposables = util_1.dispose(this.disposables);
     }
 }
+Repository.InputValidationLength = 72;
 __decorate([
     decorators_1.memoize
 ], Repository.prototype, "onDidChangeOperations", null);
@@ -988,4 +1050,4 @@ __decorate([
     decorators_1.throttle
 ], Repository.prototype, "updateWhenIdleAndWait", null);
 exports.Repository = Repository;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/554a9c6dcd8b0636ace6f1c64e13e12adf0fcd1d/extensions\git\out/repository.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/1633d0959a33c1ba0169618280a0edb30d1ddcc3/extensions\git\out/repository.js.map

@@ -6,12 +6,9 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const vscode = require("vscode");
 const path = require("path");
-const resolveExtensionResources = (extension, stylePath) => {
-    const resource = vscode.Uri.parse(stylePath);
-    if (resource.scheme) {
-        return resource;
-    }
-    return vscode.Uri.file(path.join(extension.extensionPath, stylePath));
+const resolveExtensionResources = (extension, resourcePath) => {
+    return vscode.Uri.parse(path.join(extension.extensionPath, resourcePath))
+        .with({ scheme: 'vscode-extension-resource' });
 };
 function loadMarkdownExtensions(contentProvider, engine) {
     for (const extension of vscode.extensions.all) {
@@ -60,4 +57,4 @@ function tryLoadPreviewStyles(contributes, contentProvider, extension) {
         }
     }
 }
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/554a9c6dcd8b0636ace6f1c64e13e12adf0fcd1d/extensions\markdown\out/markdownExtensions.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/1633d0959a33c1ba0169618280a0edb30d1ddcc3/extensions\markdown\out/markdownExtensions.js.map

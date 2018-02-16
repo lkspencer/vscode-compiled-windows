@@ -36,10 +36,7 @@ class SyncedBuffer {
             }
         }
         if (this.client.apiVersion.has230Features()) {
-            const root = this.client.getWorkspaceRootForResource(this.document.uri);
-            if (root) {
-                args.projectRootPath = root;
-            }
+            args.projectRootPath = this.client.getWorkspaceRootForResource(this.document.uri);
         }
         if (this.client.apiVersion.has240Features()) {
             const tsPluginsForDocument = this.client.plugins
@@ -214,4 +211,4 @@ class BufferSyncSupport {
     }
 }
 exports.default = BufferSyncSupport;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/554a9c6dcd8b0636ace6f1c64e13e12adf0fcd1d/extensions\typescript\out/features\bufferSyncSupport.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/1633d0959a33c1ba0169618280a0edb30d1ddcc3/extensions\typescript\out/features\bufferSyncSupport.js.map

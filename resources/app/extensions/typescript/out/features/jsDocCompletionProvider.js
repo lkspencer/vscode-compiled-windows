@@ -138,7 +138,7 @@ class TryCompleteJsDocCommand {
         template = template.replace(/\* @param([ ]\{\S+\})?\s+(\S+)\s*$/gm, (_param, type, post) => {
             let out = '* @param ';
             if (type === ' {any}' || type === ' {*}') {
-                out += `{*\$\{${snippetIndex++}\}} `;
+                out += `{\$\{${snippetIndex++}:*\}} `;
             }
             else if (type) {
                 out += type + ' ';
@@ -157,4 +157,4 @@ class TryCompleteJsDocCommand {
     }
 }
 TryCompleteJsDocCommand.COMMAND_NAME = '_typeScript.tryCompleteJsDoc';
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/554a9c6dcd8b0636ace6f1c64e13e12adf0fcd1d/extensions\typescript\out/features\jsDocCompletionProvider.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/1633d0959a33c1ba0169618280a0edb30d1ddcc3/extensions\typescript\out/features\jsDocCompletionProvider.js.map

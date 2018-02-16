@@ -5,8 +5,6 @@
 'use strict';
 Object.defineProperty(exports, "__esModule", { value: true });
 var vscode = require("vscode");
-var nls = require("vscode-nls");
-nls.config({ locale: vscode.env.language });
 var completionItemProvider_1 = require("./features/completionItemProvider");
 var hoverProvider_1 = require("./features/hoverProvider");
 var signatureHelpProvider_1 = require("./features/signatureHelpProvider");
@@ -52,4 +50,4 @@ function activate(context) {
     });
 }
 exports.activate = activate;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/554a9c6dcd8b0636ace6f1c64e13e12adf0fcd1d/extensions\php\out/phpMain.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/1633d0959a33c1ba0169618280a0edb30d1ddcc3/extensions\php\out/phpMain.js.map

@@ -1,8 +1,8 @@
+"use strict";
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-'use strict';
 Object.defineProperty(exports, "__esModule", { value: true });
 const vscode = require("vscode");
 const previewContentProvider_1 = require("./features/previewContentProvider");
@@ -62,9 +62,9 @@ class ExtensionContentSecurityPolicyArbiter {
 }
 exports.ExtensionContentSecurityPolicyArbiter = ExtensionContentSecurityPolicyArbiter;
 class PreviewSecuritySelector {
-    constructor(cspArbiter, contentProvider) {
+    constructor(cspArbiter, webviewManager) {
         this.cspArbiter = cspArbiter;
-        this.contentProvider = contentProvider;
+        this.webviewManager = webviewManager;
     }
     async showSecutitySelectorForResource(resource) {
         function markActiveWhen(when) {
@@ -108,16 +108,12 @@ class PreviewSecuritySelector {
         const sourceUri = previewContentProvider_1.getMarkdownUri(resource);
         if (selection.type === 'toggle') {
             this.cspArbiter.setShouldDisableSecurityWarning(!this.cspArbiter.shouldDisableSecurityWarnings());
-            this.contentProvider.update(sourceUri);
+            this.webviewManager.update(sourceUri);
             return;
         }
         await this.cspArbiter.setSecurityLevelForResource(resource, selection.type);
-        await vscode.commands.executeCommand('_workbench.htmlPreview.updateOptions', sourceUri, {
-            allowScripts: true,
-            allowSvgs: this.cspArbiter.shouldAllowSvgsForResource(resource)
-        });
-        this.contentProvider.update(sourceUri);
+        this.webviewManager.update(sourceUri);
     }
 }
 exports.PreviewSecuritySelector = PreviewSecuritySelector;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/554a9c6dcd8b0636ace6f1c64e13e12adf0fcd1d/extensions\markdown\out/security.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/1633d0959a33c1ba0169618280a0edb30d1ddcc3/extensions\markdown\out/security.js.map

@@ -49,23 +49,26 @@ var SettingsDocument = /** @class */ (function () {
     };
     SettingsDocument.prototype.provideFilesAssociationsCompletionItems = function (location, range) {
         var completions = [];
-        // Key
-        if (location.path.length === 1) {
-            completions.push(this.newSnippetCompletionItem({
-                label: localize(10, null),
-                documentation: localize(11, null),
-                snippet: location.isAtPropertyKey ? '"*.${1:extension}": "${2:language}"' : '{ "*.${1:extension}": "${2:language}" }',
-                range: range
-            }));
-            completions.push(this.newSnippetCompletionItem({
-                label: localize(12, null),
-                documentation: localize(13, null),
-                snippet: location.isAtPropertyKey ? '"/${1:path to file}/*.${2:extension}": "${3:language}"' : '{ "/${1:path to file}/*.${2:extension}": "${3:language}" }',
-                range: range
-            }));
-        }
-        else if (location.path.length === 2 && !location.isAtPropertyKey) {
-            return this.provideLanguageCompletionItems(location, range);
+        if (location.path.length === 2) {
+            // Key
+            if (!location.isAtPropertyKey || location.path[1] === '') {
+                completions.push(this.newSnippetCompletionItem({
+                    label: localize(10, null),
+                    documentation: localize(11, null),
+                    snippet: location.isAtPropertyKey ? '"*.${1:extension}": "${2:language}"' : '{ "*.${1:extension}": "${2:language}" }',
+                    range: range
+                }));
+                completions.push(this.newSnippetCompletionItem({
+                    label: localize(12, null),
+                    documentation: localize(13, null),
+                    snippet: location.isAtPropertyKey ? '"/${1:path to file}/*.${2:extension}": "${3:language}"' : '{ "/${1:path to file}/*.${2:extension}": "${3:language}" }',
+                    range: range
+                }));
+            }
+            else {
+                // Value
+                return this.provideLanguageCompletionItems(location, range);
+            }
         }
         return Promise.resolve(completions);
     };
@@ -192,4 +195,4 @@ var SettingsDocument = /** @class */ (function () {
     return SettingsDocument;
 }());
 exports.SettingsDocument = SettingsDocument;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/554a9c6dcd8b0636ace6f1c64e13e12adf0fcd1d/extensions\configuration-editing\out/settingsDocumentHelper.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/1633d0959a33c1ba0169618280a0edb30d1ddcc3/extensions\configuration-editing\out/settingsDocumentHelper.js.map

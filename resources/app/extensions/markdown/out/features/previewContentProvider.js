@@ -1,8 +1,8 @@
+"use strict";
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-'use strict';
 Object.defineProperty(exports, "__esModule", { value: true });
 const vscode = require("vscode");
 const path = require("path");
@@ -16,15 +16,15 @@ const previewStrings = {
 };
 function isMarkdownFile(document) {
     return document.languageId === 'markdown'
-        && document.uri.scheme !== 'markdown'; // prevent processing of own documents
+        && document.uri.scheme !== MarkdownContentProvider.scheme; // prevent processing of own documents
 }
 exports.isMarkdownFile = isMarkdownFile;
 function getMarkdownUri(uri) {
-    if (uri.scheme === 'markdown') {
+    if (uri.scheme === MarkdownContentProvider.scheme) {
         return uri;
     }
     return uri.with({
-        scheme: 'markdown',
+        scheme: MarkdownContentProvider.scheme,
         path: uri.path + '.rendered',
         query: uri.toString()
     });
@@ -74,6 +74,7 @@ class MarkdownPreviewConfig {
         return true;
     }
 }
+exports.MarkdownPreviewConfig = MarkdownPreviewConfig;
 class PreviewConfigManager {
     constructor() {
         this.previewConfigurationsForWorkspaces = new Map();
@@ -97,15 +98,13 @@ class PreviewConfigManager {
         return folder.uri.toString();
     }
 }
-class MDDocumentContentProvider {
+exports.PreviewConfigManager = PreviewConfigManager;
+class MarkdownContentProvider {
     constructor(engine, context, cspArbiter, logger) {
         this.engine = engine;
         this.context = context;
         this.cspArbiter = cspArbiter;
         this.logger = logger;
-        this._onDidChange = new vscode.EventEmitter();
-        this._waiting = false;
-        this.previewConfigurations = new PreviewConfigManager();
         this.extraStyles = [];
         this.extraScripts = [];
     }
@@ -116,7 +115,9 @@ class MDDocumentContentProvider {
         this.extraStyles.push(resource);
     }
     getMediaPath(mediaFile) {
-        return vscode.Uri.file(this.context.asAbsolutePath(path.join('media', mediaFile))).toString();
+        return vscode.Uri.file(this.context.asAbsolutePath(path.join('media', mediaFile)))
+            .with({ scheme: 'vscode-extension-resource' })
+            .toString();
     }
     fixHref(resource, href) {
         if (!href) {
@@ -124,20 +125,26 @@ class MDDocumentContentProvider {
         }
         // Use href if it is already an URL
         const hrefUri = vscode.Uri.parse(href);
-        if (['file', 'http', 'https'].indexOf(hrefUri.scheme) >= 0) {
+        if (['http', 'https'].indexOf(hrefUri.scheme) >= 0) {
             return hrefUri.toString();
         }
         // Use href as file URI if it is absolute
-        if (path.isAbsolute(href)) {
-            return vscode.Uri.file(href).toString();
+        if (path.isAbsolute(href) || hrefUri.scheme === 'file') {
+            return vscode.Uri.file(href)
+                .with({ scheme: 'vscode-workspace-resource' })
+                .toString();
         }
         // use a workspace relative path if there is a workspace
         let root = vscode.workspace.getWorkspaceFolder(resource);
         if (root) {
-            return vscode.Uri.file(path.join(root.uri.fsPath, href)).toString();
+            return vscode.Uri.file(path.join(root.uri.fsPath, href))
+                .with({ scheme: 'vscode-workspace-resource' })
+                .toString();
         }
         // otherwise look relative to the markdown file
-        return vscode.Uri.file(path.join(path.dirname(resource.fsPath), href)).toString();
+        return vscode.Uri.file(path.join(path.dirname(resource.fsPath), href))
+            .with({ scheme: 'vscode-workspace-resource' })
+            .toString();
     }
     computeCustomStyleSheetIncludes(resource, config) {
         if (config.styles && Array.isArray(config.styles)) {
@@ -171,17 +178,16 @@ class MDDocumentContentProvider {
             .map(source => `<script async src="${source}" nonce="${nonce}" charset="UTF-8"></script>`)
             .join('\n');
     }
-    async provideTextDocumentContent(uri) {
-        const sourceUri = vscode.Uri.parse(uri.query);
+    async provideTextDocumentContent(sourceUri, previewConfigurations) {
         let initialLine = undefined;
         const editor = vscode.window.activeTextEditor;
         if (editor && editor.document.uri.toString() === sourceUri.toString()) {
             initialLine = editor.selection.active.line;
         }
         const document = await vscode.workspace.openTextDocument(sourceUri);
-        const config = this.previewConfigurations.loadAndCacheConfiguration(sourceUri);
+        const config = previewConfigurations.loadAndCacheConfiguration(sourceUri);
         const initialData = {
-            previewUri: uri.toString(),
+            previewUri: sourceUri.toString(),
             source: sourceUri.toString(),
             line: initialLine,
             scrollPreviewWithEditorSelection: config.scrollPreviewWithEditorSelection,
@@ -203,7 +209,7 @@ class MDDocumentContentProvider {
 				<script src="${this.getMediaPath('csp.js')}" nonce="${nonce}"></script>
 				<script src="${this.getMediaPath('loading.js')}" nonce="${nonce}"></script>
 				${this.getStyles(sourceUri, nonce, config)}
-				<base href="${document.uri.toString(true)}">
+				<base href="${document.uri.with({ scheme: 'vscode-workspace-resource' }).toString(true)}">
 			</head>
 			<body class="vscode-body ${config.scrollBeyondLastLine ? 'scrollBeyondLastLine' : ''} ${config.wordWrap ? 'wordWrap' : ''} ${config.markEditorSelection ? 'showEditorSelection' : ''}">
 				${body}
@@ -212,40 +218,77 @@ class MDDocumentContentProvider {
 			</body>
 			</html>`;
     }
-    updateConfiguration() {
-        // update all generated md documents
-        for (const document of vscode.workspace.textDocuments) {
-            if (document.uri.scheme === 'markdown') {
-                const sourceUri = vscode.Uri.parse(document.uri.query);
-                if (this.previewConfigurations.shouldUpdateConfiguration(sourceUri)) {
-                    this.update(document.uri);
-                }
-            }
-        }
-    }
-    get onDidChange() {
-        return this._onDidChange.event;
-    }
-    update(uri) {
-        if (!this._waiting) {
-            this._waiting = true;
-            setTimeout(() => {
-                this._waiting = false;
-                this._onDidChange.fire(uri);
-            }, 300);
-        }
-    }
     getCspForResource(resource, nonce) {
         switch (this.cspArbiter.getSecurityLevelForResource(resource)) {
             case security_1.MarkdownPreviewSecurityLevel.AllowInsecureContent:
-                return `<meta http-equiv="Content-Security-Policy" content="default-src 'none'; img-src 'self' http: https: data:; media-src 'self' http: https: data:; script-src 'nonce-${nonce}'; style-src 'self' 'unsafe-inline' http: https: data:; font-src 'self' http: https: data:;">`;
+                return `<meta http-equiv="Content-Security-Policy" content="default-src 'none'; img-src vscode-workspace-resource: vscode-extension-resource: http: https: data:; media-src vscode-workspace-resource: vscode-extension-resource: http: https: data:; script-src 'nonce-${nonce}'; style-src vscode-workspace-resource: 'unsafe-inline' http: https: data: vscode-extension-resource:; font-src vscode-workspace-resource: http: https: data:;">`;
             case security_1.MarkdownPreviewSecurityLevel.AllowScriptsAndAllContent:
                 return '';
             case security_1.MarkdownPreviewSecurityLevel.Strict:
             default:
-                return `<meta http-equiv="Content-Security-Policy" content="default-src 'none'; img-src 'self' https: data:; media-src 'self' https: data:; script-src 'nonce-${nonce}'; style-src 'self' 'unsafe-inline' https: data:; font-src 'self' https: data:;">`;
+                return `<meta http-equiv="Content-Security-Policy" content="default-src 'none'; img-src vscode-workspace-resource: vscode-extension-resource: https: data:; media-src vscode-workspace-resource: vscode-extension-resource: https: data:; script-src 'nonce-${nonce}'; style-src vscode-workspace-resource: 'unsafe-inline' https: data: vscode-extension-resource:; font-src vscode-workspace-resource: https: data:;">`;
         }
     }
 }
-exports.MDDocumentContentProvider = MDDocumentContentProvider;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/554a9c6dcd8b0636ace6f1c64e13e12adf0fcd1d/extensions\markdown\out/features\previewContentProvider.js.map
+MarkdownContentProvider.scheme = 'markdown';
+exports.MarkdownContentProvider = MarkdownContentProvider;
+class MarkdownPreviewWebviewManager {
+    constructor(contentProvider) {
+        this.contentProvider = contentProvider;
+        this.webviews = new Map();
+        this.previewConfigurations = new PreviewConfigManager();
+        this.disposables = [];
+        vscode.workspace.onDidSaveTextDocument(document => {
+            this.update(document.uri);
+        }, null, this.disposables);
+        vscode.workspace.onDidChangeTextDocument(event => {
+            this.update(event.document.uri);
+        }, null, this.disposables);
+    }
+    dispose() {
+        while (this.disposables.length) {
+            const item = this.disposables.pop();
+            if (item) {
+                item.dispose();
+            }
+        }
+        this.webviews.clear();
+    }
+    update(uri) {
+        const webview = this.webviews.get(uri.fsPath);
+        if (webview) {
+            this.contentProvider.provideTextDocumentContent(uri, this.previewConfigurations).then(x => webview.html = x);
+        }
+    }
+    updateAll() {
+        for (const resource of this.webviews.keys()) {
+            const sourceUri = vscode.Uri.parse(resource);
+            this.update(sourceUri);
+        }
+    }
+    updateConfiguration() {
+        for (const resource of this.webviews.keys()) {
+            const sourceUri = vscode.Uri.parse(resource);
+            if (this.previewConfigurations.shouldUpdateConfiguration(sourceUri)) {
+                this.update(sourceUri);
+            }
+        }
+    }
+    create(resource, viewColumn) {
+        const view = vscode.window.createWebview(localize(3, null, path.basename(resource.fsPath)), viewColumn, { enableScripts: true });
+        this.contentProvider.provideTextDocumentContent(resource, this.previewConfigurations).then(x => view.html = x);
+        view.onMessage(e => {
+            vscode.commands.executeCommand(e.command, ...e.args);
+        });
+        view.onBecameActive(() => {
+            vscode.commands.executeCommand('setContext', 'markdownPreview', true);
+        });
+        view.onBecameInactive(() => {
+            vscode.commands.executeCommand('setContext', 'markdownPreview', false);
+        });
+        this.webviews.set(resource.fsPath, view);
+        return view;
+    }
+}
+exports.MarkdownPreviewWebviewManager = MarkdownPreviewWebviewManager;
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/1633d0959a33c1ba0169618280a0edb30d1ddcc3/extensions\markdown\out/features\previewContentProvider.js.map

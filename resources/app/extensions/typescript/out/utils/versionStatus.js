@@ -31,8 +31,11 @@ class VersionStatus {
         if (vscode.languages.match([languageModeIds.typescript, languageModeIds.typescriptreact], doc)) {
             if (this.normalizePath(doc.uri)) {
                 this.versionBarEntry.show();
-                return;
             }
+            else {
+                this.versionBarEntry.hide();
+            }
+            return;
         }
         if (!vscode.window.activeTextEditor.viewColumn) {
             // viewColumn is undefined for the debug/output panel, but we still want
@@ -43,4 +46,4 @@ class VersionStatus {
     }
 }
 exports.default = VersionStatus;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/554a9c6dcd8b0636ace6f1c64e13e12adf0fcd1d/extensions\typescript\out/utils\versionStatus.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/1633d0959a33c1ba0169618280a0edb30d1ddcc3/extensions\typescript\out/utils\versionStatus.js.map

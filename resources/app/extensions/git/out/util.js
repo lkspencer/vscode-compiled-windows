@@ -33,6 +33,10 @@ function combinedDisposable(disposables) {
 }
 exports.combinedDisposable = combinedDisposable;
 exports.EmptyDisposable = toDisposable(() => null);
+function fireEvent(event) {
+    return (listener, thisArgs = null, disposables) => event(_ => listener.call(thisArgs), null, disposables);
+}
+exports.fireEvent = fireEvent;
 function mapEvent(event, map) {
     return (listener, thisArgs = null, disposables) => event(i => listener.call(thisArgs, map(i)), null, disposables);
 }
@@ -65,6 +69,16 @@ function onceEvent(event) {
     };
 }
 exports.onceEvent = onceEvent;
+function debounceEvent(event, delay) {
+    return (listener, thisArgs = null, disposables) => {
+        let timer;
+        return event(e => {
+            clearTimeout(timer);
+            timer = setTimeout(() => listener.call(thisArgs, e), delay);
+        }, null, disposables);
+    };
+}
+exports.debounceEvent = debounceEvent;
 function eventToPromise(event) {
     return new Promise(c => onceEvent(event)(c));
 }
@@ -161,6 +175,15 @@ function uniqueFilter(keyFn) {
     };
 }
 exports.uniqueFilter = uniqueFilter;
+function firstIndex(array, fn) {
+    for (let i = 0; i < array.length; i++) {
+        if (fn(array[i])) {
+            return i;
+        }
+    }
+    return -1;
+}
+exports.firstIndex = firstIndex;
 function find(array, fn) {
     let result = undefined;
     array.some(e => {
@@ -256,4 +279,4 @@ function isDescendant(parent, descendant) {
     return descendant.startsWith(parent);
 }
 exports.isDescendant = isDescendant;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/554a9c6dcd8b0636ace6f1c64e13e12adf0fcd1d/extensions\git\out/util.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/1633d0959a33c1ba0169618280a0edb30d1ddcc3/extensions\git\out/util.js.map

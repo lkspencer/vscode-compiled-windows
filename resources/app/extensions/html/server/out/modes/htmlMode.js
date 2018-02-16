@@ -5,9 +5,11 @@
 'use strict';
 Object.defineProperty(exports, "__esModule", { value: true });
 var languageModelCache_1 = require("../languageModelCache");
+var vscode_html_languageservice_1 = require("vscode-html-languageservice");
 function getHTMLMode(htmlLanguageService) {
     var globalSettings = {};
     var htmlDocuments = languageModelCache_1.getLanguageModelCache(10, 60, function (document) { return htmlLanguageService.parseHTMLDocument(document); });
+    var completionParticipants = [];
     return {
         getId: function () {
             return 'html';
@@ -22,7 +24,24 @@ function getHTMLMode(htmlLanguageService) {
             if (doAutoComplete) {
                 options.hideAutoCompleteProposals = true;
             }
-            return htmlLanguageService.doComplete(document, position, htmlDocuments.get(document), options);
+            var htmlDocument = htmlDocuments.get(document);
+            var offset = document.offsetAt(position);
+            var node = htmlDocument.findNodeBefore(offset);
+            var scanner = htmlLanguageService.createScanner(document.getText(), node.start);
+            var token = scanner.scan();
+            while (token !== vscode_html_languageservice_1.TokenType.EOS && scanner.getTokenOffset() <= offset) {
+                if (token === vscode_html_languageservice_1.TokenType.Content && offset <= scanner.getTokenEnd()) {
+                    completionParticipants.forEach(function (participant) { if (participant.onHtmlContent) {
+                        participant.onHtmlContent();
+                    } });
+                    break;
+                }
+                token = scanner.scan();
+            }
+            return htmlLanguageService.doComplete(document, position, htmlDocument, options);
+        },
+        setCompletionParticipants: function (registeredCompletionParticipants) {
+            completionParticipants = registeredCompletionParticipants;
         },
         doHover: function (document, position) {
             return htmlLanguageService.doHover(document, position, htmlDocuments.get(document));
@@ -79,4 +98,4 @@ function merge(src, dst) {
     }
     return dst;
 }
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/554a9c6dcd8b0636ace6f1c64e13e12adf0fcd1d/extensions\html\server\out/modes\htmlMode.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/1633d0959a33c1ba0169618280a0edb30d1ddcc3/extensions\html\server\out/modes\htmlMode.js.map

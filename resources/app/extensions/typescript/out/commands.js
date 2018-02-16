@@ -5,6 +5,9 @@
  *--------------------------------------------------------------------------------------------*/
 Object.defineProperty(exports, "__esModule", { value: true });
 const vscode = require("vscode");
+const tsconfig_1 = require("./utils/tsconfig");
+const nls = require("vscode-nls");
+const localize = nls.loadMessageBundle(__filename);
 class ReloadTypeScriptProjectsCommand {
     constructor(lazyClientHost) {
         this.lazyClientHost = lazyClientHost;
@@ -63,7 +66,7 @@ class TypeScriptGoToProjectConfigCommand {
     execute() {
         const editor = vscode.window.activeTextEditor;
         if (editor) {
-            this.lazyClientHost.value.goToProjectConfig(true, editor.document.uri);
+            goToProjectConfig(this.lazyClientHost.value, true, editor.document.uri);
         }
     }
 }
@@ -76,9 +79,70 @@ class JavaScriptGoToProjectConfigCommand {
     execute() {
         const editor = vscode.window.activeTextEditor;
         if (editor) {
-            this.lazyClientHost.value.goToProjectConfig(false, editor.document.uri);
+            goToProjectConfig(this.lazyClientHost.value, false, editor.document.uri);
         }
     }
 }
-exports.JavaScriptGoToProjectConfigCommand = JavaScriptGoToProjectConfigCommand;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/554a9c6dcd8b0636ace6f1c64e13e12adf0fcd1d/extensions\typescript\out/commands.js.map
+exports.JavaScriptGoToProjectConfigCommand = JavaScriptGoToProjectConfigCommand;
+async function goToProjectConfig(clientHost, isTypeScriptProject, resource) {
+    const client = clientHost.serviceClient;
+    const rootPath = client.getWorkspaceRootForResource(resource);
+    if (!rootPath) {
+        vscode.window.showInformationMessage(localize(0, null));
+        return;
+    }
+    const file = client.normalizePath(resource);
+    // TSServer errors when 'projectInfo' is invoked on a non js/ts file
+    if (!file || !clientHost.handles(file)) {
+        vscode.window.showWarningMessage(localize(1, null));
+        return;
+    }
+    let res = undefined;
+    try {
+        res = await client.execute('projectInfo', { file, needFileNameList: false });
+    }
+    catch (_a) {
+        // noop
+    }
+    if (!res || !res.body) {
+        vscode.window.showWarningMessage(localize(2, null));
+        return;
+    }
+    const { configFileName } = res.body;
+    if (configFileName && !tsconfig_1.isImplicitProjectConfigFile(configFileName)) {
+        const doc = await vscode.workspace.openTextDocument(configFileName);
+        vscode.window.showTextDocument(doc, vscode.window.activeTextEditor ? vscode.window.activeTextEditor.viewColumn : undefined);
+        return;
+    }
+    let ProjectConfigAction;
+    (function (ProjectConfigAction) {
+        ProjectConfigAction[ProjectConfigAction["None"] = 0] = "None";
+        ProjectConfigAction[ProjectConfigAction["CreateConfig"] = 1] = "CreateConfig";
+        ProjectConfigAction[ProjectConfigAction["LearnMore"] = 2] = "LearnMore";
+    })(ProjectConfigAction || (ProjectConfigAction = {}));
+    const selected = await vscode.window.showInformationMessage((isTypeScriptProject
+        ? localize(3, null)
+        : localize(4, null)), {
+        title: isTypeScriptProject
+            ? localize(5, null)
+            : localize(6, null),
+        id: ProjectConfigAction.CreateConfig
+    }, {
+        title: localize(7, null),
+        id: ProjectConfigAction.LearnMore
+    });
+    switch (selected && selected.id) {
+        case ProjectConfigAction.CreateConfig:
+            tsconfig_1.openOrCreateConfigFile(isTypeScriptProject, rootPath, client.configuration);
+            return;
+        case ProjectConfigAction.LearnMore:
+            if (isTypeScriptProject) {
+                vscode.commands.executeCommand('vscode.open', vscode.Uri.parse('https://go.microsoft.com/fwlink/?linkid=841896'));
+            }
+            else {
+                vscode.commands.executeCommand('vscode.open', vscode.Uri.parse('https://go.microsoft.com/fwlink/?linkid=759670'));
+            }
+            return;
+    }
+}
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/1633d0959a33c1ba0169618280a0edb30d1ddcc3/extensions\typescript\out/commands.js.map

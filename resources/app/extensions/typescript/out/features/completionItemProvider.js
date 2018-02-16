@@ -11,32 +11,61 @@ const convert_1 = require("../utils/convert");
 const nls = require("vscode-nls");
 const codeAction_1 = require("../utils/codeAction");
 const languageModeIds = require("../utils/languageModeIds");
-let localize = nls.loadMessageBundle(__filename);
+const localize = nls.loadMessageBundle(__filename);
 class MyCompletionItem extends vscode_1.CompletionItem {
-    constructor(position, document, entry, enableDotCompletions, useCodeSnippetsOnMethodSuggest) {
-        super(entry.name);
+    constructor(position, document, line, tsEntry, enableDotCompletions, useCodeSnippetsOnMethodSuggest) {
+        super(tsEntry.name);
         this.position = position;
         this.document = document;
-        this.useCodeSnippetsOnMethodSuggest = useCodeSnippetsOnMethodSuggest;
-        this.source = entry.source;
-        this.sortText = entry.sortText;
-        this.kind = MyCompletionItem.convertKind(entry.kind);
-        this.position = position;
-        this.commitCharacters = MyCompletionItem.getCommitCharacters(enableDotCompletions, !useCodeSnippetsOnMethodSuggest, entry.kind);
-        if (entry.replacementSpan) {
-            let span = entry.replacementSpan;
-            // The indexing for the range returned by the server uses 1-based indexing.
-            // We convert to 0-based indexing.
-            this.textEdit = vscode_1.TextEdit.replace(convert_1.tsTextSpanToVsRange(span), entry.name);
+        this.tsEntry = tsEntry;
+        if (tsEntry.isRecommended) {
+            // Make sure isRecommended property always comes first
+            // https://github.com/Microsoft/vscode/issues/40325
+            this.sortText = '\0' + tsEntry.sortText;
+        }
+        else if (tsEntry.source) {
+            // De-prioritze auto-imports
+            // https://github.com/Microsoft/vscode/issues/40311
+            this.sortText = '\uffff' + tsEntry.sortText;
         }
         else {
+            this.sortText = tsEntry.sortText;
+        }
+        this.kind = MyCompletionItem.convertKind(tsEntry.kind);
+        this.position = position;
+        this.commitCharacters = MyCompletionItem.getCommitCharacters(enableDotCompletions, !useCodeSnippetsOnMethodSuggest, tsEntry.kind);
+        this.useCodeSnippet = useCodeSnippetsOnMethodSuggest && (this.kind === vscode_1.CompletionItemKind.Function || this.kind === vscode_1.CompletionItemKind.Method);
+        if (tsEntry.replacementSpan) {
+            this.range = convert_1.tsTextSpanToVsRange(tsEntry.replacementSpan);
+        }
+        if (typeof tsEntry.insertText === 'string') {
+            this.insertText = tsEntry.insertText;
+            if (tsEntry.replacementSpan) {
+                this.range = convert_1.tsTextSpanToVsRange(tsEntry.replacementSpan);
+                if (this.insertText[0] === '[') {
+                    this.filterText = '.' + this.label;
+                }
+                // Make sure we only replace a single line at most
+                if (!this.range.isSingleLine) {
+                    this.range = new vscode_1.Range(this.range.start.line, this.range.start.character, this.range.start.line, line.length);
+                }
+            }
+        }
+        if (tsEntry.kindModifiers.match(/\boptional\b/)) {
+            this.insertText = this.label;
+            this.filterText = this.label;
+            this.label += '?';
+        }
+    }
+    resolve() {
+        if (!this.range) {
             // Try getting longer, prefix based range for completions that span words
-            const wordRange = document.getWordRangeAtPosition(position);
-            const text = document.getText(new vscode_1.Range(position.line, Math.max(0, position.character - entry.name.length), position.line, position.character)).toLowerCase();
-            const entryName = entry.name.toLowerCase();
+            const wordRange = this.document.getWordRangeAtPosition(this.position);
+            const text = this.document.getText(new vscode_1.Range(this.position.line, Math.max(0, this.position.character - this.label.length), this.position.line, this.position.character)).toLowerCase();
+            const entryName = this.label.toLowerCase();
             for (let i = entryName.length; i >= 0; --i) {
-                if (text.endsWith(entryName.substr(0, i)) && (!wordRange || wordRange.start.character > position.character - i)) {
-                    this.range = new vscode_1.Range(position.line, Math.max(0, position.character - i), position.line, position.character);
+                if (text.endsWith(entryName.substr(0, i)) && (!wordRange || wordRange.start.character > this.position.character - i)) {
+                    this.range = new vscode_1.Range(this.position.line, Math.max(0, this.position.character - i), this.position.line, this.position.character);
                     break;
                 }
             }
@@ -163,14 +192,15 @@ class TypeScriptCompletionItemProvider {
         if (!file) {
             return [];
         }
+        const line = document.lineAt(position.line);
         const config = this.getConfiguration(document.uri);
         if (context.triggerCharacter === '"' || context.triggerCharacter === '\'') {
             if (!config.quickSuggestionsForPaths) {
                 return [];
             }
             // make sure we are in something that looks like the start of an import
-            const line = document.lineAt(position.line).text.slice(0, position.character);
-            if (!line.match(/\b(from|import)\s*["']$/) && !line.match(/\b(import|require)\(['"]$/)) {
+            const pre = line.text.slice(0, position.character);
+            if (!pre.match(/\b(from|import)\s*["']$/) && !pre.match(/\b(import|require)\(['"]$/)) {
                 return [];
             }
         }
@@ -179,20 +209,20 @@ class TypeScriptCompletionItemProvider {
                 return [];
             }
             // make sure we are in something that looks like an import path
-            const line = document.lineAt(position.line).text.slice(0, position.character);
-            if (!line.match(/\b(from|import)\s*["'][^'"]*$/) && !line.match(/\b(import|require)\(['"][^'"]*$/)) {
+            const pre = line.text.slice(0, position.character);
+            if (!pre.match(/\b(from|import)\s*["'][^'"]*$/) && !pre.match(/\b(import|require)\(['"][^'"]*$/)) {
                 return [];
             }
         }
         if (context.triggerCharacter === '@') {
             // make sure we are in something that looks like the start of a jsdoc comment
-            const line = document.lineAt(position.line).text.slice(0, position.character);
-            if (!line.match(/^\s*\*[ ]?@/) && !line.match(/\/\*\*+[ ]?@/)) {
+            const pre = line.text.slice(0, position.character);
+            if (!pre.match(/^\s*\*[ ]?@/) && !pre.match(/\/\*\*+[ ]?@/)) {
                 return [];
             }
         }
         try {
-            const args = Object.assign({}, convert_1.vsPositionToTsFileLocation(file, position), { includeExternalModuleExports: config.autoImportSuggestions });
+            const args = Object.assign({}, convert_1.vsPositionToTsFileLocation(file, position), { includeExternalModuleExports: config.autoImportSuggestions, includeInsertTextCompletions: true });
             const msg = await this.client.execute('completions', args, token);
             // This info has to come from the tsserver. See https://github.com/Microsoft/TypeScript/issues/2831
             // let isMemberCompletion = false;
@@ -228,7 +258,7 @@ class TypeScriptCompletionItemProvider {
                     if (!config.autoImportSuggestions && element.hasAction) {
                         continue;
                     }
-                    const item = new MyCompletionItem(position, document, element, enableDotCompletions, config.useCodeSnippetsOnMethodSuggest);
+                    const item = new MyCompletionItem(position, document, line.text, element, enableDotCompletions, config.useCodeSnippetsOnMethodSuggest);
                     completionItems.push(item);
                 }
             }
@@ -238,69 +268,75 @@ class TypeScriptCompletionItemProvider {
             return [];
         }
     }
-    resolveCompletionItem(item, token) {
+    async resolveCompletionItem(item, token) {
         if (!(item instanceof MyCompletionItem)) {
-            return null;
+            return undefined;
         }
         const filepath = this.client.normalizePath(item.document.uri);
         if (!filepath) {
-            return null;
+            return undefined;
         }
+        item.resolve();
         const args = Object.assign({}, convert_1.vsPositionToTsFileLocation(filepath, item.position), { entryNames: [
-                item.source ? { name: item.label, source: item.source } : item.label
+                item.tsEntry.source ? { name: item.tsEntry.name, source: item.tsEntry.source } : item.tsEntry.name
             ] });
-        return this.client.execute('completionEntryDetails', args, token).then((response) => {
-            const details = response.body;
-            if (!details || !details.length || !details[0]) {
-                return item;
+        let response;
+        try {
+            response = await this.client.execute('completionEntryDetails', args, token);
+        }
+        catch (_a) {
+            return item;
+        }
+        const details = response.body;
+        if (!details || !details.length || !details[0]) {
+            return item;
+        }
+        const detail = details[0];
+        item.detail = detail.displayParts.length ? Previewer.plain(detail.displayParts) : undefined;
+        item.documentation = this.getDocumentation(detail, item);
+        if (detail.codeActions && detail.codeActions.length) {
+            item.command = {
+                title: '',
+                command: ApplyCompletionCodeActionCommand.ID,
+                arguments: [filepath, detail.codeActions]
+            };
+        }
+        if (detail && item.useCodeSnippet) {
+            const shouldCompleteFunction = await this.isValidFunctionCompletionContext(filepath, item.position);
+            if (shouldCompleteFunction) {
+                item.insertText = this.snippetForFunctionCall(item, detail);
             }
-            const detail = details[0];
-            item.detail = Previewer.plain(detail.displayParts);
-            const documentation = new vscode_1.MarkdownString();
-            if (detail.source) {
-                let importPath = `'${Previewer.plain(detail.source)}'`;
-                if (this.client.apiVersion.has260Features() && !this.client.apiVersion.has262Features()) {
-                    // Try to resolve the real import name that will be added
-                    if (detail.codeActions && detail.codeActions[0]) {
-                        const action = detail.codeActions[0];
-                        if (action.changes[0] && action.changes[0].textChanges[0]) {
-                            const textChange = action.changes[0].textChanges[0];
-                            const matchedImport = textChange.newText.match(/(['"])(.+?)\1/);
-                            if (matchedImport) {
-                                importPath = matchedImport[0];
-                                item.detail += ` — from ${matchedImport[0]}`;
-                            }
+            return item;
+        }
+        return item;
+    }
+    getDocumentation(detail, item) {
+        const documentation = new vscode_1.MarkdownString();
+        if (detail.source) {
+            let importPath = `'${Previewer.plain(detail.source)}'`;
+            if (this.client.apiVersion.has260Features() && !this.client.apiVersion.has262Features()) {
+                // Try to resolve the real import name that will be added
+                if (detail.codeActions && detail.codeActions[0]) {
+                    const action = detail.codeActions[0];
+                    if (action.changes[0] && action.changes[0].textChanges[0]) {
+                        const textChange = action.changes[0].textChanges[0];
+                        const matchedImport = textChange.newText.match(/(['"])(.+?)\1/);
+                        if (matchedImport) {
+                            importPath = matchedImport[0];
+                            item.detail += ` — from ${matchedImport[0]}`;
                         }
                     }
-                    documentation.appendMarkdown(localize(3, null, importPath));
                 }
-                else {
-                    const autoImportLabel = localize(4, null, importPath);
-                    item.detail = `${autoImportLabel}\n${item.detail}`;
-                }
-                documentation.appendMarkdown('\n\n');
+                documentation.appendMarkdown(localize(3, null, importPath));
             }
-            Previewer.addmarkdownDocumentation(documentation, detail.documentation, detail.tags);
-            item.documentation = documentation;
-            if (detail.codeActions && detail.codeActions.length) {
-                item.command = {
-                    title: '',
-                    command: ApplyCompletionCodeActionCommand.ID,
-                    arguments: [filepath, detail.codeActions]
-                };
+            else {
+                const autoImportLabel = localize(4, null, importPath);
+                item.detail = `${autoImportLabel}\n${item.detail}`;
             }
-            if (detail && item.useCodeSnippetsOnMethodSuggest && (item.kind === vscode_1.CompletionItemKind.Function || item.kind === vscode_1.CompletionItemKind.Method)) {
-                return this.isValidFunctionCompletionContext(filepath, item.position).then(shouldCompleteFunction => {
-                    if (shouldCompleteFunction) {
-                        item.insertText = this.snippetForFunctionCall(detail);
-                    }
-                    return item;
-                });
-            }
-            return item;
-        }, () => {
-            return item;
-        });
+            documentation.appendMarkdown('\n\n');
+        }
+        Previewer.addMarkdownDocumentation(documentation, detail.documentation, detail.tags);
+        return documentation.value.length ? documentation : undefined;
     }
     async isValidFunctionCompletionContext(filepath, position) {
         // Workaround for https://github.com/Microsoft/TypeScript/issues/12677
@@ -322,9 +358,12 @@ class TypeScriptCompletionItemProvider {
             return true;
         }
     }
-    snippetForFunctionCall(detail) {
-        const suggestionArgumentNames = [];
-        let hasOptionalParemeters = false;
+    snippetForFunctionCall(item, detail) {
+        let hasOptionalParameters = false;
+        let hasAddedParameters = false;
+        const snippet = new vscode_1.SnippetString();
+        snippet.appendText(item.label || item.insertText);
+        snippet.appendText('(');
         let parenCount = 0;
         let i = 0;
         for (; i < detail.displayParts.length; ++i) {
@@ -335,9 +374,13 @@ class TypeScriptCompletionItemProvider {
                 // Skip optional parameters
                 const nameIsFollowedByOptionalIndicator = next && next.text === '?';
                 if (!nameIsFollowedByOptionalIndicator) {
-                    suggestionArgumentNames.push(`\${${i + 1}:${part.text}}`);
+                    if (hasAddedParameters) {
+                        snippet.appendText(', ');
+                    }
+                    hasAddedParameters = true;
+                    snippet.appendPlaceholder(part.text);
                 }
-                hasOptionalParemeters = hasOptionalParemeters || nameIsFollowedByOptionalIndicator;
+                hasOptionalParameters = hasOptionalParameters || nameIsFollowedByOptionalIndicator;
             }
             else if (part.kind === 'punctuation') {
                 if (part.text === '(') {
@@ -348,13 +391,17 @@ class TypeScriptCompletionItemProvider {
                 }
                 else if (part.text === '...' && parenCount === 1) {
                     // Found rest parmeter. Do not fill in any further arguments
-                    hasOptionalParemeters = true;
+                    hasOptionalParameters = true;
                     break;
                 }
             }
         }
-        const codeSnippet = `${detail.name}(${suggestionArgumentNames.join(', ')}${hasOptionalParemeters ? '${' + i + '}' : ''})$0`;
-        return new vscode_1.SnippetString(codeSnippet);
+        if (hasOptionalParameters) {
+            snippet.appendTabstop();
+        }
+        snippet.appendText(')');
+        snippet.appendTabstop(0);
+        return snippet;
     }
     getConfiguration(resource) {
         // Use shared setting for js and ts
@@ -368,4 +415,4 @@ class TypeScriptCompletionItemProvider {
     }
 }
 exports.default = TypeScriptCompletionItemProvider;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/554a9c6dcd8b0636ace6f1c64e13e12adf0fcd1d/extensions\typescript\out/features\completionItemProvider.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/1633d0959a33c1ba0169618280a0edb30d1ddcc3/extensions\typescript\out/features\completionItemProvider.js.map

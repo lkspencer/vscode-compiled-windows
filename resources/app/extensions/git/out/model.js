@@ -29,8 +29,9 @@ const nls = require("vscode-nls");
 const uri_1 = require("./uri");
 const localize = nls.loadMessageBundle(__filename);
 class RepositoryPick {
-    constructor(repository) {
+    constructor(repository, index) {
         this.repository = repository;
+        this.index = index;
     }
     get label() {
         return path.basename(this.repository.root);
@@ -92,8 +93,10 @@ class Model {
         });
     }
     onPossibleGitRepositoryChange(uri) {
-        const possibleGitRepositoryPath = uri.fsPath.replace(/\.git.*$/, '');
-        this.possibleGitRepositoryPaths.add(possibleGitRepositoryPath);
+        this.eventuallyScanPossibleGitRepository(uri.fsPath.replace(/\.git.*$/, ''));
+    }
+    eventuallyScanPossibleGitRepository(path) {
+        this.possibleGitRepositoryPaths.add(path);
         this.eventuallyScanPossibleGitRepositories();
     }
     eventuallyScanPossibleGitRepositories() {
@@ -131,6 +134,11 @@ class Model {
         openRepositoriesToDispose.forEach(r => r.dispose());
     }
     onDidChangeVisibleTextEditors(editors) {
+        const config = vscode_1.workspace.getConfiguration('git');
+        const enabled = config.get('autoRepositoryDetection') === true;
+        if (!enabled) {
+            return;
+        }
         editors.forEach(editor => {
             const uri = editor.document.uri;
             if (uri.scheme !== 'file') {
@@ -154,10 +162,11 @@ class Model {
                 return;
             }
             try {
-                const repositoryRoot = yield this.git.getRepositoryRoot(path);
+                const rawRoot = yield this.git.getRepositoryRoot(path);
                 // This can happen whenever `path` has the wrong case sensitivity in
                 // case insensitive file systems
                 // https://github.com/Microsoft/vscode/issues/33498
+                const repositoryRoot = vscode_1.Uri.file(rawRoot).fsPath;
                 if (this.getRepository(repositoryRoot)) {
                     return;
                 }
@@ -177,10 +186,13 @@ class Model {
         const disappearListener = onDidDisappearRepository(() => dispose());
         const changeListener = repository.onDidChangeRepository(uri => this._onDidChangeRepository.fire({ repository, uri }));
         const originalResourceChangeListener = repository.onDidChangeOriginalResource(uri => this._onDidChangeOriginalResource.fire({ repository, uri }));
+        const statusListener = repository.onDidRunGitStatus(() => this.scanSubmodules(repository));
+        this.scanSubmodules(repository);
         const dispose = () => {
             disappearListener.dispose();
             changeListener.dispose();
             originalResourceChangeListener.dispose();
+            statusListener.dispose();
             repository.dispose();
             this.openRepositories = this.openRepositories.filter(e => e !== openRepository);
             this._onDidCloseRepository.fire(repository);
@@ -188,6 +200,17 @@ class Model {
         const openRepository = { repository, dispose };
         this.openRepositories.push(openRepository);
         this._onDidOpenRepository.fire(repository);
+    }
+    scanSubmodules(repository) {
+        const shouldScanSubmodules = vscode_1.workspace
+            .getConfiguration('git', vscode_1.Uri.file(repository.root))
+            .get('detectSubmodules') === true;
+        if (!shouldScanSubmodules) {
+            return;
+        }
+        repository.submodules
+            .map(r => path.join(repository.root, r.path))
+            .forEach(p => this.eventuallyScanPossibleGitRepository(p));
     }
     close(repository) {
         const openRepository = this.getOpenRepository(repository);
@@ -201,7 +224,14 @@ class Model {
             if (this.openRepositories.length === 0) {
                 throw new Error(localize(0, null));
             }
-            const picks = this.openRepositories.map(e => new RepositoryPick(e.repository));
+            const picks = this.openRepositories.map((e, index) => new RepositoryPick(e.repository, index));
+            const active = vscode_1.window.activeTextEditor;
+            const repository = active && this.getRepository(active.document.fileName);
+            const index = util_1.firstIndex(picks, pick => pick.repository === repository);
+            // Move repository pick containing the active text editor to appear first
+            if (index > -1) {
+                picks.unshift(...picks.splice(index, 1));
+            }
             const placeHolder = localize(1, null);
             const pick = yield vscode_1.window.showQuickPick(picks, { placeHolder });
             return pick && pick.repository;
@@ -229,11 +259,17 @@ class Model {
             else {
                 resourcePath = hint.fsPath;
             }
-            for (const liveRepository of this.openRepositories) {
-                const relativePath = path.relative(liveRepository.repository.root, resourcePath);
-                if (util_1.isDescendant(liveRepository.repository.root, resourcePath)) {
-                    return liveRepository;
+            outer: for (const liveRepository of this.openRepositories.sort((a, b) => b.repository.root.length - a.repository.root.length)) {
+                if (!util_1.isDescendant(liveRepository.repository.root, resourcePath)) {
+                    continue;
                 }
+                for (const submodule of liveRepository.repository.submodules) {
+                    const submoduleRoot = path.join(liveRepository.repository.root, submodule.path);
+                    if (util_1.isDescendant(submoduleRoot, resourcePath)) {
+                        continue outer;
+                    }
+                }
+                return liveRepository;
             }
             return undefined;
         }
@@ -244,6 +280,17 @@ class Model {
             }
             if (hint === repository.mergeGroup || hint === repository.indexGroup || hint === repository.workingTreeGroup) {
                 return liveRepository;
+            }
+        }
+        return undefined;
+    }
+    getRepositoryForSubmodule(submoduleUri) {
+        for (const repository of this.repositories) {
+            for (const submodule of repository.submodules) {
+                const submodulePath = path.join(repository.root, submodule.path);
+                if (submodulePath === submoduleUri.fsPath) {
+                    return repository;
+                }
             }
         }
         return undefined;
@@ -263,4 +310,4 @@ __decorate([
     decorators_1.sequentialize
 ], Model.prototype, "tryOpenRepository", null);
 exports.Model = Model;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/554a9c6dcd8b0636ace6f1c64e13e12adf0fcd1d/extensions\git\out/model.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/1633d0959a33c1ba0169618280a0edb30d1ddcc3/extensions\git\out/model.js.map

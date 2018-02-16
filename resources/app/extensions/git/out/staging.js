@@ -55,10 +55,19 @@ function toLineRanges(selections, textDocument) {
 }
 exports.toLineRanges = toLineRanges;
 function getModifiedRange(textDocument, diff) {
-    return diff.modifiedEndLineNumber === 0
-        ? new vscode_1.Range(textDocument.lineAt(diff.modifiedStartLineNumber - 1).range.end, textDocument.lineAt(diff.modifiedStartLineNumber).range.start)
-        : new vscode_1.Range(textDocument.lineAt(diff.modifiedStartLineNumber - 1).range.start, textDocument.lineAt(diff.modifiedEndLineNumber - 1).range.end);
+    if (diff.modifiedEndLineNumber === 0) {
+        if (diff.modifiedStartLineNumber === 0) {
+            return new vscode_1.Range(textDocument.lineAt(diff.modifiedStartLineNumber).range.end, textDocument.lineAt(diff.modifiedStartLineNumber).range.start);
+        }
+        else {
+            return new vscode_1.Range(textDocument.lineAt(diff.modifiedStartLineNumber - 1).range.end, textDocument.lineAt(diff.modifiedStartLineNumber).range.start);
+        }
+    }
+    else {
+        return new vscode_1.Range(textDocument.lineAt(diff.modifiedStartLineNumber - 1).range.start, textDocument.lineAt(diff.modifiedEndLineNumber - 1).range.end);
+    }
 }
+exports.getModifiedRange = getModifiedRange;
 function intersectDiffWithRange(textDocument, diff, range) {
     const modifiedRange = getModifiedRange(textDocument, diff);
     const intersection = range.intersection(modifiedRange);
@@ -87,4 +96,4 @@ function invertLineChange(diff) {
     };
 }
 exports.invertLineChange = invertLineChange;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/554a9c6dcd8b0636ace6f1c64e13e12adf0fcd1d/extensions\git\out/staging.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/1633d0959a33c1ba0169618280a0edb30d1ddcc3/extensions\git\out/staging.js.map

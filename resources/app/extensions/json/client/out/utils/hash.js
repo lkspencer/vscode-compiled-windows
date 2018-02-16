@@ -7,8 +7,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 /**
  * Return a hash value for an object.
  */
-function hash(obj, hashVal) {
-    if (hashVal === void 0) { hashVal = 0; }
+function hash(obj, hashVal = 0) {
     switch (typeof obj) {
         case 'object':
             if (obj === null) {
@@ -39,20 +38,20 @@ function booleanHash(b, initialHashVal) {
 }
 function stringHash(s, hashVal) {
     hashVal = numberHash(149417, hashVal);
-    for (var i = 0, length = s.length; i < length; i++) {
+    for (let i = 0, length = s.length; i < length; i++) {
         hashVal = numberHash(s.charCodeAt(i), hashVal);
     }
     return hashVal;
 }
 function arrayHash(arr, initialHashVal) {
     initialHashVal = numberHash(104579, initialHashVal);
-    return arr.reduce(function (hashVal, item) { return hash(item, hashVal); }, initialHashVal);
+    return arr.reduce((hashVal, item) => hash(item, hashVal), initialHashVal);
 }
 function objectHash(obj, initialHashVal) {
     initialHashVal = numberHash(181387, initialHashVal);
-    return Object.keys(obj).sort().reduce(function (hashVal, key) {
+    return Object.keys(obj).sort().reduce((hashVal, key) => {
         hashVal = stringHash(key, hashVal);
         return hash(obj[key], hashVal);
     }, initialHashVal);
 }
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/554a9c6dcd8b0636ace6f1c64e13e12adf0fcd1d/extensions\json\client\out/utils\hash.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/1633d0959a33c1ba0169618280a0edb30d1ddcc3/extensions\json\client\out/utils\hash.js.map
