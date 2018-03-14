@@ -15,6 +15,8 @@ const markdownExtensions_1 = require("./markdownExtensions");
 const documentLinkProvider_1 = require("./features/documentLinkProvider");
 const documentSymbolProvider_1 = require("./features/documentSymbolProvider");
 const previewContentProvider_1 = require("./features/previewContentProvider");
+const previewManager_1 = require("./features/previewManager");
+const foldingProvider_1 = require("./features/foldingProvider");
 function activate(context) {
     const telemetryReporter = telemetryReporter_1.loadDefaultTelemetryReporter();
     context.subscriptions.push(telemetryReporter);
@@ -24,36 +26,28 @@ function activate(context) {
     const selector = 'markdown';
     const contentProvider = new previewContentProvider_1.MarkdownContentProvider(engine, context, cspArbiter, logger);
     markdownExtensions_1.loadMarkdownExtensions(contentProvider, engine);
-    const webviewManager = new previewContentProvider_1.MarkdownPreviewWebviewManager(contentProvider);
-    context.subscriptions.push(webviewManager);
+    const previewManager = new previewManager_1.MarkdownPreviewManager(contentProvider, logger);
+    context.subscriptions.push(previewManager);
     context.subscriptions.push(vscode.languages.registerDocumentSymbolProvider(selector, new documentSymbolProvider_1.default(engine)));
     context.subscriptions.push(vscode.languages.registerDocumentLinkProvider(selector, new documentLinkProvider_1.default()));
-    const previewSecuritySelector = new security_1.PreviewSecuritySelector(cspArbiter, webviewManager);
+    context.subscriptions.push(vscode.languages.registerFoldingProvider(selector, new foldingProvider_1.default(engine)));
+    const previewSecuritySelector = new security_1.PreviewSecuritySelector(cspArbiter, previewManager);
     const commandManager = new commandManager_1.CommandManager();
     context.subscriptions.push(commandManager);
-    commandManager.register(new commands.ShowPreviewCommand(webviewManager, telemetryReporter));
-    commandManager.register(new commands.ShowPreviewToSideCommand(webviewManager, telemetryReporter));
-    commandManager.register(new commands.ShowSourceCommand());
-    commandManager.register(new commands.RefreshPreviewCommand(webviewManager));
-    commandManager.register(new commands.RevealLineCommand(logger));
+    commandManager.register(new commands.ShowPreviewCommand(previewManager, telemetryReporter));
+    commandManager.register(new commands.ShowPreviewToSideCommand(previewManager, telemetryReporter));
+    commandManager.register(new commands.ShowLockedPreviewToSideCommand(previewManager, telemetryReporter));
+    commandManager.register(new commands.ShowSourceCommand(previewManager));
+    commandManager.register(new commands.RefreshPreviewCommand(previewManager));
     commandManager.register(new commands.MoveCursorToPositionCommand());
-    commandManager.register(new commands.ShowPreviewSecuritySelectorCommand(previewSecuritySelector));
+    commandManager.register(new commands.ShowPreviewSecuritySelectorCommand(previewSecuritySelector, previewManager));
     commandManager.register(new commands.OnPreviewStyleLoadErrorCommand());
-    commandManager.register(new commands.DidClickCommand());
     commandManager.register(new commands.OpenDocumentLinkCommand(engine));
+    commandManager.register(new commands.ToggleLockCommand(previewManager));
     context.subscriptions.push(vscode.workspace.onDidChangeConfiguration(() => {
         logger.updateConfiguration();
-        webviewManager.updateConfiguration();
-    }));
-    context.subscriptions.push(vscode.window.onDidChangeTextEditorSelection(event => {
-        if (previewContentProvider_1.isMarkdownFile(event.textEditor.document)) {
-            const markdownFile = previewContentProvider_1.getMarkdownUri(event.textEditor.document.uri);
-            logger.log('updatePreviewForSelection', { markdownFile: markdownFile.toString() });
-            vscode.commands.executeCommand('_workbench.htmlPreview.postMessage', markdownFile, {
-                line: event.selections[0].active.line
-            });
-        }
+        previewManager.updateConfiguration();
     }));
 }
 exports.activate = activate;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/1633d0959a33c1ba0169618280a0edb30d1ddcc3/extensions\markdown\out/extension.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/cc11eb00ba83ee0b6d29851f1a599cf3d9469932/extensions\markdown\out/extension.js.map

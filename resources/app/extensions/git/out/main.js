@@ -32,14 +32,20 @@ function init(context, outputChannel, disposables) {
         const askpass = new askpass_1.Askpass();
         const env = yield askpass.getEnv();
         const git = new git_1.Git({ gitPath: info.path, version: info.version, env });
-        const model = new model_1.Model(git, context.globalState);
+        const model = new model_1.Model(git, context.globalState, outputChannel);
         disposables.push(model);
         const onRepository = () => vscode_1.commands.executeCommand('setContext', 'gitOpenRepositoryCount', `${model.repositories.length}`);
         model.onDidOpenRepository(onRepository, null, disposables);
         model.onDidCloseRepository(onRepository, null, disposables);
         onRepository();
         outputChannel.appendLine(localize(1, null, info.version, info.path));
-        const onOutput = (str) => outputChannel.append(str);
+        const onOutput = (str) => {
+            const lines = str.split(/\r?\n/mg);
+            while (/^\s*$/.test(lines[lines.length - 1])) {
+                lines.pop();
+            }
+            outputChannel.appendLine(lines.join('\n'));
+        };
         git.onOutput.addListener('log', onOutput);
         disposables.push(util_1.toDisposable(() => git.onOutput.removeListener('log', onOutput)));
         disposables.push(new commands_1.CommandCenter(git, model, outputChannel, telemetryReporter), new contentProvider_1.GitContentProvider(model), new decorationProvider_1.GitDecorations(model));
@@ -127,4 +133,4 @@ function deactivate() {
     return telemetryReporter ? telemetryReporter.dispose() : Promise.resolve(null);
 }
 exports.deactivate = deactivate;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/1633d0959a33c1ba0169618280a0edb30d1ddcc3/extensions\git\out/main.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/cc11eb00ba83ee0b6d29851f1a599cf3d9469932/extensions\git\out/main.js.map

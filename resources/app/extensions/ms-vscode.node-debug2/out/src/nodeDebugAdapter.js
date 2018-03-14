@@ -86,11 +86,12 @@ class NodeDebugAdapter extends vscode_chrome_debug_core_1.ChromeDebugAdapter {
                 }
             }
             else {
-                if (!pathUtils.findOnPath(NodeDebugAdapter.NODE, args.env)) {
+                const re = pathUtils.findOnPath(NodeDebugAdapter.NODE, args.env);
+                if (!re) {
                     return Promise.reject(errors.runtimeNotFound(NodeDebugAdapter.NODE));
                 }
                 // use node from PATH
-                runtimeExecutable = NodeDebugAdapter.NODE;
+                runtimeExecutable = re;
             }
             this._continueAfterConfigDone = !args.stopOnEntry;
             if (this.isExtensionHost()) {
@@ -181,7 +182,11 @@ class NodeDebugAdapter extends vscode_chrome_debug_core_1.ChromeDebugAdapter {
                         args: wslLaunchArgs.combined,
                         env: envArgs
                     };
-                    launchP = this.launchInTerminal(termArgs);
+                    launchP = this.launchInTerminal(termArgs).then(() => {
+                        if (args.noDebug) {
+                            this.terminateSession('cannot track process');
+                        }
+                    });
                 }
                 else if (!args.console || args.console === 'internalConsole') {
                     launchP = this.launchInInternalConsole(wslLaunchArgs.executable, wslLaunchArgs.args, envArgs, cwd);
@@ -234,7 +239,7 @@ class NodeDebugAdapter extends vscode_chrome_debug_core_1.ChromeDebugAdapter {
             yield _super("doAttach").call(this, port, targetUrl, address, timeout, websocketUrl, extraCRDPChannelPort);
             this.beginWaitingForDebuggerPaused();
             this.getNodeProcessDetailsIfNeeded();
-            return { supportsStepBack: this.supportsStepBack() };
+            this._session.sendEvent(new vscode_debugadapter_1.CapabilitiesEvent({ supportsStepBack: this.supportsStepBack() }));
         });
     }
     supportsStepBack() {

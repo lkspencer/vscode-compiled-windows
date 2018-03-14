@@ -12,16 +12,20 @@ class Slug {
     static fromHeading(heading) {
         const slugifiedHeading = encodeURI(heading.trim()
             .toLowerCase()
-            .replace(/[\]\[\!\"\#\$\%\&\'\(\)\*\+\,\.\/\:\;\<\=\>\?\@\\\^\_\{\|\}\~\`]/g, '')
-            .replace(/\s+/g, '-')
-            .replace(/^\-+/, '')
-            .replace(/\-+$/, ''));
+            .replace(/./g, c => Slug.specialChars[c] || c)
+            .replace(/[\]\[\!\'\#\$\%\&\'\(\)\*\+\,\.\/\:\;\<\=\>\?\@\\\^\_\{\|\}\~\`]/g, '')
+            .replace(/\s+/g, '-') // Replace whitespace with -
+            .replace(/[^\w\-]+/g, '') // Remove remaining non-word chars
+            .replace(/^\-+/, '') // Remove leading -
+            .replace(/\-+$/, '') // Remove trailing -
+        );
         return new Slug(slugifiedHeading);
     }
     equals(other) {
         return this.value === other.value;
     }
 }
+Slug.specialChars = { 'à': 'a', 'ä': 'a', 'ã': 'a', 'á': 'a', 'â': 'a', 'æ': 'a', 'å': 'a', 'ë': 'e', 'è': 'e', 'é': 'e', 'ê': 'e', 'î': 'i', 'ï': 'i', 'ì': 'i', 'í': 'i', 'ò': 'o', 'ó': 'o', 'ö': 'o', 'ô': 'o', 'ø': 'o', 'ù': 'o', 'ú': 'u', 'ü': 'u', 'û': 'u', 'ñ': 'n', 'ç': 'c', 'ß': 's', 'ÿ': 'y', 'œ': 'o', 'ŕ': 'r', 'ś': 's', 'ń': 'n', 'ṕ': 'p', 'ẃ': 'w', 'ǵ': 'g', 'ǹ': 'n', 'ḿ': 'm', 'ǘ': 'u', 'ẍ': 'x', 'ź': 'z', 'ḧ': 'h', '·': '-', '/': '-', '_': '-', ',': '-', ':': '-', ';': '-' };
 exports.Slug = Slug;
 class TableOfContentsProvider {
     constructor(engine, document) {
@@ -76,4 +80,4 @@ class TableOfContentsProvider {
     }
 }
 exports.TableOfContentsProvider = TableOfContentsProvider;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/1633d0959a33c1ba0169618280a0edb30d1ddcc3/extensions\markdown\out/tableOfContentsProvider.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/cc11eb00ba83ee0b6d29851f1a599cf3d9469932/extensions\markdown\out/tableOfContentsProvider.js.map

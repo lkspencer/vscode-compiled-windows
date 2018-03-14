@@ -93,7 +93,7 @@ async function goToProjectConfig(clientHost, isTypeScriptProject, resource) {
     }
     const file = client.normalizePath(resource);
     // TSServer errors when 'projectInfo' is invoked on a non js/ts file
-    if (!file || !clientHost.handles(file)) {
+    if (!file || !clientHost.handles(resource)) {
         vscode.window.showWarningMessage(localize(1, null));
         return;
     }
@@ -121,28 +121,17 @@ async function goToProjectConfig(clientHost, isTypeScriptProject, resource) {
         ProjectConfigAction[ProjectConfigAction["LearnMore"] = 2] = "LearnMore";
     })(ProjectConfigAction || (ProjectConfigAction = {}));
     const selected = await vscode.window.showInformationMessage((isTypeScriptProject
-        ? localize(3, null)
-        : localize(4, null)), {
+        ? localize(3, null, 'https://go.microsoft.com/fwlink/?linkid=841896')
+        : localize(4, null, 'https://go.microsoft.com/fwlink/?linkid=759670')), {
         title: isTypeScriptProject
             ? localize(5, null)
             : localize(6, null),
         id: ProjectConfigAction.CreateConfig
-    }, {
-        title: localize(7, null),
-        id: ProjectConfigAction.LearnMore
     });
     switch (selected && selected.id) {
         case ProjectConfigAction.CreateConfig:
             tsconfig_1.openOrCreateConfigFile(isTypeScriptProject, rootPath, client.configuration);
             return;
-        case ProjectConfigAction.LearnMore:
-            if (isTypeScriptProject) {
-                vscode.commands.executeCommand('vscode.open', vscode.Uri.parse('https://go.microsoft.com/fwlink/?linkid=841896'));
-            }
-            else {
-                vscode.commands.executeCommand('vscode.open', vscode.Uri.parse('https://go.microsoft.com/fwlink/?linkid=759670'));
-            }
-            return;
     }
 }
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/1633d0959a33c1ba0169618280a0edb30d1ddcc3/extensions\typescript\out/commands.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/cc11eb00ba83ee0b6d29851f1a599cf3d9469932/extensions\typescript\out/commands.js.map

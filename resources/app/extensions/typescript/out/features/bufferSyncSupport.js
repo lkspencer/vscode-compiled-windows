@@ -8,6 +8,7 @@ const fs = require("fs");
 const vscode_1 = require("vscode");
 const async_1 = require("../utils/async");
 const languageModeIds = require("../utils/languageModeIds");
+const dipose_1 = require("../utils/dipose");
 function mode2ScriptKind(mode) {
     switch (mode) {
         case languageModeIds.typescript: return 'TS';
@@ -74,7 +75,39 @@ class SyncedBuffer {
             };
             this.client.execute('change', args, false);
         }
-        this.diagnosticRequestor.requestDiagnostic(filePath);
+        this.diagnosticRequestor.requestDiagnostic(this.document.uri);
+    }
+}
+class SyncedBufferMap {
+    constructor(_normalizePath) {
+        this._normalizePath = _normalizePath;
+        this._map = new Map();
+    }
+    has(resource) {
+        const file = this._normalizePath(resource);
+        return !!file && this._map.has(file);
+    }
+    get(resource) {
+        const file = this._normalizePath(resource);
+        return file ? this._map.get(file) : undefined;
+    }
+    set(resource, buffer) {
+        const file = this._normalizePath(resource);
+        if (file) {
+            this._map.set(file, buffer);
+        }
+    }
+    delete(resource) {
+        const file = this._normalizePath(resource);
+        if (file) {
+            this._map.delete(file);
+        }
+    }
+    get allBuffers() {
+        return this._map.values();
+    }
+    get allResources() {
+        return this._map.keys();
     }
 }
 class BufferSyncSupport {
@@ -86,7 +119,7 @@ class BufferSyncSupport {
         this.diagnostics = diagnostics;
         this._validate = validate;
         this.diagnosticDelayer = new async_1.Delayer(300);
-        this.syncedBuffers = new Map();
+        this.syncedBuffers = new SyncedBufferMap(path => this.client.normalizePath(path));
     }
     listen() {
         vscode_1.workspace.onDidOpenTextDocument(this.onDidOpenTextDocument, this, this.disposables);
@@ -97,21 +130,16 @@ class BufferSyncSupport {
     set validate(value) {
         this._validate = value;
     }
-    handles(file) {
-        return this.syncedBuffers.has(file);
+    handles(resource) {
+        return this.syncedBuffers.has(resource);
     }
     reOpenDocuments() {
-        for (const buffer of this.syncedBuffers.values()) {
+        for (const buffer of this.syncedBuffers.allBuffers) {
             buffer.open();
         }
     }
     dispose() {
-        while (this.disposables.length) {
-            const obj = this.disposables.pop();
-            if (obj) {
-                obj.dispose();
-            }
-        }
+        dipose_1.disposeAll(this.disposables);
     }
     onDidOpenTextDocument(document) {
         if (!this.modeIds.has(document.languageId)) {
@@ -123,57 +151,53 @@ class BufferSyncSupport {
             return;
         }
         const syncedBuffer = new SyncedBuffer(document, filepath, this, this.client);
-        this.syncedBuffers.set(filepath, syncedBuffer);
+        this.syncedBuffers.set(resource, syncedBuffer);
         syncedBuffer.open();
-        this.requestDiagnostic(filepath);
+        this.requestDiagnostic(resource);
     }
     onDidCloseTextDocument(document) {
-        const filepath = this.client.normalizePath(document.uri);
-        if (!filepath) {
-            return;
-        }
-        const syncedBuffer = this.syncedBuffers.get(filepath);
+        const resource = document.uri;
+        const syncedBuffer = this.syncedBuffers.get(resource);
         if (!syncedBuffer) {
             return;
         }
-        this.diagnostics.delete(filepath);
-        this.syncedBuffers.delete(filepath);
+        this.diagnostics.delete(resource);
+        this.syncedBuffers.delete(resource);
         syncedBuffer.close();
-        if (!fs.existsSync(filepath)) {
+        if (!fs.existsSync(resource.fsPath)) {
             this.requestAllDiagnostics();
         }
     }
     onDidChangeTextDocument(e) {
-        const filepath = this.client.normalizePath(e.document.uri);
-        if (!filepath) {
-            return;
+        const syncedBuffer = this.syncedBuffers.get(e.document.uri);
+        if (syncedBuffer) {
+            syncedBuffer.onContentChanged(e.contentChanges);
         }
-        let syncedBuffer = this.syncedBuffers.get(filepath);
-        if (!syncedBuffer) {
-            return;
-        }
-        syncedBuffer.onContentChanged(e.contentChanges);
     }
     requestAllDiagnostics() {
         if (!this._validate) {
             return;
         }
-        for (const filePath of this.syncedBuffers.keys()) {
+        for (const filePath of this.syncedBuffers.allResources) {
             this.pendingDiagnostics.set(filePath, Date.now());
         }
         this.diagnosticDelayer.trigger(() => {
             this.sendPendingDiagnostics();
         }, 200);
     }
-    requestDiagnostic(file) {
+    requestDiagnostic(resource) {
         if (!this._validate) {
             return;
         }
+        const file = this.client.normalizePath(resource);
+        if (!file) {
+            return;
+        }
         this.pendingDiagnostics.set(file, Date.now());
-        const buffer = this.syncedBuffers.get(file);
+        const buffer = this.syncedBuffers.get(resource);
         let delay = 300;
         if (buffer) {
-            let lineCount = buffer.lineCount;
+            const lineCount = buffer.lineCount;
             delay = Math.min(Math.max(Math.ceil(lineCount / 20), 300), 800);
         }
         this.diagnosticDelayer.trigger(() => {
@@ -195,7 +219,7 @@ class BufferSyncSupport {
             return value.file;
         });
         // Add all open TS buffers to the geterr request. They might be visible
-        for (const file of this.syncedBuffers.keys()) {
+        for (const file of this.syncedBuffers.allResources) {
             if (!this.pendingDiagnostics.get(file)) {
                 files.push(file);
             }
@@ -211,4 +235,4 @@ class BufferSyncSupport {
     }
 }
 exports.default = BufferSyncSupport;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/1633d0959a33c1ba0169618280a0edb30d1ddcc3/extensions\typescript\out/features\bufferSyncSupport.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/cc11eb00ba83ee0b6d29851f1a599cf3d9469932/extensions\typescript\out/features\bufferSyncSupport.js.map

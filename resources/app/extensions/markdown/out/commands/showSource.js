@@ -6,22 +6,21 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const vscode = require("vscode");
 class ShowSourceCommand {
-    constructor() {
+    constructor(previewManager) {
+        this.previewManager = previewManager;
         this.id = 'markdown.showSource';
     }
-    execute(mdUri) {
-        if (!mdUri) {
+    execute(docUri) {
+        if (!docUri) {
             return vscode.commands.executeCommand('workbench.action.navigateBack');
         }
-        const docUri = vscode.Uri.parse(mdUri.query);
-        for (const editor of vscode.window.visibleTextEditors) {
-            if (editor.document.uri.scheme === docUri.scheme && editor.document.uri.toString() === docUri.toString()) {
-                return vscode.window.showTextDocument(editor.document, editor.viewColumn);
-            }
+        const resource = this.previewManager.getResourceForPreview(docUri);
+        if (resource) {
+            return vscode.workspace.openTextDocument(resource)
+                .then(document => vscode.window.showTextDocument(document));
         }
-        return vscode.workspace.openTextDocument(docUri)
-            .then(vscode.window.showTextDocument);
+        return undefined;
     }
 }
 exports.ShowSourceCommand = ShowSourceCommand;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/1633d0959a33c1ba0169618280a0edb30d1ddcc3/extensions\markdown\out/commands\showSource.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/cc11eb00ba83ee0b6d29851f1a599cf3d9469932/extensions\markdown\out/commands\showSource.js.map

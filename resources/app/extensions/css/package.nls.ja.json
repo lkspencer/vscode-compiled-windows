@@ -1,4 +1,6 @@
 {
+	"displayName": "CSS 言語機能",
+	"description": "CSS、LESS、SCSS ファイルに豊富な言語サポートを提供。",
 	"css.title": "CSS",
 	"css.lint.argumentsInColorFunction.desc": "無効なパラメーター数値",
 	"css.lint.boxModel.desc": "padding や border を使用するときに width や height を使用しないでください",

@@ -15,6 +15,7 @@ const languageProvider_1 = require("./languageProvider");
 const typingsStatus_1 = require("./utils/typingsStatus");
 const versionStatus_1 = require("./utils/versionStatus");
 const convert_1 = require("./utils/convert");
+const dipose_1 = require("./utils/dipose");
 // Style check diagnostics that can be reported as warnings
 const styleCheckDiagnostics = [
     6133,
@@ -45,8 +46,12 @@ class TypeScriptServiceClientHost {
         configFileWatcher.onDidCreate(handleProjectCreateOrDelete, this, this.disposables);
         configFileWatcher.onDidDelete(handleProjectCreateOrDelete, this, this.disposables);
         configFileWatcher.onDidChange(handleProjectChange, this, this.disposables);
-        this.client = new typescriptServiceClient_1.default(this, workspaceState, version => this.versionStatus.onDidChangeTypeScriptVersion(version), plugins, logDirectoryProvider);
+        this.client = new typescriptServiceClient_1.default(workspaceState, version => this.versionStatus.onDidChangeTypeScriptVersion(version), plugins, logDirectoryProvider);
         this.disposables.push(this.client);
+        this.client.onSyntaxDiagnosticsReceived(({ resource, diagnostics }) => this.syntaxDiagnosticsReceived(resource, diagnostics), null, this.disposables);
+        this.client.onSemanticDiagnosticsReceived(({ resource, diagnostics }) => this.semanticDiagnosticsReceived(resource, diagnostics), null, this.disposables);
+        this.client.onConfigDiagnosticsReceived(diag => this.configFileDiagnosticsReceived(diag), null, this.disposables);
+        this.client.onResendModelsRequested(() => this.populateService(), null, this.disposables);
         this.versionStatus = new versionStatus_1.default(resource => this.client.normalizePath(resource));
         this.disposables.push(this.versionStatus);
         this.typingsStatus = new typingsStatus_1.default(this.client);
@@ -88,12 +93,7 @@ class TypeScriptServiceClientHost {
         this.configurationChanged();
     }
     dispose() {
-        while (this.disposables.length) {
-            const obj = this.disposables.pop();
-            if (obj) {
-                obj.dispose();
-            }
-        }
+        dipose_1.disposeAll(this.disposables);
         this.typingsStatus.dispose();
         this.ataProgressReporter.dispose();
     }
@@ -104,17 +104,17 @@ class TypeScriptServiceClientHost {
         this.client.execute('reloadProjects', null, false);
         this.triggerAllDiagnostics();
     }
-    handles(file) {
-        return !!this.findLanguage(file);
+    handles(resource) {
+        return !!this.findLanguage(resource);
     }
     configurationChanged() {
         const config = vscode_1.workspace.getConfiguration('typescript');
         this.reportStyleCheckAsWarnings = config.get('reportStyleChecksAsWarnings', true);
     }
-    async findLanguage(file) {
+    async findLanguage(resource) {
         try {
-            const doc = await vscode_1.workspace.openTextDocument(this.client.asUrl(file));
-            return this.languages.find(language => language.handles(file, doc));
+            const doc = await vscode_1.workspace.openTextDocument(resource);
+            return this.languages.find(language => language.handles(resource, doc));
         }
         catch (_a) {
             return undefined;
@@ -125,7 +125,7 @@ class TypeScriptServiceClientHost {
             language.triggerAllDiagnostics();
         }
     }
-    /* internal */ populateService() {
+    populateService() {
         // See https://github.com/Microsoft/TypeScript/issues/5530
         vscode_1.workspace.saveAll(false).then(() => {
             for (const language of this.languagePerId.values()) {
@@ -133,33 +133,25 @@ class TypeScriptServiceClientHost {
             }
         });
     }
-    /* internal */ syntaxDiagnosticsReceived(event) {
-        const body = event.body;
-        if (body && body.diagnostics) {
-            this.findLanguage(body.file).then(language => {
-                if (language) {
-                    language.syntaxDiagnosticsReceived(this.client.asUrl(body.file), this.createMarkerDatas(body.diagnostics, language.diagnosticSource));
-                }
-            });
+    async syntaxDiagnosticsReceived(resource, diagnostics) {
+        const language = await this.findLanguage(resource);
+        if (language) {
+            language.syntaxDiagnosticsReceived(resource, this.createMarkerDatas(diagnostics, language.diagnosticSource));
         }
     }
-    /* internal */ semanticDiagnosticsReceived(event) {
-        const body = event.body;
-        if (body && body.diagnostics) {
-            this.findLanguage(body.file).then(language => {
-                if (language) {
-                    language.semanticDiagnosticsReceived(this.client.asUrl(body.file), this.createMarkerDatas(body.diagnostics, language.diagnosticSource));
-                }
-            });
+    async semanticDiagnosticsReceived(resource, diagnostics) {
+        const language = await this.findLanguage(resource);
+        if (language) {
+            language.semanticDiagnosticsReceived(resource, this.createMarkerDatas(diagnostics, language.diagnosticSource));
         }
     }
-    /* internal */ configFileDiagnosticsReceived(event) {
+    configFileDiagnosticsReceived(event) {
         // See https://github.com/Microsoft/TypeScript/issues/10384
         const body = event.body;
         if (!body || !body.diagnostics || !body.configFile) {
             return;
         }
-        (this.findLanguage(body.configFile)).then(language => {
+        (this.findLanguage(this.client.asUrl(body.configFile))).then(language => {
             if (!language) {
                 return;
             }
@@ -206,19 +198,18 @@ class TypeScriptServiceClientHost {
         });
     }
     createMarkerDatas(diagnostics, source) {
-        const result = [];
-        for (let diagnostic of diagnostics) {
-            const { start, end, text } = diagnostic;
-            const range = new vscode_1.Range(convert_1.tsLocationToVsPosition(start), convert_1.tsLocationToVsPosition(end));
-            const converted = new vscode_1.Diagnostic(range, text);
-            converted.severity = this.getDiagnosticSeverity(diagnostic);
-            converted.source = diagnostic.source || source;
-            if (diagnostic.code) {
-                converted.code = diagnostic.code;
-            }
-            result.push(converted);
+        return diagnostics.map(tsDiag => this.tsDiagnosticToVsDiagnostic(tsDiag, source));
+    }
+    tsDiagnosticToVsDiagnostic(diagnostic, source) {
+        const { start, end, text } = diagnostic;
+        const range = new vscode_1.Range(convert_1.tsLocationToVsPosition(start), convert_1.tsLocationToVsPosition(end));
+        const converted = new vscode_1.Diagnostic(range, text);
+        converted.severity = this.getDiagnosticSeverity(diagnostic);
+        converted.source = diagnostic.source || source;
+        if (diagnostic.code) {
+            converted.code = diagnostic.code;
         }
-        return result;
+        return converted;
     }
     getDiagnosticSeverity(diagnostic) {
         if (this.reportStyleCheckAsWarnings && this.isStyleCheckDiagnostic(diagnostic.code)) {
@@ -238,4 +229,4 @@ class TypeScriptServiceClientHost {
     }
 }
 exports.default = TypeScriptServiceClientHost;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/1633d0959a33c1ba0169618280a0edb30d1ddcc3/extensions\typescript\out/typeScriptServiceClientHost.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/cc11eb00ba83ee0b6d29851f1a599cf3d9469932/extensions\typescript\out/typeScriptServiceClientHost.js.map

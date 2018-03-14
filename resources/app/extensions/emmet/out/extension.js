@@ -116,7 +116,7 @@ exports.activate = activate;
  */
 const languageMappingForCompletionProviders = new Map();
 const completionProvidersMapping = new Map();
-const languagesToSkipCompletionProviders = ['html', 'css', 'scss', 'less'];
+const languagesToSkipCompletionProviders = ['html'];
 function registerCompletionProviders(context) {
     let completionProvider = new defaultCompletionProvider_1.DefaultCompletionItemProvider();
     let includedLanguages = util_1.getMappingForIncludedLanguages();
@@ -149,4 +149,4 @@ function registerCompletionProviders(context) {
 function deactivate() {
 }
 exports.deactivate = deactivate;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/1633d0959a33c1ba0169618280a0edb30d1ddcc3/extensions\emmet\out/extension.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/cc11eb00ba83ee0b6d29851f1a599cf3d9469932/extensions\emmet\out/extension.js.map

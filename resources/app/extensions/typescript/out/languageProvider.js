@@ -3,6 +3,12 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 const vscode_1 = require("vscode");
 const path_1 = require("path");
@@ -12,7 +18,10 @@ const languageConfigurations = require("./utils/languageConfigurations");
 const diagnostics_1 = require("./features/diagnostics");
 const fileSchemes = require("./utils/fileSchemes");
 const baseCodeLensProvider_1 = require("./features/baseCodeLensProvider");
+const memoize_1 = require("./utils/memoize");
+const dipose_1 = require("./utils/dipose");
 const validateSetting = 'validate.enable';
+const foldingSetting = 'typescript.experimental.syntaxFolding';
 class LanguageProvider {
     constructor(client, description, commandManager, typingsStatus) {
         this.client = client;
@@ -21,13 +30,14 @@ class LanguageProvider {
         this._validate = true;
         this.disposables = [];
         this.versionDependentDisposables = [];
+        this.foldingProviderRegistration = void 0;
         this.formattingOptionsManager = new formattingConfigurationManager_1.default(client);
         this.bufferSyncSupport = new bufferSyncSupport_1.default(client, description.modeIds, {
-            delete: (file) => {
-                this.diagnosticsManager.delete(file);
+            delete: (resource) => {
+                this.diagnosticsManager.delete(resource);
             }
         }, this._validate);
-        this.diagnosticsManager = new diagnostics_1.default(description.id, this.client);
+        this.diagnosticsManager = new diagnostics_1.default(description.id);
         vscode_1.workspace.onDidChangeConfiguration(this.configurationChanged, this, this.disposables);
         this.configurationChanged();
         client.onReady(async () => {
@@ -36,32 +46,20 @@ class LanguageProvider {
         });
     }
     dispose() {
-        while (this.disposables.length) {
-            const obj = this.disposables.pop();
-            if (obj) {
-                obj.dispose();
-            }
-        }
-        while (this.versionDependentDisposables.length) {
-            const obj = this.versionDependentDisposables.pop();
-            if (obj) {
-                obj.dispose();
-            }
-        }
+        dipose_1.disposeAll(this.disposables);
+        dipose_1.disposeAll(this.versionDependentDisposables);
         this.diagnosticsManager.dispose();
         this.bufferSyncSupport.dispose();
         this.formattingOptionsManager.dispose();
     }
     get documentSelector() {
-        if (!this._documentSelector) {
-            this._documentSelector = [];
-            for (const language of this.description.modeIds) {
-                for (const scheme of fileSchemes.supportedSchemes) {
-                    this._documentSelector.push({ language, scheme });
-                }
+        const documentSelector = [];
+        for (const language of this.description.modeIds) {
+            for (const scheme of fileSchemes.supportedSchemes) {
+                documentSelector.push({ language, scheme });
             }
         }
-        return this._documentSelector;
+        return documentSelector;
     }
     async registerProviders(client, commandManager, typingsStatus) {
         const selector = this.documentSelector;
@@ -86,6 +84,13 @@ class LanguageProvider {
         this.disposables.push(vscode_1.languages.registerRenameProvider(selector, new (await Promise.resolve().then(() => require('./features/renameProvider'))).default(client)));
         this.disposables.push(vscode_1.languages.registerCodeActionsProvider(selector, new (await Promise.resolve().then(() => require('./features/quickFixProvider'))).default(client, this.formattingOptionsManager, commandManager, this.diagnosticsManager)));
         this.disposables.push(vscode_1.languages.registerCodeActionsProvider(selector, new (await Promise.resolve().then(() => require('./features/refactorProvider'))).default(client, this.formattingOptionsManager, commandManager)));
+        await this.initFoldingProvider();
+        this.disposables.push(vscode_1.workspace.onDidChangeConfiguration(c => {
+            if (c.affectsConfiguration(foldingSetting)) {
+                this.initFoldingProvider();
+            }
+        }));
+        this.disposables.push({ dispose: () => this.foldingProviderRegistration && this.foldingProviderRegistration.dispose() });
         this.registerVersionDependentProviders();
         const cachedResponse = new baseCodeLensProvider_1.CachedNavTreeResponse();
         const referenceCodeLensProvider = new (await Promise.resolve().then(() => require('./features/referencesCodeLensProvider'))).default(client, this.description.id, cachedResponse);
@@ -103,6 +108,20 @@ class LanguageProvider {
             }
         }
     }
+    async initFoldingProvider() {
+        let enable = vscode_1.workspace.getConfiguration().get(foldingSetting, false);
+        if (enable) {
+            if (!this.foldingProviderRegistration) {
+                this.foldingProviderRegistration = vscode_1.languages.registerFoldingProvider(this.documentSelector, new (await Promise.resolve().then(() => require('./features/folderingProvider'))).default(this.client));
+            }
+        }
+        else {
+            if (this.foldingProviderRegistration) {
+                this.foldingProviderRegistration.dispose();
+                this.foldingProviderRegistration = void 0;
+            }
+        }
+    }
     configurationChanged() {
         const config = vscode_1.workspace.getConfiguration(this.id);
         this.updateValidate(config.get(validateSetting, true));
@@ -110,14 +129,14 @@ class LanguageProvider {
             toUpdate.updateConfiguration();
         }
     }
-    handles(file, doc) {
+    handles(resource, doc) {
         if (doc && this.description.modeIds.indexOf(doc.languageId) >= 0) {
             return true;
         }
-        if (this.bufferSyncSupport.handles(file)) {
+        if (this.bufferSyncSupport.handles(resource)) {
             return true;
         }
-        const base = path_1.basename(file);
+        const base = path_1.basename(resource.fsPath);
         return !!base && base === this.description.configFile;
     }
     get id() {
@@ -145,12 +164,7 @@ class LanguageProvider {
         this.registerVersionDependentProviders();
     }
     async registerVersionDependentProviders() {
-        while (this.versionDependentDisposables.length) {
-            const obj = this.versionDependentDisposables.pop();
-            if (obj) {
-                obj.dispose();
-            }
-        }
+        dipose_1.disposeAll(this.versionDependentDisposables);
         if (!this.client) {
             return;
         }
@@ -175,5 +189,8 @@ class LanguageProvider {
         this.diagnosticsManager.configFileDiagnosticsReceived(file, diagnostics);
     }
 }
+__decorate([
+    memoize_1.memoize
+], LanguageProvider.prototype, "documentSelector", null);
 exports.default = LanguageProvider;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/1633d0959a33c1ba0169618280a0edb30d1ddcc3/extensions\typescript\out/languageProvider.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/cc11eb00ba83ee0b6d29851f1a599cf3d9469932/extensions\typescript\out/languageProvider.js.map

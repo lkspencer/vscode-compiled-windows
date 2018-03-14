@@ -5,15 +5,16 @@
 'use strict';
 Object.defineProperty(exports, "__esModule", { value: true });
 var vscode_languageserver_1 = require("vscode-languageserver");
-var protocol_colorProvider_proposed_1 = require("vscode-languageserver-protocol/lib/protocol.colorProvider.proposed");
 var request_light_1 = require("request-light");
 var fs = require("fs");
 var vscode_uri_1 = require("vscode-uri");
 var URL = require("url");
-var Strings = require("./utils/strings");
+var strings_1 = require("./utils/strings");
 var errors_1 = require("./utils/errors");
 var vscode_json_languageservice_1 = require("vscode-json-languageservice");
 var languageModelCache_1 = require("./languageModelCache");
+var jsonFolding_1 = require("./jsonFolding");
+var foldingProvider_proposed_1 = require("./protocol/foldingProvider.proposed");
 var SchemaAssociationNotification;
 (function (SchemaAssociationNotification) {
     SchemaAssociationNotification.type = new vscode_languageserver_1.NotificationType('json/schemaAssociations');
@@ -64,7 +65,8 @@ connection.onInitialize(function (params) {
         hoverProvider: true,
         documentSymbolProvider: true,
         documentRangeFormattingProvider: false,
-        colorProvider: true
+        colorProvider: true,
+        foldingProvider: true
     };
     return { capabilities: capabilities };
 });
@@ -74,7 +76,7 @@ var workspaceContext = {
     }
 };
 var schemaRequestService = function (uri) {
-    if (Strings.startsWith(uri, 'file://')) {
+    if (strings_1.startsWith(uri, 'file://')) {
         var fsPath_1 = vscode_uri_1.default.parse(uri).fsPath;
         return new Promise(function (c, e) {
             fs.readFile(fsPath_1, 'UTF-8', function (err, result) {
@@ -82,7 +84,7 @@ var schemaRequestService = function (uri) {
             });
         });
     }
-    else if (Strings.startsWith(uri, 'vscode://')) {
+    else if (strings_1.startsWith(uri, 'vscode://')) {
         return connection.sendRequest(VSCodeContentRequest.type, uri).then(function (responseText) {
             return responseText;
         }, function (error) {
@@ -90,6 +92,11 @@ var schemaRequestService = function (uri) {
         });
     }
     if (uri.indexOf('//schema.management.azure.com/') !== -1) {
+        /* __GDPR__
+            "json.schema" : {
+                "schemaURL" : { "classification": "SystemMetaData", "purpose": "FeatureInsight" }
+            }
+         */
         connection.telemetry.logEvent({
             key: 'json.schema',
             value: {
@@ -205,17 +212,20 @@ function validateTextDocument(textDocument) {
         connection.sendDiagnostics({ uri: textDocument.uri, diagnostics: [] });
         return;
     }
-    try {
-        var jsonDocument = getJSONDocument(textDocument);
-        var documentSettings = textDocument.languageId === 'jsonc' ? { comments: 'ignore', trailingCommas: 'ignore' } : { comments: 'error', trailingCommas: 'error' };
-        languageService.doValidation(textDocument, jsonDocument, documentSettings).then(function (diagnostics) {
-            // Send the computed diagnostics to VSCode.
-            connection.sendDiagnostics({ uri: textDocument.uri, diagnostics: diagnostics });
-        });
-    }
-    catch (e) {
-        connection.console.error(errors_1.formatError("Error while validating " + textDocument.uri, e));
-    }
+    var jsonDocument = getJSONDocument(textDocument);
+    var version = textDocument.version;
+    var documentSettings = textDocument.languageId === 'jsonc' ? { comments: 'ignore', trailingCommas: 'ignore' } : { comments: 'error', trailingCommas: 'error' };
+    languageService.doValidation(textDocument, jsonDocument, documentSettings).then(function (diagnostics) {
+        setTimeout(function () {
+            var currDocument = documents.get(textDocument.uri);
+            if (currDocument && currDocument.version === version) {
+                // Send the computed diagnostics to VSCode.
+                connection.sendDiagnostics({ uri: textDocument.uri, diagnostics: diagnostics });
+            }
+        }, 100);
+    }, function (error) {
+        connection.console.error(errors_1.formatError("Error while validating " + textDocument.uri, error));
+    });
 }
 connection.onDidChangeWatchedFiles(function (change) {
     // Monitored files have changed in VSCode
@@ -226,7 +236,7 @@ connection.onDidChangeWatchedFiles(function (change) {
         }
     });
     if (hasChanges) {
-        documents.all().forEach(validateTextDocument);
+        documents.all().forEach(triggerValidation);
     }
 });
 var jsonDocuments = languageModelCache_1.getLanguageModelCache(10, 60, function (document) { return languageService.parseJSONDocument(document); });
@@ -258,20 +268,20 @@ connection.onHover(function (textDocumentPositionParams) {
         return languageService.doHover(document, textDocumentPositionParams.position, jsonDocument);
     }, null, "Error while computing hover for " + textDocumentPositionParams.textDocument.uri);
 });
-connection.onDocumentSymbol(function (documentSymbolParams) {
+connection.onDocumentSymbol(function (documentSymbolParams, token) {
     return errors_1.runSafe(function () {
         var document = documents.get(documentSymbolParams.textDocument.uri);
         var jsonDocument = getJSONDocument(document);
         return languageService.findDocumentSymbols(document, jsonDocument);
-    }, [], "Error while computing document symbols for " + documentSymbolParams.textDocument.uri);
+    }, [], "Error while computing document symbols for " + documentSymbolParams.textDocument.uri, token);
 });
-connection.onDocumentRangeFormatting(function (formatParams) {
+connection.onDocumentRangeFormatting(function (formatParams, token) {
     return errors_1.runSafe(function () {
         var document = documents.get(formatParams.textDocument.uri);
         return languageService.format(document, formatParams.range, formatParams.options);
-    }, [], "Error while formatting range for " + formatParams.textDocument.uri);
+    }, [], "Error while formatting range for " + formatParams.textDocument.uri, token);
 });
-connection.onRequest(protocol_colorProvider_proposed_1.DocumentColorRequest.type, function (params) {
+connection.onRequest(vscode_languageserver_1.DocumentColorRequest.type, function (params) {
     return errors_1.runSafeAsync(function () {
         var document = documents.get(params.textDocument.uri);
         if (document) {
@@ -281,7 +291,7 @@ connection.onRequest(protocol_colorProvider_proposed_1.DocumentColorRequest.type
         return Promise.resolve([]);
     }, [], "Error while computing document colors for " + params.textDocument.uri);
 });
-connection.onRequest(protocol_colorProvider_proposed_1.ColorPresentationRequest.type, function (params) {
+connection.onRequest(vscode_languageserver_1.ColorPresentationRequest.type, function (params, token) {
     return errors_1.runSafe(function () {
         var document = documents.get(params.textDocument.uri);
         if (document) {
@@ -289,8 +299,17 @@ connection.onRequest(protocol_colorProvider_proposed_1.ColorPresentationRequest.
             return languageService.getColorPresentations(document, jsonDocument, params.color, params.range);
         }
         return [];
-    }, [], "Error while computing color presentationsd for " + params.textDocument.uri);
+    }, [], "Error while computing color presentations for " + params.textDocument.uri, token);
+});
+connection.onRequest(foldingProvider_proposed_1.FoldingRangesRequest.type, function (params, token) {
+    return errors_1.runSafe(function () {
+        var document = documents.get(params.textDocument.uri);
+        if (document) {
+            return jsonFolding_1.getFoldingRegions(document, params.maxRanges, token);
+        }
+        return null;
+    }, null, "Error while computing folding ranges for " + params.textDocument.uri, token);
 });
 // Listen on the connection
 connection.listen();
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/1633d0959a33c1ba0169618280a0edb30d1ddcc3/extensions\json\server\out/jsonServerMain.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/cc11eb00ba83ee0b6d29851f1a599cf3d9469932/extensions\json\server\out/jsonServerMain.js.map

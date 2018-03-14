@@ -61,6 +61,11 @@ suite('markdown.TableOfContentsProvider', () => {
         assert.strictEqual(await provider.lookup('foo'), undefined);
         assert.strictEqual(await provider.lookup('fo o'), undefined);
     });
+    test('should normalize special characters #44779', async () => {
+        const doc = new InMemoryDocument(testFileName, `# Indentação\n`);
+        const provider = new tableOfContentsProvider_1.TableOfContentsProvider(new markdownEngine_1.MarkdownEngine(), doc);
+        assert.strictEqual((await provider.lookup('indentacao')).line, 0);
+    });
 });
 class InMemoryDocument {
     constructor(uri, _contents) {
@@ -110,4 +115,4 @@ class InMemoryDocument {
         throw new Error('Method not implemented.');
     }
 }
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/1633d0959a33c1ba0169618280a0edb30d1ddcc3/extensions\markdown\out/test\tableOfContentsProvider.test.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/cc11eb00ba83ee0b6d29851f1a599cf3d9469932/extensions\markdown\out/test\tableOfContentsProvider.test.js.map

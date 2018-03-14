@@ -10,7 +10,6 @@ var protocol_colorProvider_proposed_1 = require("vscode-languageserver-protocol/
 var vscode_css_languageservice_1 = require("vscode-css-languageservice");
 var languageModelCache_1 = require("./languageModelCache");
 var errors_1 = require("./utils/errors");
-var vscode_emmet_helper_1 = require("vscode-emmet-helper");
 var vscode_uri_1 = require("vscode-uri");
 // Create a connection for the server.
 var connection = vscode_languageserver_1.createConnection();
@@ -34,9 +33,6 @@ connection.onShutdown(function () {
 });
 var scopedSettingsSupport = false;
 var workspaceFolders;
-var emmetSettings = {};
-var currentEmmetExtensionsPath;
-var emmetTriggerCharacters = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
 // After the server has started the client sends an initilize request. The server receives
 // in the passed params the rootPath of the workspace plus the client capabilities.
 connection.onInitialize(function (params) {
@@ -60,7 +56,7 @@ connection.onInitialize(function (params) {
     var capabilities = {
         // Tell the client that the server works in FULL text document sync mode
         textDocumentSync: documents.syncKind,
-        completionProvider: snippetSupport ? { resolveProvider: false, triggerCharacters: emmetTriggerCharacters } : undefined,
+        completionProvider: snippetSupport ? { resolveProvider: false } : undefined,
         hoverProvider: true,
         documentSymbolProvider: true,
         referencesProvider: true,
@@ -114,12 +110,6 @@ function updateConfiguration(settings) {
     documentSettings = {};
     // Revalidate any open text documents
     documents.all().forEach(triggerValidation);
-    emmetSettings = settings.emmet;
-    if (currentEmmetExtensionsPath !== emmetSettings['extensionsPath']) {
-        currentEmmetExtensionsPath = emmetSettings['extensionsPath'];
-        var workspaceUri = (workspaceFolders && workspaceFolders.length === 1) ? vscode_uri_1.default.parse(workspaceFolders[0].uri) : null;
-        vscode_emmet_helper_1.updateExtensionsPath(currentEmmetExtensionsPath, workspaceUri ? workspaceUri.fsPath : null);
-    }
 }
 var pendingValidationRequests = {};
 var validationDelayMs = 500;
@@ -158,42 +148,10 @@ function validateTextDocument(textDocument) {
         connection.console.error(errors_1.formatError("Error while validating " + textDocument.uri, e));
     });
 }
-var cachedCompletionList;
-var hexColorRegex = /^#[\d,a-f,A-F]{1,6}$/;
 connection.onCompletion(function (textDocumentPosition) {
     return errors_1.runSafe(function () {
         var document = documents.get(textDocumentPosition.textDocument.uri);
-        if (cachedCompletionList
-            && !cachedCompletionList.isIncomplete
-            && textDocumentPosition.context
-            && textDocumentPosition.context.triggerKind === vscode_languageserver_1.CompletionTriggerKind.TriggerForIncompleteCompletions) {
-            var result_1 = vscode_emmet_helper_1.doComplete(document, textDocumentPosition.position, document.languageId, emmetSettings);
-            if (result_1 && result_1.items) {
-                (_a = result_1.items).push.apply(_a, cachedCompletionList.items);
-            }
-            else {
-                result_1 = cachedCompletionList;
-                cachedCompletionList = null;
-            }
-            return result_1;
-        }
-        cachedCompletionList = null;
-        var emmetCompletionList = {
-            isIncomplete: true,
-            items: undefined
-        };
-        var emmetCompletionParticipant = vscode_emmet_helper_1.getEmmetCompletionParticipants(document, textDocumentPosition.position, document.languageId, emmetSettings, emmetCompletionList);
-        getLanguageService(document).setCompletionParticipants([emmetCompletionParticipant]);
-        var result = getLanguageService(document).doComplete(document, textDocumentPosition.position, stylesheets.get(document)); /* TODO: remove ! once LS has null annotations */
-        if (emmetCompletionList && emmetCompletionList.items) {
-            cachedCompletionList = result;
-            if (emmetCompletionList.items.length && hexColorRegex.test(emmetCompletionList.items[0].label) && result.items.some(function (x) { return x.label === emmetCompletionList.items[0].label; })) {
-                emmetCompletionList.items.shift();
-            }
-            return { isIncomplete: true, items: emmetCompletionList.items.concat(result.items) };
-        }
-        return result;
-        var _a;
+        return getLanguageService(document).doComplete(document, textDocumentPosition.position, stylesheets.get(document)); /* TODO: remove ! once LS has null annotations */
     }, null, "Error while computing completions for " + textDocumentPosition.textDocument.uri);
 });
 connection.onHover(function (textDocumentPosition) {
@@ -267,4 +225,4 @@ connection.onRenameRequest(function (renameParameters) {
 });
 // Listen on the connection
 connection.listen();
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/1633d0959a33c1ba0169618280a0edb30d1ddcc3/extensions\css\server\out/cssServerMain.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/cc11eb00ba83ee0b6d29851f1a599cf3d9469932/extensions\css\server\out/cssServerMain.js.map

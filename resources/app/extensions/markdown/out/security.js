@@ -5,7 +5,6 @@
  *--------------------------------------------------------------------------------------------*/
 Object.defineProperty(exports, "__esModule", { value: true });
 const vscode = require("vscode");
-const previewContentProvider_1 = require("./features/previewContentProvider");
 const nls = require("vscode-nls");
 const localize = nls.loadMessageBundle(__filename);
 var MarkdownPreviewSecurityLevel;
@@ -105,15 +104,15 @@ class PreviewSecuritySelector {
             vscode.commands.executeCommand('vscode.open', vscode.Uri.parse('https://go.microsoft.com/fwlink/?linkid=854414'));
             return;
         }
-        const sourceUri = previewContentProvider_1.getMarkdownUri(resource);
         if (selection.type === 'toggle') {
             this.cspArbiter.setShouldDisableSecurityWarning(!this.cspArbiter.shouldDisableSecurityWarnings());
-            this.webviewManager.update(sourceUri);
             return;
         }
-        await this.cspArbiter.setSecurityLevelForResource(resource, selection.type);
-        this.webviewManager.update(sourceUri);
+        else {
+            await this.cspArbiter.setSecurityLevelForResource(resource, selection.type);
+        }
+        this.webviewManager.refresh();
     }
 }
 exports.PreviewSecuritySelector = PreviewSecuritySelector;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/1633d0959a33c1ba0169618280a0edb30d1ddcc3/extensions\markdown\out/security.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/cc11eb00ba83ee0b6d29851f1a599cf3d9469932/extensions\markdown\out/security.js.map

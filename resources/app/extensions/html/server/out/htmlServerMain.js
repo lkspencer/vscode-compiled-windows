@@ -51,6 +51,8 @@ var documentContext_1 = require("./utils/documentContext");
 var vscode_uri_1 = require("vscode-uri");
 var errors_1 = require("./utils/errors");
 var vscode_emmet_helper_1 = require("vscode-emmet-helper");
+var pathCompletion_1 = require("./modes/pathCompletion");
+var foldingProvider_proposed_1 = require("./protocol/foldingProvider.proposed");
 var TagCloseRequest;
 (function (TagCloseRequest) {
     TagCloseRequest.type = new vscode_languageserver_1.RequestType('html/tag');
@@ -60,6 +62,9 @@ var connection = vscode_languageserver_1.createConnection();
 console.log = connection.console.log.bind(connection.console);
 console.error = connection.console.error.bind(connection.console);
 process.on('unhandledRejection', function (e) {
+    connection.console.error(errors_1.formatError("Unhandled exception", e));
+});
+process.on('uncaughtException', function (e) {
     connection.console.error(errors_1.formatError("Unhandled exception", e));
 });
 // Create a simple text document manager. The text document manager
@@ -141,7 +146,8 @@ connection.onInitialize(function (params) {
         definitionProvider: true,
         signatureHelpProvider: { triggerCharacters: ['('] },
         referencesProvider: true,
-        colorProvider: true
+        colorProvider: true,
+        foldingProvider: true
     };
     return { capabilities: capabilities };
 });
@@ -270,7 +276,7 @@ connection.onCompletion(function (textDocumentPosition) { return __awaiter(_this
     var _this = this;
     return __generator(this, function (_a) {
         return [2 /*return*/, errors_1.runSafe(function () { return __awaiter(_this, void 0, void 0, function () {
-                var document, mode, result_1, emmetCompletionList, emmetCompletionParticipant, settings, result, _a;
+                var document, mode, result_1, emmetCompletionList, pathCompletionList, emmetCompletionParticipant, completionParticipants, pathCompletionParticipant, settings, result, _a;
                 return __generator(this, function (_b) {
                     switch (_b.label) {
                         case 0:
@@ -295,27 +301,41 @@ connection.onCompletion(function (textDocumentPosition) { return __awaiter(_this
                                 return [2 /*return*/, result_1];
                             }
                             if (mode.getId() !== 'html') {
+                                /* __GDPR__
+                                    "html.embbedded.complete" : {
+                                        "languageId" : { "classification": "SystemMetaData", "purpose": "FeatureInsight" }
+                                    }
+                                 */
                                 connection.telemetry.logEvent({ key: 'html.embbedded.complete', value: { languageId: mode.getId() } });
                             }
                             cachedCompletionList = null;
                             emmetCompletionList = {
-                                isIncomplete: true,
-                                items: undefined
+                                isIncomplete: false,
+                                items: []
                             };
-                            if (mode.setCompletionParticipants) {
-                                emmetCompletionParticipant = vscode_emmet_helper_1.getEmmetCompletionParticipants(document, textDocumentPosition.position, mode.getId(), emmetSettings, emmetCompletionList);
-                                mode.setCompletionParticipants([emmetCompletionParticipant]);
+                            pathCompletionList = {
+                                isIncomplete: false,
+                                items: []
+                            };
+                            emmetCompletionParticipant = vscode_emmet_helper_1.getEmmetCompletionParticipants(document, textDocumentPosition.position, mode.getId(), emmetSettings, emmetCompletionList);
+                            completionParticipants = [emmetCompletionParticipant];
+                            // Ideally, fix this in the Language Service side
+                            // Check participants' methods before calling them
+                            if (mode.getId() === 'html') {
+                                pathCompletionParticipant = pathCompletion_1.getPathCompletionParticipant(document, workspaceFolders, pathCompletionList);
+                                completionParticipants.push(pathCompletionParticipant);
                             }
                             return [4 /*yield*/, getDocumentSettings(document, function () { return mode.doComplete.length > 2; })];
                         case 1:
                             settings = _b.sent();
-                            result = mode.doComplete(document, textDocumentPosition.position, settings);
+                            result = mode.doComplete(document, textDocumentPosition.position, settings, completionParticipants);
+                            result.items = pathCompletionList.items.concat(result.items);
                             if (emmetCompletionList && emmetCompletionList.items) {
                                 cachedCompletionList = result;
                                 if (emmetCompletionList.items.length && hexColorRegex.test(emmetCompletionList.items[0].label) && result.items.some(function (x) { return x.label === emmetCompletionList.items[0].label; })) {
                                     emmetCompletionList.items.shift();
                                 }
-                                return [2 /*return*/, { isIncomplete: true, items: emmetCompletionList.items.concat(result.items) }];
+                                return [2 /*return*/, { isIncomplete: emmetCompletionList.isIncomplete || result.isIncomplete, items: emmetCompletionList.items.concat(result.items) }];
                             }
                             return [2 /*return*/, result];
                     }
@@ -477,6 +497,19 @@ connection.onRequest(TagCloseRequest.type, function (params) {
         return null;
     }, null, "Error while computing tag close actions for " + params.textDocument.uri);
 });
+connection.onRequest(foldingProvider_proposed_1.FoldingRangesRequest.type, function (params) {
+    return errors_1.runSafe(function () {
+        var document = documents.get(params.textDocument.uri);
+        if (document) {
+            var mode = languageModes.getMode('html');
+            if (mode && mode.getFoldingRanges) {
+                return mode.getFoldingRanges(document);
+            }
+            return null;
+        }
+        return null;
+    }, null, "Error while computing folding regions for " + params.textDocument.uri);
+});
 // Listen on the connection
 connection.listen();
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/1633d0959a33c1ba0169618280a0edb30d1ddcc3/extensions\html\server\out/htmlServerMain.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/cc11eb00ba83ee0b6d29851f1a599cf3d9469932/extensions\html\server\out/htmlServerMain.js.map

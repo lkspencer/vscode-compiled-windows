@@ -12,11 +12,14 @@ const vscode_languageclient_1 = require("vscode-languageclient");
 const htmlEmptyTagsShared_1 = require("./htmlEmptyTagsShared");
 const tagClosing_1 = require("./tagClosing");
 const vscode_extension_telemetry_1 = require("vscode-extension-telemetry");
+const foldingProvider_proposed_1 = require("./protocol/foldingProvider.proposed");
 var TagCloseRequest;
 (function (TagCloseRequest) {
     TagCloseRequest.type = new vscode_languageclient_1.RequestType('html/tag');
 })(TagCloseRequest || (TagCloseRequest = {}));
 let telemetryReporter;
+let foldingProviderRegistration = void 0;
+const foldingSetting = 'html.experimental.syntaxFolding';
 function activate(context) {
     let toDispose = context.subscriptions;
     let packageInfo = getPackageInfo(context);
@@ -61,6 +64,13 @@ function activate(context) {
             }
         });
         toDispose.push(disposable);
+        initFoldingProvider();
+        toDispose.push(vscode_1.workspace.onDidChangeConfiguration(c => {
+            if (c.affectsConfiguration(foldingSetting)) {
+                initFoldingProvider();
+            }
+        }));
+        toDispose.push({ dispose: () => foldingProviderRegistration && foldingProviderRegistration.dispose() });
     });
     vscode_1.languages.setLanguageConfiguration('html', {
         indentationRules: {
@@ -132,6 +142,36 @@ function activate(context) {
             return null;
         }
     });
+    function initFoldingProvider() {
+        let enable = vscode_1.workspace.getConfiguration().get(foldingSetting);
+        if (enable) {
+            if (!foldingProviderRegistration) {
+                foldingProviderRegistration = vscode_1.languages.registerFoldingProvider(documentSelector, {
+                    provideFoldingRanges(document, context, token) {
+                        const param = {
+                            textDocument: client.code2ProtocolConverter.asTextDocumentIdentifier(document),
+                            maxRanges: context.maxRanges
+                        };
+                        return client.sendRequest(foldingProvider_proposed_1.FoldingRangesRequest.type, param, token).then(res => {
+                            if (res && Array.isArray(res.ranges)) {
+                                return new vscode_1.FoldingRangeList(res.ranges.map(r => new vscode_1.FoldingRange(r.startLine, r.endLine, r.type)));
+                            }
+                            return null;
+                        }, error => {
+                            client.logFailedRequest(foldingProvider_proposed_1.FoldingRangesRequest.type, error);
+                            return null;
+                        });
+                    }
+                });
+            }
+        }
+        else {
+            if (foldingProviderRegistration) {
+                foldingProviderRegistration.dispose();
+                foldingProviderRegistration = void 0;
+            }
+        }
+    }
 }
 exports.activate = activate;
 function getPackageInfo(context) {
@@ -149,4 +189,4 @@ function deactivate() {
     return telemetryReporter ? telemetryReporter.dispose() : Promise.resolve(null);
 }
 exports.deactivate = deactivate;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/1633d0959a33c1ba0169618280a0edb30d1ddcc3/extensions\html\client\out/htmlMain.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/cc11eb00ba83ee0b6d29851f1a599cf3d9469932/extensions\html\client\out/htmlMain.js.map

@@ -3,6 +3,14 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 const vscode_debugadapter_1 = require("vscode-debugadapter");
 const nodeV8Protocol_1 = require("./nodeV8Protocol");
@@ -129,10 +137,18 @@ class Script {
     }
 }
 class InternalSourceBreakpoint {
-    constructor(line, column = 0, condition, hitter) {
+    constructor(line, column = 0, condition, logMessage, hitter) {
         this.line = this.orgLine = line;
         this.column = this.orgColumn = column;
-        this.condition = condition;
+        if (logMessage) {
+            this.condition = `console.log('${logMessage}')`;
+            if (condition) {
+                this.condition = `(${condition}) && ${this.condition}`;
+            }
+        }
+        else if (condition) {
+            this.condition = condition;
+        }
         this.hitCount = 0;
         this.hitter = hitter;
     }
@@ -762,6 +778,9 @@ class NodeDebugSession extends vscode_debugadapter_1.LoggingDebugSession {
                         && !args.useWSL; // it will not work with WSL either
                     if (this._noDebug) {
                         this.sendResponse(response);
+                        // since we do not know the process ID we will not be able to terminate it properly
+                        // therefore we end the session
+                        this._terminated('cannot track process');
                     }
                     else {
                         this._attach(response, args, port, address, timeout);
@@ -943,12 +962,8 @@ class NodeDebugSession extends vscode_debugadapter_1.LoggingDebugSession {
                             const v = this._node.embeddedHostVersion; // x.y.z version represented as (x*100+y)*100+z
                             if (!this._node.v8Version && v >= 70000) {
                                 this._stepBack = true;
+                                this.sendEvent(new vscode_debugadapter_1.CapabilitiesEvent({ supportsStepBack: true }));
                             }
-                        }
-                        if (this._stepBack) {
-                            response.body = {
-                                supportsStepBack: true
-                            };
                         }
                         this.sendResponse(response);
                         this._startInitialize(!running);
@@ -1252,7 +1267,7 @@ class NodeDebugSession extends vscode_debugadapter_1.LoggingDebugSession {
                         // error
                     }
                 }
-                sbs.push(new InternalSourceBreakpoint(this.convertClientLineToDebugger(b.line), typeof b.column === 'number' ? this.convertClientColumnToDebugger(b.column) : 0, b.condition, hitter));
+                sbs.push(new InternalSourceBreakpoint(this.convertClientLineToDebugger(b.line), typeof b.column === 'number' ? this.convertClientColumnToDebugger(b.column) : 0, b.condition, b.logMessage, hitter));
             }
         }
         else if (args.lines) {
@@ -1492,26 +1507,45 @@ class NodeDebugSession extends vscode_debugadapter_1.LoggingDebugSession {
         });
     }
     _setBreakpoint2(ibp, path, actualSrcLine, actualSrcColumn, actualLine, actualColumn) {
-        // nasty corner case: since we ignore the break-on-entry event we have to make sure that we
-        // stop in the entry point line if the user has an explicit breakpoint there (or if there is a 'debugger' statement).
-        // For this we check here whether a breakpoint is at the same location as the 'break-on-entry' location.
-        // If yes, then we plan for hitting the breakpoint instead of 'continue' over it!
-        if (!this._stopOnEntry && path && PathUtils.pathCompare(this._entryPath, path)) {
-            if (this._entryLine === actualLine && this._entryColumn === actualColumn) {
-                // we do not have to 'continue' but we have to generate a stopped event instead
-                this._needContinue = false;
-                this._needBreakpointEvent = true;
-                this.log('la', '_setBreakpoint2: remember to fire a breakpoint event later');
+        return __awaiter(this, void 0, void 0, function* () {
+            // nasty corner case: since we ignore the break-on-entry event we have to make sure that we
+            // stop in the entry point line if the user has an explicit breakpoint there (or if there is a 'debugger' statement).
+            // For this we check here whether a breakpoint is at the same location as the 'break-on-entry' location.
+            // If yes, then we plan for hitting the breakpoint instead of 'continue' over it!
+            if (path && PathUtils.pathCompare(this._entryPath, path) && this._entryLine === actualLine && this._entryColumn === actualColumn) {
+                let conditionMet = true; // for regular breakpoints condition is always true
+                if (ibp.condition) {
+                    // if conditional breakpoint we have to evaluate the condition because node didn't do it (because it stopped on entry).
+                    conditionMet = yield this.evaluateCondition(ibp.condition);
+                }
+                if (!this._stopOnEntry && conditionMet) {
+                    // we do not have to 'continue' but we have to generate a stopped event instead
+                    this._needContinue = false;
+                    this._needBreakpointEvent = true;
+                    this.log('la', '_setBreakpoint2: remember to fire a breakpoint event later');
+                }
             }
-        }
-        if (ibp.verificationMessage) {
-            const bp = new vscode_debugadapter_1.Breakpoint(false, this.convertDebuggerLineToClient(actualSrcLine), this.convertDebuggerColumnToClient(actualSrcColumn));
-            bp.message = ibp.verificationMessage;
-            return bp;
-        }
-        else {
-            return new vscode_debugadapter_1.Breakpoint(true, this.convertDebuggerLineToClient(actualSrcLine), this.convertDebuggerColumnToClient(actualSrcColumn));
-        }
+            if (ibp.verificationMessage) {
+                const bp = new vscode_debugadapter_1.Breakpoint(false, this.convertDebuggerLineToClient(actualSrcLine), this.convertDebuggerColumnToClient(actualSrcColumn));
+                bp.message = ibp.verificationMessage;
+                return bp;
+            }
+            else {
+                return new vscode_debugadapter_1.Breakpoint(true, this.convertDebuggerLineToClient(actualSrcLine), this.convertDebuggerColumnToClient(actualSrcColumn));
+            }
+        });
+    }
+    evaluateCondition(condition) {
+        const args = {
+            expression: condition,
+            frame: 0,
+            disable_break: true
+        };
+        return this._node.evaluate(args).then(response => {
+            return !!response.body.value;
+        }).catch(e => {
+            return false;
+        });
     }
     /**
      * converts a path into a regular expression for use in the setbreakpoint request

@@ -139,14 +139,14 @@ class TscTaskProvider {
         const tasks = [];
         if (this.autoDetect === 'build' || this.autoDetect === 'on') {
             const buildTaskidentifier = { type: 'typescript', tsconfig: label };
-            const buildTask = new vscode.Task(buildTaskidentifier, project.workspaceFolder || vscode.TaskScope.Workspace, localize(0, null, label), 'tsc', new vscode.ShellExecution(`${command} -p "${project.path}"`), '$tsc');
+            const buildTask = new vscode.Task(buildTaskidentifier, project.workspaceFolder || vscode.TaskScope.Workspace, localize(0, null, label), 'tsc', new vscode.ShellExecution(command, ['-p', project.path]), '$tsc');
             buildTask.group = vscode.TaskGroup.Build;
             buildTask.isBackground = false;
             tasks.push(buildTask);
         }
         if (this.autoDetect === 'watch' || this.autoDetect === 'on') {
             const watchTaskidentifier = { type: 'typescript', tsconfig: label, option: 'watch' };
-            const watchTask = new vscode.Task(watchTaskidentifier, project.workspaceFolder || vscode.TaskScope.Workspace, localize(1, null, label), 'tsc', new vscode.ShellExecution(`${command} --watch -p "${project.path}"`), '$tsc-watch');
+            const watchTask = new vscode.Task(watchTaskidentifier, project.workspaceFolder || vscode.TaskScope.Workspace, localize(1, null, label), 'tsc', new vscode.ShellExecution(command, ['--watch', '-p', project.path]), '$tsc-watch');
             watchTask.group = vscode.TaskGroup.Build;
             watchTask.isBackground = true;
             tasks.push(watchTask);
@@ -208,4 +208,4 @@ class TypeScriptTaskProviderManager {
     }
 }
 exports.default = TypeScriptTaskProviderManager;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/1633d0959a33c1ba0169618280a0edb30d1ddcc3/extensions\typescript\out/features\taskProvider.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/cc11eb00ba83ee0b6d29851f1a599cf3d9469932/extensions\typescript\out/features\taskProvider.js.map

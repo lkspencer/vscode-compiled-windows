@@ -5,14 +5,15 @@
 'use strict';
 Object.defineProperty(exports, "__esModule", { value: true });
 const nls = require("vscode-nls");
-const child_process_1 = require("child_process");
 const vscode = require("vscode");
+const processTree_1 = require("./processTree");
 const localize = nls.loadMessageBundle(__filename);
 const POLL_INTERVAL = 1000;
 const DEBUG_PORT_PATTERN = /\s--(inspect|debug)-port=(\d+)/;
 const DEBUG_FLAGS_PATTERN = /\s--(inspect|debug)(-brk)?(=(\d+))?/;
 class Cluster {
-    constructor(config) {
+    constructor(folder, config) {
+        this.folder = folder;
         this.config = config;
         this.pids = new Set();
     }
@@ -20,38 +21,47 @@ class Cluster {
         this.session = session;
         setTimeout(_ => {
             // get the process ID from the debuggee
-            this.session.customRequest('evaluate', { expression: 'process.pid' }).then(reply => {
-                const rootPid = parseInt(reply.result);
-                this.attachChildProcesses(rootPid);
-            }, e => {
-                // 'evaluate' error -> use the fall back strategy
-                this.attachChildProcesses(NaN);
-            });
+            if (this.session) {
+                this.session.customRequest('evaluate', { expression: 'process.pid' }).then(reply => {
+                    const rootPid = parseInt(reply.result);
+                    this.attachChildProcesses(rootPid);
+                }, e => {
+                    // 'evaluate' error -> use the fall back strategy
+                    this.attachChildProcesses(NaN);
+                });
+            }
         }, this.session.type === 'node2' ? 500 : 100);
     }
     stopWatching() {
-        if (this.intervalId) {
-            clearInterval(this.intervalId);
+        this.session = undefined;
+        if (this.timeoutId) {
+            clearTimeout(this.timeoutId);
+            this.timeoutId = undefined;
         }
     }
     attachChildProcesses(rootPid) {
         this.pollChildProcesses(rootPid, (pid, cmd) => {
             if (!this.pids.has(pid)) {
                 this.pids.add(pid);
-                attachChildProcess(pid, cmd, this.config);
+                attachChildProcess(this.folder, pid, cmd, this.config);
             }
         });
     }
     pollChildProcesses(rootPid, cb) {
-        findChildProcesses(rootPid, cb);
-        this.intervalId = setInterval(() => {
-            findChildProcesses(rootPid, cb);
-        }, POLL_INTERVAL);
+        //const start = Date.now();
+        findChildProcesses(rootPid, cb).then(_ => {
+            //console.log(`duration: ${Date.now() - start}`);
+            if (this.session) {
+                this.timeoutId = setTimeout(_ => {
+                    this.pollChildProcesses(rootPid, cb);
+                }, POLL_INTERVAL);
+            }
+        });
     }
 }
 const clusters = new Map();
-function prepareAutoAttachChildProcesses(config) {
-    clusters.set(config.name, new Cluster(config));
+function prepareAutoAttachChildProcesses(folder, config) {
+    clusters.set(config.name, new Cluster(folder, config));
 }
 exports.prepareAutoAttachChildProcesses = prepareAutoAttachChildProcesses;
 function startSession(session) {
@@ -69,7 +79,7 @@ function stopSession(session) {
     }
 }
 exports.stopSession = stopSession;
-function attachChildProcess(pid, cmd, baseConfig) {
+function attachChildProcess(folder, pid, cmd, baseConfig) {
     const config = {
         type: 'node',
         request: 'attach',
@@ -121,61 +131,25 @@ function attachChildProcess(pid, cmd, baseConfig) {
         config.port = parseInt(matches[2]);
     }
     //log(`attach: ${config.protocol} ${config.port}`);
-    vscode.debug.startDebugging(undefined, config);
+    vscode.debug.startDebugging(folder, config);
 }
 function findChildProcesses(rootPid, cb) {
-    const set = new Set();
-    if (!isNaN(rootPid) && rootPid > 0) {
-        set.add(rootPid);
-    }
-    function oneProcess(pid, ppid, cmd) {
-        if (set.size === 0) {
-            // try to find the root process
-            const matches = DEBUG_PORT_PATTERN.exec(cmd);
-            if (matches && matches.length >= 3) {
-                // since this is a child we add the parent id as the root id
-                set.add(ppid);
-            }
+    function walker(node) {
+        const matches = DEBUG_PORT_PATTERN.exec(node.args);
+        const matches2 = DEBUG_FLAGS_PATTERN.exec(node.args);
+        if ((matches && matches.length >= 3) || (matches2 && matches2.length >= 5)) {
+            cb(node.pid, node.args);
         }
-        if (set.has(ppid)) {
-            set.add(pid);
-            const matches = DEBUG_PORT_PATTERN.exec(cmd);
-            const matches2 = DEBUG_FLAGS_PATTERN.exec(cmd);
-            if ((matches && matches.length >= 3) || (matches2 && matches2.length >= 5)) {
-                cb(pid, cmd);
-            }
+        for (const child of node.children || []) {
+            walker(child);
         }
     }
-    if (process.platform === 'win32') {
-        const CMD = 'wmic process get CommandLine,ParentProcessId,ProcessId';
-        const CMD_PAT = /^(.+)\s+([0-9]+)\s+([0-9]+)$/;
-        child_process_1.exec(CMD, { maxBuffer: 1000 * 1024 }, (err, stdout, stderr) => {
-            if (!err && !stderr) {
-                const lines = stdout.split('\r\n');
-                for (let line of lines) {
-                    let matches = CMD_PAT.exec(line.trim());
-                    if (matches && matches.length === 4) {
-                        oneProcess(parseInt(matches[3]), parseInt(matches[2]), matches[1].trim());
-                    }
-                }
-            }
-        });
-    }
-    else {
-        const CMD = 'ps -ax -o pid=,ppid=,command=';
-        const CMD_PAT = /^\s*([0-9]+)\s+([0-9]+)\s+(.+)$/;
-        child_process_1.exec(CMD, { maxBuffer: 1000 * 1024 }, (err, stdout, stderr) => {
-            if (!err && !stderr) {
-                const lines = stdout.toString().split('\n');
-                for (const line of lines) {
-                    let matches = CMD_PAT.exec(line.trim());
-                    if (matches && matches.length === 4) {
-                        oneProcess(parseInt(matches[1]), parseInt(matches[2]), matches[3]);
-                    }
-                }
-            }
-        });
-    }
+    return processTree_1.getProcessTree(rootPid).then(tree => {
+        for (const child of tree.children || []) {
+            walker(child);
+        }
+    }).catch(err => {
+    });
 }
 
 //# sourceMappingURL=../../../out/node/extension/childProcesses.js.map

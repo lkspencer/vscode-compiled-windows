@@ -7,7 +7,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const vscode = require("vscode");
 const path = require("path");
 const tableOfContentsProvider_1 = require("../tableOfContentsProvider");
-const previewContentProvider_1 = require("../features/previewContentProvider");
+const file_1 = require("../util/file");
 class OpenDocumentLinkCommand {
     constructor(engine) {
         this.engine = engine;
@@ -17,18 +17,19 @@ class OpenDocumentLinkCommand {
         return vscode.Uri.parse(`command:${OpenDocumentLinkCommand.id}?${encodeURIComponent(JSON.stringify({ path, fragment }))}`);
     }
     execute(args) {
-        return this.tryOpen(args.path, args).catch(() => {
-            if (path.extname(args.path) === '') {
-                return this.tryOpen(args.path + '.md', args);
+        const p = decodeURIComponent(args.path);
+        return this.tryOpen(p, args).catch(() => {
+            if (path.extname(p) === '') {
+                return this.tryOpen(p + '.md', args);
             }
-            const resource = vscode.Uri.file(args.path);
+            const resource = vscode.Uri.file(p);
             return Promise.resolve(void 0)
                 .then(() => vscode.commands.executeCommand('vscode.open', resource))
                 .then(() => void 0);
         });
     }
     async tryOpen(path, args) {
-        if (vscode.window.activeTextEditor && previewContentProvider_1.isMarkdownFile(vscode.window.activeTextEditor.document) && vscode.window.activeTextEditor.document.uri.fsPath === path) {
+        if (vscode.window.activeTextEditor && file_1.isMarkdownFile(vscode.window.activeTextEditor.document) && vscode.window.activeTextEditor.document.uri.fsPath === path) {
             return this.tryRevealLine(vscode.window.activeTextEditor, args.fragment);
         }
         else {
@@ -57,4 +58,4 @@ class OpenDocumentLinkCommand {
 }
 OpenDocumentLinkCommand.id = '_markdown.openDocumentLink';
 exports.OpenDocumentLinkCommand = OpenDocumentLinkCommand;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/1633d0959a33c1ba0169618280a0edb30d1ddcc3/extensions\markdown\out/commands\openDocumentLink.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/cc11eb00ba83ee0b6d29851f1a599cf3d9469932/extensions\markdown\out/commands\openDocumentLink.js.map

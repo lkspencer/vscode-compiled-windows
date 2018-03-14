@@ -195,30 +195,30 @@ suite('Tests for Expand Abbreviations (HTML)', () => {
             });
         });
     });
-    test('Expand css when inside style tag in completion list (HTML)', () => {
-        const abbreviation = 'm10';
-        const expandedText = 'margin: 10px;';
-        return testUtils_1.withRandomFileEditor(htmlContents, 'html', (editor, doc) => {
-            editor.selection = new vscode_1.Selection(13, 3, 13, 6);
-            const cancelSrc = new vscode_1.CancellationTokenSource();
-            const completionPromise = completionProvider.provideCompletionItems(editor.document, editor.selection.active, cancelSrc.token);
-            if (!completionPromise) {
-                assert.equal(1, 2, `Problem with expanding m10`);
-                return Promise.resolve();
-            }
-            return completionPromise.then((completionList) => {
-                if (!completionList.items || !completionList.items.length) {
-                    assert.equal(1, 2, `Problem with expanding m10`);
-                    return Promise.resolve();
-                }
-                const emmetCompletionItem = completionList.items[0];
-                assert.equal(emmetCompletionItem.label, expandedText, `Label of completion item doesnt match.`);
-                assert.equal((emmetCompletionItem.documentation || '').replace(/\|/g, ''), expandedText, `Docs of completion item doesnt match.`);
-                assert.equal(emmetCompletionItem.filterText, abbreviation, `FilterText of completion item doesnt match.`);
-                return Promise.resolve();
-            });
-        });
-    });
+    // test('Expand css when inside style tag in completion list (HTML)', () => {
+    // 	const abbreviation = 'm10';
+    // 	const expandedText = 'margin: 10px;';
+    // 	return withRandomFileEditor(htmlContents, 'html', (editor, doc) => {
+    // 		editor.selection = new Selection(13, 3, 13, 6);
+    // 		const cancelSrc = new CancellationTokenSource();
+    // 		const completionPromise = completionProvider.provideCompletionItems(editor.document, editor.selection.active, cancelSrc.token);
+    // 		if (!completionPromise) {
+    // 			assert.equal(1, 2, `Problem with expanding m10`);
+    // 			return Promise.resolve();
+    // 		}
+    // 		return completionPromise.then((completionList: CompletionList) => {
+    // 			if (!completionList.items || !completionList.items.length) {
+    // 				assert.equal(1, 2, `Problem with expanding m10`);
+    // 				return Promise.resolve();
+    // 			}
+    // 			const emmetCompletionItem = completionList.items[0];
+    // 			assert.equal(emmetCompletionItem.label, expandedText, `Label of completion item doesnt match.`);
+    // 			assert.equal((<string>emmetCompletionItem.documentation || '').replace(/\|/g, ''), expandedText, `Docs of completion item doesnt match.`);
+    // 			assert.equal(emmetCompletionItem.filterText, abbreviation, `FilterText of completion item doesnt match.`);
+    // 			return Promise.resolve();
+    // 		});
+    // 	});
+    // });
     test('No expanding when html is excluded in the settings', () => {
         return vscode_1.workspace.getConfiguration('emmet').update('excludeLanguages', ['html']).then(() => {
             return testExpandAbbreviation('html', new vscode_1.Selection(9, 6, 9, 6), '', '', true).then(() => {
@@ -321,4 +321,4 @@ function testHtmlCompletionProvider(selection, abbreviation, expandedText, shoul
         });
     });
 }
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/1633d0959a33c1ba0169618280a0edb30d1ddcc3/extensions\emmet\out/test\abbreviationAction.test.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/cc11eb00ba83ee0b6d29851f1a599cf3d9469932/extensions\emmet\out/test\abbreviationAction.test.js.map

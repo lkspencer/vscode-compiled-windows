@@ -5,9 +5,11 @@
  *--------------------------------------------------------------------------------------------*/
 Object.defineProperty(exports, "__esModule", { value: true });
 const vscode = require("vscode");
+const file_1 = require("../util/file");
 class ShowPreviewSecuritySelectorCommand {
-    constructor(previewSecuritySelector) {
+    constructor(previewSecuritySelector, previewManager) {
         this.previewSecuritySelector = previewSecuritySelector;
+        this.previewManager = previewManager;
         this.id = 'markdown.showPreviewSecuritySelector';
     }
     execute(resource) {
@@ -15,12 +17,13 @@ class ShowPreviewSecuritySelectorCommand {
             const source = vscode.Uri.parse(resource).query;
             this.previewSecuritySelector.showSecutitySelectorForResource(vscode.Uri.parse(source));
         }
-        else {
-            if (vscode.window.activeTextEditor && vscode.window.activeTextEditor.document.languageId === 'markdown') {
-                this.previewSecuritySelector.showSecutitySelectorForResource(vscode.window.activeTextEditor.document.uri);
-            }
+        else if (vscode.window.activeTextEditor && file_1.isMarkdownFile(vscode.window.activeTextEditor.document)) {
+            this.previewSecuritySelector.showSecutitySelectorForResource(vscode.window.activeTextEditor.document.uri);
+        }
+        else if (this.previewManager.activePreviewResource) {
+            this.previewSecuritySelector.showSecutitySelectorForResource(this.previewManager.activePreviewResource);
         }
     }
 }
 exports.ShowPreviewSecuritySelectorCommand = ShowPreviewSecuritySelectorCommand;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/1633d0959a33c1ba0169618280a0edb30d1ddcc3/extensions\markdown\out/commands\showPreviewSecuritySelector.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/cc11eb00ba83ee0b6d29851f1a599cf3d9469932/extensions\markdown\out/commands\showPreviewSecuritySelector.js.map

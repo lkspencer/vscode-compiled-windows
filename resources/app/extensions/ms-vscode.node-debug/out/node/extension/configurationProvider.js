@@ -41,7 +41,7 @@ class NodeConfigurationProvider {
             config = createLaunchConfigFromContext(folder, true, config);
             if (!config.program) {
                 const message = localize(0, null);
-                return vscode.window.showInformationMessage(message).then(_ => {
+                return vscode.window.showErrorMessage(message, { modal: true }).then(_ => {
                     return undefined; // abort launch
                 });
             }
@@ -51,9 +51,22 @@ class NodeConfigurationProvider {
             if (folder) {
                 config.cwd = folder.uri.fsPath;
             }
-            else if (config.program) {
+            // no folder -> config is a user or workspace launch config
+            if (!config.cwd && vscode.workspace.workspaceFolders && vscode.workspace.workspaceFolders.length > 0) {
+                config.cwd = vscode.workspace.workspaceFolders[0].uri.fsPath;
+            }
+            // no folder case
+            if (!config.cwd && config.program === '${file}') {
+                config.cwd = '${fileDirname}';
+            }
+            // program is some absolute path
+            if (!config.cwd && path_1.isAbsolute(config.program)) {
                 // derive 'cwd' from 'program'
                 config.cwd = path_1.dirname(config.program);
+            }
+            // last resort
+            if (!config.cwd) {
+                config.cwd = '${workspaceFolder}';
             }
         }
         // remove 'useWSL' on all platforms but Windows
@@ -61,57 +74,89 @@ class NodeConfigurationProvider {
             this._extensionContext.logger.debug('useWSL attribute ignored on non-Windows OS.');
             delete config.useWSL;
         }
+        // when using "integratedTerminal" ensure that debug console doesn't get activated; see #43164
+        if (config.console === 'integratedTerminal' && !config.internalConsoleOptions) {
+            config.internalConsoleOptions = 'neverOpen';
+        }
         // "nvm" support
         if (config.runtimeVersion && config.runtimeVersion !== 'default') {
             // if a runtime version is specified we prepend env.PATH with the folder that corresponds to the version
-            if (process.platform === 'win32') {
-                const home = process.env['NVM_HOME'];
-                if (home) {
-                    const bin = path_1.join(home, `v${config.runtimeVersion}`);
-                    if (fs.existsSync(bin)) {
-                        if (!config.env) {
-                            config.env = {};
-                        }
-                        config.env['Path'] = `${bin};${process.env['Path']}`;
+            let bin = undefined;
+            let versionManagerName = undefined;
+            // first try the Node Version Switcher 'nvs'
+            let nvsHome = process.env['NVS_HOME'];
+            if (!nvsHome) {
+                // NVS_HOME is not always set. Probe for 'nvs' directory instead
+                const nvsDir = process.platform === 'win32' ? path_1.join(process.env['LOCALAPPDATA'], 'nvs') : path_1.join(process.env['HOME'], '.nvs');
+                if (fs.existsSync(nvsDir)) {
+                    nvsHome = nvsDir;
+                }
+            }
+            const { nvsFormat, remoteName, semanticVersion, arch } = parseVersionString(config.runtimeVersion);
+            if (nvsFormat || nvsHome) {
+                if (nvsHome) {
+                    bin = path_1.join(nvsHome, remoteName, semanticVersion, arch);
+                    if (process.platform !== 'win32') {
+                        bin = path_1.join(bin, 'bin');
                     }
-                    else {
-                        return vscode.window.showErrorMessage(localize(1, null, config.runtimeVersion)).then(_ => {
-                            return undefined; // abort launch
-                        });
-                    }
+                    versionManagerName = 'nvs';
                 }
                 else {
-                    return vscode.window.showErrorMessage(localize(2, null)).then(_ => {
+                    return vscode.window.showErrorMessage(localize(1, null), { modal: true }).then(_ => {
                         return undefined; // abort launch
                     });
                 }
             }
-            else {
-                const dir = process.env['NVM_DIR'];
-                if (dir) {
-                    const bin = path_1.join(dir, 'versions', 'node', `v${config.runtimeVersion}`, 'bin');
-                    if (fs.existsSync(bin)) {
-                        if (!config.env) {
-                            config.env = {};
-                        }
-                        config.env['PATH'] = `${bin}:${process.env['PATH']}`;
-                    }
-                    else {
-                        return vscode.window.showErrorMessage(localize(3, null, config.runtimeVersion)).then(_ => {
+            if (!bin) {
+                // now try the Node Version Manager 'nvm'
+                if (process.platform === 'win32') {
+                    const nvmHome = process.env['NVM_HOME'];
+                    if (!nvmHome) {
+                        return vscode.window.showErrorMessage(localize(2, null), { modal: true }).then(_ => {
                             return undefined; // abort launch
                         });
                     }
+                    bin = path_1.join(nvmHome, `v${config.runtimeVersion}`);
+                    versionManagerName = 'nvm-windows';
                 }
                 else {
-                    return vscode.window.showErrorMessage(localize(4, null)).then(_ => {
-                        return undefined; // abort launch
-                    });
+                    let nvmHome = process.env['NVM_DIR'];
+                    if (!nvmHome) {
+                        // if NVM_DIR is not set. Probe for '.nvm' directory instead
+                        const nvmDir = path_1.join(process.env['HOME'], '.nvm');
+                        if (fs.existsSync(nvmDir)) {
+                            nvmHome = nvmDir;
+                        }
+                    }
+                    if (!nvmHome) {
+                        return vscode.window.showErrorMessage(localize(3, null), { modal: true }).then(_ => {
+                            return undefined; // abort launch
+                        });
+                    }
+                    bin = path_1.join(nvmHome, 'versions', 'node', `v${config.runtimeVersion}`, 'bin');
+                    versionManagerName = 'nvm';
                 }
+            }
+            if (fs.existsSync(bin)) {
+                if (!config.env) {
+                    config.env = {};
+                }
+                if (process.platform === 'win32') {
+                    config.env['Path'] = `${bin};${process.env['Path']}`;
+                }
+                else {
+                    config.env['PATH'] = `${bin}:${process.env['PATH']}`;
+                }
+            }
+            else {
+                return vscode.window.showErrorMessage(localize(4, null, config.runtimeVersion, versionManagerName), { modal: true }).then(_ => {
+                    return undefined; // abort launch
+                });
             }
         }
         // is "auto attach child process" mode enabled?
         if (config.autoAttachChildProcesses) {
-            childProcesses_1.prepareAutoAttachChildProcesses(config);
+            childProcesses_1.prepareAutoAttachChildProcesses(folder, config);
         }
         // determine which protocol to use
         return determineDebugType(config, this._extensionContext.logger).then(debugType => {
@@ -349,6 +394,39 @@ function determineDebugTypeForPidInDebugMode(config, pid) {
             debugProtocol === 'legacy' ? 'node' :
                 null;
     });
+}
+function nvsStandardArchName(arch) {
+    switch (arch) {
+        case '32':
+        case 'x86':
+        case 'ia32':
+            return 'x86';
+        case '64':
+        case 'x64':
+        case 'amd64':
+            return 'x64';
+        case 'arm':
+            const arm_version = process.config.variables.arm_version;
+            return arm_version ? 'armv' + arm_version + 'l' : 'arm';
+        default:
+            return arch;
+    }
+}
+/**
+ * Parses a node version string into remote name, semantic version, and architecture
+ * components. Infers some unspecified components based on configuration.
+ */
+function parseVersionString(versionString) {
+    const versionRegex = /^(([\w-]+)\/)?(v?(\d+(\.\d+(\.\d+)?)?))(\/((x86)|(32)|((x)?64)|(arm\w*)|(ppc\w*)))?$/i;
+    const match = versionRegex.exec(versionString);
+    if (!match) {
+        throw new Error('Invalid version string: ' + versionString);
+    }
+    const nvsFormat = !!(match[2] || match[8]);
+    const remoteName = match[2] || 'node';
+    const semanticVersion = match[4] || '';
+    const arch = nvsStandardArchName(match[8] || process.arch);
+    return { nvsFormat, remoteName, semanticVersion, arch };
 }
 
 //# sourceMappingURL=../../../out/node/extension/configurationProvider.js.map

@@ -3,13 +3,19 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 const path = require("path");
 const vscode_extension_telemetry_1 = require("vscode-extension-telemetry");
+const memoize_1 = require("./memoize");
 class TelemetryReporter {
     constructor(clientVersionDelegate) {
         this.clientVersionDelegate = clientVersionDelegate;
-        this._packageInfo = null;
         this._reporter = null;
     }
     dispose() {
@@ -19,44 +25,40 @@ class TelemetryReporter {
         }
     }
     logTelemetry(eventName, properties) {
-        if (this.reporter) {
+        const reporter = this.reporter;
+        if (reporter) {
             if (!properties) {
                 properties = {};
             }
             properties['version'] = this.clientVersionDelegate();
-            this.reporter.sendTelemetryEvent(eventName, properties);
+            reporter.sendTelemetryEvent(eventName, properties);
         }
     }
     get reporter() {
-        if (typeof this._reporter !== 'undefined') {
-            return this._reporter;
-        }
         if (this.packageInfo && this.packageInfo.aiKey) {
             this._reporter = new vscode_extension_telemetry_1.default(this.packageInfo.name, this.packageInfo.version, this.packageInfo.aiKey);
+            return this._reporter;
         }
-        else {
-            this._reporter = null;
-        }
-        return this._reporter;
+        return null;
     }
     get packageInfo() {
-        if (this._packageInfo !== undefined) {
-            return this._packageInfo;
-        }
         const packagePath = path.join(__dirname, '..', '..', 'package.json');
         const extensionPackage = require(packagePath);
         if (extensionPackage) {
-            this._packageInfo = {
+            return {
                 name: extensionPackage.name,
                 version: extensionPackage.version,
                 aiKey: extensionPackage.aiKey
             };
         }
-        else {
-            this._packageInfo = null;
-        }
-        return this._packageInfo;
+        return null;
     }
 }
+__decorate([
+    memoize_1.memoize
+], TelemetryReporter.prototype, "reporter", null);
+__decorate([
+    memoize_1.memoize
+], TelemetryReporter.prototype, "packageInfo", null);
 exports.default = TelemetryReporter;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/1633d0959a33c1ba0169618280a0edb30d1ddcc3/extensions\typescript\out/utils\telemetry.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/cc11eb00ba83ee0b6d29851f1a599cf3d9469932/extensions\typescript\out/utils\telemetry.js.map

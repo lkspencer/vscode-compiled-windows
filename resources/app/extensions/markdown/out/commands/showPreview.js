@@ -21,7 +21,7 @@ function getViewColumn(sideBySide) {
     }
     return active.viewColumn;
 }
-function showPreview(webviewManager, telemetryReporter, uri, sideBySide = false) {
+async function showPreview(webviewManager, telemetryReporter, uri, previewSettings) {
     let resource = uri;
     if (!(resource instanceof vscode.Uri)) {
         if (vscode.window.activeTextEditor) {
@@ -37,12 +37,15 @@ function showPreview(webviewManager, telemetryReporter, uri, sideBySide = false)
         // nothing found that could be shown or toggled
         return;
     }
-    const view = webviewManager.create(resource, getViewColumn(sideBySide) || vscode.ViewColumn.Active);
+    webviewManager.preview(resource, {
+        resourceColumn: (vscode.window.activeTextEditor && vscode.window.activeTextEditor.viewColumn) || vscode.ViewColumn.One,
+        previewColumn: getViewColumn(!!previewSettings.sideBySide) || vscode.ViewColumn.Active,
+        locked: !!previewSettings.locked
+    });
     telemetryReporter.sendTelemetryEvent('openPreview', {
-        where: sideBySide ? 'sideBySide' : 'inPlace',
+        where: previewSettings.sideBySide ? 'sideBySide' : 'inPlace',
         how: (uri instanceof vscode.Uri) ? 'action' : 'pallete'
     });
-    return view;
 }
 class ShowPreviewCommand {
     constructor(webviewManager, telemetryReporter) {
@@ -50,9 +53,12 @@ class ShowPreviewCommand {
         this.telemetryReporter = telemetryReporter;
         this.id = 'markdown.showPreview';
     }
-    execute(mainUri, allUris) {
+    execute(mainUri, allUris, previewSettings) {
         for (const uri of (allUris || [mainUri])) {
-            showPreview(this.webviewManager, this.telemetryReporter, uri, false);
+            showPreview(this.webviewManager, this.telemetryReporter, uri, {
+                sideBySide: false,
+                locked: previewSettings && previewSettings.locked
+            });
         }
     }
 }
@@ -63,9 +69,26 @@ class ShowPreviewToSideCommand {
         this.telemetryReporter = telemetryReporter;
         this.id = 'markdown.showPreviewToSide';
     }
-    execute(uri) {
-        showPreview(this.webviewManager, this.telemetryReporter, uri, true);
+    execute(uri, previewSettings) {
+        showPreview(this.webviewManager, this.telemetryReporter, uri, {
+            sideBySide: true,
+            locked: previewSettings && previewSettings.locked
+        });
     }
 }
-exports.ShowPreviewToSideCommand = ShowPreviewToSideCommand;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/1633d0959a33c1ba0169618280a0edb30d1ddcc3/extensions\markdown\out/commands\showPreview.js.map
+exports.ShowPreviewToSideCommand = ShowPreviewToSideCommand;
+class ShowLockedPreviewToSideCommand {
+    constructor(webviewManager, telemetryReporter) {
+        this.webviewManager = webviewManager;
+        this.telemetryReporter = telemetryReporter;
+        this.id = 'markdown.showLockedPreviewToSide';
+    }
+    execute(uri) {
+        showPreview(this.webviewManager, this.telemetryReporter, uri, {
+            sideBySide: true,
+            locked: true
+        });
+    }
+}
+exports.ShowLockedPreviewToSideCommand = ShowLockedPreviewToSideCommand;
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/cc11eb00ba83ee0b6d29851f1a599cf3d9469932/extensions\markdown\out/commands\showPreview.js.map

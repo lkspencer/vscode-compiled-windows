@@ -20,6 +20,7 @@ const versionProvider_1 = require("./utils/versionProvider");
 const versionPicker_1 = require("./utils/versionPicker");
 const fileSchemes = require("./utils/fileSchemes");
 const tsconfig_1 = require("./utils/tsconfig");
+const dipose_1 = require("./utils/dipose");
 const localize = nls.loadMessageBundle(__filename);
 class CallbackMap {
     constructor() {
@@ -93,7 +94,7 @@ class ForkedTsServerProcess {
     write(serverRequest) {
         this.childProcess.stdin.write(JSON.stringify(serverRequest) + '\r\n', 'utf8');
     }
-    createReader(callback, onError = () => ({})) {
+    createReader(callback, onError) {
         // tslint:disable-next-line:no-unused-expression
         new wireProtocol_1.Reader(this.childProcess.stdout, callback, onError);
     }
@@ -102,8 +103,7 @@ class ForkedTsServerProcess {
     }
 }
 class TypeScriptServiceClient {
-    constructor(host, workspaceState, onDidChangeTypeScriptVersion, plugins, logDirectoryProvider) {
-        this.host = host;
+    constructor(workspaceState, onDidChangeTypeScriptVersion, plugins, logDirectoryProvider) {
         this.workspaceState = workspaceState;
         this.onDidChangeTypeScriptVersion = onDidChangeTypeScriptVersion;
         this.plugins = plugins;
@@ -118,6 +118,10 @@ class TypeScriptServiceClient {
         this._onDidEndInstallTypings = new vscode_1.EventEmitter();
         this._onTypesInstallerInitializationFailed = new vscode_1.EventEmitter();
         this.disposables = [];
+        this._onSyntaxDiagnosticsReceived = new vscode_1.EventEmitter();
+        this._onSemanticDiagnosticsReceived = new vscode_1.EventEmitter();
+        this._onConfigDiagnosticsReceived = new vscode_1.EventEmitter();
+        this._onResendModelsRequested = new vscode_1.EventEmitter();
         this.pathSeparator = path.sep;
         this.lastStart = Date.now();
         var p = new Promise((resolve, reject) => {
@@ -153,6 +157,10 @@ class TypeScriptServiceClient {
         this.telemetryReporter = new telemetry_1.default(() => this._tsserverVersion || this._apiVersion.versionString);
         this.disposables.push(this.telemetryReporter);
     }
+    get onSyntaxDiagnosticsReceived() { return this._onSyntaxDiagnosticsReceived.event; }
+    get onSemanticDiagnosticsReceived() { return this._onSemanticDiagnosticsReceived.event; }
+    get onConfigDiagnosticsReceived() { return this._onConfigDiagnosticsReceived.event; }
+    get onResendModelsRequested() { return this._onResendModelsRequested.event; }
     get configuration() {
         return this._configuration;
     }
@@ -162,12 +170,11 @@ class TypeScriptServiceClient {
                 childProcess.kill();
             }).then(undefined, () => void 0);
         }
-        while (this.disposables.length) {
-            const obj = this.disposables.pop();
-            if (obj) {
-                obj.dispose();
-            }
-        }
+        dipose_1.disposeAll(this.disposables);
+        this._onSyntaxDiagnosticsReceived.dispose();
+        this._onSemanticDiagnosticsReceived.dispose();
+        this._onConfigDiagnosticsReceived.dispose();
+        this._onResendModelsRequested.dispose();
     }
     restartTsServer() {
         const start = () => {
@@ -209,9 +216,6 @@ class TypeScriptServiceClient {
     }
     info(message, data) {
         this.logger.info(message, data);
-    }
-    warn(message, data) {
-        this.logger.warn(message, data);
     }
     error(message, data) {
         this.logger.error(message, data);
@@ -292,7 +296,7 @@ class TypeScriptServiceClient {
                             this.error(`TSServer exited with code: ${code}`);
                             /* __GDPR__
                                 "tsserver.exitWithCode" : {
-                                    "code" : { "classification": "SystemMetaData", "purpose": "PerformanceAndHealth" }
+                                    "code" : { "classification": "CallstackOrException", "purpose": "PerformanceAndHealth" }
                                 }
                             */
                             this.logTelemetry('tsserver.exitWithCode', { code: code });
@@ -365,7 +369,7 @@ class TypeScriptServiceClient {
         this.execute('configure', configureOptions);
         this.setCompilerOptionsForInferredProjects(this._configuration);
         if (resendModels) {
-            this.host.populateService();
+            this._onResendModelsRequested.fire();
         }
     }
     setCompilerOptionsForInferredProjects(configuration) {
@@ -404,8 +408,7 @@ class TypeScriptServiceClient {
                     startService = false;
                     prompt = vscode_1.window.showErrorMessage(localize(7, null), {
                         title: localize(8, null),
-                        id: MessageAction.reportIssue,
-                        isCloseAffordance: true
+                        id: MessageAction.reportIssue
                     });
                     /* __GDPR__
                         "serviceExited" : {}
@@ -417,8 +420,7 @@ class TypeScriptServiceClient {
                     this.lastStart = Date.now();
                     prompt = vscode_1.window.showWarningMessage(localize(9, null), {
                         title: localize(10, null),
-                        id: MessageAction.reportIssue,
-                        isCloseAffordance: true
+                        id: MessageAction.reportIssue
                     });
                 }
                 if (prompt) {
@@ -440,7 +442,7 @@ class TypeScriptServiceClient {
             if (resource.scheme === fileSchemes.walkThroughSnippet || resource.scheme === fileSchemes.untitled) {
                 const dirName = path.dirname(resource.path);
                 const fileName = this.inMemoryResourcePrefix + path.basename(resource.path);
-                return resource.with({ path: path.join(dirName, fileName) }).toString(true);
+                return resource.with({ path: path.posix.join(dirName, fileName) }).toString(true);
             }
         }
         if (resource.scheme !== fileSchemes.file) {
@@ -464,7 +466,7 @@ class TypeScriptServiceClient {
                     const dirName = path.dirname(resource.path);
                     const fileName = path.basename(resource.path);
                     if (fileName.startsWith(this.inMemoryResourcePrefix)) {
-                        resource = resource.with({ path: path.join(dirName, fileName.slice(this.inMemoryResourcePrefix.length)) });
+                        resource = resource.with({ path: path.posix.join(dirName, fileName.slice(this.inMemoryResourcePrefix.length)) });
                     }
                 }
                 return resource;
@@ -632,13 +634,29 @@ class TypeScriptServiceClient {
     dispatchEvent(event) {
         switch (event.event) {
             case 'syntaxDiag':
-                this.host.syntaxDiagnosticsReceived(event);
-                break;
+                {
+                    const diagnosticEvent = event;
+                    if (diagnosticEvent.body && diagnosticEvent.body.diagnostics) {
+                        this._onSyntaxDiagnosticsReceived.fire({
+                            resource: this.asUrl(diagnosticEvent.body.file),
+                            diagnostics: diagnosticEvent.body.diagnostics
+                        });
+                    }
+                    break;
+                }
             case 'semanticDiag':
-                this.host.semanticDiagnosticsReceived(event);
-                break;
+                {
+                    const diagnosticEvent = event;
+                    if (diagnosticEvent.body && diagnosticEvent.body.diagnostics) {
+                        this._onSemanticDiagnosticsReceived.fire({
+                            resource: this.asUrl(diagnosticEvent.body.file),
+                            diagnostics: diagnosticEvent.body.diagnostics
+                        });
+                    }
+                    break;
+                }
             case 'configFileDiag':
-                this.host.configFileDiagnosticsReceived(event);
+                this._onConfigDiagnosticsReceived.fire(event);
                 break;
             case 'telemetry':
                 const telemetryData = event.body;
@@ -786,4 +804,4 @@ exports.default = TypeScriptServiceClient;
 const getTsLocale = (configuration) => (configuration.locale
     ? configuration.locale
     : vscode_1.env.language);
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/1633d0959a33c1ba0169618280a0edb30d1ddcc3/extensions\typescript\out/typescriptServiceClient.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/cc11eb00ba83ee0b6d29851f1a599cf3d9469932/extensions\typescript\out/typescriptServiceClient.js.map

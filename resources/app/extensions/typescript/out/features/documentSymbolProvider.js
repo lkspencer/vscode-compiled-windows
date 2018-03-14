@@ -68,7 +68,7 @@ class TypeScriptDocumentSymbolProvider {
             bucket.push(result);
         }
         if (item.childItems && item.childItems.length > 0) {
-            for (let child of item.childItems) {
+            for (const child of item.childItems) {
                 TypeScriptDocumentSymbolProvider.convertNavBar(resource, realIndent + 1, foldingMap, bucket, child, item.text);
             }
         }
@@ -89,4 +89,4 @@ class TypeScriptDocumentSymbolProvider {
     }
 }
 exports.default = TypeScriptDocumentSymbolProvider;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/1633d0959a33c1ba0169618280a0edb30d1ddcc3/extensions\typescript\out/features\documentSymbolProvider.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/cc11eb00ba83ee0b6d29851f1a599cf3d9469932/extensions\typescript\out/features\documentSymbolProvider.js.map

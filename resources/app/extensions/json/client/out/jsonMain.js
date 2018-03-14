@@ -10,6 +10,7 @@ const localize = nls.loadMessageBundle(__filename);
 const vscode_1 = require("vscode");
 const vscode_languageclient_1 = require("vscode-languageclient");
 const vscode_extension_telemetry_1 = require("vscode-extension-telemetry");
+const foldingProvider_proposed_1 = require("./protocol/foldingProvider.proposed");
 const hash_1 = require("./utils/hash");
 var VSCodeContentRequest;
 (function (VSCodeContentRequest) {
@@ -24,6 +25,8 @@ var SchemaAssociationNotification;
     SchemaAssociationNotification.type = new vscode_languageclient_1.NotificationType('json/schemaAssociations');
 })(SchemaAssociationNotification || (SchemaAssociationNotification = {}));
 let telemetryReporter;
+let foldingProviderRegistration = void 0;
+const foldingSetting = 'json.experimental.syntaxFolding';
 function activate(context) {
     let toDispose = context.subscriptions;
     let packageInfo = getPackageInfo(context);
@@ -31,7 +34,7 @@ function activate(context) {
     // The server is implemented in node
     let serverModule = context.asAbsolutePath(path.join('server', 'out', 'jsonServerMain.js'));
     // The debug options for the server
-    let debugOptions = { execArgv: ['--nolazy', '--inspect=6046'] };
+    let debugOptions = { execArgv: ['--nolazy', '--inspect=' + (9000 + Math.round(Math.random() * 10000))] };
     // If the extension is launch in debug mode the debug server options are use
     // Otherwise the run options are used
     let serverOptions = {
@@ -60,7 +63,7 @@ function activate(context) {
     let disposable = client.start();
     toDispose.push(disposable);
     client.onReady().then(() => {
-        client.onTelemetry(e => {
+        disposable = client.onTelemetry(e => {
             if (telemetryReporter) {
                 telemetryReporter.sendTelemetryEvent(e.key, e.data);
             }
@@ -82,6 +85,13 @@ function activate(context) {
         toDispose.push(vscode_1.workspace.onDidChangeTextDocument(e => handleContentChange(e.document.uri)));
         toDispose.push(vscode_1.workspace.onDidCloseTextDocument(d => handleContentChange(d.uri)));
         client.sendNotification(SchemaAssociationNotification.type, getSchemaAssociation(context));
+        initFoldingProvider();
+        toDispose.push(vscode_1.workspace.onDidChangeConfiguration(c => {
+            if (c.affectsConfiguration(foldingSetting)) {
+                initFoldingProvider();
+            }
+        }));
+        toDispose.push({ dispose: () => foldingProviderRegistration && foldingProviderRegistration.dispose() });
     });
     let languageConfiguration = {
         wordPattern: /("(?:[^\\\"]*(?:\\.)?)*"?)|[^\s{}\[\],:]+/,
@@ -92,6 +102,36 @@ function activate(context) {
     };
     vscode_1.languages.setLanguageConfiguration('json', languageConfiguration);
     vscode_1.languages.setLanguageConfiguration('jsonc', languageConfiguration);
+    function initFoldingProvider() {
+        let enable = vscode_1.workspace.getConfiguration().get(foldingSetting);
+        if (enable) {
+            if (!foldingProviderRegistration) {
+                foldingProviderRegistration = vscode_1.languages.registerFoldingProvider(documentSelector, {
+                    provideFoldingRanges(document, context, token) {
+                        const param = {
+                            textDocument: client.code2ProtocolConverter.asTextDocumentIdentifier(document),
+                            maxRanges: context.maxRanges
+                        };
+                        return client.sendRequest(foldingProvider_proposed_1.FoldingRangesRequest.type, param, token).then(res => {
+                            if (res && Array.isArray(res.ranges)) {
+                                return new vscode_1.FoldingRangeList(res.ranges.map(r => new vscode_1.FoldingRange(r.startLine, r.endLine, r.type)));
+                            }
+                            return null;
+                        }, error => {
+                            client.logFailedRequest(foldingProvider_proposed_1.FoldingRangesRequest.type, error);
+                            return null;
+                        });
+                    }
+                });
+            }
+        }
+        else {
+            if (foldingProviderRegistration) {
+                foldingProviderRegistration.dispose();
+                foldingProviderRegistration = void 0;
+            }
+        }
+    }
 }
 exports.activate = activate;
 function deactivate() {
@@ -212,4 +252,4 @@ function getPackageInfo(context) {
     }
     return void 0;
 }
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/1633d0959a33c1ba0169618280a0edb30d1ddcc3/extensions\json\client\out/jsonMain.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/cc11eb00ba83ee0b6d29851f1a599cf3d9469932/extensions\json\client\out/jsonMain.js.map
