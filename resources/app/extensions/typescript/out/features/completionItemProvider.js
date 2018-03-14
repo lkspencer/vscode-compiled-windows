@@ -38,7 +38,7 @@ class MyCompletionItem extends vscode.CompletionItem {
         if (tsEntry.replacementSpan) {
             this.range = convert_1.tsTextSpanToVsRange(tsEntry.replacementSpan);
         }
-        if (tsEntry.insertText) {
+        if (typeof tsEntry.insertText === 'string') {
             this.insertText = tsEntry.insertText;
             if (tsEntry.replacementSpan) {
                 this.range = convert_1.tsTextSpanToVsRange(tsEntry.replacementSpan);
@@ -51,13 +51,9 @@ class MyCompletionItem extends vscode.CompletionItem {
                 }
             }
         }
-        if (tsEntry.kindModifiers && tsEntry.kindModifiers.match(/\boptional\b/)) {
-            if (!this.insertText) {
-                this.insertText = this.label;
-            }
-            if (!this.filterText) {
-                this.filterText = this.label;
-            }
+        if (tsEntry.kindModifiers.match(/\boptional\b/)) {
+            this.insertText = this.label;
+            this.filterText = this.label;
             this.label += '?';
         }
     }
@@ -402,4 +398,4 @@ class TypeScriptCompletionItemProvider {
     }
 }
 exports.default = TypeScriptCompletionItemProvider;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/cc11eb00ba83ee0b6d29851f1a599cf3d9469932/extensions\typescript\out/features\completionItemProvider.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/9a199d77c82fcb82f39c68bb33c614af01c111ba/extensions\typescript\out/features\completionItemProvider.js.map

@@ -3,21 +3,17 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 const vscode_1 = require("vscode");
 const is = require("./is");
-const memoize_1 = require("./memoize");
 const nls = require("vscode-nls");
 const localize = nls.loadMessageBundle(__filename);
 class Logger {
     get output() {
-        return vscode_1.window.createOutputChannel(localize(0, null));
+        if (!this._output) {
+            this._output = vscode_1.window.createOutputChannel(localize(0, null));
+        }
+        return this._output;
     }
     data2String(data) {
         if (data instanceof Error) {
@@ -54,8 +50,5 @@ class Logger {
         }
     }
 }
-__decorate([
-    memoize_1.memoize
-], Logger.prototype, "output", null);
 exports.default = Logger;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/cc11eb00ba83ee0b6d29851f1a599cf3d9469932/extensions\typescript\out/utils\logger.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/9a199d77c82fcb82f39c68bb33c614af01c111ba/extensions\typescript\out/utils\logger.js.map

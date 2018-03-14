@@ -147,18 +147,11 @@ function activate(context) {
         if (enable) {
             if (!foldingProviderRegistration) {
                 foldingProviderRegistration = vscode_1.languages.registerFoldingProvider(documentSelector, {
-                    provideFoldingRanges(document, context, token) {
-                        const param = {
-                            textDocument: client.code2ProtocolConverter.asTextDocumentIdentifier(document),
-                            maxRanges: context.maxRanges
-                        };
-                        return client.sendRequest(foldingProvider_proposed_1.FoldingRangesRequest.type, param, token).then(res => {
+                    provideFoldingRanges(document) {
+                        return client.sendRequest(foldingProvider_proposed_1.FoldingRangesRequest.type, { textDocument: client.code2ProtocolConverter.asTextDocumentIdentifier(document) }).then(res => {
                             if (res && Array.isArray(res.ranges)) {
                                 return new vscode_1.FoldingRangeList(res.ranges.map(r => new vscode_1.FoldingRange(r.startLine, r.endLine, r.type)));
                             }
-                            return null;
-                        }, error => {
-                            client.logFailedRequest(foldingProvider_proposed_1.FoldingRangesRequest.type, error);
                             return null;
                         });
                     }
@@ -189,4 +182,4 @@ function deactivate() {
     return telemetryReporter ? telemetryReporter.dispose() : Promise.resolve(null);
 }
 exports.deactivate = deactivate;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/cc11eb00ba83ee0b6d29851f1a599cf3d9469932/extensions\html\client\out/htmlMain.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/9a199d77c82fcb82f39c68bb33c614af01c111ba/extensions\html\client\out/htmlMain.js.map

@@ -41,8 +41,8 @@ exports.LANGUAGE_MODES = {
     'sass': [':', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9'],
     'less': [':', '-', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9'],
     'stylus': [':', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9'],
-    'javascriptreact': ['!', '.', '}', '*', '$', ']', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9'],
-    'typescriptreact': ['!', '.', '}', '*', '$', ']', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9']
+    'javascriptreact': ['.', '}', '*', '$', ']', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9'],
+    'typescriptreact': ['.', '}', '*', '$', ']', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9']
 };
 const emmetModes = ['html', 'pug', 'slim', 'haml', 'xml', 'xsl', 'jsx', 'css', 'scss', 'sass', 'less', 'stylus'];
 // Explicitly map languages that have built-in grammar in VS Code to their parent language
@@ -287,7 +287,6 @@ exports.sameNodes = sameNodes;
 function getEmmetConfiguration(syntax) {
     const emmetConfig = vscode.workspace.getConfiguration('emmet');
     const syntaxProfiles = Object.assign({}, emmetConfig['syntaxProfiles'] || {});
-    const preferences = Object.assign({}, emmetConfig['preferences'] || {});
     // jsx, xml and xsl syntaxes need to have self closing tags unless otherwise configured by user
     if (syntax === 'jsx' || syntax === 'xml' || syntax === 'xsl') {
         syntaxProfiles[syntax] = syntaxProfiles[syntax] || {};
@@ -299,7 +298,7 @@ function getEmmetConfiguration(syntax) {
         }
     }
     return {
-        preferences,
+        preferences: emmetConfig['preferences'],
         showExpandedAbbreviation: emmetConfig['showExpandedAbbreviation'],
         showAbbreviationSuggestions: emmetConfig['showAbbreviationSuggestions'],
         syntaxProfiles,
@@ -350,4 +349,4 @@ function getCssPropertyFromDocument(editor, position) {
     }
 }
 exports.getCssPropertyFromDocument = getCssPropertyFromDocument;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/cc11eb00ba83ee0b6d29851f1a599cf3d9469932/extensions\emmet\out/util.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/9a199d77c82fcb82f39c68bb33c614af01c111ba/extensions\emmet\out/util.js.map

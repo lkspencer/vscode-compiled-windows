@@ -71,4 +71,4 @@ var PackageDocument = /** @class */ (function () {
     return PackageDocument;
 }());
 exports.PackageDocument = PackageDocument;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/cc11eb00ba83ee0b6d29851f1a599cf3d9469932/extensions\extension-editing\out/packageDocumentHelper.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/9a199d77c82fcb82f39c68bb33c614af01c111ba/extensions\extension-editing\out/packageDocumentHelper.js.map

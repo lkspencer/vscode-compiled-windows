@@ -24,4 +24,4 @@ var FoldingRangesRequest;
 (function (FoldingRangesRequest) {
     FoldingRangesRequest.type = new vscode_languageserver_protocol_1.RequestType('textDocument/foldingRanges');
 })(FoldingRangesRequest = exports.FoldingRangesRequest || (exports.FoldingRangesRequest = {}));
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/cc11eb00ba83ee0b6d29851f1a599cf3d9469932/extensions\json\client\out/protocol\foldingProvider.proposed.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/9a199d77c82fcb82f39c68bb33c614af01c111ba/extensions\json\client\out/protocol\foldingProvider.proposed.js.map

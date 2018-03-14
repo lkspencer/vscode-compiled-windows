@@ -635,42 +635,24 @@ class Repository {
             yield this.run(Operation.Fetch, () => this.repository.fetch());
         });
     }
-    pullWithRebase(head) {
+    pullWithRebase() {
         return __awaiter(this, void 0, void 0, function* () {
-            let remote;
-            let branch;
-            if (head && head.name && head.upstream) {
-                remote = head.upstream.remote;
-                branch = `${head.upstream.name}`;
-            }
-            yield this.run(Operation.Pull, () => this.repository.pull(true, remote, branch));
+            yield this.run(Operation.Pull, () => this.repository.pull(true));
         });
     }
-    pull(head) {
+    pull(rebase, remote, name) {
         return __awaiter(this, void 0, void 0, function* () {
-            let remote;
-            let branch;
-            if (head && head.name && head.upstream) {
-                remote = head.upstream.remote;
-                branch = `${head.upstream.name}`;
-            }
-            yield this.run(Operation.Pull, () => this.repository.pull(false, remote, branch));
+            yield this.run(Operation.Pull, () => this.repository.pull(rebase, remote, name));
+        });
+    }
+    push() {
+        return __awaiter(this, void 0, void 0, function* () {
+            yield this.run(Operation.Push, () => this.repository.push());
         });
     }
     pullFrom(rebase, remote, branch) {
         return __awaiter(this, void 0, void 0, function* () {
             yield this.run(Operation.Pull, () => this.repository.pull(rebase, remote, branch));
-        });
-    }
-    push(head) {
-        return __awaiter(this, void 0, void 0, function* () {
-            let remote;
-            let branch;
-            if (head && head.name && head.upstream) {
-                remote = head.upstream.remote;
-                branch = `${head.name}:${head.upstream.name}`;
-            }
-            yield this.run(Operation.Push, () => this.repository.push(remote, branch));
         });
     }
     pushTo(remote, name, setUpstream = false) {
@@ -683,31 +665,23 @@ class Repository {
             yield this.run(Operation.Push, () => this.repository.push(remote, undefined, false, true));
         });
     }
-    sync(head) {
-        return this._sync(head, false);
-    }
-    syncRebase(head) {
+    _sync(rebase) {
         return __awaiter(this, void 0, void 0, function* () {
-            return this._sync(head, true);
-        });
-    }
-    _sync(head, rebase) {
-        return __awaiter(this, void 0, void 0, function* () {
-            let remote;
-            let pullBranch;
-            let pushBranch;
-            if (head.name && head.upstream) {
-                remote = head.upstream.remote;
-                pullBranch = `${head.upstream.name}`;
-                pushBranch = `${head.name}:${head.upstream.name}`;
-            }
             yield this.run(Operation.Sync, () => __awaiter(this, void 0, void 0, function* () {
-                yield this.repository.pull(rebase, remote, pullBranch);
+                yield this.repository.pull(rebase);
                 const shouldPush = this.HEAD && typeof this.HEAD.ahead === 'number' ? this.HEAD.ahead > 0 : true;
                 if (shouldPush) {
-                    yield this.repository.push(remote, pushBranch);
+                    yield this.repository.push();
                 }
             }));
+        });
+    }
+    sync() {
+        return this._sync(false);
+    }
+    syncRebase() {
+        return __awaiter(this, void 0, void 0, function* () {
+            return this._sync(true);
         });
     }
     show(ref, filePath) {
@@ -1072,4 +1046,4 @@ __decorate([
     decorators_1.throttle
 ], Repository.prototype, "updateWhenIdleAndWait", null);
 exports.Repository = Repository;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/cc11eb00ba83ee0b6d29851f1a599cf3d9469932/extensions\git\out/repository.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/9a199d77c82fcb82f39c68bb33c614af01c111ba/extensions\git\out/repository.js.map

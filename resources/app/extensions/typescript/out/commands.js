@@ -93,7 +93,7 @@ async function goToProjectConfig(clientHost, isTypeScriptProject, resource) {
     }
     const file = client.normalizePath(resource);
     // TSServer errors when 'projectInfo' is invoked on a non js/ts file
-    if (!file || !clientHost.handles(resource)) {
+    if (!file || !clientHost.handles(file)) {
         vscode.window.showWarningMessage(localize(1, null));
         return;
     }
@@ -134,4 +134,4 @@ async function goToProjectConfig(clientHost, isTypeScriptProject, resource) {
             return;
     }
 }
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/cc11eb00ba83ee0b6d29851f1a599cf3d9469932/extensions\typescript\out/commands.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/9a199d77c82fcb82f39c68bb33c614af01c111ba/extensions\typescript\out/commands.js.map

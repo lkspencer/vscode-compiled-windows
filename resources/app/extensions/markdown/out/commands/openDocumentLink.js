@@ -17,12 +17,11 @@ class OpenDocumentLinkCommand {
         return vscode.Uri.parse(`command:${OpenDocumentLinkCommand.id}?${encodeURIComponent(JSON.stringify({ path, fragment }))}`);
     }
     execute(args) {
-        const p = decodeURIComponent(args.path);
-        return this.tryOpen(p, args).catch(() => {
-            if (path.extname(p) === '') {
-                return this.tryOpen(p + '.md', args);
+        return this.tryOpen(args.path, args).catch(() => {
+            if (path.extname(args.path) === '') {
+                return this.tryOpen(args.path + '.md', args);
             }
-            const resource = vscode.Uri.file(p);
+            const resource = vscode.Uri.file(args.path);
             return Promise.resolve(void 0)
                 .then(() => vscode.commands.executeCommand('vscode.open', resource))
                 .then(() => void 0);
@@ -58,4 +57,4 @@ class OpenDocumentLinkCommand {
 }
 OpenDocumentLinkCommand.id = '_markdown.openDocumentLink';
 exports.OpenDocumentLinkCommand = OpenDocumentLinkCommand;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/cc11eb00ba83ee0b6d29851f1a599cf3d9469932/extensions\markdown\out/commands\openDocumentLink.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/9a199d77c82fcb82f39c68bb33c614af01c111ba/extensions\markdown\out/commands\openDocumentLink.js.map

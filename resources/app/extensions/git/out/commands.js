@@ -1139,7 +1139,7 @@ class CommandCenter {
                 return;
             }
             const remoteCharCnt = remotePick.label.length;
-            repository.pullFrom(false, remotePick.label, branchPick.label.slice(remoteCharCnt + 1));
+            repository.pull(false, remotePick.label, branchPick.label.slice(remoteCharCnt + 1));
         });
     }
     pull(repository) {
@@ -1149,7 +1149,7 @@ class CommandCenter {
                 vscode_1.window.showWarningMessage(localize(71, null));
                 return;
             }
-            yield repository.pull(repository.HEAD);
+            yield repository.pull();
         });
     }
     pullRebase(repository) {
@@ -1159,7 +1159,7 @@ class CommandCenter {
                 vscode_1.window.showWarningMessage(localize(72, null));
                 return;
             }
-            yield repository.pullWithRebase(repository.HEAD);
+            yield repository.pullWithRebase();
         });
     }
     push(repository) {
@@ -1174,7 +1174,7 @@ class CommandCenter {
                 return;
             }
             try {
-                yield repository.push(repository.HEAD);
+                yield repository.push();
             }
             catch (err) {
                 if (err.gitErrorCode !== git_1.GitErrorCodes.NoUpstreamBranch) {
@@ -1231,7 +1231,7 @@ class CommandCenter {
             const config = vscode_1.workspace.getConfiguration('git');
             const shouldPrompt = config.get('confirmSync') === true;
             if (shouldPrompt) {
-                const message = localize(82, null, HEAD.upstream.remote, HEAD.upstream.name);
+                const message = localize(82, null, HEAD.upstream);
                 const yes = localize(83, null);
                 const neverAgain = localize(84, null);
                 const pick = yield vscode_1.window.showWarningMessage(message, { modal: true }, yes, neverAgain);
@@ -1243,10 +1243,10 @@ class CommandCenter {
                 }
             }
             if (rebase) {
-                yield repository.syncRebase(HEAD);
+                yield repository.syncRebase();
             }
             else {
-                yield repository.sync(HEAD);
+                yield repository.sync();
             }
         });
     }
@@ -1260,7 +1260,7 @@ class CommandCenter {
                 if (!HEAD || !HEAD.upstream) {
                     return;
                 }
-                yield repository.sync(HEAD);
+                yield repository.sync();
             })));
         });
     }
@@ -1393,9 +1393,6 @@ class CommandCenter {
             */
             this.telemetryReporter.sendTelemetryEvent('git.command', { command: id });
             return result.catch((err) => __awaiter(this, void 0, void 0, function* () {
-                const options = {
-                    modal: err.gitErrorCode === git_1.GitErrorCodes.DirtyWorkTree
-                };
                 let message;
                 switch (err.gitErrorCode) {
                     case git_1.GitErrorCodes.DirtyWorkTree:
@@ -1419,10 +1416,9 @@ class CommandCenter {
                     console.error(err);
                     return;
                 }
-                options.modal = true;
                 const outputChannel = this.outputChannel;
                 const openOutputChannelChoice = localize(97, null);
-                const choice = yield vscode_1.window.showErrorMessage(message, options, openOutputChannelChoice);
+                const choice = yield vscode_1.window.showErrorMessage(message, openOutputChannelChoice);
                 if (choice === openOutputChannelChoice) {
                     outputChannel.show();
                 }
@@ -1638,4 +1634,4 @@ __decorate([
     command('git.stashPopLatest', { repository: true })
 ], CommandCenter.prototype, "stashPopLatest", null);
 exports.CommandCenter = CommandCenter;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/cc11eb00ba83ee0b6d29851f1a599cf3d9469932/extensions\git\out/commands.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/9a199d77c82fcb82f39c68bb33c614af01c111ba/extensions\git\out/commands.js.map

@@ -58,7 +58,8 @@ class MarkdownContentProvider {
 				<meta http-equiv="Content-type" content="text/html;charset=UTF-8">
 				${csp}
 				<meta id="vscode-markdown-preview-data" data-settings="${JSON.stringify(initialData).replace(/"/g, '&quot;')}" data-strings="${JSON.stringify(previewStrings).replace(/"/g, '&quot;')}">
-				<script src="${this.extensionResourcePath('pre.js')}" nonce="${nonce}"></script>
+				<script src="${this.extensionResourcePath('csp.js')}" nonce="${nonce}"></script>
+				<script src="${this.extensionResourcePath('loading.js')}" nonce="${nonce}"></script>
 				${this.getStyles(sourceUri, nonce, config)}
 				<base href="${markdownDocument.uri.with({ scheme: 'vscode-workspace-resource' }).toString(true)}">
 			</head>
@@ -128,7 +129,7 @@ class MarkdownContentProvider {
 			${this.computeCustomStyleSheetIncludes(resource, config)}`;
     }
     getScripts(nonce) {
-        const scripts = [this.extensionResourcePath('index.js')].concat(this.extraScripts.map(resource => resource.toString()));
+        const scripts = [this.extensionResourcePath('main.js')].concat(this.extraScripts.map(resource => resource.toString()));
         return scripts
             .map(source => `<script async src="${source}" nonce="${nonce}" charset="UTF-8"></script>`)
             .join('\n');
@@ -146,4 +147,4 @@ class MarkdownContentProvider {
     }
 }
 exports.MarkdownContentProvider = MarkdownContentProvider;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/cc11eb00ba83ee0b6d29851f1a599cf3d9469932/extensions\markdown\out/features\previewContentProvider.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/9a199d77c82fcb82f39c68bb33c614af01c111ba/extensions\markdown\out/features\previewContentProvider.js.map

@@ -50,28 +50,27 @@ class TypeScriptFormattingProvider {
         if (!filepath) {
             return [];
         }
-        await this.formattingOptionsManager.ensureFormatOptions(document, options, token);
         const args = {
             file: filepath,
             line: position.line + 1,
             offset: position.character + 1,
             key: ch
         };
-        try {
-            const response = await this.client.execute('formatonkey', args, token);
-            const edits = response.body;
-            const result = [];
+        await this.formattingOptionsManager.ensureFormatOptions(document, options, token);
+        return this.client.execute('formatonkey', args, token).then((response) => {
+            let edits = response.body;
+            let result = [];
             if (!edits) {
                 return result;
             }
-            for (const edit of edits) {
-                const textEdit = this.codeEdit2SingleEditOperation(edit);
-                const range = textEdit.range;
+            for (let edit of edits) {
+                let textEdit = this.codeEdit2SingleEditOperation(edit);
+                let range = textEdit.range;
                 // Work around for https://github.com/Microsoft/TypeScript/issues/6700.
                 // Check if we have an edit at the beginning of the line which only removes white spaces and leaves
                 // an empty line. Drop those edits
                 if (range.start.character === 0 && range.start.line === range.end.line && textEdit.newText === '') {
-                    const lText = document.lineAt(range.start.line).text;
+                    let lText = document.lineAt(range.start.line).text;
                     // If the edit leaves something on the line keep the edit (note that the end character is exclusive).
                     // Keep it also if it removes something else than whitespace
                     if (lText.trim().length > 0 || lText.length > range.end.character) {
@@ -83,11 +82,9 @@ class TypeScriptFormattingProvider {
                 }
             }
             return result;
-        }
-        catch (_a) {
-            // noop
-        }
-        return [];
+        }, () => {
+            return [];
+        });
     }
     codeEdit2SingleEditOperation(edit) {
         return new vscode_1.TextEdit(convert_1.tsTextSpanToVsRange(edit), edit.newText);
@@ -119,4 +116,4 @@ class FormattingProviderManager {
     }
 }
 exports.FormattingProviderManager = FormattingProviderManager;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/cc11eb00ba83ee0b6d29851f1a599cf3d9469932/extensions\typescript\out/features\formattingProvider.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/9a199d77c82fcb82f39c68bb33c614af01c111ba/extensions\typescript\out/features\formattingProvider.js.map

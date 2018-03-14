@@ -134,16 +134,9 @@ class MarkdownEngine {
                         uri = vscode.Uri.file(path.join(path.dirname(this.currentDocument.path), uri.path));
                     }
                     if (fragment) {
-                        uri = uri.with({
-                            fragment: tableOfContentsProvider_1.Slug.fromHeading(fragment).value
-                        });
+                        uri = uri.with({ fragment });
                     }
                     return normalizeLink(uri.with({ scheme: 'vscode-workspace-resource' }).toString(true));
-                }
-                else if (!uri.scheme && !uri.path && uri.fragment) {
-                    return normalizeLink(uri.with({
-                        fragment: tableOfContentsProvider_1.Slug.fromHeading(uri.fragment).value
-                    }).toString(true));
                 }
             }
             catch (e) {
@@ -161,4 +154,4 @@ class MarkdownEngine {
     }
 }
 exports.MarkdownEngine = MarkdownEngine;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/cc11eb00ba83ee0b6d29851f1a599cf3d9469932/extensions\markdown\out/markdownEngine.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/9a199d77c82fcb82f39c68bb33c614af01c111ba/extensions\markdown\out/markdownEngine.js.map

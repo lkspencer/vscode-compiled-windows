@@ -7,33 +7,33 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const vscode = require("vscode");
 const languageModeIds = require("./languageModeIds");
 class VersionStatus {
-    constructor(_normalizePath) {
-        this._normalizePath = _normalizePath;
-        this._versionBarEntry = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 99 /* to the right of editor status (100) */);
-        this._onChangeEditorSub = vscode.window.onDidChangeActiveTextEditor(this.showHideStatus, this);
+    constructor(normalizePath) {
+        this.normalizePath = normalizePath;
+        this.versionBarEntry = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 99 /* to the right of editor status (100) */);
+        this.onChangeEditorSub = vscode.window.onDidChangeActiveTextEditor(this.showHideStatus, this);
     }
     dispose() {
-        this._versionBarEntry.dispose();
-        this._onChangeEditorSub.dispose();
+        this.versionBarEntry.dispose();
+        this.onChangeEditorSub.dispose();
     }
     onDidChangeTypeScriptVersion(version) {
         this.showHideStatus();
-        this._versionBarEntry.text = version.versionString;
-        this._versionBarEntry.tooltip = version.path;
-        this._versionBarEntry.command = 'typescript.selectTypeScriptVersion';
+        this.versionBarEntry.text = version.versionString;
+        this.versionBarEntry.tooltip = version.path;
+        this.versionBarEntry.command = 'typescript.selectTypeScriptVersion';
     }
     showHideStatus() {
         if (!vscode.window.activeTextEditor) {
-            this._versionBarEntry.hide();
+            this.versionBarEntry.hide();
             return;
         }
         const doc = vscode.window.activeTextEditor.document;
         if (vscode.languages.match([languageModeIds.typescript, languageModeIds.typescriptreact], doc)) {
-            if (this._normalizePath(doc.uri)) {
-                this._versionBarEntry.show();
+            if (this.normalizePath(doc.uri)) {
+                this.versionBarEntry.show();
             }
             else {
-                this._versionBarEntry.hide();
+                this.versionBarEntry.hide();
             }
             return;
         }
@@ -42,8 +42,8 @@ class VersionStatus {
             // to show the version info in the existing editor
             return;
         }
-        this._versionBarEntry.hide();
+        this.versionBarEntry.hide();
     }
 }
 exports.default = VersionStatus;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/cc11eb00ba83ee0b6d29851f1a599cf3d9469932/extensions\typescript\out/utils\versionStatus.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/9a199d77c82fcb82f39c68bb33c614af01c111ba/extensions\typescript\out/utils\versionStatus.js.map

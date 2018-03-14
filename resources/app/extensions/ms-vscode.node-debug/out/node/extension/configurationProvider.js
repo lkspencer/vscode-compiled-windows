@@ -156,7 +156,7 @@ class NodeConfigurationProvider {
         }
         // is "auto attach child process" mode enabled?
         if (config.autoAttachChildProcesses) {
-            childProcesses_1.prepareAutoAttachChildProcesses(folder, config);
+            childProcesses_1.prepareAutoAttachChildProcesses(config);
         }
         // determine which protocol to use
         return determineDebugType(config, this._extensionContext.logger).then(debugType => {

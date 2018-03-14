@@ -52,6 +52,5 @@
 	"emmetPreferencesCssWebkitProperties": "Emmet 缩写中使用的由 \"-\" 打头有 \"webkit\" 前缀的 CSS 属性，使用半角逗号 (\",\") 进行分隔。若要始终避免 \"webkit\" 前缀，请设为空字符串。",
 	"emmetPreferencesCssMozProperties": "Emmet 缩写中使用的由 \"-\" 打头有 \"moz\" 前缀的 CSS 属性，使用半角逗号 (\",\") 进行分隔。若要始终避免 \"moz\" 前缀，请设为空字符串。",
 	"emmetPreferencesCssOProperties": "Emmet 缩写中使用的由 \"-\" 打头有 \"o\" 前缀的 CSS 属性，使用半角逗号 (\",\") 进行分隔。若要始终避免 \"o\" 前缀，请设为空字符串。",
-	"emmetPreferencesCssMsProperties": "Emmet 缩写中使用的由 \"-\" 打头有 \"ms\" 前缀的 CSS 属性，使用半角逗号 (\",\") 进行分隔。若要始终避免 \"ms\" 前缀，请设为空字符串。",
-	"emmetPreferencesCssFuzzySearchMinScore": "The minimum score (from 0 to 1) that fuzzy-matched abbreviation should achieve. Lower values may produce many false-positive matches, higher values may reduce possible matches."
+	"emmetPreferencesCssMsProperties": "Emmet 缩写中使用的由 \"-\" 打头有 \"ms\" 前缀的 CSS 属性，使用半角逗号 (\",\") 进行分隔。若要始终避免 \"ms\" 前缀，请设为空字符串。"
 }

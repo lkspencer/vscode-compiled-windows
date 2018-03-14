@@ -16,7 +16,6 @@ const documentLinkProvider_1 = require("./features/documentLinkProvider");
 const documentSymbolProvider_1 = require("./features/documentSymbolProvider");
 const previewContentProvider_1 = require("./features/previewContentProvider");
 const previewManager_1 = require("./features/previewManager");
-const foldingProvider_1 = require("./features/foldingProvider");
 function activate(context) {
     const telemetryReporter = telemetryReporter_1.loadDefaultTelemetryReporter();
     context.subscriptions.push(telemetryReporter);
@@ -30,7 +29,6 @@ function activate(context) {
     context.subscriptions.push(previewManager);
     context.subscriptions.push(vscode.languages.registerDocumentSymbolProvider(selector, new documentSymbolProvider_1.default(engine)));
     context.subscriptions.push(vscode.languages.registerDocumentLinkProvider(selector, new documentLinkProvider_1.default()));
-    context.subscriptions.push(vscode.languages.registerFoldingProvider(selector, new foldingProvider_1.default(engine)));
     const previewSecuritySelector = new security_1.PreviewSecuritySelector(cspArbiter, previewManager);
     const commandManager = new commandManager_1.CommandManager();
     context.subscriptions.push(commandManager);
@@ -50,4 +48,4 @@ function activate(context) {
     }));
 }
 exports.activate = activate;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/cc11eb00ba83ee0b6d29851f1a599cf3d9469932/extensions\markdown\out/extension.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/9a199d77c82fcb82f39c68bb33c614af01c111ba/extensions\markdown\out/extension.js.map

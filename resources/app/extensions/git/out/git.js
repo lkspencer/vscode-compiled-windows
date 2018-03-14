@@ -1025,14 +1025,9 @@ class Repository {
             }
             const commit = result.stdout.trim();
             try {
-                const res2 = yield this.run(['rev-parse', '--symbolic-full-name', name + '@{u}']);
-                const fullUpstream = res2.stdout.trim();
-                const match = /^refs\/remotes\/([^/]+)\/(.+)$/.exec(fullUpstream);
-                if (!match) {
-                    throw new Error(`Could not parse upstream branch: ${fullUpstream}`);
-                }
-                const upstream = { remote: match[1], name: match[2] };
-                const res3 = yield this.run(['rev-list', '--left-right', name + '...' + fullUpstream]);
+                const res2 = yield this.run(['rev-parse', '--symbolic-full-name', '--abbrev-ref', name + '@{u}']);
+                const upstream = res2.stdout.trim();
+                const res3 = yield this.run(['rev-list', '--left-right', name + '...' + upstream]);
                 let ahead = 0, behind = 0;
                 let i = 0;
                 while (i < res3.stdout.length) {
@@ -1111,4 +1106,4 @@ class Repository {
     }
 }
 exports.Repository = Repository;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/cc11eb00ba83ee0b6d29851f1a599cf3d9469932/extensions\git\out/git.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/9a199d77c82fcb82f39c68bb33c614af01c111ba/extensions\git\out/git.js.map

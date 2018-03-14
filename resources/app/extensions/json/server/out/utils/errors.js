@@ -4,7 +4,6 @@
  *--------------------------------------------------------------------------------------------*/
 'use strict';
 Object.defineProperty(exports, "__esModule", { value: true });
-var vscode_languageserver_1 = require("vscode-languageserver");
 function formatError(message, err) {
     if (err instanceof Error) {
         var error = err;
@@ -27,34 +26,14 @@ function runSafeAsync(func, errorVal, errorMessage) {
     });
 }
 exports.runSafeAsync = runSafeAsync;
-function runSafe(func, errorVal, errorMessage, token) {
-    return new Promise(function (resolve, reject) {
-        setTimeout(function () {
-            if (token.isCancellationRequested) {
-                resolve(cancelValue());
-            }
-            else {
-                try {
-                    var result = func();
-                    if (token.isCancellationRequested) {
-                        resolve(cancelValue());
-                        return;
-                    }
-                    else {
-                        resolve(result);
-                    }
-                }
-                catch (e) {
-                    console.error(formatError(errorMessage, e));
-                    resolve(errorVal);
-                }
-            }
-        }, 100);
-    });
+function runSafe(func, errorVal, errorMessage) {
+    try {
+        return func();
+    }
+    catch (e) {
+        console.error(formatError(errorMessage, e));
+        return errorVal;
+    }
 }
-exports.runSafe = runSafe;
-function cancelValue() {
-    console.log('cancelled');
-    return new vscode_languageserver_1.ResponseError(vscode_languageserver_1.ErrorCodes.RequestCancelled, 'Request cancelled');
-}
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/cc11eb00ba83ee0b6d29851f1a599cf3d9469932/extensions\json\server\out/utils\errors.js.map
+exports.runSafe = runSafe;
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/9a199d77c82fcb82f39c68bb33c614af01c111ba/extensions\json\server\out/utils\errors.js.map

@@ -3,14 +3,6 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 const vscode_debugadapter_1 = require("vscode-debugadapter");
 const nodeV8Protocol_1 = require("./nodeV8Protocol");
@@ -1507,45 +1499,26 @@ class NodeDebugSession extends vscode_debugadapter_1.LoggingDebugSession {
         });
     }
     _setBreakpoint2(ibp, path, actualSrcLine, actualSrcColumn, actualLine, actualColumn) {
-        return __awaiter(this, void 0, void 0, function* () {
-            // nasty corner case: since we ignore the break-on-entry event we have to make sure that we
-            // stop in the entry point line if the user has an explicit breakpoint there (or if there is a 'debugger' statement).
-            // For this we check here whether a breakpoint is at the same location as the 'break-on-entry' location.
-            // If yes, then we plan for hitting the breakpoint instead of 'continue' over it!
-            if (path && PathUtils.pathCompare(this._entryPath, path) && this._entryLine === actualLine && this._entryColumn === actualColumn) {
-                let conditionMet = true; // for regular breakpoints condition is always true
-                if (ibp.condition) {
-                    // if conditional breakpoint we have to evaluate the condition because node didn't do it (because it stopped on entry).
-                    conditionMet = yield this.evaluateCondition(ibp.condition);
-                }
-                if (!this._stopOnEntry && conditionMet) {
-                    // we do not have to 'continue' but we have to generate a stopped event instead
-                    this._needContinue = false;
-                    this._needBreakpointEvent = true;
-                    this.log('la', '_setBreakpoint2: remember to fire a breakpoint event later');
-                }
+        // nasty corner case: since we ignore the break-on-entry event we have to make sure that we
+        // stop in the entry point line if the user has an explicit breakpoint there (or if there is a 'debugger' statement).
+        // For this we check here whether a breakpoint is at the same location as the 'break-on-entry' location.
+        // If yes, then we plan for hitting the breakpoint instead of 'continue' over it!
+        if (!this._stopOnEntry && path && PathUtils.pathCompare(this._entryPath, path)) {
+            if (this._entryLine === actualLine && this._entryColumn === actualColumn) {
+                // we do not have to 'continue' but we have to generate a stopped event instead
+                this._needContinue = false;
+                this._needBreakpointEvent = true;
+                this.log('la', '_setBreakpoint2: remember to fire a breakpoint event later');
             }
-            if (ibp.verificationMessage) {
-                const bp = new vscode_debugadapter_1.Breakpoint(false, this.convertDebuggerLineToClient(actualSrcLine), this.convertDebuggerColumnToClient(actualSrcColumn));
-                bp.message = ibp.verificationMessage;
-                return bp;
-            }
-            else {
-                return new vscode_debugadapter_1.Breakpoint(true, this.convertDebuggerLineToClient(actualSrcLine), this.convertDebuggerColumnToClient(actualSrcColumn));
-            }
-        });
-    }
-    evaluateCondition(condition) {
-        const args = {
-            expression: condition,
-            frame: 0,
-            disable_break: true
-        };
-        return this._node.evaluate(args).then(response => {
-            return !!response.body.value;
-        }).catch(e => {
-            return false;
-        });
+        }
+        if (ibp.verificationMessage) {
+            const bp = new vscode_debugadapter_1.Breakpoint(false, this.convertDebuggerLineToClient(actualSrcLine), this.convertDebuggerColumnToClient(actualSrcColumn));
+            bp.message = ibp.verificationMessage;
+            return bp;
+        }
+        else {
+            return new vscode_debugadapter_1.Breakpoint(true, this.convertDebuggerLineToClient(actualSrcLine), this.convertDebuggerColumnToClient(actualSrcColumn));
+        }
     }
     /**
      * converts a path into a regular expression for use in the setbreakpoint request

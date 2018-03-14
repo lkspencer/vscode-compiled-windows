@@ -6,12 +6,12 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 require("mocha");
 var assert = require("assert");
-var vscode_css_languageservice_1 = require("vscode-css-languageservice");
+var cssLanguageService_1 = require("vscode-css-languageservice/lib/cssLanguageService");
 var vscode_languageserver_types_1 = require("vscode-languageserver-types");
 var vscode_emmet_helper_1 = require("vscode-emmet-helper");
 suite('Emmet Support', function () {
-    var cssLanguageService = vscode_css_languageservice_1.getCSSLanguageService();
-    var scssLanguageService = vscode_css_languageservice_1.getSCSSLanguageService();
+    var cssLanguageService = cssLanguageService_1.getCSSLanguageService();
+    var scssLanguageService = cssLanguageService_1.getSCSSLanguageService();
     function assertCompletions(syntax, value, expectedProposal, expectedProposalDoc) {
         var offset = value.indexOf('|');
         value = value.substr(0, offset) + value.substr(offset + 1);
@@ -58,4 +58,4 @@ suite('Emmet Support', function () {
         assertCompletions('scss', '.foo { display: none; -m-m10| }', 'margin: 10px;', '-moz-margin: 10px;\nmargin: 10px;');
     });
 });
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/cc11eb00ba83ee0b6d29851f1a599cf3d9469932/extensions\css\server\out/test\emmet.test.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/9a199d77c82fcb82f39c68bb33c614af01c111ba/extensions\css\server\out/test\emmet.test.js.map

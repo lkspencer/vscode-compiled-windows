@@ -269,9 +269,6 @@ function detectUnicodeEncoding(buffer) {
     return null;
 }
 exports.detectUnicodeEncoding = detectUnicodeEncoding;
-function isWindowsPath(path) {
-    return /^[a-zA-Z]:\\/.test(path);
-}
 function isDescendant(parent, descendant) {
     if (parent === descendant) {
         return true;
@@ -279,12 +276,7 @@ function isDescendant(parent, descendant) {
     if (parent.charAt(parent.length - 1) !== path_1.sep) {
         parent += path_1.sep;
     }
-    // Windows is case insensitive
-    if (isWindowsPath(parent)) {
-        parent = parent.toLowerCase();
-        descendant = descendant.toLowerCase();
-    }
     return descendant.startsWith(parent);
 }
 exports.isDescendant = isDescendant;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/cc11eb00ba83ee0b6d29851f1a599cf3d9469932/extensions\git\out/util.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/9a199d77c82fcb82f39c68bb33c614af01c111ba/extensions\git\out/util.js.map

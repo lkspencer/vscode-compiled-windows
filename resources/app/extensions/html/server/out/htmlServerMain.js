@@ -301,11 +301,6 @@ connection.onCompletion(function (textDocumentPosition) { return __awaiter(_this
                                 return [2 /*return*/, result_1];
                             }
                             if (mode.getId() !== 'html') {
-                                /* __GDPR__
-                                    "html.embbedded.complete" : {
-                                        "languageId" : { "classification": "SystemMetaData", "purpose": "FeatureInsight" }
-                                    }
-                                 */
                                 connection.telemetry.logEvent({ key: 'html.embbedded.complete', value: { languageId: mode.getId() } });
                             }
                             cachedCompletionList = null;
@@ -512,4 +507,4 @@ connection.onRequest(foldingProvider_proposed_1.FoldingRangesRequest.type, funct
 });
 // Listen on the connection
 connection.listen();
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/cc11eb00ba83ee0b6d29851f1a599cf3d9469932/extensions\html\server\out/htmlServerMain.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/9a199d77c82fcb82f39c68bb33c614af01c111ba/extensions\html\server\out/htmlServerMain.js.map

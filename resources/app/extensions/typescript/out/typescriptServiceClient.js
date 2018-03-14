@@ -20,7 +20,6 @@ const versionProvider_1 = require("./utils/versionProvider");
 const versionPicker_1 = require("./utils/versionPicker");
 const fileSchemes = require("./utils/fileSchemes");
 const tsconfig_1 = require("./utils/tsconfig");
-const dipose_1 = require("./utils/dipose");
 const localize = nls.loadMessageBundle(__filename);
 class CallbackMap {
     constructor() {
@@ -94,7 +93,7 @@ class ForkedTsServerProcess {
     write(serverRequest) {
         this.childProcess.stdin.write(JSON.stringify(serverRequest) + '\r\n', 'utf8');
     }
-    createReader(callback, onError) {
+    createReader(callback, onError = () => ({})) {
         // tslint:disable-next-line:no-unused-expression
         new wireProtocol_1.Reader(this.childProcess.stdout, callback, onError);
     }
@@ -103,7 +102,8 @@ class ForkedTsServerProcess {
     }
 }
 class TypeScriptServiceClient {
-    constructor(workspaceState, onDidChangeTypeScriptVersion, plugins, logDirectoryProvider) {
+    constructor(host, workspaceState, onDidChangeTypeScriptVersion, plugins, logDirectoryProvider) {
+        this.host = host;
         this.workspaceState = workspaceState;
         this.onDidChangeTypeScriptVersion = onDidChangeTypeScriptVersion;
         this.plugins = plugins;
@@ -118,10 +118,6 @@ class TypeScriptServiceClient {
         this._onDidEndInstallTypings = new vscode_1.EventEmitter();
         this._onTypesInstallerInitializationFailed = new vscode_1.EventEmitter();
         this.disposables = [];
-        this._onSyntaxDiagnosticsReceived = new vscode_1.EventEmitter();
-        this._onSemanticDiagnosticsReceived = new vscode_1.EventEmitter();
-        this._onConfigDiagnosticsReceived = new vscode_1.EventEmitter();
-        this._onResendModelsRequested = new vscode_1.EventEmitter();
         this.pathSeparator = path.sep;
         this.lastStart = Date.now();
         var p = new Promise((resolve, reject) => {
@@ -157,10 +153,6 @@ class TypeScriptServiceClient {
         this.telemetryReporter = new telemetry_1.default(() => this._tsserverVersion || this._apiVersion.versionString);
         this.disposables.push(this.telemetryReporter);
     }
-    get onSyntaxDiagnosticsReceived() { return this._onSyntaxDiagnosticsReceived.event; }
-    get onSemanticDiagnosticsReceived() { return this._onSemanticDiagnosticsReceived.event; }
-    get onConfigDiagnosticsReceived() { return this._onConfigDiagnosticsReceived.event; }
-    get onResendModelsRequested() { return this._onResendModelsRequested.event; }
     get configuration() {
         return this._configuration;
     }
@@ -170,11 +162,12 @@ class TypeScriptServiceClient {
                 childProcess.kill();
             }).then(undefined, () => void 0);
         }
-        dipose_1.disposeAll(this.disposables);
-        this._onSyntaxDiagnosticsReceived.dispose();
-        this._onSemanticDiagnosticsReceived.dispose();
-        this._onConfigDiagnosticsReceived.dispose();
-        this._onResendModelsRequested.dispose();
+        while (this.disposables.length) {
+            const obj = this.disposables.pop();
+            if (obj) {
+                obj.dispose();
+            }
+        }
     }
     restartTsServer() {
         const start = () => {
@@ -216,6 +209,9 @@ class TypeScriptServiceClient {
     }
     info(message, data) {
         this.logger.info(message, data);
+    }
+    warn(message, data) {
+        this.logger.warn(message, data);
     }
     error(message, data) {
         this.logger.error(message, data);
@@ -369,7 +365,7 @@ class TypeScriptServiceClient {
         this.execute('configure', configureOptions);
         this.setCompilerOptionsForInferredProjects(this._configuration);
         if (resendModels) {
-            this._onResendModelsRequested.fire();
+            this.host.populateService();
         }
     }
     setCompilerOptionsForInferredProjects(configuration) {
@@ -634,29 +630,13 @@ class TypeScriptServiceClient {
     dispatchEvent(event) {
         switch (event.event) {
             case 'syntaxDiag':
-                {
-                    const diagnosticEvent = event;
-                    if (diagnosticEvent.body && diagnosticEvent.body.diagnostics) {
-                        this._onSyntaxDiagnosticsReceived.fire({
-                            resource: this.asUrl(diagnosticEvent.body.file),
-                            diagnostics: diagnosticEvent.body.diagnostics
-                        });
-                    }
-                    break;
-                }
+                this.host.syntaxDiagnosticsReceived(event);
+                break;
             case 'semanticDiag':
-                {
-                    const diagnosticEvent = event;
-                    if (diagnosticEvent.body && diagnosticEvent.body.diagnostics) {
-                        this._onSemanticDiagnosticsReceived.fire({
-                            resource: this.asUrl(diagnosticEvent.body.file),
-                            diagnostics: diagnosticEvent.body.diagnostics
-                        });
-                    }
-                    break;
-                }
+                this.host.semanticDiagnosticsReceived(event);
+                break;
             case 'configFileDiag':
-                this._onConfigDiagnosticsReceived.fire(event);
+                this.host.configFileDiagnosticsReceived(event);
                 break;
             case 'telemetry':
                 const telemetryData = event.body;
@@ -804,4 +784,4 @@ exports.default = TypeScriptServiceClient;
 const getTsLocale = (configuration) => (configuration.locale
     ? configuration.locale
     : vscode_1.env.language);
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/cc11eb00ba83ee0b6d29851f1a599cf3d9469932/extensions\typescript\out/typescriptServiceClient.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/9a199d77c82fcb82f39c68bb33c614af01c111ba/extensions\typescript\out/typescriptServiceClient.js.map

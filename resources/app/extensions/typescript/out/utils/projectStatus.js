@@ -62,7 +62,7 @@ function createLargeProjectMonitorForProject(item, client, isOpen, memento) {
         if (!file) {
             return;
         }
-        isOpen(editor.document.uri).then(value => {
+        isOpen(file).then(value => {
             if (!value) {
                 return;
             }
@@ -151,7 +151,7 @@ function computeLargeRoots(configFileName, fileNames) {
     let roots = Object.create(null);
     let dir = path_1.dirname(configFileName);
     // console.log(dir, fileNames);
-    for (const fileName of fileNames) {
+    for (let fileName of fileNames) {
         if (fileName.indexOf(dir) === 0) {
             let first = fileName.substring(dir.length + 1);
             first = first.substring(0, first.indexOf('/'));
@@ -169,7 +169,7 @@ function computeLargeRoots(configFileName, fileNames) {
         .filter(s => s.root === 'src' || s.root === 'test' || s.root === 'tests');
     let result = [];
     let sum = 0;
-    for (const e of data) {
+    for (let e of data) {
         sum += e.count;
         result.push(e.root);
         if (fileNames.length - sum < fileLimit) {
@@ -178,4 +178,4 @@ function computeLargeRoots(configFileName, fileNames) {
     }
     return result;
 }
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/cc11eb00ba83ee0b6d29851f1a599cf3d9469932/extensions\typescript\out/utils\projectStatus.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/9a199d77c82fcb82f39c68bb33c614af01c111ba/extensions\typescript\out/utils\projectStatus.js.map

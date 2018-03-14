@@ -49,4 +49,4 @@ class DirectiveCommentCompletionProvider {
     }
 }
 exports.default = DirectiveCommentCompletionProvider;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/cc11eb00ba83ee0b6d29851f1a599cf3d9469932/extensions\typescript\out/features\directiveCommentCompletionProvider.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/9a199d77c82fcb82f39c68bb33c614af01c111ba/extensions\typescript\out/features\directiveCommentCompletionProvider.js.map
