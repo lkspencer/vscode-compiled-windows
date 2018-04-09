@@ -1,5 +1,5 @@
 {
-	"extension.description": "Visual Studio-Codedebuggererweiterung für Node.js v6.3+ mit dem neuen Inspektorprotokoll",
+	"extension.description": "Debuggingunterstützung für Node.js",
 	"node.label": "Node.js v6.3+ über Inspektorprotokoll",
 	"node.sourceMaps.description": "Verwendet JavaScript-Quellzuordnungen (wenn vorhanden).",
 	"outDir.deprecationMessage": "Das Attribut \"outDir\" ist veraltet. Verwenden Sie stattdessen \"outFiles\".",

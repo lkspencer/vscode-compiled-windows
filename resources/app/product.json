@@ -20,14 +20,14 @@
 		"ms-vscode.node-debug",
 		"ms-vscode.node-debug2"
 	],
-	"commit": "9a199d77c82fcb82f39c68bb33c614af01c111ba",
-	"date": "2018-03-14T14:17:48.606Z",
+	"commit": "950b8b0d37a9b7061b6f0d291837ccc4015f5ecd",
+	"date": "2018-04-09T16:31:46.289Z",
 	"checksums": {
-		"vs/workbench/workbench.main.js": "EQDgA3JDBuLhu0TgK5wiWg",
-		"vs/workbench/workbench.main.css": "HEyY6asvVJ1NEGeQCgelXQ",
+		"vs/workbench/workbench.main.js": "QtZkjESnr9fwF5gmj5he9g",
+		"vs/workbench/workbench.main.css": "JGwC1usX+kTXQpvgqORbzw",
 		"vs/workbench/electron-browser/bootstrap/index.html": "/Tgz9oebstmTGvDlTpbgpg",
-		"vs/workbench/electron-browser/bootstrap/index.js": "cQLS4XYdyPnYngrN4KTLyg",
-		"vs/workbench/electron-browser/bootstrap/preload.js": "Vw+2EuJHO6USzHl7I7fVfg"
+		"vs/workbench/electron-browser/bootstrap/index.js": "Qvm48gob4+uJ7zGVaBHsMg",
+		"vs/workbench/electron-browser/bootstrap/preload.js": "rGRSzRKLcV0PPFtwkyObfA"
 	},
-	"settingsSearchBuildId": 121001223
+	"settingsSearchBuildId": 122010003
 }

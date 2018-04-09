@@ -13,13 +13,12 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 const nls = require("vscode-nls");
 const vscode = require("vscode");
-const child_process_1 = require("child_process");
 const path_1 = require("path");
 const fs = require("fs");
 const utilities_1 = require("./utilities");
 const protocolDetection_1 = require("./protocolDetection");
 const processPicker_1 = require("./processPicker");
-const childProcesses_1 = require("./childProcesses");
+const cluster_1 = require("./cluster");
 const localize = nls.loadMessageBundle(__filename);
 //---- NodeConfigurationProvider
 class NodeConfigurationProvider {
@@ -36,51 +35,97 @@ class NodeConfigurationProvider {
      * Try to add all missing attributes to the debug configuration being launched.
      */
     resolveDebugConfiguration(folder, config, token) {
-        // if launch.json is missing or empty
-        if (!config.type && !config.request && !config.name) {
-            config = createLaunchConfigFromContext(folder, true, config);
-            if (!config.program) {
-                const message = localize(0, null);
-                return vscode.window.showErrorMessage(message, { modal: true }).then(_ => {
-                    return undefined; // abort launch
-                });
+        return this.resolveConfigAsync(folder, config).catch(err => {
+            return vscode.window.showErrorMessage(err.message, { modal: true }).then(_ => undefined); // abort launch
+        });
+    }
+    /**
+     * Try to add all missing attributes to the debug configuration being launched.
+     */
+    resolveConfigAsync(folder, config, token) {
+        return __awaiter(this, void 0, void 0, function* () {
+            // if launch.json is missing or empty
+            if (!config.type && !config.request && !config.name) {
+                config = createLaunchConfigFromContext(folder, true, config);
+                if (!config.program) {
+                    throw new Error(localize(0, null));
+                }
             }
-        }
-        // make sure that config has a 'cwd' attribute set
-        if (!config.cwd) {
-            if (folder) {
-                config.cwd = folder.uri.fsPath;
-            }
-            // no folder -> config is a user or workspace launch config
-            if (!config.cwd && vscode.workspace.workspaceFolders && vscode.workspace.workspaceFolders.length > 0) {
-                config.cwd = vscode.workspace.workspaceFolders[0].uri.fsPath;
-            }
-            // no folder case
-            if (!config.cwd && config.program === '${file}') {
-                config.cwd = '${fileDirname}';
-            }
-            // program is some absolute path
-            if (!config.cwd && path_1.isAbsolute(config.program)) {
-                // derive 'cwd' from 'program'
-                config.cwd = path_1.dirname(config.program);
-            }
-            // last resort
+            // make sure that config has a 'cwd' attribute set
             if (!config.cwd) {
-                config.cwd = '${workspaceFolder}';
+                if (folder) {
+                    config.cwd = folder.uri.fsPath;
+                }
+                // no folder -> config is a user or workspace launch config
+                if (!config.cwd && vscode.workspace.workspaceFolders && vscode.workspace.workspaceFolders.length > 0) {
+                    config.cwd = vscode.workspace.workspaceFolders[0].uri.fsPath;
+                }
+                // no folder case
+                if (!config.cwd && config.program === '${file}') {
+                    config.cwd = '${fileDirname}';
+                }
+                // program is some absolute path
+                if (!config.cwd && path_1.isAbsolute(config.program)) {
+                    // derive 'cwd' from 'program'
+                    config.cwd = path_1.dirname(config.program);
+                }
+                // last resort
+                if (!config.cwd) {
+                    config.cwd = '${workspaceFolder}';
+                }
             }
-        }
-        // remove 'useWSL' on all platforms but Windows
-        if (process.platform !== 'win32' && config.useWSL) {
-            this._extensionContext.logger.debug('useWSL attribute ignored on non-Windows OS.');
-            delete config.useWSL;
-        }
-        // when using "integratedTerminal" ensure that debug console doesn't get activated; see #43164
-        if (config.console === 'integratedTerminal' && !config.internalConsoleOptions) {
-            config.internalConsoleOptions = 'neverOpen';
-        }
-        // "nvm" support
-        if (config.runtimeVersion && config.runtimeVersion !== 'default') {
-            // if a runtime version is specified we prepend env.PATH with the folder that corresponds to the version
+            // remove 'useWSL' on all platforms but Windows
+            if (process.platform !== 'win32' && config.useWSL) {
+                this._extensionContext.logger.debug('useWSL attribute ignored on non-Windows OS.');
+                delete config.useWSL;
+            }
+            // when using "integratedTerminal" ensure that debug console doesn't get activated; see #43164
+            if (config.console === 'integratedTerminal' && !config.internalConsoleOptions) {
+                config.internalConsoleOptions = 'neverOpen';
+            }
+            // "nvm" support
+            if (config.request === 'launch' && typeof config.runtimeVersion === 'string' && config.runtimeVersion !== 'default') {
+                yield this.nvmSupport(config);
+            }
+            // "auto attach child process" support
+            if (config.autoAttachChildProcesses) {
+                cluster_1.Cluster.prepareAutoAttachChildProcesses(folder, config);
+            }
+            // "attach to process via picker" support
+            if (config.request === 'attach' && typeof config.processId === 'string') {
+                // we resolve Process Picker early (before VS Code) so that we can probe the process for its protocol
+                if (yield processPicker_1.resolveProcessId(config)) {
+                    return undefined; // abort launch
+                }
+            }
+            // finally determine which protocol to use
+            const debugType = yield determineDebugType(config, this._extensionContext.logger);
+            if (debugType) {
+                config.type = debugType;
+            }
+            // fixup log parameters
+            if (config.trace && !config.logFilePath) {
+                const fileName = config.type === 'node' ? 'debugadapter-legacy.txt' : 'debugadapter.txt';
+                if (this._extensionContext.logDirectory) {
+                    try {
+                        yield utilities_1.mkdirP(this._extensionContext.logDirectory);
+                    }
+                    catch (e) {
+                        // Already exists
+                    }
+                    config.logFilePath = path_1.join(this._extensionContext.logDirectory, fileName);
+                }
+            }
+            // everything ok: let VS Code start the debug session
+            return config;
+        });
+    }
+    /**
+     * if a runtime version is specified we prepend env.PATH with the folder that corresponds to the version.
+     * Returns false on error
+     */
+    nvmSupport(config) {
+        return __awaiter(this, void 0, void 0, function* () {
             let bin = undefined;
             let versionManagerName = undefined;
             // first try the Node Version Switcher 'nvs'
@@ -102,9 +147,7 @@ class NodeConfigurationProvider {
                     versionManagerName = 'nvs';
                 }
                 else {
-                    return vscode.window.showErrorMessage(localize(1, null), { modal: true }).then(_ => {
-                        return undefined; // abort launch
-                    });
+                    throw new Error(localize(1, null));
                 }
             }
             if (!bin) {
@@ -112,9 +155,7 @@ class NodeConfigurationProvider {
                 if (process.platform === 'win32') {
                     const nvmHome = process.env['NVM_HOME'];
                     if (!nvmHome) {
-                        return vscode.window.showErrorMessage(localize(2, null), { modal: true }).then(_ => {
-                            return undefined; // abort launch
-                        });
+                        throw new Error(localize(2, null));
                     }
                     bin = path_1.join(nvmHome, `v${config.runtimeVersion}`);
                     versionManagerName = 'nvm-windows';
@@ -129,9 +170,7 @@ class NodeConfigurationProvider {
                         }
                     }
                     if (!nvmHome) {
-                        return vscode.window.showErrorMessage(localize(3, null), { modal: true }).then(_ => {
-                            return undefined; // abort launch
-                        });
+                        throw new Error(localize(3, null));
                     }
                     bin = path_1.join(nvmHome, 'versions', 'node', `v${config.runtimeVersion}`, 'bin');
                     versionManagerName = 'nvm';
@@ -149,32 +188,8 @@ class NodeConfigurationProvider {
                 }
             }
             else {
-                return vscode.window.showErrorMessage(localize(4, null, config.runtimeVersion, versionManagerName), { modal: true }).then(_ => {
-                    return undefined; // abort launch
-                });
+                throw new Error(localize(4, null, config.runtimeVersion, versionManagerName));
             }
-        }
-        // is "auto attach child process" mode enabled?
-        if (config.autoAttachChildProcesses) {
-            childProcesses_1.prepareAutoAttachChildProcesses(config);
-        }
-        // determine which protocol to use
-        return determineDebugType(config, this._extensionContext.logger).then(debugType => {
-            if (debugType) {
-                config.type = debugType;
-            }
-            return this.fixupLogParameters(config);
-        });
-    }
-    fixupLogParameters(config) {
-        return __awaiter(this, void 0, void 0, function* () {
-            if (config.trace && !config.logFilePath) {
-                const fileName = config.type === 'node' ?
-                    'debugadapter-legacy.txt' :
-                    'debugadapter.txt';
-                config.logFilePath = path_1.join(yield this._extensionContext.logger.logDirectory, fileName);
-            }
-            return config;
         });
     }
 }
@@ -317,10 +332,7 @@ function guessProgramFromPackage(folder, packageJson, resolve) {
 }
 //---- debug type -------------------------------------------------------------------------------------------------------------
 function determineDebugType(config, logger) {
-    if (config.request === 'attach' && typeof config.processId === 'string') {
-        return determineDebugTypeForPidConfig(config);
-    }
-    else if (config.protocol === 'legacy') {
+    if (config.protocol === 'legacy') {
         return Promise.resolve('node');
     }
     else if (config.protocol === 'inspector') {
@@ -330,70 +342,6 @@ function determineDebugType(config, logger) {
         // 'auto', or unspecified
         return protocolDetection_1.detectDebugType(config, logger);
     }
-}
-function determineDebugTypeForPidConfig(config) {
-    const getPidP = isPickProcessCommand(config.processId) ?
-        processPicker_1.pickProcess() :
-        Promise.resolve(config.processId);
-    return getPidP.then(pid => {
-        if (pid && pid.match(/^[0-9]+$/)) {
-            const pidNum = Number(pid);
-            putPidInDebugMode(pidNum);
-            return determineDebugTypeForPidInDebugMode(config, pidNum);
-        }
-        else {
-            throw new Error(localize(9, null, pid));
-        }
-    }).then(debugType => {
-        if (debugType) {
-            // processID is handled, so turn this config into a normal port attach config
-            config.processId = undefined;
-            config.port = debugType === 'node2' ? protocolDetection_1.INSPECTOR_PORT_DEFAULT : protocolDetection_1.LEGACY_PORT_DEFAULT;
-        }
-        return debugType;
-    });
-}
-function isPickProcessCommand(configProcessId) {
-    configProcessId = configProcessId.trim();
-    return configProcessId === '${command:PickProcess}' || configProcessId === '${command:extension.pickNodeProcess}';
-}
-function putPidInDebugMode(pid) {
-    try {
-        if (process.platform === 'win32') {
-            // regular node has an undocumented API function for forcing another node process into debug mode.
-            // 		(<any>process)._debugProcess(pid);
-            // But since we are running on Electron's node, process._debugProcess doesn't work (for unknown reasons).
-            // So we use a regular node instead:
-            const command = `node -e process._debugProcess(${pid})`;
-            child_process_1.execSync(command);
-        }
-        else {
-            process.kill(pid, 'SIGUSR1');
-        }
-    }
-    catch (e) {
-        throw new Error(localize(10, null, pid, e));
-    }
-}
-function determineDebugTypeForPidInDebugMode(config, pid) {
-    let debugProtocolP;
-    if (config.port === protocolDetection_1.INSPECTOR_PORT_DEFAULT) {
-        debugProtocolP = Promise.resolve('inspector');
-    }
-    else if (config.port === protocolDetection_1.LEGACY_PORT_DEFAULT) {
-        debugProtocolP = Promise.resolve('legacy');
-    }
-    else if (config.protocol) {
-        debugProtocolP = Promise.resolve(config.protocol);
-    }
-    else {
-        debugProtocolP = protocolDetection_1.detectProtocolForPid(pid);
-    }
-    return debugProtocolP.then(debugProtocol => {
-        return debugProtocol === 'inspector' ? 'node2' :
-            debugProtocol === 'legacy' ? 'node' :
-                null;
-    });
 }
 function nvsStandardArchName(arch) {
     switch (arch) {

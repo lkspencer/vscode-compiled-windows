@@ -193,13 +193,15 @@ class Model {
         const disappearListener = onDidDisappearRepository(() => dispose());
         const changeListener = repository.onDidChangeRepository(uri => this._onDidChangeRepository.fire({ repository, uri }));
         const originalResourceChangeListener = repository.onDidChangeOriginalResource(uri => this._onDidChangeOriginalResource.fire({ repository, uri }));
+        const submodulesLimit = vscode_1.workspace
+            .getConfiguration('git', vscode_1.Uri.file(repository.root))
+            .get('detectSubmodulesLimit');
         const checkForSubmodules = () => {
-            if (repository.submodules.length > 10) {
+            if (repository.submodules.length > submodulesLimit) {
                 vscode_1.window.showWarningMessage(localize(0, null, path.basename(repository.root), repository.submodules.length));
                 statusListener.dispose();
-                return;
             }
-            this.scanSubmodules(repository);
+            this.scanSubmodules(repository, submodulesLimit);
         };
         const statusListener = repository.onDidRunGitStatus(checkForSubmodules);
         checkForSubmodules();
@@ -216,7 +218,7 @@ class Model {
         this.openRepositories.push(openRepository);
         this._onDidOpenRepository.fire(repository);
     }
-    scanSubmodules(repository) {
+    scanSubmodules(repository, limit) {
         const shouldScanSubmodules = vscode_1.workspace
             .getConfiguration('git', vscode_1.Uri.file(repository.root))
             .get('detectSubmodules') === true;
@@ -224,6 +226,7 @@ class Model {
             return;
         }
         repository.submodules
+            .slice(0, limit)
             .map(r => path.join(repository.root, r.path))
             .forEach(p => this.eventuallyScanPossibleGitRepository(p));
     }
@@ -326,4 +329,4 @@ __decorate([
     decorators_1.sequentialize
 ], Model.prototype, "tryOpenRepository", null);
 exports.Model = Model;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/9a199d77c82fcb82f39c68bb33c614af01c111ba/extensions\git\out/model.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/950b8b0d37a9b7061b6f0d291837ccc4015f5ecd/extensions\git\out/model.js.map

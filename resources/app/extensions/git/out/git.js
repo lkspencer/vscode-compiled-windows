@@ -21,6 +21,7 @@ const events_1 = require("events");
 const iconv = require("iconv-lite");
 const filetype = require("file-type");
 const util_1 = require("./util");
+const encoding_1 = require("./encoding");
 const readfile = util_1.denodeify(fs.readFile);
 var RefType;
 (function (RefType) {
@@ -271,7 +272,7 @@ function getGitErrorCode(stderr) {
 class Git {
     constructor(options) {
         this._onOutput = new events_1.EventEmitter();
-        this.gitPath = options.gitPath;
+        this.path = options.gitPath;
         this.env = options.env || {};
     }
     get onOutput() { return this._onOutput; }
@@ -340,7 +341,7 @@ class Git {
         });
     }
     spawn(args, options = {}) {
-        if (!this.gitPath) {
+        if (!this.path) {
             throw new Error('git could not be found in the system.');
         }
         if (!options) {
@@ -357,7 +358,7 @@ class Git {
         if (options.log !== false) {
             this.log(`> git ${args.join(' ')}\n`);
         }
-        return cp.spawn(this.gitPath, args, options);
+        return cp.spawn(this.path, args, options);
     }
     log(output) {
         this._onOutput.emit('log', output);
@@ -498,10 +499,14 @@ class Repository {
             return result.stdout;
         });
     }
-    bufferString(object, encoding = 'utf8') {
+    bufferString(object, encoding = 'utf8', autoGuessEncoding = false) {
         return __awaiter(this, void 0, void 0, function* () {
             const stdout = yield this.buffer(object);
-            return iconv.decode(stdout, iconv.encodingExists(encoding) ? encoding : 'utf8');
+            if (autoGuessEncoding) {
+                encoding = encoding_1.detectEncoding(stdout) || encoding;
+            }
+            encoding = iconv.encodingExists(encoding) ? encoding : 'utf8';
+            return iconv.decode(stdout, encoding);
         });
     }
     buffer(object) {
@@ -1025,9 +1030,14 @@ class Repository {
             }
             const commit = result.stdout.trim();
             try {
-                const res2 = yield this.run(['rev-parse', '--symbolic-full-name', '--abbrev-ref', name + '@{u}']);
-                const upstream = res2.stdout.trim();
-                const res3 = yield this.run(['rev-list', '--left-right', name + '...' + upstream]);
+                const res2 = yield this.run(['rev-parse', '--symbolic-full-name', name + '@{u}']);
+                const fullUpstream = res2.stdout.trim();
+                const match = /^refs\/remotes\/([^/]+)\/(.+)$/.exec(fullUpstream);
+                if (!match) {
+                    throw new Error(`Could not parse upstream branch: ${fullUpstream}`);
+                }
+                const upstream = { remote: match[1], name: match[2] };
+                const res3 = yield this.run(['rev-list', '--left-right', name + '...' + fullUpstream]);
                 let ahead = 0, behind = 0;
                 let i = 0;
                 while (i < res3.stdout.length) {
@@ -1106,4 +1116,4 @@ class Repository {
     }
 }
 exports.Repository = Repository;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/9a199d77c82fcb82f39c68bb33c614af01c111ba/extensions\git\out/git.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/950b8b0d37a9b7061b6f0d291837ccc4015f5ecd/extensions\git\out/git.js.map

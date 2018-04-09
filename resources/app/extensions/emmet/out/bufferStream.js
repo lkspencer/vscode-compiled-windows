@@ -14,8 +14,15 @@ class DocumentStreamReader {
     constructor(document, pos, limit) {
         this.document = document;
         this.start = this.pos = pos ? pos : new vscode_1.Position(0, 0);
+        this._sof = limit ? limit.start : new vscode_1.Position(0, 0);
         this._eof = limit ? limit.end : new vscode_1.Position(this.document.lineCount - 1, this._lineLength(this.document.lineCount - 1));
         this._eol = this.document.eol === vscode_1.EndOfLine.LF ? '\n' : '\r\n';
+    }
+    /**
+     * Returns true only if the stream is at the start of the file.
+     */
+    sof() {
+        return this.pos.isBeforeOrEqual(this._sof);
     }
     /**
      * Returns true only if the stream is at the end of the file.
@@ -135,4 +142,4 @@ class DocumentStreamReader {
     }
 }
 exports.DocumentStreamReader = DocumentStreamReader;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/9a199d77c82fcb82f39c68bb33c614af01c111ba/extensions\emmet\out/bufferStream.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/950b8b0d37a9b7061b6f0d291837ccc4015f5ecd/extensions\emmet\out/bufferStream.js.map

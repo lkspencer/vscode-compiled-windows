@@ -94,16 +94,22 @@ function provideNpmScripts() {
     return __awaiter(this, void 0, void 0, function* () {
         let emptyTasks = [];
         let allTasks = [];
-        let paths = yield vscode.workspace.findFiles('**/package.json', '**/node_modules/**');
-        if (paths.length === 0) {
+        let folders = vscode.workspace.workspaceFolders;
+        if (!folders) {
             return emptyTasks;
         }
         try {
-            for (let i = 0; i < paths.length; i++) {
-                let folder = vscode.workspace.getWorkspaceFolder(paths[i]);
-                if (folder && isEnabled(folder) && !isExcluded(folder, paths[i])) {
-                    let tasks = yield provideNpmScriptsForFolder(paths[i]);
-                    allTasks.push(...tasks);
+            for (let i = 0; i < folders.length; i++) {
+                let folder = folders[i];
+                if (isEnabled(folder)) {
+                    let relativePattern = new vscode.RelativePattern(folder, '**/package.json');
+                    let paths = yield vscode.workspace.findFiles(relativePattern, '**/node_modules/**');
+                    for (let j = 0; j < paths.length; j++) {
+                        if (!isExcluded(folder, paths[j])) {
+                            let tasks = yield provideNpmScriptsForFolder(paths[j]);
+                            allTasks.push(...tasks);
+                        }
+                    }
                 }
             }
             return allTasks;
@@ -208,4 +214,4 @@ function createTask(script, cmd, folder, packageJsonUri, matcher) {
     let cwd = path.dirname(packageJsonUri.fsPath);
     return new vscode.Task(kind, folder, taskName, 'npm', new vscode.ShellExecution(getCommandLine(folder, cmd), { cwd: cwd }), matcher);
 }
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/9a199d77c82fcb82f39c68bb33c614af01c111ba/extensions\npm\out/main.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/950b8b0d37a9b7061b6f0d291837ccc4015f5ecd/extensions\npm\out/main.js.map

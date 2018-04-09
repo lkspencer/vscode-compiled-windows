@@ -635,24 +635,42 @@ class Repository {
             yield this.run(Operation.Fetch, () => this.repository.fetch());
         });
     }
-    pullWithRebase() {
+    pullWithRebase(head) {
         return __awaiter(this, void 0, void 0, function* () {
-            yield this.run(Operation.Pull, () => this.repository.pull(true));
+            let remote;
+            let branch;
+            if (head && head.name && head.upstream) {
+                remote = head.upstream.remote;
+                branch = `${head.upstream.name}`;
+            }
+            yield this.run(Operation.Pull, () => this.repository.pull(true, remote, branch));
         });
     }
-    pull(rebase, remote, name) {
+    pull(head) {
         return __awaiter(this, void 0, void 0, function* () {
-            yield this.run(Operation.Pull, () => this.repository.pull(rebase, remote, name));
-        });
-    }
-    push() {
-        return __awaiter(this, void 0, void 0, function* () {
-            yield this.run(Operation.Push, () => this.repository.push());
+            let remote;
+            let branch;
+            if (head && head.name && head.upstream) {
+                remote = head.upstream.remote;
+                branch = `${head.upstream.name}`;
+            }
+            yield this.run(Operation.Pull, () => this.repository.pull(false, remote, branch));
         });
     }
     pullFrom(rebase, remote, branch) {
         return __awaiter(this, void 0, void 0, function* () {
             yield this.run(Operation.Pull, () => this.repository.pull(rebase, remote, branch));
+        });
+    }
+    push(head) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let remote;
+            let branch;
+            if (head && head.name && head.upstream) {
+                remote = head.upstream.remote;
+                branch = `${head.name}:${head.upstream.name}`;
+            }
+            yield this.run(Operation.Push, () => this.repository.push(remote, branch));
         });
     }
     pushTo(remote, name, setUpstream = false) {
@@ -665,45 +683,50 @@ class Repository {
             yield this.run(Operation.Push, () => this.repository.push(remote, undefined, false, true));
         });
     }
-    _sync(rebase) {
+    sync(head) {
+        return this._sync(head, false);
+    }
+    syncRebase(head) {
         return __awaiter(this, void 0, void 0, function* () {
+            return this._sync(head, true);
+        });
+    }
+    _sync(head, rebase) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let remote;
+            let pullBranch;
+            let pushBranch;
+            if (head.name && head.upstream) {
+                remote = head.upstream.remote;
+                pullBranch = `${head.upstream.name}`;
+                pushBranch = `${head.name}:${head.upstream.name}`;
+            }
             yield this.run(Operation.Sync, () => __awaiter(this, void 0, void 0, function* () {
-                yield this.repository.pull(rebase);
+                yield this.repository.pull(rebase, remote, pullBranch);
                 const shouldPush = this.HEAD && typeof this.HEAD.ahead === 'number' ? this.HEAD.ahead > 0 : true;
                 if (shouldPush) {
-                    yield this.repository.push();
+                    yield this.repository.push(remote, pushBranch);
                 }
             }));
         });
     }
-    sync() {
-        return this._sync(false);
-    }
-    syncRebase() {
-        return __awaiter(this, void 0, void 0, function* () {
-            return this._sync(true);
-        });
-    }
     show(ref, filePath) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield this.run(Operation.Show, () => __awaiter(this, void 0, void 0, function* () {
+            return this.run(Operation.Show, () => {
                 const relativePath = path.relative(this.repository.root, filePath).replace(/\\/g, '/');
                 const configFiles = vscode_1.workspace.getConfiguration('files', vscode_1.Uri.file(filePath));
-                const encoding = configFiles.get('encoding');
-                // TODO@joao: Resource config api
-                return yield this.repository.bufferString(`${ref}:${relativePath}`, encoding);
-            }));
+                const defaultEncoding = configFiles.get('encoding');
+                const autoGuessEncoding = configFiles.get('autoGuessEncoding');
+                return this.repository.bufferString(`${ref}:${relativePath}`, defaultEncoding, autoGuessEncoding);
+            });
         });
     }
     buffer(ref, filePath) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield this.run(Operation.Show, () => __awaiter(this, void 0, void 0, function* () {
+            return this.run(Operation.Show, () => {
                 const relativePath = path.relative(this.repository.root, filePath).replace(/\\/g, '/');
-                // const configFiles = workspace.getConfiguration('files', Uri.file(filePath));
-                // const encoding = configFiles.get<string>('encoding');
-                // TODO@joao: REsource config api
-                return yield this.repository.buffer(`${ref}:${relativePath}`);
-            }));
+                return this.repository.buffer(`${ref}:${relativePath}`);
+            });
         });
     }
     lstree(ref, filePath) {
@@ -1046,4 +1069,4 @@ __decorate([
     decorators_1.throttle
 ], Repository.prototype, "updateWhenIdleAndWait", null);
 exports.Repository = Repository;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/9a199d77c82fcb82f39c68bb33c614af01c111ba/extensions\git\out/repository.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/950b8b0d37a9b7061b6f0d291837ccc4015f5ecd/extensions\git\out/repository.js.map
