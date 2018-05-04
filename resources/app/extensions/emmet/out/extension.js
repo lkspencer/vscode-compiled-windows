@@ -116,7 +116,6 @@ exports.activate = activate;
  */
 const languageMappingForCompletionProviders = new Map();
 const completionProvidersMapping = new Map();
-const languagesToSkipCompletionProviders = ['html'];
 function registerCompletionProviders(context) {
     let completionProvider = new defaultCompletionProvider_1.DefaultCompletionItemProvider();
     let includedLanguages = util_1.getMappingForIncludedLanguages();
@@ -132,14 +131,14 @@ function registerCompletionProviders(context) {
             languageMappingForCompletionProviders.delete(language);
             completionProvidersMapping.delete(language);
         }
-        const provider = vscode.languages.registerCompletionItemProvider(language, completionProvider, ...util_1.LANGUAGE_MODES[includedLanguages[language]]);
+        const provider = vscode.languages.registerCompletionItemProvider([{ language, scheme: 'file' }, { language, scheme: 'untitled' }], completionProvider, ...util_1.LANGUAGE_MODES[includedLanguages[language]]);
         context.subscriptions.push(provider);
         languageMappingForCompletionProviders.set(language, includedLanguages[language]);
         completionProvidersMapping.set(language, provider);
     });
     Object.keys(util_1.LANGUAGE_MODES).forEach(language => {
-        if (languagesToSkipCompletionProviders.indexOf(language) === -1 && !languageMappingForCompletionProviders.has(language)) {
-            const provider = vscode.languages.registerCompletionItemProvider(language, completionProvider, ...util_1.LANGUAGE_MODES[language]);
+        if (!languageMappingForCompletionProviders.has(language)) {
+            const provider = vscode.languages.registerCompletionItemProvider([{ language, scheme: 'file' }, { language, scheme: 'untitled' }], completionProvider, ...util_1.LANGUAGE_MODES[language]);
             context.subscriptions.push(provider);
             languageMappingForCompletionProviders.set(language, language);
             completionProvidersMapping.set(language, provider);
@@ -149,4 +148,4 @@ function registerCompletionProviders(context) {
 function deactivate() {
 }
 exports.deactivate = deactivate;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/950b8b0d37a9b7061b6f0d291837ccc4015f5ecd/extensions\emmet\out/extension.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/7c7da59c2333a1306c41e6e7b68d7f0caa7b3d45/extensions\emmet\out/extension.js.map

@@ -17,9 +17,15 @@ class TypeScriptSignatureHelpProvider {
             return null;
         }
         const args = typeConverters.Position.toFileLocationRequestArgs(filepath, position);
-        const response = await this.client.execute('signatureHelp', args, token);
-        const info = response.body;
-        if (!info) {
+        let info = undefined;
+        try {
+            const response = await this.client.execute('signatureHelp', args, token);
+            info = response.body;
+            if (!info) {
+                return null;
+            }
+        }
+        catch (_a) {
             return null;
         }
         const result = new vscode_1.SignatureHelp();
@@ -48,4 +54,4 @@ class TypeScriptSignatureHelpProvider {
     }
 }
 exports.default = TypeScriptSignatureHelpProvider;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/950b8b0d37a9b7061b6f0d291837ccc4015f5ecd/extensions\typescript-language-features\out/features\signatureHelpProvider.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/7c7da59c2333a1306c41e6e7b68d7f0caa7b3d45/extensions\typescript-language-features\out/features\signatureHelpProvider.js.map

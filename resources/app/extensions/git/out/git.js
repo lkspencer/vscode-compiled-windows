@@ -287,10 +287,25 @@ class Git {
     }
     clone(url, parentPath, cancellationToken) {
         return __awaiter(this, void 0, void 0, function* () {
-            const folderName = decodeURI(url).replace(/^.*\//, '').replace(/\.git$/, '') || 'repository';
-            const folderPath = path.join(parentPath, folderName);
+            let baseFolderName = decodeURI(url).replace(/^.*\//, '').replace(/\.git$/, '') || 'repository';
+            let folderName = baseFolderName;
+            let folderPath = path.join(parentPath, folderName);
+            let count = 1;
+            while (count < 20 && (yield new Promise(c => fs.exists(folderPath, c)))) {
+                folderName = `${baseFolderName}-${count++}`;
+                folderPath = path.join(parentPath, folderName);
+            }
             yield util_1.mkdirp(parentPath);
-            yield this.exec(parentPath, ['clone', url, folderPath], { cancellationToken });
+            try {
+                yield this.exec(parentPath, ['clone', url, folderPath], { cancellationToken });
+            }
+            catch (err) {
+                if (err.stderr) {
+                    err.stderr = err.stderr.replace(/^Cloning.+$/m, '').trim();
+                    err.stderr = err.stderr.replace(/^ERROR:\s+/, '').trim();
+                }
+                throw err;
+            }
             return folderPath;
         });
     }
@@ -527,7 +542,7 @@ class Repository {
     }
     lstree(treeish, path) {
         return __awaiter(this, void 0, void 0, function* () {
-            if (!treeish) {
+            if (!treeish) { // index
                 const { stdout } = yield this.run(['ls-files', '--stage', '--', path]);
                 const match = /^(\d+)\s+([0-9a-f]{40})\s+(\d+)/.exec(stdout);
                 if (!match) {
@@ -819,7 +834,7 @@ class Repository {
     }
     pull(rebase, remote, branch) {
         return __awaiter(this, void 0, void 0, function* () {
-            const args = ['pull'];
+            const args = ['pull', '--tags'];
             if (rebase) {
                 args.push('-r');
             }
@@ -840,7 +855,8 @@ class Repository {
                 else if (/Could not read from remote repository/.test(err.stderr || '')) {
                     err.gitErrorCode = exports.GitErrorCodes.RemoteConnectionError;
                 }
-                else if (/Pull is not possible because you have unmerged files|Cannot pull with rebase: You have unstaged changes|Your local changes to the following files would be overwritten|Please, commit your changes before you can merge/.test(err.stderr)) {
+                else if (/Pull is not possible because you have unmerged files|Cannot pull with rebase: You have unstaged changes|Your local changes to the following files would be overwritten|Please, commit your changes before you can merge/i.test(err.stderr)) {
+                    err.stderr = err.stderr.replace(/Cannot pull with rebase: You have unstaged changes/i, 'Cannot pull with rebase, you have unstaged changes');
                     err.gitErrorCode = exports.GitErrorCodes.DirtyWorkTree;
                 }
                 throw err;
@@ -1052,7 +1068,7 @@ class Repository {
                             i++;
                             break;
                     }
-                    while (res3.stdout.charAt(i++) !== '\n') { }
+                    while (res3.stdout.charAt(i++) !== '\n') { /* no-op */ }
                 }
                 return { name, type: RefType.Head, commit, upstream, ahead, behind };
             }
@@ -1116,4 +1132,4 @@ class Repository {
     }
 }
 exports.Repository = Repository;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/950b8b0d37a9b7061b6f0d291837ccc4015f5ecd/extensions\git\out/git.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/7c7da59c2333a1306c41e6e7b68d7f0caa7b3d45/extensions\git\out/git.js.map

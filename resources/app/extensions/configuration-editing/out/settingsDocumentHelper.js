@@ -113,6 +113,7 @@ var SettingsDocument = /** @class */ (function () {
                 range: range
             }));
         }
+        // Value
         else {
             completions.push(this.newSimpleCompletionItem('false', range, localize(26, null)));
             completions.push(this.newSimpleCompletionItem('true', range, localize(27, null)));
@@ -195,4 +196,4 @@ var SettingsDocument = /** @class */ (function () {
     return SettingsDocument;
 }());
 exports.SettingsDocument = SettingsDocument;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/950b8b0d37a9b7061b6f0d291837ccc4015f5ecd/extensions\configuration-editing\out/settingsDocumentHelper.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/7c7da59c2333a1306c41e6e7b68d7f0caa7b3d45/extensions\configuration-editing\out/settingsDocumentHelper.js.map

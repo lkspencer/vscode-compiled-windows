@@ -8,19 +8,19 @@ const assert = require("assert");
 const vscode = require("vscode");
 require("mocha");
 const tableOfContentsProvider_1 = require("../tableOfContentsProvider");
-const markdownEngine_1 = require("../markdownEngine");
 const inMemoryDocument_1 = require("./inMemoryDocument");
+const engine_1 = require("./engine");
 const testFileName = vscode.Uri.parse('test.md');
 suite('markdown.TableOfContentsProvider', () => {
     test('Lookup should not return anything for empty document', async () => {
         const doc = new inMemoryDocument_1.InMemoryDocument(testFileName, '');
-        const provider = new tableOfContentsProvider_1.TableOfContentsProvider(newEngine(), doc);
+        const provider = new tableOfContentsProvider_1.TableOfContentsProvider(engine_1.createNewMarkdownEngine(), doc);
         assert.strictEqual(await provider.lookup(''), undefined);
         assert.strictEqual(await provider.lookup('foo'), undefined);
     });
     test('Lookup should not return anything for document with no headers', async () => {
         const doc = new inMemoryDocument_1.InMemoryDocument(testFileName, 'a *b*\nc');
-        const provider = new tableOfContentsProvider_1.TableOfContentsProvider(newEngine(), doc);
+        const provider = new tableOfContentsProvider_1.TableOfContentsProvider(engine_1.createNewMarkdownEngine(), doc);
         assert.strictEqual(await provider.lookup(''), undefined);
         assert.strictEqual(await provider.lookup('foo'), undefined);
         assert.strictEqual(await provider.lookup('a'), undefined);
@@ -28,7 +28,7 @@ suite('markdown.TableOfContentsProvider', () => {
     });
     test('Lookup should return basic #header', async () => {
         const doc = new inMemoryDocument_1.InMemoryDocument(testFileName, `# a\nx\n# c`);
-        const provider = new tableOfContentsProvider_1.TableOfContentsProvider(newEngine(), doc);
+        const provider = new tableOfContentsProvider_1.TableOfContentsProvider(engine_1.createNewMarkdownEngine(), doc);
         {
             const entry = await provider.lookup('a');
             assert.ok(entry);
@@ -45,14 +45,14 @@ suite('markdown.TableOfContentsProvider', () => {
     });
     test('Lookups should be case in-sensitive', async () => {
         const doc = new inMemoryDocument_1.InMemoryDocument(testFileName, `# fOo\n`);
-        const provider = new tableOfContentsProvider_1.TableOfContentsProvider(newEngine(), doc);
+        const provider = new tableOfContentsProvider_1.TableOfContentsProvider(engine_1.createNewMarkdownEngine(), doc);
         assert.strictEqual((await provider.lookup('fOo')).line, 0);
         assert.strictEqual((await provider.lookup('foo')).line, 0);
         assert.strictEqual((await provider.lookup('FOO')).line, 0);
     });
     test('Lookups should ignore leading and trailing white-space, and collapse internal whitespace', async () => {
         const doc = new inMemoryDocument_1.InMemoryDocument(testFileName, `#      f o  o    \n`);
-        const provider = new tableOfContentsProvider_1.TableOfContentsProvider(newEngine(), doc);
+        const provider = new tableOfContentsProvider_1.TableOfContentsProvider(engine_1.createNewMarkdownEngine(), doc);
         assert.strictEqual((await provider.lookup('f o  o')).line, 0);
         assert.strictEqual((await provider.lookup('  f o  o')).line, 0);
         assert.strictEqual((await provider.lookup('  f o  o  ')).line, 0);
@@ -64,18 +64,14 @@ suite('markdown.TableOfContentsProvider', () => {
     });
     test('should normalize special characters #44779', async () => {
         const doc = new inMemoryDocument_1.InMemoryDocument(testFileName, `# Indentação\n`);
-        const provider = new tableOfContentsProvider_1.TableOfContentsProvider(newEngine(), doc);
+        const provider = new tableOfContentsProvider_1.TableOfContentsProvider(engine_1.createNewMarkdownEngine(), doc);
         assert.strictEqual((await provider.lookup('indentacao')).line, 0);
     });
-});
-function newEngine() {
-    return new markdownEngine_1.MarkdownEngine(new class {
-        constructor() {
-            this.previewScripts = [];
-            this.previewStyles = [];
-            this.previewResourceRoots = [];
-            this.markdownItPlugins = [];
-        }
+    test('should map special З, #37079', async () => {
+        const doc = new inMemoryDocument_1.InMemoryDocument(testFileName, `### Заголовок Header 3`);
+        const provider = new tableOfContentsProvider_1.TableOfContentsProvider(engine_1.createNewMarkdownEngine(), doc);
+        assert.strictEqual((await provider.lookup('Заголовок-header-3')).line, 0);
+        assert.strictEqual((await provider.lookup('3аголовок-header-3')).line, 0);
     });
-}
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/950b8b0d37a9b7061b6f0d291837ccc4015f5ecd/extensions\markdown-language-features\out/test\tableOfContentsProvider.test.js.map
+});
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/7c7da59c2333a1306c41e6e7b68d7f0caa7b3d45/extensions\markdown-language-features\out/test\tableOfContentsProvider.test.js.map

@@ -9,7 +9,6 @@ class InMemoryDocument {
     constructor(uri, _contents) {
         this.uri = uri;
         this._contents = _contents;
-        this.fileName = '';
         this.isUntitled = false;
         this.languageId = '';
         this.version = 1;
@@ -17,6 +16,9 @@ class InMemoryDocument {
         this.isClosed = false;
         this.eol = vscode.EndOfLine.LF;
         this._lines = this._contents.split(/\n/g);
+    }
+    get fileName() {
+        return this.uri.fsPath;
     }
     get lineCount() {
         return this._lines.length;
@@ -54,4 +56,4 @@ class InMemoryDocument {
     }
 }
 exports.InMemoryDocument = InMemoryDocument;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/950b8b0d37a9b7061b6f0d291837ccc4015f5ecd/extensions\markdown-language-features\out/test\inMemoryDocument.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/7c7da59c2333a1306c41e6e7b68d7f0caa7b3d45/extensions\markdown-language-features\out/test\inMemoryDocument.js.map

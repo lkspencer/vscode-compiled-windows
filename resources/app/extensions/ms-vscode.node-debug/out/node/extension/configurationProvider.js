@@ -65,7 +65,7 @@ class NodeConfigurationProvider {
                     config.cwd = '${fileDirname}';
                 }
                 // program is some absolute path
-                if (!config.cwd && path_1.isAbsolute(config.program)) {
+                if (!config.cwd && config.program && path_1.isAbsolute(config.program)) {
                     // derive 'cwd' from 'program'
                     config.cwd = path_1.dirname(config.program);
                 }

@@ -9,6 +9,31 @@ const abbreviationActions_1 = require("./abbreviationActions");
 const util_1 = require("./util");
 class DefaultCompletionItemProvider {
     provideCompletionItems(document, position, token, context) {
+        const completionResult = this.provideCompletionItemsInternal(document, position, token, context);
+        if (!completionResult) {
+            this.lastCompletionType = undefined;
+            return;
+        }
+        return completionResult.then(completionList => {
+            if (!completionList || !completionList.items.length) {
+                this.lastCompletionType = undefined;
+                return completionList;
+            }
+            const item = completionList.items[0];
+            const expandedText = item.documentation ? item.documentation.toString() : '';
+            if (expandedText.startsWith('<')) {
+                this.lastCompletionType = 'html';
+            }
+            else if (expandedText.indexOf(':') > 0 && expandedText.endsWith(';')) {
+                this.lastCompletionType = 'css';
+            }
+            else {
+                this.lastCompletionType = undefined;
+            }
+            return completionList;
+        });
+    }
+    provideCompletionItemsInternal(document, position, token, context) {
         const emmetConfig = vscode.workspace.getConfiguration('emmet');
         const excludedLanguages = emmetConfig['excludeLanguages'] ? emmetConfig['excludeLanguages'] : [];
         if (excludedLanguages.indexOf(document.languageId) > -1) {
@@ -23,24 +48,53 @@ class DefaultCompletionItemProvider {
             return;
         }
         const helper = util_1.getEmmetHelper();
+        let validateLocation = syntax === 'html' || syntax === 'jsx' || syntax === 'xml';
+        let rootNode = undefined;
+        let currentNode = null;
+        if (document.languageId === 'html') {
+            if (context.triggerKind === vscode.CompletionTriggerKind.TriggerForIncompleteCompletions) {
+                switch (this.lastCompletionType) {
+                    case 'html':
+                        validateLocation = false;
+                        break;
+                    case 'css':
+                        validateLocation = false;
+                        syntax = 'css';
+                        break;
+                    default:
+                        break;
+                }
+            }
+            if (validateLocation) {
+                rootNode = util_1.parseDocument(document, false);
+                currentNode = util_1.getNode(rootNode, position, true);
+                if (util_1.isStyleAttribute(currentNode, position)) {
+                    syntax = 'css';
+                    validateLocation = false;
+                }
+                else {
+                    const embeddedCssNode = util_1.getEmbeddedCssNodeIfAny(document, currentNode, position);
+                    if (embeddedCssNode) {
+                        currentNode = util_1.getNode(embeddedCssNode, position, true);
+                        syntax = 'css';
+                    }
+                }
+            }
+        }
         const extractAbbreviationResults = helper.extractAbbreviation(document, position, !util_1.isStyleSheet(syntax));
         if (!extractAbbreviationResults || !helper.isAbbreviationValid(syntax, extractAbbreviationResults.abbreviation)) {
             return;
         }
-        let validateLocation = false;
-        let rootNode = undefined;
-        if (context.triggerKind !== vscode.CompletionTriggerKind.TriggerForIncompleteCompletions) {
-            validateLocation = syntax === 'html' || util_1.isStyleSheet(document.languageId);
-            // If document can be css parsed, get currentNode
-            if (util_1.isStyleSheet(document.languageId)) {
-                let usePartialParsing = vscode.workspace.getConfiguration('emmet')['optimizeStylesheetParsing'] === true;
-                rootNode = usePartialParsing && document.lineCount > 1000 ? util_1.parsePartialStylesheet(document, position) : util_1.parseDocument(document, false);
-                if (!rootNode) {
-                    return;
-                }
+        if (util_1.isStyleSheet(document.languageId) && context.triggerKind !== vscode.CompletionTriggerKind.TriggerForIncompleteCompletions) {
+            validateLocation = true;
+            let usePartialParsing = vscode.workspace.getConfiguration('emmet')['optimizeStylesheetParsing'] === true;
+            rootNode = usePartialParsing && document.lineCount > 1000 ? util_1.parsePartialStylesheet(document, position) : util_1.parseDocument(document, false);
+            if (!rootNode) {
+                return;
             }
+            currentNode = util_1.getNode(rootNode, position, true);
         }
-        if (validateLocation && !abbreviationActions_1.isValidLocationForEmmetAbbreviation(document, rootNode, syntax, position, extractAbbreviationResults.abbreviationRange)) {
+        if (validateLocation && !abbreviationActions_1.isValidLocationForEmmetAbbreviation(document, rootNode, currentNode, syntax, position, extractAbbreviationResults.abbreviationRange)) {
             return;
         }
         let noiseCheckPromise = Promise.resolve();
@@ -85,4 +139,4 @@ class DefaultCompletionItemProvider {
     }
 }
 exports.DefaultCompletionItemProvider = DefaultCompletionItemProvider;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/950b8b0d37a9b7061b6f0d291837ccc4015f5ecd/extensions\emmet\out/defaultCompletionProvider.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/7c7da59c2333a1306c41e6e7b68d7f0caa7b3d45/extensions\emmet\out/defaultCompletionProvider.js.map

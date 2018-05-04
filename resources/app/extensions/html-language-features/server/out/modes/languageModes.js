@@ -21,7 +21,7 @@ function getLanguageModes(supportedLanguages, workspace) {
         modes['css'] = cssMode_1.getCSSMode(documentRegions, workspace);
     }
     if (supportedLanguages['javascript']) {
-        modes['javascript'] = javascriptMode_1.getJavascriptMode(documentRegions, workspace);
+        modes['javascript'] = javascriptMode_1.getJavaScriptMode(documentRegions, workspace);
     }
     return {
         getModeAtPosition: function (document, position) {
@@ -82,4 +82,4 @@ function getLanguageModes(supportedLanguages, workspace) {
     };
 }
 exports.getLanguageModes = getLanguageModes;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/950b8b0d37a9b7061b6f0d291837ccc4015f5ecd/extensions\html-language-features\server\out/modes\languageModes.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/7c7da59c2333a1306c41e6e7b68d7f0caa7b3d45/extensions\html-language-features\server\out/modes\languageModes.js.map

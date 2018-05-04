@@ -7,31 +7,31 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const assert = require("assert");
 const vscode = require("vscode");
 require("mocha");
-const markdownEngine_1 = require("../markdownEngine");
 const foldingProvider_1 = require("../features/foldingProvider");
 const inMemoryDocument_1 = require("./inMemoryDocument");
+const engine_1 = require("./engine");
 const testFileName = vscode.Uri.parse('test.md');
 suite('markdown.FoldingProvider', () => {
     test('Should not return anything for empty document', async () => {
         const folds = await getFoldsForDocument(``);
-        assert.strictEqual(folds.ranges.length, 0);
+        assert.strictEqual(folds.length, 0);
     });
     test('Should not return anything for document without headers', async () => {
         const folds = await getFoldsForDocument(`a
 **b** afas
 a#b
 a`);
-        assert.strictEqual(folds.ranges.length, 0);
+        assert.strictEqual(folds.length, 0);
     });
     test('Should fold from header to end of document', async () => {
         const folds = await getFoldsForDocument(`a
 # b
 c
 d`);
-        assert.strictEqual(folds.ranges.length, 1);
-        const firstFold = folds.ranges[0];
-        assert.strictEqual(firstFold.startLine, 1);
-        assert.strictEqual(firstFold.endLine, 3);
+        assert.strictEqual(folds.length, 1);
+        const firstFold = folds[0];
+        assert.strictEqual(firstFold.start, 1);
+        assert.strictEqual(firstFold.end, 3);
     });
     test('Should leave single newline before next header', async () => {
         const folds = await getFoldsForDocument(`
@@ -40,10 +40,10 @@ x
 
 # b
 y`);
-        assert.strictEqual(folds.ranges.length, 2);
-        const firstFold = folds.ranges[0];
-        assert.strictEqual(firstFold.startLine, 1);
-        assert.strictEqual(firstFold.endLine, 3);
+        assert.strictEqual(folds.length, 2);
+        const firstFold = folds[0];
+        assert.strictEqual(firstFold.start, 1);
+        assert.strictEqual(firstFold.end, 3);
     });
     test('Should collapse multuple newlines to single newline before next header', async () => {
         const folds = await getFoldsForDocument(`
@@ -54,10 +54,10 @@ x
 
 # b
 y`);
-        assert.strictEqual(folds.ranges.length, 2);
-        const firstFold = folds.ranges[0];
-        assert.strictEqual(firstFold.startLine, 1);
-        assert.strictEqual(firstFold.endLine, 5);
+        assert.strictEqual(folds.length, 2);
+        const firstFold = folds[0];
+        assert.strictEqual(firstFold.start, 1);
+        assert.strictEqual(firstFold.end, 5);
     });
     test('Should not collapse if there is no newline before next header', async () => {
         const folds = await getFoldsForDocument(`
@@ -65,25 +65,15 @@ y`);
 x
 # b
 y`);
-        assert.strictEqual(folds.ranges.length, 2);
-        const firstFold = folds.ranges[0];
-        assert.strictEqual(firstFold.startLine, 1);
-        assert.strictEqual(firstFold.endLine, 2);
+        assert.strictEqual(folds.length, 2);
+        const firstFold = folds[0];
+        assert.strictEqual(firstFold.start, 1);
+        assert.strictEqual(firstFold.end, 2);
     });
 });
 async function getFoldsForDocument(contents) {
     const doc = new inMemoryDocument_1.InMemoryDocument(testFileName, contents);
-    const provider = new foldingProvider_1.default(newEngine());
+    const provider = new foldingProvider_1.default(engine_1.createNewMarkdownEngine());
     return await provider.provideFoldingRanges(doc, {}, new vscode.CancellationTokenSource().token);
-}
-function newEngine() {
-    return new markdownEngine_1.MarkdownEngine(new class {
-        constructor() {
-            this.previewScripts = [];
-            this.previewStyles = [];
-            this.previewResourceRoots = [];
-            this.markdownItPlugins = [];
-        }
-    });
 }
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/950b8b0d37a9b7061b6f0d291837ccc4015f5ecd/extensions\markdown-language-features\out/test\foldingProvider.test.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/7c7da59c2333a1306c41e6e7b68d7f0caa7b3d45/extensions\markdown-language-features\out/test\foldingProvider.test.js.map

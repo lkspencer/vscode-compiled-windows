@@ -14,7 +14,7 @@ function getPathCompletionParticipant(document, workspaceFolders, result) {
     return {
         onHtmlAttributeValue: function (_a) {
             var tag = _a.tag, position = _a.position, attribute = _a.attribute, valueBeforeCursor = _a.value, range = _a.range;
-            var fullValue = getFullValueWithoutQuotes(document, range);
+            var fullValue = stripQuotes(document.getText(range));
             if (shouldDoPathCompletion(tag, attribute, fullValue)) {
                 if (workspaceFolders.length === 0) {
                     return;
@@ -27,8 +27,7 @@ function getPathCompletionParticipant(document, workspaceFolders, result) {
     };
 }
 exports.getPathCompletionParticipant = getPathCompletionParticipant;
-function getFullValueWithoutQuotes(document, range) {
-    var fullValue = document.getText(range);
+function stripQuotes(fullValue) {
     if (strings_1.startsWith(fullValue, "'") || strings_1.startsWith(fullValue, "\"")) {
         return fullValue.slice(1, -1);
     }
@@ -163,4 +162,4 @@ var PATH_TAG_AND_ATTR = {
     track: 'src',
     video: ['src', 'poster']
 };
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/950b8b0d37a9b7061b6f0d291837ccc4015f5ecd/extensions\html-language-features\server\out/modes\pathCompletion.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/7c7da59c2333a1306c41e6e7b68d7f0caa7b3d45/extensions\html-language-features\server\out/modes\pathCompletion.js.map

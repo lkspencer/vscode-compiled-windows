@@ -5,7 +5,6 @@
 'use strict';
 Object.defineProperty(exports, "__esModule", { value: true });
 var languageModelCache_1 = require("../languageModelCache");
-var htmlFolding_1 = require("./htmlFolding");
 var pathCompletion_1 = require("./pathCompletion");
 function getHTMLMode(htmlLanguageService, workspace) {
     var htmlDocuments = languageModelCache_1.getLanguageModelCache(10, 60, function (document) { return htmlLanguageService.parseHTMLDocument(document); });
@@ -13,7 +12,7 @@ function getHTMLMode(htmlLanguageService, workspace) {
         getId: function () {
             return 'html';
         },
-        doComplete: function (document, position, settings, completionParticipants) {
+        doComplete: function (document, position, settings) {
             if (settings === void 0) { settings = workspace.settings; }
             var options = settings && settings.html && settings.html.suggest;
             var doAutoComplete = settings && settings.html && settings.html.autoClosingTags;
@@ -22,9 +21,6 @@ function getHTMLMode(htmlLanguageService, workspace) {
             }
             var pathCompletionProposals = [];
             var participants = [pathCompletion_1.getPathCompletionParticipant(document, workspace.folders, pathCompletionProposals)];
-            if (completionParticipants) {
-                participants.push.apply(participants, completionParticipants);
-            }
             htmlLanguageService.setCompletionParticipants(participants);
             var htmlDocument = htmlDocuments.get(document);
             var completionList = htmlLanguageService.doComplete(document, position, htmlDocument, options);
@@ -63,7 +59,8 @@ function getHTMLMode(htmlLanguageService, workspace) {
             return htmlLanguageService.format(document, range, formatSettings);
         },
         getFoldingRanges: function (document, range) {
-            return htmlFolding_1.getHTMLFoldingRegions(htmlLanguageService, document, range);
+            var ranges = htmlLanguageService.getFoldingRanges(document);
+            return ranges.filter(function (r) { return r.startLine >= range.start.line && r.endLine < range.end.line; });
         },
         doAutoClose: function (document, position) {
             var offset = document.offsetAt(position);
@@ -90,4 +87,4 @@ function merge(src, dst) {
     }
     return dst;
 }
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/950b8b0d37a9b7061b6f0d291837ccc4015f5ecd/extensions\html-language-features\server\out/modes\htmlMode.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/7c7da59c2333a1306c41e6e7b68d7f0caa7b3d45/extensions\html-language-features\server\out/modes\htmlMode.js.map

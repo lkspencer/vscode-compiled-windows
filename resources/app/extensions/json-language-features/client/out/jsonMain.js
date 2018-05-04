@@ -58,6 +58,21 @@ function activate(context) {
     // Create the language client and start the client.
     let client = new vscode_languageclient_1.LanguageClient('json', localize(0, null), serverOptions, clientOptions);
     client.registerProposedFeatures();
+    client.registerFeature({
+        fillClientCapabilities(capabilities) {
+            let textDocumentCap = capabilities.textDocument;
+            if (!textDocumentCap) {
+                textDocumentCap = capabilities.textDocument = {};
+            }
+            textDocumentCap.foldingRange = {
+                dynamicRegistration: false,
+                rangeLimit: 5000,
+                lineFoldingOnly: true
+            };
+        },
+        initialize(capabilities, documentSelector) {
+        }
+    });
     let disposable = client.start();
     toDispose.push(disposable);
     client.onReady().then(() => {
@@ -95,19 +110,31 @@ function activate(context) {
     vscode_1.languages.setLanguageConfiguration('json', languageConfiguration);
     vscode_1.languages.setLanguageConfiguration('jsonc', languageConfiguration);
     function initFoldingProvider() {
-        return vscode_1.languages.registerFoldingProvider(documentSelector, {
+        function getKind(kind) {
+            if (kind) {
+                switch (kind) {
+                    case vscode_languageserver_protocol_foldingprovider_1.FoldingRangeKind.Comment:
+                        return vscode_1.FoldingRangeKind.Comment;
+                    case vscode_languageserver_protocol_foldingprovider_1.FoldingRangeKind.Imports:
+                        return vscode_1.FoldingRangeKind.Imports;
+                    case vscode_languageserver_protocol_foldingprovider_1.FoldingRangeKind.Region:
+                        return vscode_1.FoldingRangeKind.Region;
+                }
+            }
+            return void 0;
+        }
+        return vscode_1.languages.registerFoldingRangeProvider(documentSelector, {
             provideFoldingRanges(document, context, token) {
                 const param = {
-                    textDocument: client.code2ProtocolConverter.asTextDocumentIdentifier(document),
-                    maxRanges: context.maxRanges
+                    textDocument: client.code2ProtocolConverter.asTextDocumentIdentifier(document)
                 };
-                return client.sendRequest(vscode_languageserver_protocol_foldingprovider_1.FoldingRangesRequest.type, param, token).then(res => {
-                    if (res && Array.isArray(res.ranges)) {
-                        return new vscode_1.FoldingRangeList(res.ranges.map(r => new vscode_1.FoldingRange(r.startLine, r.endLine, r.type)));
+                return client.sendRequest(vscode_languageserver_protocol_foldingprovider_1.FoldingRangeRequest.type, param, token).then(ranges => {
+                    if (Array.isArray(ranges)) {
+                        return ranges.map(r => new vscode_1.FoldingRange(r.startLine, r.endLine, getKind(r.kind)));
                     }
                     return null;
                 }, error => {
-                    client.logFailedRequest(vscode_languageserver_protocol_foldingprovider_1.FoldingRangesRequest.type, error);
+                    client.logFailedRequest(vscode_languageserver_protocol_foldingprovider_1.FoldingRangeRequest.type, error);
                     return null;
                 });
             }
@@ -233,4 +260,4 @@ function getPackageInfo(context) {
     }
     return void 0;
 }
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/950b8b0d37a9b7061b6f0d291837ccc4015f5ecd/extensions\json-language-features\client\out/jsonMain.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/7c7da59c2333a1306c41e6e7b68d7f0caa7b3d45/extensions\json-language-features\client\out/jsonMain.js.map

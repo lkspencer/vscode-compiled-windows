@@ -8,7 +8,6 @@ var languageModelCache_1 = require("../languageModelCache");
 var vscode_languageserver_types_1 = require("vscode-languageserver-types");
 var vscode_css_languageservice_1 = require("vscode-css-languageservice");
 var embeddedSupport_1 = require("./embeddedSupport");
-var vscode_emmet_helper_1 = require("vscode-emmet-helper");
 function getCSSMode(documentRegions, workspace) {
     var cssLanguageService = vscode_css_languageservice_1.getCSSLanguageService();
     var embeddedCSSDocuments = languageModelCache_1.getLanguageModelCache(10, 60, function (document) { return documentRegions.get(document).getEmbeddedDocument('css'); });
@@ -22,27 +21,10 @@ function getCSSMode(documentRegions, workspace) {
             var embedded = embeddedCSSDocuments.get(document);
             return cssLanguageService.doValidation(embedded, cssStylesheets.get(embedded), settings && settings.css);
         },
-        doComplete: function (document, position, settings, registeredCompletionParticipants) {
+        doComplete: function (document, position, settings) {
             if (settings === void 0) { settings = workspace.settings; }
             var embedded = embeddedCSSDocuments.get(document);
             var stylesheet = cssStylesheets.get(embedded);
-            var nonEmmetCompletionParticipants = [];
-            if (registeredCompletionParticipants) {
-                // Css Emmet completions in html files are provided no matter where the cursor is inside the embedded css document
-                // Mimic the same here, until we solve the issue of css language service not able to parse complete embedded documents when there are errors
-                for (var i = 0; i < registeredCompletionParticipants.length; i++) {
-                    if (typeof registeredCompletionParticipants[i].getId === 'function' && registeredCompletionParticipants[i].getId() === 'emmet') {
-                        var extractedResults = vscode_emmet_helper_1.extractAbbreviation(document, position, { lookAhead: false, syntax: 'css' });
-                        if (extractedResults && extractedResults.abbreviation) {
-                            registeredCompletionParticipants[i].onCssProperty({ propertyName: extractedResults.abbreviation, range: extractedResults.abbreviationRange });
-                        }
-                    }
-                    else {
-                        nonEmmetCompletionParticipants.push(registeredCompletionParticipants[i]);
-                    }
-                }
-            }
-            cssLanguageService.setCompletionParticipants(nonEmmetCompletionParticipants);
             return cssLanguageService.doComplete(embedded, position, stylesheet) || vscode_languageserver_types_1.CompletionList.create();
         },
         doHover: function (document, position) {
@@ -73,6 +55,11 @@ function getCSSMode(documentRegions, workspace) {
             var embedded = embeddedCSSDocuments.get(document);
             return cssLanguageService.getColorPresentations(embedded, cssStylesheets.get(embedded), color, range);
         },
+        getFoldingRanges: function (document, range) {
+            var embedded = embeddedCSSDocuments.get(document);
+            var ranges = cssLanguageService.getFoldingRanges(embedded, {});
+            return ranges.filter(function (r) { return r.startLine >= range.start.line && r.endLine < range.end.line; });
+        },
         onDocumentRemoved: function (document) {
             embeddedCSSDocuments.onDocumentRemoved(document);
             cssStylesheets.onDocumentRemoved(document);
@@ -84,4 +71,4 @@ function getCSSMode(documentRegions, workspace) {
     };
 }
 exports.getCSSMode = getCSSMode;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/950b8b0d37a9b7061b6f0d291837ccc4015f5ecd/extensions\html-language-features\server\out/modes\cssMode.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/7c7da59c2333a1306c41e6e7b68d7f0caa7b3d45/extensions\html-language-features\server\out/modes\cssMode.js.map

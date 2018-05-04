@@ -14,6 +14,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const vscode_chrome_debug_core_1 = require("vscode-chrome-debug-core");
 const telemetry = vscode_chrome_debug_core_1.telemetry.telemetry;
 const vscode_debugadapter_1 = require("vscode-debugadapter");
+const errors_1 = require("vscode-chrome-debug-core/out/src/errors");
 const path = require("path");
 const fs = require("fs");
 const cp = require("child_process");
@@ -59,16 +60,19 @@ class NodeDebugAdapter extends vscode_chrome_debug_core_1.ChromeDebugAdapter {
     launch(args) {
         const _super = name => super[name];
         return __awaiter(this, void 0, void 0, function* () {
+            if (args.console && args.console !== 'internalConsole' && typeof args._suppressConsoleOutput === 'undefined') {
+                args._suppressConsoleOutput = true;
+            }
             yield _super("launch").call(this, args);
             if (args.__restart && typeof args.__restart.port === 'number') {
                 return this.doAttach(args.__restart.port, undefined, args.address, args.timeout);
             }
             const port = args.port || utils.random(3000, 50000);
             if (args.useWSL && !wsl.subsystemForLinuxPresent()) {
-                return Promise.reject({
+                return Promise.reject(new errors_1.ErrorWithMessage({
                     id: 2007,
                     format: localize(0, null)
-                });
+                }));
             }
             let runtimeExecutable = args.runtimeExecutable;
             if (args.useWSL) {
@@ -201,6 +205,16 @@ class NodeDebugAdapter extends vscode_chrome_debug_core_1.ChromeDebugAdapter {
         }
         const runtimeArgs = args.runtimeArgs || [];
         const programArgs = args.args || [];
+        // if VS Code runs out of sources, add the path to the VS Code workspace as a first argument so that Electron turns into VS Code
+        const electronIdx = args.runtimeExecutable.indexOf(process.platform === 'win32' ? '\\.build\\electron\\' : '/.build/electron/');
+        if (electronIdx > 0 && programArgs.length > 0) {
+            // guess the VS Code workspace path
+            const vscodeWorkspacePath = args.runtimeExecutable.substr(0, electronIdx);
+            // only add path if user hasn't already added path
+            if (!programArgs[0].startsWith(vscodeWorkspacePath)) {
+                programArgs.unshift(vscodeWorkspacePath);
+            }
+        }
         launchArgs = launchArgs.concat(runtimeArgs, programArgs);
         const envArgs = this.collectEnvFileArgs(args) || args.env;
         return this.launchInInternalConsole(runtimeExecutable, launchArgs, envArgs);
@@ -301,18 +315,22 @@ class NodeDebugAdapter extends vscode_chrome_debug_core_1.ChromeDebugAdapter {
             nodeProcess.on('exit', () => {
                 const msg = 'Target exited';
                 vscode_chrome_debug_core_1.logger.log(msg);
-                this.terminateSession(msg);
+                if (!this.isExtensionHost) {
+                    this.terminateSession(msg);
+                }
             });
             nodeProcess.on('close', (code) => {
                 const msg = 'Target closed';
                 vscode_chrome_debug_core_1.logger.log(msg);
-                this.terminateSession(msg);
+                if (!this.isExtensionHost) {
+                    this.terminateSession(msg);
+                }
             });
             const noDebugMode = this._launchAttachArgs.noDebug;
             this.captureStderr(nodeProcess, noDebugMode);
             // Must attach a listener to stdout or process will hang on Windows
             nodeProcess.stdout.on('data', (data) => {
-                if (noDebugMode || this._captureFromStd) {
+                if ((noDebugMode || this._captureFromStd) && !this._launchAttachArgs._suppressConsoleOutput) {
                     let msg = data.toString();
                     this._session.sendEvent(new vscode_debugadapter_1.OutputEvent(msg, 'stdout'));
                 }
@@ -345,7 +363,7 @@ class NodeDebugAdapter extends vscode_chrome_debug_core_1.ChromeDebugAdapter {
                 const helpMsg = /For help see https:\/\/nodejs.org\/en\/docs\/inspector\s*/;
                 msg = msg.replace(helpMsg, '');
             }
-            if (this._handlingEarlyNodeMsgs || noDebugMode || this._captureFromStd) {
+            if ((this._handlingEarlyNodeMsgs || noDebugMode || this._captureFromStd) && !this._launchAttachArgs._suppressConsoleOutput) {
                 this._session.sendEvent(new vscode_debugadapter_1.OutputEvent(msg, 'stderr'));
             }
             if (isLastEarlyNodeMsg) {
@@ -631,10 +649,16 @@ class NodeDebugAdapter extends vscode_chrome_debug_core_1.ChromeDebugAdapter {
                 vscode_chrome_debug_core_1.logger.log(`Target node version: ${version} ${arch}`);
                 /* __GDPR__
                     "nodeVersion" : {
-                        "version" : { "classification": "SystemMetaData", "purpose": "FeatureInsight" }
+                        "version" : { "classification": "SystemMetaData", "purpose": "FeatureInsight" },
+                        "${include}": [ "${DebugCommonProperties}" ]
                     }
-                    */
+                 */
                 telemetry.reportEvent('nodeVersion', { version });
+                /* __GDPR__FRAGMENT__
+                    "DebugCommonProperties" : {
+                        "Versions.Target.Version" : { "classification": "SystemMetaData", "purpose": "FeatureInsight" }
+                    }
+                */
                 telemetry.addCustomGlobalProperty({ 'Versions.Target.Version': version });
             }
         });
@@ -681,11 +705,11 @@ class NodeDebugAdapter extends vscode_chrome_debug_core_1.ChromeDebugAdapter {
      * 'Path does not exist' error
      */
     getNotExistErrorResponse(attribute, path) {
-        return Promise.reject({
+        return Promise.reject(new errors_1.ErrorWithMessage({
             id: 2007,
             format: localize(3, null, attribute, '{path}'),
             variables: { path }
-        });
+        }));
     }
     /**
      * 'Path not absolute' error with 'More Information' link.
@@ -695,24 +719,24 @@ class NodeDebugAdapter extends vscode_chrome_debug_core_1.ChromeDebugAdapter {
         return this.getErrorResponseWithInfoLink(2008, format, { path }, 20003);
     }
     getRuntimeNotOnPathErrorResponse(runtime) {
-        return Promise.reject({
+        return Promise.reject(new errors_1.ErrorWithMessage({
             id: 2001,
             format: localize(5, null, '{_runtime}'),
             variables: { _runtime: runtime }
-        });
+        }));
     }
     /**
      * Send error response with 'More Information' link.
      */
     getErrorResponseWithInfoLink(code, format, variables, infoId) {
-        return Promise.reject({
+        return Promise.reject(new errors_1.ErrorWithMessage({
             id: code,
             format,
             variables,
             showUser: true,
             url: 'http://go.microsoft.com/fwlink/?linkID=534832#_' + infoId.toString(),
             urlLabel: localize(6, null)
-        });
+        }));
     }
     getReadonlyOrigin(aPath) {
         return path.isAbsolute(aPath) || aPath.startsWith(vscode_chrome_debug_core_1.ChromeDebugAdapter.EVAL_NAME_PREFIX) ?
@@ -804,8 +828,8 @@ var DebugArgs;
 })(DebugArgs = exports.DebugArgs || (exports.DebugArgs = {}));
 const defaultDebugArgs = DebugArgs.InspectBrk;
 function detectSupportedDebugArgsForLaunch(config, runtimeExecutable, env) {
-    if (config.__nodeVersion) {
-        return getSupportedDebugArgsForVersion(config.__nodeVersion);
+    if (config.__nodeVersion || (config.runtimeVersion && config.runtimeVersion !== 'default')) {
+        return getSupportedDebugArgsForVersion(config.__nodeVersion || config.runtimeVersion);
     }
     else if (config.runtimeExecutable) {
         vscode_chrome_debug_core_1.logger.log('Using --inspect-brk because a runtimeExecutable is set');

@@ -16,6 +16,11 @@ vscode_chrome_debug_core_1.ChromeDebugSession.run(vscode_chrome_debug_core_1.Chr
 /* tslint:disable:no-var-requires */
 const debugAdapterVersion = require('../../package.json').version;
 vscode_chrome_debug_core_1.logger.log('node-debug2: ' + debugAdapterVersion);
+/* __GDPR__FRAGMENT__
+   "DebugCommonProperties" : {
+      "Versions.DebugAdapter" : { "classification": "SystemMetaData", "purpose": "FeatureInsight" }
+   }
+ */
 vscode_chrome_debug_core_1.telemetry.telemetry.addCustomGlobalProperty({ 'Versions.DebugAdapter': debugAdapterVersion });
 
 //# sourceMappingURL=nodeDebug.js.map

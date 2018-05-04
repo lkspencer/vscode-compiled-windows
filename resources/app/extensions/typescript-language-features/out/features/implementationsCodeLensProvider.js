@@ -38,6 +38,7 @@ class TypeScriptImplementationsCodeLensProvider extends baseCodeLensProvider_1.T
             new vscode_1.Location(this.client.asUrl(reference.file), reference.start.line === reference.end.line
                 ? typeConverters.Range.fromTextSpan(reference)
                 : new vscode_1.Range(reference.start.line - 1, reference.start.offset - 1, reference.start.line, 0)))
+                // Exclude original from implementations
                 .filter(location => !(location.uri.toString() === codeLens.document.toString() &&
                 location.range.start.line === codeLens.range.start.line &&
                 location.range.start.character === codeLens.range.start.character));
@@ -75,4 +76,4 @@ class TypeScriptImplementationsCodeLensProvider extends baseCodeLensProvider_1.T
     }
 }
 exports.default = TypeScriptImplementationsCodeLensProvider;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/950b8b0d37a9b7061b6f0d291837ccc4015f5ecd/extensions\typescript-language-features\out/features\implementationsCodeLensProvider.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/7c7da59c2333a1306c41e6e7b68d7f0caa7b3d45/extensions\typescript-language-features\out/features\implementationsCodeLensProvider.js.map

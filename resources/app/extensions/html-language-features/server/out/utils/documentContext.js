@@ -23,7 +23,7 @@ function getDocumentContext(documentUri, workspaceFolders) {
     return {
         resolveReference: function (ref, base) {
             if (base === void 0) { base = documentUri; }
-            if (ref[0] === '/') {
+            if (ref[0] === '/') { // resolve absolute path against the current workspace folder
                 if (strings_1.startsWith(base, 'file://')) {
                     var folderUri = getRootFolder();
                     if (folderUri) {
@@ -36,4 +36,4 @@ function getDocumentContext(documentUri, workspaceFolders) {
     };
 }
 exports.getDocumentContext = getDocumentContext;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/950b8b0d37a9b7061b6f0d291837ccc4015f5ecd/extensions\html-language-features\server\out/utils\documentContext.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/7c7da59c2333a1306c41e6e7b68d7f0caa7b3d45/extensions\html-language-features\server\out/utils\documentContext.js.map

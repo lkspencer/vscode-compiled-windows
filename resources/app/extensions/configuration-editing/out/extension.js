@@ -59,7 +59,11 @@ function autoFixSettingsJSON(willSaveEvent) {
         onError: function (error, offset, length) {
             if (error === jsonc_parser_1.ParseErrorCode.CommaExpected && lastEndOfSomething > -1) {
                 var fixPosition = document.positionAt(lastEndOfSomething);
-                edit.insert(document.uri, fixPosition, ',');
+                // Don't insert a comma immediately before a : or ' :'
+                var colonRange = document.getWordRangeAtPosition(fixPosition, / *:/);
+                if (!colonRange) {
+                    edit.insert(document.uri, fixPosition, ',');
+                }
             }
         }
     });
@@ -211,4 +215,4 @@ vscode.languages.registerDocumentSymbolProvider({ pattern: '**/launch.json', lan
         return result;
     }
 });
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/950b8b0d37a9b7061b6f0d291837ccc4015f5ecd/extensions\configuration-editing\out/extension.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/7c7da59c2333a1306c41e6e7b68d7f0caa7b3d45/extensions\configuration-editing\out/extension.js.map

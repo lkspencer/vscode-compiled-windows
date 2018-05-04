@@ -13,7 +13,7 @@ var vscode_languageserver_protocol_foldingprovider_1 = require("vscode-languages
 var FILE_NAME = 'vscode://javascript/1'; // the same 'file' is used for all contents
 var JQUERY_D_TS = path_1.join(__dirname, '../../lib/jquery.d.ts');
 var JS_WORD_REGEX = /(-?\d*\.\d\w*)|([^\`\~\!\@\#\%\^\&\*\(\)\-\=\+\[\{\]\}\\\|\;\:\'\"\,\.\<\>\/\?\s]+)/g;
-function getJavascriptMode(documentRegions, workspace) {
+function getJavaScriptMode(documentRegions, workspace) {
     var jsDocuments = languageModelCache_1.getLanguageModelCache(10, 60, function (document) { return documentRegions.get(document).getEmbeddedDocument('javascript'); });
     var compilerOptions = { allowNonTsExtensions: true, allowJs: true, lib: ['lib.es6.d.ts'], target: ts.ScriptTarget.Latest, moduleResolution: ts.ModuleResolutionKind.Classic };
     var currentTextDocument;
@@ -280,7 +280,7 @@ function getJavascriptMode(documentRegions, workspace) {
                     var foldingRange = { startLine: startLine, endLine: endLine };
                     var match = document.getText(curr).match(/^\s*\/(?:(\/\s*#(?:end)?region\b)|(\*|\/))/);
                     if (match) {
-                        foldingRange.type = match[1] ? vscode_languageserver_protocol_foldingprovider_1.FoldingRangeType.Region : vscode_languageserver_protocol_foldingprovider_1.FoldingRangeType.Comment;
+                        foldingRange.kind = match[1] ? vscode_languageserver_protocol_foldingprovider_1.FoldingRangeKind.Region : vscode_languageserver_protocol_foldingprovider_1.FoldingRangeKind.Comment;
                     }
                     ranges.push(foldingRange);
                 }
@@ -296,7 +296,7 @@ function getJavascriptMode(documentRegions, workspace) {
         }
     };
 }
-exports.getJavascriptMode = getJavascriptMode;
+exports.getJavaScriptMode = getJavaScriptMode;
 function convertRange(document, span) {
     if (typeof span.start === 'undefined') {
         var pos = document.positionAt(0);
@@ -413,4 +413,4 @@ function generateIndent(level, options) {
         return strings_1.repeat('\t', level);
     }
 }
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/950b8b0d37a9b7061b6f0d291837ccc4015f5ecd/extensions\html-language-features\server\out/modes\javascriptMode.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/7c7da59c2333a1306c41e6e7b68d7f0caa7b3d45/extensions\html-language-features\server\out/modes\javascriptMode.js.map

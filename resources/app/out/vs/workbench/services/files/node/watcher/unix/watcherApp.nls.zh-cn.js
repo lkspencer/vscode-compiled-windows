@@ -1,5 +1,5 @@
 /*!--------------------------------------------------------
  * Copyright (C) Microsoft Corporation. All rights reserved.
  *--------------------------------------------------------*/
-define("vs/workbench/services/files/node/watcher/unix/watcherApp.nls.zh-cn",{"vs/base/node/processes":["无法对 UNC 驱动器执行 shell 命令。"]});
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/950b8b0d37a9b7061b6f0d291837ccc4015f5ecd/core/vs\workbench\services\files\node\watcher\unix\watcherApp.nls.zh-cn.js.map
+define("vs/workbench/services/files/node/watcher/unix/watcherApp.nls.zh-cn",{"vs/base/node/processes":["无法在 UNC 驱动器上执行 Shell 命令。"]});
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/7c7da59c2333a1306c41e6e7b68d7f0caa7b3d45/core/vs\workbench\services\files\node\watcher\unix\watcherApp.nls.zh-cn.js.map

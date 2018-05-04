@@ -27,6 +27,7 @@ class LanguageProvider {
     constructor(client, description, commandManager, typingsStatus) {
         this.client = client;
         this.description = description;
+        this.commandManager = commandManager;
         this.toUpdateOnConfigurationChanged = [];
         this._validate = true;
         this._enableSuggestionDiagnostics = true;
@@ -86,7 +87,8 @@ class LanguageProvider {
         this.disposables.push(vscode_1.languages.registerSignatureHelpProvider(selector, new (await Promise.resolve().then(() => require('./features/signatureHelpProvider'))).default(client), '(', ','));
         this.disposables.push(vscode_1.languages.registerRenameProvider(selector, new (await Promise.resolve().then(() => require('./features/renameProvider'))).default(client)));
         this.disposables.push(vscode_1.languages.registerCodeActionsProvider(selector, new (await Promise.resolve().then(() => require('./features/quickFixProvider'))).default(client, this.formattingOptionsManager, commandManager, this.diagnosticsManager, this.bufferSyncSupport)));
-        this.disposables.push(vscode_1.languages.registerCodeActionsProvider(selector, new (await Promise.resolve().then(() => require('./features/refactorProvider'))).default(client, this.formattingOptionsManager, commandManager)));
+        const refactorProvider = new (await Promise.resolve().then(() => require('./features/refactorProvider'))).default(client, this.formattingOptionsManager, commandManager);
+        this.disposables.push(vscode_1.languages.registerCodeActionsProvider(selector, refactorProvider, refactorProvider.metadata));
         await this.initFoldingProvider();
         this.disposables.push(vscode_1.workspace.onDidChangeConfiguration(c => {
             if (c.affectsConfiguration(foldingSetting)) {
@@ -114,7 +116,7 @@ class LanguageProvider {
         let enable = vscode_1.workspace.getConfiguration().get(foldingSetting, false);
         if (enable && this.client.apiVersion.has280Features()) {
             if (!this.foldingProviderRegistration) {
-                this.foldingProviderRegistration = vscode_1.languages.registerFoldingProvider(this.documentSelector, new (await Promise.resolve().then(() => require('./features/folderingProvider'))).default(this.client));
+                this.foldingProviderRegistration = vscode_1.languages.registerFoldingRangeProvider(this.documentSelector, new (await Promise.resolve().then(() => require('./features/foldingProvider'))).default(this.client));
             }
         }
         else {
@@ -188,6 +190,10 @@ class LanguageProvider {
         if (this.client.apiVersion.has213Features()) {
             this.versionDependentDisposables.push(vscode_1.languages.registerTypeDefinitionProvider(selector, new (await Promise.resolve().then(() => require('./features/typeDefinitionProvider'))).default(this.client)));
         }
+        if (this.client.apiVersion.has280Features()) {
+            const organizeImportsProvider = new (await Promise.resolve().then(() => require('./features/organizeImports'))).OrganizeImportsCodeActionProvider(this.client, this.commandManager);
+            this.versionDependentDisposables.push(vscode_1.languages.registerCodeActionsProvider(selector, organizeImportsProvider, organizeImportsProvider.metadata));
+        }
     }
     triggerAllDiagnostics() {
         this.bufferSyncSupport.requestAllDiagnostics();
@@ -203,4 +209,4 @@ __decorate([
     memoize_1.memoize
 ], LanguageProvider.prototype, "documentSelector", null);
 exports.default = LanguageProvider;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/950b8b0d37a9b7061b6f0d291837ccc4015f5ecd/extensions\typescript-language-features\out/languageProvider.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/7c7da59c2333a1306c41e6e7b68d7f0caa7b3d45/extensions\typescript-language-features\out/languageProvider.js.map

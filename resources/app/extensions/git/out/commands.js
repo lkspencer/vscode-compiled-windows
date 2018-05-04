@@ -212,7 +212,7 @@ class CommandCenter {
                 if (mimetype === 'text/plain') {
                     return uri_1.toGitUri(uri, ref);
                 }
-                if (size > 1000000) {
+                if (size > 1000000) { // 1 MB
                     return vscode_1.Uri.parse(`data:;label:${path.basename(uri.fsPath)};description:${gitRef},`);
                 }
                 if (ImageMimetypes.indexOf(mimetype) > -1) {
@@ -302,13 +302,16 @@ class CommandCenter {
                 return;
             }
             const config = vscode_1.workspace.getConfiguration('git');
-            let value = config.get('defaultCloneDirectory') || os.homedir();
-            const parentPath = yield vscode_1.window.showInputBox({
-                prompt: localize(4, null),
-                value,
-                ignoreFocusOut: true
+            let defaultCloneDirectory = config.get('defaultCloneDirectory') || os.homedir();
+            defaultCloneDirectory = defaultCloneDirectory.replace(/^~/, os.homedir());
+            const uris = yield vscode_1.window.showOpenDialog({
+                canSelectFiles: false,
+                canSelectFolders: true,
+                canSelectMany: false,
+                defaultUri: vscode_1.Uri.file(defaultCloneDirectory),
+                openLabel: localize(4, null)
             });
-            if (!parentPath) {
+            if (!uris || uris.length === 0) {
                 /* __GDPR__
                     "clone" : {
                         "outcome" : { "classification": "SystemMetaData", "purpose": "FeatureInsight" }
@@ -317,20 +320,25 @@ class CommandCenter {
                 this.telemetryReporter.sendTelemetryEvent('clone', { outcome: 'no_directory' });
                 return;
             }
-            const tokenSource = new vscode_1.CancellationTokenSource();
-            const cancelCommandId = `cancelClone${CommandCenter.cloneId++}`;
-            const commandDisposable = vscode_1.commands.registerCommand(cancelCommandId, () => tokenSource.cancel());
-            const statusBarItem = vscode_1.window.createStatusBarItem(vscode_1.StatusBarAlignment.Left);
-            statusBarItem.text = localize(5, null);
-            statusBarItem.tooltip = localize(6, null);
-            statusBarItem.command = cancelCommandId;
-            statusBarItem.show();
-            const clonePromise = this.git.clone(url, parentPath.replace(/^~/, os.homedir()), tokenSource.token);
+            const uri = uris[0];
+            const parentPath = uri.fsPath;
             try {
-                vscode_1.window.withProgress({ location: vscode_1.ProgressLocation.SourceControl, title: localize(7, null) }, () => clonePromise);
-                const repositoryPath = yield clonePromise;
-                const open = localize(8, null);
-                const result = yield vscode_1.window.showInformationMessage(localize(9, null), open);
+                const opts = {
+                    location: vscode_1.ProgressLocation.Notification,
+                    title: localize(5, null, url),
+                    cancellable: true
+                };
+                const repositoryPath = yield vscode_1.window.withProgress(opts, (_, token) => this.git.clone(url, parentPath, token));
+                const choices = [];
+                let message = localize(6, null);
+                const open = localize(7, null);
+                choices.push(open);
+                const addToWorkspace = localize(8, null);
+                if (vscode_1.workspace.workspaceFolders) {
+                    message = localize(9, null);
+                    choices.push(addToWorkspace);
+                }
+                const result = yield vscode_1.window.showInformationMessage(message, ...choices);
                 const openFolder = result === open;
                 /* __GDPR__
                     "clone" : {
@@ -339,8 +347,12 @@ class CommandCenter {
                     }
                 */
                 this.telemetryReporter.sendTelemetryEvent('clone', { outcome: 'success' }, { openFolder: openFolder ? 1 : 0 });
+                const uri = vscode_1.Uri.file(repositoryPath);
                 if (openFolder) {
-                    vscode_1.commands.executeCommand('vscode.openFolder', vscode_1.Uri.file(repositoryPath));
+                    vscode_1.commands.executeCommand('vscode.openFolder', uri);
+                }
+                else if (result === addToWorkspace) {
+                    vscode_1.workspace.updateWorkspaceFolders(vscode_1.workspace.workspaceFolders.length, 0, { uri });
                 }
             }
             catch (err) {
@@ -364,10 +376,6 @@ class CommandCenter {
                     this.telemetryReporter.sendTelemetryEvent('clone', { outcome: 'error' });
                 }
                 throw err;
-            }
-            finally {
-                commandDisposable.dispose();
-                statusBarItem.dispose();
             }
         });
     }
@@ -797,7 +805,7 @@ class CommandCenter {
                 }
                 yield repository.clean(resources.map(r => r.resourceUri));
             }
-            else {
+            else { // resources.length > 1 && untrackedResources.length > 0 && trackedResources.length > 0
                 const untrackedMessage = untrackedResources.length === 1
                     ? localize(37, null, path.basename(untrackedResources[0].resourceUri.fsPath))
                     : localize(38, null, untrackedResources.length);
@@ -1029,7 +1037,7 @@ class CommandCenter {
                 }
                 const message = localize(57, null, name);
                 const yes = localize(58, null);
-                const pick = yield vscode_1.window.showWarningMessage(message, yes);
+                const pick = yield vscode_1.window.showWarningMessage(message, { modal: true }, yes);
                 if (pick === yes) {
                     yield run(true);
                 }
@@ -1483,7 +1491,6 @@ class CommandCenter {
         this.disposables.forEach(d => d.dispose());
     }
 }
-CommandCenter.cloneId = 0;
 __decorate([
     command('git.refresh', { repository: true })
 ], CommandCenter.prototype, "refresh", null);
@@ -1638,4 +1645,4 @@ __decorate([
     command('git.stashPopLatest', { repository: true })
 ], CommandCenter.prototype, "stashPopLatest", null);
 exports.CommandCenter = CommandCenter;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/950b8b0d37a9b7061b6f0d291837ccc4015f5ecd/extensions\git\out/commands.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/7c7da59c2333a1306c41e6e7b68d7f0caa7b3d45/extensions\git\out/commands.js.map

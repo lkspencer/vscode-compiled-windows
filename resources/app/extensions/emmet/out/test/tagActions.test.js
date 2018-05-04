@@ -15,8 +15,8 @@ const splitJoinTag_1 = require("../splitJoinTag");
 const mergeLines_1 = require("../mergeLines");
 suite('Tests for Emmet actions on html tags', () => {
     teardown(() => {
-        // Reset config and close all editors
-        return vscode_1.workspace.getConfiguration('emmet').update('syntaxProfiles', {}).then(testUtils_1.closeAllEditors);
+        // close all editors
+        return testUtils_1.closeAllEditors;
     });
     const contents = `
 	<div class="hello">
@@ -107,7 +107,8 @@ suite('Tests for Emmet actions on html tags', () => {
 		<span></span>
 	</div>
 	`;
-        return vscode_1.workspace.getConfiguration('emmet').update('syntaxProfiles', { jsx: { selfClosingStyle: 'xhtml' } }).then(() => {
+        const oldValueForSyntaxProfiles = vscode_1.workspace.getConfiguration('emmet').inspect('syntaxProfiles');
+        return vscode_1.workspace.getConfiguration('emmet').update('syntaxProfiles', { jsx: { selfClosingStyle: 'xhtml' } }, vscode_1.ConfigurationTarget.Global).then(() => {
             return testUtils_1.withRandomFileEditor(contents, 'jsx', (editor, doc) => {
                 editor.selections = [
                     new vscode_1.Selection(3, 17, 3, 17),
@@ -115,7 +116,7 @@ suite('Tests for Emmet actions on html tags', () => {
                 ];
                 return splitJoinTag_1.splitJoinTag().then(() => {
                     assert.equal(doc.getText(), expectedContents);
-                    return Promise.resolve();
+                    return vscode_1.workspace.getConfiguration('emmet').update('syntaxProfiles', oldValueForSyntaxProfiles ? oldValueForSyntaxProfiles.globalValue : undefined, vscode_1.ConfigurationTarget.Global);
                 });
             });
         });
@@ -171,4 +172,4 @@ suite('Tests for Emmet actions on html tags', () => {
         });
     });
 });
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/950b8b0d37a9b7061b6f0d291837ccc4015f5ecd/extensions\emmet\out/test\tagActions.test.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/7c7da59c2333a1306c41e6e7b68d7f0caa7b3d45/extensions\emmet\out/test\tagActions.test.js.map

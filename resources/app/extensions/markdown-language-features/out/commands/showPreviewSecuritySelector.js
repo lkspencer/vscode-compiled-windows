@@ -13,17 +13,17 @@ class ShowPreviewSecuritySelectorCommand {
         this.id = 'markdown.showPreviewSecuritySelector';
     }
     execute(resource) {
-        if (resource) {
-            const source = vscode.Uri.parse(resource).query;
-            this.previewSecuritySelector.showSecutitySelectorForResource(vscode.Uri.parse(source));
+        if (this.previewManager.activePreviewResource) {
+            this.previewSecuritySelector.showSecutitySelectorForResource(this.previewManager.activePreviewResource);
+        }
+        else if (resource) {
+            const source = vscode.Uri.parse(resource);
+            this.previewSecuritySelector.showSecutitySelectorForResource(source.query ? vscode.Uri.parse(source.query) : source);
         }
         else if (vscode.window.activeTextEditor && file_1.isMarkdownFile(vscode.window.activeTextEditor.document)) {
             this.previewSecuritySelector.showSecutitySelectorForResource(vscode.window.activeTextEditor.document.uri);
         }
-        else if (this.previewManager.activePreviewResource) {
-            this.previewSecuritySelector.showSecutitySelectorForResource(this.previewManager.activePreviewResource);
-        }
     }
 }
 exports.ShowPreviewSecuritySelectorCommand = ShowPreviewSecuritySelectorCommand;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/950b8b0d37a9b7061b6f0d291837ccc4015f5ecd/extensions\markdown-language-features\out/commands\showPreviewSecuritySelector.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/7c7da59c2333a1306c41e6e7b68d7f0caa7b3d45/extensions\markdown-language-features\out/commands\showPreviewSecuritySelector.js.map

@@ -5,27 +5,24 @@
  *--------------------------------------------------------------------------------------------*/
 Object.defineProperty(exports, "__esModule", { value: true });
 const vscode = require("vscode");
-const typeconverts = require("../utils/typeConverters");
+const nls = require("vscode-nls");
 const languageModeIds_1 = require("../utils/languageModeIds");
+const typeconverts = require("../utils/typeConverters");
+const localize = nls.loadMessageBundle(__filename);
 class OrganizeImportsCommand {
-    constructor(lazyClientHost) {
-        this.lazyClientHost = lazyClientHost;
-        this.id = OrganizeImportsCommand.Ids;
+    constructor(client) {
+        this.client = client;
+        this.id = OrganizeImportsCommand.Id;
     }
     async execute() {
-        // Don't force activation
-        if (!this.lazyClientHost.hasValue) {
-            return false;
-        }
-        const client = this.lazyClientHost.value.serviceClient;
-        if (!client.apiVersion.has280Features()) {
+        if (!this.client.apiVersion.has280Features()) {
             return false;
         }
         const editor = vscode.window.activeTextEditor;
         if (!editor || !languageModeIds_1.isSupportedLanguageMode(editor.document)) {
             return false;
         }
-        const file = client.normalizePath(editor.document.uri);
+        const file = this.client.normalizePath(editor.document.uri);
         if (!file) {
             return false;
         }
@@ -37,34 +34,31 @@ class OrganizeImportsCommand {
                 }
             }
         };
-        const response = await client.execute('organizeImports', args);
+        const response = await this.client.execute('organizeImports', args);
         if (!response || !response.success) {
             return false;
         }
-        const edits = typeconverts.WorkspaceEdit.fromFromFileCodeEdits(client, response.body);
+        const edits = typeconverts.WorkspaceEdit.fromFromFileCodeEdits(this.client, response.body);
         return await vscode.workspace.applyEdit(edits);
     }
 }
-OrganizeImportsCommand.Ids = ['javascript.organizeImports', 'typescript.organizeImports'];
-exports.OrganizeImportsCommand = OrganizeImportsCommand;
-/**
- * When clause context set when the ts version supports organize imports.
- */
-const contextName = 'typescript.canOrganizeImports';
-class OrganizeImportsContextManager {
-    constructor() {
-        this.currentValue = false;
+OrganizeImportsCommand.Id = '_typescript.organizeImports';
+class OrganizeImportsCodeActionProvider {
+    constructor(client, commandManager) {
+        this.client = client;
+        this.metadata = {
+            providedCodeActionKinds: [vscode.CodeActionKind.SourceOrganizeImports]
+        };
+        commandManager.register(new OrganizeImportsCommand(client));
     }
-    onDidChangeApiVersion(apiVersion) {
-        this.updateContext(apiVersion.has280Features());
-    }
-    updateContext(newValue) {
-        if (newValue === this.currentValue) {
-            return;
+    provideCodeActions(_document, _range, _context, _token) {
+        if (!this.client.apiVersion.has280Features()) {
+            return [];
         }
-        vscode.commands.executeCommand('setContext', contextName, newValue);
-        this.currentValue = newValue;
+        const action = new vscode.CodeAction(localize(0, null), vscode.CodeActionKind.SourceOrganizeImports);
+        action.command = { title: '', command: OrganizeImportsCommand.Id };
+        return [action];
     }
 }
-exports.OrganizeImportsContextManager = OrganizeImportsContextManager;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/950b8b0d37a9b7061b6f0d291837ccc4015f5ecd/extensions\typescript-language-features\out/features\organizeImports.js.map
+exports.OrganizeImportsCodeActionProvider = OrganizeImportsCodeActionProvider;
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/7c7da59c2333a1306c41e6e7b68d7f0caa7b3d45/extensions\typescript-language-features\out/features\organizeImports.js.map

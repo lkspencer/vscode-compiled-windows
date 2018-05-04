@@ -24,6 +24,7 @@ const askpass_1 = require("./askpass");
 const util_1 = require("./util");
 const vscode_extension_telemetry_1 = require("vscode-extension-telemetry");
 const api_1 = require("./api");
+const protocolHandler_1 = require("./protocolHandler");
 let telemetryReporter;
 function init(context, outputChannel, disposables) {
     return __awaiter(this, void 0, void 0, function* () {
@@ -48,7 +49,7 @@ function init(context, outputChannel, disposables) {
         };
         git.onOutput.addListener('log', onOutput);
         disposables.push(util_1.toDisposable(() => git.onOutput.removeListener('log', onOutput)));
-        disposables.push(new commands_1.CommandCenter(git, model, outputChannel, telemetryReporter), new contentProvider_1.GitContentProvider(model), new decorationProvider_1.GitDecorations(model));
+        disposables.push(new commands_1.CommandCenter(git, model, outputChannel, telemetryReporter), new contentProvider_1.GitContentProvider(model), new decorationProvider_1.GitDecorations(model), new protocolHandler_1.GitProtocolHandler());
         yield checkGitVersion(info);
         return model;
     });
@@ -133,4 +134,4 @@ function deactivate() {
     return telemetryReporter ? telemetryReporter.dispose() : Promise.resolve(null);
 }
 exports.deactivate = deactivate;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/950b8b0d37a9b7061b6f0d291837ccc4015f5ecd/extensions\git\out/main.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/7c7da59c2333a1306c41e6e7b68d7f0caa7b3d45/extensions\git\out/main.js.map

@@ -18,7 +18,6 @@ const managedFileContext_1 = require("./utils/managedFileContext");
 const lazy_1 = require("./utils/lazy");
 const fileSchemes = require("./utils/fileSchemes");
 const logDirectoryProvider_1 = require("./utils/logDirectoryProvider");
-const organizeImports_1 = require("./features/organizeImports");
 function activate(context) {
     const plugins = plugins_1.getContributedTypeScriptServerPlugins();
     const commandManager = new commandManager_1.CommandManager();
@@ -54,10 +53,6 @@ function createLazyClientHost(context, plugins, commandManager) {
         const logDirectoryProvider = new logDirectoryProvider_1.default(context);
         const clientHost = new typeScriptServiceClientHost_1.default(languageDescription_1.standardLanguageDescriptions, context.workspaceState, plugins, commandManager, logDirectoryProvider);
         context.subscriptions.push(clientHost);
-        const organizeImportsContext = new organizeImports_1.OrganizeImportsContextManager();
-        clientHost.serviceClient.onTsServerStarted(api => {
-            organizeImportsContext.onDidChangeApiVersion(api);
-        }, null, context.subscriptions);
         clientHost.serviceClient.onReady(() => {
             context.subscriptions.push(ProjectStatus.create(clientHost.serviceClient, clientHost.serviceClient.telemetryReporter, path => new Promise(resolve => setTimeout(() => resolve(clientHost.handles(path)), 750)), context.workspaceState));
         });
@@ -72,7 +67,6 @@ function registerCommands(commandManager, lazyClientHost) {
     commandManager.register(new commands.RestartTsServerCommand(lazyClientHost));
     commandManager.register(new commands.TypeScriptGoToProjectConfigCommand(lazyClientHost));
     commandManager.register(new commands.JavaScriptGoToProjectConfigCommand(lazyClientHost));
-    commandManager.register(new organizeImports_1.OrganizeImportsCommand(lazyClientHost));
 }
 function isSupportedDocument(supportedLanguage, document) {
     if (supportedLanguage.indexOf(document.languageId) < 0) {
@@ -80,4 +74,4 @@ function isSupportedDocument(supportedLanguage, document) {
     }
     return fileSchemes.isSupportedScheme(document.uri.scheme);
 }
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/950b8b0d37a9b7061b6f0d291837ccc4015f5ecd/extensions\typescript-language-features\out/extension.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/7c7da59c2333a1306c41e6e7b68d7f0caa7b3d45/extensions\typescript-language-features\out/extension.js.map

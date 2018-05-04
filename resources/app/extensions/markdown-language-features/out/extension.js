@@ -5,18 +5,19 @@
  *--------------------------------------------------------------------------------------------*/
 Object.defineProperty(exports, "__esModule", { value: true });
 const vscode = require("vscode");
-const markdownEngine_1 = require("./markdownEngine");
-const security_1 = require("./security");
-const logger_1 = require("./logger");
 const commandManager_1 = require("./commandManager");
 const commands = require("./commands/index");
-const telemetryReporter_1 = require("./telemetryReporter");
-const markdownExtensions_1 = require("./markdownExtensions");
 const documentLinkProvider_1 = require("./features/documentLinkProvider");
 const documentSymbolProvider_1 = require("./features/documentSymbolProvider");
+const foldingProvider_1 = require("./features/foldingProvider");
 const previewContentProvider_1 = require("./features/previewContentProvider");
 const previewManager_1 = require("./features/previewManager");
-const foldingProvider_1 = require("./features/foldingProvider");
+const workspaceSymbolProvider_1 = require("./features/workspaceSymbolProvider");
+const logger_1 = require("./logger");
+const markdownEngine_1 = require("./markdownEngine");
+const markdownExtensions_1 = require("./markdownExtensions");
+const security_1 = require("./security");
+const telemetryReporter_1 = require("./telemetryReporter");
 function activate(context) {
     const telemetryReporter = telemetryReporter_1.loadDefaultTelemetryReporter();
     context.subscriptions.push(telemetryReporter);
@@ -24,13 +25,18 @@ function activate(context) {
     const cspArbiter = new security_1.ExtensionContentSecurityPolicyArbiter(context.globalState, context.workspaceState);
     const engine = new markdownEngine_1.MarkdownEngine(contributions);
     const logger = new logger_1.Logger();
-    const selector = 'markdown';
+    const selector = [
+        { language: 'markdown', scheme: 'file' },
+        { language: 'markdown', scheme: 'untitled' }
+    ];
     const contentProvider = new previewContentProvider_1.MarkdownContentProvider(engine, context, cspArbiter, contributions, logger);
+    const symbolProvider = new documentSymbolProvider_1.default(engine);
     const previewManager = new previewManager_1.MarkdownPreviewManager(contentProvider, logger, contributions);
     context.subscriptions.push(previewManager);
-    context.subscriptions.push(vscode.languages.registerDocumentSymbolProvider(selector, new documentSymbolProvider_1.default(engine)));
+    context.subscriptions.push(vscode.languages.registerDocumentSymbolProvider(selector, symbolProvider));
     context.subscriptions.push(vscode.languages.registerDocumentLinkProvider(selector, new documentLinkProvider_1.default()));
-    context.subscriptions.push(vscode.languages.registerFoldingProvider(selector, new foldingProvider_1.default(engine)));
+    context.subscriptions.push(vscode.languages.registerFoldingRangeProvider(selector, new foldingProvider_1.default(engine)));
+    context.subscriptions.push(vscode.languages.registerWorkspaceSymbolProvider(new workspaceSymbolProvider_1.default(symbolProvider)));
     const previewSecuritySelector = new security_1.PreviewSecuritySelector(cspArbiter, previewManager);
     const commandManager = new commandManager_1.CommandManager();
     context.subscriptions.push(commandManager);
@@ -50,4 +56,4 @@ function activate(context) {
     }));
 }
 exports.activate = activate;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/950b8b0d37a9b7061b6f0d291837ccc4015f5ecd/extensions\markdown-language-features\out/extension.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/7c7da59c2333a1306c41e6e7b68d7f0caa7b3d45/extensions\markdown-language-features\out/extension.js.map

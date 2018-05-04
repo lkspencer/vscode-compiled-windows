@@ -24,19 +24,26 @@ const htmlContents = `
 	</ul>
 	<style>
 		.boo {
-			m10
+			display: dn; m10
 		}
 	</style>
 	<span></span>
 	(ul>li.item$)*2
 	(ul>li.item$)*2+span
 	(div>dl>(dt+dd)*2)
+	<script type="text/html">
+		span.hello
+	</script>
+	<script type="text/javascript">
+		span.hello
+	</script>
 </body>
 `;
 suite('Tests for Expand Abbreviations (HTML)', () => {
+    const oldValueForExcludeLanguages = vscode_1.workspace.getConfiguration('emmet').inspect('excludeLanguages');
     teardown(() => {
-        // Reset config and close all editors
-        return vscode_1.workspace.getConfiguration('emmet').update('excludeLanguages', []).then(testUtils_1.closeAllEditors);
+        // close all editors
+        return testUtils_1.closeAllEditors;
     });
     test('Expand snippets (HTML)', () => {
         return testExpandAbbreviation('html', new vscode_1.Selection(3, 23, 3, 23), 'img', '<img src=\"\" alt=\"\">');
@@ -184,7 +191,7 @@ suite('Tests for Expand Abbreviations (HTML)', () => {
     });
     test('Expand css when inside style tag (HTML)', () => {
         return testUtils_1.withRandomFileEditor(htmlContents, 'html', (editor, doc) => {
-            editor.selection = new vscode_1.Selection(13, 3, 13, 6);
+            editor.selection = new vscode_1.Selection(13, 16, 13, 19);
             let expandPromise = abbreviationActions_1.expandEmmetAbbreviation({ language: 'css' });
             if (!expandPromise) {
                 return Promise.resolve();
@@ -195,53 +202,164 @@ suite('Tests for Expand Abbreviations (HTML)', () => {
             });
         });
     });
-    // test('Expand css when inside style tag in completion list (HTML)', () => {
-    // 	const abbreviation = 'm10';
-    // 	const expandedText = 'margin: 10px;';
-    // 	return withRandomFileEditor(htmlContents, 'html', (editor, doc) => {
-    // 		editor.selection = new Selection(13, 3, 13, 6);
-    // 		const cancelSrc = new CancellationTokenSource();
-    // 		const completionPromise = completionProvider.provideCompletionItems(editor.document, editor.selection.active, cancelSrc.token, { triggerKind: CompletionTriggerKind.Invoke });
-    // 		if (!completionPromise) {
-    // 			assert.equal(1, 2, `Problem with expanding m10`);
-    // 			return Promise.resolve();
-    // 		}
-    // 		return completionPromise.then((completionList: CompletionList) => {
-    // 			if (!completionList.items || !completionList.items.length) {
-    // 				assert.equal(1, 2, `Problem with expanding m10`);
-    // 				return Promise.resolve();
-    // 			}
-    // 			const emmetCompletionItem = completionList.items[0];
-    // 			assert.equal(emmetCompletionItem.label, expandedText, `Label of completion item doesnt match.`);
-    // 			assert.equal((<string>emmetCompletionItem.documentation || '').replace(/\|/g, ''), expandedText, `Docs of completion item doesnt match.`);
-    // 			assert.equal(emmetCompletionItem.filterText, abbreviation, `FilterText of completion item doesnt match.`);
-    // 			return Promise.resolve();
+    test('Expand css when inside style tag in completion list (HTML)', () => {
+        const abbreviation = 'm10';
+        const expandedText = 'margin: 10px;';
+        return testUtils_1.withRandomFileEditor(htmlContents, 'html', (editor, doc) => {
+            editor.selection = new vscode_1.Selection(13, 16, 13, 19);
+            const cancelSrc = new vscode_1.CancellationTokenSource();
+            const completionPromise = completionProvider.provideCompletionItems(editor.document, editor.selection.active, cancelSrc.token, { triggerKind: vscode_1.CompletionTriggerKind.Invoke });
+            if (!completionPromise) {
+                assert.equal(1, 2, `Problem with expanding m10`);
+                return Promise.resolve();
+            }
+            return completionPromise.then((completionList) => {
+                if (!completionList.items || !completionList.items.length) {
+                    assert.equal(1, 2, `Problem with expanding m10`);
+                    return Promise.resolve();
+                }
+                const emmetCompletionItem = completionList.items[0];
+                assert.equal(emmetCompletionItem.label, expandedText, `Label of completion item doesnt match.`);
+                assert.equal((emmetCompletionItem.documentation || '').replace(/\|/g, ''), expandedText, `Docs of completion item doesnt match.`);
+                assert.equal(emmetCompletionItem.filterText, abbreviation, `FilterText of completion item doesnt match.`);
+                return Promise.resolve();
+            });
+        });
+    });
+    test('No expanding text inside style tag if position is not for property name (HTML)', () => {
+        return testUtils_1.withRandomFileEditor(htmlContents, 'html', (editor, doc) => {
+            editor.selection = new vscode_1.Selection(13, 14, 13, 14);
+            return abbreviationActions_1.expandEmmetAbbreviation(null).then(() => {
+                assert.equal(editor.document.getText(), htmlContents);
+                return Promise.resolve();
+            });
+        });
+    });
+    test('No expanding text in completion list inside style tag if position is not for property name (HTML)', () => {
+        return testUtils_1.withRandomFileEditor(htmlContents, 'html', (editor, doc) => {
+            editor.selection = new vscode_1.Selection(13, 14, 13, 14);
+            const cancelSrc = new vscode_1.CancellationTokenSource();
+            const completionPromise = completionProvider.provideCompletionItems(editor.document, editor.selection.active, cancelSrc.token, { triggerKind: vscode_1.CompletionTriggerKind.Invoke });
+            assert.equal(!completionPromise, true, `Got unexpected comapletion promise instead of undefined`);
+            return Promise.resolve();
+        });
+    });
+    test('Expand css when inside style attribute (HTML)', () => {
+        const styleAttributeContent = '<div style="m10" class="hello"></div>';
+        return testUtils_1.withRandomFileEditor(styleAttributeContent, 'html', (editor, doc) => {
+            editor.selection = new vscode_1.Selection(0, 15, 0, 15);
+            let expandPromise = abbreviationActions_1.expandEmmetAbbreviation(null);
+            if (!expandPromise) {
+                return Promise.resolve();
+            }
+            return expandPromise.then(() => {
+                assert.equal(editor.document.getText(), styleAttributeContent.replace('m10', 'margin: 10px;'));
+                return Promise.resolve();
+            });
+        });
+    });
+    test('Expand css when inside style attribute in completion list (HTML)', () => {
+        const abbreviation = 'm10';
+        const expandedText = 'margin: 10px;';
+        return testUtils_1.withRandomFileEditor('<div style="m10" class="hello"></div>', 'html', (editor, doc) => {
+            editor.selection = new vscode_1.Selection(0, 15, 0, 15);
+            const cancelSrc = new vscode_1.CancellationTokenSource();
+            const completionPromise = completionProvider.provideCompletionItems(editor.document, editor.selection.active, cancelSrc.token, { triggerKind: vscode_1.CompletionTriggerKind.Invoke });
+            if (!completionPromise) {
+                assert.equal(1, 2, `Problem with expanding m10`);
+                return Promise.resolve();
+            }
+            return completionPromise.then((completionList) => {
+                if (!completionList.items || !completionList.items.length) {
+                    assert.equal(1, 2, `Problem with expanding m10`);
+                    return Promise.resolve();
+                }
+                const emmetCompletionItem = completionList.items[0];
+                assert.equal(emmetCompletionItem.label, expandedText, `Label of completion item doesnt match.`);
+                assert.equal((emmetCompletionItem.documentation || '').replace(/\|/g, ''), expandedText, `Docs of completion item doesnt match.`);
+                assert.equal(emmetCompletionItem.filterText, abbreviation, `FilterText of completion item doesnt match.`);
+                return Promise.resolve();
+            });
+        });
+    });
+    test('Expand html when inside script tag with html type (HTML)', () => {
+        return testUtils_1.withRandomFileEditor(htmlContents, 'html', (editor, doc) => {
+            editor.selection = new vscode_1.Selection(21, 12, 21, 12);
+            let expandPromise = abbreviationActions_1.expandEmmetAbbreviation(null);
+            if (!expandPromise) {
+                return Promise.resolve();
+            }
+            return expandPromise.then(() => {
+                assert.equal(editor.document.getText(), htmlContents.replace('span.hello', '<span class="hello"></span>'));
+                return Promise.resolve();
+            });
+        });
+    });
+    test('Expand html when inside script tag with html type (HTML)', () => {
+        const abbreviation = 'span.hello';
+        const expandedText = '<span class="hello"></span>';
+        return testUtils_1.withRandomFileEditor(htmlContents, 'html', (editor, doc) => {
+            editor.selection = new vscode_1.Selection(21, 12, 21, 12);
+            const cancelSrc = new vscode_1.CancellationTokenSource();
+            const completionPromise = completionProvider.provideCompletionItems(editor.document, editor.selection.active, cancelSrc.token, { triggerKind: vscode_1.CompletionTriggerKind.Invoke });
+            if (!completionPromise) {
+                assert.equal(1, 2, `Problem with expanding span.hello`);
+                return Promise.resolve();
+            }
+            return completionPromise.then((completionList) => {
+                if (!completionList.items || !completionList.items.length) {
+                    assert.equal(1, 2, `Problem with expanding span.hello`);
+                    return Promise.resolve();
+                }
+                const emmetCompletionItem = completionList.items[0];
+                assert.equal(emmetCompletionItem.label, abbreviation, `Label of completion item doesnt match.`);
+                assert.equal((emmetCompletionItem.documentation || '').replace(/\|/g, ''), expandedText, `Docs of completion item doesnt match.`);
+                return Promise.resolve();
+            });
+        });
+    });
+    test('No expanding text inside script tag with javascript type (HTML)', () => {
+        return testUtils_1.withRandomFileEditor(htmlContents, 'html', (editor, doc) => {
+            editor.selection = new vscode_1.Selection(24, 12, 24, 12);
+            return abbreviationActions_1.expandEmmetAbbreviation(null).then(() => {
+                assert.equal(editor.document.getText(), htmlContents);
+                return Promise.resolve();
+            });
+        });
+    });
+    test('No expanding text in completion list inside script tag with javascript type (HTML)', () => {
+        return testUtils_1.withRandomFileEditor(htmlContents, 'html', (editor, doc) => {
+            editor.selection = new vscode_1.Selection(24, 12, 24, 12);
+            const cancelSrc = new vscode_1.CancellationTokenSource();
+            const completionPromise = completionProvider.provideCompletionItems(editor.document, editor.selection.active, cancelSrc.token, { triggerKind: vscode_1.CompletionTriggerKind.Invoke });
+            assert.equal(!completionPromise, true, `Got unexpected comapletion promise instead of undefined`);
+            return Promise.resolve();
+        });
+    });
+    // test('No expanding when html is excluded in the settings', () => {
+    // 	return workspace.getConfiguration('emmet').update('excludeLanguages', ['html'], ConfigurationTarget.Global).then(() => {
+    // 		return testExpandAbbreviation('html', new Selection(9, 6, 9, 6), '', '', true).then(() => {
+    // 			return workspace.getConfiguration('emmet').update('excludeLanguages', oldValueForExcludeLanguages ? oldValueForExcludeLanguages.globalValue : undefined, ConfigurationTarget.Global);
     // 		});
     // 	});
     // });
-    test('No expanding when html is excluded in the settings', () => {
-        return vscode_1.workspace.getConfiguration('emmet').update('excludeLanguages', ['html']).then(() => {
-            return testExpandAbbreviation('html', new vscode_1.Selection(9, 6, 9, 6), '', '', true).then(() => {
-                return vscode_1.workspace.getConfiguration('emmet').update('excludeLanguages', []);
-            });
-        });
-    });
     test('No expanding when html is excluded in the settings in completion list', () => {
-        return vscode_1.workspace.getConfiguration('emmet').update('excludeLanguages', ['html']).then(() => {
+        return vscode_1.workspace.getConfiguration('emmet').update('excludeLanguages', ['html'], vscode_1.ConfigurationTarget.Global).then(() => {
             return testHtmlCompletionProvider(new vscode_1.Selection(9, 6, 9, 6), '', '', true).then(() => {
-                return vscode_1.workspace.getConfiguration('emmet').update('excludeLanguages', []);
+                return vscode_1.workspace.getConfiguration('emmet').update('excludeLanguages', oldValueForExcludeLanguages ? oldValueForExcludeLanguages.globalValue : undefined, vscode_1.ConfigurationTarget.Global);
             });
         });
     });
-    test('No expanding when php (mapped syntax) is excluded in the settings', () => {
-        return vscode_1.workspace.getConfiguration('emmet').update('excludeLanguages', ['php']).then(() => {
-            return testExpandAbbreviation('php', new vscode_1.Selection(9, 6, 9, 6), '', '', true).then(() => {
-                return vscode_1.workspace.getConfiguration('emmet').update('excludeLanguages', []);
-            });
-        });
-    });
+    // test('No expanding when php (mapped syntax) is excluded in the settings', () => {
+    // 	return workspace.getConfiguration('emmet').update('excludeLanguages', ['php'], ConfigurationTarget.Global).then(() => {
+    // 		return testExpandAbbreviation('php', new Selection(9, 6, 9, 6), '', '', true).then(() => {
+    // 			return workspace.getConfiguration('emmet').update('excludeLanguages', oldValueForExcludeLanguages ? oldValueForExcludeLanguages.globalValue : undefined, ConfigurationTarget.Global);
+    // 		});
+    // 	});
+    // });
 });
 suite('Tests for jsx, xml and xsl', () => {
+    const oldValueForSyntaxProfiles = vscode_1.workspace.getConfiguration('emmet').inspect('syntaxProfiles');
     teardown(testUtils_1.closeAllEditors);
     test('Expand abbreviation with className instead of class in jsx', () => {
         return testUtils_1.withRandomFileEditor('ul.nav', 'javascriptreact', (editor, doc) => {
@@ -258,6 +376,17 @@ suite('Tests for jsx, xml and xsl', () => {
             return abbreviationActions_1.expandEmmetAbbreviation({ language: 'javascriptreact' }).then(() => {
                 assert.equal(editor.document.getText(), '<img src="" alt=""/>');
                 return Promise.resolve();
+            });
+        });
+    });
+    test('Expand abbreviation with single quotes for jsx', () => {
+        return vscode_1.workspace.getConfiguration('emmet').update('syntaxProfiles', { jsx: { "attr_quotes": "single" } }, vscode_1.ConfigurationTarget.Global).then(() => {
+            return testUtils_1.withRandomFileEditor('img', 'javascriptreact', (editor, doc) => {
+                editor.selection = new vscode_1.Selection(0, 6, 0, 6);
+                return abbreviationActions_1.expandEmmetAbbreviation({ language: 'javascriptreact' }).then(() => {
+                    assert.equal(editor.document.getText(), '<img src=\'\' alt=\'\'/>');
+                    return vscode_1.workspace.getConfiguration('emmet').update('syntaxProfiles', oldValueForSyntaxProfiles ? oldValueForSyntaxProfiles.globalValue : undefined, vscode_1.ConfigurationTarget.Global);
+                });
             });
         });
     });
@@ -278,6 +407,18 @@ suite('Tests for jsx, xml and xsl', () => {
                 return Promise.resolve();
             });
         });
+    });
+    test('No expanding text inside open tag in completion list (jsx)', () => {
+        return testNoCompletion('jsx', htmlContents, new vscode_1.Selection(2, 4, 2, 4));
+    });
+    test('No expanding tag that is opened, but not closed in completion list (jsx)', () => {
+        return testNoCompletion('jsx', htmlContents, new vscode_1.Selection(9, 6, 9, 6));
+    });
+    test('No expanding text inside open tag when there is no closing tag in completion list (jsx)', () => {
+        return testNoCompletion('jsx', htmlContents, new vscode_1.Selection(9, 8, 9, 8));
+    });
+    test('No expanding text in completion list inside open tag when there is no closing tag when there is no parent node (jsx)', () => {
+        return testNoCompletion('jsx', '<img s', new vscode_1.Selection(0, 6, 0, 6));
     });
 });
 function testExpandAbbreviation(syntax, selection, abbreviation, expandedText, shouldFail) {
@@ -320,5 +461,14 @@ function testHtmlCompletionProvider(selection, abbreviation, expandedText, shoul
             return Promise.resolve();
         });
     });
+}
+function testNoCompletion(syntax, fileContents, selection) {
+    return testUtils_1.withRandomFileEditor(fileContents, syntax, (editor, doc) => {
+        editor.selection = selection;
+        const cancelSrc = new vscode_1.CancellationTokenSource();
+        const completionPromise = completionProvider.provideCompletionItems(editor.document, editor.selection.active, cancelSrc.token, { triggerKind: vscode_1.CompletionTriggerKind.Invoke });
+        assert.equal(!completionPromise, true, `Got unexpected comapletion promise instead of undefined`);
+        return Promise.resolve();
+    });
 }
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/950b8b0d37a9b7061b6f0d291837ccc4015f5ecd/extensions\emmet\out/test\abbreviationAction.test.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/7c7da59c2333a1306c41e6e7b68d7f0caa7b3d45/extensions\emmet\out/test\abbreviationAction.test.js.map

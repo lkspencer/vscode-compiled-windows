@@ -13,9 +13,9 @@ class MDDocumentSymbolProvider {
     async provideDocumentSymbols(document) {
         const toc = await new tableOfContentsProvider_1.TableOfContentsProvider(this.engine, document).getToc();
         return toc.map(entry => {
-            return new vscode.SymbolInformation('#'.repeat(entry.level) + ' ' + entry.text, vscode.SymbolKind.Namespace, '', entry.location);
+            return new vscode.SymbolInformation('#'.repeat(entry.level) + ' ' + entry.text, vscode.SymbolKind.String, '', entry.location);
         });
     }
 }
 exports.default = MDDocumentSymbolProvider;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/950b8b0d37a9b7061b6f0d291837ccc4015f5ecd/extensions\markdown-language-features\out/features\documentSymbolProvider.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/7c7da59c2333a1306c41e6e7b68d7f0caa7b3d45/extensions\markdown-language-features\out/features\documentSymbolProvider.js.map

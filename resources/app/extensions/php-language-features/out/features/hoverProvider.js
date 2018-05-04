@@ -5,8 +5,9 @@
 'use strict';
 Object.defineProperty(exports, "__esModule", { value: true });
 var vscode_1 = require("vscode");
-var phpGlobals = require("./phpGlobals");
 var markedTextUtil_1 = require("./utils/markedTextUtil");
+var phpGlobals = require("./phpGlobals");
+var phpGlobalFunctions = require("./phpGlobalFunctions");
 var PHPHoverProvider = /** @class */ (function () {
     function PHPHoverProvider() {
     }
@@ -20,7 +21,7 @@ var PHPHoverProvider = /** @class */ (function () {
             return undefined;
         }
         var name = document.getText(wordRange);
-        var entry = phpGlobals.globalfunctions[name] || phpGlobals.compiletimeconstants[name] || phpGlobals.globalvariables[name] || phpGlobals.keywords[name];
+        var entry = phpGlobalFunctions.globalfunctions[name] || phpGlobals.compiletimeconstants[name] || phpGlobals.globalvariables[name] || phpGlobals.keywords[name];
         if (entry && entry.description) {
             var signature = name + (entry.signature || '');
             var contents = [markedTextUtil_1.textToMarkedString(entry.description), { language: 'php', value: signature }];
@@ -31,4 +32,4 @@ var PHPHoverProvider = /** @class */ (function () {
     return PHPHoverProvider;
 }());
 exports.default = PHPHoverProvider;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/950b8b0d37a9b7061b6f0d291837ccc4015f5ecd/extensions\php-language-features\out/features\hoverProvider.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/7c7da59c2333a1306c41e6e7b68d7f0caa7b3d45/extensions\php-language-features\out/features\hoverProvider.js.map

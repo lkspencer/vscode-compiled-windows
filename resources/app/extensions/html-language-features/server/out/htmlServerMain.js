@@ -41,14 +41,12 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 var _this = this;
 Object.defineProperty(exports, "__esModule", { value: true });
 var vscode_languageserver_1 = require("vscode-languageserver");
-var vscode_languageserver_types_1 = require("vscode-languageserver-types");
 var languageModes_1 = require("./modes/languageModes");
 var formatting_1 = require("./modes/formatting");
 var arrays_1 = require("./utils/arrays");
 var documentContext_1 = require("./utils/documentContext");
 var vscode_uri_1 = require("vscode-uri");
 var runner_1 = require("./utils/runner");
-var vscode_emmet_helper_1 = require("vscode-emmet-helper");
 var vscode_languageserver_protocol_foldingprovider_1 = require("vscode-languageserver-protocol-foldingprovider");
 var htmlFolding_1 = require("./modes/htmlFolding");
 var TagCloseRequest;
@@ -77,6 +75,7 @@ var clientSnippetSupport = false;
 var clientDynamicRegisterSupport = false;
 var scopedSettingsSupport = false;
 var workspaceFoldersSupport = false;
+var foldingRangeLimit = Number.MAX_VALUE;
 var globalSettings = {};
 var documentSettings = {};
 // remove document settings on close
@@ -96,11 +95,8 @@ function getDocumentSettings(textDocument, needsDocumentSettings) {
     }
     return Promise.resolve(void 0);
 }
-var emmetSettings = {};
-var currentEmmetExtensionsPath;
-var emmetTriggerCharacters = ['!', '.', '}', ':', '*', '$', ']', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
-// After the server has started the client sends an initilize request. The server receives
-// in the passed params the rootPath of the workspace plus the client capabilites
+// After the server has started the client sends an initialize request. The server receives
+// in the passed params the rootPath of the workspace plus the client capabilities
 connection.onInitialize(function (params) {
     var initializationOptions = params.initializationOptions;
     workspaceFolders = params.workspaceFolders;
@@ -121,25 +117,26 @@ connection.onInitialize(function (params) {
     connection.onShutdown(function () {
         languageModes.dispose();
     });
-    function hasClientCapability() {
-        var keys = [];
-        for (var _i = 0; _i < arguments.length; _i++) {
-            keys[_i] = arguments[_i];
-        }
+    function getClientCapability(name, def) {
+        var keys = name.split('.');
         var c = params.capabilities;
         for (var i = 0; c && i < keys.length; i++) {
+            if (!c.hasOwnProperty(keys[i])) {
+                return def;
+            }
             c = c[keys[i]];
         }
-        return !!c;
+        return c;
     }
-    clientSnippetSupport = hasClientCapability('textDocument', 'completion', 'completionItem', 'snippetSupport');
-    clientDynamicRegisterSupport = hasClientCapability('workspace', 'symbol', 'dynamicRegistration');
-    scopedSettingsSupport = hasClientCapability('workspace', 'configuration');
-    workspaceFoldersSupport = hasClientCapability('workspace', 'workspaceFolders');
+    clientSnippetSupport = getClientCapability('textDocument.completion.completionItem.snippetSupport', false);
+    clientDynamicRegisterSupport = getClientCapability('workspace.symbol.dynamicRegistration', false);
+    scopedSettingsSupport = getClientCapability('workspace.configuration', false);
+    workspaceFoldersSupport = getClientCapability('workspace.workspaceFolders', false);
+    foldingRangeLimit = getClientCapability('textDocument.foldingRange.rangeLimit', Number.MAX_VALUE);
     var capabilities = {
         // Tell the client that the server works in FULL text document sync mode
         textDocumentSync: documents.syncKind,
-        completionProvider: clientSnippetSupport ? { resolveProvider: true, triggerCharacters: emmetTriggerCharacters.concat(['.', ':', '<', '"', '=', '/']) } : undefined,
+        completionProvider: clientSnippetSupport ? { resolveProvider: true, triggerCharacters: ['.', ':', '<', '"', '=', '/'] } : undefined,
         hoverProvider: true,
         documentHighlightProvider: true,
         documentRangeFormattingProvider: false,
@@ -149,7 +146,7 @@ connection.onInitialize(function (params) {
         signatureHelpProvider: { triggerCharacters: ['('] },
         referencesProvider: true,
         colorProvider: true,
-        foldingProvider: true
+        foldingRangeProvider: true
     };
     return { capabilities: capabilities };
 });
@@ -195,12 +192,6 @@ connection.onDidChangeConfiguration(function (change) {
             formatterRegistration.then(function (r) { return r.dispose(); });
             formatterRegistration = null;
         }
-    }
-    emmetSettings = globalSettings.emmet || {};
-    if (currentEmmetExtensionsPath !== emmetSettings['extensionsPath']) {
-        currentEmmetExtensionsPath = emmetSettings['extensionsPath'];
-        var workspaceUri = (workspaceFolders && workspaceFolders.length === 1) ? vscode_uri_1.default.parse(workspaceFolders[0].uri) : null;
-        vscode_emmet_helper_1.updateExtensionsPath(currentEmmetExtensionsPath, workspaceUri ? workspaceUri.fsPath : undefined);
     }
 });
 var pendingValidationRequests = {};
@@ -252,7 +243,7 @@ function validateTextDocument(textDocument) {
                 case 1:
                     settings_1 = _a.sent();
                     textDocument = documents.get(textDocument.uri);
-                    if (textDocument && textDocument.version === version) {
+                    if (textDocument && textDocument.version === version) { // check no new version has come in after in after the async op
                         modes_1.forEach(function (mode) {
                             if (mode.doValidation && isValidationEnabled(mode.getId(), settings_1)) {
                                 arrays_1.pushAll(diagnostics_1, mode.doValidation(textDocument, settings_1));
@@ -271,15 +262,13 @@ function validateTextDocument(textDocument) {
         });
     });
 }
-var cachedCompletionList;
-var hexColorRegex = /^#[\d,a-f,A-F]{1,6}$/;
 connection.onCompletion(function (textDocumentPosition, token) { return __awaiter(_this, void 0, void 0, function () {
     var _this = this;
     return __generator(this, function (_a) {
         return [2 /*return*/, runner_1.runSafeAsync(function () { return __awaiter(_this, void 0, void 0, function () {
-                var document, mode, doComplete, result_1, emmetCompletionList, emmetCompletionParticipant, completionParticipants, settings, result, _a;
-                return __generator(this, function (_b) {
-                    switch (_b.label) {
+                var document, mode, doComplete, settings, result;
+                return __generator(this, function (_a) {
+                    switch (_a.label) {
                         case 0:
                             document = documents.get(textDocumentPosition.textDocument.uri);
                             mode = languageModes.getModeAtPosition(document, textDocumentPosition.position);
@@ -287,21 +276,6 @@ connection.onCompletion(function (textDocumentPosition, token) { return __awaite
                                 return [2 /*return*/, { isIncomplete: true, items: [] }];
                             }
                             doComplete = mode.doComplete;
-                            if (cachedCompletionList
-                                && !cachedCompletionList.isIncomplete
-                                && (mode.getId() === 'html' || mode.getId() === 'css')
-                                && textDocumentPosition.context
-                                && textDocumentPosition.context.triggerKind === vscode_languageserver_1.CompletionTriggerKind.TriggerForIncompleteCompletions) {
-                                result_1 = vscode_emmet_helper_1.doComplete(document, textDocumentPosition.position, mode.getId(), emmetSettings);
-                                if (result_1 && result_1.items) {
-                                    (_a = result_1.items).push.apply(_a, cachedCompletionList.items);
-                                }
-                                else {
-                                    result_1 = cachedCompletionList;
-                                    cachedCompletionList = null;
-                                }
-                                return [2 /*return*/, result_1];
-                            }
                             if (mode.getId() !== 'html') {
                                 /* __GDPR__
                                     "html.embbedded.complete" : {
@@ -310,21 +284,10 @@ connection.onCompletion(function (textDocumentPosition, token) { return __awaite
                                  */
                                 connection.telemetry.logEvent({ key: 'html.embbedded.complete', value: { languageId: mode.getId() } });
                             }
-                            cachedCompletionList = null;
-                            emmetCompletionList = vscode_languageserver_types_1.CompletionList.create([], false);
-                            emmetCompletionParticipant = vscode_emmet_helper_1.getEmmetCompletionParticipants(document, textDocumentPosition.position, mode.getId(), emmetSettings, emmetCompletionList);
-                            completionParticipants = [emmetCompletionParticipant];
                             return [4 /*yield*/, getDocumentSettings(document, function () { return doComplete.length > 2; })];
                         case 1:
-                            settings = _b.sent();
-                            result = doComplete(document, textDocumentPosition.position, settings, completionParticipants);
-                            if (emmetCompletionList.isIncomplete) {
-                                cachedCompletionList = result;
-                                if (hexColorRegex.test(emmetCompletionList.items[0].label) && result.items.some(function (x) { return x.label === emmetCompletionList.items[0].label; })) {
-                                    emmetCompletionList.items.shift();
-                                }
-                                return [2 /*return*/, vscode_languageserver_types_1.CompletionList.create(emmetCompletionList.items.concat(result.items), emmetCompletionList.isIncomplete || result.isIncomplete)];
-                            }
+                            settings = _a.sent();
+                            result = doComplete(document, textDocumentPosition.position, settings);
                             return [2 /*return*/, result];
                     }
                 });
@@ -485,15 +448,15 @@ connection.onRequest(TagCloseRequest.type, function (params, token) {
         return null;
     }, null, "Error while computing tag close actions for " + params.textDocument.uri, token);
 });
-connection.onRequest(vscode_languageserver_protocol_foldingprovider_1.FoldingRangesRequest.type, function (params, token) {
+connection.onRequest(vscode_languageserver_protocol_foldingprovider_1.FoldingRangeRequest.type, function (params, token) {
     return runner_1.runSafe(function () {
         var document = documents.get(params.textDocument.uri);
         if (document) {
-            return htmlFolding_1.getFoldingRegions(languageModes, document, params.maxRanges, token);
+            return htmlFolding_1.getFoldingRanges(languageModes, document, foldingRangeLimit, token);
         }
         return null;
     }, null, "Error while computing folding regions for " + params.textDocument.uri, token);
 });
 // Listen on the connection
 connection.listen();
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/950b8b0d37a9b7061b6f0d291837ccc4015f5ecd/extensions\html-language-features\server\out/htmlServerMain.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/7c7da59c2333a1306c41e6e7b68d7f0caa7b3d45/extensions\html-language-features\server\out/htmlServerMain.js.map

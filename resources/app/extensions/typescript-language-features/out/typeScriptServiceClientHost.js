@@ -207,7 +207,9 @@ class TypeScriptServiceClientHost {
         return converted;
     }
     getDiagnosticSeverity(diagnostic) {
-        if (this.reportStyleCheckAsWarnings && this.isStyleCheckDiagnostic(diagnostic.code)) {
+        if (this.reportStyleCheckAsWarnings
+            && this.isStyleCheckDiagnostic(diagnostic.code)
+            && diagnostic.category === PConst.DiagnosticCategory.error) {
             return vscode_1.DiagnosticSeverity.Warning;
         }
         switch (diagnostic.category) {
@@ -226,4 +228,4 @@ class TypeScriptServiceClientHost {
     }
 }
 exports.default = TypeScriptServiceClientHost;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/950b8b0d37a9b7061b6f0d291837ccc4015f5ecd/extensions\typescript-language-features\out/typeScriptServiceClientHost.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/7c7da59c2333a1306c41e6e7b68d7f0caa7b3d45/extensions\typescript-language-features\out/typeScriptServiceClientHost.js.map

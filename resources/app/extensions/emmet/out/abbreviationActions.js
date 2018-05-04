@@ -8,6 +8,7 @@ const vscode = require("vscode");
 const util_1 = require("./util");
 const trimRegex = /[\u00a0]*[\d|#|\-|\*|\u2022]+\.?/;
 const hexColorRegex = /^#\d+$/;
+const allowedMimeTypesInScriptTag = ['text/html', 'text/plain', 'text/x-template', 'text/template'];
 const inlineElements = ['a', 'abbr', 'acronym', 'applet', 'b', 'basefont', 'bdo',
     'big', 'br', 'button', 'cite', 'code', 'del', 'dfn', 'em', 'font', 'i',
     'iframe', 'img', 'input', 'ins', 'kbd', 'label', 'map', 'object', 'q',
@@ -252,7 +253,23 @@ function expandEmmetAbbreviation(args) {
         if (!helper.isAbbreviationValid(syntax, abbreviation)) {
             return;
         }
-        if (!isValidLocationForEmmetAbbreviation(editor.document, rootNode, syntax, position, rangeToReplace)) {
+        let currentNode = util_1.getNode(rootNode, position, true);
+        let validateLocation = true;
+        let syntaxToUse = syntax;
+        if (editor.document.languageId === 'html') {
+            if (util_1.isStyleAttribute(currentNode, position)) {
+                syntaxToUse = 'css';
+                validateLocation = false;
+            }
+            else {
+                const embeddedCssNode = util_1.getEmbeddedCssNodeIfAny(editor.document, currentNode, position);
+                if (embeddedCssNode) {
+                    currentNode = util_1.getNode(embeddedCssNode, position, true);
+                    syntaxToUse = 'css';
+                }
+            }
+        }
+        if (validateLocation && !isValidLocationForEmmetAbbreviation(editor.document, rootNode, currentNode, syntaxToUse, position, rangeToReplace)) {
             return;
         }
         if (!firstAbbreviation) {
@@ -261,7 +278,7 @@ function expandEmmetAbbreviation(args) {
         else if (allAbbreviationsSame && firstAbbreviation !== abbreviation) {
             allAbbreviationsSame = false;
         }
-        abbreviationList.push({ syntax, abbreviation, rangeToReplace, filter });
+        abbreviationList.push({ syntax: syntaxToUse, abbreviation, rangeToReplace, filter });
     });
     return expandAbbreviationInRange(editor, abbreviationList, allAbbreviationsSame).then(success => {
         if (!success) {
@@ -281,12 +298,12 @@ function fallbackTab() {
  * Works only on html and css/less/scss syntax
  * @param document current Text Document
  * @param rootNode parsed document
+ * @param currentNode current node in the parsed document
  * @param syntax syntax of the abbreviation
  * @param position position to validate
  * @param abbreviationRange The range of the abbreviation for which given position is being validated
  */
-function isValidLocationForEmmetAbbreviation(document, rootNode, syntax, position, abbreviationRange) {
-    const currentNode = rootNode ? util_1.getNode(rootNode, position, true) : null;
+function isValidLocationForEmmetAbbreviation(document, rootNode, currentNode, syntax, position, abbreviationRange) {
     if (util_1.isStyleSheet(syntax)) {
         const stylesheet = rootNode;
         if (stylesheet && (stylesheet.comments || []).some(x => position.isAfterOrEqual(x.start) && position.isBeforeOrEqual(x.end))) {
@@ -351,6 +368,11 @@ function isValidLocationForEmmetAbbreviation(document, rootNode, syntax, positio
     const currentHtmlNode = currentNode;
     let start = new vscode.Position(0, 0);
     if (currentHtmlNode) {
+        if (currentHtmlNode.name === 'script') {
+            return (currentHtmlNode.attributes
+                && currentHtmlNode.attributes.some(x => x.name.toString() === 'type'
+                    && allowedMimeTypesInScriptTag.indexOf(x.value.toString()) > -1));
+        }
         const innerRange = util_1.getInnerRange(currentHtmlNode);
         // Fix for https://github.com/Microsoft/vscode/issues/28829
         if (!innerRange || !innerRange.contains(position)) {
@@ -517,4 +539,4 @@ function getSyntaxFromArgs(args) {
     }
     return syntax;
 }
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/950b8b0d37a9b7061b6f0d291837ccc4015f5ecd/extensions\emmet\out/abbreviationActions.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/7c7da59c2333a1306c41e6e7b68d7f0caa7b3d45/extensions\emmet\out/abbreviationActions.js.map

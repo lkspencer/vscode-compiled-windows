@@ -5,12 +5,9 @@
 'use strict';
 Object.defineProperty(exports, "__esModule", { value: true });
 var vscode_languageserver_1 = require("vscode-languageserver");
-var vscode_html_languageservice_1 = require("vscode-html-languageservice");
-var vscode_languageserver_protocol_foldingprovider_1 = require("vscode-languageserver-protocol-foldingprovider");
-var arrays_1 = require("../utils/arrays");
-function getFoldingRegions(languageModes, document, maxRanges, cancellationToken) {
+function getFoldingRanges(languageModes, document, maxRanges, cancellationToken) {
     var htmlMode = languageModes.getMode('html');
-    var range = vscode_html_languageservice_1.Range.create(vscode_languageserver_1.Position.create(0, 0), vscode_languageserver_1.Position.create(document.lineCount, 0));
+    var range = vscode_languageserver_1.Range.create(vscode_languageserver_1.Position.create(0, 0), vscode_languageserver_1.Position.create(document.lineCount, 0));
     var ranges = [];
     if (htmlMode && htmlMode.getFoldingRanges) {
         ranges.push.apply(ranges, htmlMode.getFoldingRanges(document, range));
@@ -26,9 +23,9 @@ function getFoldingRegions(languageModes, document, maxRanges, cancellationToken
     if (maxRanges && ranges.length > maxRanges) {
         ranges = limitRanges(ranges, maxRanges);
     }
-    return { ranges: ranges };
+    return ranges;
 }
-exports.getFoldingRegions = getFoldingRegions;
+exports.getFoldingRanges = getFoldingRanges;
 function limitRanges(ranges, maxRanges) {
     ranges = ranges.sort(function (r1, r2) {
         var diff = r1.startLine - r2.startLine;
@@ -89,95 +86,5 @@ function limitRanges(ranges, maxRanges) {
         }
     }
     return ranges.filter(function (r, index) { return (typeof nestingLevels[index] === 'number') && nestingLevels[index] < maxLevel; });
-}
-exports.EMPTY_ELEMENTS = ['area', 'base', 'br', 'col', 'embed', 'hr', 'img', 'input', 'keygen', 'link', 'menuitem', 'meta', 'param', 'source', 'track', 'wbr'];
-function isEmptyElement(e) {
-    return !!e && arrays_1.binarySearch(exports.EMPTY_ELEMENTS, e.toLowerCase(), function (s1, s2) { return s1.localeCompare(s2); }) >= 0;
-}
-exports.isEmptyElement = isEmptyElement;
-function getHTMLFoldingRegions(htmlLanguageService, document, range) {
-    var scanner = htmlLanguageService.createScanner(document.getText());
-    var token = scanner.scan();
-    var ranges = [];
-    var stack = [];
-    var lastTagName = null;
-    var prevStart = -1;
-    function addRange(range) {
-        ranges.push(range);
-        prevStart = range.startLine;
-    }
-    while (token !== vscode_html_languageservice_1.TokenType.EOS) {
-        switch (token) {
-            case vscode_html_languageservice_1.TokenType.StartTag: {
-                var tagName = scanner.getTokenText();
-                var startLine = document.positionAt(scanner.getTokenOffset()).line;
-                stack.push({ startLine: startLine, tagName: tagName });
-                lastTagName = tagName;
-                break;
-            }
-            case vscode_html_languageservice_1.TokenType.EndTag: {
-                lastTagName = scanner.getTokenText();
-                break;
-            }
-            case vscode_html_languageservice_1.TokenType.StartTagClose:
-                if (!lastTagName || !isEmptyElement(lastTagName)) {
-                    break;
-                }
-            // fallthrough
-            case vscode_html_languageservice_1.TokenType.EndTagClose:
-            case vscode_html_languageservice_1.TokenType.StartTagSelfClose: {
-                var i = stack.length - 1;
-                while (i >= 0 && stack[i].tagName !== lastTagName) {
-                    i--;
-                }
-                if (i >= 0) {
-                    var stackElement = stack[i];
-                    stack.length = i;
-                    var line = document.positionAt(scanner.getTokenOffset()).line;
-                    var startLine = stackElement.startLine;
-                    var endLine = line - 1;
-                    if (endLine > startLine && prevStart !== startLine) {
-                        addRange({ startLine: startLine, endLine: endLine });
-                    }
-                }
-                break;
-            }
-            case vscode_html_languageservice_1.TokenType.Comment: {
-                var startLine = document.positionAt(scanner.getTokenOffset()).line;
-                var text = scanner.getTokenText();
-                var m = text.match(/^\s*#(region\b)|(endregion\b)/);
-                if (m) {
-                    if (m[1]) {
-                        stack.push({ startLine: startLine, tagName: '' }); // empty tagName marks region
-                    }
-                    else {
-                        var i = stack.length - 1;
-                        while (i >= 0 && stack[i].tagName.length) {
-                            i--;
-                        }
-                        if (i >= 0) {
-                            var stackElement = stack[i];
-                            stack.length = i;
-                            var endLine = startLine;
-                            startLine = stackElement.startLine;
-                            if (endLine > startLine && prevStart !== startLine) {
-                                addRange({ startLine: startLine, endLine: endLine, type: vscode_languageserver_protocol_foldingprovider_1.FoldingRangeType.Region });
-                            }
-                        }
-                    }
-                }
-                else {
-                    var endLine = document.positionAt(scanner.getTokenOffset() + scanner.getTokenLength()).line;
-                    if (startLine < endLine) {
-                        addRange({ startLine: startLine, endLine: endLine, type: vscode_languageserver_protocol_foldingprovider_1.FoldingRangeType.Comment });
-                    }
-                }
-                break;
-            }
-        }
-        token = scanner.scan();
-    }
-    return ranges;
-}
-exports.getHTMLFoldingRegions = getHTMLFoldingRegions;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/950b8b0d37a9b7061b6f0d291837ccc4015f5ecd/extensions\html-language-features\server\out/modes\htmlFolding.js.map
+}
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/7c7da59c2333a1306c41e6e7b68d7f0caa7b3d45/extensions\html-language-features\server\out/modes\htmlFolding.js.map

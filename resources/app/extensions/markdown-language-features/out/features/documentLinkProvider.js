@@ -73,13 +73,13 @@ class LinkProvider {
             let linkStart;
             let linkEnd;
             let reference = match[3];
-            if (reference) {
+            if (reference) { // [text][ref]
                 const pre = match[1];
                 const offset = (match.index || 0) + pre.length;
                 linkStart = document.positionAt(offset);
                 linkEnd = document.positionAt(offset + reference.length);
             }
-            else if (match[2]) {
+            else if (match[2]) { // [ref][]
                 reference = match[2];
                 const offset = (match.index || 0) + 1;
                 linkStart = document.positionAt(offset);
@@ -126,4 +126,4 @@ class LinkProvider {
     }
 }
 exports.default = LinkProvider;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/950b8b0d37a9b7061b6f0d291837ccc4015f5ecd/extensions\markdown-language-features\out/features\documentLinkProvider.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/7c7da59c2333a1306c41e6e7b68d7f0caa7b3d45/extensions\markdown-language-features\out/features\documentLinkProvider.js.map

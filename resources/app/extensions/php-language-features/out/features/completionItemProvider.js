@@ -6,6 +6,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 var vscode_1 = require("vscode");
 var phpGlobals = require("./phpGlobals");
+var phpGlobalFunctions = require("./phpGlobalFunctions");
 var PHPCompletionItemProvider = /** @class */ (function () {
     function PHPCompletionItemProvider() {
     }
@@ -60,10 +61,10 @@ var PHPCompletionItemProvider = /** @class */ (function () {
                 result.push(createNewProposal(vscode_1.CompletionItemKind.Variable, globalvariables, phpGlobals.globalvariables[globalvariables]));
             }
         }
-        for (var globalfunctions in phpGlobals.globalfunctions) {
-            if (phpGlobals.globalfunctions.hasOwnProperty(globalfunctions) && matches(globalfunctions)) {
+        for (var globalfunctions in phpGlobalFunctions.globalfunctions) {
+            if (phpGlobalFunctions.globalfunctions.hasOwnProperty(globalfunctions) && matches(globalfunctions)) {
                 added[globalfunctions] = true;
-                result.push(createNewProposal(vscode_1.CompletionItemKind.Function, globalfunctions, phpGlobals.globalfunctions[globalfunctions]));
+                result.push(createNewProposal(vscode_1.CompletionItemKind.Function, globalfunctions, phpGlobalFunctions.globalfunctions[globalfunctions]));
             }
         }
         for (var compiletimeconstants in phpGlobals.compiletimeconstants) {
@@ -104,4 +105,4 @@ var PHPCompletionItemProvider = /** @class */ (function () {
     return PHPCompletionItemProvider;
 }());
 exports.default = PHPCompletionItemProvider;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/950b8b0d37a9b7061b6f0d291837ccc4015f5ecd/extensions\php-language-features\out/features\completionItemProvider.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/7c7da59c2333a1306c41e6e7b68d7f0caa7b3d45/extensions\php-language-features\out/features\completionItemProvider.js.map

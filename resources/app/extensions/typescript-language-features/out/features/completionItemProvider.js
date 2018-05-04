@@ -41,7 +41,7 @@ class MyCompletionItem extends vscode.CompletionItem {
             this.insertText = tsEntry.insertText;
             if (tsEntry.replacementSpan) {
                 this.range = typeConverters.Range.fromTextSpan(tsEntry.replacementSpan);
-                if (this.insertText[0] === '[') {
+                if (this.insertText[0] === '[') { // o.x -> o['x']
                     this.filterText = '.' + this.label;
                 }
                 // Make sure we only replace a single line at most
@@ -392,7 +392,17 @@ class TypeScriptCompletionItemProvider {
         let hasAddedParameters = false;
         const snippet = new vscode.SnippetString();
         const methodName = detail.displayParts.find(part => part.kind === 'methodName');
-        snippet.appendText((methodName && methodName.text) || item.label || item.insertText);
+        if (item.insertText) {
+            if (typeof item.insertText === 'string') {
+                snippet.appendText(item.insertText);
+            }
+            else {
+                return item.insertText;
+            }
+        }
+        else {
+            snippet.appendText((methodName && methodName.text) || item.label);
+        }
         snippet.appendText('(');
         let parenCount = 0;
         let i = 0;
@@ -435,4 +445,4 @@ class TypeScriptCompletionItemProvider {
     }
 }
 exports.default = TypeScriptCompletionItemProvider;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/950b8b0d37a9b7061b6f0d291837ccc4015f5ecd/extensions\typescript-language-features\out/features\completionItemProvider.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/7c7da59c2333a1306c41e6e7b68d7f0caa7b3d45/extensions\typescript-language-features\out/features\completionItemProvider.js.map

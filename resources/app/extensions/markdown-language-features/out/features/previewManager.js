@@ -5,10 +5,9 @@
  *--------------------------------------------------------------------------------------------*/
 Object.defineProperty(exports, "__esModule", { value: true });
 const vscode = require("vscode");
-const preview_1 = require("./preview");
 const dispose_1 = require("../util/dispose");
 const topmostLineMonitor_1 = require("../util/topmostLineMonitor");
-const file_1 = require("../util/file");
+const preview_1 = require("./preview");
 const previewConfig_1 = require("./previewConfig");
 class MarkdownPreviewManager {
     constructor(contentProvider, logger, contributions) {
@@ -20,15 +19,7 @@ class MarkdownPreviewManager {
         this.previews = [];
         this.activePreview = undefined;
         this.disposables = [];
-        vscode.window.onDidChangeActiveTextEditor(editor => {
-            if (editor) {
-                if (file_1.isMarkdownFile(editor.document)) {
-                    for (const preview of this.previews.filter(preview => !preview.locked)) {
-                        preview.update(editor.document.uri);
-                    }
-                }
-            }
-        }, null, this.disposables);
+        this.disposables.push(vscode.window.registerWebviewPanelSerializer(preview_1.MarkdownPreview.viewType, this));
     }
     dispose() {
         dispose_1.disposeAll(this.disposables);
@@ -51,7 +42,6 @@ class MarkdownPreviewManager {
         }
         else {
             preview = this.createNewPreview(resource, previewSettings);
-            this.previews.push(preview);
         }
         preview.update(resource);
     }
@@ -70,25 +60,37 @@ class MarkdownPreviewManager {
             }
         }
     }
+    async deserializeWebviewPanel(webview, state) {
+        const preview = await preview_1.MarkdownPreview.revive(webview, state, this.contentProvider, this.previewConfigurations, this.logger, this.topmostLineMonitor);
+        this.registerPreview(preview);
+    }
+    async serializeWebviewPanel(webview) {
+        const preview = this.previews.find(preview => preview.isWebviewOf(webview));
+        return preview ? preview.state : undefined;
+    }
     getExistingPreview(resource, previewSettings) {
         return this.previews.find(preview => preview.matchesResource(resource, previewSettings.previewColumn, previewSettings.locked));
     }
     createNewPreview(resource, previewSettings) {
-        const preview = new preview_1.MarkdownPreview(resource, previewSettings.previewColumn, previewSettings.locked, this.contentProvider, this.previewConfigurations, this.logger, this.topmostLineMonitor, this.contributions);
+        const preview = preview_1.MarkdownPreview.create(resource, previewSettings.previewColumn, previewSettings.locked, this.contentProvider, this.previewConfigurations, this.logger, this.topmostLineMonitor, this.contributions);
+        return this.registerPreview(preview);
+    }
+    registerPreview(preview) {
+        this.previews.push(preview);
         preview.onDispose(() => {
             const existing = this.previews.indexOf(preview);
             if (existing >= 0) {
                 this.previews.splice(existing, 1);
             }
         });
-        preview.onDidChangeViewState(({ active }) => {
+        preview.onDidChangeViewState(({ webviewPanel }) => {
             dispose_1.disposeAll(this.previews.filter(otherPreview => preview !== otherPreview && preview.matches(otherPreview)));
-            vscode.commands.executeCommand('setContext', MarkdownPreviewManager.markdownPreviewActiveContextKey, active);
-            this.activePreview = active ? preview : undefined;
+            vscode.commands.executeCommand('setContext', MarkdownPreviewManager.markdownPreviewActiveContextKey, webviewPanel.visible);
+            this.activePreview = webviewPanel.visible ? preview : undefined;
         });
         return preview;
     }
 }
 MarkdownPreviewManager.markdownPreviewActiveContextKey = 'markdownPreviewFocus';
 exports.MarkdownPreviewManager = MarkdownPreviewManager;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/950b8b0d37a9b7061b6f0d291837ccc4015f5ecd/extensions\markdown-language-features\out/features\previewManager.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/7c7da59c2333a1306c41e6e7b68d7f0caa7b3d45/extensions\markdown-language-features\out/features\previewManager.js.map

@@ -11,6 +11,11 @@ const vscode = require("vscode");
 const util_1 = require("../util");
 const abbreviationActions_1 = require("../abbreviationActions");
 suite('Tests for partial parse of Stylesheets', () => {
+    function isValid(doc, range, syntax) {
+        const rootNode = util_1.parsePartialStylesheet(doc, range.end);
+        const currentNode = util_1.getNode(rootNode, range.end, true);
+        return abbreviationActions_1.isValidLocationForEmmetAbbreviation(doc, rootNode, currentNode, 'css', range.end, range);
+    }
     test('Ignore block comment inside rule', function () {
         const cssContents = `
 p {
@@ -34,10 +39,10 @@ p {
                 new vscode.Range(6, 2, 6, 3) // p after ending of block
             ];
             rangesForEmmet.forEach(range => {
-                assert.equal(abbreviationActions_1.isValidLocationForEmmetAbbreviation(doc, util_1.parsePartialStylesheet(doc, range.end), 'css', range.end, range), true);
+                assert.equal(isValid(doc, range, 'css'), true);
             });
             rangesNotEmmet.forEach(range => {
-                assert.equal(abbreviationActions_1.isValidLocationForEmmetAbbreviation(doc, util_1.parsePartialStylesheet(doc, range.end), 'css', range.end, range), false);
+                assert.equal(isValid(doc, range, 'css'), false);
             });
             return Promise.resolve();
         });
@@ -62,7 +67,7 @@ dn	{
                 new vscode.Range(7, 2, 7, 4) // bg after ending of badly constructed block
             ];
             rangesNotEmmet.forEach(range => {
-                assert.equal(abbreviationActions_1.isValidLocationForEmmetAbbreviation(doc, util_1.parsePartialStylesheet(doc, range.end), 'scss', range.end, range), false);
+                assert.equal(isValid(doc, range, 'scss'), false);
             });
             return Promise.resolve();
         });
@@ -96,10 +101,10 @@ comment */
                 new vscode.Range(10, 2, 10, 3) // p after ending of block
             ];
             rangesForEmmet.forEach(range => {
-                assert.equal(abbreviationActions_1.isValidLocationForEmmetAbbreviation(doc, util_1.parsePartialStylesheet(doc, range.end), 'css', range.end, range), true);
+                assert.equal(isValid(doc, range, 'css'), true);
             });
             rangesNotEmmet.forEach(range => {
-                assert.equal(abbreviationActions_1.isValidLocationForEmmetAbbreviation(doc, util_1.parsePartialStylesheet(doc, range.end), 'css', range.end, range), false);
+                assert.equal(isValid(doc, range, 'css'), false);
             });
             return Promise.resolve();
         });
@@ -130,10 +135,10 @@ comment */
                 new vscode.Range(6, 3, 6, 4) // In selector
             ];
             rangesForEmmet.forEach(range => {
-                assert.equal(abbreviationActions_1.isValidLocationForEmmetAbbreviation(doc, util_1.parsePartialStylesheet(doc, range.end), 'scss', range.end, range), true);
+                assert.equal(isValid(doc, range, 'scss'), true);
             });
             rangesNotEmmet.forEach(range => {
-                assert.equal(abbreviationActions_1.isValidLocationForEmmetAbbreviation(doc, util_1.parsePartialStylesheet(doc, range.end), 'scss', range.end, range), false);
+                assert.equal(isValid(doc, range, 'scss'), false);
             });
             return Promise.resolve();
         });
@@ -161,10 +166,10 @@ comment */
                 new vscode.Range(1, 66, 1, 68) // Outside any ruleset
             ];
             rangesForEmmet.forEach(range => {
-                assert.equal(abbreviationActions_1.isValidLocationForEmmetAbbreviation(doc, util_1.parsePartialStylesheet(doc, range.end), 'scss', range.end, range), true);
+                assert.equal(isValid(doc, range, 'scss'), true);
             });
             rangesNotEmmet.forEach(range => {
-                assert.equal(abbreviationActions_1.isValidLocationForEmmetAbbreviation(doc, util_1.parsePartialStylesheet(doc, range.end), 'scss', range.end, range), false);
+                assert.equal(isValid(doc, range, 'scss'), false);
             });
             return Promise.resolve();
         });
@@ -195,10 +200,10 @@ p.#{dn} {
                 new vscode.Range(7, 1, 7, 3) // dn inside ruleset whose selector uses nested interpolation
             ];
             rangesForEmmet.forEach(range => {
-                assert.equal(abbreviationActions_1.isValidLocationForEmmetAbbreviation(doc, util_1.parsePartialStylesheet(doc, range.end), 'scss', range.end, range), true);
+                assert.equal(isValid(doc, range, 'scss'), true);
             });
             rangesNotEmmet.forEach(range => {
-                assert.equal(abbreviationActions_1.isValidLocationForEmmetAbbreviation(doc, util_1.parsePartialStylesheet(doc, range.end), 'scss', range.end, range), false);
+                assert.equal(isValid(doc, range, 'scss'), false);
             });
             return Promise.resolve();
         });
@@ -232,13 +237,13 @@ ment */{
                 new vscode.Range(6, 3, 6, 4) // In c inside block comment
             ];
             rangesForEmmet.forEach(range => {
-                assert.equal(abbreviationActions_1.isValidLocationForEmmetAbbreviation(doc, util_1.parsePartialStylesheet(doc, range.end), 'scss', range.end, range), true);
+                assert.equal(isValid(doc, range, 'scss'), true);
             });
             rangesNotEmmet.forEach(range => {
-                assert.equal(abbreviationActions_1.isValidLocationForEmmetAbbreviation(doc, util_1.parsePartialStylesheet(doc, range.end), 'scss', range.end, range), false);
+                assert.equal(isValid(doc, range, 'scss'), false);
             });
             return Promise.resolve();
         });
     });
 });
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/950b8b0d37a9b7061b6f0d291837ccc4015f5ecd/extensions\emmet\out/test\partialParsingStylesheet.test.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/7c7da59c2333a1306c41e6e7b68d7f0caa7b3d45/extensions\emmet\out/test\partialParsingStylesheet.test.js.map

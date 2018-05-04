@@ -97,5 +97,29 @@ suite('Completions', function () {
             ]
         }, testUri, folders);
     });
+    test('CSS Path Completion - Unquoted url', function () {
+        var testUri = vscode_uri_1.default.file(path.resolve(__dirname, '../../test/pathCompletionFixtures/about/about.css')).toString();
+        var folders = [{ name: 'x', uri: vscode_uri_1.default.file(path.resolve(__dirname, '../../test')).toString() }];
+        assertCompletions('html { background-image: url(./|)', {
+            items: [
+                { label: 'about.html', resultText: 'html { background-image: url(./about.html)' }
+            ]
+        }, testUri, folders);
+        assertCompletions('html { background-image: url(./a|)', {
+            items: [
+                { label: 'about.html', resultText: 'html { background-image: url(./about.html)' }
+            ]
+        }, testUri, folders);
+        assertCompletions('html { background-image: url(../|src/)', {
+            items: [
+                { label: 'about/', resultText: 'html { background-image: url(../about/)' }
+            ]
+        }, testUri, folders);
+        assertCompletions('html { background-image: url(../s|rc/)', {
+            items: [
+                { label: 'about/', resultText: 'html { background-image: url(../about/)' }
+            ]
+        }, testUri, folders);
+    });
 });
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/950b8b0d37a9b7061b6f0d291837ccc4015f5ecd/extensions\css-language-features\server\out/test\completion.test.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/7c7da59c2333a1306c41e6e7b68d7f0caa7b3d45/extensions\css-language-features\server\out/test\completion.test.js.map

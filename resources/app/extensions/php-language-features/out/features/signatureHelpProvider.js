@@ -6,6 +6,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 var vscode_1 = require("vscode");
 var phpGlobals = require("./phpGlobals");
+var phpGlobalFunctions = require("./phpGlobalFunctions");
 var _NL = '\n'.charCodeAt(0);
 var _TAB = '\t'.charCodeAt(0);
 var _WSB = ' '.charCodeAt(0);
@@ -70,7 +71,7 @@ var PHPSignatureHelpProvider = /** @class */ (function () {
         if (!ident) {
             return null;
         }
-        var entry = phpGlobals.globalfunctions[ident] || phpGlobals.keywords[ident];
+        var entry = phpGlobalFunctions.globalfunctions[ident] || phpGlobals.keywords[ident];
         if (!entry || !entry.signature) {
             return null;
         }
@@ -136,7 +137,7 @@ var PHPSignatureHelpProvider = /** @class */ (function () {
             ch >= _a && ch <= _z || // a-z
             ch >= _A && ch <= _Z || // A-Z
             ch >= _0 && ch <= _9 || // 0/9
-            ch >= 0x80 && ch <= 0xFFFF) {
+            ch >= 0x80 && ch <= 0xFFFF) { // nonascii
             return true;
         }
         return false;
@@ -162,4 +163,4 @@ var PHPSignatureHelpProvider = /** @class */ (function () {
     return PHPSignatureHelpProvider;
 }());
 exports.default = PHPSignatureHelpProvider;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/950b8b0d37a9b7061b6f0d291837ccc4015f5ecd/extensions\php-language-features\out/features\signatureHelpProvider.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/7c7da59c2333a1306c41e6e7b68d7f0caa7b3d45/extensions\php-language-features\out/features\signatureHelpProvider.js.map

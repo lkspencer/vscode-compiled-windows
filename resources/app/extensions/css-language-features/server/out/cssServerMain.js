@@ -7,7 +7,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var vscode_languageserver_1 = require("vscode-languageserver");
 var vscode_css_languageservice_1 = require("vscode-css-languageservice");
 var languageModelCache_1 = require("./languageModelCache");
-var errors_1 = require("./utils/errors");
+var runner_1 = require("./utils/runner");
 var vscode_uri_1 = require("vscode-uri");
 var pathCompletion_1 = require("./pathCompletion");
 var vscode_languageserver_protocol_foldingprovider_1 = require("vscode-languageserver-protocol-foldingprovider");
@@ -16,7 +16,7 @@ var connection = vscode_languageserver_1.createConnection();
 console.log = connection.console.log.bind(connection.console);
 console.error = connection.console.error.bind(connection.console);
 process.on('unhandledRejection', function (e) {
-    connection.console.error(errors_1.formatError("Unhandled exception", e));
+    connection.console.error(runner_1.formatError("Unhandled exception", e));
 });
 // Create a simple text document manager. The text document manager
 // supports full document sync only
@@ -32,8 +32,9 @@ connection.onShutdown(function () {
     stylesheets.dispose();
 });
 var scopedSettingsSupport = false;
+var foldingRangeLimit = Number.MAX_VALUE;
 var workspaceFolders;
-// After the server has started the client sends an initilize request. The server receives
+// After the server has started the client sends an initialize request. The server receives
 // in the passed params the rootPath of the workspace plus the client capabilities.
 connection.onInitialize(function (params) {
     workspaceFolders = params.workspaceFolders;
@@ -43,20 +44,24 @@ connection.onInitialize(function (params) {
             workspaceFolders.push({ name: '', uri: vscode_uri_1.default.file(params.rootPath).toString() });
         }
     }
-    function hasClientCapability(name) {
+    function getClientCapability(name, def) {
         var keys = name.split('.');
         var c = params.capabilities;
         for (var i = 0; c && i < keys.length; i++) {
+            if (!c.hasOwnProperty(keys[i])) {
+                return def;
+            }
             c = c[keys[i]];
         }
-        return !!c;
+        return c;
     }
-    var snippetSupport = hasClientCapability('textDocument.completion.completionItem.snippetSupport');
-    scopedSettingsSupport = hasClientCapability('workspace.configuration');
+    var snippetSupport = !!getClientCapability('textDocument.completion.completionItem.snippetSupport', false);
+    scopedSettingsSupport = !!getClientCapability('workspace.configuration', false);
+    foldingRangeLimit = getClientCapability('textDocument.foldingRange.rangeLimit', Number.MAX_VALUE);
     var capabilities = {
         // Tell the client that the server works in FULL text document sync mode
         textDocumentSync: documents.syncKind,
-        completionProvider: snippetSupport ? { resolveProvider: false } : undefined,
+        completionProvider: snippetSupport ? { resolveProvider: false, triggerCharacters: ['/'] } : undefined,
         hoverProvider: true,
         documentSymbolProvider: true,
         referencesProvider: true,
@@ -65,7 +70,7 @@ connection.onInitialize(function (params) {
         codeActionProvider: true,
         renameProvider: true,
         colorProvider: true,
-        foldingProvider: true
+        foldingRangeProvider: true
     };
     return { capabilities: capabilities };
 });
@@ -146,11 +151,11 @@ function validateTextDocument(textDocument) {
         // Send the computed diagnostics to VSCode.
         connection.sendDiagnostics({ uri: textDocument.uri, diagnostics: diagnostics });
     }, function (e) {
-        connection.console.error(errors_1.formatError("Error while validating " + textDocument.uri, e));
+        connection.console.error(runner_1.formatError("Error while validating " + textDocument.uri, e));
     });
 }
-connection.onCompletion(function (textDocumentPosition) {
-    return errors_1.runSafe(function () {
+connection.onCompletion(function (textDocumentPosition, token) {
+    return runner_1.runSafe(function () {
         var document = documents.get(textDocumentPosition.textDocument.uri);
         var cssLS = getLanguageService(document);
         var pathCompletionList = {
@@ -160,87 +165,86 @@ connection.onCompletion(function (textDocumentPosition) {
         cssLS.setCompletionParticipants([pathCompletion_1.getPathCompletionParticipant(document, workspaceFolders, pathCompletionList)]);
         var result = cssLS.doComplete(document, textDocumentPosition.position, stylesheets.get(document)); /* TODO: remove ! once LS has null annotations */
         return {
-            isIncomplete: result.isIncomplete,
+            isIncomplete: pathCompletionList.isIncomplete,
             items: pathCompletionList.items.concat(result.items)
         };
-    }, null, "Error while computing completions for " + textDocumentPosition.textDocument.uri);
+    }, null, "Error while computing completions for " + textDocumentPosition.textDocument.uri, token);
 });
-connection.onHover(function (textDocumentPosition) {
-    return errors_1.runSafe(function () {
+connection.onHover(function (textDocumentPosition, token) {
+    return runner_1.runSafe(function () {
         var document = documents.get(textDocumentPosition.textDocument.uri);
         var styleSheet = stylesheets.get(document);
-        return getLanguageService(document).doHover(document, textDocumentPosition.position, styleSheet); /* TODO: remove ! once LS has null annotations */
-    }, null, "Error while computing hover for " + textDocumentPosition.textDocument.uri);
+        return getLanguageService(document).doHover(document, textDocumentPosition.position, styleSheet);
+    }, null, "Error while computing hover for " + textDocumentPosition.textDocument.uri, token);
 });
-connection.onDocumentSymbol(function (documentSymbolParams) {
-    return errors_1.runSafe(function () {
+connection.onDocumentSymbol(function (documentSymbolParams, token) {
+    return runner_1.runSafe(function () {
         var document = documents.get(documentSymbolParams.textDocument.uri);
         var stylesheet = stylesheets.get(document);
         return getLanguageService(document).findDocumentSymbols(document, stylesheet);
-    }, [], "Error while computing document symbols for " + documentSymbolParams.textDocument.uri);
+    }, [], "Error while computing document symbols for " + documentSymbolParams.textDocument.uri, token);
 });
-connection.onDefinition(function (documentSymbolParams) {
-    return errors_1.runSafe(function () {
+connection.onDefinition(function (documentSymbolParams, token) {
+    return runner_1.runSafe(function () {
         var document = documents.get(documentSymbolParams.textDocument.uri);
         var stylesheet = stylesheets.get(document);
         return getLanguageService(document).findDefinition(document, documentSymbolParams.position, stylesheet);
-    }, null, "Error while computing definitions for " + documentSymbolParams.textDocument.uri);
+    }, null, "Error while computing definitions for " + documentSymbolParams.textDocument.uri, token);
 });
-connection.onDocumentHighlight(function (documentSymbolParams) {
-    return errors_1.runSafe(function () {
+connection.onDocumentHighlight(function (documentSymbolParams, token) {
+    return runner_1.runSafe(function () {
         var document = documents.get(documentSymbolParams.textDocument.uri);
         var stylesheet = stylesheets.get(document);
         return getLanguageService(document).findDocumentHighlights(document, documentSymbolParams.position, stylesheet);
-    }, [], "Error while computing document highlights for " + documentSymbolParams.textDocument.uri);
+    }, [], "Error while computing document highlights for " + documentSymbolParams.textDocument.uri, token);
 });
-connection.onReferences(function (referenceParams) {
-    return errors_1.runSafe(function () {
+connection.onReferences(function (referenceParams, token) {
+    return runner_1.runSafe(function () {
         var document = documents.get(referenceParams.textDocument.uri);
         var stylesheet = stylesheets.get(document);
         return getLanguageService(document).findReferences(document, referenceParams.position, stylesheet);
-    }, [], "Error while computing references for " + referenceParams.textDocument.uri);
+    }, [], "Error while computing references for " + referenceParams.textDocument.uri, token);
 });
-connection.onCodeAction(function (codeActionParams) {
-    return errors_1.runSafe(function () {
+connection.onCodeAction(function (codeActionParams, token) {
+    return runner_1.runSafe(function () {
         var document = documents.get(codeActionParams.textDocument.uri);
         var stylesheet = stylesheets.get(document);
         return getLanguageService(document).doCodeActions(document, codeActionParams.range, codeActionParams.context, stylesheet);
-    }, [], "Error while computing code actions for " + codeActionParams.textDocument.uri);
+    }, [], "Error while computing code actions for " + codeActionParams.textDocument.uri, token);
 });
-connection.onRequest(vscode_languageserver_1.DocumentColorRequest.type, function (params) {
-    return errors_1.runSafe(function () {
+connection.onDocumentColor(function (params, token) {
+    return runner_1.runSafe(function () {
         var document = documents.get(params.textDocument.uri);
         if (document) {
             var stylesheet = stylesheets.get(document);
             return getLanguageService(document).findDocumentColors(document, stylesheet);
         }
         return [];
-    }, [], "Error while computing document colors for " + params.textDocument.uri);
+    }, [], "Error while computing document colors for " + params.textDocument.uri, token);
 });
-connection.onRequest(vscode_languageserver_1.ColorPresentationRequest.type, function (params) {
-    return errors_1.runSafe(function () {
+connection.onColorPresentation(function (params, token) {
+    return runner_1.runSafe(function () {
         var document = documents.get(params.textDocument.uri);
         if (document) {
             var stylesheet = stylesheets.get(document);
             return getLanguageService(document).getColorPresentations(document, stylesheet, params.color, params.range);
         }
         return [];
-    }, [], "Error while computing color presentations for " + params.textDocument.uri);
+    }, [], "Error while computing color presentations for " + params.textDocument.uri, token);
 });
-connection.onRenameRequest(function (renameParameters) {
-    return errors_1.runSafe(function () {
+connection.onRenameRequest(function (renameParameters, token) {
+    return runner_1.runSafe(function () {
         var document = documents.get(renameParameters.textDocument.uri);
         var stylesheet = stylesheets.get(document);
         return getLanguageService(document).doRename(document, renameParameters.position, renameParameters.newName, stylesheet);
-    }, null, "Error while computing renames for " + renameParameters.textDocument.uri);
+    }, null, "Error while computing renames for " + renameParameters.textDocument.uri, token);
 });
-connection.onRequest(vscode_languageserver_protocol_foldingprovider_1.FoldingRangesRequest.type, function (params, token) {
-    return errors_1.runSafe(function () {
+connection.onRequest(vscode_languageserver_protocol_foldingprovider_1.FoldingRangeRequest.type, function (params, token) {
+    return runner_1.runSafe(function () {
         var document = documents.get(params.textDocument.uri);
-        var stylesheet = stylesheets.get(document);
-        return getLanguageService(document).findFoldingRegions(document, stylesheet);
-    }, null, "Error while computing folding ranges for " + params.textDocument.uri);
+        return getLanguageService(document).getFoldingRanges(document, { rangeLimit: foldingRangeLimit });
+    }, null, "Error while computing folding ranges for " + params.textDocument.uri, token);
 });
 // Listen on the connection
 connection.listen();
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/950b8b0d37a9b7061b6f0d291837ccc4015f5ecd/extensions\css-language-features\server\out/cssServerMain.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/7c7da59c2333a1306c41e6e7b68d7f0caa7b3d45/extensions\css-language-features\server\out/cssServerMain.js.map

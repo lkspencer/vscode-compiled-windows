@@ -50,6 +50,7 @@ const emmetModes = ['html', 'pug', 'slim', 'haml', 'xml', 'xsl', 'jsx', 'css', '
 // For other languages, users will have to use `emmet.includeLanguages` or
 // language specific extensions can provide emmet completion support
 exports.MAPPED_MODES = {
+    'handlebars': 'html',
     'php': 'html'
 };
 function isStyleSheet(syntax) {
@@ -94,10 +95,10 @@ function getEmmetMode(language, excludedLanguages) {
     if (!language || excludedLanguages.indexOf(language) > -1) {
         return;
     }
-    if (/\b(typescriptreact|javascriptreact|jsx-tags)\b/.test(language)) {
+    if (/\b(typescriptreact|javascriptreact|jsx-tags)\b/.test(language)) { // treat tsx like jsx
         return 'jsx';
     }
-    if (language === 'sass-indented') {
+    if (language === 'sass-indented') { // map sass-indented to sass
         return 'sass';
     }
     if (language === 'jade') {
@@ -432,7 +433,7 @@ function getEmmetConfiguration(syntax) {
             && !syntaxProfiles[syntax].hasOwnProperty('self_closing_tag') // Old Emmet format
             && !syntaxProfiles[syntax].hasOwnProperty('selfClosingStyle') // Emmet 2.0 format
         ) {
-            syntaxProfiles[syntax]['selfClosingStyle'] = 'xml';
+            syntaxProfiles[syntax] = Object.assign({}, syntaxProfiles[syntax], { selfClosingStyle: 'xml' });
         }
     }
     return {
@@ -486,5 +487,36 @@ function getCssPropertyFromDocument(editor, position) {
         return (node && node.type === 'property') ? node : null;
     }
 }
-exports.getCssPropertyFromDocument = getCssPropertyFromDocument;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/950b8b0d37a9b7061b6f0d291837ccc4015f5ecd/extensions\emmet\out/util.js.map
+exports.getCssPropertyFromDocument = getCssPropertyFromDocument;
+function getEmbeddedCssNodeIfAny(document, currentNode, position) {
+    if (!currentNode) {
+        return;
+    }
+    const currentHtmlNode = currentNode;
+    if (currentHtmlNode && currentHtmlNode.close) {
+        const innerRange = getInnerRange(currentHtmlNode);
+        if (innerRange && innerRange.contains(position)) {
+            if (currentHtmlNode.name === 'style'
+                && currentHtmlNode.open.end.isBefore(position)
+                && currentHtmlNode.close.start.isAfter(position)) {
+                let buffer = new bufferStream_1.DocumentStreamReader(document, currentHtmlNode.open.end, new vscode.Range(currentHtmlNode.open.end, currentHtmlNode.close.start));
+                return css_parser_1.default(buffer);
+            }
+        }
+    }
+}
+exports.getEmbeddedCssNodeIfAny = getEmbeddedCssNodeIfAny;
+function isStyleAttribute(currentNode, position) {
+    if (!currentNode) {
+        return false;
+    }
+    const currentHtmlNode = currentNode;
+    const index = (currentHtmlNode.attributes || []).findIndex(x => x.name.toString() === 'style');
+    if (index === -1) {
+        return false;
+    }
+    const styleAttribute = currentHtmlNode.attributes[index];
+    return position.isAfterOrEqual(styleAttribute.value.start) && position.isBeforeOrEqual(styleAttribute.value.end);
+}
+exports.isStyleAttribute = isStyleAttribute;
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/7c7da59c2333a1306c41e6e7b68d7f0caa7b3d45/extensions\emmet\out/util.js.map

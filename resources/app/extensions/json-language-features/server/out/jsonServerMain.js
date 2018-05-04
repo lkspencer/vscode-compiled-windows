@@ -13,7 +13,6 @@ var strings_1 = require("./utils/strings");
 var runner_1 = require("./utils/runner");
 var vscode_json_languageservice_1 = require("vscode-json-languageservice");
 var languageModelCache_1 = require("./languageModelCache");
-var jsonFolding_1 = require("./jsonFolding");
 var vscode_languageserver_protocol_foldingprovider_1 = require("vscode-languageserver-protocol-foldingprovider");
 var SchemaAssociationNotification;
 (function (SchemaAssociationNotification) {
@@ -45,22 +44,24 @@ var documents = new vscode_languageserver_1.TextDocuments();
 documents.listen(connection);
 var clientSnippetSupport = false;
 var clientDynamicRegisterSupport = false;
-// After the server has started the client sends an initilize request. The server receives
+var foldingRangeLimit = Number.MAX_VALUE;
+// After the server has started the client sends an initialize request. The server receives
 // in the passed params the rootPath of the workspace plus the client capabilities.
 connection.onInitialize(function (params) {
-    function hasClientCapability() {
-        var keys = [];
-        for (var _i = 0; _i < arguments.length; _i++) {
-            keys[_i] = arguments[_i];
-        }
+    function getClientCapability(name, def) {
+        var keys = name.split('.');
         var c = params.capabilities;
         for (var i = 0; c && i < keys.length; i++) {
+            if (!c.hasOwnProperty(keys[i])) {
+                return def;
+            }
             c = c[keys[i]];
         }
-        return !!c;
+        return c;
     }
-    clientSnippetSupport = hasClientCapability('textDocument', 'completion', 'completionItem', 'snippetSupport');
-    clientDynamicRegisterSupport = hasClientCapability('workspace', 'symbol', 'dynamicRegistration');
+    clientSnippetSupport = getClientCapability('textDocument.completion.completionItem.snippetSupport', false);
+    clientDynamicRegisterSupport = getClientCapability('workspace.symbol.dynamicRegistration', false);
+    foldingRangeLimit = getClientCapability('textDocument.foldingRange.rangeLimit', Number.MAX_VALUE);
     var capabilities = {
         // Tell the client that the server works in FULL text document sync mode
         textDocumentSync: documents.syncKind,
@@ -69,7 +70,7 @@ connection.onInitialize(function (params) {
         documentSymbolProvider: true,
         documentRangeFormattingProvider: false,
         colorProvider: true,
-        foldingProvider: true
+        foldingRangeProvider: true
     };
     return { capabilities: capabilities };
 });
@@ -304,15 +305,15 @@ connection.onColorPresentation(function (params, token) {
         return [];
     }, [], "Error while computing color presentations for " + params.textDocument.uri, token);
 });
-connection.onRequest(vscode_languageserver_protocol_foldingprovider_1.FoldingRangesRequest.type, function (params, token) {
+connection.onRequest(vscode_languageserver_protocol_foldingprovider_1.FoldingRangeRequest.type, function (params, token) {
     return runner_1.runSafe(function () {
         var document = documents.get(params.textDocument.uri);
         if (document) {
-            return jsonFolding_1.getFoldingRegions(document, params.maxRanges, token);
+            return languageService.getFoldingRanges(document, { rangeLimit: foldingRangeLimit });
         }
         return null;
     }, null, "Error while computing folding ranges for " + params.textDocument.uri, token);
 });
 // Listen on the connection
 connection.listen();
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/950b8b0d37a9b7061b6f0d291837ccc4015f5ecd/extensions\json-language-features\server\out/jsonServerMain.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/7c7da59c2333a1306c41e6e7b68d7f0caa7b3d45/extensions\json-language-features\server\out/jsonServerMain.js.map

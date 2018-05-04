@@ -37,12 +37,15 @@ class MergeConflictParser {
                 // Create a new conflict starting at this line
                 currentConflict = { startHeader: line, commonAncestors: [] };
             }
+            // Are we within a conflict block and is this a common ancestors marker? |||||||
             else if (currentConflict && !currentConflict.splitter && line.text.startsWith(commonAncestorsMarker)) {
                 currentConflict.commonAncestors.push(line);
             }
+            // Are we within a conflict block and is this a splitter? =======
             else if (currentConflict && !currentConflict.splitter && line.text.startsWith(splitterMarker)) {
                 currentConflict.splitter = line;
             }
+            // Are we within a conflict block and is this a footer? >>>>>>>
             else if (currentConflict && line.text.startsWith(endFooterMarker)) {
                 currentConflict.endFooter = line;
                 // Create a full descriptor from the lines that we matched. This can return
@@ -123,4 +126,4 @@ class MergeConflictParser {
     }
 }
 exports.MergeConflictParser = MergeConflictParser;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/950b8b0d37a9b7061b6f0d291837ccc4015f5ecd/extensions\merge-conflict\out/mergeConflictParser.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/7c7da59c2333a1306c41e6e7b68d7f0caa7b3d45/extensions\merge-conflict\out/mergeConflictParser.js.map
