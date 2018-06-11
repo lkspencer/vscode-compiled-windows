@@ -1,0 +1,33 @@
+{
+	"nameShort": "Code - OSS",
+	"nameLong": "Code - OSS",
+	"applicationName": "code-oss",
+	"dataFolderName": ".vscode-oss",
+	"win32MutexName": "vscodeoss",
+	"licenseName": "MIT",
+	"licenseUrl": "https://github.com/Microsoft/vscode/blob/master/LICENSE.txt",
+	"win32DirName": "Microsoft Code OSS",
+	"win32NameVersion": "Microsoft Code OSS",
+	"win32RegValueName": "CodeOSS",
+	"win32AppId": "{{E34003BB-9E10-4501-8C11-BE3FAA83F23F}",
+	"win32x64AppId": "{{D77B7E06-80BA-4137-BCF4-654B95CCEBC5}",
+	"win32AppUserModelId": "Microsoft.CodeOSS",
+	"win32ShellNameShort": "C&ode - OSS",
+	"darwinBundleIdentifier": "com.visualstudio.code.oss",
+	"reportIssueUrl": "https://github.com/Microsoft/vscode/issues/new",
+	"urlProtocol": "code-oss",
+	"extensionAllowedProposedApi": [
+		"ms-vscode.node-debug",
+		"ms-vscode.node-debug2"
+	],
+	"commit": "6a6e02cef0f2122ee1469765b704faf5d0e0d859",
+	"date": "2018-06-11T21:38:06.591Z",
+	"checksums": {
+		"vs/workbench/workbench.main.js": "LDAFVik3hcdAKmYpevwQMg",
+		"vs/workbench/workbench.main.css": "6vQda4D6dR+lppyC69uw/w",
+		"vs/workbench/electron-browser/bootstrap/index.html": "/Tgz9oebstmTGvDlTpbgpg",
+		"vs/workbench/electron-browser/bootstrap/index.js": "KNzmOPvJBfnsWmwo6Nrw0A",
+		"vs/workbench/electron-browser/bootstrap/preload.js": "P/uzXdkB/Ea78Fc8z1xZoQ"
+	},
+	"settingsSearchBuildId": 124001143
+}
