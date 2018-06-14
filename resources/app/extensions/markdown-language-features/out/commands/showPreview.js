@@ -91,4 +91,4 @@ class ShowLockedPreviewToSideCommand {
     }
 }
 exports.ShowLockedPreviewToSideCommand = ShowLockedPreviewToSideCommand;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/6a6e02cef0f2122ee1469765b704faf5d0e0d859/extensions\markdown-language-features\out/commands\showPreview.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/24f62626b222e9a8313213fb64b10d741a326288/extensions\markdown-language-features\out/commands\showPreview.js.map

@@ -144,4 +144,4 @@ TypeScriptRefactorProvider.extractFunctionKind = vscode.CodeActionKind.RefactorE
 TypeScriptRefactorProvider.extractConstantKind = vscode.CodeActionKind.RefactorExtract.append('constant');
 TypeScriptRefactorProvider.moveKind = vscode.CodeActionKind.Refactor.append('move');
 exports.default = TypeScriptRefactorProvider;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/6a6e02cef0f2122ee1469765b704faf5d0e0d859/extensions\typescript-language-features\out/features\refactorProvider.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/24f62626b222e9a8313213fb64b10d741a326288/extensions\typescript-language-features\out/features\refactorProvider.js.map

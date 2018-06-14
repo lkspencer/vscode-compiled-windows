@@ -112,4 +112,4 @@ class AutoFetcher {
 AutoFetcher.Period = 3 * 60 * 1000 /* three minutes */;
 AutoFetcher.DidInformUser = 'autofetch.didInformUser';
 exports.AutoFetcher = AutoFetcher;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/6a6e02cef0f2122ee1469765b704faf5d0e0d859/extensions\git\out/autofetch.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/24f62626b222e9a8313213fb64b10d741a326288/extensions\git\out/autofetch.js.map
