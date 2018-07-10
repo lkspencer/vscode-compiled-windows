@@ -7,7 +7,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const vscode = require("vscode");
 const util_1 = require("./util");
 function nextItemHTML(selectionStart, selectionEnd, editor, rootNode) {
-    let currentNode = util_1.getNode(rootNode, selectionEnd);
+    let currentNode = util_1.getHtmlNode(editor.document, rootNode, selectionEnd);
     let nextNode = undefined;
     if (!currentNode) {
         return;
@@ -26,7 +26,7 @@ function nextItemHTML(selectionStart, selectionEnd, editor, rootNode) {
         }
         // Get the first child of current node which is right after the cursor and is not a comment
         nextNode = currentNode.firstChild;
-        while (nextNode && (selectionEnd.isAfterOrEqual(nextNode.start) || nextNode.type === 'comment')) {
+        while (nextNode && (selectionEnd.isAfterOrEqual(nextNode.end) || nextNode.type === 'comment')) {
             nextNode = nextNode.nextSibling;
         }
     }
@@ -48,13 +48,13 @@ function nextItemHTML(selectionStart, selectionEnd, editor, rootNode) {
 }
 exports.nextItemHTML = nextItemHTML;
 function prevItemHTML(selectionStart, selectionEnd, editor, rootNode) {
-    let currentNode = util_1.getNode(rootNode, selectionStart);
+    let currentNode = util_1.getHtmlNode(editor.document, rootNode, selectionStart);
     let prevNode = undefined;
     if (!currentNode) {
         return;
     }
     if (currentNode.type !== 'comment' && selectionStart.translate(0, -1).isAfter(currentNode.open.start)) {
-        if (selectionStart.isBefore(currentNode.open.end) || !currentNode.firstChild) {
+        if (selectionStart.isBefore(currentNode.open.end) || !currentNode.firstChild || selectionEnd.isBeforeOrEqual(currentNode.firstChild.start)) {
             prevNode = currentNode;
         }
         else {
@@ -170,4 +170,4 @@ function getPrevAttribute(selectionStart, selectionEnd, document, node) {
         }
     }
 }
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/24f62626b222e9a8313213fb64b10d741a326288/extensions\emmet\out/selectItemHTML.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/0f080e5267e829de46638128001aeb7ca2d6d50e/extensions\emmet\out/selectItemHTML.js.map

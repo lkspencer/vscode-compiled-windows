@@ -6,14 +6,14 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const assert = require("assert");
 require("mocha");
-const jsDocCompletionProvider_1 = require("../features/jsDocCompletionProvider");
+const jsDocCompletions_1 = require("../features/jsDocCompletions");
 suite('typescript.jsDocSnippet', () => {
     test('Should do nothing for single line input', async () => {
         const input = `/** */`;
-        assert.strictEqual(jsDocCompletionProvider_1.templateToSnippet(input).value, input);
+        assert.strictEqual(jsDocCompletions_1.templateToSnippet(input).value, input);
     });
     test('Should put cursor inside multiline line input', async () => {
-        assert.strictEqual(jsDocCompletionProvider_1.templateToSnippet([
+        assert.strictEqual(jsDocCompletions_1.templateToSnippet([
             '/**',
             ' * ',
             ' */'
@@ -24,7 +24,7 @@ suite('typescript.jsDocSnippet', () => {
         ].join('\n'));
     });
     test('Should add placeholders after each parameter', async () => {
-        assert.strictEqual(jsDocCompletionProvider_1.templateToSnippet([
+        assert.strictEqual(jsDocCompletions_1.templateToSnippet([
             '/**',
             ' * @param a',
             ' * @param b',
@@ -37,7 +37,7 @@ suite('typescript.jsDocSnippet', () => {
         ].join('\n'));
     });
     test('Should add placeholders for types', async () => {
-        assert.strictEqual(jsDocCompletionProvider_1.templateToSnippet([
+        assert.strictEqual(jsDocCompletions_1.templateToSnippet([
             '/**',
             ' * @param {*} a',
             ' * @param {*} b',
@@ -50,7 +50,7 @@ suite('typescript.jsDocSnippet', () => {
         ].join('\n'));
     });
     test('Should properly escape dollars in parameter names', async () => {
-        assert.strictEqual(jsDocCompletionProvider_1.templateToSnippet([
+        assert.strictEqual(jsDocCompletions_1.templateToSnippet([
             '/**',
             ' * ',
             ' * @param $arg',
@@ -63,4 +63,4 @@ suite('typescript.jsDocSnippet', () => {
         ].join('\n'));
     });
 });
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/24f62626b222e9a8313213fb64b10d741a326288/extensions\typescript-language-features\out/test\jsdocSnippet.test.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/0f080e5267e829de46638128001aeb7ca2d6d50e/extensions\typescript-language-features\out/test\jsdocSnippet.test.js.map

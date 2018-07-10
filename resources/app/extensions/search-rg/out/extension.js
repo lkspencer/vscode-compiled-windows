@@ -8,7 +8,7 @@ var vscode = require("vscode");
 var ripgrepTextSearch_1 = require("./ripgrepTextSearch");
 var ripgrepFileSearch_1 = require("./ripgrepFileSearch");
 function activate() {
-    if (vscode.workspace.getConfiguration('searchrg').get('enable')) {
+    if (vscode.workspace.getConfiguration('searchRipgrep').get('enable')) {
         var outputChannel = vscode.window.createOutputChannel('search-rg');
         var provider = new RipgrepSearchProvider(outputChannel);
         vscode.workspace.registerSearchProvider('file', provider);
@@ -29,4 +29,4 @@ var RipgrepSearchProvider = /** @class */ (function () {
     };
     return RipgrepSearchProvider;
 }());
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/24f62626b222e9a8313213fb64b10d741a326288/extensions\search-rg\out/extension.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/0f080e5267e829de46638128001aeb7ca2d6d50e/extensions\search-rg\out/extension.js.map

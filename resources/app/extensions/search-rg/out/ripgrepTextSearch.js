@@ -26,10 +26,10 @@ var cp = require("child_process");
 var events_1 = require("events");
 var string_decoder_1 = require("string_decoder");
 var vscode = require("vscode");
-var vscode_ripgrep_1 = require("vscode-ripgrep");
+var ripgrep_1 = require("./ripgrep");
 var ripgrepHelpers_1 = require("./ripgrepHelpers");
 // If vscode-ripgrep is in an .asar file, then the binary is unpacked.
-var rgDiskPath = vscode_ripgrep_1.rgPath.replace(/\bnode_modules\.asar\b/, 'node_modules.asar.unpacked');
+var rgDiskPath = ripgrep_1.rgPath.replace(/\bnode_modules\.asar\b/, 'node_modules.asar.unpacked');
 // TODO@roblou move to SearchService
 var MAX_TEXT_RESULTS = 10000;
 var RipgrepTextSearchEngine = /** @class */ (function () {
@@ -116,7 +116,7 @@ exports.RipgrepTextSearchEngine = RipgrepTextSearchEngine;
  * "failed" when a fatal error was produced.
  */
 function rgErrorMsgForDisplay(msg) {
-    var firstLine = msg.split('\n')[0];
+    var firstLine = msg.split('\n')[0].trim();
     if (firstLine.startsWith('Error parsing regex')) {
         return firstLine;
     }
@@ -125,8 +125,12 @@ function rgErrorMsgForDisplay(msg) {
         // Uppercase first letter
         return firstLine.charAt(0).toUpperCase() + firstLine.substr(1);
     }
+    if (firstLine === "Literal '\\n' not allowed.") {
+        // I won't localize this because none of the Ripgrep error messages are localized
+        return "Literal '\\n' currently not supported";
+    }
     if (firstLine.startsWith('Literal ')) {
-        // e.g. "Literal \n not allowed"
+        // Other unsupported chars
         return firstLine;
     }
     return undefined;
@@ -319,12 +323,13 @@ function getRgArgs(query, options) {
         args.push('--regexp', regexpStr);
     }
     else if (query.isRegExp) {
-        args.push('--regexp', query.pattern);
+        args.push('--regexp', fixRegexEndingPattern(query.pattern));
     }
     else {
         searchPatternAfterDoubleDashes = query.pattern;
         args.push('--fixed-strings');
     }
+    args.push('--no-config');
     // Folder to search
     args.push('--');
     if (searchPatternAfterDoubleDashes) {
@@ -376,5 +381,12 @@ function startsWithUTF8BOM(str) {
 }
 function stripUTF8BOM(str) {
     return startsWithUTF8BOM(str) ? str.substr(1) : str;
+}
+function fixRegexEndingPattern(pattern) {
+    // Replace an unescaped $ at the end of the pattern with \r?$
+    // Match $ preceeded by none or even number of literal \
+    return pattern.match(/([^\\]|^)(\\\\)*\$$/) ?
+        pattern.replace(/\$$/, '\\r?$') :
+        pattern;
 }
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/24f62626b222e9a8313213fb64b10d741a326288/extensions\search-rg\out/ripgrepTextSearch.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/0f080e5267e829de46638128001aeb7ca2d6d50e/extensions\search-rg\out/ripgrepTextSearch.js.map

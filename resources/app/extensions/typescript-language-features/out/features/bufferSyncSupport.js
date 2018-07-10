@@ -6,9 +6,16 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const fs = require("fs");
 const vscode_1 = require("vscode");
+const api_1 = require("../utils/api");
 const async_1 = require("../utils/async");
 const dispose_1 = require("../utils/dispose");
 const languageModeIds = require("../utils/languageModeIds");
+const resourceMap_1 = require("./resourceMap");
+var BufferKind;
+(function (BufferKind) {
+    BufferKind[BufferKind["TypeScript"] = 1] = "TypeScript";
+    BufferKind[BufferKind["JavaScript"] = 2] = "JavaScript";
+})(BufferKind || (BufferKind = {}));
 function mode2ScriptKind(mode) {
     switch (mode) {
         case languageModeIds.typescript: return 'TS';
@@ -30,16 +37,16 @@ class SyncedBuffer {
             file: this.filepath,
             fileContent: this.document.getText(),
         };
-        if (this.client.apiVersion.has203Features()) {
+        if (this.client.apiVersion.gte(api_1.default.v203)) {
             const scriptKind = mode2ScriptKind(this.document.languageId);
             if (scriptKind) {
                 args.scriptKindName = scriptKind;
             }
         }
-        if (this.client.apiVersion.has230Features()) {
+        if (this.client.apiVersion.gte(api_1.default.v230)) {
             args.projectRootPath = this.client.getWorkspaceRootForResource(this.document.uri);
         }
-        if (this.client.apiVersion.has240Features()) {
+        if (this.client.apiVersion.gte(api_1.default.v240)) {
             const tsPluginsForDocument = this.client.plugins
                 .filter(x => x.languages.indexOf(this.document.languageId) >= 0);
             if (tsPluginsForDocument.length) {
@@ -48,8 +55,22 @@ class SyncedBuffer {
         }
         this.client.execute('open', args, false);
     }
+    get resource() {
+        return this.document.uri;
+    }
     get lineCount() {
         return this.document.lineCount;
+    }
+    get kind() {
+        switch (this.document.languageId) {
+            case languageModeIds.javascript:
+            case languageModeIds.javascriptreact:
+                return BufferKind.JavaScript;
+            case languageModeIds.typescript:
+            case languageModeIds.typescriptreact:
+            default:
+                return BufferKind.TypeScript;
+        }
     }
     close() {
         const args = {
@@ -58,13 +79,9 @@ class SyncedBuffer {
         this.client.execute('close', args, false);
     }
     onContentChanged(events) {
-        const filePath = this.client.normalizePath(this.document.uri);
-        if (!filePath) {
-            return;
-        }
         for (const { range, text } of events) {
             const args = {
-                file: filePath,
+                file: this.filepath,
                 line: range.start.line + 1,
                 offset: range.start.character + 1,
                 endLine: range.end.line + 1,
@@ -76,60 +93,52 @@ class SyncedBuffer {
         this.diagnosticRequestor.requestDiagnostic(this.document.uri);
     }
 }
-class SyncedBufferMap {
-    constructor(_normalizePath) {
-        this._normalizePath = _normalizePath;
-        this._map = new Map();
-    }
-    has(resource) {
-        const file = this._normalizePath(resource);
-        return !!file && this._map.has(file);
-    }
-    get(resource) {
-        const file = this._normalizePath(resource);
-        return file ? this._map.get(file) : undefined;
-    }
-    set(resource, buffer) {
-        const file = this._normalizePath(resource);
-        if (file) {
-            this._map.set(file, buffer);
-        }
-    }
-    delete(resource) {
-        const file = this._normalizePath(resource);
-        if (file) {
-            this._map.delete(file);
-        }
+class SyncedBufferMap extends resourceMap_1.ResourceMap {
+    getForPath(filePath) {
+        return this.get(vscode_1.Uri.file(filePath));
     }
     get allBuffers() {
-        return this._map.values();
+        return this.values;
     }
     get allResources() {
-        return this._map.keys();
+        return this.keys;
     }
 }
 class BufferSyncSupport {
-    constructor(client, modeIds, diagnostics, validate) {
+    constructor(client, modeIds) {
+        this._validateJavaScript = true;
+        this._validateTypeScript = true;
         this.disposables = [];
         this.pendingDiagnostics = new Map();
+        this.listening = false;
+        this._onDelete = new vscode_1.EventEmitter();
+        this.onDelete = this._onDelete.event;
         this.client = client;
         this.modeIds = new Set(modeIds);
-        this.diagnostics = diagnostics;
-        this._validate = validate;
         this.diagnosticDelayer = new async_1.Delayer(300);
-        this.syncedBuffers = new SyncedBufferMap(path => this.client.normalizePath(path));
+        this.syncedBuffers = new SyncedBufferMap(path => this.normalizePath(path));
+        this.updateConfiguration();
+        vscode_1.workspace.onDidChangeConfiguration(() => this.updateConfiguration(), null);
     }
     listen() {
+        if (this.listening) {
+            return;
+        }
+        this.listening = true;
         vscode_1.workspace.onDidOpenTextDocument(this.openTextDocument, this, this.disposables);
         vscode_1.workspace.onDidCloseTextDocument(this.onDidCloseTextDocument, this, this.disposables);
         vscode_1.workspace.onDidChangeTextDocument(this.onDidChangeTextDocument, this, this.disposables);
         vscode_1.workspace.textDocuments.forEach(this.openTextDocument, this);
     }
-    set validate(value) {
-        this._validate = value;
-    }
     handles(resource) {
         return this.syncedBuffers.has(resource);
+    }
+    toResource(filePath) {
+        const buffer = this.syncedBuffers.getForPath(filePath);
+        if (buffer) {
+            return buffer.resource;
+        }
+        return vscode_1.Uri.file(filePath);
     }
     reOpenDocuments() {
         for (const buffer of this.syncedBuffers.allBuffers) {
@@ -138,13 +147,14 @@ class BufferSyncSupport {
     }
     dispose() {
         dispose_1.disposeAll(this.disposables);
+        this._onDelete.dispose();
     }
     openTextDocument(document) {
         if (!this.modeIds.has(document.languageId)) {
             return;
         }
         const resource = document.uri;
-        const filepath = this.client.normalizePath(resource);
+        const filepath = this.client.normalizedPath(resource);
         if (!filepath) {
             return;
         }
@@ -164,7 +174,7 @@ class BufferSyncSupport {
         this.syncedBuffers.delete(resource);
         syncedBuffer.close();
         if (!fs.existsSync(resource.fsPath)) {
-            this.diagnostics.delete(resource);
+            this._onDelete.fire(resource);
             this.requestAllDiagnostics();
         }
     }
@@ -173,20 +183,23 @@ class BufferSyncSupport {
     }
     onDidChangeTextDocument(e) {
         const syncedBuffer = this.syncedBuffers.get(e.document.uri);
-        if (syncedBuffer) {
-            syncedBuffer.onContentChanged(e.contentChanges);
-            if (this.pendingGetErr) {
-                this.pendingGetErr.token.cancel();
-                this.pendingGetErr = undefined;
-            }
+        if (!syncedBuffer) {
+            return;
+        }
+        syncedBuffer.onContentChanged(e.contentChanges);
+        if (this.pendingGetErr) {
+            this.pendingGetErr.token.cancel();
+            this.pendingGetErr = undefined;
+            this.diagnosticDelayer.trigger(() => {
+                this.sendPendingDiagnostics();
+            }, 200);
         }
     }
     requestAllDiagnostics() {
-        if (!this._validate) {
-            return;
-        }
-        for (const filePath of this.syncedBuffers.allResources) {
-            this.pendingDiagnostics.set(filePath, Date.now());
+        for (const buffer of this.syncedBuffers.allBuffers) {
+            if (this.shouldValidate(buffer)) {
+                this.pendingDiagnostics.set(buffer.filepath, Date.now());
+            }
         }
         this.diagnosticDelayer.trigger(() => {
             this.sendPendingDiagnostics();
@@ -198,7 +211,7 @@ class BufferSyncSupport {
             return;
         }
         for (const resource of handledResources) {
-            const file = this.client.normalizePath(resource);
+            const file = this.client.normalizedPath(resource);
             if (file) {
                 this.pendingDiagnostics.set(file, Date.now());
             }
@@ -208,32 +221,27 @@ class BufferSyncSupport {
         }, 200);
     }
     requestDiagnostic(resource) {
-        if (!this._validate) {
-            return;
-        }
-        const file = this.client.normalizePath(resource);
+        const file = this.client.normalizedPath(resource);
         if (!file) {
             return;
         }
         this.pendingDiagnostics.set(file, Date.now());
         const buffer = this.syncedBuffers.get(resource);
-        let delay = 300;
-        if (buffer) {
-            const lineCount = buffer.lineCount;
-            delay = Math.min(Math.max(Math.ceil(lineCount / 20), 300), 800);
+        if (!buffer || !this.shouldValidate(buffer)) {
+            return;
         }
+        let delay = 300;
+        const lineCount = buffer.lineCount;
+        delay = Math.min(Math.max(Math.ceil(lineCount / 20), 300), 800);
         this.diagnosticDelayer.trigger(() => {
             this.sendPendingDiagnostics();
         }, delay);
     }
     hasPendingDiagnostics(resource) {
-        const file = this.client.normalizePath(resource);
+        const file = this.client.normalizedPath(resource);
         return !file || this.pendingDiagnostics.has(file);
     }
     sendPendingDiagnostics() {
-        if (!this._validate) {
-            return;
-        }
         const files = new Set(Array.from(this.pendingDiagnostics.entries())
             .sort((a, b) => a[1] - b[1])
             .map(entry => entry[0]));
@@ -269,6 +277,24 @@ class BufferSyncSupport {
         }
         this.pendingDiagnostics.clear();
     }
+    updateConfiguration() {
+        const jsConfig = vscode_1.workspace.getConfiguration('javascript', null);
+        const tsConfig = vscode_1.workspace.getConfiguration('typescript', null);
+        this._validateJavaScript = jsConfig.get('validate.enable', true);
+        this._validateTypeScript = tsConfig.get('validate.enable', true);
+    }
+    shouldValidate(buffer) {
+        switch (buffer.kind) {
+            case BufferKind.JavaScript:
+                return this._validateJavaScript;
+            case BufferKind.TypeScript:
+            default:
+                return this._validateTypeScript;
+        }
+    }
+    normalizePath(path) {
+        return this.client.normalizedPath(path);
+    }
 }
 exports.default = BufferSyncSupport;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/24f62626b222e9a8313213fb64b10d741a326288/extensions\typescript-language-features\out/features\bufferSyncSupport.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/0f080e5267e829de46638128001aeb7ca2d6d50e/extensions\typescript-language-features\out/features\bufferSyncSupport.js.map

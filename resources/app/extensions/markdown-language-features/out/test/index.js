@@ -3,24 +3,24 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-//
-// PLEASE DO NOT MODIFY / DELETE UNLESS YOU KNOW WHAT YOU ARE DOING
-//
-// This file is providing the test runner to use when running extension tests.
-// By default the test runner in use is Mocha based.
-//
-// You can provide your own test runner if you want to override it by exporting
-// a function run(testRoot: string, clb: (error:Error) => void) that the extension
-// host can call to run the tests. The test runner is expected to use console.log
-// to report the results back to the caller. When the tests are finished, return
-// a possible error to the callback or null if none.
+const path = require('path');
 const testRunner = require('vscode/lib/testrunner');
-// You can directly control Mocha options by uncommenting the following lines
-// See https://github.com/mochajs/mocha/wiki/Using-mocha-programmatically#set-options for more info
-testRunner.configure({
+const suite = 'Integration Markdown Tests';
+const options = {
     ui: 'tdd',
-    useColors: process.platform !== 'win32',
+    useColors: true,
     timeout: 60000
-});
+};
+if (process.env.BUILD_ARTIFACTSTAGINGDIRECTORY) {
+    options.reporter = 'mocha-multi-reporters';
+    options.reporterOptions = {
+        reporterEnabled: 'spec, mocha-junit-reporter',
+        mochaJunitReporterReporterOptions: {
+            testsuitesTitle: `${suite} ${process.platform}`,
+            mochaFile: path.join(process.env.BUILD_ARTIFACTSTAGINGDIRECTORY, `test-results/${process.platform}-${suite.toLowerCase().replace(/[^\w]/g, '-')}-results.xml`)
+        }
+    };
+}
+testRunner.configure(options);
 module.exports = testRunner;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/24f62626b222e9a8313213fb64b10d741a326288/extensions\markdown-language-features\out/test\index.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/0f080e5267e829de46638128001aeb7ca2d6d50e/extensions\markdown-language-features\out/test\index.js.map

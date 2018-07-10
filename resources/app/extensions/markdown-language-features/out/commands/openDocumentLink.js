@@ -46,7 +46,7 @@ class OpenDocumentLinkCommand {
             if (entry) {
                 return editor.revealRange(new vscode.Range(entry.line, 0, entry.line, 0), vscode.TextEditorRevealType.AtTop);
             }
-            const lineNumberFragment = fragment.match(/^L(\d+)$/);
+            const lineNumberFragment = fragment.match(/^L(\d+)$/i);
             if (lineNumberFragment) {
                 const line = +lineNumberFragment[1] - 1;
                 if (!isNaN(line)) {
@@ -58,4 +58,4 @@ class OpenDocumentLinkCommand {
 }
 OpenDocumentLinkCommand.id = '_markdown.openDocumentLink';
 exports.OpenDocumentLinkCommand = OpenDocumentLinkCommand;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/24f62626b222e9a8313213fb64b10d741a326288/extensions\markdown-language-features\out/commands\openDocumentLink.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/0f080e5267e829de46638128001aeb7ca2d6d50e/extensions\markdown-language-features\out/commands\openDocumentLink.js.map

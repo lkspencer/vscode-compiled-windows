@@ -15,6 +15,7 @@ var decoration = vscode.window.createTextEditorDecorationType({
 });
 var pendingLaunchJsonDecoration;
 function activate(context) {
+    var _a;
     //keybindings.json command-suggestions
     context.subscriptions.push(registerKeybindingsCompletions());
     //settings.json suggestions
@@ -42,7 +43,6 @@ function activate(context) {
         }
         autoFixSettingsJSON(e);
     }));
-    var _a;
 }
 exports.activate = activate;
 function autoFixSettingsJSON(willSaveEvent) {
@@ -240,4 +240,4 @@ vscode.languages.registerDocumentSymbolProvider({ pattern: '**/launch.json', lan
         return result;
     }
 });
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/24f62626b222e9a8313213fb64b10d741a326288/extensions\configuration-editing\out/extension.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/0f080e5267e829de46638128001aeb7ca2d6d50e/extensions\configuration-editing\out/extension.js.map

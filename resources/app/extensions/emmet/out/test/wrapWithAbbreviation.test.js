@@ -197,14 +197,14 @@ suite('Tests for Wrap with Abbreviations', () => {
     test('Wrap individual lines with abbreviation', () => {
         const contents = `
 	<ul class="nav main">
-		<li class="item1">img</li>
+		<li class="item1">This $10 is not a tabstop</li>
 		<li class="item2">hi.there</li>
 	</ul>
 `;
         const wrapIndividualLinesExpected = `
 	<ul class="nav main">
 		<ul>
-			<li class="hello1"><li class="item1">img</li></li>
+			<li class="hello1"><li class="item1">This $10 is not a tabstop</li></li>
 			<li class="hello2"><li class="item2">hi.there</li></li>
 		</ul>
 	</ul>
@@ -323,4 +323,4 @@ function testWrapWithAbbreviation(selections, abbreviation, expectedContents) {
         });
     });
 }
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/24f62626b222e9a8313213fb64b10d741a326288/extensions\emmet\out/test\wrapWithAbbreviation.test.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/0f080e5267e829de46638128001aeb7ca2d6d50e/extensions\emmet\out/test\wrapWithAbbreviation.test.js.map

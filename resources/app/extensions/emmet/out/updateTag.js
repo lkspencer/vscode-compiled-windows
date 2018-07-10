@@ -27,7 +27,7 @@ function updateTag(tagName) {
 }
 exports.updateTag = updateTag;
 function getRangesToUpdate(editor, selection, rootNode) {
-    let nodeToUpdate = util_1.getNode(rootNode, selection.start);
+    let nodeToUpdate = util_1.getHtmlNode(editor.document, rootNode, selection.start);
     if (!nodeToUpdate) {
         return [];
     }
@@ -41,4 +41,4 @@ function getRangesToUpdate(editor, selection, rootNode) {
     }
     return ranges;
 }
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/24f62626b222e9a8313213fb64b10d741a326288/extensions\emmet\out/updateTag.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/0f080e5267e829de46638128001aeb7ca2d6d50e/extensions\emmet\out/updateTag.js.map

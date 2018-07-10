@@ -44,6 +44,7 @@ exports.LANGUAGE_MODES = {
     'javascriptreact': ['!', '.', '}', '*', '$', ']', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9'],
     'typescriptreact': ['!', '.', '}', '*', '$', ']', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9']
 };
+const allowedMimeTypesInScriptTag = ['text/html', 'text/plain', 'text/x-template', 'text/template', 'text/ng-template'];
 const emmetModes = ['html', 'pug', 'slim', 'haml', 'xml', 'xsl', 'jsx', 'css', 'scss', 'sass', 'less', 'stylus'];
 // Explicitly map languages that have built-in grammar in VS Code to their parent language
 // to get emmet completion support
@@ -287,6 +288,23 @@ function getNode(root, position, includeNodeBoundary = false) {
     return foundNode;
 }
 exports.getNode = getNode;
+function getHtmlNode(document, root, position, includeNodeBoundary = false) {
+    let currentNode = getNode(root, position, includeNodeBoundary);
+    if (!currentNode) {
+        return;
+    }
+    if (isTemplateScript(currentNode) && currentNode.close &&
+        (position.isAfter(currentNode.open.end) && position.isBefore(currentNode.close.start))) {
+        let buffer = new bufferStream_1.DocumentStreamReader(document, currentNode.open.end, new vscode.Range(currentNode.open.end, currentNode.close.start));
+        try {
+            let scriptInnerNodes = html_matcher_1.default(buffer);
+            currentNode = getNode(scriptInnerNodes, position, includeNodeBoundary) || currentNode;
+        }
+        catch (e) { }
+    }
+    return currentNode;
+}
+exports.getHtmlNode = getHtmlNode;
 /**
  * Returns inner range of an html node.
  * @param currentNode
@@ -518,5 +536,12 @@ function isStyleAttribute(currentNode, position) {
     const styleAttribute = currentHtmlNode.attributes[index];
     return position.isAfterOrEqual(styleAttribute.value.start) && position.isBeforeOrEqual(styleAttribute.value.end);
 }
-exports.isStyleAttribute = isStyleAttribute;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/24f62626b222e9a8313213fb64b10d741a326288/extensions\emmet\out/util.js.map
+exports.isStyleAttribute = isStyleAttribute;
+function isTemplateScript(currentNode) {
+    return currentNode.name === 'script' &&
+        (currentNode.attributes &&
+            currentNode.attributes.some(x => x.name.toString() === 'type'
+                && allowedMimeTypesInScriptTag.indexOf(x.value.toString()) > -1));
+}
+exports.isTemplateScript = isTemplateScript;
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/0f080e5267e829de46638128001aeb7ca2d6d50e/extensions\emmet\out/util.js.map

@@ -12,7 +12,7 @@ class MarkdownPreviewConfiguration {
     constructor(resource) {
         const editorConfig = vscode.workspace.getConfiguration('editor', resource);
         const markdownConfig = vscode.workspace.getConfiguration('markdown', resource);
-        const markdownEditorConfig = vscode.workspace.getConfiguration('[markdown]');
+        const markdownEditorConfig = vscode.workspace.getConfiguration('[markdown]', resource);
         this.scrollBeyondLastLine = editorConfig.get('scrollBeyondLastLine', false);
         this.wordWrap = editorConfig.get('wordWrap', 'off') !== 'off';
         if (markdownEditorConfig && markdownEditorConfig['editor.wordWrap']) {
@@ -71,4 +71,4 @@ class MarkdownPreviewConfigurationManager {
     }
 }
 exports.MarkdownPreviewConfigurationManager = MarkdownPreviewConfigurationManager;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/24f62626b222e9a8313213fb64b10d741a326288/extensions\markdown-language-features\out/features\previewConfig.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/0f080e5267e829de46638128001aeb7ca2d6d50e/extensions\markdown-language-features\out/features\previewConfig.js.map

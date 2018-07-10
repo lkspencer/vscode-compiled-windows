@@ -12,10 +12,11 @@ const topmostLineMonitor_1 = require("../util/topmostLineMonitor");
 const file_1 = require("../util/file");
 const localize = nls.loadMessageBundle(__filename);
 class MarkdownPreview {
-    constructor(webview, resource, locked, _contentProvider, _previewConfigurations, _logger, topmostLineMonitor) {
+    constructor(webview, resource, locked, _contentProvider, _previewConfigurations, _logger, topmostLineMonitor, _contributions) {
         this._contentProvider = _contentProvider;
         this._previewConfigurations = _previewConfigurations;
         this._logger = _logger;
+        this._contributions = _contributions;
         this.line = undefined;
         this.disposables = [];
         this.firstUpdate = true;
@@ -76,11 +77,12 @@ class MarkdownPreview {
             }
         }, null, this.disposables);
     }
-    static async revive(webview, state, contentProvider, previewConfigurations, logger, topmostLineMonitor) {
+    static async revive(webview, state, contentProvider, previewConfigurations, logger, topmostLineMonitor, contributions) {
         const resource = vscode.Uri.parse(state.resource);
         const locked = state.locked;
         const line = state.line;
-        const preview = new MarkdownPreview(webview, resource, locked, contentProvider, previewConfigurations, logger, topmostLineMonitor);
+        const preview = new MarkdownPreview(webview, resource, locked, contentProvider, previewConfigurations, logger, topmostLineMonitor, contributions);
+        preview.editor.webview.options = MarkdownPreview.getWebviewOptions(resource, contributions);
         if (!isNaN(line)) {
             preview.line = line;
         }
@@ -88,13 +90,8 @@ class MarkdownPreview {
         return preview;
     }
     static create(resource, previewColumn, locked, contentProvider, previewConfigurations, logger, topmostLineMonitor, contributions) {
-        const webview = vscode.window.createWebviewPanel(MarkdownPreview.viewType, MarkdownPreview.getPreviewTitle(resource, locked), previewColumn, {
-            enableScripts: true,
-            enableCommandUris: true,
-            enableFindWidget: true,
-            localResourceRoots: MarkdownPreview.getLocalResourceRoots(resource, contributions)
-        });
-        return new MarkdownPreview(webview, resource, locked, contentProvider, previewConfigurations, logger, topmostLineMonitor);
+        const webview = vscode.window.createWebviewPanel(MarkdownPreview.viewType, MarkdownPreview.getPreviewTitle(resource, locked), previewColumn, Object.assign({ enableFindWidget: true }, MarkdownPreview.getWebviewOptions(resource, contributions)));
+        return new MarkdownPreview(webview, resource, locked, contentProvider, previewConfigurations, logger, topmostLineMonitor, contributions);
     }
     get resource() {
         return this._resource;
@@ -151,9 +148,6 @@ class MarkdownPreview {
     }
     get position() {
         return this.editor.viewColumn;
-    }
-    isWebviewOf(webview) {
-        return this.editor === webview;
     }
     matchesResource(otherResource, otherPosition, otherLocked) {
         if (this.position !== otherPosition) {
@@ -223,8 +217,16 @@ class MarkdownPreview {
         const content = await this._contentProvider.provideTextDocumentContent(document, this._previewConfigurations, this.line, this.state);
         if (this._resource === resource) {
             this.editor.title = MarkdownPreview.getPreviewTitle(this._resource, this._locked);
+            this.editor.webview.options = MarkdownPreview.getWebviewOptions(resource, this._contributions);
             this.editor.webview.html = content;
         }
+    }
+    static getWebviewOptions(resource, contributions) {
+        return {
+            enableScripts: true,
+            enableCommandUris: true,
+            localResourceRoots: MarkdownPreview.getLocalResourceRoots(resource, contributions)
+        };
     }
     static getLocalResourceRoots(resource, contributions) {
         const baseRoots = contributions.previewResourceRoots;
@@ -265,4 +267,4 @@ class MarkdownPreview {
 }
 MarkdownPreview.viewType = 'markdown.preview';
 exports.MarkdownPreview = MarkdownPreview;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/24f62626b222e9a8313213fb64b10d741a326288/extensions\markdown-language-features\out/features\preview.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/0f080e5267e829de46638128001aeb7ca2d6d50e/extensions\markdown-language-features\out/features\preview.js.map

@@ -204,11 +204,23 @@ function getSettings() {
                 settings.json.schemas.push(schemaSetting);
             }
             let fileMatches = setting.fileMatch;
+            let resultingFileMatches = schemaSetting.fileMatch;
             if (Array.isArray(fileMatches)) {
                 if (fileMatchPrefix) {
-                    fileMatches = fileMatches.map(m => fileMatchPrefix + m);
+                    for (let fileMatch of fileMatches) {
+                        if (fileMatch[0] === '/') {
+                            resultingFileMatches.push(fileMatchPrefix + fileMatch);
+                            resultingFileMatches.push(fileMatchPrefix + '/*' + fileMatch);
+                        }
+                        else {
+                            resultingFileMatches.push(fileMatchPrefix + '/' + fileMatch);
+                            resultingFileMatches.push(fileMatchPrefix + '/*/' + fileMatch);
+                        }
+                    }
                 }
-                schemaSetting.fileMatch.push(...fileMatches);
+                else {
+                    resultingFileMatches.push(...fileMatches);
+                }
             }
             if (setting.schema) {
                 schemaSetting.schema = setting.schema;
@@ -228,10 +240,10 @@ function getSettings() {
             let folderSchemas = schemaConfigInfo.workspaceFolderValue;
             if (Array.isArray(folderSchemas)) {
                 let folderPath = folderUri.toString();
-                if (folderPath[folderPath.length - 1] !== '/') {
-                    folderPath = folderPath + '/';
+                if (folderPath[folderPath.length - 1] === '/') {
+                    folderPath = folderPath.substr(0, folderPath.length - 1);
                 }
-                collectSchemaSettings(folderSchemas, folderUri.fsPath, folderPath + '*');
+                collectSchemaSettings(folderSchemas, folderUri.fsPath, folderPath);
             }
         }
     }
@@ -260,4 +272,4 @@ function getPackageInfo(context) {
     }
     return void 0;
 }
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/24f62626b222e9a8313213fb64b10d741a326288/extensions\json-language-features\client\out/jsonMain.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/0f080e5267e829de46638128001aeb7ca2d6d50e/extensions\json-language-features\client\out/jsonMain.js.map

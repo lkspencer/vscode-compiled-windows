@@ -8,7 +8,7 @@ const vscode_1 = require("vscode");
 const typeConverters = require("./typeConverters");
 function getEditForCodeAction(client, action) {
     return action.changes && action.changes.length
-        ? typeConverters.WorkspaceEdit.fromFromFileCodeEdits(client, action.changes)
+        ? typeConverters.WorkspaceEdit.fromFileCodeEdits(client, action.changes)
         : undefined;
 }
 exports.getEditForCodeAction = getEditForCodeAction;
@@ -34,4 +34,4 @@ async function applyCodeActionCommands(client, action) {
     return true;
 }
 exports.applyCodeActionCommands = applyCodeActionCommands;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/24f62626b222e9a8313213fb64b10d741a326288/extensions\typescript-language-features\out/utils\codeAction.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/0f080e5267e829de46638128001aeb7ca2d6d50e/extensions\typescript-language-features\out/utils\codeAction.js.map

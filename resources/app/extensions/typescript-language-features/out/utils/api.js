@@ -3,21 +3,17 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 const semver = require("semver");
 const nls = require("vscode-nls");
 const localize = nls.loadMessageBundle(__filename);
-const memoize_1 = require("./memoize");
 class API {
     constructor(versionString, version) {
         this.versionString = versionString;
         this.version = version;
+    }
+    static fromSimpleString(value) {
+        return new API(value, value);
     }
     static fromVersionString(versionString) {
         let version = semver.valid(versionString);
@@ -31,103 +27,27 @@ class API {
         }
         return new API(versionString, version);
     }
-    has203Features() {
-        return semver.gte(this.version, '2.0.3');
-    }
-    has206Features() {
-        return semver.gte(this.version, '2.0.6');
-    }
-    has208Features() {
-        return semver.gte(this.version, '2.0.8');
-    }
-    has213Features() {
-        return semver.gte(this.version, '2.1.3');
-    }
-    has220Features() {
-        return semver.gte(this.version, '2.2.0');
-    }
-    has222Features() {
-        return semver.gte(this.version, '2.2.2');
-    }
-    has230Features() {
-        return semver.gte(this.version, '2.3.0');
-    }
-    has234Features() {
-        return semver.gte(this.version, '2.3.4');
-    }
-    has240Features() {
-        return semver.gte(this.version, '2.4.0');
-    }
-    has250Features() {
-        return semver.gte(this.version, '2.5.0');
-    }
-    has260Features() {
-        return semver.gte(this.version, '2.6.0');
-    }
-    has262Features() {
-        return semver.gte(this.version, '2.6.2');
-    }
-    has270Features() {
-        return semver.gte(this.version, '2.7.0');
-    }
-    has280Features() {
-        return semver.gte(this.version, '2.8.0');
-    }
-    has290Features() {
-        return semver.gte(this.version, '2.9.0');
-    }
-    has291Features() {
-        return semver.gte(this.version, '2.9.1');
+    gte(other) {
+        return semver.gte(this.version, other.version);
     }
 }
-API.defaultVersion = new API('1.0.0', '1.0.0');
-__decorate([
-    memoize_1.memoize
-], API.prototype, "has203Features", null);
-__decorate([
-    memoize_1.memoize
-], API.prototype, "has206Features", null);
-__decorate([
-    memoize_1.memoize
-], API.prototype, "has208Features", null);
-__decorate([
-    memoize_1.memoize
-], API.prototype, "has213Features", null);
-__decorate([
-    memoize_1.memoize
-], API.prototype, "has220Features", null);
-__decorate([
-    memoize_1.memoize
-], API.prototype, "has222Features", null);
-__decorate([
-    memoize_1.memoize
-], API.prototype, "has230Features", null);
-__decorate([
-    memoize_1.memoize
-], API.prototype, "has234Features", null);
-__decorate([
-    memoize_1.memoize
-], API.prototype, "has240Features", null);
-__decorate([
-    memoize_1.memoize
-], API.prototype, "has250Features", null);
-__decorate([
-    memoize_1.memoize
-], API.prototype, "has260Features", null);
-__decorate([
-    memoize_1.memoize
-], API.prototype, "has262Features", null);
-__decorate([
-    memoize_1.memoize
-], API.prototype, "has270Features", null);
-__decorate([
-    memoize_1.memoize
-], API.prototype, "has280Features", null);
-__decorate([
-    memoize_1.memoize
-], API.prototype, "has290Features", null);
-__decorate([
-    memoize_1.memoize
-], API.prototype, "has291Features", null);
+API.defaultVersion = API.fromSimpleString('1.0.0');
+API.v203 = API.fromSimpleString('2.0.3');
+API.v206 = API.fromSimpleString('2.0.6');
+API.v208 = API.fromSimpleString('2.0.8');
+API.v213 = API.fromSimpleString('2.1.3');
+API.v220 = API.fromSimpleString('2.2.0');
+API.v222 = API.fromSimpleString('2.2.2');
+API.v230 = API.fromSimpleString('2.3.0');
+API.v234 = API.fromSimpleString('2.3.4');
+API.v240 = API.fromSimpleString('2.4.0');
+API.v250 = API.fromSimpleString('2.5.0');
+API.v260 = API.fromSimpleString('2.6.0');
+API.v270 = API.fromSimpleString('2.7.0');
+API.v280 = API.fromSimpleString('2.8.0');
+API.v290 = API.fromSimpleString('2.9.0');
+API.v291 = API.fromSimpleString('2.9.1');
+API.v292 = API.fromSimpleString('2.9.2');
+API.v300 = API.fromSimpleString('3.0.0');
 exports.default = API;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/24f62626b222e9a8313213fb64b10d741a326288/extensions\typescript-language-features\out/utils\api.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/0f080e5267e829de46638128001aeb7ca2d6d50e/extensions\typescript-language-features\out/utils\api.js.map

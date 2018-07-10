@@ -11,12 +11,13 @@ class MarkdownFileTopmostLineMonitor {
     constructor() {
         this.disposables = [];
         this.pendingUpdates = new Map();
+        this.throttle = 50;
         this._onDidChangeTopmostLineEmitter = new vscode.EventEmitter();
         this.onDidChangeTopmostLine = this._onDidChangeTopmostLineEmitter.event;
         vscode.window.onDidChangeTextEditorVisibleRanges(event => {
             if (file_1.isMarkdownFile(event.textEditor.document)) {
                 const line = getVisibleLine(event.textEditor);
-                if (line) {
+                if (typeof line === 'number') {
                     this.updateLine(event.textEditor.document.uri, line);
                 }
             }
@@ -37,7 +38,7 @@ class MarkdownFileTopmostLineMonitor {
                     });
                     this.pendingUpdates.delete(key);
                 }
-            }, 50);
+            }, this.throttle);
         }
         this.pendingUpdates.set(key, line);
     }
@@ -60,4 +61,4 @@ function getVisibleLine(editor) {
     return lineNumber + progress;
 }
 exports.getVisibleLine = getVisibleLine;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/24f62626b222e9a8313213fb64b10d741a326288/extensions\markdown-language-features\out/util\topmostLineMonitor.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/0f080e5267e829de46638128001aeb7ca2d6d50e/extensions\markdown-language-features\out/util\topmostLineMonitor.js.map

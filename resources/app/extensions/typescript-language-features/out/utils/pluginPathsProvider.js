@@ -35,4 +35,4 @@ class TypeScriptPluginPathsProvider {
     }
 }
 exports.TypeScriptPluginPathsProvider = TypeScriptPluginPathsProvider;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/24f62626b222e9a8313213fb64b10d741a326288/extensions\typescript-language-features\out/utils\pluginPathsProvider.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/0f080e5267e829de46638128001aeb7ca2d6d50e/extensions\typescript-language-features\out/utils\pluginPathsProvider.js.map

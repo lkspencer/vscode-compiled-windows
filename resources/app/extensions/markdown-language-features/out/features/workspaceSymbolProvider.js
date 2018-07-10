@@ -25,8 +25,8 @@ class VSCodeWorkspaceMarkdownDocumentProvider {
     }
     async getAllMarkdownDocuments() {
         const resources = await vscode.workspace.findFiles('**/*.md', '**/node_modules/**');
-        const documents = await Promise.all(resources.map(resource => vscode.workspace.openTextDocument(resource).then(x => x, () => undefined)));
-        return documents.filter(doc => doc && file_1.isMarkdownFile(doc));
+        const docs = await Promise.all(resources.map(doc => this.getMarkdownDocument(doc)));
+        return docs.filter(doc => !!doc);
     }
     get onDidChangeMarkdownDocument() {
         this.ensureWatcher();
@@ -46,14 +46,14 @@ class VSCodeWorkspaceMarkdownDocumentProvider {
         }
         this._watcher = vscode.workspace.createFileSystemWatcher('**/*.md');
         this._watcher.onDidChange(async (resource) => {
-            const document = await vscode.workspace.openTextDocument(resource);
-            if (file_1.isMarkdownFile(document)) {
+            const document = await this.getMarkdownDocument(resource);
+            if (document) {
                 this._onDidChangeMarkdownDocumentEmitter.fire(document);
             }
         }, null, this._disposables);
         this._watcher.onDidCreate(async (resource) => {
-            const document = await vscode.workspace.openTextDocument(resource);
-            if (file_1.isMarkdownFile(document)) {
+            const document = await this.getMarkdownDocument(resource);
+            if (document) {
                 this._onDidCreateMarkdownDocumentEmitter.fire(document);
             }
         }, null, this._disposables);
@@ -65,6 +65,10 @@ class VSCodeWorkspaceMarkdownDocumentProvider {
                 this._onDidChangeMarkdownDocumentEmitter.fire(e.document);
             }
         }, null, this._disposables);
+    }
+    async getMarkdownDocument(resource) {
+        const doc = await vscode.workspace.openTextDocument(resource);
+        return doc && file_1.isMarkdownFile(doc) ? doc : undefined;
     }
 }
 class MarkdownWorkspaceSymbolProvider {
@@ -88,9 +92,9 @@ class MarkdownWorkspaceSymbolProvider {
         return allSymbols.filter(symbolInformation => symbolInformation.name.toLowerCase().indexOf(query.toLowerCase()) !== -1);
     }
     async populateSymbolCache() {
-        const markDownDocumentUris = await this._workspaceMarkdownDocumentProvider.getAllMarkdownDocuments();
-        for (const document of markDownDocumentUris) {
-            this._symbolCache.set(document.fileName, this.getSymbols(document));
+        const markdownDocumentUris = await this._workspaceMarkdownDocumentProvider.getAllMarkdownDocuments();
+        for (const document of markdownDocumentUris) {
+            this._symbolCache.set(document.uri.fsPath, this.getSymbols(document));
         }
     }
     dispose() {
@@ -98,15 +102,15 @@ class MarkdownWorkspaceSymbolProvider {
     }
     getSymbols(document) {
         return lazy_1.lazy(async () => {
-            return this._symbolProvider.provideDocumentSymbols(document);
+            return this._symbolProvider.provideDocumentSymbolInformation(document);
         });
     }
     onDidChangeDocument(document) {
-        this._symbolCache.set(document.fileName, this.getSymbols(document));
+        this._symbolCache.set(document.uri.fsPath, this.getSymbols(document));
     }
     onDidDeleteDocument(resource) {
         this._symbolCache.delete(resource.fsPath);
     }
 }
 exports.default = MarkdownWorkspaceSymbolProvider;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/24f62626b222e9a8313213fb64b10d741a326288/extensions\markdown-language-features\out/features\workspaceSymbolProvider.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/0f080e5267e829de46638128001aeb7ca2d6d50e/extensions\markdown-language-features\out/features\workspaceSymbolProvider.js.map

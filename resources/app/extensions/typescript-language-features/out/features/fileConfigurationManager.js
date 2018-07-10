@@ -6,6 +6,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const vscode_1 = require("vscode");
 const languageIds = require("../utils/languageModeIds");
+const api_1 = require("../utils/api");
 function objsAreEqual(a, b) {
     let keys = Object.keys(a);
     for (let i = 0; i < keys.length; i++) {
@@ -50,7 +51,7 @@ class FileConfigurationManager {
         }
     }
     async ensureConfigurationOptions(document, options, token) {
-        const file = this.client.normalizePath(document.uri);
+        const file = this.client.toPath(document.uri);
         if (!file) {
             return;
         }
@@ -99,7 +100,7 @@ class FileConfigurationManager {
         };
     }
     getPreferences(document) {
-        if (!this.client.apiVersion.has290Features()) {
+        if (!this.client.apiVersion.gte(api_1.default.v290)) {
             return {};
         }
         const preferences = vscode_1.workspace.getConfiguration(isTypeScriptDocument(document) ? 'typescript.preferences' : 'javascript.preferences', document.uri);
@@ -128,4 +129,4 @@ function getImportModuleSpecifierPreference(config) {
 function isTypeScriptDocument(document) {
     return document.languageId === languageIds.typescript || document.languageId === languageIds.typescriptreact;
 }
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/24f62626b222e9a8313213fb64b10d741a326288/extensions\typescript-language-features\out/features\fileConfigurationManager.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/0f080e5267e829de46638128001aeb7ca2d6d50e/extensions\typescript-language-features\out/features\fileConfigurationManager.js.map

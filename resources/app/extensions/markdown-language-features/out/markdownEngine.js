@@ -33,11 +33,11 @@ class MarkdownEngine {
                     }
                     if (lang && hljs.getLanguage(lang)) {
                         try {
-                            return `<pre class="hljs"><code><div>${hljs.highlight(lang, str, true).value}</div></code></pre>`;
+                            return `<div>${hljs.highlight(lang, str, true).value}</div>`;
                         }
                         catch (error) { }
                     }
-                    return `<pre class="hljs"><code><div>${this.md.utils.escapeHtml(str)}</div></code></pre>`;
+                    return `<code><div>${this.md.utils.escapeHtml(str)}</div></code>`;
                 }
             }).use(mdnh, {
                 slugify: (header) => this.slugifier.fromHeading(header).value
@@ -45,9 +45,10 @@ class MarkdownEngine {
             for (const plugin of this.extensionPreviewResourceProvider.markdownItPlugins) {
                 this.usePlugin(await plugin);
             }
-            for (const renderName of ['paragraph_open', 'heading_open', 'image', 'code_block', 'blockquote_open', 'list_item_open']) {
+            for (const renderName of ['paragraph_open', 'heading_open', 'image', 'code_block', 'fence', 'blockquote_open', 'list_item_open']) {
                 this.addLineNumberRenderer(this.md, renderName);
             }
+            this.addFencedRenderer(this.md);
             this.addLinkNormalizer(this.md);
             this.addLinkValidator(this.md);
         }
@@ -107,6 +108,16 @@ class MarkdownEngine {
             }
         };
     }
+    addFencedRenderer(md) {
+        const original = md.renderer.rules['fenced'];
+        md.renderer.rules['fenced'] = (tokens, idx, options, env, self) => {
+            const token = tokens[idx];
+            if (token.map && token.map.length) {
+                token.attrJoin('class', 'hljs');
+            }
+            return original(tokens, idx, options, env, self);
+        };
+    }
     addLinkNormalizer(md) {
         const normalizeLink = md.normalizeLink;
         md.normalizeLink = (link) => {
@@ -152,4 +163,4 @@ class MarkdownEngine {
     }
 }
 exports.MarkdownEngine = MarkdownEngine;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/24f62626b222e9a8313213fb64b10d741a326288/extensions\markdown-language-features\out/markdownEngine.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/0f080e5267e829de46638128001aeb7ca2d6d50e/extensions\markdown-language-features\out/markdownEngine.js.map

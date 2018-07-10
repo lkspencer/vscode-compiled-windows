@@ -41,23 +41,13 @@ class TypeScriptBaseCodeLensProvider {
     constructor(client, cachedResponse) {
         this.client = client;
         this.cachedResponse = cachedResponse;
-        this.enabled = true;
         this.onDidChangeCodeLensesEmitter = new vscode_1.EventEmitter();
     }
     get onDidChangeCodeLenses() {
         return this.onDidChangeCodeLensesEmitter.event;
     }
-    setEnabled(enabled) {
-        if (this.enabled !== enabled) {
-            this.enabled = enabled;
-            this.onDidChangeCodeLensesEmitter.fire();
-        }
-    }
     async provideCodeLenses(document, token) {
-        if (!this.enabled) {
-            return [];
-        }
-        const filepath = this.client.normalizePath(document.uri);
+        const filepath = this.client.toPath(document.uri);
         if (!filepath) {
             return [];
         }
@@ -87,14 +77,15 @@ class TypeScriptBaseCodeLensProvider {
         }
         (item.childItems || []).forEach(child => this.walkNavTree(document, child, item, results));
     }
-    /**
-     * TODO: TS currently requires the position for 'references 'to be inside of the identifer
-     * Massage the range to make sure this is the case
-     */
     getSymbolRange(document, item) {
         if (!item) {
             return null;
         }
+        // TS 3.0+ provides a span for just the symbol
+        if (item.nameSpan) {
+            return typeConverters.Range.fromTextSpan(item.nameSpan);
+        }
+        // In older versions, we have to calculate this manually. See #23924
         const span = item.spans && item.spans[0];
         if (!span) {
             return null;
@@ -109,4 +100,4 @@ class TypeScriptBaseCodeLensProvider {
     }
 }
 exports.TypeScriptBaseCodeLensProvider = TypeScriptBaseCodeLensProvider;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/24f62626b222e9a8313213fb64b10d741a326288/extensions\typescript-language-features\out/features\baseCodeLensProvider.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/0f080e5267e829de46638128001aeb7ca2d6d50e/extensions\typescript-language-features\out/features\baseCodeLensProvider.js.map

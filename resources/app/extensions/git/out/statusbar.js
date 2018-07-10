@@ -47,7 +47,10 @@ class SyncStatusBar {
         this._onDidChange.fire();
     }
     onOperationsChange() {
-        this.state = Object.assign({}, this.state, { isSyncRunning: this.repository.operations.isRunning(repository_1.Operation.Sync) });
+        const isSyncRunning = this.repository.operations.isRunning(repository_1.Operation.Sync) ||
+            this.repository.operations.isRunning(repository_1.Operation.Push) ||
+            this.repository.operations.isRunning(repository_1.Operation.Pull);
+        this.state = Object.assign({}, this.state, { isSyncRunning });
     }
     onModelChange() {
         this.state = Object.assign({}, this.state, { hasRemotes: this.repository.remotes.length > 0, HEAD: this.repository.HEAD });
@@ -128,4 +131,4 @@ class StatusBarCommands {
     }
 }
 exports.StatusBarCommands = StatusBarCommands;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/24f62626b222e9a8313213fb64b10d741a326288/extensions\git\out/statusbar.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/0f080e5267e829de46638128001aeb7ca2d6d50e/extensions\git\out/statusbar.js.map

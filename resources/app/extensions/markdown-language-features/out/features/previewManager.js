@@ -10,28 +10,28 @@ const topmostLineMonitor_1 = require("../util/topmostLineMonitor");
 const preview_1 = require("./preview");
 const previewConfig_1 = require("./previewConfig");
 class MarkdownPreviewManager {
-    constructor(contentProvider, logger, contributions) {
-        this.contentProvider = contentProvider;
-        this.logger = logger;
-        this.contributions = contributions;
-        this.topmostLineMonitor = new topmostLineMonitor_1.MarkdownFileTopmostLineMonitor();
-        this.previewConfigurations = new previewConfig_1.MarkdownPreviewConfigurationManager();
-        this.previews = [];
-        this.activePreview = undefined;
-        this.disposables = [];
-        this.disposables.push(vscode.window.registerWebviewPanelSerializer(preview_1.MarkdownPreview.viewType, this));
+    constructor(_contentProvider, _logger, _contributions) {
+        this._contentProvider = _contentProvider;
+        this._logger = _logger;
+        this._contributions = _contributions;
+        this._topmostLineMonitor = new topmostLineMonitor_1.MarkdownFileTopmostLineMonitor();
+        this._previewConfigurations = new previewConfig_1.MarkdownPreviewConfigurationManager();
+        this._previews = [];
+        this._activePreview = undefined;
+        this._disposables = [];
+        this._disposables.push(vscode.window.registerWebviewPanelSerializer(preview_1.MarkdownPreview.viewType, this));
     }
     dispose() {
-        dispose_1.disposeAll(this.disposables);
-        dispose_1.disposeAll(this.previews);
+        dispose_1.disposeAll(this._disposables);
+        dispose_1.disposeAll(this._previews);
     }
     refresh() {
-        for (const preview of this.previews) {
+        for (const preview of this._previews) {
             preview.refresh();
         }
     }
     updateConfiguration() {
-        for (const preview of this.previews) {
+        for (const preview of this._previews) {
             preview.updateConfiguration();
         }
     }
@@ -46,14 +46,14 @@ class MarkdownPreviewManager {
         preview.update(resource);
     }
     get activePreviewResource() {
-        return this.activePreview && this.activePreview.resource;
+        return this._activePreview && this._activePreview.resource;
     }
     toggleLock() {
-        const preview = this.activePreview;
+        const preview = this._activePreview;
         if (preview) {
             preview.toggleLock();
             // Close any previews that are now redundant, such as having two dynamic previews in the same editor group
-            for (const otherPreview of this.previews) {
+            for (const otherPreview of this._previews) {
                 if (otherPreview !== preview && preview.matches(otherPreview)) {
                     otherPreview.dispose();
                 }
@@ -61,33 +61,42 @@ class MarkdownPreviewManager {
         }
     }
     async deserializeWebviewPanel(webview, state) {
-        const preview = await preview_1.MarkdownPreview.revive(webview, state, this.contentProvider, this.previewConfigurations, this.logger, this.topmostLineMonitor);
+        const preview = await preview_1.MarkdownPreview.revive(webview, state, this._contentProvider, this._previewConfigurations, this._logger, this._topmostLineMonitor, this._contributions);
         this.registerPreview(preview);
     }
     getExistingPreview(resource, previewSettings) {
-        return this.previews.find(preview => preview.matchesResource(resource, previewSettings.previewColumn, previewSettings.locked));
+        return this._previews.find(preview => preview.matchesResource(resource, previewSettings.previewColumn, previewSettings.locked));
     }
     createNewPreview(resource, previewSettings) {
-        const preview = preview_1.MarkdownPreview.create(resource, previewSettings.previewColumn, previewSettings.locked, this.contentProvider, this.previewConfigurations, this.logger, this.topmostLineMonitor, this.contributions);
-        vscode.commands.executeCommand('setContext', MarkdownPreviewManager.markdownPreviewActiveContextKey, true);
+        const preview = preview_1.MarkdownPreview.create(resource, previewSettings.previewColumn, previewSettings.locked, this._contentProvider, this._previewConfigurations, this._logger, this._topmostLineMonitor, this._contributions);
+        this.setPreviewActiveContext(true);
+        this._activePreview = preview;
         return this.registerPreview(preview);
     }
     registerPreview(preview) {
-        this.previews.push(preview);
+        this._previews.push(preview);
         preview.onDispose(() => {
-            const existing = this.previews.indexOf(preview);
-            if (existing >= 0) {
-                this.previews.splice(existing, 1);
+            const existing = this._previews.indexOf(preview);
+            if (existing === -1) {
+                return;
+            }
+            this._previews.splice(existing, 1);
+            if (this._activePreview === preview) {
+                this.setPreviewActiveContext(false);
+                this._activePreview = undefined;
             }
         });
         preview.onDidChangeViewState(({ webviewPanel }) => {
-            dispose_1.disposeAll(this.previews.filter(otherPreview => preview !== otherPreview && preview.matches(otherPreview)));
-            vscode.commands.executeCommand('setContext', MarkdownPreviewManager.markdownPreviewActiveContextKey, webviewPanel.visible);
-            this.activePreview = webviewPanel.visible ? preview : undefined;
+            dispose_1.disposeAll(this._previews.filter(otherPreview => preview !== otherPreview && preview.matches(otherPreview)));
+            this.setPreviewActiveContext(webviewPanel.active);
+            this._activePreview = webviewPanel.active ? preview : undefined;
         });
         return preview;
+    }
+    setPreviewActiveContext(value) {
+        vscode.commands.executeCommand('setContext', MarkdownPreviewManager.markdownPreviewActiveContextKey, value);
     }
 }
 MarkdownPreviewManager.markdownPreviewActiveContextKey = 'markdownPreviewFocus';
 exports.MarkdownPreviewManager = MarkdownPreviewManager;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/24f62626b222e9a8313213fb64b10d741a326288/extensions\markdown-language-features\out/features\previewManager.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/0f080e5267e829de46638128001aeb7ca2d6d50e/extensions\markdown-language-features\out/features\previewManager.js.map

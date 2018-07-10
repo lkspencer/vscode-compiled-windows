@@ -76,4 +76,4 @@ async function getFoldsForDocument(contents) {
     const provider = new foldingProvider_1.default(engine_1.createNewMarkdownEngine());
     return await provider.provideFoldingRanges(doc, {}, new vscode.CancellationTokenSource().token);
 }
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/24f62626b222e9a8313213fb64b10d741a326288/extensions\markdown-language-features\out/test\foldingProvider.test.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/0f080e5267e829de46638128001aeb7ca2d6d50e/extensions\markdown-language-features\out/test\foldingProvider.test.js.map

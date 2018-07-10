@@ -8,7 +8,9 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const path = require("path");
 const fs = require("fs");
-const reAbsolute = /^\/+/;
+const reAbsolutePosix = /^\/+/;
+const reAbsoluteWin32 = /^\\+/;
+const reAbsolute = path.sep === '/' ? reAbsolutePosix : reAbsoluteWin32;
 /**
  * Locates given `filePath` on user’s file system and returns absolute path to it.
  * This method expects either URL, or relative/absolute path to resource
@@ -68,4 +70,4 @@ function tryFile(file) {
         });
     });
 }
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/24f62626b222e9a8313213fb64b10d741a326288/extensions\emmet\out/locateFile.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/0f080e5267e829de46638128001aeb7ca2d6d50e/extensions\emmet\out/locateFile.js.map

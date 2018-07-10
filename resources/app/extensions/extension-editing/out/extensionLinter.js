@@ -138,8 +138,8 @@ var ExtensionLinter = /** @class */ (function () {
     };
     ExtensionLinter.prototype.lintReadme = function () {
         return __awaiter(this, void 0, void 0, function () {
-            var _this = this;
             var _loop_1, this_1, _i, _a, document, state_1;
+            var _this = this;
             return __generator(this, function (_b) {
                 switch (_b.label) {
                     case 0:
@@ -433,4 +433,4 @@ function parseUri(src) {
         }
     }
 }
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/24f62626b222e9a8313213fb64b10d741a326288/extensions\extension-editing\out/extensionLinter.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/0f080e5267e829de46638128001aeb7ca2d6d50e/extensions\extension-editing\out/extensionLinter.js.map

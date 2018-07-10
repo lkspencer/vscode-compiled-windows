@@ -13,6 +13,7 @@ function getHTMLMode(htmlLanguageService, workspace) {
             return 'html';
         },
         doComplete: function (document, position, settings) {
+            var _a;
             if (settings === void 0) { settings = workspace.settings; }
             var options = settings && settings.html && settings.html.suggest;
             var doAutoComplete = settings && settings.html && settings.html.autoClosingTags;
@@ -26,7 +27,6 @@ function getHTMLMode(htmlLanguageService, workspace) {
             var completionList = htmlLanguageService.doComplete(document, position, htmlDocument, options);
             (_a = completionList.items).push.apply(_a, pathCompletionProposals);
             return completionList;
-            var _a;
         },
         doHover: function (document, position) {
             return htmlLanguageService.doHover(document, position, htmlDocuments.get(document));
@@ -87,4 +87,4 @@ function merge(src, dst) {
     }
     return dst;
 }
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/24f62626b222e9a8313213fb64b10d741a326288/extensions\html-language-features\server\out/modes\htmlMode.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/0f080e5267e829de46638128001aeb7ca2d6d50e/extensions\html-language-features\server\out/modes\htmlMode.js.map

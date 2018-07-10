@@ -74,7 +74,7 @@ function detectProtocolForAttach(config, logger) {
     }).catch(err => {
         return {
             reason: localize(1, null, err.toString()),
-            protocol: 'legacy'
+            protocol: 'inspector'
         };
     }).then(result => {
         cleanup();

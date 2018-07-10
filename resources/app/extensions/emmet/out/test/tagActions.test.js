@@ -28,6 +28,16 @@ suite('Tests for Emmet actions on html tags', () => {
 		<span/>
 	</div>
 	`;
+    let contentsWithTemplate = `
+	<script type="text/template">
+		<ul>
+			<li><span>Hello</span></li>
+			<li><span>There</span></li>
+			<div><li><span>Bye</span></li></div>
+		</ul>
+		<span/>
+	</script>
+	`;
     test('update tag with multiple cursors', () => {
         const expectedContents = `
 	<div class="hello">
@@ -44,6 +54,27 @@ suite('Tests for Emmet actions on html tags', () => {
                 new vscode_1.Selection(3, 17, 3, 17),
                 new vscode_1.Selection(4, 5, 4, 5),
                 new vscode_1.Selection(5, 35, 5, 35),
+            ];
+            return updateTag_1.updateTag('section').then(() => {
+                assert.equal(doc.getText(), expectedContents);
+                return Promise.resolve();
+            });
+        });
+    });
+    test('update tag with template', () => {
+        const expectedContents = `
+	<script type="text/template">
+		<section>
+			<li><span>Hello</span></li>
+			<li><span>There</span></li>
+			<div><li><span>Bye</span></li></div>
+		</section>
+		<span/>
+	</script>
+	`;
+        return testUtils_1.withRandomFileEditor(contentsWithTemplate, 'html', (editor, doc) => {
+            editor.selections = [
+                new vscode_1.Selection(2, 4, 2, 4),
             ];
             return updateTag_1.updateTag('section').then(() => {
                 assert.equal(doc.getText(), expectedContents);
@@ -74,6 +105,27 @@ suite('Tests for Emmet actions on html tags', () => {
             });
         });
     });
+    test('remove tag with template', () => {
+        const expectedContents = `
+	<script type="text/template">
+\t\t
+		<li><span>Hello</span></li>
+		<li><span>There</span></li>
+		<div><li><span>Bye</span></li></div>
+\t
+		<span/>
+	</script>
+	`;
+        return testUtils_1.withRandomFileEditor(contentsWithTemplate, 'html', (editor, doc) => {
+            editor.selections = [
+                new vscode_1.Selection(2, 4, 2, 4),
+            ];
+            return removeTag_1.removeTag().then(() => {
+                assert.equal(doc.getText(), expectedContents);
+                return Promise.resolve();
+            });
+        });
+    });
     test('split/join tag with mutliple cursors', () => {
         const expectedContents = `
 	<div class="hello">
@@ -86,6 +138,28 @@ suite('Tests for Emmet actions on html tags', () => {
 	</div>
 	`;
         return testUtils_1.withRandomFileEditor(contents, 'html', (editor, doc) => {
+            editor.selections = [
+                new vscode_1.Selection(3, 17, 3, 17),
+                new vscode_1.Selection(7, 5, 7, 5),
+            ];
+            return splitJoinTag_1.splitJoinTag().then(() => {
+                assert.equal(doc.getText(), expectedContents);
+                return Promise.resolve();
+            });
+        });
+    });
+    test('split/join tag with templates', () => {
+        const expectedContents = `
+	<script type="text/template">
+		<ul>
+			<li><span/></li>
+			<li><span>There</span></li>
+			<div><li><span>Bye</span></li></div>
+		</ul>
+		<span></span>
+	</script>
+	`;
+        return testUtils_1.withRandomFileEditor(contentsWithTemplate, 'html', (editor, doc) => {
             editor.selections = [
                 new vscode_1.Selection(3, 17, 3, 17),
                 new vscode_1.Selection(7, 5, 7, 5),
@@ -141,6 +215,27 @@ suite('Tests for Emmet actions on html tags', () => {
             return Promise.resolve();
         });
     });
+    test('match tag with template scripts', () => {
+        let templateScript = `
+	<script type="text/template">
+		<div>
+			Hello
+		</div>
+	</script>`;
+        return testUtils_1.withRandomFileEditor(templateScript, 'html', (editor, doc) => {
+            editor.selections = [
+                new vscode_1.Selection(2, 2, 2, 2),
+            ];
+            matchTag_1.matchTag();
+            editor.selections.forEach(selection => {
+                assert.equal(selection.active.line, 4);
+                assert.equal(selection.active.character, 4);
+                assert.equal(selection.anchor.line, 4);
+                assert.equal(selection.anchor.character, 4);
+            });
+            return Promise.resolve();
+        });
+    });
     test('merge lines of tag with children when empty selection', () => {
         const expectedContents = `
 	<div class="hello">
@@ -172,4 +267,4 @@ suite('Tests for Emmet actions on html tags', () => {
         });
     });
 });
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/24f62626b222e9a8313213fb64b10d741a326288/extensions\emmet\out/test\tagActions.test.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/0f080e5267e829de46638128001aeb7ca2d6d50e/extensions\emmet\out/test\tagActions.test.js.map

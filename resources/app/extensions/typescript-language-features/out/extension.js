@@ -5,27 +5,26 @@
  *--------------------------------------------------------------------------------------------*/
 Object.defineProperty(exports, "__esModule", { value: true });
 const vscode = require("vscode");
-const commandManager_1 = require("./utils/commandManager");
-const typeScriptServiceClientHost_1 = require("./typeScriptServiceClientHost");
 const commands = require("./commands");
-const taskProvider_1 = require("./features/taskProvider");
+const languageConfiguration_1 = require("./features/languageConfiguration");
+const task_1 = require("./features/task");
+const typeScriptServiceClientHost_1 = require("./typeScriptServiceClientHost");
+const commandManager_1 = require("./utils/commandManager");
+const fileSchemes = require("./utils/fileSchemes");
+const languageDescription_1 = require("./utils/languageDescription");
+const lazy_1 = require("./utils/lazy");
+const logDirectoryProvider_1 = require("./utils/logDirectoryProvider");
+const managedFileContext_1 = require("./utils/managedFileContext");
 const plugins_1 = require("./utils/plugins");
 const ProjectStatus = require("./utils/projectStatus");
-const languageModeIds = require("./utils/languageModeIds");
-const languageConfigurations = require("./utils/languageConfigurations");
-const languageDescription_1 = require("./utils/languageDescription");
-const managedFileContext_1 = require("./utils/managedFileContext");
-const lazy_1 = require("./utils/lazy");
-const fileSchemes = require("./utils/fileSchemes");
-const logDirectoryProvider_1 = require("./utils/logDirectoryProvider");
 function activate(context) {
     const plugins = plugins_1.getContributedTypeScriptServerPlugins();
     const commandManager = new commandManager_1.CommandManager();
     context.subscriptions.push(commandManager);
     const lazyClientHost = createLazyClientHost(context, plugins, commandManager);
     registerCommands(commandManager, lazyClientHost);
-    context.subscriptions.push(new taskProvider_1.default(lazyClientHost.map(x => x.serviceClient)));
-    context.subscriptions.push(vscode.languages.setLanguageConfiguration(languageModeIds.jsxTags, languageConfigurations.jsxTags));
+    context.subscriptions.push(new task_1.default(lazyClientHost.map(x => x.serviceClient)));
+    context.subscriptions.push(new languageConfiguration_1.LanguageConfigurationManager());
     const supportedLanguage = [].concat.apply([], languageDescription_1.standardLanguageDescriptions.map(x => x.modeIds).concat(plugins.map(x => x.languages)));
     function didOpenTextDocument(textDocument) {
         if (isSupportedDocument(supportedLanguage, textDocument)) {
@@ -34,7 +33,7 @@ function activate(context) {
             // tslint:disable-next-line:no-unused-expression
             void lazyClientHost.value;
             context.subscriptions.push(new managedFileContext_1.default(resource => {
-                return lazyClientHost.value.serviceClient.normalizePath(resource);
+                return lazyClientHost.value.serviceClient.toPath(resource);
             }));
             return true;
         }
@@ -54,7 +53,7 @@ function createLazyClientHost(context, plugins, commandManager) {
         const clientHost = new typeScriptServiceClientHost_1.default(languageDescription_1.standardLanguageDescriptions, context.workspaceState, plugins, commandManager, logDirectoryProvider);
         context.subscriptions.push(clientHost);
         clientHost.serviceClient.onReady(() => {
-            context.subscriptions.push(ProjectStatus.create(clientHost.serviceClient, clientHost.serviceClient.telemetryReporter, path => new Promise(resolve => setTimeout(() => resolve(clientHost.handles(path)), 750)), context.workspaceState));
+            context.subscriptions.push(ProjectStatus.create(clientHost.serviceClient, clientHost.serviceClient.telemetryReporter));
         });
         return clientHost;
     });
@@ -74,4 +73,4 @@ function isSupportedDocument(supportedLanguage, document) {
     }
     return fileSchemes.isSupportedScheme(document.uri.scheme);
 }
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/24f62626b222e9a8313213fb64b10d741a326288/extensions\typescript-language-features\out/extension.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/0f080e5267e829de46638128001aeb7ca2d6d50e/extensions\typescript-language-features\out/extension.js.map

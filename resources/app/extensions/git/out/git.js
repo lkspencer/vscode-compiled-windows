@@ -1026,13 +1026,30 @@ class Repository {
     getRemotes() {
         return __awaiter(this, void 0, void 0, function* () {
             const result = yield this.run(['remote', '--verbose']);
-            const regex = /^([^\s]+)\s+([^\s]+)\s/;
-            const rawRemotes = result.stdout.trim().split('\n')
-                .filter(b => !!b)
-                .map(line => regex.exec(line))
-                .filter(g => !!g)
-                .map((groups) => ({ name: groups[1], url: groups[2] }));
-            return util_1.uniqBy(rawRemotes, remote => remote.name);
+            const lines = result.stdout.trim().split('\n').filter(l => !!l);
+            const remotes = [];
+            for (const line of lines) {
+                const parts = line.split(/\s/);
+                const [name, url, type] = parts;
+                let remote = remotes.find(r => r.name === name);
+                if (!remote) {
+                    remote = { name, isReadOnly: false };
+                    remotes.push(remote);
+                }
+                if (/fetch/i.test(type)) {
+                    remote.fetchUrl = url;
+                }
+                else if (/push/i.test(type)) {
+                    remote.pushUrl = url;
+                }
+                else {
+                    remote.fetchUrl = url;
+                    remote.pushUrl = url;
+                }
+                // https://github.com/Microsoft/vscode/issues/45271
+                remote.isReadOnly = remote.pushUrl === undefined || remote.pushUrl === 'no_push';
+            }
+            return remotes;
         });
     }
     getBranch(name) {
@@ -1132,4 +1149,4 @@ class Repository {
     }
 }
 exports.Repository = Repository;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/24f62626b222e9a8313213fb64b10d741a326288/extensions\git\out/git.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/0f080e5267e829de46638128001aeb7ca2d6d50e/extensions\git\out/git.js.map

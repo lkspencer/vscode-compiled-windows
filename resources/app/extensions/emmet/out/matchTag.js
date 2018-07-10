@@ -29,7 +29,7 @@ function matchTag() {
 }
 exports.matchTag = matchTag;
 function getUpdatedSelections(editor, position, rootNode) {
-    let currentNode = util_1.getNode(rootNode, position, true);
+    let currentNode = util_1.getHtmlNode(editor.document, rootNode, position, true);
     if (!currentNode) {
         return;
     }
@@ -41,4 +41,4 @@ function getUpdatedSelections(editor, position, rootNode) {
     let finalPosition = position.isBeforeOrEqual(currentNode.open.end) ? currentNode.close.start.translate(0, 2) : currentNode.open.start.translate(0, 1);
     return new vscode.Selection(finalPosition, finalPosition);
 }
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/24f62626b222e9a8313213fb64b10d741a326288/extensions\emmet\out/matchTag.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/0f080e5267e829de46638128001aeb7ca2d6d50e/extensions\emmet\out/matchTag.js.map

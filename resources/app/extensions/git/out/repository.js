@@ -193,7 +193,8 @@ class Resource {
             case Status.INDEX_DELETED:
             case Status.DELETED:
                 return new vscode_1.ThemeColor('gitDecoration.deletedResourceForeground');
-            case Status.INDEX_ADDED: // todo@joh - special color?
+            case Status.INDEX_ADDED:
+                return new vscode_1.ThemeColor('gitDecoration.addedResourceForeground');
             case Status.INDEX_RENAMED: // todo@joh - special color?
             case Status.UNTRACKED:
                 return new vscode_1.ThemeColor('gitDecoration.untrackedResourceForeground');
@@ -472,6 +473,12 @@ class Repository {
         if (setting === 'off') {
             return;
         }
+        if (/^\s+$/.test(text)) {
+            return {
+                message: localize(22, null),
+                type: vscode_1.SourceControlInputBoxValidationType.Warning
+            };
+        }
         let start = 0, end;
         let match;
         const regex = /\r?\n/g;
@@ -485,13 +492,13 @@ class Repository {
                 return;
             }
             return {
-                message: localize(22, null, Repository.InputValidationLength - line.length),
+                message: localize(23, null, Repository.InputValidationLength - line.length),
                 type: vscode_1.SourceControlInputBoxValidationType.Information
             };
         }
         else {
             return {
-                message: localize(23, null, line.length - Repository.InputValidationLength, Repository.InputValidationLength),
+                message: localize(24, null, line.length - Repository.InputValidationLength, Repository.InputValidationLength),
                 type: vscode_1.SourceControlInputBoxValidationType.Warning
             };
         }
@@ -693,19 +700,23 @@ class Repository {
     }
     _sync(head, rebase) {
         return __awaiter(this, void 0, void 0, function* () {
-            let remote;
+            let remoteName;
             let pullBranch;
             let pushBranch;
             if (head.name && head.upstream) {
-                remote = head.upstream.remote;
+                remoteName = head.upstream.remote;
                 pullBranch = `${head.upstream.name}`;
                 pushBranch = `${head.name}:${head.upstream.name}`;
             }
             yield this.run(Operation.Sync, () => __awaiter(this, void 0, void 0, function* () {
-                yield this.repository.pull(rebase, remote, pullBranch);
-                const shouldPush = this.HEAD && typeof this.HEAD.ahead === 'number' ? this.HEAD.ahead > 0 : true;
+                yield this.repository.pull(rebase, remoteName, pullBranch);
+                const remote = this.remotes.find(r => r.name === remoteName);
+                if (remote && remote.isReadOnly) {
+                    return;
+                }
+                const shouldPush = this.HEAD && (typeof this.HEAD.ahead === 'number' ? this.HEAD.ahead > 0 : true);
                 if (shouldPush) {
-                    yield this.repository.push(remote, pushBranch);
+                    yield this.repository.push(remoteName, pushBranch);
                 }
             }));
         });
@@ -874,8 +885,8 @@ class Repository {
             const useIcons = !config.get('decorations.enabled', true);
             this.isRepositoryHuge = didHitLimit;
             if (didHitLimit && !shouldIgnore && !this.didWarnAboutLimit) {
-                const neverAgain = { title: localize(24, null) };
-                vscode_1.window.showWarningMessage(localize(25, null, this.repository.root), neverAgain).then(result => {
+                const neverAgain = { title: localize(25, null) };
+                vscode_1.window.showWarningMessage(localize(26, null, this.repository.root), neverAgain).then(result => {
                     if (result === neverAgain) {
                         config.update('ignoreLimitWarning', true, false);
                     }
@@ -1028,6 +1039,11 @@ class Repository {
             || !(this.HEAD.ahead || this.HEAD.behind)) {
             return '';
         }
+        const remoteName = this.HEAD && this.HEAD.remote || this.HEAD.upstream.remote;
+        const remote = this.remotes.find(r => r.name === remoteName);
+        if (remote && remote.isReadOnly) {
+            return `${this.HEAD.behind}↓`;
+        }
         return `${this.HEAD.behind}↓ ${this.HEAD.ahead}↑`;
     }
     dispose() {
@@ -1069,4 +1085,4 @@ __decorate([
     decorators_1.throttle
 ], Repository.prototype, "updateWhenIdleAndWait", null);
 exports.Repository = Repository;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/24f62626b222e9a8313213fb64b10d741a326288/extensions\git\out/repository.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/0f080e5267e829de46638128001aeb7ca2d6d50e/extensions\git\out/repository.js.map

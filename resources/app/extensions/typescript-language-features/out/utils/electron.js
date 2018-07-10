@@ -4,22 +4,18 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 Object.defineProperty(exports, "__esModule", { value: true });
+const temp_1 = require("./temp");
 const path = require("path");
 const os = require("os");
 const net = require("net");
 const cp = require("child_process");
-function makeRandomHexString(length) {
-    let chars = ['0', '1', '2', '3', '4', '5', '6', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'];
-    let result = '';
-    for (let i = 0; i < length; i++) {
-        const idx = Math.floor(chars.length * Math.random());
-        result += chars[idx];
-    }
-    return result;
+function getTempSock(prefix) {
+    const fullName = `vscode-${prefix}-${temp_1.makeRandomHexString(20)}`;
+    return temp_1.getTempFile(fullName + '.sock');
 }
-exports.makeRandomHexString = makeRandomHexString;
+exports.getTempSock = getTempSock;
 function generatePipeName() {
-    return getPipeName(makeRandomHexString(40));
+    return getPipeName(temp_1.makeRandomHexString(40));
 }
 function getPipeName(name) {
     const fullName = 'vscode-' + name;
@@ -29,11 +25,6 @@ function getPipeName(name) {
     // Mac/Unix: use socket file
     return path.join(os.tmpdir(), fullName + '.sock');
 }
-function getTempFile(name) {
-    const fullName = 'vscode-' + name;
-    return path.join(os.tmpdir(), fullName + '.sock');
-}
-exports.getTempFile = getTempFile;
 function generatePatchedEnv(env, stdInPipeName, stdOutPipeName, stdErrPipeName) {
     const newEnv = Object.assign({}, env);
     // Set the two unique pipe names and the electron flag as process env
@@ -96,7 +87,7 @@ function fork(modulePath, args, options, logger, callback) {
         stdErrServer.close();
     };
     // Create the process
-    logger.info('Forking TSServer', `PATH: ${newEnv['PATH']}`);
+    logger.info('Forking TSServer', `PATH: ${newEnv['PATH']} `);
     const bootstrapperPath = require.resolve('./electronForkStart');
     childProcess = cp.fork(bootstrapperPath, [modulePath].concat(args), {
         silent: true,
@@ -114,4 +105,4 @@ function fork(modulePath, args, options, logger, callback) {
     });
 }
 exports.fork = fork;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/24f62626b222e9a8313213fb64b10d741a326288/extensions\typescript-language-features\out/utils\electron.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/0f080e5267e829de46638128001aeb7ca2d6d50e/extensions\typescript-language-features\out/utils\electron.js.map

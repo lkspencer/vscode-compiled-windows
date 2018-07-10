@@ -234,6 +234,35 @@ suite('Tests for Toggle Comment action from Emmet (HTML)', () => {
             });
         });
     });
+    test('toggle comment within script template', () => {
+        const templateContents = `
+	<script type="text/template">
+		<li><span>Hello</span></li>
+		<li><!--<span>There</span>--></li>
+		<div><li><span>Bye</span></li></div>
+		<span/>
+	</script>
+	`;
+        const expectedContents = `
+	<script type="text/template">
+		<!--<li><span>Hello</span></li>-->
+		<li><span>There</span></li>
+		<div><li><!--<span>Bye</span>--></li></div>
+		<span/>
+	</script>
+	`;
+        return testUtils_1.withRandomFileEditor(templateContents, 'html', (editor, doc) => {
+            editor.selections = [
+                new vscode_1.Selection(2, 2, 2, 28),
+                new vscode_1.Selection(3, 17, 3, 17),
+                new vscode_1.Selection(4, 18, 4, 18),
+            ];
+            return toggleComment().then(() => {
+                assert.equal(doc.getText(), expectedContents);
+                return Promise.resolve();
+            });
+        });
+    });
 });
 suite('Tests for Toggle Comment action from Emmet (CSS)', () => {
     teardown(testUtils_1.closeAllEditors);
@@ -645,4 +674,4 @@ suite('Tests for Toggle Comment action from Emmet in nested css (SCSS)', () => {
         });
     });
 });
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/24f62626b222e9a8313213fb64b10d741a326288/extensions\emmet\out/test\toggleComment.test.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/0f080e5267e829de46638128001aeb7ca2d6d50e/extensions\emmet\out/test\toggleComment.test.js.map

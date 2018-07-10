@@ -5,22 +5,6 @@
  *--------------------------------------------------------------------------------------------*/
 Object.defineProperty(exports, "__esModule", { value: true });
 const vscode = require("vscode");
-function getViewColumn(sideBySide) {
-    const active = vscode.window.activeTextEditor;
-    if (!active) {
-        return vscode.ViewColumn.One;
-    }
-    if (!sideBySide) {
-        return active.viewColumn;
-    }
-    switch (active.viewColumn) {
-        case vscode.ViewColumn.One:
-            return vscode.ViewColumn.Two;
-        case vscode.ViewColumn.Two:
-            return vscode.ViewColumn.Three;
-    }
-    return active.viewColumn;
-}
 async function showPreview(webviewManager, telemetryReporter, uri, previewSettings) {
     let resource = uri;
     if (!(resource instanceof vscode.Uri)) {
@@ -39,7 +23,7 @@ async function showPreview(webviewManager, telemetryReporter, uri, previewSettin
     }
     webviewManager.preview(resource, {
         resourceColumn: (vscode.window.activeTextEditor && vscode.window.activeTextEditor.viewColumn) || vscode.ViewColumn.One,
-        previewColumn: getViewColumn(!!previewSettings.sideBySide) || vscode.ViewColumn.Active,
+        previewColumn: previewSettings.sideBySide ? vscode.ViewColumn.Beside : vscode.ViewColumn.Active,
         locked: !!previewSettings.locked
     });
     telemetryReporter.sendTelemetryEvent('openPreview', {
@@ -91,4 +75,4 @@ class ShowLockedPreviewToSideCommand {
     }
 }
 exports.ShowLockedPreviewToSideCommand = ShowLockedPreviewToSideCommand;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/24f62626b222e9a8313213fb64b10d741a326288/extensions\markdown-language-features\out/commands\showPreview.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/0f080e5267e829de46638128001aeb7ca2d6d50e/extensions\markdown-language-features\out/commands\showPreview.js.map

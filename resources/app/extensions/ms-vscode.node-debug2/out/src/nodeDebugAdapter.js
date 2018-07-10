@@ -484,7 +484,8 @@ class NodeDebugAdapter extends vscode_chrome_debug_core_1.ChromeDebugAdapter {
                     this._continueAfterConfigDone = false;
                 }
                 yield this.getNodeProcessDetailsIfNeeded();
-                return this.sendInitializedEvent();
+                yield this.sendInitializedEvent();
+                return { didPause: true };
             }
             else {
                 return _super("onPaused").call(this, notification, expectingStopReason);

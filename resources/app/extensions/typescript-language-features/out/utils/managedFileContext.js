@@ -9,7 +9,6 @@ const languageModeIds_1 = require("./languageModeIds");
 /**
  * When clause context set when the current file is managed by vscode's built-in typescript extension.
  */
-const isManagedFile_contextName = 'typescript.isManagedFile';
 class ManagedFileContextManager {
     constructor(normalizePath) {
         this.normalizePath = normalizePath;
@@ -30,9 +29,10 @@ class ManagedFileContextManager {
         if (newValue === this.isInManagedFileContext) {
             return;
         }
-        vscode.commands.executeCommand('setContext', isManagedFile_contextName, newValue);
+        vscode.commands.executeCommand('setContext', ManagedFileContextManager.contextName, newValue);
         this.isInManagedFileContext = newValue;
     }
 }
+ManagedFileContextManager.contextName = 'typescript.isManagedFile';
 exports.default = ManagedFileContextManager;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/24f62626b222e9a8313213fb64b10d741a326288/extensions\typescript-language-features\out/utils\managedFileContext.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/0f080e5267e829de46638128001aeb7ca2d6d50e/extensions\typescript-language-features\out/utils\managedFileContext.js.map

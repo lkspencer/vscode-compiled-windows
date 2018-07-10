@@ -2,6 +2,14 @@
  * Copyright (C) Microsoft Corporation. All rights reserved.
  *--------------------------------------------------------*/
 'use strict';
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 const nls = require("vscode-nls");
 const vscode = require("vscode");
@@ -28,17 +36,18 @@ class LoadedScriptsProvider {
         this._onDidChangeTreeData = new vscode_1.EventEmitter();
         this.onDidChangeTreeData = this._onDidChangeTreeData.event;
         this._root = new RootTreeItem();
-        context.subscriptions.push(vscode.debug.onDidStartDebugSession(session => {
+        context.subscriptions.push(vscode.debug.onDidStartDebugSession((session) => __awaiter(this, void 0, void 0, function* () {
             const t = session ? session.type : undefined;
-            if (t === 'node' || t === 'node2' || t === 'extensionHost' || t === 'chrome') {
+            if (yield this.isSupportedDebugType(t, session)) {
+                vscode.commands.executeCommand('setContext', 'showLoadedScriptsExplorer', true);
                 this._root.add(session);
                 this._onDidChangeTreeData.fire(undefined);
             }
-        }));
+        })));
         let timeout;
-        context.subscriptions.push(vscode.debug.onDidReceiveDebugSessionCustomEvent(event => {
+        context.subscriptions.push(vscode.debug.onDidReceiveDebugSessionCustomEvent((event) => __awaiter(this, void 0, void 0, function* () {
             const t = (event.event === 'loadedSource' && event.session) ? event.session.type : undefined;
-            if (t === 'node' || t === 'node2' || t === 'extensionHost' || t === 'chrome') {
+            if (yield this.isSupportedDebugType(t, event.session)) {
                 const sessionRoot = this._root.add(event.session);
                 sessionRoot.addPath(event.body.source);
                 clearTimeout(timeout);
@@ -46,7 +55,7 @@ class LoadedScriptsProvider {
                     this._onDidChangeTreeData.fire(undefined);
                 }, 300);
             }
-        }));
+        })));
         context.subscriptions.push(vscode.debug.onDidTerminateDebugSession(session => {
             this._root.remove(session.id);
             this._onDidChangeTreeData.fire(undefined);
@@ -57,6 +66,18 @@ class LoadedScriptsProvider {
     }
     getTreeItem(node) {
         return node;
+    }
+    isSupportedDebugType(debugType, session) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (debugType === 'vslsShare') {
+                try {
+                    debugType = session ? yield session.customRequest('debugType', {}) : undefined;
+                }
+                catch (e) {
+                }
+            }
+            return debugType === 'node' || debugType === 'node2' || debugType === 'extensionHost' || debugType === 'chrome';
+        });
     }
 }
 exports.LoadedScriptsProvider = LoadedScriptsProvider;
@@ -89,7 +110,10 @@ class BaseTreeItem extends vscode_1.TreeItem {
         delete this._children[key];
     }
     compare(a, b) {
-        return a.label.localeCompare(b.label);
+        if (a.label && b.label) {
+            return a.label.localeCompare(b.label);
+        }
+        return 0;
     }
 }
 class RootTreeItem extends BaseTreeItem {
@@ -155,7 +179,7 @@ class SessionTreeItem extends BaseTreeItem {
             return item.folder.index;
         }
         // <...> come at the very end
-        if (/^<.+>$/.test(item.label)) {
+        if (item.label && /^<.+>$/.test(item.label)) {
             return 1000;
         }
         // everything else in between

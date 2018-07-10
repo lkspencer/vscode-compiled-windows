@@ -134,7 +134,7 @@ class NpmScriptsTreeDataProvider {
                 this.scriptNotValid(task);
                 return;
             }
-            vscode_1.workspace.executeTask(script.task);
+            vscode_1.tasks.executeTask(script.task);
         });
     }
     extractDebugArg(scripts, task) {
@@ -239,7 +239,7 @@ class NpmScriptsTreeDataProvider {
                 return;
             }
             let task = tasks_1.createTask('install', 'install', selection.folder.workspaceFolder, uri, []);
-            vscode_1.workspace.executeTask(task);
+            vscode_1.tasks.executeTask(task);
         });
     }
     openScript(selection) {
@@ -285,9 +285,9 @@ class NpmScriptsTreeDataProvider {
     getChildren(element) {
         return __awaiter(this, void 0, void 0, function* () {
             if (!this.taskTree) {
-                let tasks = yield vscode_1.workspace.fetchTasks({ type: 'npm' });
-                if (tasks) {
-                    this.taskTree = this.buildTaskTree(tasks);
+                let taskItems = yield vscode_1.tasks.fetchTasks({ type: 'npm' });
+                if (taskItems) {
+                    this.taskTree = this.buildTaskTree(taskItems);
                     if (this.taskTree.length === 0) {
                         this.taskTree = [new NoScripts()];
                     }
@@ -354,4 +354,4 @@ class NpmScriptsTreeDataProvider {
     }
 }
 exports.NpmScriptsTreeDataProvider = NpmScriptsTreeDataProvider;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/24f62626b222e9a8313213fb64b10d741a326288/extensions\npm\out/npmView.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/0f080e5267e829de46638128001aeb7ca2d6d50e/extensions\npm\out/npmView.js.map

@@ -14,13 +14,13 @@ var __assign = (this && this.__assign) || Object.assign || function(t) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var cp = require("child_process");
 var string_decoder_1 = require("string_decoder");
-var vscode_ripgrep_1 = require("vscode-ripgrep");
 var normalization_1 = require("./normalization");
+var ripgrep_1 = require("./ripgrep");
 var ripgrepHelpers_1 = require("./ripgrepHelpers");
 var ripgrepTextSearch_1 = require("./ripgrepTextSearch");
 var isMac = process.platform === 'darwin';
 // If vscode-ripgrep is in an .asar file, then the binary is unpacked.
-var rgDiskPath = vscode_ripgrep_1.rgPath.replace(/\bnode_modules\.asar\b/, 'node_modules.asar.unpacked');
+var rgDiskPath = ripgrep_1.rgPath.replace(/\bnode_modules\.asar\b/, 'node_modules.asar.unpacked');
 var RipgrepFileSearchEngine = /** @class */ (function () {
     function RipgrepFileSearchEngine(outputChannel) {
         var _this = this;
@@ -103,27 +103,32 @@ var RipgrepFileSearchEngine = /** @class */ (function () {
     };
     RipgrepFileSearchEngine.prototype.collectStdout = function (cmd, cb) {
         var _this = this;
-        var done = function (err, stdout, last) {
+        var onData = function (err, stdout, last) {
             if (err || last) {
-                done = function () { };
+                onData = function () { };
             }
             cb(err, stdout, last);
         };
-        this.forwardData(cmd.stdout, done);
+        if (cmd.stdout) {
+            this.forwardData(cmd.stdout, onData);
+        }
+        else {
+            this.outputChannel.appendLine('stdout is null');
+        }
         var stderr = this.collectData(cmd.stderr);
         var gotData = false;
         cmd.stdout.once('data', function () { return gotData = true; });
         cmd.on('error', function (err) {
-            done(err);
+            onData(err);
         });
         cmd.on('close', function (code) {
             // ripgrep returns code=1 when no results are found
             var stderrText, displayMsg;
             if (!gotData && (stderrText = _this.decodeData(stderr)) && (displayMsg = ripgrepTextSearch_1.rgErrorMsgForDisplay(stderrText))) {
-                done(new Error("command failed with error code " + code + ": " + displayMsg));
+                onData(new Error("command failed with error code " + code + ": " + displayMsg));
             }
             else {
-                done(null, '', true);
+                onData(null, '', true);
             }
         });
     };
@@ -186,4 +191,4 @@ function getRgArgs(options) {
     args.push('.');
     return args;
 }
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/24f62626b222e9a8313213fb64b10d741a326288/extensions\search-rg\out/ripgrepFileSearch.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/0f080e5267e829de46638128001aeb7ca2d6d50e/extensions\search-rg\out/ripgrepFileSearch.js.map

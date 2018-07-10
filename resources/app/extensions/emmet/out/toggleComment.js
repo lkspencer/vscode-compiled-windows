@@ -57,8 +57,8 @@ exports.toggleComment = toggleComment;
 function toggleCommentHTML(document, selection, rootNode) {
     const selectionStart = selection.isReversed ? selection.active : selection.anchor;
     const selectionEnd = selection.isReversed ? selection.anchor : selection.active;
-    let startNode = util_1.getNode(rootNode, selectionStart, true);
-    let endNode = util_1.getNode(rootNode, selectionEnd, true);
+    let startNode = util_1.getHtmlNode(document, rootNode, selectionStart, true);
+    let endNode = util_1.getHtmlNode(document, rootNode, selectionEnd, true);
     if (!startNode || !endNode) {
         return [];
     }
@@ -181,4 +181,4 @@ function adjustEndNodeCss(node, pos, rootNode) {
     }
     return newEndNode.end;
 }
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/24f62626b222e9a8313213fb64b10d741a326288/extensions\emmet\out/toggleComment.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/0f080e5267e829de46638128001aeb7ca2d6d50e/extensions\emmet\out/toggleComment.js.map

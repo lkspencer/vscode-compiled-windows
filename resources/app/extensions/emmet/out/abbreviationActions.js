@@ -8,7 +8,6 @@ const vscode = require("vscode");
 const util_1 = require("./util");
 const trimRegex = /[\u00a0]*[\d|#|\-|\*|\u2022]+\.?/;
 const hexColorRegex = /^#[\d,a-f,A-F]{0,6}$/;
-const allowedMimeTypesInScriptTag = ['text/html', 'text/plain', 'text/x-template', 'text/template'];
 const inlineElements = ['a', 'abbr', 'acronym', 'applet', 'b', 'basefont', 'bdo',
     'big', 'br', 'button', 'cite', 'code', 'del', 'dfn', 'em', 'font', 'i',
     'iframe', 'img', 'input', 'ins', 'kbd', 'label', 'map', 'object', 'q',
@@ -78,6 +77,7 @@ function doWrapping(individualLines, args) {
             const preceedingWhiteSpace = otherMatches ? otherMatches[1] : '';
             textToWrapInPreview = rangeToReplace.isSingleLine ? [textToReplace] : ['\n\t' + textToReplace.split('\n' + preceedingWhiteSpace).join('\n\t') + '\n'];
         }
+        textToWrapInPreview = textToWrapInPreview.map(e => e.replace(/(\$\d)/g, '\\$1'));
         return {
             previewRange: rangeToReplace,
             originalRange: rangeToReplace,
@@ -389,9 +389,7 @@ function isValidLocationForEmmetAbbreviation(document, rootNode, currentNode, sy
     let start = new vscode.Position(0, 0);
     if (currentHtmlNode) {
         if (currentHtmlNode.name === 'script') {
-            return (currentHtmlNode.attributes
-                && currentHtmlNode.attributes.some(x => x.name.toString() === 'type'
-                    && allowedMimeTypesInScriptTag.indexOf(x.value.toString()) > -1));
+            return util_1.isTemplateScript(currentHtmlNode);
         }
         const innerRange = util_1.getInnerRange(currentHtmlNode);
         // Fix for https://github.com/Microsoft/vscode/issues/28829
@@ -564,4 +562,4 @@ function getSyntaxFromArgs(args) {
     }
     return syntax;
 }
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/24f62626b222e9a8313213fb64b10d741a326288/extensions\emmet\out/abbreviationActions.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/0f080e5267e829de46638128001aeb7ca2d6d50e/extensions\emmet\out/abbreviationActions.js.map

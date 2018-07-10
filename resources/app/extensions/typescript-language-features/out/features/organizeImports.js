@@ -7,6 +7,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const vscode = require("vscode");
 const nls = require("vscode-nls");
 const typeconverts = require("../utils/typeConverters");
+const dependentRegistration_1 = require("../utils/dependentRegistration");
+const api_1 = require("../utils/api");
 const localize = nls.loadMessageBundle(__filename);
 class OrganizeImportsCommand {
     constructor(client) {
@@ -14,9 +16,6 @@ class OrganizeImportsCommand {
         this.id = OrganizeImportsCommand.Id;
     }
     async execute(file) {
-        if (!this.client.apiVersion.has280Features()) {
-            return false;
-        }
         const args = {
             scope: {
                 type: 'file',
@@ -29,7 +28,7 @@ class OrganizeImportsCommand {
         if (!response || !response.success) {
             return false;
         }
-        const edits = typeconverts.WorkspaceEdit.fromFromFileCodeEdits(this.client, response.body);
+        const edits = typeconverts.WorkspaceEdit.fromFileCodeEdits(this.client, response.body);
         return await vscode.workspace.applyEdit(edits);
     }
 }
@@ -44,10 +43,7 @@ class OrganizeImportsCodeActionProvider {
         commandManager.register(new OrganizeImportsCommand(client));
     }
     provideCodeActions(document, _range, _context, token) {
-        if (!this.client.apiVersion.has280Features()) {
-            return [];
-        }
-        const file = this.client.normalizePath(document.uri);
+        const file = this.client.toPath(document.uri);
         if (!file) {
             return [];
         }
@@ -57,5 +53,12 @@ class OrganizeImportsCodeActionProvider {
         return [action];
     }
 }
-exports.OrganizeImportsCodeActionProvider = OrganizeImportsCodeActionProvider;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/24f62626b222e9a8313213fb64b10d741a326288/extensions\typescript-language-features\out/features\organizeImports.js.map
+exports.OrganizeImportsCodeActionProvider = OrganizeImportsCodeActionProvider;
+function register(selector, client, commandManager, fileConfigurationManager) {
+    return new dependentRegistration_1.VersionDependentRegistration(client, api_1.default.v280, () => {
+        const organizeImportsProvider = new OrganizeImportsCodeActionProvider(client, commandManager, fileConfigurationManager);
+        return vscode.languages.registerCodeActionsProvider(selector, organizeImportsProvider, organizeImportsProvider.metadata);
+    });
+}
+exports.register = register;
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/0f080e5267e829de46638128001aeb7ca2d6d50e/extensions\typescript-language-features\out/features\organizeImports.js.map

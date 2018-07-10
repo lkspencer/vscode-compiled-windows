@@ -5,21 +5,19 @@
  *--------------------------------------------------------------------------------------------*/
 Object.defineProperty(exports, "__esModule", { value: true });
 const vscode = require("vscode");
+const resourceMap_1 = require("./resourceMap");
 class DiagnosticSet {
     constructor() {
-        this._map = Object.create(null);
+        this._map = new resourceMap_1.ResourceMap();
     }
     set(file, diagnostics) {
-        this._map[this.key(file)] = diagnostics;
+        this._map.set(file, diagnostics);
     }
     get(file) {
-        return this._map[this.key(file)] || [];
+        return this._map.get(file) || [];
     }
     clear() {
-        this._map = Object.create(null);
-    }
-    key(file) {
-        return file.toString(true);
+        this._map = new resourceMap_1.ResourceMap();
     }
 }
 exports.DiagnosticSet = DiagnosticSet;
@@ -33,7 +31,7 @@ const allDiagnosticKinds = [DiagnosticKind.Syntax, DiagnosticKind.Semantic, Diag
 class DiagnosticsManager {
     constructor(owner) {
         this._diagnostics = new Map();
-        this._pendingUpdates = Object.create(null);
+        this._pendingUpdates = new resourceMap_1.ResourceMap();
         this._validate = true;
         this._enableSuggestions = true;
         this.updateDelay = 50;
@@ -44,10 +42,10 @@ class DiagnosticsManager {
     }
     dispose() {
         this._currentDiagnostics.dispose();
-        for (const key of Object.keys(this._pendingUpdates)) {
-            clearTimeout(this._pendingUpdates[key]);
-            delete this._pendingUpdates[key];
+        for (const value of this._pendingUpdates.values) {
+            clearTimeout(value);
         }
+        this._pendingUpdates = new resourceMap_1.ResourceMap();
     }
     reInitialize() {
         this._currentDiagnostics.clear();
@@ -98,15 +96,14 @@ class DiagnosticsManager {
         return this._currentDiagnostics.get(file) || [];
     }
     scheduleDiagnosticsUpdate(file) {
-        const key = file.fsPath;
-        if (!this._pendingUpdates[key]) {
-            this._pendingUpdates[key] = setTimeout(() => this.updateCurrentDiagnostics(file), this.updateDelay);
+        if (!this._pendingUpdates.has(file)) {
+            this._pendingUpdates.set(file, setTimeout(() => this.updateCurrentDiagnostics(file), this.updateDelay));
         }
     }
     updateCurrentDiagnostics(file) {
-        if (this._pendingUpdates[file.fsPath]) {
-            clearTimeout(this._pendingUpdates[file.fsPath]);
-            delete this._pendingUpdates[file.fsPath];
+        if (this._pendingUpdates.has(file)) {
+            clearTimeout(this._pendingUpdates.get(file));
+            this._pendingUpdates.delete(file);
         }
         if (!this._validate) {
             return;
@@ -122,11 +119,11 @@ class DiagnosticsManager {
         return this._diagnostics.get(DiagnosticKind.Suggestion).get(file).filter(x => {
             if (!this._enableSuggestions) {
                 // Still show unused
-                return x.customTags && x.customTags.indexOf(vscode.DiagnosticTag.Unnecessary) !== -1;
+                return x.tags && x.tags.indexOf(vscode.DiagnosticTag.Unnecessary) !== -1;
             }
             return true;
         });
     }
 }
 exports.DiagnosticsManager = DiagnosticsManager;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/24f62626b222e9a8313213fb64b10d741a326288/extensions\typescript-language-features\out/features\diagnostics.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/0f080e5267e829de46638128001aeb7ca2d6d50e/extensions\typescript-language-features\out/features\diagnostics.js.map

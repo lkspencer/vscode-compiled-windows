@@ -531,9 +531,11 @@ class CommandCenter {
     }
     stage(...resourceStates) {
         return __awaiter(this, void 0, void 0, function* () {
+            this.outputChannel.appendLine(`git.stage ${resourceStates.length}`);
             resourceStates = resourceStates.filter(s => !!s);
             if (resourceStates.length === 0 || (resourceStates[0] && !(resourceStates[0].resourceUri instanceof vscode_1.Uri))) {
                 const resource = this.getSCMResource();
+                this.outputChannel.appendLine(`git.stage.getSCMResource ${resource ? resource.resourceUri.toString() : null}`);
                 if (!resource) {
                     return;
                 }
@@ -561,6 +563,7 @@ class CommandCenter {
             }
             const workingTree = selection.filter(s => s.resourceGroupType === repository_1.ResourceGroupType.WorkingTree);
             const scmResources = [...workingTree, ...resolvedConflicts, ...unresolvedConflicts];
+            this.outputChannel.appendLine(`git.stage.scmResources ${scmResources.length}`);
             if (!scmResources.length) {
                 return;
             }
@@ -660,13 +663,6 @@ class CommandCenter {
             }
             const originalUri = uri_1.toGitUri(modifiedUri, '~');
             const originalDocument = yield vscode_1.workspace.openTextDocument(originalUri);
-            const basename = path.basename(modifiedUri.fsPath);
-            const message = localize(21, null, basename);
-            const yes = localize(22, null);
-            const pick = yield vscode_1.window.showWarningMessage(message, { modal: true }, yes);
-            if (pick !== yes) {
-                return;
-            }
             const result = staging_1.applyLineChanges(originalDocument, modifiedDocument, changes);
             const edit = new vscode_1.WorkspaceEdit();
             edit.replace(modifiedUri, new vscode_1.Range(new vscode_1.Position(0, 0), modifiedDocument.lineAt(modifiedDocument.lineCount - 1).range.end), result);
@@ -744,20 +740,20 @@ class CommandCenter {
             }
             const untrackedCount = scmResources.reduce((s, r) => s + (r.type === repository_1.Status.UNTRACKED ? 1 : 0), 0);
             let message;
-            let yes = localize(23, null);
+            let yes = localize(21, null);
             if (scmResources.length === 1) {
                 if (untrackedCount > 0) {
-                    message = localize(24, null, path.basename(scmResources[0].resourceUri.fsPath));
-                    yes = localize(25, null);
+                    message = localize(22, null, path.basename(scmResources[0].resourceUri.fsPath));
+                    yes = localize(23, null);
                 }
                 else {
-                    message = localize(26, null, path.basename(scmResources[0].resourceUri.fsPath));
+                    message = localize(24, null, path.basename(scmResources[0].resourceUri.fsPath));
                 }
             }
             else {
-                message = localize(27, null, scmResources.length);
+                message = localize(25, null, scmResources.length);
                 if (untrackedCount > 0) {
-                    message = `${message}\n\n${localize(28, null, untrackedCount)}`;
+                    message = `${message}\n\n${localize(26, null, untrackedCount)}`;
                 }
             }
             const pick = yield vscode_1.window.showWarningMessage(message, { modal: true }, yes);
@@ -778,11 +774,11 @@ class CommandCenter {
             const untrackedResources = resources.filter(r => r.type === repository_1.Status.UNTRACKED || r.type === repository_1.Status.IGNORED);
             if (untrackedResources.length === 0) {
                 const message = resources.length === 1
-                    ? localize(29, null, path.basename(resources[0].resourceUri.fsPath))
-                    : localize(30, null, resources.length);
+                    ? localize(27, null, path.basename(resources[0].resourceUri.fsPath))
+                    : localize(28, null, resources.length);
                 const yes = resources.length === 1
-                    ? localize(31, null)
-                    : localize(32, null, resources.length);
+                    ? localize(29, null)
+                    : localize(30, null, resources.length);
                 const pick = yield vscode_1.window.showWarningMessage(message, { modal: true }, yes);
                 if (pick !== yes) {
                     return;
@@ -791,8 +787,8 @@ class CommandCenter {
                 return;
             }
             else if (resources.length === 1) {
-                const message = localize(33, null, path.basename(resources[0].resourceUri.fsPath));
-                const yes = localize(34, null);
+                const message = localize(31, null, path.basename(resources[0].resourceUri.fsPath));
+                const yes = localize(32, null);
                 const pick = yield vscode_1.window.showWarningMessage(message, { modal: true }, yes);
                 if (pick !== yes) {
                     return;
@@ -800,8 +796,8 @@ class CommandCenter {
                 yield repository.clean(resources.map(r => r.resourceUri));
             }
             else if (trackedResources.length === 0) {
-                const message = localize(35, null, resources.length);
-                const yes = localize(36, null);
+                const message = localize(33, null, resources.length);
+                const yes = localize(34, null);
                 const pick = yield vscode_1.window.showWarningMessage(message, { modal: true }, yes);
                 if (pick !== yes) {
                     return;
@@ -810,13 +806,13 @@ class CommandCenter {
             }
             else { // resources.length > 1 && untrackedResources.length > 0 && trackedResources.length > 0
                 const untrackedMessage = untrackedResources.length === 1
-                    ? localize(37, null, path.basename(untrackedResources[0].resourceUri.fsPath))
-                    : localize(38, null, untrackedResources.length);
-                const message = localize(39, null, untrackedMessage, resources.length);
+                    ? localize(35, null, path.basename(untrackedResources[0].resourceUri.fsPath))
+                    : localize(36, null, untrackedResources.length);
+                const message = localize(37, null, untrackedMessage, resources.length);
                 const yesTracked = trackedResources.length === 1
-                    ? localize(40, null, trackedResources.length)
-                    : localize(41, null, trackedResources.length);
-                const yesAll = localize(42, null, resources.length);
+                    ? localize(38, null, trackedResources.length)
+                    : localize(39, null, trackedResources.length);
+                const yesAll = localize(40, null, resources.length);
                 const pick = yield vscode_1.window.showWarningMessage(message, { modal: true }, yesTracked, yesAll);
                 if (pick === yesTracked) {
                     resources = trackedResources;
@@ -837,10 +833,10 @@ class CommandCenter {
                     .filter(d => !d.isUntitled && d.isDirty && util_1.isDescendant(repository.root, d.uri.fsPath));
                 if (unsavedTextDocuments.length > 0) {
                     const message = unsavedTextDocuments.length === 1
-                        ? localize(43, null, path.basename(unsavedTextDocuments[0].uri.fsPath))
-                        : localize(44, null, unsavedTextDocuments.length);
-                    const saveAndCommit = localize(45, null);
-                    const commit = localize(46, null);
+                        ? localize(41, null, path.basename(unsavedTextDocuments[0].uri.fsPath))
+                        : localize(42, null, unsavedTextDocuments.length);
+                    const saveAndCommit = localize(43, null);
+                    const commit = localize(44, null);
                     const pick = yield vscode_1.window.showWarningMessage(message, { modal: true }, saveAndCommit, commit);
                     if (pick === saveAndCommit) {
                         yield Promise.all(unsavedTextDocuments.map(d => d.save()));
@@ -858,9 +854,9 @@ class CommandCenter {
             // no changes, and the user has not configured to commit all in this case
             if (!noUnstagedChanges && noStagedChanges && !enableSmartCommit) {
                 // prompt the user if we want to commit all or not
-                const message = localize(47, null);
-                const yes = localize(48, null);
-                const always = localize(49, null);
+                const message = localize(45, null);
+                const yes = localize(46, null);
+                const always = localize(47, null);
                 const pick = yield vscode_1.window.showWarningMessage(message, { modal: true }, yes, always);
                 if (pick === always) {
                     config.update('enableSmartCommit', true, true);
@@ -882,7 +878,7 @@ class CommandCenter {
             (noStagedChanges && noUnstagedChanges)
                 // or no staged changes and not `all`
                 || (!opts.all && noStagedChanges)) {
-                vscode_1.window.showInformationMessage(localize(50, null));
+                vscode_1.window.showInformationMessage(localize(48, null));
                 return false;
             }
             const message = yield getCommitMessage();
@@ -906,8 +902,8 @@ class CommandCenter {
                 }
                 return yield vscode_1.window.showInputBox({
                     value,
-                    placeHolder: localize(51, null),
-                    prompt: localize(52, null),
+                    placeHolder: localize(49, null),
+                    prompt: localize(50, null),
                     ignoreFocusOut: true
                 });
             });
@@ -991,7 +987,7 @@ class CommandCenter {
             const remoteHeads = (includeRemotes ? repository.refs.filter(ref => ref.type === git_1.RefType.RemoteHead) : [])
                 .map(ref => new CheckoutRemoteHeadItem(ref));
             const picks = [createBranch, ...heads, ...tags, ...remoteHeads];
-            const placeHolder = localize(53, null);
+            const placeHolder = localize(51, null);
             const choice = yield vscode_1.window.showQuickPick(picks, { placeHolder });
             if (!choice) {
                 return;
@@ -1002,8 +998,8 @@ class CommandCenter {
     branch(repository) {
         return __awaiter(this, void 0, void 0, function* () {
             const result = yield vscode_1.window.showInputBox({
-                placeHolder: localize(54, null),
-                prompt: localize(55, null),
+                placeHolder: localize(52, null),
+                prompt: localize(53, null),
                 ignoreFocusOut: true
             });
             if (!result) {
@@ -1023,7 +1019,7 @@ class CommandCenter {
                 const currentHead = repository.HEAD && repository.HEAD.name;
                 const heads = repository.refs.filter(ref => ref.type === git_1.RefType.Head && ref.name !== currentHead)
                     .map(ref => new BranchDeleteItem(ref));
-                const placeHolder = localize(56, null);
+                const placeHolder = localize(54, null);
                 const choice = yield vscode_1.window.showQuickPick(heads, { placeHolder });
                 if (!choice || !choice.branchName) {
                     return;
@@ -1038,8 +1034,8 @@ class CommandCenter {
                 if (err.gitErrorCode !== git_1.GitErrorCodes.BranchNotFullyMerged) {
                     throw err;
                 }
-                const message = localize(57, null, name);
-                const yes = localize(58, null);
+                const message = localize(55, null, name);
+                const yes = localize(56, null);
                 const pick = yield vscode_1.window.showWarningMessage(message, { modal: true }, yes);
                 if (pick === yes) {
                     yield run(true);
@@ -1049,7 +1045,7 @@ class CommandCenter {
     }
     renameBranch(repository) {
         return __awaiter(this, void 0, void 0, function* () {
-            const placeHolder = localize(59, null);
+            const placeHolder = localize(57, null);
             const name = yield vscode_1.window.showInputBox({ placeHolder });
             if (!name || name.trim().length === 0) {
                 return;
@@ -1060,10 +1056,10 @@ class CommandCenter {
             catch (err) {
                 switch (err.gitErrorCode) {
                     case git_1.GitErrorCodes.InvalidBranchName:
-                        vscode_1.window.showErrorMessage(localize(60, null));
+                        vscode_1.window.showErrorMessage(localize(58, null));
                         return;
                     case git_1.GitErrorCodes.BranchAlreadyExists:
-                        vscode_1.window.showErrorMessage(localize(61, null, name));
+                        vscode_1.window.showErrorMessage(localize(59, null, name));
                         return;
                     default:
                         throw err;
@@ -1083,7 +1079,7 @@ class CommandCenter {
                 .filter(ref => ref.name || ref.commit)
                 .map(ref => new MergeItem(ref));
             const picks = [...heads, ...remoteHeads];
-            const placeHolder = localize(62, null);
+            const placeHolder = localize(60, null);
             const choice = yield vscode_1.window.showQuickPick(picks, { placeHolder });
             if (!choice) {
                 return;
@@ -1095,7 +1091,7 @@ class CommandCenter {
                 if (err.gitErrorCode !== git_1.GitErrorCodes.Conflict) {
                     throw err;
                 }
-                const message = localize(63, null);
+                const message = localize(61, null);
                 yield vscode_1.window.showWarningMessage(message);
             }
         });
@@ -1103,16 +1099,16 @@ class CommandCenter {
     createTag(repository) {
         return __awaiter(this, void 0, void 0, function* () {
             const inputTagName = yield vscode_1.window.showInputBox({
-                placeHolder: localize(64, null),
-                prompt: localize(65, null),
+                placeHolder: localize(62, null),
+                prompt: localize(63, null),
                 ignoreFocusOut: true
             });
             if (!inputTagName) {
                 return;
             }
             const inputMessage = yield vscode_1.window.showInputBox({
-                placeHolder: localize(66, null),
-                prompt: localize(67, null),
+                placeHolder: localize(64, null),
+                prompt: localize(65, null),
                 ignoreFocusOut: true
             });
             const name = inputTagName.replace(/^\.|\/\.|\.\.|~|\^|:|\/$|\.lock$|\.lock\/|\\|\*|\s|^\s*$|\.$/g, '-');
@@ -1123,7 +1119,7 @@ class CommandCenter {
     fetch(repository) {
         return __awaiter(this, void 0, void 0, function* () {
             if (repository.remotes.length === 0) {
-                vscode_1.window.showWarningMessage(localize(68, null));
+                vscode_1.window.showWarningMessage(localize(66, null));
                 return;
             }
             yield repository.fetch();
@@ -1133,11 +1129,11 @@ class CommandCenter {
         return __awaiter(this, void 0, void 0, function* () {
             const remotes = repository.remotes;
             if (remotes.length === 0) {
-                vscode_1.window.showWarningMessage(localize(69, null));
+                vscode_1.window.showWarningMessage(localize(67, null));
                 return;
             }
-            const remotePicks = remotes.map(r => ({ label: r.name, description: r.url }));
-            const placeHolder = localize(70, null);
+            const remotePicks = remotes.filter(r => r.fetchUrl !== undefined).map(r => ({ label: r.name, description: r.fetchUrl }));
+            const placeHolder = localize(68, null);
             const remotePick = yield vscode_1.window.showQuickPick(remotePicks, { placeHolder });
             if (!remotePick) {
                 return;
@@ -1150,14 +1146,14 @@ class CommandCenter {
                 return;
             }
             const remoteCharCnt = remotePick.label.length;
-            repository.pullFrom(false, remotePick.label, branchPick.label.slice(remoteCharCnt + 1));
+            yield repository.pullFrom(false, remotePick.label, branchPick.label.slice(remoteCharCnt + 1));
         });
     }
     pull(repository) {
         return __awaiter(this, void 0, void 0, function* () {
             const remotes = repository.remotes;
             if (remotes.length === 0) {
-                vscode_1.window.showWarningMessage(localize(71, null));
+                vscode_1.window.showWarningMessage(localize(69, null));
                 return;
             }
             yield repository.pull(repository.HEAD);
@@ -1167,7 +1163,7 @@ class CommandCenter {
         return __awaiter(this, void 0, void 0, function* () {
             const remotes = repository.remotes;
             if (remotes.length === 0) {
-                vscode_1.window.showWarningMessage(localize(72, null));
+                vscode_1.window.showWarningMessage(localize(70, null));
                 return;
             }
             yield repository.pullWithRebase(repository.HEAD);
@@ -1177,11 +1173,11 @@ class CommandCenter {
         return __awaiter(this, void 0, void 0, function* () {
             const remotes = repository.remotes;
             if (remotes.length === 0) {
-                vscode_1.window.showWarningMessage(localize(73, null));
+                vscode_1.window.showWarningMessage(localize(71, null));
                 return;
             }
             if (!repository.HEAD || !repository.HEAD.name) {
-                vscode_1.window.showWarningMessage(localize(74, null));
+                vscode_1.window.showWarningMessage(localize(72, null));
                 return;
             }
             try {
@@ -1192,8 +1188,8 @@ class CommandCenter {
                     throw err;
                 }
                 const branchName = repository.HEAD.name;
-                const message = localize(75, null, branchName);
-                const yes = localize(76, null);
+                const message = localize(73, null, branchName);
+                const yes = localize(74, null);
                 const pick = yield vscode_1.window.showWarningMessage(message, { modal: true }, yes);
                 if (pick === yes) {
                     yield this.publish(repository);
@@ -1205,32 +1201,32 @@ class CommandCenter {
         return __awaiter(this, void 0, void 0, function* () {
             const remotes = repository.remotes;
             if (remotes.length === 0) {
-                vscode_1.window.showWarningMessage(localize(77, null));
+                vscode_1.window.showWarningMessage(localize(75, null));
                 return;
             }
             yield repository.pushTags();
-            vscode_1.window.showInformationMessage(localize(78, null));
+            vscode_1.window.showInformationMessage(localize(76, null));
         });
     }
     pushTo(repository) {
         return __awaiter(this, void 0, void 0, function* () {
             const remotes = repository.remotes;
             if (remotes.length === 0) {
-                vscode_1.window.showWarningMessage(localize(79, null));
+                vscode_1.window.showWarningMessage(localize(77, null));
                 return;
             }
             if (!repository.HEAD || !repository.HEAD.name) {
-                vscode_1.window.showWarningMessage(localize(80, null));
+                vscode_1.window.showWarningMessage(localize(78, null));
                 return;
             }
             const branchName = repository.HEAD.name;
-            const picks = remotes.map(r => ({ label: r.name, description: r.url }));
-            const placeHolder = localize(81, null, branchName);
+            const picks = remotes.filter(r => r.pushUrl !== undefined).map(r => ({ label: r.name, description: r.pushUrl }));
+            const placeHolder = localize(79, null, branchName);
             const pick = yield vscode_1.window.showQuickPick(picks, { placeHolder });
             if (!pick) {
                 return;
             }
-            repository.pushTo(pick.label, branchName);
+            yield repository.pushTo(pick.label, branchName);
         });
     }
     _sync(repository, rebase) {
@@ -1239,12 +1235,15 @@ class CommandCenter {
             if (!HEAD || !HEAD.upstream) {
                 return;
             }
+            const remoteName = HEAD.remote || HEAD.upstream.remote;
+            const remote = repository.remotes.find(r => r.name === remoteName);
+            const isReadonly = remote && remote.isReadOnly;
             const config = vscode_1.workspace.getConfiguration('git');
-            const shouldPrompt = config.get('confirmSync') === true;
+            const shouldPrompt = !isReadonly && config.get('confirmSync') === true;
             if (shouldPrompt) {
-                const message = localize(82, null, HEAD.upstream.remote, HEAD.upstream.name);
-                const yes = localize(83, null);
-                const neverAgain = localize(84, null);
+                const message = localize(80, null, HEAD.upstream.remote, HEAD.upstream.name);
+                const yes = localize(81, null);
+                const neverAgain = localize(82, null);
                 const pick = yield vscode_1.window.showWarningMessage(message, { modal: true }, yes, neverAgain);
                 if (pick === neverAgain) {
                     yield config.update('confirmSync', false, true);
@@ -1282,13 +1281,13 @@ class CommandCenter {
         return __awaiter(this, void 0, void 0, function* () {
             const remotes = repository.remotes;
             if (remotes.length === 0) {
-                vscode_1.window.showWarningMessage(localize(85, null));
+                vscode_1.window.showWarningMessage(localize(83, null));
                 return;
             }
             const branchName = repository.HEAD && repository.HEAD.name || '';
             const selectRemote = () => __awaiter(this, void 0, void 0, function* () {
                 const picks = repository.remotes.map(r => r.name);
-                const placeHolder = localize(86, null, branchName);
+                const placeHolder = localize(84, null, branchName);
                 return yield vscode_1.window.showQuickPick(picks, { placeHolder });
             });
             const choice = remotes.length === 1 ? remotes[0].name : yield selectRemote();
@@ -1322,7 +1321,7 @@ class CommandCenter {
             const noUnstagedChanges = repository.workingTreeGroup.resourceStates.length === 0;
             const noStagedChanges = repository.indexGroup.resourceStates.length === 0;
             if (noUnstagedChanges && noStagedChanges) {
-                vscode_1.window.showInformationMessage(localize(87, null));
+                vscode_1.window.showInformationMessage(localize(85, null));
                 return;
             }
             const message = yield this.getStashMessage();
@@ -1335,8 +1334,8 @@ class CommandCenter {
     getStashMessage() {
         return __awaiter(this, void 0, void 0, function* () {
             return yield vscode_1.window.showInputBox({
-                prompt: localize(88, null),
-                placeHolder: localize(89, null)
+                prompt: localize(86, null),
+                placeHolder: localize(87, null)
             });
         });
     }
@@ -1350,11 +1349,11 @@ class CommandCenter {
         return __awaiter(this, void 0, void 0, function* () {
             const stashes = yield repository.getStashes();
             if (stashes.length === 0) {
-                vscode_1.window.showInformationMessage(localize(90, null));
+                vscode_1.window.showInformationMessage(localize(88, null));
                 return;
             }
             const picks = stashes.map(r => ({ label: `#${r.index}:  ${r.description}`, description: '', details: '', id: r.index }));
-            const placeHolder = localize(91, null);
+            const placeHolder = localize(89, null);
             const choice = yield vscode_1.window.showQuickPick(picks, { placeHolder });
             if (!choice) {
                 return;
@@ -1366,7 +1365,7 @@ class CommandCenter {
         return __awaiter(this, void 0, void 0, function* () {
             const stashes = yield repository.getStashes();
             if (stashes.length === 0) {
-                vscode_1.window.showInformationMessage(localize(92, null));
+                vscode_1.window.showInformationMessage(localize(90, null));
                 return;
             }
             yield repository.popStash();
@@ -1411,10 +1410,10 @@ class CommandCenter {
                 let message;
                 switch (err.gitErrorCode) {
                     case git_1.GitErrorCodes.DirtyWorkTree:
-                        message = localize(93, null);
+                        message = localize(91, null);
                         break;
                     case git_1.GitErrorCodes.PushRejected:
-                        message = localize(94, null);
+                        message = localize(92, null);
                         break;
                     default:
                         const hint = (err.stderr || err.message || String(err))
@@ -1423,8 +1422,8 @@ class CommandCenter {
                             .split(/[\r\n]/)
                             .filter((line) => !!line)[0];
                         message = hint
-                            ? localize(95, null, hint)
-                            : localize(96, null);
+                            ? localize(93, null, hint)
+                            : localize(94, null);
                         break;
                 }
                 if (!message) {
@@ -1433,7 +1432,7 @@ class CommandCenter {
                 }
                 options.modal = true;
                 const outputChannel = this.outputChannel;
-                const openOutputChannelChoice = localize(97, null);
+                const openOutputChannelChoice = localize(95, null);
                 const choice = yield vscode_1.window.showErrorMessage(message, options, openOutputChannelChoice);
                 if (choice === openOutputChannelChoice) {
                     outputChannel.show();
@@ -1445,7 +1444,11 @@ class CommandCenter {
         return result;
     }
     getSCMResource(uri) {
-        uri = uri ? uri : vscode_1.window.activeTextEditor && vscode_1.window.activeTextEditor.document.uri;
+        uri = uri ? uri : (vscode_1.window.activeTextEditor && vscode_1.window.activeTextEditor.document.uri);
+        this.outputChannel.appendLine(`git.getSCMResource.uri ${uri && uri.toString()}`);
+        for (const r of this.model.repositories.map(r => r.root)) {
+            this.outputChannel.appendLine(`repo root ${r}`);
+        }
         if (!uri) {
             return undefined;
         }
@@ -1649,4 +1652,4 @@ __decorate([
     command('git.stashPopLatest', { repository: true })
 ], CommandCenter.prototype, "stashPopLatest", null);
 exports.CommandCenter = CommandCenter;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/24f62626b222e9a8313213fb64b10d741a326288/extensions\git\out/commands.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/0f080e5267e829de46638128001aeb7ca2d6d50e/extensions\git\out/commands.js.map

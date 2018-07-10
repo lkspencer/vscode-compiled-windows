@@ -10,7 +10,7 @@ class TypeScriptDefinitionProviderBase {
         this.client = client;
     }
     async getSymbolLocations(definitionType, document, position, token) {
-        const filepath = this.client.normalizePath(document.uri);
+        const filepath = this.client.toPath(document.uri);
         if (!filepath) {
             return undefined;
         }
@@ -18,7 +18,7 @@ class TypeScriptDefinitionProviderBase {
         try {
             const response = await this.client.execute(definitionType, args, token);
             const locations = (response && response.body) || [];
-            return locations.map(location => typeConverters.Location.fromTextSpan(this.client.asUrl(location.file), location));
+            return locations.map(location => typeConverters.Location.fromTextSpan(this.client.toResource(location.file), location));
         }
         catch (_a) {
             return [];
@@ -26,4 +26,4 @@ class TypeScriptDefinitionProviderBase {
     }
 }
 exports.default = TypeScriptDefinitionProviderBase;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/24f62626b222e9a8313213fb64b10d741a326288/extensions\typescript-language-features\out/features\definitionProviderBase.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/0f080e5267e829de46638128001aeb7ca2d6d50e/extensions\typescript-language-features\out/features\definitionProviderBase.js.map

@@ -18,7 +18,7 @@ suite('Tests for Next/Previous Select/Edit point and Balance actions', () => {
 	margin: 20px 10px;
 	background-image: url('tryme.png');
 }
-		
+
 .boo .hoo {
 	margin: 10px;
 }
@@ -43,7 +43,7 @@ suite('Tests for Next/Previous Select/Edit point and Balance actions', () => {
 </head>
 <body>
 	<div>
-		
+\t\t
 	</div>
 	<div class="header">
 		<ul class="nav main">
@@ -94,6 +94,50 @@ suite('Tests for Next/Previous Select/Edit point and Balance actions', () => {
                 testSelection(editor.selection, colstart, line, colend);
             });
             editor.selections = [new vscode_1.Selection(6, 15, 6, 15)];
+            expectedNextItemPoints.reverse().forEach(([line, colstart, colend]) => {
+                selectItem_1.fetchSelectItem('prev');
+                testSelection(editor.selection, colstart, line, colend);
+            });
+            return Promise.resolve();
+        });
+    });
+    test('Emmet Select Next/Prev item at boundary', function () {
+        return testUtils_1.withRandomFileEditor(htmlContents, '.html', (editor, doc) => {
+            editor.selections = [new vscode_1.Selection(4, 1, 4, 1)];
+            selectItem_1.fetchSelectItem('next');
+            testSelection(editor.selection, 2, 4, 6);
+            editor.selections = [new vscode_1.Selection(4, 1, 4, 1)];
+            selectItem_1.fetchSelectItem('prev');
+            testSelection(editor.selection, 1, 3, 5);
+            return Promise.resolve();
+        });
+    });
+    test('Emmet Next/Prev Item in html template', function () {
+        const templateContents = `
+<script type="text/template">
+	<div class="header">
+		<ul class="nav main">
+		</ul>
+	</div>
+</script>
+`;
+        return testUtils_1.withRandomFileEditor(templateContents, '.html', (editor, doc) => {
+            editor.selections = [new vscode_1.Selection(2, 2, 2, 2)];
+            let expectedNextItemPoints = [
+                [2, 2, 5],
+                [2, 6, 20],
+                [2, 13, 19],
+                [3, 3, 5],
+                [3, 6, 22],
+                [3, 13, 21],
+                [3, 13, 16],
+                [3, 17, 21],
+            ];
+            expectedNextItemPoints.forEach(([line, colstart, colend]) => {
+                selectItem_1.fetchSelectItem('next');
+                testSelection(editor.selection, colstart, line, colend);
+            });
+            editor.selections = [new vscode_1.Selection(4, 1, 4, 1)];
             expectedNextItemPoints.reverse().forEach(([line, colstart, colend]) => {
                 selectItem_1.fetchSelectItem('prev');
                 testSelection(editor.selection, colstart, line, colend);
@@ -212,6 +256,38 @@ suite('Tests for Next/Previous Select/Edit point and Balance actions', () => {
             return Promise.resolve();
         });
     });
+    test('Emmet Balance In/Out in html template', function () {
+        const htmlTemplate = `
+<script type="text/html">
+<div class="header">
+	<ul class="nav main">
+		<li class="item1">Item 1</li>
+		<li class="item2">Item 2</li>
+	</ul>
+</div>
+</script>`;
+        return testUtils_1.withRandomFileEditor(htmlTemplate, 'html', (editor, doc) => {
+            editor.selections = [new vscode_1.Selection(5, 24, 5, 24)];
+            let expectedBalanceOutRanges = [
+                [5, 20, 5, 26],
+                [5, 2, 5, 31],
+                [3, 22, 6, 1],
+                [3, 1, 6, 6],
+                [2, 20, 7, 0],
+                [2, 0, 7, 6],
+            ];
+            expectedBalanceOutRanges.forEach(([linestart, colstart, lineend, colend]) => {
+                balance_1.balanceOut();
+                testSelection(editor.selection, colstart, linestart, colend, lineend);
+            });
+            expectedBalanceOutRanges.pop();
+            expectedBalanceOutRanges.reverse().forEach(([linestart, colstart, lineend, colend]) => {
+                balance_1.balanceIn();
+                testSelection(editor.selection, colstart, linestart, colend, lineend);
+            });
+            return Promise.resolve();
+        });
+    });
 });
 function testSelection(selection, startChar, startline, endChar, endLine) {
     assert.equal(selection.anchor.line, startline);
@@ -229,4 +305,4 @@ function testSelection(selection, startChar, startline, endChar, endLine) {
         assert.equal(selection.active.character, endChar);
     }
 }
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/24f62626b222e9a8313213fb64b10d741a326288/extensions\emmet\out/test\editPointSelectItemBalance.test.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/0f080e5267e829de46638128001aeb7ca2d6d50e/extensions\emmet\out/test\editPointSelectItemBalance.test.js.map

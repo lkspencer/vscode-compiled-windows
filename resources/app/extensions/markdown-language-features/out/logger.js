@@ -4,7 +4,8 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 Object.defineProperty(exports, "__esModule", { value: true });
-const vscode_1 = require("vscode");
+const vscode = require("vscode");
+const lazy_1 = require("./util/lazy");
 var Trace;
 (function (Trace) {
     Trace[Trace["Off"] = 0] = "Off";
@@ -29,27 +30,25 @@ function isString(value) {
 }
 class Logger {
     constructor() {
+        this.outputChannel = lazy_1.lazy(() => vscode.window.createOutputChannel('Markdown'));
         this.updateConfiguration();
     }
     log(message, data) {
         if (this.trace === Trace.Verbose) {
-            this.output.appendLine(`[Log - ${(new Date().toLocaleTimeString())}] ${message}`);
+            this.appendLine(`[Log - ${(new Date().toLocaleTimeString())}] ${message}`);
             if (data) {
-                this.output.appendLine(Logger.data2String(data));
+                this.appendLine(Logger.data2String(data));
             }
         }
     }
     updateConfiguration() {
         this.trace = this.readTrace();
     }
-    get output() {
-        if (!this._output) {
-            this._output = vscode_1.window.createOutputChannel('Markdown');
-        }
-        return this._output;
+    appendLine(value) {
+        return this.outputChannel.value.appendLine(value);
     }
     readTrace() {
-        return Trace.fromString(vscode_1.workspace.getConfiguration().get('markdown.trace', 'off'));
+        return Trace.fromString(vscode.workspace.getConfiguration().get('markdown.trace', 'off'));
     }
     static data2String(data) {
         if (data instanceof Error) {
@@ -65,4 +64,4 @@ class Logger {
     }
 }
 exports.Logger = Logger;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/24f62626b222e9a8313213fb64b10d741a326288/extensions\markdown-language-features\out/logger.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/0f080e5267e829de46638128001aeb7ca2d6d50e/extensions\markdown-language-features\out/logger.js.map

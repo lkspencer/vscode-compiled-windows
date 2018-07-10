@@ -38,15 +38,18 @@ var TextEdit;
 })(TextEdit = exports.TextEdit || (exports.TextEdit = {}));
 var WorkspaceEdit;
 (function (WorkspaceEdit) {
-    function fromFromFileCodeEdits(client, edits) {
-        const workspaceEdit = new vscode.WorkspaceEdit();
+    function fromFileCodeEdits(client, edits) {
+        return withFileCodeEdits(new vscode.WorkspaceEdit(), client, edits);
+    }
+    WorkspaceEdit.fromFileCodeEdits = fromFileCodeEdits;
+    function withFileCodeEdits(workspaceEdit, client, edits) {
         for (const edit of edits) {
             for (const textChange of edit.textChanges) {
-                workspaceEdit.replace(client.asUrl(edit.fileName), Range.fromTextSpan(textChange), textChange.newText);
+                workspaceEdit.replace(client.toResource(edit.fileName), Range.fromTextSpan(textChange), textChange.newText);
             }
         }
         return workspaceEdit;
     }
-    WorkspaceEdit.fromFromFileCodeEdits = fromFromFileCodeEdits;
+    WorkspaceEdit.withFileCodeEdits = withFileCodeEdits;
 })(WorkspaceEdit = exports.WorkspaceEdit || (exports.WorkspaceEdit = {}));
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/24f62626b222e9a8313213fb64b10d741a326288/extensions\typescript-language-features\out/utils\typeConverters.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/0f080e5267e829de46638128001aeb7ca2d6d50e/extensions\typescript-language-features\out/utils\typeConverters.js.map

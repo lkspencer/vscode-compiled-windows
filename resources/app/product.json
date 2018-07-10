@@ -11,6 +11,8 @@
 	"win32RegValueName": "CodeOSS",
 	"win32AppId": "{{E34003BB-9E10-4501-8C11-BE3FAA83F23F}",
 	"win32x64AppId": "{{D77B7E06-80BA-4137-BCF4-654B95CCEBC5}",
+	"win32UserAppId": "{{C6065F05-9603-4FC4-8101-B9781A25D88E}",
+	"win32x64UserAppId": "{{C6065F05-9603-4FC4-8101-B9781A25D88E}",
 	"win32AppUserModelId": "Microsoft.CodeOSS",
 	"win32ShellNameShort": "C&ode - OSS",
 	"darwinBundleIdentifier": "com.visualstudio.code.oss",
@@ -20,14 +22,14 @@
 		"ms-vscode.node-debug",
 		"ms-vscode.node-debug2"
 	],
-	"commit": "24f62626b222e9a8313213fb64b10d741a326288",
-	"date": "2018-06-14T15:07:06.474Z",
+	"commit": "0f080e5267e829de46638128001aeb7ca2d6d50e",
+	"date": "2018-07-10T17:03:22.884Z",
 	"checksums": {
-		"vs/workbench/workbench.main.js": "Z5ibRw7moUXn1iQt8LBzIg",
-		"vs/workbench/workbench.main.css": "6vQda4D6dR+lppyC69uw/w",
+		"vs/workbench/workbench.main.js": "uAyCOBRXLN9fszw8Vuz6ug",
+		"vs/workbench/workbench.main.css": "KhYJtYvHC9Y+gII24GayRw",
 		"vs/workbench/electron-browser/bootstrap/index.html": "/Tgz9oebstmTGvDlTpbgpg",
-		"vs/workbench/electron-browser/bootstrap/index.js": "XMklUXuX0COOaaHlypJz5g",
-		"vs/workbench/electron-browser/bootstrap/preload.js": "XWQyp0ewLBEuFTuXj3jgSg"
+		"vs/workbench/electron-browser/bootstrap/index.js": "pmxeZnFa+g7U2HO4dcc6jw",
+		"vs/workbench/electron-browser/bootstrap/preload.js": "AOv/DKWJvIiFIBz3tp4lHQ"
 	},
-	"settingsSearchBuildId": 124010009
+	"settingsSearchBuildId": 125002152
 }

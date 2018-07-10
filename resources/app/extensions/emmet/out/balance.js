@@ -56,7 +56,7 @@ function balance(out) {
     lastBalancedSelections = editor.selections = newSelections;
 }
 function getRangeToBalanceOut(document, selection, rootNode) {
-    let nodeToBalance = util_1.getNode(rootNode, selection.start);
+    let nodeToBalance = util_1.getHtmlNode(document, rootNode, selection.start);
     if (!nodeToBalance) {
         return selection;
     }
@@ -74,7 +74,7 @@ function getRangeToBalanceOut(document, selection, rootNode) {
     return selection;
 }
 function getRangeToBalanceIn(document, selection, rootNode) {
-    let nodeToBalance = util_1.getNode(rootNode, selection.start, true);
+    let nodeToBalance = util_1.getHtmlNode(document, rootNode, selection.start, true);
     if (!nodeToBalance) {
         return selection;
     }
@@ -104,4 +104,4 @@ function areSameSelections(a, b) {
     }
     return true;
 }
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/24f62626b222e9a8313213fb64b10d741a326288/extensions\emmet\out/balance.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/0f080e5267e829de46638128001aeb7ca2d6d50e/extensions\emmet\out/balance.js.map

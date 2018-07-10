@@ -23,6 +23,7 @@ const tsconfig_1 = require("./utils/tsconfig");
 const dispose_1 = require("./utils/dispose");
 const diagnostics_1 = require("./features/diagnostics");
 const pluginPathsProvider_1 = require("./utils/pluginPathsProvider");
+const bufferSyncSupport_1 = require("./features/bufferSyncSupport");
 const localize = nls.loadMessageBundle(__filename);
 class CallbackMap {
     constructor() {
@@ -117,7 +118,7 @@ class ForkedTsServerProcess {
     }
 }
 class TypeScriptServiceClient {
-    constructor(workspaceState, onDidChangeTypeScriptVersion, plugins, logDirectoryProvider) {
+    constructor(workspaceState, onDidChangeTypeScriptVersion, plugins, logDirectoryProvider, allModeIds) {
         this.workspaceState = workspaceState;
         this.onDidChangeTypeScriptVersion = onDidChangeTypeScriptVersion;
         this.plugins = plugins;
@@ -126,20 +127,23 @@ class TypeScriptServiceClient {
         this.tsServerLogFile = null;
         this.isRestarting = false;
         this.cancellationPipeName = null;
-        this._onTsServerStarted = new vscode_1.EventEmitter();
-        this._onTypesInstallerInitializationFailed = new vscode_1.EventEmitter();
         this.disposables = [];
+        this._onTsServerStarted = new vscode_1.EventEmitter();
+        this.onTsServerStarted = this._onTsServerStarted.event;
         this._onDiagnosticsReceived = new vscode_1.EventEmitter();
+        this.onDiagnosticsReceived = this._onDiagnosticsReceived.event;
         this._onConfigDiagnosticsReceived = new vscode_1.EventEmitter();
+        this.onConfigDiagnosticsReceived = this._onConfigDiagnosticsReceived.event;
         this._onResendModelsRequested = new vscode_1.EventEmitter();
-        this._onProjectUpdatedInBackground = new vscode_1.EventEmitter();
-        this.onProjectUpdatedInBackground = this._onProjectUpdatedInBackground.event;
+        this.onResendModelsRequested = this._onResendModelsRequested.event;
         this._onProjectLanguageServiceStateChanged = new vscode_1.EventEmitter();
         this.onProjectLanguageServiceStateChanged = this._onProjectLanguageServiceStateChanged.event;
         this._onDidBeginInstallTypings = new vscode_1.EventEmitter();
         this.onDidBeginInstallTypings = this._onDidBeginInstallTypings.event;
         this._onDidEndInstallTypings = new vscode_1.EventEmitter();
         this.onDidEndInstallTypings = this._onDidEndInstallTypings.event;
+        this._onTypesInstallerInitializationFailed = new vscode_1.EventEmitter();
+        this.onTypesInstallerInitializationFailed = this._onTypesInstallerInitializationFailed.event;
         this.pathSeparator = path.sep;
         this.lastStart = Date.now();
         var p = new Promise((resolve, reject) => {
@@ -158,6 +162,8 @@ class TypeScriptServiceClient {
         this._apiVersion = api_1.default.defaultVersion;
         this._tsserverVersion = undefined;
         this.tracer = new tracer_1.default(this.logger);
+        this.bufferSyncSupport = new bufferSyncSupport_1.default(this, allModeIds);
+        this.onReady(() => { this.bufferSyncSupport.listen(); });
         vscode_1.workspace.onDidChangeConfiguration(() => {
             const oldConfiguration = this._configuration;
             this._configuration = configuration_1.TypeScriptServiceConfiguration.loadFromWorkspace();
@@ -177,13 +183,11 @@ class TypeScriptServiceClient {
         this.telemetryReporter = new telemetry_1.default(() => this._tsserverVersion || this._apiVersion.versionString);
         this.disposables.push(this.telemetryReporter);
     }
-    get onDiagnosticsReceived() { return this._onDiagnosticsReceived.event; }
-    get onConfigDiagnosticsReceived() { return this._onConfigDiagnosticsReceived.event; }
-    get onResendModelsRequested() { return this._onResendModelsRequested.event; }
     get configuration() {
         return this._configuration;
     }
     dispose() {
+        this.bufferSyncSupport.dispose();
         this._onTsServerStarted.dispose();
         this._onDidBeginInstallTypings.dispose();
         this._onDidEndInstallTypings.dispose();
@@ -214,12 +218,6 @@ class TypeScriptServiceClient {
         else {
             start();
         }
-    }
-    get onTsServerStarted() {
-        return this._onTsServerStarted.event;
-    }
-    get onTypesInstallerInitializationFailed() {
-        return this._onTypesInstallerInitializationFailed.event;
     }
     get apiVersion() {
         return this._apiVersion;
@@ -355,7 +353,7 @@ class TypeScriptServiceClient {
         });
     }
     async openTsServerLogFile() {
-        if (!this.apiVersion.has222Features()) {
+        if (!this.apiVersion.gte(api_1.default.v222)) {
             vscode_1.window.showErrorMessage(localize(2, null));
             return false;
         }
@@ -397,7 +395,7 @@ class TypeScriptServiceClient {
         }
     }
     setCompilerOptionsForInferredProjects(configuration) {
-        if (!this.apiVersion.has206Features()) {
+        if (!this.apiVersion.gte(api_1.default.v206)) {
             return;
         }
         const args = {
@@ -465,8 +463,8 @@ class TypeScriptServiceClient {
             }
         }
     }
-    normalizePath(resource) {
-        if (this._apiVersion.has213Features()) {
+    normalizedPath(resource) {
+        if (this._apiVersion.gte(api_1.default.v213)) {
             if (resource.scheme === fileSchemes.walkThroughSnippet || resource.scheme === fileSchemes.untitled) {
                 const dirName = path.dirname(resource.path);
                 const fileName = this.inMemoryResourcePrefix + path.basename(resource.path);
@@ -483,11 +481,14 @@ class TypeScriptServiceClient {
         // Both \ and / must be escaped in regular expressions
         return result.replace(new RegExp('\\' + this.pathSeparator, 'g'), '/');
     }
-    get inMemoryResourcePrefix() {
-        return this._apiVersion.has270Features() ? '^' : '';
+    toPath(resource) {
+        return this.normalizedPath(resource);
     }
-    asUrl(filepath) {
-        if (this._apiVersion.has213Features()) {
+    get inMemoryResourcePrefix() {
+        return this._apiVersion.gte(api_1.default.v270) ? '^' : '';
+    }
+    toResource(filepath) {
+        if (this._apiVersion.gte(api_1.default.v213)) {
             if (filepath.startsWith(TypeScriptServiceClient.WALK_THROUGH_SNIPPET_SCHEME_COLON) || (filepath.startsWith(fileSchemes.untitled + ':'))) {
                 let resource = vscode_1.Uri.parse(filepath);
                 if (this.inMemoryResourcePrefix) {
@@ -500,7 +501,7 @@ class TypeScriptServiceClient {
                 return resource;
             }
         }
-        return vscode_1.Uri.file(filepath);
+        return this.bufferSyncSupport.toResource(filepath);
     }
     getWorkspaceRootForResource(resource) {
         const roots = vscode_1.workspace.workspaceFolders;
@@ -618,7 +619,7 @@ class TypeScriptServiceClient {
                 this.tracer.logTrace(`TypeScript Service: canceled request with sequence number ${seq}`);
                 return true;
             }
-            if (this.apiVersion.has222Features() && this.cancellationPipeName) {
+            if (this.apiVersion.gte(api_1.default.v222) && this.cancellationPipeName) {
                 this.tracer.logTrace(`TypeScript Service: trying to cancel ongoing request with sequence number ${seq}`);
                 try {
                     fs.writeFileSync(this.cancellationPipeName + seq, '');
@@ -683,7 +684,7 @@ class TypeScriptServiceClient {
                 if (diagnosticEvent.body && diagnosticEvent.body.diagnostics) {
                     this._onDiagnosticsReceived.fire({
                         kind: getDignosticsKind(event),
-                        resource: this.asUrl(diagnosticEvent.body.file),
+                        resource: this.toResource(diagnosticEvent.body.file),
                         diagnostics: diagnosticEvent.body.diagnostics
                     });
                 }
@@ -702,7 +703,9 @@ class TypeScriptServiceClient {
                 break;
             case 'projectsUpdatedInBackground':
                 if (event.body) {
-                    this._onProjectUpdatedInBackground.fire(event.body);
+                    const body = event.body;
+                    const resources = body.openFiles.map(vscode_1.Uri.file);
+                    this.bufferSyncSupport.getErr(resources);
                 }
                 break;
             case 'beginInstallTypes':
@@ -769,8 +772,8 @@ class TypeScriptServiceClient {
     }
     async getTsServerArgs(currentVersion) {
         const args = [];
-        if (this.apiVersion.has206Features()) {
-            if (this.apiVersion.has250Features()) {
+        if (this.apiVersion.gte(api_1.default.v206)) {
+            if (this.apiVersion.gte(api_1.default.v250)) {
                 args.push('--useInferredProjectPerProjectRoot');
             }
             else {
@@ -780,14 +783,14 @@ class TypeScriptServiceClient {
                 args.push('--disableAutomaticTypingAcquisition');
             }
         }
-        if (this.apiVersion.has208Features()) {
+        if (this.apiVersion.gte(api_1.default.v208)) {
             args.push('--enableTelemetry');
         }
-        if (this.apiVersion.has222Features()) {
-            this.cancellationPipeName = electron.getTempFile(`tscancellation-${electron.makeRandomHexString(20)}`);
+        if (this.apiVersion.gte(api_1.default.v222)) {
+            this.cancellationPipeName = electron.getTempSock('tscancellation');
             args.push('--cancellationPipeName', this.cancellationPipeName + '*');
         }
-        if (this.apiVersion.has222Features()) {
+        if (this.apiVersion.gte(api_1.default.v222)) {
             if (this._configuration.tsServerLogLevel !== configuration_1.TsServerLogLevel.Off) {
                 const logDir = await this.logDirectoryProvider.getNewLogDirectory();
                 if (logDir) {
@@ -804,7 +807,7 @@ class TypeScriptServiceClient {
                 }
             }
         }
-        if (this.apiVersion.has230Features()) {
+        if (this.apiVersion.gte(api_1.default.v230)) {
             const pluginPaths = this.pluginPathsProvider.getPluginPaths();
             if (this.plugins.length) {
                 args.push('--globalPlugins', this.plugins.map(x => x.name).join(','));
@@ -816,18 +819,18 @@ class TypeScriptServiceClient {
                 args.push('--pluginProbeLocations', pluginPaths.join(','));
             }
         }
-        if (this.apiVersion.has234Features()) {
+        if (this.apiVersion.gte(api_1.default.v234)) {
             if (this._configuration.npmLocation) {
                 args.push('--npmLocation', `"${this._configuration.npmLocation}"`);
             }
         }
-        if (this.apiVersion.has260Features()) {
+        if (this.apiVersion.gte(api_1.default.v260)) {
             const tsLocale = getTsLocale(this._configuration);
             if (tsLocale) {
                 args.push('--locale', tsLocale);
             }
         }
-        if (this.apiVersion.has291Features()) {
+        if (this.apiVersion.gte(api_1.default.v291)) {
             args.push('--noGetErrOnBackgroundUpdate');
         }
         return args;
@@ -860,4 +863,4 @@ function getDignosticsKind(event) {
     }
     throw new Error('Unknown dignostics kind');
 }
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/24f62626b222e9a8313213fb64b10d741a326288/extensions\typescript-language-features\out/typescriptServiceClient.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/0f080e5267e829de46638128001aeb7ca2d6d50e/extensions\typescript-language-features\out/typescriptServiceClient.js.map

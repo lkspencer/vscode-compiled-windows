@@ -6,12 +6,8 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const vscode = require("vscode");
 const vscode_nls_1 = require("vscode-nls");
-const path_1 = require("path");
 const tsconfig_1 = require("./tsconfig");
-const languageModeIds = require("../utils/languageModeIds");
 const localize = vscode_nls_1.loadMessageBundle(__filename);
-const selector = [languageModeIds.javascript, languageModeIds.javascriptreact];
-const fileLimit = 500;
 class ExcludeHintItem {
     constructor(telemetryReporter) {
         this.telemetryReporter = telemetryReporter;
@@ -44,59 +40,6 @@ class ExcludeHintItem {
         */
         this.telemetryReporter.logTelemetry('js.hintProjectExcludes');
     }
-}
-function createLargeProjectMonitorForProject(item, client, isOpen, memento) {
-    const toDispose = [];
-    const projectHinted = Object.create(null);
-    const projectHintIgnoreList = memento.get('projectHintIgnoreList', []);
-    for (let path of projectHintIgnoreList) {
-        if (path === null) {
-            path = 'undefined';
-        }
-        projectHinted[path] = true;
-    }
-    function onEditor(editor) {
-        if (!editor
-            || !vscode.languages.match(selector, editor.document)
-            || !client.normalizePath(editor.document.uri)) {
-            item.hide();
-            return;
-        }
-        const file = client.normalizePath(editor.document.uri);
-        if (!file) {
-            return;
-        }
-        isOpen(editor.document.uri).then(value => {
-            if (!value) {
-                return;
-            }
-            return client.execute('projectInfo', { file, needFileNameList: true }).then(res => {
-                if (!res.body) {
-                    return;
-                }
-                let { configFileName, fileNames } = res.body;
-                if (projectHinted[configFileName] === true || !fileNames) {
-                    return;
-                }
-                if (fileNames.length > fileLimit || res.body.languageServiceDisabled) {
-                    let largeRoots = computeLargeRoots(configFileName, fileNames).map(f => `'/${f}/'`).join(', ');
-                    item.show(largeRoots);
-                    projectHinted[configFileName] = true;
-                }
-                else {
-                    item.hide();
-                }
-            });
-        }).catch(err => {
-            client.logger.warn(err);
-        });
-    }
-    toDispose.push(vscode.workspace.onDidChangeTextDocument(e => {
-        delete projectHinted[e.document.fileName];
-    }));
-    toDispose.push(vscode.window.onDidChangeActiveTextEditor(onEditor));
-    onEditor(vscode.window.activeTextEditor);
-    return toDispose;
 }
 function createLargeProjectMonitorFromTypeScript(item, client) {
     return client.onProjectLanguageServiceStateChanged(body => {
@@ -132,7 +75,7 @@ function onConfigureExcludesSelected(client, configFileName) {
         }
     }
 }
-function create(client, telemetryReporter, isOpen, memento) {
+function create(client, telemetryReporter) {
     const toDispose = [];
     const item = new ExcludeHintItem(telemetryReporter);
     toDispose.push(vscode.commands.registerCommand('js.projectStatus.command', () => {
@@ -142,44 +85,8 @@ function create(client, telemetryReporter, isOpen, memento) {
         let { message } = item.getCurrentHint();
         return vscode.window.showInformationMessage(message);
     }));
-    if (client.apiVersion.has213Features()) {
-        toDispose.push(createLargeProjectMonitorFromTypeScript(item, client));
-    }
-    else {
-        toDispose.push(...createLargeProjectMonitorForProject(item, client, isOpen, memento));
-    }
+    toDispose.push(createLargeProjectMonitorFromTypeScript(item, client));
     return vscode.Disposable.from(...toDispose);
 }
-exports.create = create;
-function computeLargeRoots(configFileName, fileNames) {
-    let roots = Object.create(null);
-    let dir = path_1.dirname(configFileName);
-    // console.log(dir, fileNames);
-    for (const fileName of fileNames) {
-        if (fileName.indexOf(dir) === 0) {
-            let first = fileName.substring(dir.length + 1);
-            first = first.substring(0, first.indexOf('/'));
-            if (first) {
-                roots[first] = (roots[first] || 0) + 1;
-            }
-        }
-    }
-    let data = [];
-    for (let key in roots) {
-        data.push({ root: key, count: roots[key] });
-    }
-    data
-        .sort((a, b) => b.count - a.count)
-        .filter(s => s.root === 'src' || s.root === 'test' || s.root === 'tests');
-    let result = [];
-    let sum = 0;
-    for (const e of data) {
-        sum += e.count;
-        result.push(e.root);
-        if (fileNames.length - sum < fileLimit) {
-            break;
-        }
-    }
-    return result;
-}
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/24f62626b222e9a8313213fb64b10d741a326288/extensions\typescript-language-features\out/utils\projectStatus.js.map
+exports.create = create;
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/0f080e5267e829de46638128001aeb7ca2d6d50e/extensions\typescript-language-features\out/utils\projectStatus.js.map
