@@ -373,4 +373,4 @@ connection.onRequest(vscode_languageserver_protocol_foldingprovider_1.FoldingRan
 });
 // Listen on the connection
 connection.listen();
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/0f080e5267e829de46638128001aeb7ca2d6d50e/extensions\json-language-features\server\out/jsonServerMain.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/1dfc5e557209371715f655691b1235b6b26a06be/extensions\json-language-features\server\out/jsonServerMain.js.map
