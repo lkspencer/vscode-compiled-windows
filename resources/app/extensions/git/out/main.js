@@ -25,8 +25,16 @@ const util_1 = require("./util");
 const vscode_extension_telemetry_1 = require("vscode-extension-telemetry");
 const api_1 = require("./api");
 const protocolHandler_1 = require("./protocolHandler");
-let telemetryReporter;
-function init(context, outputChannel, disposables) {
+const deactivateTasks = [];
+function deactivate() {
+    return __awaiter(this, void 0, void 0, function* () {
+        for (const task of deactivateTasks) {
+            yield task();
+        }
+    });
+}
+exports.deactivate = deactivate;
+function createModel(context, outputChannel, telemetryReporter, disposables) {
     return __awaiter(this, void 0, void 0, function* () {
         const pathHint = vscode_1.workspace.getConfiguration('git').get('path');
         const info = yield git_1.findGit(pathHint, path => outputChannel.appendLine(localize(0, null, path)));
@@ -55,13 +63,26 @@ function init(context, outputChannel, disposables) {
         return model;
     });
 }
-function _activate(context, disposables) {
+function activate(context) {
     return __awaiter(this, void 0, void 0, function* () {
+        const disposables = [];
+        context.subscriptions.push(new vscode_1.Disposable(() => vscode_1.Disposable.from(...disposables).dispose()));
         const outputChannel = vscode_1.window.createOutputChannel('Git');
         vscode_1.commands.registerCommand('git.showOutput', () => outputChannel.show());
         disposables.push(outputChannel);
+        const { name, version, aiKey } = require(context.asAbsolutePath('./package.json'));
+        const telemetryReporter = new vscode_extension_telemetry_1.default(name, version, aiKey);
+        deactivateTasks.push(() => telemetryReporter.dispose());
+        const config = vscode_1.workspace.getConfiguration('git', null);
+        const enabled = config.get('enabled');
+        if (!enabled) {
+            const onConfigChange = util_1.filterEvent(vscode_1.workspace.onDidChangeConfiguration, e => e.affectsConfiguration('git'));
+            const onEnabled = util_1.filterEvent(onConfigChange, () => vscode_1.workspace.getConfiguration('git', null).get('enabled') === true);
+            yield util_1.eventToPromise(onEnabled);
+        }
         try {
-            return yield init(context, outputChannel, disposables);
+            const model = yield createModel(context, outputChannel, telemetryReporter, disposables);
+            return new api_1.APIImpl(model);
         }
         catch (err) {
             if (!/Git installation not found/.test(err.message || '')) {
@@ -69,45 +90,23 @@ function _activate(context, disposables) {
             }
             const config = vscode_1.workspace.getConfiguration('git');
             const shouldIgnore = config.get('ignoreMissingGitWarning') === true;
-            if (shouldIgnore) {
-                return;
+            if (!shouldIgnore) {
+                console.warn(err.message);
+                outputChannel.appendLine(err.message);
+                outputChannel.show();
+                const download = localize(2, null);
+                const neverShowAgain = localize(3, null);
+                const choice = yield vscode_1.window.showWarningMessage(localize(4, null), download, neverShowAgain);
+                if (choice === download) {
+                    vscode_1.commands.executeCommand('vscode.open', vscode_1.Uri.parse('https://git-scm.com/'));
+                }
+                else if (choice === neverShowAgain) {
+                    yield config.update('ignoreMissingGitWarning', true, true);
+                }
             }
-            console.warn(err.message);
-            outputChannel.appendLine(err.message);
-            outputChannel.show();
-            const download = localize(2, null);
-            const neverShowAgain = localize(3, null);
-            const choice = yield vscode_1.window.showWarningMessage(localize(4, null), download, neverShowAgain);
-            if (choice === download) {
-                vscode_1.commands.executeCommand('vscode.open', vscode_1.Uri.parse('https://git-scm.com/'));
-            }
-            else if (choice === neverShowAgain) {
-                yield config.update('ignoreMissingGitWarning', true, true);
-            }
+            return new api_1.NoopAPIImpl();
         }
     });
-}
-function activate(context) {
-    const config = vscode_1.workspace.getConfiguration('git', null);
-    const enabled = config.get('enabled');
-    const disposables = [];
-    context.subscriptions.push(new vscode_1.Disposable(() => vscode_1.Disposable.from(...disposables).dispose()));
-    const { name, version, aiKey } = require(context.asAbsolutePath('./package.json'));
-    telemetryReporter = new vscode_extension_telemetry_1.default(name, version, aiKey);
-    let activatePromise;
-    if (enabled) {
-        activatePromise = _activate(context, disposables);
-    }
-    else {
-        const onConfigChange = util_1.filterEvent(vscode_1.workspace.onDidChangeConfiguration, e => e.affectsConfiguration('git'));
-        const onEnabled = util_1.filterEvent(onConfigChange, () => vscode_1.workspace.getConfiguration('git', null).get('enabled') === true);
-        activatePromise = util_1.eventToPromise(onEnabled)
-            .then(() => _activate(context, disposables));
-    }
-    const modelPromise = activatePromise
-        .then(model => model || Promise.reject('Git model not found'));
-    activatePromise.catch(err => console.error(err));
-    return api_1.createApi(modelPromise);
 }
 exports.activate = activate;
 function checkGitVersion(info) {
@@ -130,9 +129,5 @@ function checkGitVersion(info) {
             yield config.update('ignoreLegacyWarning', true, true);
         }
     });
-}
-function deactivate() {
-    return telemetryReporter ? telemetryReporter.dispose() : Promise.resolve(null);
-}
-exports.deactivate = deactivate;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/1dfc5e557209371715f655691b1235b6b26a06be/extensions\git\out/main.js.map
+}
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/4e9361845dc28659923a300945f84731393e210d/extensions\git\out/main.js.map

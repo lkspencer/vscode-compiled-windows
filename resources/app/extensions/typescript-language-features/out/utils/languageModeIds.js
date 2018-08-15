@@ -13,5 +13,9 @@ exports.jsxTags = 'jsx-tags';
 function isSupportedLanguageMode(doc) {
     return vscode.languages.match([exports.typescript, exports.typescriptreact, exports.javascript, exports.javascriptreact], doc) > 0;
 }
-exports.isSupportedLanguageMode = isSupportedLanguageMode;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/1dfc5e557209371715f655691b1235b6b26a06be/extensions\typescript-language-features\out/utils\languageModeIds.js.map
+exports.isSupportedLanguageMode = isSupportedLanguageMode;
+function isTypeScriptDocument(doc) {
+    return vscode.languages.match([exports.typescript, exports.typescriptreact], doc) > 0;
+}
+exports.isTypeScriptDocument = isTypeScriptDocument;
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/4e9361845dc28659923a300945f84731393e210d/extensions\typescript-language-features\out/utils\languageModeIds.js.map

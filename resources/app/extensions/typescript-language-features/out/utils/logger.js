@@ -10,14 +10,14 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const vscode_1 = require("vscode");
+const vscode = require("vscode");
+const nls = require("vscode-nls");
 const is = require("./is");
 const memoize_1 = require("./memoize");
-const nls = require("vscode-nls");
 const localize = nls.loadMessageBundle(__filename);
 class Logger {
     get output() {
-        return vscode_1.window.createOutputChannel(localize(0, null));
+        return vscode.window.createOutputChannel(localize(0, null));
     }
     data2String(data) {
         if (data instanceof Error) {
@@ -58,4 +58,4 @@ __decorate([
     memoize_1.memoize
 ], Logger.prototype, "output", null);
 exports.default = Logger;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/1dfc5e557209371715f655691b1235b6b26a06be/extensions\typescript-language-features\out/utils\logger.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/4e9361845dc28659923a300945f84731393e210d/extensions\typescript-language-features\out/utils\logger.js.map

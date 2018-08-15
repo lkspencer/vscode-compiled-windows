@@ -7,7 +7,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const vscode = require("vscode");
 const util_1 = require("./util");
 function nextItemHTML(selectionStart, selectionEnd, editor, rootNode) {
-    let currentNode = util_1.getHtmlNode(editor.document, rootNode, selectionEnd);
+    let currentNode = util_1.getHtmlNode(editor.document, rootNode, selectionEnd, false);
     let nextNode = undefined;
     if (!currentNode) {
         return;
@@ -48,7 +48,7 @@ function nextItemHTML(selectionStart, selectionEnd, editor, rootNode) {
 }
 exports.nextItemHTML = nextItemHTML;
 function prevItemHTML(selectionStart, selectionEnd, editor, rootNode) {
-    let currentNode = util_1.getHtmlNode(editor.document, rootNode, selectionStart);
+    let currentNode = util_1.getHtmlNode(editor.document, rootNode, selectionStart, false);
     let prevNode = undefined;
     if (!currentNode) {
         return;
@@ -170,4 +170,4 @@ function getPrevAttribute(selectionStart, selectionEnd, document, node) {
         }
     }
 }
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/1dfc5e557209371715f655691b1235b6b26a06be/extensions\emmet\out/selectItemHTML.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/4e9361845dc28659923a300945f84731393e210d/extensions\emmet\out/selectItemHTML.js.map

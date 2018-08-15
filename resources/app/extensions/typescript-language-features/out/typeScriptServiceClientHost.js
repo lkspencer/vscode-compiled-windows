@@ -8,17 +8,18 @@ Object.defineProperty(exports, "__esModule", { value: true });
  * Includes code from typescript-sublime-plugin project, obtained from
  * https://github.com/Microsoft/TypeScript-Sublime-Plugin/blob/master/TypeScript%20Indent.tmPreferences
  * ------------------------------------------------------------------------------------------ */
-const vscode_1 = require("vscode");
+const vscode = require("vscode");
 const fileConfigurationManager_1 = require("./features/fileConfigurationManager");
+const updatePathsOnRename_1 = require("./features/updatePathsOnRename");
 const languageProvider_1 = require("./languageProvider");
 const PConst = require("./protocol.const");
 const typescriptServiceClient_1 = require("./typescriptServiceClient");
 const api_1 = require("./utils/api");
 const dispose_1 = require("./utils/dispose");
+const languageDescription_1 = require("./utils/languageDescription");
 const typeConverters = require("./utils/typeConverters");
 const typingsStatus_1 = require("./utils/typingsStatus");
 const versionStatus_1 = require("./utils/versionStatus");
-const updatePathsOnRename_1 = require("./features/updatePathsOnRename");
 // Style check diagnostics that can be reported as warnings
 const styleCheckDiagnostics = [
     6133,
@@ -28,15 +29,15 @@ const styleCheckDiagnostics = [
     7029,
     7030 // not all code paths return a value
 ];
-class TypeScriptServiceClientHost {
+class TypeScriptServiceClientHost extends dispose_1.Disposable {
     constructor(descriptions, workspaceState, plugins, commandManager, logDirectoryProvider) {
+        super();
         this.commandManager = commandManager;
         this.languages = [];
         this.languagePerId = new Map();
-        this.disposables = [];
         this.reportStyleCheckAsWarnings = true;
         const handleProjectCreateOrDelete = () => {
-            this.client.execute('reloadProjects', null, false);
+            this.client.executeWithoutWaitingForResponse('reloadProjects', null);
             this.triggerAllDiagnostics();
         };
         const handleProjectChange = () => {
@@ -44,31 +45,31 @@ class TypeScriptServiceClientHost {
                 this.triggerAllDiagnostics();
             }, 1500);
         };
-        const configFileWatcher = vscode_1.workspace.createFileSystemWatcher('**/[tj]sconfig.json');
-        this.disposables.push(configFileWatcher);
-        configFileWatcher.onDidCreate(handleProjectCreateOrDelete, this, this.disposables);
-        configFileWatcher.onDidDelete(handleProjectCreateOrDelete, this, this.disposables);
-        configFileWatcher.onDidChange(handleProjectChange, this, this.disposables);
+        const configFileWatcher = vscode.workspace.createFileSystemWatcher('**/[tj]sconfig.json');
+        this._register(configFileWatcher);
+        configFileWatcher.onDidCreate(handleProjectCreateOrDelete, this, this._disposables);
+        configFileWatcher.onDidDelete(handleProjectCreateOrDelete, this, this._disposables);
+        configFileWatcher.onDidChange(handleProjectChange, this, this._disposables);
         const allModeIds = this.getAllModeIds(descriptions);
         this.client = new typescriptServiceClient_1.default(workspaceState, version => this.versionStatus.onDidChangeTypeScriptVersion(version), plugins, logDirectoryProvider, allModeIds);
-        this.disposables.push(this.client);
+        this._register(this.client);
         this.client.onDiagnosticsReceived(({ kind, resource, diagnostics }) => {
             this.diagnosticsReceived(kind, resource, diagnostics);
-        }, null, this.disposables);
-        this.client.onConfigDiagnosticsReceived(diag => this.configFileDiagnosticsReceived(diag), null, this.disposables);
-        this.client.onResendModelsRequested(() => this.populateService(), null, this.disposables);
+        }, null, this._disposables);
+        this.client.onConfigDiagnosticsReceived(diag => this.configFileDiagnosticsReceived(diag), null, this._disposables);
+        this.client.onResendModelsRequested(() => this.populateService(), null, this._disposables);
         this.versionStatus = new versionStatus_1.default(resource => this.client.toPath(resource));
-        this.disposables.push(this.versionStatus);
-        this.typingsStatus = new typingsStatus_1.default(this.client);
-        this.ataProgressReporter = new typingsStatus_1.AtaProgressReporter(this.client);
-        this.fileConfigurationManager = new fileConfigurationManager_1.default(this.client);
+        this._register(this.versionStatus);
+        this._register(new typingsStatus_1.AtaProgressReporter(this.client));
+        this.typingsStatus = this._register(new typingsStatus_1.default(this.client));
+        this.fileConfigurationManager = this._register(new fileConfigurationManager_1.default(this.client));
         for (const description of descriptions) {
             const manager = new languageProvider_1.default(this.client, description, this.commandManager, this.client.telemetryReporter, this.typingsStatus, this.fileConfigurationManager);
             this.languages.push(manager);
-            this.disposables.push(manager);
+            this._register(manager);
             this.languagePerId.set(description.id, manager);
         }
-        this.updateImportsOnFileRenameHandler = new updatePathsOnRename_1.UpdateImportsOnFileRenameHandler(this.client, this.fileConfigurationManager, uri => this.handles(uri));
+        this._register(updatePathsOnRename_1.register(this.client, this.fileConfigurationManager, uri => this.handles(uri)));
         this.client.ensureServiceStarted();
         this.client.onReady(() => {
             if (!this.client.apiVersion.gte(api_1.default.v230)) {
@@ -84,20 +85,21 @@ class TypeScriptServiceClientHost {
                 const description = {
                     id: 'typescript-plugins',
                     modeIds: Array.from(languages.values()),
-                    diagnosticSource: 'ts-plugins',
+                    diagnosticSource: 'ts-plugin',
+                    diagnosticLanguage: languageDescription_1.DiagnosticLanguage.TypeScript,
                     diagnosticOwner: 'typescript',
                     isExternal: true
                 };
                 const manager = new languageProvider_1.default(this.client, description, this.commandManager, this.client.telemetryReporter, this.typingsStatus, this.fileConfigurationManager);
                 this.languages.push(manager);
-                this.disposables.push(manager);
+                this._register(manager);
                 this.languagePerId.set(description.id, manager);
             }
         });
         this.client.onTsServerStarted(() => {
             this.triggerAllDiagnostics();
         });
-        vscode_1.workspace.onDidChangeConfiguration(this.configurationChanged, this, this.disposables);
+        vscode.workspace.onDidChangeConfiguration(this.configurationChanged, this, this._disposables);
         this.configurationChanged();
     }
     getAllModeIds(descriptions) {
@@ -107,18 +109,11 @@ class TypeScriptServiceClientHost {
         }
         return allModeIds;
     }
-    dispose() {
-        dispose_1.disposeAll(this.disposables);
-        this.typingsStatus.dispose();
-        this.ataProgressReporter.dispose();
-        this.fileConfigurationManager.dispose();
-        this.updateImportsOnFileRenameHandler.dispose();
-    }
     get serviceClient() {
         return this.client;
     }
     reloadProjects() {
-        this.client.execute('reloadProjects', null, false);
+        this.client.executeWithoutWaitingForResponse('reloadProjects', null);
         this.triggerAllDiagnostics();
     }
     async handles(resource) {
@@ -129,12 +124,12 @@ class TypeScriptServiceClientHost {
         return this.client.bufferSyncSupport.handles(resource);
     }
     configurationChanged() {
-        const typescriptConfig = vscode_1.workspace.getConfiguration('typescript');
+        const typescriptConfig = vscode.workspace.getConfiguration('typescript');
         this.reportStyleCheckAsWarnings = typescriptConfig.get('reportStyleChecksAsWarnings', true);
     }
     async findLanguage(resource) {
         try {
-            const doc = await vscode_1.workspace.openTextDocument(resource);
+            const doc = await vscode.workspace.openTextDocument(resource);
             return this.languages.find(language => language.handles(resource, doc));
         }
         catch (_a) {
@@ -151,7 +146,7 @@ class TypeScriptServiceClientHost {
         this.client.bufferSyncSupport.reOpenDocuments();
         this.client.bufferSyncSupport.requestAllDiagnostics();
         // See https://github.com/Microsoft/TypeScript/issues/5530
-        vscode_1.workspace.saveAll(false).then(() => {
+        vscode.workspace.saveAll(false).then(() => {
             for (const language of this.languagePerId.values()) {
                 language.reInitialize();
             }
@@ -177,7 +172,7 @@ class TypeScriptServiceClientHost {
                 language.configFileDiagnosticsReceived(this.client.toResource(body.configFile), []);
             }
             else if (body.diagnostics.length >= 1) {
-                vscode_1.workspace.openTextDocument(vscode_1.Uri.file(body.configFile)).then((document) => {
+                vscode.workspace.openTextDocument(vscode.Uri.file(body.configFile)).then((document) => {
                     let curly = undefined;
                     let nonCurly = undefined;
                     let diagnostic;
@@ -200,17 +195,17 @@ class TypeScriptServiceClientHost {
                     }
                     const match = curly || nonCurly;
                     if (match) {
-                        diagnostic = new vscode_1.Diagnostic(new vscode_1.Range(match[0], match[1], match[0], match[2]), body.diagnostics[0].text);
+                        diagnostic = new vscode.Diagnostic(new vscode.Range(match[0], match[1], match[0], match[2]), body.diagnostics[0].text);
                     }
                     else {
-                        diagnostic = new vscode_1.Diagnostic(new vscode_1.Range(0, 0, 0, 0), body.diagnostics[0].text);
+                        diagnostic = new vscode.Diagnostic(new vscode.Range(0, 0, 0, 0), body.diagnostics[0].text);
                     }
                     if (diagnostic) {
                         diagnostic.source = language.diagnosticSource;
                         language.configFileDiagnosticsReceived(this.client.toResource(body.configFile), [diagnostic]);
                     }
                 }, _error => {
-                    language.configFileDiagnosticsReceived(this.client.toResource(body.configFile), [new vscode_1.Diagnostic(new vscode_1.Range(0, 0, 0, 0), body.diagnostics[0].text)]);
+                    language.configFileDiagnosticsReceived(this.client.toResource(body.configFile), [new vscode.Diagnostic(new vscode.Range(0, 0, 0, 0), body.diagnostics[0].text)]);
                 });
             }
         });
@@ -220,14 +215,13 @@ class TypeScriptServiceClientHost {
     }
     tsDiagnosticToVsDiagnostic(diagnostic, source) {
         const { start, end, text } = diagnostic;
-        const range = new vscode_1.Range(typeConverters.Position.fromLocation(start), typeConverters.Position.fromLocation(end));
-        const converted = new vscode_1.Diagnostic(range, text);
+        const range = new vscode.Range(typeConverters.Position.fromLocation(start), typeConverters.Position.fromLocation(end));
+        const converted = new vscode.Diagnostic(range, text);
         converted.severity = this.getDiagnosticSeverity(diagnostic);
         converted.source = diagnostic.source || source;
         if (diagnostic.code) {
             converted.code = diagnostic.code;
         }
-        // TODO: requires TS 3.0
         const relatedInformation = diagnostic.relatedInformation;
         if (relatedInformation) {
             converted.relatedInformation = relatedInformation.map((info) => {
@@ -235,11 +229,11 @@ class TypeScriptServiceClientHost {
                 if (!span) {
                     return undefined;
                 }
-                return new vscode_1.DiagnosticRelatedInformation(typeConverters.Location.fromTextSpan(this.client.toResource(span.file), span), info.message);
+                return new vscode.DiagnosticRelatedInformation(typeConverters.Location.fromTextSpan(this.client.toResource(span.file), span), info.message);
             }).filter((x) => !!x);
         }
         if (diagnostic.reportsUnnecessary) {
-            converted.tags = [vscode_1.DiagnosticTag.Unnecessary];
+            converted.tags = [vscode.DiagnosticTag.Unnecessary];
         }
         converted.reportUnnecessary = diagnostic.reportsUnnecessary;
         return converted;
@@ -248,17 +242,17 @@ class TypeScriptServiceClientHost {
         if (this.reportStyleCheckAsWarnings
             && this.isStyleCheckDiagnostic(diagnostic.code)
             && diagnostic.category === PConst.DiagnosticCategory.error) {
-            return vscode_1.DiagnosticSeverity.Warning;
+            return vscode.DiagnosticSeverity.Warning;
         }
         switch (diagnostic.category) {
             case PConst.DiagnosticCategory.error:
-                return vscode_1.DiagnosticSeverity.Error;
+                return vscode.DiagnosticSeverity.Error;
             case PConst.DiagnosticCategory.warning:
-                return vscode_1.DiagnosticSeverity.Warning;
+                return vscode.DiagnosticSeverity.Warning;
             case PConst.DiagnosticCategory.suggestion:
-                return vscode_1.DiagnosticSeverity.Hint;
+                return vscode.DiagnosticSeverity.Hint;
             default:
-                return vscode_1.DiagnosticSeverity.Error;
+                return vscode.DiagnosticSeverity.Error;
         }
     }
     isStyleCheckDiagnostic(code) {
@@ -266,4 +260,4 @@ class TypeScriptServiceClientHost {
     }
 }
 exports.default = TypeScriptServiceClientHost;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/1dfc5e557209371715f655691b1235b6b26a06be/extensions\typescript-language-features\out/typeScriptServiceClientHost.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/4e9361845dc28659923a300945f84731393e210d/extensions\typescript-language-features\out/typeScriptServiceClientHost.js.map

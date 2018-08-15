@@ -44,7 +44,7 @@ function nextItemStylesheet(startOffset, endOffset, editor, rootNode) {
 }
 exports.nextItemStylesheet = nextItemStylesheet;
 function prevItemStylesheet(startOffset, endOffset, editor, rootNode) {
-    let currentNode = util_1.getNode(rootNode, startOffset);
+    let currentNode = util_1.getNode(rootNode, startOffset, false);
     if (!currentNode) {
         currentNode = rootNode;
     }
@@ -112,4 +112,4 @@ function getSelectionFromProperty(node, document, selectionStart, selectionEnd, 
     const newSelectionEnd = propertyNode.valueToken.start.translate(0, newSelectionEndOffset);
     return new vscode.Selection(newSelectionStart, newSelectionEnd);
 }
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/1dfc5e557209371715f655691b1235b6b26a06be/extensions\emmet\out/selectItemStylesheet.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/4e9361845dc28659923a300945f84731393e210d/extensions\emmet\out/selectItemStylesheet.js.map

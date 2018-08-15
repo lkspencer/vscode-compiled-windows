@@ -17,7 +17,7 @@ function splitJoinTag() {
     }
     return editor.edit(editBuilder => {
         editor.selections.reverse().forEach(selection => {
-            let nodeToUpdate = util_1.getHtmlNode(editor.document, rootNode, selection.start);
+            let nodeToUpdate = util_1.getHtmlNode(editor.document, rootNode, selection.start, true);
             if (nodeToUpdate) {
                 let textEdit = getRangesToReplace(editor.document, nodeToUpdate);
                 editBuilder.replace(textEdit.range, textEdit.newText);
@@ -53,4 +53,4 @@ function getRangesToReplace(document, nodeToUpdate) {
     }
     return new vscode.TextEdit(rangeToReplace, textToReplaceWith);
 }
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/1dfc5e557209371715f655691b1235b6b26a06be/extensions\emmet\out/splitJoinTag.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/4e9361845dc28659923a300945f84731393e210d/extensions\emmet\out/splitJoinTag.js.map

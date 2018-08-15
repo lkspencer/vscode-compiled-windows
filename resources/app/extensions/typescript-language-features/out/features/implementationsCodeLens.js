@@ -17,9 +17,9 @@ class TypeScriptImplementationsCodeLensProvider extends baseCodeLensProvider_1.T
         const codeLens = inputCodeLens;
         const args = typeConverters.Position.toFileLocationRequestArgs(codeLens.file, codeLens.range.start);
         try {
-            const response = await this.client.execute('implementation', args, token);
-            if (response && response.body) {
-                const locations = response.body
+            const { body } = await this.client.execute('implementation', args, token);
+            if (body) {
+                const locations = body
                     .map(reference => 
                 // Only take first line on implementation: https://github.com/Microsoft/vscode/issues/23924
                 new vscode.Location(this.client.toResource(reference.file), reference.start.line === reference.end.line
@@ -78,4 +78,4 @@ function register(selector, modeId, client, cachedResponse) {
     }));
 }
 exports.register = register;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/1dfc5e557209371715f655691b1235b6b26a06be/extensions\typescript-language-features\out/features\implementationsCodeLens.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/4e9361845dc28659923a300945f84731393e210d/extensions\typescript-language-features\out/features\implementationsCodeLens.js.map

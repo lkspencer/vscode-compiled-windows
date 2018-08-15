@@ -291,20 +291,22 @@ var Operation;
     Operation["GetCommitTemplate"] = "GetCommitTemplate";
     Operation["DeleteBranch"] = "DeleteBranch";
     Operation["RenameBranch"] = "RenameBranch";
+    Operation["DeleteRef"] = "DeleteRef";
     Operation["Merge"] = "Merge";
     Operation["Ignore"] = "Ignore";
     Operation["Tag"] = "Tag";
     Operation["Stash"] = "Stash";
     Operation["CheckIgnore"] = "CheckIgnore";
-    Operation["LSTree"] = "LSTree";
+    Operation["GetObjectDetails"] = "GetObjectDetails";
     Operation["SubmoduleUpdate"] = "SubmoduleUpdate";
+    Operation["RebaseContinue"] = "RebaseContinue";
 })(Operation = exports.Operation || (exports.Operation = {}));
 function isReadOnly(operation) {
     switch (operation) {
         case Operation.Show:
         case Operation.GetCommitTemplate:
         case Operation.CheckIgnore:
-        case Operation.LSTree:
+        case Operation.GetObjectDetails:
             return true;
         default:
             return false;
@@ -314,7 +316,7 @@ function shouldShowProgress(operation) {
     switch (operation) {
         case Operation.Fetch:
         case Operation.CheckIgnore:
-        case Operation.LSTree:
+        case Operation.GetObjectDetails:
         case Operation.Show:
             return false;
         default:
@@ -394,6 +396,7 @@ class Repository {
         this._refs = [];
         this._remotes = [];
         this._submodules = [];
+        this._rebaseCommit = undefined;
         this._operations = new OperationsImpl();
         this._state = RepositoryState.Idle;
         this.isRepositoryHuge = false;
@@ -422,6 +425,14 @@ class Repository {
         this.disposables.push(this.indexGroup);
         this.disposables.push(this.workingTreeGroup);
         this.disposables.push(new autofetch_1.AutoFetcher(this, globalState));
+        // https://github.com/Microsoft/vscode/issues/39039
+        const onSuccessfulPush = util_1.filterEvent(this.onDidRunOperation, e => e.operation === Operation.Push && !e.error);
+        onSuccessfulPush(() => {
+            const gitConfig = vscode_1.workspace.getConfiguration('git');
+            if (gitConfig.get('showPushSuccessNotification')) {
+                vscode_1.window.showInformationMessage(localize(22, null));
+            }
+        }, null, this.disposables);
         const statusBar = new statusbar_1.StatusBarCommands(this);
         this.disposables.push(statusBar);
         statusBar.onDidChange(() => this._sourceControl.statusBarCommands = statusBar.commands, null, this.disposables);
@@ -451,6 +462,18 @@ class Repository {
     get submodules() {
         return this._submodules;
     }
+    set rebaseCommit(rebaseCommit) {
+        if (this._rebaseCommit && !rebaseCommit) {
+            this.inputBox.value = '';
+        }
+        else if (rebaseCommit && (!this._rebaseCommit || this._rebaseCommit.hash !== rebaseCommit.hash)) {
+            this.inputBox.value = rebaseCommit.message;
+        }
+        this._rebaseCommit = rebaseCommit;
+    }
+    get rebaseCommit() {
+        return this._rebaseCommit;
+    }
     get operations() { return this._operations; }
     get state() { return this._state; }
     set state(state) {
@@ -468,6 +491,14 @@ class Repository {
         return this.repository.root;
     }
     validateInput(text, position) {
+        if (this.rebaseCommit) {
+            if (this.rebaseCommit.message !== text) {
+                return {
+                    message: localize(23, null),
+                    type: vscode_1.SourceControlInputBoxValidationType.Warning
+                };
+            }
+        }
         const config = vscode_1.workspace.getConfiguration('git');
         const setting = config.get('inputValidation');
         if (setting === 'off') {
@@ -475,7 +506,7 @@ class Repository {
         }
         if (/^\s+$/.test(text)) {
             return {
-                message: localize(22, null),
+                message: localize(24, null),
                 type: vscode_1.SourceControlInputBoxValidationType.Warning
             };
         }
@@ -492,13 +523,13 @@ class Repository {
                 return;
             }
             return {
-                message: localize(23, null, Repository.InputValidationLength - line.length),
+                message: localize(25, null, Repository.InputValidationLength - line.length),
                 type: vscode_1.SourceControlInputBoxValidationType.Information
             };
         }
         else {
             return {
-                message: localize(24, null, line.length - Repository.InputValidationLength, Repository.InputValidationLength),
+                message: localize(26, null, line.length - Repository.InputValidationLength, Repository.InputValidationLength),
                 type: vscode_1.SourceControlInputBoxValidationType.Warning
             };
         }
@@ -546,12 +577,22 @@ class Repository {
     }
     commit(message, opts = Object.create(null)) {
         return __awaiter(this, void 0, void 0, function* () {
-            yield this.run(Operation.Commit, () => __awaiter(this, void 0, void 0, function* () {
-                if (opts.all) {
-                    yield this.repository.add([]);
-                }
-                yield this.repository.commit(message, opts);
-            }));
+            if (this.rebaseCommit) {
+                yield this.run(Operation.RebaseContinue, () => __awaiter(this, void 0, void 0, function* () {
+                    if (opts.all) {
+                        yield this.repository.add([]);
+                    }
+                    yield this.repository.rebaseContinue();
+                }));
+            }
+            else {
+                yield this.run(Operation.Commit, () => __awaiter(this, void 0, void 0, function* () {
+                    if (opts.all) {
+                        yield this.repository.add([]);
+                    }
+                    yield this.repository.commit(message, opts);
+                }));
+            }
         });
     }
     clean(resources) {
@@ -635,6 +676,11 @@ class Repository {
     reset(treeish, hard) {
         return __awaiter(this, void 0, void 0, function* () {
             yield this.run(Operation.Reset, () => this.repository.reset(treeish, hard));
+        });
+    }
+    deleteRef(ref) {
+        return __awaiter(this, void 0, void 0, function* () {
+            yield this.run(Operation.DeleteRef, () => this.repository.deleteRef(ref));
         });
     }
     fetch() {
@@ -723,13 +769,22 @@ class Repository {
     }
     show(ref, filePath) {
         return __awaiter(this, void 0, void 0, function* () {
-            return this.run(Operation.Show, () => {
+            return yield this.run(Operation.Show, () => __awaiter(this, void 0, void 0, function* () {
                 const relativePath = path.relative(this.repository.root, filePath).replace(/\\/g, '/');
                 const configFiles = vscode_1.workspace.getConfiguration('files', vscode_1.Uri.file(filePath));
                 const defaultEncoding = configFiles.get('encoding');
                 const autoGuessEncoding = configFiles.get('autoGuessEncoding');
-                return this.repository.bufferString(`${ref}:${relativePath}`, defaultEncoding, autoGuessEncoding);
-            });
+                try {
+                    return yield this.repository.bufferString(`${ref}:${relativePath}`, defaultEncoding, autoGuessEncoding);
+                }
+                catch (err) {
+                    if (err.gitErrorCode === git_1.GitErrorCodes.WrongCase) {
+                        const gitRelativePath = yield this.repository.getGitRelativePath(ref, relativePath);
+                        return yield this.repository.bufferString(`${ref}:${gitRelativePath}`, defaultEncoding, autoGuessEncoding);
+                    }
+                    throw err;
+                }
+            }));
         });
     }
     buffer(ref, filePath) {
@@ -740,8 +795,8 @@ class Repository {
             });
         });
     }
-    lstree(ref, filePath) {
-        return this.run(Operation.LSTree, () => this.repository.lstree(ref, filePath));
+    getObjectDetails(ref, filePath) {
+        return this.run(Operation.GetObjectDetails, () => this.repository.getObjectDetails(ref, filePath));
     }
     detectObjectType(object) {
         return this.run(Operation.Show, () => this.repository.detectObjectType(object));
@@ -885,8 +940,8 @@ class Repository {
             const useIcons = !config.get('decorations.enabled', true);
             this.isRepositoryHuge = didHitLimit;
             if (didHitLimit && !shouldIgnore && !this.didWarnAboutLimit) {
-                const neverAgain = { title: localize(25, null) };
-                vscode_1.window.showWarningMessage(localize(26, null, this.repository.root), neverAgain).then(result => {
+                const neverAgain = { title: localize(27, null) };
+                vscode_1.window.showWarningMessage(localize(28, null, this.repository.root), neverAgain).then(result => {
                     if (result === neverAgain) {
                         config.update('ignoreLimitWarning', true, false);
                     }
@@ -908,11 +963,12 @@ class Repository {
             catch (err) {
                 // noop
             }
-            const [refs, remotes, submodules] = yield Promise.all([this.repository.getRefs(), this.repository.getRemotes(), this.repository.getSubmodules()]);
+            const [refs, remotes, submodules, rebaseCommit] = yield Promise.all([this.repository.getRefs(), this.repository.getRemotes(), this.repository.getSubmodules(), this.getRebaseCommit()]);
             this._HEAD = HEAD;
             this._refs = refs;
             this._remotes = remotes;
             this._submodules = submodules;
+            this.rebaseCommit = rebaseCommit;
             const index = [];
             const workingTree = [];
             const merge = [];
@@ -976,6 +1032,18 @@ class Repository {
             // https://github.com/Microsoft/vscode/issues/43066
             vscode_1.commands.executeCommand('setContext', 'gitFreshRepository', !this._HEAD || !this._HEAD.commit);
             this._onDidChangeStatus.fire();
+        });
+    }
+    getRebaseCommit() {
+        return __awaiter(this, void 0, void 0, function* () {
+            const rebaseHeadPath = path.join(this.repository.root, '.git', 'REBASE_HEAD');
+            try {
+                const rebaseHead = yield new Promise((c, e) => fs.readFile(rebaseHeadPath, 'utf8', (err, result) => err ? e(err) : c(result)));
+                return yield this.getCommit(rebaseHead.trim());
+            }
+            catch (err) {
+                return undefined;
+            }
         });
     }
     onFSChange(uri) {
@@ -1085,4 +1153,4 @@ __decorate([
     decorators_1.throttle
 ], Repository.prototype, "updateWhenIdleAndWait", null);
 exports.Repository = Repository;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/1dfc5e557209371715f655691b1235b6b26a06be/extensions\git\out/repository.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/4e9361845dc28659923a300945f84731393e210d/extensions\git\out/repository.js.map

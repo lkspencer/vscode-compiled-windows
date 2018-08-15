@@ -6,8 +6,8 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const vscode = require("vscode");
 const nls = require("vscode-nls");
-const dependentRegistration_1 = require("../utils/dependentRegistration");
 const api_1 = require("../utils/api");
+const dependentRegistration_1 = require("../utils/dependentRegistration");
 const localize = nls.loadMessageBundle(__filename);
 const directives = [
     {
@@ -43,9 +43,6 @@ class DirectiveCommentCompletionProvider {
         }
         return [];
     }
-    resolveCompletionItem(item, _token) {
-        return item;
-    }
 }
 function register(selector, client) {
     return new dependentRegistration_1.VersionDependentRegistration(client, api_1.default.v230, () => {
@@ -53,4 +50,4 @@ function register(selector, client) {
     });
 }
 exports.register = register;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/1dfc5e557209371715f655691b1235b6b26a06be/extensions\typescript-language-features\out/features\directiveCommentCompletions.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/4e9361845dc28659923a300945f84731393e210d/extensions\typescript-language-features\out/features\directiveCommentCompletions.js.map

@@ -22,7 +22,7 @@ const slugify_1 = require("./slugify");
 function activate(context) {
     const telemetryReporter = telemetryReporter_1.loadDefaultTelemetryReporter();
     context.subscriptions.push(telemetryReporter);
-    const contributions = markdownExtensions_1.getMarkdownExtensionContributions();
+    const contributions = markdownExtensions_1.getMarkdownExtensionContributions(context);
     const cspArbiter = new security_1.ExtensionContentSecurityPolicyArbiter(context.globalState, context.workspaceState);
     const engine = new markdownEngine_1.MarkdownEngine(contributions, slugify_1.githubSlugifier);
     const logger = new logger_1.Logger();
@@ -57,4 +57,4 @@ function activate(context) {
     }));
 }
 exports.activate = activate;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/1dfc5e557209371715f655691b1235b6b26a06be/extensions\markdown-language-features\out/extension.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/4e9361845dc28659923a300945f84731393e210d/extensions\markdown-language-features\out/extension.js.map

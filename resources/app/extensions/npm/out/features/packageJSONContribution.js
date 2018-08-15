@@ -5,6 +5,7 @@
 'use strict';
 Object.defineProperty(exports, "__esModule", { value: true });
 const vscode_1 = require("vscode");
+const jsonContributions_1 = require("./jsonContributions");
 const markedTextUtil_1 = require("./markedTextUtil");
 const nls = require("vscode-nls");
 const localize = nls.loadMessageBundle(__filename);
@@ -12,8 +13,7 @@ const LIMIT = 40;
 const SCOPED_LIMIT = 250;
 const USER_AGENT = 'Visual Studio Code';
 class PackageJSONContribution {
-    constructor(xhr) {
-        this.xhr = xhr;
+    constructor(httprequestxhr) {
         this.mostDependedOn = ['lodash', 'async', 'underscore', 'request', 'commander', 'express', 'debug', 'chalk', 'colors', 'q', 'coffee-script',
             'mkdirp', 'optimist', 'through2', 'yeoman-generator', 'moment', 'bluebird', 'glob', 'gulp-util', 'minimist', 'cheerio', 'pug', 'redis', 'node-uuid',
             'socket', 'io', 'uglify-js', 'winston', 'through', 'fs-extra', 'handlebars', 'body-parser', 'rimraf', 'mime', 'semver', 'mongodb', 'jquery',
@@ -21,6 +21,15 @@ class PackageJSONContribution {
             'shelljs', 'gulp', 'yargs', 'browserify', 'minimatch', 'react', 'less', 'prompt', 'inquirer', 'ws', 'event-stream', 'inherits', 'mysql', 'esprima',
             'jsdom', 'stylus', 'when', 'readable-stream', 'aws-sdk', 'concat-stream', 'chai', 'Thenable', 'wrench'];
         this.knownScopes = ['@types', '@angular'];
+        const getxhr = () => {
+            return vscode_1.workspace.getConfiguration('npm').get('fetchOnlinePackageInfo') === false ? jsonContributions_1.xhrDisabled : httprequestxhr;
+        };
+        this.xhr = getxhr();
+        vscode_1.workspace.onDidChangeConfiguration((e) => {
+            if (e.affectsConfiguration('npm.fetchOnlinePackageInfo')) {
+                this.xhr = getxhr();
+            }
+        });
     }
     getDocumentSelector() {
         return [{ language: 'json', scheme: '*', pattern: '**/package.json' }];
@@ -294,4 +303,4 @@ class PackageJSONContribution {
     }
 }
 exports.PackageJSONContribution = PackageJSONContribution;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/1dfc5e557209371715f655691b1235b6b26a06be/extensions\npm\out/features\packageJSONContribution.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/4e9361845dc28659923a300945f84731393e210d/extensions\npm\out/features\packageJSONContribution.js.map

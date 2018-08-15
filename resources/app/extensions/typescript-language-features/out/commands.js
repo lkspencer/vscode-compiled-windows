@@ -5,8 +5,9 @@
  *--------------------------------------------------------------------------------------------*/
 Object.defineProperty(exports, "__esModule", { value: true });
 const vscode = require("vscode");
-const tsconfig_1 = require("./utils/tsconfig");
 const nls = require("vscode-nls");
+const tsconfig_1 = require("./utils/tsconfig");
+const cancellation_1 = require("./utils/cancellation");
 const localize = nls.loadMessageBundle(__filename);
 class ReloadTypeScriptProjectsCommand {
     constructor(lazyClientHost) {
@@ -99,7 +100,7 @@ async function goToProjectConfig(clientHost, isTypeScriptProject, resource) {
     }
     let res = undefined;
     try {
-        res = await client.execute('projectInfo', { file, needFileNameList: false });
+        res = await client.execute('projectInfo', { file, needFileNameList: false }, cancellation_1.nulToken);
     }
     catch (_a) {
         // noop
@@ -134,4 +135,4 @@ async function goToProjectConfig(clientHost, isTypeScriptProject, resource) {
             return;
     }
 }
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/1dfc5e557209371715f655691b1235b6b26a06be/extensions\typescript-language-features\out/commands.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/4e9361845dc28659923a300945f84731393e210d/extensions\typescript-language-features\out/commands.js.map

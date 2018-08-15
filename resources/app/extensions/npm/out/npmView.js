@@ -138,20 +138,7 @@ class NpmScriptsTreeDataProvider {
         });
     }
     extractDebugArg(scripts, task) {
-        let script = scripts[task.name];
-        let match = script.match(/--(inspect|debug)(-brk)?(=(\d*))?/);
-        if (match) {
-            if (match[4]) {
-                return [match[1], parseInt(match[4])];
-            }
-            if (match[1] === 'inspect') {
-                return [match[1], 9229];
-            }
-            if (match[1] === 'debug') {
-                return [match[1], 5858];
-            }
-        }
-        return undefined;
+        return tasks_1.extractDebugArgFromScript(scripts[task.name]);
     }
     debugScript(script) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -162,7 +149,7 @@ class NpmScriptsTreeDataProvider {
                 this.scriptNotValid(task);
                 return;
             }
-            let debugArg = yield this.extractDebugArg(scripts, task);
+            let debugArg = this.extractDebugArg(scripts, task);
             if (!debugArg) {
                 let message = localize(1, null, task.name);
                 let learnMore = localize(2, null);
@@ -173,26 +160,7 @@ class NpmScriptsTreeDataProvider {
                 }
                 return;
             }
-            let protocol = 'inspector';
-            if (debugArg[0] === 'debug') {
-                protocol = 'legacy';
-            }
-            let packageManager = tasks_1.getPackageManager(script.getFolder());
-            const config = {
-                type: 'node',
-                request: 'launch',
-                name: `Debug ${task.name}`,
-                runtimeExecutable: packageManager,
-                runtimeArgs: [
-                    'run-script',
-                    task.name,
-                ],
-                port: debugArg[1],
-                protocol: protocol
-            };
-            if (tasks_1.isWorkspaceFolder(task.scope)) {
-                vscode_1.debug.startDebugging(task.scope, config);
-            }
+            tasks_1.startDebugging(task.name, debugArg[0], debugArg[1], script.getFolder());
         });
     }
     scriptNotValid(task) {
@@ -320,7 +288,6 @@ class NpmScriptsTreeDataProvider {
     buildTaskTree(tasks) {
         let folders = new Map();
         let packages = new Map();
-        let scripts = new Map();
         let folder = null;
         let packageJson = null;
         tasks.forEach(each => {
@@ -340,11 +307,8 @@ class NpmScriptsTreeDataProvider {
                     packages.set(fullPath, packageJson);
                 }
                 let fullScriptPath = path.join(packageJson.path, each.name);
-                if (!scripts.get(fullScriptPath)) {
-                    let script = new NpmScript(this.extensionContext, packageJson, each);
-                    packageJson.addScript(script);
-                    scripts.set(fullScriptPath, script);
-                }
+                let script = new NpmScript(this.extensionContext, packageJson, each);
+                packageJson.addScript(script);
             }
         });
         if (folders.size === 1) {
@@ -354,4 +318,4 @@ class NpmScriptsTreeDataProvider {
     }
 }
 exports.NpmScriptsTreeDataProvider = NpmScriptsTreeDataProvider;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/1dfc5e557209371715f655691b1235b6b26a06be/extensions\npm\out/npmView.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/4e9361845dc28659923a300945f84731393e210d/extensions\npm\out/npmView.js.map

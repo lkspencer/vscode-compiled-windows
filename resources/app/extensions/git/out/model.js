@@ -84,13 +84,18 @@ class Model {
      */
     scanWorkspaceFolders() {
         return __awaiter(this, void 0, void 0, function* () {
+            const config = vscode_1.workspace.getConfiguration('git');
+            const autoRepositoryDetection = config.get('autoRepositoryDetection');
+            if (autoRepositoryDetection !== true && autoRepositoryDetection !== 'subFolders') {
+                return;
+            }
             for (const folder of vscode_1.workspace.workspaceFolders || []) {
                 const root = folder.uri.fsPath;
                 try {
                     const children = yield new Promise((c, e) => fs.readdir(root, (err, r) => err ? e(err) : c(r)));
                     children
                         .filter(child => child !== '.git')
-                        .forEach(child => this.tryOpenRepository(path.join(root, child)));
+                        .forEach(child => this.openRepository(path.join(root, child)));
                 }
                 catch (err) {
                     // noop
@@ -107,7 +112,7 @@ class Model {
     }
     eventuallyScanPossibleGitRepositories() {
         for (const path of this.possibleGitRepositoryPaths) {
-            this.tryOpenRepository(path);
+            this.openRepository(path);
         }
         this.possibleGitRepositoryPaths.clear();
     }
@@ -124,7 +129,7 @@ class Model {
                 .filter(r => !!r)
                 .filter(r => !activeRepositories.has(r.repository))
                 .filter(r => !(vscode_1.workspace.workspaceFolders || []).some(f => util_1.isDescendant(f.uri.fsPath, r.repository.root)));
-            possibleRepositoryFolders.forEach(p => this.tryOpenRepository(p.uri.fsPath));
+            possibleRepositoryFolders.forEach(p => this.openRepository(p.uri.fsPath));
             openRepositoriesToDispose.forEach(r => r.dispose());
         });
     }
@@ -136,13 +141,13 @@ class Model {
             .map(repository => ({ repository, root: vscode_1.Uri.file(repository.repository.root) }))
             .filter(({ root }) => vscode_1.workspace.getConfiguration('git', root).get('enabled') !== true)
             .map(({ repository }) => repository);
-        possibleRepositoryFolders.forEach(p => this.tryOpenRepository(p.uri.fsPath));
+        possibleRepositoryFolders.forEach(p => this.openRepository(p.uri.fsPath));
         openRepositoriesToDispose.forEach(r => r.dispose());
     }
     onDidChangeVisibleTextEditors(editors) {
         const config = vscode_1.workspace.getConfiguration('git');
-        const enabled = config.get('autoRepositoryDetection') === true;
-        if (!enabled) {
+        const autoRepositoryDetection = config.get('autoRepositoryDetection');
+        if (autoRepositoryDetection !== true && autoRepositoryDetection !== 'openEditors') {
             return;
         }
         editors.forEach(editor => {
@@ -154,10 +159,10 @@ class Model {
             if (repository) {
                 return;
             }
-            this.tryOpenRepository(path.dirname(uri.fsPath));
+            this.openRepository(path.dirname(uri.fsPath));
         });
     }
-    tryOpenRepository(path) {
+    openRepository(path) {
         return __awaiter(this, void 0, void 0, function* () {
             if (this.getRepository(path)) {
                 return;
@@ -174,6 +179,11 @@ class Model {
                 // https://github.com/Microsoft/vscode/issues/33498
                 const repositoryRoot = vscode_1.Uri.file(rawRoot).fsPath;
                 if (this.getRepository(repositoryRoot)) {
+                    return;
+                }
+                const config = vscode_1.workspace.getConfiguration('git');
+                const ignoredRepos = new Set(config.get('ignoredRepositories'));
+                if (ignoredRepos.has(rawRoot)) {
                     return;
                 }
                 const repository = new repository_1.Repository(this.git.open(repositoryRoot), this.globalState);
@@ -327,6 +337,6 @@ __decorate([
 ], Model.prototype, "eventuallyScanPossibleGitRepositories", null);
 __decorate([
     decorators_1.sequentialize
-], Model.prototype, "tryOpenRepository", null);
+], Model.prototype, "openRepository", null);
 exports.Model = Model;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/1dfc5e557209371715f655691b1235b6b26a06be/extensions\git\out/model.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/4e9361845dc28659923a300945f84731393e210d/extensions\git\out/model.js.map

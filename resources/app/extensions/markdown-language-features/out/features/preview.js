@@ -170,6 +170,13 @@ class MarkdownPreview {
         this._locked = !this._locked;
         this.editor.title = MarkdownPreview.getPreviewTitle(this._resource, this._locked);
     }
+    get iconPath() {
+        const root = path.join(this._contributions.extensionPath, 'media');
+        return {
+            light: vscode.Uri.file(path.join(root, 'Preview.svg')),
+            dark: vscode.Uri.file(path.join(root, 'Preview_inverse.svg'))
+        };
+    }
     isPreviewOf(resource) {
         return this._resource.fsPath === resource.fsPath;
     }
@@ -217,6 +224,7 @@ class MarkdownPreview {
         const content = await this._contentProvider.provideTextDocumentContent(document, this._previewConfigurations, this.line, this.state);
         if (this._resource === resource) {
             this.editor.title = MarkdownPreview.getPreviewTitle(this._resource, this._locked);
+            this.editor.iconPath = this.iconPath;
             this.editor.webview.options = MarkdownPreview.getWebviewOptions(resource, this._contributions);
             this.editor.webview.html = content;
         }
@@ -267,4 +275,4 @@ class MarkdownPreview {
 }
 MarkdownPreview.viewType = 'markdown.preview';
 exports.MarkdownPreview = MarkdownPreview;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/1dfc5e557209371715f655691b1235b6b26a06be/extensions\markdown-language-features\out/features\preview.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/4e9361845dc28659923a300945f84731393e210d/extensions\markdown-language-features\out/features\preview.js.map

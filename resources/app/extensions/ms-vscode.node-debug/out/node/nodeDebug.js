@@ -407,8 +407,8 @@ class NodeDebugSession extends vscode_debugadapter_1.LoggingDebugSession {
             // try to map
             let line = event.sourceLine;
             let column = this._adjustColumn(line, event.sourceColumn);
-            return this._sourceMaps.MapToSource(localPath, null, line, column).then(mapresult => {
-                return !mapresult;
+            return this._sourceMaps.CannotMapLine(localPath, null, line, column).then(skip => {
+                return skip;
             });
         }
         return Promise.resolve(false);
@@ -554,6 +554,10 @@ class NodeDebugSession extends vscode_debugadapter_1.LoggingDebugSession {
         response.body.supportsDelayedStackTraceLoading = true;
         // This debug adapter supports log points
         response.body.supportsLogPoints = true;
+        // This debug adapter supports terminate request (but not on Windows)
+        response.body.supportsTerminateRequest = process.platform !== 'win32';
+        // This debug adapter supports loaded sources request
+        response.body.supportsLoadedSourcesRequest = true;
         this.sendResponse(response);
     }
     //---- launch request -----------------------------------------------------------------------------------------------------
@@ -1210,6 +1214,13 @@ class NodeDebugSession extends vscode_debugadapter_1.LoggingDebugSession {
         }
     }
     //---- disconnect request -------------------------------------------------------------------------------------------------
+    terminateRequest(response, args) {
+        if (!this._isWSL && this._nodeProcessId > 0) {
+            process.kill(this._nodeProcessId, 'SIGINT');
+        }
+        this.log('la', 'terminateRequest: send response');
+        this.sendResponse(response);
+    }
     disconnectRequest(response, args) {
         this.shutdown();
         this.log('la', 'disconnectRequest: send response');
@@ -3049,7 +3060,7 @@ class NodeDebugSession extends vscode_debugadapter_1.LoggingDebugSession {
             this.sendErrorResponse(response, 2032, 'exceptionInfoRequest error: no stored exception', undefined, vscode_debugadapter_1.ErrorDestination.Telemetry);
         }
     }
-    //--- exception info request ----------------------------------------------------------------------------------------------
+    //--- loaded sources request ----------------------------------------------------------------------------------------------
     loadedSourcesRequest(response, args) {
         this._node.scripts({ types: 4 }).then(resp => {
             let sources = resp.body.map(script => this._scriptToSource(script));

@@ -10,7 +10,6 @@ var languageModelCache_1 = require("./languageModelCache");
 var runner_1 = require("./utils/runner");
 var vscode_uri_1 = require("vscode-uri");
 var pathCompletion_1 = require("./pathCompletion");
-var vscode_languageserver_protocol_foldingprovider_1 = require("vscode-languageserver-protocol-foldingprovider");
 // Create a connection for the server.
 var connection = vscode_languageserver_1.createConnection();
 console.log = connection.console.log.bind(connection.console);
@@ -263,7 +262,7 @@ connection.onRenameRequest(function (renameParameters, token) {
         return null;
     }, null, "Error while computing renames for " + renameParameters.textDocument.uri, token);
 });
-connection.onRequest(vscode_languageserver_protocol_foldingprovider_1.FoldingRangeRequest.type, function (params, token) {
+connection.onFoldingRanges(function (params, token) {
     return runner_1.runSafe(function () {
         var document = documents.get(params.textDocument.uri);
         if (document) {
@@ -274,4 +273,4 @@ connection.onRequest(vscode_languageserver_protocol_foldingprovider_1.FoldingRan
 });
 // Listen on the connection
 connection.listen();
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/1dfc5e557209371715f655691b1235b6b26a06be/extensions\css-language-features\server\out/cssServerMain.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/4e9361845dc28659923a300945f84731393e210d/extensions\css-language-features\server\out/cssServerMain.js.map

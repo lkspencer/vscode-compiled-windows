@@ -60,9 +60,9 @@ const jsxTagsLanguageConfiguration = {
         }
     ],
 };
-class LanguageConfigurationManager {
+class LanguageConfigurationManager extends dispose_1.Disposable {
     constructor() {
-        this._registrations = [];
+        super();
         const standardLanguages = [
             languageModeIds.javascript,
             languageModeIds.javascriptreact,
@@ -75,11 +75,8 @@ class LanguageConfigurationManager {
         this.registerConfiguration(languageModeIds.jsxTags, jsxTagsLanguageConfiguration);
     }
     registerConfiguration(language, config) {
-        this._registrations.push(vscode.languages.setLanguageConfiguration(language, config));
-    }
-    dispose() {
-        dispose_1.disposeAll(this._registrations);
+        this._register(vscode.languages.setLanguageConfiguration(language, config));
     }
 }
 exports.LanguageConfigurationManager = LanguageConfigurationManager;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/1dfc5e557209371715f655691b1235b6b26a06be/extensions\typescript-language-features\out/features\languageConfiguration.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/4e9361845dc28659923a300945f84731393e210d/extensions\typescript-language-features\out/features\languageConfiguration.js.map

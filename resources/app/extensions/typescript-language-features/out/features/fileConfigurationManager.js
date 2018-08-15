@@ -4,9 +4,10 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 Object.defineProperty(exports, "__esModule", { value: true });
-const vscode_1 = require("vscode");
-const languageIds = require("../utils/languageModeIds");
+const vscode = require("vscode");
 const api_1 = require("../utils/api");
+const languageModeIds_1 = require("../utils/languageModeIds");
+const resourceMap_1 = require("../utils/resourceMap");
 function objsAreEqual(a, b) {
     let keys = Object.keys(a);
     for (let i = 0; i < keys.length; i++) {
@@ -24,14 +25,13 @@ function areFileConfigurationsEqual(a, b) {
 class FileConfigurationManager {
     constructor(client) {
         this.client = client;
-        this.formatOptions = Object.create(null);
-        this.onDidCloseTextDocumentSub = vscode_1.workspace.onDidCloseTextDocument((textDocument) => {
-            const key = textDocument.uri.toString();
+        this.formatOptions = new resourceMap_1.ResourceMap();
+        this.onDidCloseTextDocumentSub = vscode.workspace.onDidCloseTextDocument((textDocument) => {
             // When a document gets closed delete the cached formatting options.
             // This is necessary since the tsserver now closed a project when its
             // last file in it closes which drops the stored formatting options
             // as well.
-            delete this.formatOptions[key];
+            this.formatOptions.delete(textDocument.uri);
         });
     }
     dispose() {
@@ -41,32 +41,44 @@ class FileConfigurationManager {
         }
     }
     async ensureConfigurationForDocument(document, token) {
-        const editor = vscode_1.window.visibleTextEditors.find(editor => editor.document.fileName === document.fileName);
-        if (editor) {
-            const formattingOptions = {
-                tabSize: editor.options.tabSize,
-                insertSpaces: editor.options.insertSpaces
-            };
+        const formattingOptions = this.getFormattingOptions(document);
+        if (formattingOptions) {
             return this.ensureConfigurationOptions(document, formattingOptions, token);
         }
+    }
+    getFormattingOptions(document) {
+        const editor = vscode.window.visibleTextEditors.find(editor => editor.document.fileName === document.fileName);
+        return editor
+            ? {
+                tabSize: editor.options.tabSize,
+                insertSpaces: editor.options.insertSpaces
+            }
+            : undefined;
     }
     async ensureConfigurationOptions(document, options, token) {
         const file = this.client.toPath(document.uri);
         if (!file) {
             return;
         }
-        const key = document.uri.toString();
-        const cachedOptions = this.formatOptions[key];
+        const cachedOptions = this.formatOptions.get(document.uri);
         const currentOptions = this.getFileOptions(document, options);
         if (cachedOptions && areFileConfigurationsEqual(cachedOptions, currentOptions)) {
             return;
         }
+        this.formatOptions.set(document.uri, currentOptions);
         const args = Object.assign({ file }, currentOptions);
         await this.client.execute('configure', args, token);
-        this.formatOptions[key] = currentOptions;
+    }
+    async setGlobalConfigurationFromDocument(document, token) {
+        const formattingOptions = this.getFormattingOptions(document);
+        if (!formattingOptions) {
+            return;
+        }
+        const args = Object.assign({ file: undefined /*global*/ }, this.getFileOptions(document, formattingOptions));
+        await this.client.execute('configure', args, token);
     }
     reset() {
-        this.formatOptions = Object.create(null);
+        this.formatOptions.clear();
     }
     getFileOptions(document, options) {
         return {
@@ -75,7 +87,7 @@ class FileConfigurationManager {
         };
     }
     getFormatOptions(document, options) {
-        const config = vscode_1.workspace.getConfiguration(isTypeScriptDocument(document) ? 'typescript.format' : 'javascript.format', document.uri);
+        const config = vscode.workspace.getConfiguration(languageModeIds_1.isTypeScriptDocument(document) ? 'typescript.format' : 'javascript.format', document.uri);
         return {
             tabSize: options.tabSize,
             indentSize: options.tabSize,
@@ -103,7 +115,7 @@ class FileConfigurationManager {
         if (!this.client.apiVersion.gte(api_1.default.v290)) {
             return {};
         }
-        const preferences = vscode_1.workspace.getConfiguration(isTypeScriptDocument(document) ? 'typescript.preferences' : 'javascript.preferences', document.uri);
+        const preferences = vscode.workspace.getConfiguration(languageModeIds_1.isTypeScriptDocument(document) ? 'typescript.preferences' : 'javascript.preferences', document.uri);
         return {
             quotePreference: getQuoteStylePreference(preferences),
             importModuleSpecifierPreference: getImportModuleSpecifierPreference(preferences),
@@ -125,8 +137,5 @@ function getImportModuleSpecifierPreference(config) {
         case 'non-relative': return 'non-relative';
         default: return undefined;
     }
-}
-function isTypeScriptDocument(document) {
-    return document.languageId === languageIds.typescript || document.languageId === languageIds.typescriptreact;
 }
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/1dfc5e557209371715f655691b1235b6b26a06be/extensions\typescript-language-features\out/features\fileConfigurationManager.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/4e9361845dc28659923a300945f84731393e210d/extensions\typescript-language-features\out/features\fileConfigurationManager.js.map

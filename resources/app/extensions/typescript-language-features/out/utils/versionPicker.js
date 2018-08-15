@@ -4,8 +4,8 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 Object.defineProperty(exports, "__esModule", { value: true });
+const vscode = require("vscode");
 const nls = require("vscode-nls");
-const vscode_1 = require("vscode");
 const localize = nls.loadMessageBundle(__filename);
 const useWorkspaceTsdkStorageKey = 'typescript.useWorkspaceTsdk';
 var MessageAction;
@@ -62,7 +62,7 @@ class TypeScriptVersionPicker {
             description: '',
             id: MessageAction.learnMore
         });
-        const selected = await vscode_1.window.showQuickPick(pickOptions, {
+        const selected = await vscode.window.showQuickPick(pickOptions, {
             placeHolder: localize(3, null),
             ignoreFocusOut: firstRun
         });
@@ -73,7 +73,7 @@ class TypeScriptVersionPicker {
             case MessageAction.useLocal:
                 await this.workspaceState.update(useWorkspaceTsdkStorageKey, true);
                 if (selected.version) {
-                    const tsConfig = vscode_1.workspace.getConfiguration('typescript');
+                    const tsConfig = vscode.workspace.getConfiguration('typescript');
                     await tsConfig.update('tsdk', selected.version.pathLabel, false);
                     const previousVersion = this.currentVersion;
                     this._currentVersion = selected.version;
@@ -86,7 +86,7 @@ class TypeScriptVersionPicker {
                 this._currentVersion = shippedVersion;
                 return { oldVersion: previousVersion, newVersion: shippedVersion };
             case MessageAction.learnMore:
-                vscode_1.commands.executeCommand('vscode.open', vscode_1.Uri.parse('https://go.microsoft.com/fwlink/?linkid=839919'));
+                vscode.commands.executeCommand('vscode.open', vscode.Uri.parse('https://go.microsoft.com/fwlink/?linkid=839919'));
                 return { oldVersion: this.currentVersion };
             default:
                 return { oldVersion: this.currentVersion };
@@ -94,4 +94,4 @@ class TypeScriptVersionPicker {
     }
 }
 exports.TypeScriptVersionPicker = TypeScriptVersionPicker;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/1dfc5e557209371715f655691b1235b6b26a06be/extensions\typescript-language-features\out/utils\versionPicker.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/4e9361845dc28659923a300945f84731393e210d/extensions\typescript-language-features\out/utils\versionPicker.js.map

@@ -5,13 +5,13 @@
 'use strict';
 Object.defineProperty(exports, "__esModule", { value: true });
 const vscode_1 = require("vscode");
+const jsonContributions_1 = require("./jsonContributions");
 const markedTextUtil_1 = require("./markedTextUtil");
 const nls = require("vscode-nls");
 const localize = nls.loadMessageBundle(__filename);
 const USER_AGENT = 'Visual Studio Code';
 class BowerJSONContribution {
-    constructor(xhr) {
-        this.xhr = xhr;
+    constructor(httprequestxhr) {
         this.topRanked = ['twitter', 'bootstrap', 'angular-1.1.6', 'angular-latest', 'angulerjs', 'd3', 'myjquery', 'jq', 'abcdef1234567890', 'jQuery', 'jquery-1.11.1', 'jquery',
             'sushi-vanilla-x-data', 'font-awsome', 'Font-Awesome', 'font-awesome', 'fontawesome', 'html5-boilerplate', 'impress.js', 'homebrew',
             'backbone', 'moment1', 'momentjs', 'moment', 'linux', 'animate.css', 'animate-css', 'reveal.js', 'jquery-file-upload', 'blueimp-file-upload', 'threejs', 'express', 'chosen',
@@ -19,6 +19,15 @@ class BowerJSONContribution {
             'material-design-icons', 'ionic', 'chartjs', 'Chart.js', 'nnnick-chartjs', 'select2-ng', 'select2-dist', 'phantom', 'skrollr', 'scrollr', 'less.js', 'leancss', 'parser-lib',
             'hui', 'bootstrap-languages', 'async', 'gulp', 'jquery-pjax', 'coffeescript', 'hammer.js', 'ace', 'leaflet', 'jquery-mobile', 'sweetalert', 'typeahead.js', 'soup', 'typehead.js',
             'sails', 'codeigniter2'];
+        const getxhr = () => {
+            return vscode_1.workspace.getConfiguration('npm').get('fetchOnlinePackageInfo') === false ? jsonContributions_1.xhrDisabled : httprequestxhr;
+        };
+        this.xhr = getxhr();
+        vscode_1.workspace.onDidChangeConfiguration((e) => {
+            if (e.affectsConfiguration('npm.fetchOnlinePackageInfo')) {
+                this.xhr = getxhr();
+            }
+        });
     }
     getDocumentSelector() {
         return [{ language: 'json', scheme: '*', pattern: '**/bower.json' }, { language: 'json', scheme: '*', pattern: '**/.bower.json' }];
@@ -174,4 +183,4 @@ class BowerJSONContribution {
     }
 }
 exports.BowerJSONContribution = BowerJSONContribution;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/1dfc5e557209371715f655691b1235b6b26a06be/extensions\npm\out/features\bowerJSONContribution.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/4e9361845dc28659923a300945f84731393e210d/extensions\npm\out/features\bowerJSONContribution.js.map

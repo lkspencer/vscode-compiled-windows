@@ -12,11 +12,7 @@ class TypeScriptDefinitionProvider extends definitionProviderBase_1.default {
     constructor(client) {
         super(client);
     }
-    async provideDefinition() {
-        // Implemented by provideDefinition2
-        return undefined;
-    }
-    async provideDefinition2(document, position, token) {
+    async provideDefinition(document, position, token) {
         if (this.client.apiVersion.gte(api_1.default.v270)) {
             const filepath = this.client.toPath(document.uri);
             if (!filepath) {
@@ -24,16 +20,19 @@ class TypeScriptDefinitionProvider extends definitionProviderBase_1.default {
             }
             const args = typeConverters.Position.toFileLocationRequestArgs(filepath, position);
             try {
-                const response = await this.client.execute('definitionAndBoundSpan', args, token);
-                const locations = (response && response.body && response.body.definitions) || [];
-                if (!locations) {
+                const { body } = await this.client.execute('definitionAndBoundSpan', args, token);
+                if (!body) {
                     return undefined;
                 }
-                const span = response.body.textSpan ? typeConverters.Range.fromTextSpan(response.body.textSpan) : undefined;
-                return locations
+                const span = body.textSpan ? typeConverters.Range.fromTextSpan(body.textSpan) : undefined;
+                return body.definitions
                     .map(location => {
-                    const loc = typeConverters.Location.fromTextSpan(this.client.toResource(location.file), location);
-                    return Object.assign({ origin: span }, loc);
+                    const target = typeConverters.Location.fromTextSpan(this.client.toResource(location.file), location);
+                    return {
+                        originSelectionRange: span,
+                        targetRange: target.range,
+                        targetUri: target.uri,
+                    };
                 });
             }
             catch (_a) {
@@ -48,4 +47,4 @@ function register(selector, client) {
     return vscode.languages.registerDefinitionProvider(selector, new TypeScriptDefinitionProvider(client));
 }
 exports.register = register;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/1dfc5e557209371715f655691b1235b6b26a06be/extensions\typescript-language-features\out/features\definitions.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/4e9361845dc28659923a300945f84731393e210d/extensions\typescript-language-features\out/features\definitions.js.map

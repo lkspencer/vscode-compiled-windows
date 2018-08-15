@@ -7,7 +7,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const vscode = require("vscode");
 const PConst = require("../protocol.const");
 const typeConverters = require("../utils/typeConverters");
-const api_1 = require("../utils/api");
 const getSymbolKind = (kind) => {
     switch (kind) {
         case PConst.Kind.module: return vscode.SymbolKind.Module;
@@ -32,66 +31,46 @@ class TypeScriptDocumentSymbolProvider {
         this.client = client;
     }
     async provideDocumentSymbols(resource, token) {
-        const filepath = this.client.toPath(resource.uri);
-        if (!filepath) {
-            return [];
+        const file = this.client.toPath(resource.uri);
+        if (!file) {
+            return undefined;
         }
-        const args = {
-            file: filepath
-        };
+        let tree;
         try {
-            if (this.client.apiVersion.gte(api_1.default.v206)) {
-                const response = await this.client.execute('navtree', args, token);
-                if (response.body) {
-                    // The root represents the file. Ignore this when showing in the UI
-                    const tree = response.body;
-                    if (tree.childItems) {
-                        const result = new Array();
-                        tree.childItems.forEach(item => TypeScriptDocumentSymbolProvider.convertNavTree(resource.uri, result, item));
-                        return result;
-                    }
-                }
+            const args = { file };
+            const { body } = await this.client.execute('navtree', args, token);
+            if (!body) {
+                return undefined;
             }
-            else {
-                const response = await this.client.execute('navbar', args, token);
-                if (response.body) {
-                    const result = new Array();
-                    const foldingMap = Object.create(null);
-                    response.body.forEach(item => TypeScriptDocumentSymbolProvider.convertNavBar(resource.uri, 0, foldingMap, result, item));
-                    return result;
-                }
-            }
-            return [];
+            tree = body;
         }
-        catch (e) {
-            return [];
+        catch (_a) {
+            return undefined;
         }
-    }
-    static convertNavBar(resource, indent, foldingMap, bucket, item, containerLabel) {
-        const realIndent = indent + item.indent;
-        const key = `${realIndent}|${item.text}`;
-        if (realIndent !== 0 && !foldingMap[key] && TypeScriptDocumentSymbolProvider.shouldInclueEntry(item)) {
-            const result = new vscode.SymbolInformation(item.text, getSymbolKind(item.kind), containerLabel ? containerLabel : '', typeConverters.Location.fromTextSpan(resource, item.spans[0]));
-            foldingMap[key] = result;
-            bucket.push(result);
+        if (tree && tree.childItems) {
+            // The root represents the file. Ignore this when showing in the UI
+            const result = [];
+            tree.childItems.forEach(item => TypeScriptDocumentSymbolProvider.convertNavTree(resource.uri, result, item));
+            return result;
         }
-        if (item.childItems && item.childItems.length > 0) {
-            for (const child of item.childItems) {
-                TypeScriptDocumentSymbolProvider.convertNavBar(resource, realIndent + 1, foldingMap, bucket, child, item.text);
-            }
-        }
+        return undefined;
     }
     static convertNavTree(resource, bucket, item) {
-        const symbolInfo = new vscode.DocumentSymbol(item.text, '', getSymbolKind(item.kind), typeConverters.Range.fromTextSpan(item.spans[0]), typeConverters.Range.fromTextSpan(item.spans[0]));
         let shouldInclude = TypeScriptDocumentSymbolProvider.shouldInclueEntry(item);
-        if (item.childItems) {
-            for (const child of item.childItems) {
-                const includedChild = TypeScriptDocumentSymbolProvider.convertNavTree(resource, symbolInfo.children, child);
-                shouldInclude = shouldInclude || includedChild;
+        const children = new Set(item.childItems || []);
+        for (const span of item.spans) {
+            const range = typeConverters.Range.fromTextSpan(span);
+            const symbolInfo = new vscode.DocumentSymbol(item.text, '', getSymbolKind(item.kind), range, range);
+            for (const child of children) {
+                if (child.spans.some(span => !!range.intersection(typeConverters.Range.fromTextSpan(span)))) {
+                    const includedChild = TypeScriptDocumentSymbolProvider.convertNavTree(resource, symbolInfo.children, child);
+                    shouldInclude = shouldInclude || includedChild;
+                    children.delete(child);
+                }
             }
-        }
-        if (shouldInclude) {
-            bucket.push(symbolInfo);
+            if (shouldInclude) {
+                bucket.push(symbolInfo);
+            }
         }
         return shouldInclude;
     }
@@ -106,4 +85,4 @@ function register(selector, client) {
     return vscode.languages.registerDocumentSymbolProvider(selector, new TypeScriptDocumentSymbolProvider(client));
 }
 exports.register = register;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/1dfc5e557209371715f655691b1235b6b26a06be/extensions\typescript-language-features\out/features\documentSymbol.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/4e9361845dc28659923a300945f84731393e210d/extensions\typescript-language-features\out/features\documentSymbol.js.map

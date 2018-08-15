@@ -17,6 +17,7 @@ const logDirectoryProvider_1 = require("./utils/logDirectoryProvider");
 const managedFileContext_1 = require("./utils/managedFileContext");
 const plugins_1 = require("./utils/plugins");
 const ProjectStatus = require("./utils/projectStatus");
+const arrays_1 = require("./utils/arrays");
 function activate(context) {
     const plugins = plugins_1.getContributedTypeScriptServerPlugins();
     const commandManager = new commandManager_1.CommandManager();
@@ -25,7 +26,13 @@ function activate(context) {
     registerCommands(commandManager, lazyClientHost);
     context.subscriptions.push(new task_1.default(lazyClientHost.map(x => x.serviceClient)));
     context.subscriptions.push(new languageConfiguration_1.LanguageConfigurationManager());
-    const supportedLanguage = [].concat.apply([], languageDescription_1.standardLanguageDescriptions.map(x => x.modeIds).concat(plugins.map(x => x.languages)));
+    Promise.resolve().then(() => require('./features/tsconfig')).then(module => {
+        context.subscriptions.push(module.register());
+    });
+    const supportedLanguage = arrays_1.flatten([
+        ...languageDescription_1.standardLanguageDescriptions.map(x => x.modeIds),
+        ...plugins.map(x => x.languages)
+    ]);
     function didOpenTextDocument(textDocument) {
         if (isSupportedDocument(supportedLanguage, textDocument)) {
             openListener.dispose();
@@ -73,4 +80,4 @@ function isSupportedDocument(supportedLanguage, document) {
     }
     return fileSchemes.isSupportedScheme(document.uri.scheme);
 }
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/1dfc5e557209371715f655691b1235b6b26a06be/extensions\typescript-language-features\out/extension.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/4e9361845dc28659923a300945f84731393e210d/extensions\typescript-language-features\out/extension.js.map

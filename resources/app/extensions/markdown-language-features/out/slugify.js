@@ -18,11 +18,11 @@ exports.githubSlugifier = new class {
         const slugifiedHeading = encodeURI(heading.trim()
             .toLowerCase()
             .replace(/\s+/g, '-') // Replace whitespace with -
-            .replace(/[\]\[\!\'\#\$\%\&\'\(\)\*\+\,\.\/\:\;\<\=\>\?\@\\\^\_\{\|\}\~\`]/g, '') // Remove known puctuators
+            .replace(/[\]\[\!\'\#\$\%\&\'\(\)\*\+\,\.\/\:\;\<\=\>\?\@\\\^\_\{\|\}\~\`。，、；：？！…—·ˉ¨‘’“”々～‖∶＂＇｀｜〃〔〕〈〉《》「」『』．〖〗【】（）［］｛｝]/g, '') // Remove known puctuators
             .replace(/^\-+/, '') // Remove leading -
             .replace(/\-+$/, '') // Remove trailing -
         );
         return new Slug(slugifiedHeading);
     }
 };
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/1dfc5e557209371715f655691b1235b6b26a06be/extensions\markdown-language-features\out/slugify.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/4e9361845dc28659923a300945f84731393e210d/extensions\markdown-language-features\out/slugify.js.map

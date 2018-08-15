@@ -29,25 +29,32 @@ class RepositoryImpl {
 }
 exports.RepositoryImpl = RepositoryImpl;
 class APIImpl {
-    constructor(modelPromise) {
-        this.modelPromise = modelPromise;
+    constructor(model) {
+        this.model = model;
     }
     getGitPath() {
         return __awaiter(this, void 0, void 0, function* () {
-            const model = yield this.modelPromise;
-            return model.git.path;
+            return this.model.git.path;
         });
     }
     getRepositories() {
         return __awaiter(this, void 0, void 0, function* () {
-            const model = yield this.modelPromise;
-            return model.repositories.map(repository => new RepositoryImpl(repository));
+            return this.model.repositories.map(repository => new RepositoryImpl(repository));
         });
     }
 }
 exports.APIImpl = APIImpl;
-function createApi(modelPromise) {
-    return new APIImpl(modelPromise);
+class NoopAPIImpl {
+    getGitPath() {
+        return __awaiter(this, void 0, void 0, function* () {
+            throw new Error('Git model not found');
+        });
+    }
+    getRepositories() {
+        return __awaiter(this, void 0, void 0, function* () {
+            throw new Error('Git model not found');
+        });
+    }
 }
-exports.createApi = createApi;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/1dfc5e557209371715f655691b1235b6b26a06be/extensions\git\out/api.js.map
+exports.NoopAPIImpl = NoopAPIImpl;
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/4e9361845dc28659923a300945f84731393e210d/extensions\git\out/api.js.map

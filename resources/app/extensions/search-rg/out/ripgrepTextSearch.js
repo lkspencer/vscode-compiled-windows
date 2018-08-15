@@ -24,33 +24,36 @@ var __assign = (this && this.__assign) || Object.assign || function(t) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var cp = require("child_process");
 var events_1 = require("events");
+var path = require("path");
 var string_decoder_1 = require("string_decoder");
 var vscode = require("vscode");
 var ripgrep_1 = require("./ripgrep");
-var ripgrepHelpers_1 = require("./ripgrepHelpers");
+var utils_1 = require("./utils");
 // If vscode-ripgrep is in an .asar file, then the binary is unpacked.
 var rgDiskPath = ripgrep_1.rgPath.replace(/\bnode_modules\.asar\b/, 'node_modules.asar.unpacked');
 // TODO@roblou move to SearchService
 var MAX_TEXT_RESULTS = 10000;
 var RipgrepTextSearchEngine = /** @class */ (function () {
     function RipgrepTextSearchEngine(outputChannel) {
-        var _this = this;
         this.outputChannel = outputChannel;
         this.isDone = false;
-        this.killRgProcFn = function () { return _this.rgProc && _this.rgProc.kill(); };
     }
+    RipgrepTextSearchEngine.prototype.cancel = function () {
+        this.isDone = true;
+        if (this.rgProc) {
+            this.rgProc.kill();
+        }
+        if (this.ripgrepParser) {
+            this.ripgrepParser.cancel();
+        }
+    };
     RipgrepTextSearchEngine.prototype.provideTextSearchResults = function (query, options, progress, token) {
         var _this = this;
         this.outputChannel.appendLine("provideTextSearchResults " + query.pattern + ", " + JSON.stringify(__assign({}, options, {
             folder: options.folder.toString()
         })));
         return new Promise(function (resolve, reject) {
-            var cancel = function () {
-                _this.isDone = true;
-                _this.ripgrepParser.cancel();
-                _this.rgProc.kill();
-            };
-            token.onCancellationRequested(cancel);
+            token.onCancellationRequested(function () { return _this.cancel(); });
             var rgArgs = getRgArgs(query, options);
             var cwd = options.folder.fsPath;
             var escapedArgs = rgArgs
@@ -58,7 +61,6 @@ var RipgrepTextSearchEngine = /** @class */ (function () {
                 .join(' ');
             _this.outputChannel.appendLine("rg " + escapedArgs + "\n - cwd: " + cwd);
             _this.rgProc = cp.spawn(rgDiskPath, rgArgs, { cwd: cwd });
-            process.once('exit', _this.killRgProcFn);
             _this.rgProc.on('error', function (e) {
                 console.error(e);
                 _this.outputChannel.append('Error: ' + (e && e.message));
@@ -71,7 +73,7 @@ var RipgrepTextSearchEngine = /** @class */ (function () {
                 progress.report(match);
             });
             _this.ripgrepParser.on('hitLimit', function () {
-                cancel();
+                _this.cancel();
             });
             _this.rgProc.stdout.on('data', function (data) {
                 _this.ripgrepParser.handleData(data);
@@ -88,7 +90,6 @@ var RipgrepTextSearchEngine = /** @class */ (function () {
                 _this.outputChannel.appendLine(gotData ? 'Got data from stdout' : 'No data from stdout');
                 _this.outputChannel.appendLine(gotResult ? 'Got result from parser' : 'No result from parser');
                 _this.outputChannel.appendLine('');
-                process.removeListener('exit', _this.killRgProcFn);
                 if (_this.isDone) {
                     resolve();
                 }
@@ -259,7 +260,7 @@ var RipgrepParser = /** @class */ (function (_super) {
         lineMatches
             .map(function (range) {
             return {
-                path: _this.currentFile,
+                uri: vscode.Uri.file(path.join(_this.rootFolder, _this.currentFile)),
                 range: range,
                 preview: {
                     text: preview,
@@ -289,10 +290,10 @@ function getRgArgs(query, options) {
     var args = ['--hidden', '--heading', '--line-number', '--color', 'ansi', '--colors', 'path:none', '--colors', 'line:none', '--colors', 'match:fg:red', '--colors', 'match:style:nobold'];
     args.push(query.isCaseSensitive ? '--case-sensitive' : '--ignore-case');
     options.includes
-        .map(ripgrepHelpers_1.anchorGlob)
+        .map(utils_1.anchorGlob)
         .forEach(function (globArg) { return args.push('-g', globArg); });
     options.excludes
-        .map(ripgrepHelpers_1.anchorGlob)
+        .map(utils_1.anchorGlob)
         .forEach(function (rgGlob) { return args.push('-g', "!" + rgGlob); });
     if (options.maxFileSize) {
         args.push('--max-filesize', options.maxFileSize + '');
@@ -389,4 +390,4 @@ function fixRegexEndingPattern(pattern) {
         pattern.replace(/\$$/, '\\r?$') :
         pattern;
 }
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/1dfc5e557209371715f655691b1235b6b26a06be/extensions\search-rg\out/ripgrepTextSearch.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/4e9361845dc28659923a300945f84731393e210d/extensions\search-rg\out/ripgrepTextSearch.js.map

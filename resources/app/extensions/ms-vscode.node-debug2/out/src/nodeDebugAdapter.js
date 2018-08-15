@@ -55,6 +55,7 @@ class NodeDebugAdapter extends vscode_chrome_debug_core_1.ChromeDebugAdapter {
         }
         const capabilities = super.initialize(args);
         capabilities.supportsLogPoints = true;
+        capabilities.supportsTerminateRequest = process.platform !== 'win32' && !this.isExtensionHost();
         return capabilities;
     }
     launch(args) {
@@ -451,6 +452,13 @@ class NodeDebugAdapter extends vscode_chrome_debug_core_1.ChromeDebugAdapter {
             }
             this._nodeProcessId = 0;
         }
+    }
+    terminate(args) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (!this._attachMode && !this._launchAttachArgs.useWSL && this._nodeProcessId > 0) {
+                process.kill(this._nodeProcessId, 'SIGINT');
+            }
+        });
     }
     terminateSession(reason, args) {
         const _super = name => super[name];

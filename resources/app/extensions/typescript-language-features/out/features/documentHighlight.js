@@ -16,18 +16,20 @@ class TypeScriptDocumentHighlightProvider {
             return [];
         }
         const args = typeConverters.Position.toFileLocationRequestArgs(file, position);
+        let items;
         try {
-            const response = await this.client.execute('occurrences', args, token);
-            if (response && response.body) {
-                return response.body
-                    .filter(x => !x.isInString)
-                    .map(documentHighlightFromOccurance);
+            const { body } = await this.client.execute('occurrences', args, token);
+            if (!body) {
+                return [];
             }
+            items = body;
         }
         catch (_a) {
-            // noop
+            return [];
         }
-        return [];
+        return items
+            .filter(x => !x.isInString)
+            .map(documentHighlightFromOccurance);
     }
 }
 function documentHighlightFromOccurance(occurrence) {
@@ -37,4 +39,4 @@ function register(selector, client) {
     return vscode.languages.registerDocumentHighlightProvider(selector, new TypeScriptDocumentHighlightProvider(client));
 }
 exports.register = register;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/1dfc5e557209371715f655691b1235b6b26a06be/extensions\typescript-language-features\out/features\documentHighlight.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/4e9361845dc28659923a300945f84731393e210d/extensions\typescript-language-features\out/features\documentHighlight.js.map

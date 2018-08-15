@@ -17,15 +17,15 @@ class TypeScriptRenameProvider {
         }
         const args = Object.assign({}, typeConverters.Position.toFileLocationRequestArgs(file, position), { findInStrings: false, findInComments: false });
         try {
-            const response = await this.client.execute('rename', args, token);
-            if (!response.body) {
+            const { body } = await this.client.execute('rename', args, token);
+            if (!body) {
                 return null;
             }
-            const renameInfo = response.body.info;
+            const renameInfo = body.info;
             if (!renameInfo.canRename) {
                 return Promise.reject(renameInfo.localizedErrorMessage);
             }
-            return this.toWorkspaceEdit(response.body.locs, newName);
+            return this.toWorkspaceEdit(body.locs, newName);
         }
         catch (_a) {
             // noop
@@ -49,4 +49,4 @@ function register(selector, client) {
     return vscode.languages.registerRenameProvider(selector, new TypeScriptRenameProvider(client));
 }
 exports.register = register;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/1dfc5e557209371715f655691b1235b6b26a06be/extensions\typescript-language-features\out/features\rename.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/4e9361845dc28659923a300945f84731393e210d/extensions\typescript-language-features\out/features\rename.js.map

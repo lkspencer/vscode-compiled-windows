@@ -18,8 +18,8 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     function step(op) {
         if (f) throw new TypeError("Generator is already executing.");
         while (_) try {
-            if (f = 1, y && (t = y[op[0] & 2 ? "return" : op[0] ? "throw" : "next"]) && !(t = t.call(y, op[1])).done) return t;
-            if (y = 0, t) op = [0, t.value];
+            if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
+            if (y = 0, t) op = [op[0] & 2, t.value];
             switch (op[0]) {
                 case 0: case 1: t = op; break;
                 case 4: _.label++; return { value: op[1], done: false };
@@ -39,7 +39,6 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var fs = require("fs");
 var path = require("path");
 var nls = require("vscode-nls");
 var localize = nls.loadMessageBundle(__filename);
@@ -326,21 +325,25 @@ var ExtensionLinter = /** @class */ (function () {
     };
     ExtensionLinter.prototype.loadPackageJson = function (folder) {
         return __awaiter(this, void 0, void 0, function () {
-            var file, exists, document;
+            var file, document, err_1;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        file = folder.with({ path: path.posix.join(folder.path, 'package.json') });
-                        return [4 /*yield*/, fileExists(file.fsPath)];
-                    case 1:
-                        exists = _a.sent();
-                        if (!exists) {
+                        if (folder.scheme === 'git') { // #36236
                             return [2 /*return*/, undefined];
                         }
+                        file = folder.with({ path: path.posix.join(folder.path, 'package.json') });
+                        _a.label = 1;
+                    case 1:
+                        _a.trys.push([1, 3, , 4]);
                         return [4 /*yield*/, vscode_1.workspace.openTextDocument(file)];
                     case 2:
                         document = _a.sent();
                         return [2 /*return*/, jsonc_parser_1.parseTree(document.getText())];
+                    case 3:
+                        err_1 = _a.sent();
+                        return [2 /*return*/, undefined];
+                    case 4: return [2 /*return*/];
                 }
             });
         });
@@ -405,21 +408,6 @@ function endsWith(haystack, needle) {
         return false;
     }
 }
-function fileExists(path) {
-    return new Promise(function (resolve, reject) {
-        fs.lstat(path, function (err, stats) {
-            if (!err) {
-                resolve(true);
-            }
-            else if (err.code === 'ENOENT') {
-                resolve(false);
-            }
-            else {
-                reject(err);
-            }
-        });
-    });
-}
 function parseUri(src) {
     try {
         return vscode_1.Uri.parse(src);
@@ -433,4 +421,4 @@ function parseUri(src) {
         }
     }
 }
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/1dfc5e557209371715f655691b1235b6b26a06be/extensions\extension-editing\out/extensionLinter.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/4e9361845dc28659923a300945f84731393e210d/extensions\extension-editing\out/extensionLinter.js.map

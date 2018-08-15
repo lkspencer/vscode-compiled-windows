@@ -17,13 +17,13 @@ class TypeScriptSignatureHelpProvider {
             return undefined;
         }
         const args = typeConverters.Position.toFileLocationRequestArgs(filepath, position);
-        let info = undefined;
+        let info;
         try {
-            const response = await this.client.execute('signatureHelp', args, token);
-            info = response.body;
-            if (!info) {
+            const { body } = await this.client.execute('signatureHelp', args, token);
+            if (!body) {
                 return undefined;
             }
+            info = body;
         }
         catch (_a) {
             return undefined;
@@ -54,4 +54,4 @@ function register(selector, client) {
     return vscode.languages.registerSignatureHelpProvider(selector, new TypeScriptSignatureHelpProvider(client), ...TypeScriptSignatureHelpProvider.triggerCharacters);
 }
 exports.register = register;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/1dfc5e557209371715f655691b1235b6b26a06be/extensions\typescript-language-features\out/features\signatureHelp.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/4e9361845dc28659923a300945f84731393e210d/extensions\typescript-language-features\out/features\signatureHelp.js.map

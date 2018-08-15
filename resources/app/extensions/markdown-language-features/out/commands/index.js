@@ -22,4 +22,4 @@ var moveCursorToPosition_1 = require("./moveCursorToPosition");
 exports.MoveCursorToPositionCommand = moveCursorToPosition_1.MoveCursorToPositionCommand;
 var toggleLock_1 = require("./toggleLock");
 exports.ToggleLockCommand = toggleLock_1.ToggleLockCommand;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/1dfc5e557209371715f655691b1235b6b26a06be/extensions\markdown-language-features\out/commands\index.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/4e9361845dc28659923a300945f84731393e210d/extensions\markdown-language-features\out/commands\index.js.map

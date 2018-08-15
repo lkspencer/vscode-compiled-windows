@@ -9,7 +9,6 @@ var vscode_languageserver_types_1 = require("vscode-languageserver-types");
 var strings_1 = require("../utils/strings");
 var ts = require("typescript");
 var path_1 = require("path");
-var vscode_languageserver_protocol_foldingprovider_1 = require("vscode-languageserver-protocol-foldingprovider");
 var FILE_NAME = 'vscode://javascript/1'; // the same 'file' is used for all contents
 var JQUERY_D_TS = path_1.join(__dirname, '../../lib/jquery.d.ts');
 var JS_WORD_REGEX = /(-?\d*\.\d\w*)|([^\`\~\!\@\#\%\^\&\*\(\)\-\=\+\[\{\]\}\\\|\;\:\'\"\,\.\<\>\/\?\s]+)/g;
@@ -123,7 +122,7 @@ function getJavaScriptMode(documentRegions, workspace) {
         },
         doSignatureHelp: function (document, position) {
             updateCurrentTextDocument(document);
-            var signHelp = jsLanguageService.getSignatureHelpItems(FILE_NAME, currentTextDocument.offsetAt(position));
+            var signHelp = jsLanguageService.getSignatureHelpItems(FILE_NAME, currentTextDocument.offsetAt(position), undefined);
             if (signHelp) {
                 var ret_1 = {
                     activeSignature: signHelp.selectedItemIndex,
@@ -280,7 +279,7 @@ function getJavaScriptMode(documentRegions, workspace) {
                     var foldingRange = { startLine: startLine, endLine: endLine };
                     var match = document.getText(curr).match(/^\s*\/(?:(\/\s*#(?:end)?region\b)|(\*|\/))/);
                     if (match) {
-                        foldingRange.kind = match[1] ? vscode_languageserver_protocol_foldingprovider_1.FoldingRangeKind.Region : vscode_languageserver_protocol_foldingprovider_1.FoldingRangeKind.Comment;
+                        foldingRange.kind = match[1] ? vscode_languageserver_types_1.FoldingRangeKind.Region : vscode_languageserver_types_1.FoldingRangeKind.Comment;
                     }
                     ranges.push(foldingRange);
                 }
@@ -413,4 +412,4 @@ function generateIndent(level, options) {
         return strings_1.repeat('\t', level);
     }
 }
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/1dfc5e557209371715f655691b1235b6b26a06be/extensions\html-language-features\server\out/modes\javascriptMode.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/4e9361845dc28659923a300945f84731393e210d/extensions\html-language-features\server\out/modes\javascriptMode.js.map

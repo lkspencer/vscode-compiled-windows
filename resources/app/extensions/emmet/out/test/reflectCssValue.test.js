@@ -51,6 +51,15 @@ suite('Tests for Emmet: Reflect CSS Value command', () => {
             });
         });
     });
+    test('Reflect Css Value in css file, selecting entire property', function () {
+        return testUtils_1.withRandomFileEditor(cssContents, '.css', (editor, doc) => {
+            editor.selections = [new vscode_1.Selection(5, 2, 5, 32)];
+            return reflectCssValue().then(() => {
+                assert.equal(doc.getText(), cssContents.replace(/\(50deg\)/g, '(20deg)'));
+                return Promise.resolve();
+            });
+        });
+    });
     test('Reflect Css Value in html file', function () {
         return testUtils_1.withRandomFileEditor(htmlContents, '.html', (editor, doc) => {
             editor.selections = [new vscode_1.Selection(7, 20, 7, 20)];
@@ -60,5 +69,14 @@ suite('Tests for Emmet: Reflect CSS Value command', () => {
             });
         });
     });
+    test('Reflect Css Value in html file, selecting entire property', function () {
+        return testUtils_1.withRandomFileEditor(htmlContents, '.html', (editor, doc) => {
+            editor.selections = [new vscode_1.Selection(7, 4, 7, 34)];
+            return reflectCssValue().then(() => {
+                assert.equal(doc.getText(), htmlContents.replace(/\(50deg\)/g, '(20deg)'));
+                return Promise.resolve();
+            });
+        });
+    });
 });
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/1dfc5e557209371715f655691b1235b6b26a06be/extensions\emmet\out/test\reflectCssValue.test.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/4e9361845dc28659923a300945f84731393e210d/extensions\emmet\out/test\reflectCssValue.test.js.map

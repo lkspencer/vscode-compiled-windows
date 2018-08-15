@@ -22,14 +22,13 @@
 		"ms-vscode.node-debug",
 		"ms-vscode.node-debug2"
 	],
-	"commit": "1dfc5e557209371715f655691b1235b6b26a06be",
-	"date": "2018-07-23T01:26:09.300Z",
+	"commit": "4e9361845dc28659923a300945f84731393e210d",
+	"date": "2018-08-15T20:05:41.652Z",
 	"checksums": {
-		"vs/workbench/workbench.main.js": "0ziSulYLxovDAf/QuKSNuQ",
-		"vs/workbench/workbench.main.css": "KhYJtYvHC9Y+gII24GayRw",
+		"vs/workbench/workbench.main.js": "FO4OdkUwIIDXkEZ6cYl8Kw",
+		"vs/workbench/workbench.main.css": "TqG0MXWj4XjxKiedkAcAPA",
 		"vs/workbench/electron-browser/bootstrap/index.html": "/Tgz9oebstmTGvDlTpbgpg",
-		"vs/workbench/electron-browser/bootstrap/index.js": "cQr+Gr3/FWYq5KWMAVsC+A",
-		"vs/workbench/electron-browser/bootstrap/preload.js": "0/nxGMriGpkiyUAOc+yukQ"
-	},
-	"settingsSearchBuildId": 125010007
+		"vs/workbench/electron-browser/bootstrap/index.js": "g9GlO5KG4KjfCXgrDHpm4Q",
+		"vs/workbench/electron-browser/bootstrap/preload.js": "jfzdyZZa0YJUI813pczwUQ"
+	}
 }

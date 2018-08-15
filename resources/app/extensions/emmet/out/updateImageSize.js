@@ -64,13 +64,13 @@ function updateImageSizeHTML(editor, position) {
 function updateImageSizeStyleTag(editor, position) {
     const getPropertyInsiderStyleTag = (editor) => {
         const rootNode = util_1.parseDocument(editor.document);
-        const currentNode = util_1.getNode(rootNode, position);
+        const currentNode = util_1.getNode(rootNode, position, true);
         if (currentNode && currentNode.name === 'style'
             && currentNode.open.end.isBefore(position)
             && currentNode.close.start.isAfter(position)) {
             let buffer = new bufferStream_1.DocumentStreamReader(editor.document, currentNode.open.end, new vscode_1.Range(currentNode.open.end, currentNode.close.start));
             let rootNode = css_parser_1.default(buffer);
-            const node = util_1.getNode(rootNode, position);
+            const node = util_1.getNode(rootNode, position, true);
             return (node && node.type === 'property') ? node : null;
         }
         return null;
@@ -252,4 +252,4 @@ function getPropertyDelimitor(editor, node) {
     }
     return '';
 }
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/1dfc5e557209371715f655691b1235b6b26a06be/extensions\emmet\out/updateImageSize.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/4e9361845dc28659923a300945f84731393e210d/extensions\emmet\out/updateImageSize.js.map

@@ -8,6 +8,7 @@ const vscode = require("vscode");
 const api_1 = require("../utils/api");
 const dependentRegistration_1 = require("../utils/dependentRegistration");
 const typeConverters = require("../utils/typeConverters");
+const cancellation_1 = require("../utils/cancellation");
 class ApplyRefactoringCommand {
     constructor(client, telemetryReporter) {
         this.client = client;
@@ -28,8 +29,7 @@ class ApplyRefactoringCommand {
         });
         const args = Object.assign({}, typeConverters.Range.toFileRangeRequestArgs(file, range), { refactor,
             action });
-        const response = await this.client.execute('getEditsForRefactor', args);
-        const body = response && response.body;
+        const { body } = await this.client.execute('getEditsForRefactor', args, cancellation_1.nulToken);
         if (!body || !body.edits.length) {
             return false;
         }
@@ -88,19 +88,20 @@ class TypeScriptRefactorProvider {
         if (!file) {
             return undefined;
         }
-        await this.formattingOptionsManager.ensureConfigurationForDocument(document, undefined);
+        await this.formattingOptionsManager.ensureConfigurationForDocument(document, token);
         const args = typeConverters.Range.toFileRangeRequestArgs(file, rangeOrSelection);
-        let response;
+        let refactorings;
         try {
-            response = await this.client.execute('getApplicableRefactors', args, token);
-            if (!response || !response.body) {
+            const { body } = await this.client.execute('getApplicableRefactors', args, token);
+            if (!body) {
                 return undefined;
             }
+            refactorings = body;
         }
         catch (_a) {
             return undefined;
         }
-        return this.convertApplicableRefactors(response.body, document, file, rangeOrSelection);
+        return this.convertApplicableRefactors(refactorings, document, file, rangeOrSelection);
     }
     convertApplicableRefactors(body, document, file, rangeOrSelection) {
         const actions = [];
@@ -162,4 +163,4 @@ function register(selector, client, formattingOptionsManager, commandManager, te
     });
 }
 exports.register = register;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/1dfc5e557209371715f655691b1235b6b26a06be/extensions\typescript-language-features\out/features\refactor.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/4e9361845dc28659923a300945f84731393e210d/extensions\typescript-language-features\out/features\refactor.js.map

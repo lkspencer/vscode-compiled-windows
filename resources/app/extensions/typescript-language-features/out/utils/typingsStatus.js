@@ -4,11 +4,11 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 Object.defineProperty(exports, "__esModule", { value: true });
-const vscode_1 = require("vscode");
+const vscode = require("vscode");
 const vscode_nls_1 = require("vscode-nls");
 const localize = vscode_nls_1.loadMessageBundle(__filename);
 const typingsInstallTimeout = 30 * 1000;
-class TypingsStatus extends vscode_1.Disposable {
+class TypingsStatus extends vscode.Disposable {
     constructor(client) {
         super(() => this.dispose());
         this._acquiringTypings = Object.create({});
@@ -46,7 +46,7 @@ exports.default = TypingsStatus;
 class AtaProgressReporter {
     constructor(client) {
         this._promises = new Map();
-        this._disposable = vscode_1.Disposable.from(client.onDidBeginInstallTypings(e => this._onBegin(e.eventId)), client.onDidEndInstallTypings(e => this._onEndOrTimeout(e.eventId)), client.onTypesInstallerInitializationFailed(_ => this.onTypesInstallerInitializationFailed()));
+        this._disposable = vscode.Disposable.from(client.onDidBeginInstallTypings(e => this._onBegin(e.eventId)), client.onDidEndInstallTypings(e => this._onEndOrTimeout(e.eventId)), client.onTypesInstallerInitializationFailed(_ => this.onTypesInstallerInitializationFailed()));
     }
     dispose() {
         this._disposable.dispose();
@@ -60,8 +60,8 @@ class AtaProgressReporter {
                 resolve();
             });
         });
-        vscode_1.window.withProgress({
-            location: vscode_1.ProgressLocation.Window,
+        vscode.window.withProgress({
+            location: vscode.ProgressLocation.Window,
             title: localize(0, null)
         }, () => promise);
     }
@@ -73,8 +73,8 @@ class AtaProgressReporter {
         }
     }
     onTypesInstallerInitializationFailed() {
-        if (vscode_1.workspace.getConfiguration('typescript').get('check.npmIsInstalled', true)) {
-            vscode_1.window.showWarningMessage(localize(1, null, 'https://go.microsoft.com/fwlink/?linkid=847635'), {
+        if (vscode.workspace.getConfiguration('typescript').get('check.npmIsInstalled', true)) {
+            vscode.window.showWarningMessage(localize(1, null, 'https://go.microsoft.com/fwlink/?linkid=847635'), {
                 title: localize(2, null),
                 id: 1
             }).then(selected => {
@@ -83,7 +83,7 @@ class AtaProgressReporter {
                 }
                 switch (selected.id) {
                     case 1:
-                        const tsConfig = vscode_1.workspace.getConfiguration('typescript');
+                        const tsConfig = vscode.workspace.getConfiguration('typescript');
                         tsConfig.update('check.npmIsInstalled', false, true);
                         break;
                 }
@@ -92,4 +92,4 @@ class AtaProgressReporter {
     }
 }
 exports.AtaProgressReporter = AtaProgressReporter;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/1dfc5e557209371715f655691b1235b6b26a06be/extensions\typescript-language-features\out/utils\typingsStatus.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/4e9361845dc28659923a300945f84731393e210d/extensions\typescript-language-features\out/utils\typingsStatus.js.map

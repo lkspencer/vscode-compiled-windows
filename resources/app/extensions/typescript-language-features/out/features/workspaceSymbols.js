@@ -35,12 +35,12 @@ class TypeScriptWorkspaceSymbolProvider {
             file: filepath,
             searchValue: search
         };
-        const response = await this.client.execute('navto', args, token);
-        if (!response.body) {
+        const { body } = await this.client.execute('navto', args, token);
+        if (!body) {
             return [];
         }
         const result = [];
-        for (const item of response.body) {
+        for (const item of body) {
             if (!item.containerName && item.kind === 'alias') {
                 continue;
             }
@@ -80,4 +80,4 @@ function register(client, modeIds) {
     return vscode.languages.registerWorkspaceSymbolProvider(new TypeScriptWorkspaceSymbolProvider(client, modeIds));
 }
 exports.register = register;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/1dfc5e557209371715f655691b1235b6b26a06be/extensions\typescript-language-features\out/features\workspaceSymbols.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/4e9361845dc28659923a300945f84731393e210d/extensions\typescript-language-features\out/features\workspaceSymbols.js.map

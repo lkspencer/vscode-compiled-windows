@@ -16,20 +16,20 @@ var cp = require("child_process");
 var string_decoder_1 = require("string_decoder");
 var normalization_1 = require("./normalization");
 var ripgrep_1 = require("./ripgrep");
-var ripgrepHelpers_1 = require("./ripgrepHelpers");
 var ripgrepTextSearch_1 = require("./ripgrepTextSearch");
+var utils_1 = require("./utils");
 var isMac = process.platform === 'darwin';
 // If vscode-ripgrep is in an .asar file, then the binary is unpacked.
 var rgDiskPath = ripgrep_1.rgPath.replace(/\bnode_modules\.asar\b/, 'node_modules.asar.unpacked');
 var RipgrepFileSearchEngine = /** @class */ (function () {
     function RipgrepFileSearchEngine(outputChannel) {
-        var _this = this;
         this.outputChannel = outputChannel;
-        this.killRgProcFn = function () { return _this.rgProc && _this.rgProc.kill(); };
-        process.once('exit', this.killRgProcFn);
     }
-    RipgrepFileSearchEngine.prototype.dispose = function () {
-        process.removeListener('exit', this.killRgProcFn);
+    RipgrepFileSearchEngine.prototype.cancel = function () {
+        this.isDone = true;
+        if (this.rgProc) {
+            this.rgProc.kill();
+        }
     };
     RipgrepFileSearchEngine.prototype.provideFileSearchResults = function (options, progress, token) {
         var _this = this;
@@ -37,12 +37,7 @@ var RipgrepFileSearchEngine = /** @class */ (function () {
             folder: options.folder.toString()
         })));
         return new Promise(function (resolve, reject) {
-            var isDone = false;
-            var cancel = function () {
-                isDone = true;
-                _this.rgProc.kill();
-            };
-            token.onCancellationRequested(cancel);
+            token.onCancellationRequested(function () { return _this.cancel(); });
             var rgArgs = getRgArgs(options);
             var cwd = options.folder.fsPath;
             var escapedArgs = rgArgs
@@ -81,7 +76,7 @@ var RipgrepFileSearchEngine = /** @class */ (function () {
                     progress.report(relativeFile);
                 });
                 if (last) {
-                    if (isDone) {
+                    if (_this.isDone) {
                         resolve();
                     }
                     else {
@@ -96,9 +91,6 @@ var RipgrepFileSearchEngine = /** @class */ (function () {
                     }
                 }
             });
-        }).then(function () { return _this.dispose(); }, function (err) {
-            _this.dispose();
-            return Promise.reject(err);
         });
     };
     RipgrepFileSearchEngine.prototype.collectStdout = function (cmd, cb) {
@@ -109,15 +101,23 @@ var RipgrepFileSearchEngine = /** @class */ (function () {
             }
             cb(err, stdout, last);
         };
+        var gotData = false;
         if (cmd.stdout) {
+            // Should be non-null, but #38195
             this.forwardData(cmd.stdout, onData);
+            cmd.stdout.once('data', function () { return gotData = true; });
         }
         else {
             this.outputChannel.appendLine('stdout is null');
         }
-        var stderr = this.collectData(cmd.stderr);
-        var gotData = false;
-        cmd.stdout.once('data', function () { return gotData = true; });
+        var stderr;
+        if (cmd.stderr) {
+            // Should be non-null, but #38195
+            stderr = this.collectData(cmd.stderr);
+        }
+        else {
+            this.outputChannel.appendLine('stderr is null');
+        }
         cmd.on('error', function (err) {
             onData(err);
         });
@@ -156,7 +156,7 @@ exports.RipgrepFileSearchEngine = RipgrepFileSearchEngine;
 function getRgArgs(options) {
     var args = ['--files', '--hidden', '--case-sensitive'];
     options.includes.forEach(function (globArg) {
-        var inclusion = ripgrepHelpers_1.anchorGlob(globArg);
+        var inclusion = utils_1.anchorGlob(globArg);
         args.push('-g', inclusion);
         if (isMac) {
             var normalized = normalization_1.normalizeNFD(inclusion);
@@ -166,7 +166,7 @@ function getRgArgs(options) {
         }
     });
     options.excludes.forEach(function (globArg) {
-        var exclusion = "!" + ripgrepHelpers_1.anchorGlob(globArg);
+        var exclusion = "!" + utils_1.anchorGlob(globArg);
         args.push('-g', exclusion);
         if (isMac) {
             var normalized = normalization_1.normalizeNFD(exclusion);
@@ -191,4 +191,4 @@ function getRgArgs(options) {
     args.push('.');
     return args;
 }
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/1dfc5e557209371715f655691b1235b6b26a06be/extensions\search-rg\out/ripgrepFileSearch.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/4e9361845dc28659923a300945f84731393e210d/extensions\search-rg\out/ripgrepFileSearch.js.map

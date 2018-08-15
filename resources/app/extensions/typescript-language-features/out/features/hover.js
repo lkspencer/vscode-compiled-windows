@@ -18,10 +18,9 @@ class TypeScriptHoverProvider {
         }
         const args = typeConverters.Position.toFileLocationRequestArgs(filepath, position);
         try {
-            const response = await this.client.execute('quickinfo', args, token);
-            if (response && response.body) {
-                const data = response.body;
-                return new vscode.Hover(TypeScriptHoverProvider.getContents(data), typeConverters.Range.fromTextSpan(data));
+            const { body } = await this.client.interuptGetErr(() => this.client.execute('quickinfo', args, token));
+            if (body) {
+                return new vscode.Hover(TypeScriptHoverProvider.getContents(body), typeConverters.Range.fromTextSpan(body));
             }
         }
         catch (e) {
@@ -43,4 +42,4 @@ function register(selector, client) {
     return vscode.languages.registerHoverProvider(selector, new TypeScriptHoverProvider(client));
 }
 exports.register = register;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/1dfc5e557209371715f655691b1235b6b26a06be/extensions\typescript-language-features\out/features\hover.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/4e9361845dc28659923a300945f84731393e210d/extensions\typescript-language-features\out/features\hover.js.map

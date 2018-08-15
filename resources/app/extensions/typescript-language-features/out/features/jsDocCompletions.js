@@ -4,14 +4,14 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 Object.defineProperty(exports, "__esModule", { value: true });
-const vscode_1 = require("vscode");
+const vscode = require("vscode");
 const nls = require("vscode-nls");
 const dependentRegistration_1 = require("../utils/dependentRegistration");
 const typeConverters = require("../utils/typeConverters");
 const localize = nls.loadMessageBundle(__filename);
-class JsDocCompletionItem extends vscode_1.CompletionItem {
+class JsDocCompletionItem extends vscode.CompletionItem {
     constructor(document, position) {
-        super('/** */', vscode_1.CompletionItemKind.Snippet);
+        super('/** */', vscode.CompletionItemKind.Snippet);
         this.detail = localize(0, null);
         this.insertText = '';
         this.sortText = '\0';
@@ -19,7 +19,7 @@ class JsDocCompletionItem extends vscode_1.CompletionItem {
         const prefix = line.slice(0, position.character).match(/\/\**\s*$/);
         const suffix = line.slice(position.character).match(/^\s*\**\//);
         const start = position.translate(0, prefix ? -prefix[0].length : 0);
-        this.range = new vscode_1.Range(start, position.translate(0, suffix ? suffix[0].length : 0));
+        this.range = new vscode.Range(start, position.translate(0, suffix ? suffix[0].length : 0));
         this.command = {
             title: 'Try Complete JSDoc',
             command: TryCompleteJsDocCommand.COMMAND_NAME,
@@ -94,7 +94,7 @@ class TryCompleteJsDocCommand {
         if (!file) {
             return false;
         }
-        const editor = vscode_1.window.activeTextEditor;
+        const editor = vscode.window.activeTextEditor;
         if (!editor || editor.document.uri.fsPath !== resource.fsPath) {
             return false;
         }
@@ -113,9 +113,13 @@ class TryCompleteJsDocCommand {
     }
     static getSnippetTemplate(client, file, position) {
         const args = typeConverters.Position.toFileLocationRequestArgs(file, position);
+        const tokenSource = new vscode.CancellationTokenSource();
         return Promise.race([
-            client.execute('docCommentTemplate', args),
-            new Promise((_, reject) => setTimeout(reject, 250))
+            client.execute('docCommentTemplate', args, tokenSource.token),
+            new Promise((_, reject) => setTimeout(() => {
+                tokenSource.cancel();
+                reject();
+            }, 250))
         ]).then((res) => {
             if (!res || !res.body) {
                 return undefined;
@@ -133,7 +137,7 @@ class TryCompleteJsDocCommand {
      * Insert the default JSDoc
      */
     tryInsertDefaultDoc(editor, position) {
-        const snippet = new vscode_1.SnippetString(`/**\n * $0\n */`);
+        const snippet = new vscode.SnippetString(`/**\n * $0\n */`);
         return editor.insertSnippet(snippet, position, { undoStopBefore: false, undoStopAfter: true });
     }
 }
@@ -155,13 +159,13 @@ function templateToSnippet(template) {
         out += post + ` \${${snippetIndex++}}`;
         return out;
     });
-    return new vscode_1.SnippetString(template);
+    return new vscode.SnippetString(template);
 }
 exports.templateToSnippet = templateToSnippet;
 function register(selector, client, commandManager) {
     return new dependentRegistration_1.ConfigurationDependentRegistration('jsDocCompletion', 'enabled', () => {
-        return vscode_1.languages.registerCompletionItemProvider(selector, new JsDocCompletionProvider(client, commandManager), '*');
+        return vscode.languages.registerCompletionItemProvider(selector, new JsDocCompletionProvider(client, commandManager), '*');
     });
 }
 exports.register = register;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/1dfc5e557209371715f655691b1235b6b26a06be/extensions\typescript-language-features\out/features\jsDocCompletions.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/4e9361845dc28659923a300945f84731393e210d/extensions\typescript-language-features\out/features\jsDocCompletions.js.map

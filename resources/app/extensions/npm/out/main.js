@@ -17,16 +17,18 @@ const vscode = require("vscode");
 const jsonContributions_1 = require("./features/jsonContributions");
 const npmView_1 = require("./npmView");
 const tasks_1 = require("./tasks");
-let taskProvider;
+const scriptHover_1 = require("./scriptHover");
+const commands_1 = require("./commands");
 function activate(context) {
     return __awaiter(this, void 0, void 0, function* () {
-        taskProvider = registerTaskProvider(context);
+        const taskProvider = registerTaskProvider(context);
         const treeDataProvider = registerExplorer(context);
+        const hoverProvider = registerHoverProvider(context);
         configureHttpRequest();
-        vscode.workspace.onDidChangeConfiguration((e) => {
+        let d = vscode.workspace.onDidChangeConfiguration((e) => {
             configureHttpRequest();
             if (e.affectsConfiguration('npm.exclude')) {
-                tasks_1.invalidateScriptsCache();
+                tasks_1.invalidateTasksCache();
                 if (treeDataProvider) {
                     treeDataProvider.refresh();
                 }
@@ -37,26 +39,31 @@ function activate(context) {
                 }
             }
         });
+        context.subscriptions.push(d);
+        d = vscode.workspace.onDidChangeTextDocument((e) => {
+            scriptHover_1.invalidateHoverScriptsCache(e.document);
+        });
+        context.subscriptions.push(d);
+        context.subscriptions.push(vscode.commands.registerCommand('npm.runSelectedScript', commands_1.runSelectedScript));
         context.subscriptions.push(jsonContributions_1.addJSONProviders(httpRequest.xhr));
     });
 }
 exports.activate = activate;
 function registerTaskProvider(context) {
+    function invalidateScriptCaches() {
+        scriptHover_1.invalidateHoverScriptsCache();
+        tasks_1.invalidateTasksCache();
+    }
     if (vscode.workspace.workspaceFolders) {
         let watcher = vscode.workspace.createFileSystemWatcher('**/package.json');
-        watcher.onDidChange((_e) => tasks_1.invalidateScriptsCache());
-        watcher.onDidDelete((_e) => tasks_1.invalidateScriptsCache());
-        watcher.onDidCreate((_e) => tasks_1.invalidateScriptsCache());
+        watcher.onDidChange((_e) => invalidateScriptCaches());
+        watcher.onDidDelete((_e) => invalidateScriptCaches());
+        watcher.onDidCreate((_e) => invalidateScriptCaches());
         context.subscriptions.push(watcher);
-        let provider = {
-            provideTasks: () => __awaiter(this, void 0, void 0, function* () {
-                return tasks_1.provideNpmScripts();
-            }),
-            resolveTask(_task) {
-                return undefined;
-            }
-        };
-        return vscode.workspace.registerTaskProvider('npm', provider);
+        let provider = new tasks_1.NpmTaskProvider(context);
+        let disposable = vscode.workspace.registerTaskProvider('npm', provider);
+        context.subscriptions.push(disposable);
+        return disposable;
     }
     return undefined;
 }
@@ -69,14 +76,24 @@ function registerExplorer(context) {
     }
     return undefined;
 }
+function registerHoverProvider(context) {
+    if (vscode.workspace.workspaceFolders) {
+        let npmSelector = {
+            language: 'json',
+            scheme: 'file',
+            pattern: '**/package.json'
+        };
+        let provider = new scriptHover_1.NpmScriptHoverProvider(context);
+        context.subscriptions.push(vscode.languages.registerHoverProvider(npmSelector, provider));
+        return provider;
+    }
+    return undefined;
+}
 function configureHttpRequest() {
     const httpSettings = vscode.workspace.getConfiguration('http');
     httpRequest.configure(httpSettings.get('proxy', ''), httpSettings.get('proxyStrictSSL', true));
 }
 function deactivate() {
-    if (taskProvider) {
-        taskProvider.dispose();
-    }
 }
 exports.deactivate = deactivate;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/1dfc5e557209371715f655691b1235b6b26a06be/extensions\npm\out/main.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/4e9361845dc28659923a300945f84731393e210d/extensions\npm\out/main.js.map

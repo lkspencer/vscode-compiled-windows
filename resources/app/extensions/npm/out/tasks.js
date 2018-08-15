@@ -20,10 +20,22 @@ const nls = require("vscode-nls");
 const main_1 = require("jsonc-parser/lib/main");
 const localize = nls.loadMessageBundle(__filename);
 let cachedTasks = undefined;
-function invalidateScriptsCache() {
+class NpmTaskProvider {
+    constructor(context) {
+        this.extensionContext = context;
+    }
+    provideTasks() {
+        return provideNpmScripts();
+    }
+    resolveTask(_task) {
+        return undefined;
+    }
+}
+exports.NpmTaskProvider = NpmTaskProvider;
+function invalidateTasksCache() {
     cachedTasks = undefined;
 }
-exports.invalidateScriptsCache = invalidateScriptsCache;
+exports.invalidateTasksCache = invalidateTasksCache;
 const buildNames = ['build', 'compile', 'watch'];
 function isBuildTask(name) {
     for (let buildName of buildNames) {
@@ -98,6 +110,7 @@ function detectNpmScripts() {
     return __awaiter(this, void 0, void 0, function* () {
         let emptyTasks = [];
         let allTasks = [];
+        let visitedPackageJsonFiles = new Set();
         let folders = vscode_1.workspace.workspaceFolders;
         if (!folders) {
             return emptyTasks;
@@ -109,8 +122,10 @@ function detectNpmScripts() {
                     let relativePattern = new vscode_1.RelativePattern(folder, '**/package.json');
                     let paths = yield vscode_1.workspace.findFiles(relativePattern, '**/node_modules/**');
                     for (let j = 0; j < paths.length; j++) {
-                        if (!isExcluded(folder, paths[j])) {
-                            let tasks = yield provideNpmScriptsForFolder(paths[j]);
+                        let path = paths[j];
+                        if (!isExcluded(folder, path) && !visitedPackageJsonFiles.has(path.fsPath)) {
+                            let tasks = yield provideNpmScriptsForFolder(path);
+                            visitedPackageJsonFiles.add(path.fsPath);
                             allTasks.push(...tasks);
                         }
                     }
@@ -156,7 +171,7 @@ function isExcluded(folder, packageJsonUri) {
     return false;
 }
 function isDebugScript(script) {
-    let match = script.match(/--(inspect|debug)(-brk)?(=(\d*))?/);
+    let match = script.match(/--(inspect|debug)(-brk)?(=((\[[0-9a-fA-F:]*\]|[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+|[a-zA-Z0-9\.]*):)?(\d+))?/);
     return match !== null;
 }
 function provideNpmScriptsForFolder(packageJsonUri) {
@@ -260,6 +275,57 @@ function readFile(file) {
         });
     });
 }
+function runScript(script, document) {
+    let uri = document.uri;
+    let folder = vscode_1.workspace.getWorkspaceFolder(uri);
+    if (folder) {
+        let task = createTask(script, `run ${script}`, folder, uri);
+        vscode_1.tasks.executeTask(task);
+    }
+}
+exports.runScript = runScript;
+function extractDebugArgFromScript(scriptValue) {
+    // matches --debug, --debug=1234, --debug-brk, debug-brk=1234, --inspect,
+    // --inspect=1234, --inspect-brk, --inspect-brk=1234,
+    // --inspect=localhost:1245, --inspect=127.0.0.1:1234, --inspect=[aa:1:0:0:0]:1234, --inspect=:1234
+    let match = scriptValue.match(/--(inspect|debug)(-brk)?(=((\[[0-9a-fA-F:]*\]|[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+|[a-zA-Z0-9\.]*):)?(\d+))?/);
+    if (match) {
+        if (match[6]) {
+            return [match[1], parseInt(match[6])];
+        }
+        if (match[1] === 'inspect') {
+            return [match[1], 9229];
+        }
+        if (match[1] === 'debug') {
+            return [match[1], 5858];
+        }
+    }
+    return undefined;
+}
+exports.extractDebugArgFromScript = extractDebugArgFromScript;
+function startDebugging(scriptName, protocol, port, folder) {
+    let p = 'inspector';
+    if (protocol === 'debug') {
+        p = 'legacy';
+    }
+    let packageManager = getPackageManager(folder);
+    const config = {
+        type: 'node',
+        request: 'launch',
+        name: `Debug ${scriptName}`,
+        runtimeExecutable: packageManager,
+        runtimeArgs: [
+            'run',
+            scriptName,
+        ],
+        port: port,
+        protocol: p
+    };
+    if (folder) {
+        vscode_1.debug.startDebugging(folder, config);
+    }
+}
+exports.startDebugging = startDebugging;
 function findAllScripts(buffer) {
     return __awaiter(this, void 0, void 0, function* () {
         var scripts = {};
@@ -267,7 +333,6 @@ function findAllScripts(buffer) {
         let inScripts = false;
         let visitor = {
             onError(_error, _offset, _length) {
-                // TODO: inform user about the parse error
             },
             onObjectEnd() {
                 if (inScripts) {
@@ -293,6 +358,79 @@ function findAllScripts(buffer) {
         return scripts;
     });
 }
+function findAllScriptRanges(buffer) {
+    var scripts = new Map();
+    let script = undefined;
+    let offset;
+    let length;
+    let inScripts = false;
+    let visitor = {
+        onError(_error, _offset, _length) {
+        },
+        onObjectEnd() {
+            if (inScripts) {
+                inScripts = false;
+            }
+        },
+        onLiteralValue(value, _offset, _length) {
+            if (script) {
+                scripts.set(script, [offset, length, value]);
+                script = undefined;
+            }
+        },
+        onObjectProperty(property, off, len) {
+            if (property === 'scripts') {
+                inScripts = true;
+            }
+            else if (inScripts) {
+                script = property;
+                offset = off;
+                length = len;
+            }
+        }
+    };
+    main_1.visit(buffer, visitor);
+    return scripts;
+}
+exports.findAllScriptRanges = findAllScriptRanges;
+function findScriptAtPosition(buffer, offset) {
+    let script = undefined;
+    let inScripts = false;
+    let scriptStart;
+    let visitor = {
+        onError(_error, _offset, _length) {
+        },
+        onObjectEnd() {
+            if (inScripts) {
+                inScripts = false;
+                scriptStart = undefined;
+            }
+        },
+        onLiteralValue(value, nodeOffset, nodeLength) {
+            if (inScripts && scriptStart) {
+                if (offset >= scriptStart && offset < nodeOffset + nodeLength) {
+                    // found the script
+                    inScripts = false;
+                }
+                else {
+                    script = undefined;
+                }
+            }
+        },
+        onObjectProperty(property, nodeOffset, nodeLength) {
+            if (property === 'scripts') {
+                inScripts = true;
+            }
+            else if (inScripts) {
+                scriptStart = nodeOffset;
+                script = property;
+            }
+        }
+    };
+    main_1.visit(buffer, visitor);
+    return script;
+}
+exports.findScriptAtPosition = findScriptAtPosition;
 function getScripts(packageJsonUri) {
     return __awaiter(this, void 0, void 0, function* () {
         if (packageJsonUri.scheme !== 'file') {
@@ -314,4 +452,4 @@ function getScripts(packageJsonUri) {
     });
 }
 exports.getScripts = getScripts;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/1dfc5e557209371715f655691b1235b6b26a06be/extensions\npm\out/tasks.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/4e9361845dc28659923a300945f84731393e210d/extensions\npm\out/tasks.js.map

@@ -5,12 +5,13 @@
  *--------------------------------------------------------------------------------------------*/
 Object.defineProperty(exports, "__esModule", { value: true });
 const fs = require("fs");
-const vscode_1 = require("vscode");
+const vscode = require("vscode");
 const api_1 = require("../utils/api");
 const async_1 = require("../utils/async");
 const dispose_1 = require("../utils/dispose");
 const languageModeIds = require("../utils/languageModeIds");
-const resourceMap_1 = require("./resourceMap");
+const resourceMap_1 = require("../utils/resourceMap");
+const typeConverters = require("../utils/typeConverters");
 var BufferKind;
 (function (BufferKind) {
     BufferKind[BufferKind["TypeScript"] = 1] = "TypeScript";
@@ -26,10 +27,9 @@ function mode2ScriptKind(mode) {
     return undefined;
 }
 class SyncedBuffer {
-    constructor(document, filepath, diagnosticRequestor, client) {
+    constructor(document, filepath, client) {
         this.document = document;
         this.filepath = filepath;
-        this.diagnosticRequestor = diagnosticRequestor;
         this.client = client;
     }
     open() {
@@ -53,7 +53,7 @@ class SyncedBuffer {
                 args.plugins = tsPluginsForDocument.map(plugin => plugin.name);
             }
         }
-        this.client.execute('open', args, false);
+        this.client.executeWithoutWaitingForResponse('open', args);
     }
     get resource() {
         return this.document.uri;
@@ -76,59 +76,93 @@ class SyncedBuffer {
         const args = {
             file: this.filepath
         };
-        this.client.execute('close', args, false);
+        this.client.executeWithoutWaitingForResponse('close', args);
     }
     onContentChanged(events) {
         for (const { range, text } of events) {
-            const args = {
-                file: this.filepath,
-                line: range.start.line + 1,
-                offset: range.start.character + 1,
-                endLine: range.end.line + 1,
-                endOffset: range.end.character + 1,
-                insertString: text
-            };
-            this.client.execute('change', args, false);
+            const args = Object.assign({ insertString: text }, typeConverters.Range.toFormattingRequestArgs(this.filepath, range));
+            this.client.executeWithoutWaitingForResponse('change', args);
         }
-        this.diagnosticRequestor.requestDiagnostic(this.document.uri);
     }
 }
 class SyncedBufferMap extends resourceMap_1.ResourceMap {
     getForPath(filePath) {
-        return this.get(vscode_1.Uri.file(filePath));
+        return this.get(vscode.Uri.file(filePath));
     }
     get allBuffers() {
         return this.values;
     }
-    get allResources() {
-        return this.keys;
+}
+class PendingDiagnostics extends resourceMap_1.ResourceMap {
+    getOrderedFileSet() {
+        const orderedResources = Array.from(this.entries)
+            .sort((a, b) => a.value - b.value)
+            .map(entry => entry.resource);
+        const map = new resourceMap_1.ResourceMap();
+        for (const resource of orderedResources) {
+            map.set(resource, void 0);
+        }
+        return map;
     }
 }
-class BufferSyncSupport {
+class GetErrRequest {
+    constructor(client, files, _token, onDone) {
+        this.files = files;
+        this._token = _token;
+        this._done = false;
+        const args = {
+            delay: 0,
+            files: Array.from(files.entries)
+                .map(entry => client.normalizedPath(entry.resource))
+                .filter(x => !!x)
+        };
+        client.executeAsync('geterr', args, _token.token)
+            .then(undefined, () => { })
+            .then(() => {
+            if (this._done) {
+                return;
+            }
+            this._done = true;
+            onDone();
+        });
+    }
+    static executeGetErrRequest(client, files, onDone) {
+        const token = new vscode.CancellationTokenSource();
+        return new GetErrRequest(client, files, token, onDone);
+    }
+    cancel() {
+        if (!this._done) {
+            this._token.cancel();
+        }
+        this._token.dispose();
+    }
+}
+class BufferSyncSupport extends dispose_1.Disposable {
     constructor(client, modeIds) {
+        super();
         this._validateJavaScript = true;
         this._validateTypeScript = true;
-        this.disposables = [];
-        this.pendingDiagnostics = new Map();
         this.listening = false;
-        this._onDelete = new vscode_1.EventEmitter();
+        this._onDelete = this._register(new vscode.EventEmitter());
         this.onDelete = this._onDelete.event;
         this.client = client;
         this.modeIds = new Set(modeIds);
         this.diagnosticDelayer = new async_1.Delayer(300);
-        this.syncedBuffers = new SyncedBufferMap(path => this.normalizePath(path));
+        const pathNormalizer = (path) => this.client.normalizedPath(path);
+        this.syncedBuffers = new SyncedBufferMap(pathNormalizer);
+        this.pendingDiagnostics = new PendingDiagnostics(pathNormalizer);
         this.updateConfiguration();
-        vscode_1.workspace.onDidChangeConfiguration(() => this.updateConfiguration(), null);
+        vscode.workspace.onDidChangeConfiguration(this.updateConfiguration, this, this._disposables);
     }
     listen() {
         if (this.listening) {
             return;
         }
         this.listening = true;
-        vscode_1.workspace.onDidOpenTextDocument(this.openTextDocument, this, this.disposables);
-        vscode_1.workspace.onDidCloseTextDocument(this.onDidCloseTextDocument, this, this.disposables);
-        vscode_1.workspace.onDidChangeTextDocument(this.onDidChangeTextDocument, this, this.disposables);
-        vscode_1.workspace.textDocuments.forEach(this.openTextDocument, this);
+        vscode.workspace.onDidOpenTextDocument(this.openTextDocument, this, this._disposables);
+        vscode.workspace.onDidCloseTextDocument(this.onDidCloseTextDocument, this, this._disposables);
+        vscode.workspace.onDidChangeTextDocument(this.onDidChangeTextDocument, this, this._disposables);
+        vscode.workspace.textDocuments.forEach(this.openTextDocument, this);
     }
     handles(resource) {
         return this.syncedBuffers.has(resource);
@@ -138,16 +172,12 @@ class BufferSyncSupport {
         if (buffer) {
             return buffer.resource;
         }
-        return vscode_1.Uri.file(filePath);
+        return vscode.Uri.file(filePath);
     }
     reOpenDocuments() {
         for (const buffer of this.syncedBuffers.allBuffers) {
             buffer.open();
         }
-    }
-    dispose() {
-        dispose_1.disposeAll(this.disposables);
-        this._onDelete.dispose();
     }
     openTextDocument(document) {
         if (!this.modeIds.has(document.languageId)) {
@@ -161,22 +191,35 @@ class BufferSyncSupport {
         if (this.syncedBuffers.has(resource)) {
             return;
         }
-        const syncedBuffer = new SyncedBuffer(document, filepath, this, this.client);
+        const syncedBuffer = new SyncedBuffer(document, filepath, this.client);
         this.syncedBuffers.set(resource, syncedBuffer);
         syncedBuffer.open();
-        this.requestDiagnostic(resource);
+        this.requestDiagnostic(syncedBuffer);
     }
     closeResource(resource) {
         const syncedBuffer = this.syncedBuffers.get(resource);
         if (!syncedBuffer) {
             return;
         }
+        this.pendingDiagnostics.delete(resource);
         this.syncedBuffers.delete(resource);
         syncedBuffer.close();
         if (!fs.existsSync(resource.fsPath)) {
             this._onDelete.fire(resource);
             this.requestAllDiagnostics();
         }
+    }
+    interuptGetErr(f) {
+        // TODO: re-enable for 1.27 insiders
+        return f();
+        // if (!this.pendingGetErr) {
+        // 	return f();
+        // }
+        // this.pendingGetErr.cancel();
+        // this.pendingGetErr = undefined;
+        // const result = f();
+        // this.triggerDiagnostics();
+        // return result;
     }
     onDidCloseTextDocument(document) {
         this.closeResource(document.uri);
@@ -187,23 +230,21 @@ class BufferSyncSupport {
             return;
         }
         syncedBuffer.onContentChanged(e.contentChanges);
-        if (this.pendingGetErr) {
-            this.pendingGetErr.token.cancel();
+        const didTrigger = this.requestDiagnostic(syncedBuffer);
+        if (!didTrigger && this.pendingGetErr) {
+            // In this case we always want to re-trigger all diagnostics
+            this.pendingGetErr.cancel();
             this.pendingGetErr = undefined;
-            this.diagnosticDelayer.trigger(() => {
-                this.sendPendingDiagnostics();
-            }, 200);
+            this.triggerDiagnostics();
         }
     }
     requestAllDiagnostics() {
         for (const buffer of this.syncedBuffers.allBuffers) {
             if (this.shouldValidate(buffer)) {
-                this.pendingDiagnostics.set(buffer.filepath, Date.now());
+                this.pendingDiagnostics.set(buffer.resource, Date.now());
             }
         }
-        this.diagnosticDelayer.trigger(() => {
-            this.sendPendingDiagnostics();
-        }, 200);
+        this.triggerDiagnostics();
     }
     getErr(resources) {
         const handledResources = resources.filter(resource => this.handles(resource));
@@ -211,75 +252,51 @@ class BufferSyncSupport {
             return;
         }
         for (const resource of handledResources) {
-            const file = this.client.normalizedPath(resource);
-            if (file) {
-                this.pendingDiagnostics.set(file, Date.now());
-            }
+            this.pendingDiagnostics.set(resource, Date.now());
         }
-        this.diagnosticDelayer.trigger(() => {
-            this.sendPendingDiagnostics();
-        }, 200);
+        this.triggerDiagnostics();
     }
-    requestDiagnostic(resource) {
-        const file = this.client.normalizedPath(resource);
-        if (!file) {
-            return;
-        }
-        this.pendingDiagnostics.set(file, Date.now());
-        const buffer = this.syncedBuffers.get(resource);
-        if (!buffer || !this.shouldValidate(buffer)) {
-            return;
-        }
-        let delay = 300;
-        const lineCount = buffer.lineCount;
-        delay = Math.min(Math.max(Math.ceil(lineCount / 20), 300), 800);
+    triggerDiagnostics(delay = 200) {
         this.diagnosticDelayer.trigger(() => {
             this.sendPendingDiagnostics();
         }, delay);
     }
+    requestDiagnostic(buffer) {
+        if (!this.shouldValidate(buffer)) {
+            return false;
+        }
+        this.pendingDiagnostics.set(buffer.resource, Date.now());
+        const delay = Math.min(Math.max(Math.ceil(buffer.lineCount / 20), 300), 800);
+        this.triggerDiagnostics(delay);
+        return true;
+    }
     hasPendingDiagnostics(resource) {
-        const file = this.client.normalizedPath(resource);
-        return !file || this.pendingDiagnostics.has(file);
+        return this.pendingDiagnostics.has(resource);
     }
     sendPendingDiagnostics() {
-        const files = new Set(Array.from(this.pendingDiagnostics.entries())
-            .sort((a, b) => a[1] - b[1])
-            .map(entry => entry[0]));
+        const orderedFileSet = this.pendingDiagnostics.getOrderedFileSet();
         // Add all open TS buffers to the geterr request. They might be visible
-        for (const file of this.syncedBuffers.allResources) {
-            if (!this.pendingDiagnostics.get(file)) {
-                files.add(file);
-            }
+        for (const buffer of this.syncedBuffers.values) {
+            orderedFileSet.set(buffer.resource, void 0);
         }
-        if (this.pendingGetErr) {
-            for (const file of this.pendingGetErr.files) {
-                files.add(file);
+        if (orderedFileSet.size) {
+            if (this.pendingGetErr) {
+                this.pendingGetErr.cancel();
+                for (const file of this.pendingGetErr.files.entries) {
+                    orderedFileSet.set(file.resource, void 0);
+                }
             }
-        }
-        if (files.size) {
-            const fileList = Array.from(files);
-            const args = {
-                delay: 0,
-                files: fileList
-            };
-            const token = new vscode_1.CancellationTokenSource();
-            const getErr = this.pendingGetErr = {
-                request: this.client.executeAsync('geterr', args, token.token)
-                    .then(undefined, () => { })
-                    .then(() => {
-                    if (this.pendingGetErr === getErr) {
-                        this.pendingGetErr = undefined;
-                    }
-                }),
-                files: fileList,
-                token
-            };
+            const getErr = this.pendingGetErr = GetErrRequest.executeGetErrRequest(this.client, orderedFileSet, () => {
+                if (this.pendingGetErr === getErr) {
+                    this.pendingGetErr = undefined;
+                }
+            });
         }
         this.pendingDiagnostics.clear();
     }
     updateConfiguration() {
-        const jsConfig = vscode_1.workspace.getConfiguration('javascript', null);
-        const tsConfig = vscode_1.workspace.getConfiguration('typescript', null);
+        const jsConfig = vscode.workspace.getConfiguration('javascript', null);
+        const tsConfig = vscode.workspace.getConfiguration('typescript', null);
         this._validateJavaScript = jsConfig.get('validate.enable', true);
         this._validateTypeScript = tsConfig.get('validate.enable', true);
     }
@@ -292,9 +309,6 @@ class BufferSyncSupport {
                 return this._validateTypeScript;
         }
     }
-    normalizePath(path) {
-        return this.client.normalizedPath(path);
-    }
 }
 exports.default = BufferSyncSupport;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/1dfc5e557209371715f655691b1235b6b26a06be/extensions\typescript-language-features\out/features\bufferSyncSupport.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/4e9361845dc28659923a300945f84731393e210d/extensions\typescript-language-features\out/features\bufferSyncSupport.js.map

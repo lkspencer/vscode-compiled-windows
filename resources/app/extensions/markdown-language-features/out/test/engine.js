@@ -8,6 +8,7 @@ const markdownEngine_1 = require("../markdownEngine");
 const slugify_1 = require("../slugify");
 const emptyContributions = new class {
     constructor() {
+        this.extensionPath = '';
         this.previewScripts = [];
         this.previewStyles = [];
         this.previewResourceRoots = [];
@@ -18,4 +19,4 @@ function createNewMarkdownEngine() {
     return new markdownEngine_1.MarkdownEngine(emptyContributions, slugify_1.githubSlugifier);
 }
 exports.createNewMarkdownEngine = createNewMarkdownEngine;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/1dfc5e557209371715f655691b1235b6b26a06be/extensions\markdown-language-features\out/test\engine.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/4e9361845dc28659923a300945f84731393e210d/extensions\markdown-language-features\out/test\engine.js.map

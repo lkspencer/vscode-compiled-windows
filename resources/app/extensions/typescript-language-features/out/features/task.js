@@ -7,9 +7,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const fs = require("fs");
 const path = require("path");
 const vscode = require("vscode");
-const tsconfigProvider_1 = require("../utils/tsconfigProvider");
-const tsconfig_1 = require("../utils/tsconfig");
 const nls = require("vscode-nls");
+const tsconfig_1 = require("../utils/tsconfig");
+const tsconfigProvider_1 = require("../utils/tsconfigProvider");
 const localize = nls.loadMessageBundle(__filename);
 const exists = (file) => new Promise((resolve, _reject) => {
     fs.exists(file, (value) => {
@@ -51,7 +51,10 @@ class TscTaskProvider {
     }
     async getAllTsConfigs(token) {
         const out = new Set();
-        const configs = (await this.getTsConfigForActiveFile(token)).concat(await this.getTsConfigsInWorkspace());
+        const configs = [
+            ...await this.getTsConfigForActiveFile(token),
+            ...await this.getTsConfigsInWorkspace()
+        ];
         for (const config of configs) {
             if (await exists(config.path)) {
                 out.add(config);
@@ -208,4 +211,4 @@ class TypeScriptTaskProviderManager {
     }
 }
 exports.default = TypeScriptTaskProviderManager;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/1dfc5e557209371715f655691b1235b6b26a06be/extensions\typescript-language-features\out/features\task.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/4e9361845dc28659923a300945f84731393e210d/extensions\typescript-language-features\out/features\task.js.map

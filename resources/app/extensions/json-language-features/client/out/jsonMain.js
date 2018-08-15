@@ -10,7 +10,6 @@ const localize = nls.loadMessageBundle(__filename);
 const vscode_1 = require("vscode");
 const vscode_languageclient_1 = require("vscode-languageclient");
 const vscode_extension_telemetry_1 = require("vscode-extension-telemetry");
-const vscode_languageserver_protocol_foldingprovider_1 = require("vscode-languageserver-protocol-foldingprovider");
 const hash_1 = require("./utils/hash");
 var VSCodeContentRequest;
 (function (VSCodeContentRequest) {
@@ -58,21 +57,6 @@ function activate(context) {
     // Create the language client and start the client.
     let client = new vscode_languageclient_1.LanguageClient('json', localize(0, null), serverOptions, clientOptions);
     client.registerProposedFeatures();
-    client.registerFeature({
-        fillClientCapabilities(capabilities) {
-            let textDocumentCap = capabilities.textDocument;
-            if (!textDocumentCap) {
-                textDocumentCap = capabilities.textDocument = {};
-            }
-            textDocumentCap.foldingRange = {
-                dynamicRegistration: false,
-                rangeLimit: 5000,
-                lineFoldingOnly: true
-            };
-        },
-        initialize(capabilities, documentSelector) {
-        }
-    });
     let disposable = client.start();
     toDispose.push(disposable);
     client.onReady().then(() => {
@@ -98,7 +82,6 @@ function activate(context) {
         toDispose.push(vscode_1.workspace.onDidChangeTextDocument(e => handleContentChange(e.document.uri)));
         toDispose.push(vscode_1.workspace.onDidCloseTextDocument(d => handleContentChange(d.uri)));
         client.sendNotification(SchemaAssociationNotification.type, getSchemaAssociation(context));
-        toDispose.push(initFoldingProvider());
     });
     let languageConfiguration = {
         wordPattern: /("(?:[^\\\"]*(?:\\.)?)*"?)|[^\s{}\[\],:]+/,
@@ -109,37 +92,6 @@ function activate(context) {
     };
     vscode_1.languages.setLanguageConfiguration('json', languageConfiguration);
     vscode_1.languages.setLanguageConfiguration('jsonc', languageConfiguration);
-    function initFoldingProvider() {
-        function getKind(kind) {
-            if (kind) {
-                switch (kind) {
-                    case vscode_languageserver_protocol_foldingprovider_1.FoldingRangeKind.Comment:
-                        return vscode_1.FoldingRangeKind.Comment;
-                    case vscode_languageserver_protocol_foldingprovider_1.FoldingRangeKind.Imports:
-                        return vscode_1.FoldingRangeKind.Imports;
-                    case vscode_languageserver_protocol_foldingprovider_1.FoldingRangeKind.Region:
-                        return vscode_1.FoldingRangeKind.Region;
-                }
-            }
-            return void 0;
-        }
-        return vscode_1.languages.registerFoldingRangeProvider(documentSelector, {
-            provideFoldingRanges(document, context, token) {
-                const param = {
-                    textDocument: client.code2ProtocolConverter.asTextDocumentIdentifier(document)
-                };
-                return client.sendRequest(vscode_languageserver_protocol_foldingprovider_1.FoldingRangeRequest.type, param, token).then(ranges => {
-                    if (Array.isArray(ranges)) {
-                        return ranges.map(r => new vscode_1.FoldingRange(r.startLine, r.endLine, getKind(r.kind)));
-                    }
-                    return null;
-                }, error => {
-                    client.logFailedRequest(vscode_languageserver_protocol_foldingprovider_1.FoldingRangeRequest.type, error);
-                    return null;
-                });
-            }
-        });
-    }
 }
 exports.activate = activate;
 function deactivate() {
@@ -272,4 +224,4 @@ function getPackageInfo(context) {
     }
     return void 0;
 }
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/1dfc5e557209371715f655691b1235b6b26a06be/extensions\json-language-features\client\out/jsonMain.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/4e9361845dc28659923a300945f84731393e210d/extensions\json-language-features\client\out/jsonMain.js.map

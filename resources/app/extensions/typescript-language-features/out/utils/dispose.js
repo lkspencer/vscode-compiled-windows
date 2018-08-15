@@ -12,5 +12,27 @@ function disposeAll(disposables) {
         }
     }
 }
-exports.disposeAll = disposeAll;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/1dfc5e557209371715f655691b1235b6b26a06be/extensions\typescript-language-features\out/utils\dispose.js.map
+class Disposable {
+    constructor() {
+        this._isDisposed = false;
+        this._disposables = [];
+    }
+    dispose() {
+        if (this._isDisposed) {
+            return;
+        }
+        this._isDisposed = true;
+        disposeAll(this._disposables);
+    }
+    _register(value) {
+        if (this._isDisposed) {
+            value.dispose();
+        }
+        else {
+            this._disposables.push(value);
+        }
+        return value;
+    }
+}
+exports.Disposable = Disposable;
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/4e9361845dc28659923a300945f84731393e210d/extensions\typescript-language-features\out/utils\dispose.js.map

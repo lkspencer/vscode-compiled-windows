@@ -5,9 +5,9 @@
  *--------------------------------------------------------------------------------------------*/
 Object.defineProperty(exports, "__esModule", { value: true });
 const vscode = require("vscode");
-const typeConverters = require("../utils/typeConverters");
-const dependentRegistration_1 = require("../utils/dependentRegistration");
 const api_1 = require("../utils/api");
+const dependentRegistration_1 = require("../utils/dependentRegistration");
+const typeConverters = require("../utils/typeConverters");
 class TypeScriptFoldingProvider {
     constructor(client) {
         this.client = client;
@@ -18,11 +18,11 @@ class TypeScriptFoldingProvider {
             return;
         }
         const args = { file };
-        const response = await this.client.execute('getOutliningSpans', args, token);
-        if (!response || !response.body) {
+        const { body } = await this.client.execute('getOutliningSpans', args, token);
+        if (!body) {
             return;
         }
-        return response.body
+        return body
             .map(span => this.convertOutliningSpan(span, document))
             .filter(foldingRange => !!foldingRange);
     }
@@ -59,4 +59,4 @@ function register(selector, client) {
     });
 }
 exports.register = register;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/1dfc5e557209371715f655691b1235b6b26a06be/extensions\typescript-language-features\out/features\folding.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/4e9361845dc28659923a300945f84731393e210d/extensions\typescript-language-features\out/features\folding.js.map

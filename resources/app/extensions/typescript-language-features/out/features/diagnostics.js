@@ -5,39 +5,105 @@
  *--------------------------------------------------------------------------------------------*/
 Object.defineProperty(exports, "__esModule", { value: true });
 const vscode = require("vscode");
-const resourceMap_1 = require("./resourceMap");
-class DiagnosticSet {
-    constructor() {
-        this._map = new resourceMap_1.ResourceMap();
-    }
-    set(file, diagnostics) {
-        this._map.set(file, diagnostics);
-    }
-    get(file) {
-        return this._map.get(file) || [];
-    }
-    clear() {
-        this._map = new resourceMap_1.ResourceMap();
-    }
-}
-exports.DiagnosticSet = DiagnosticSet;
+const resourceMap_1 = require("../utils/resourceMap");
+const languageDescription_1 = require("../utils/languageDescription");
 var DiagnosticKind;
 (function (DiagnosticKind) {
     DiagnosticKind[DiagnosticKind["Syntax"] = 0] = "Syntax";
     DiagnosticKind[DiagnosticKind["Semantic"] = 1] = "Semantic";
     DiagnosticKind[DiagnosticKind["Suggestion"] = 2] = "Suggestion";
 })(DiagnosticKind = exports.DiagnosticKind || (exports.DiagnosticKind = {}));
-const allDiagnosticKinds = [DiagnosticKind.Syntax, DiagnosticKind.Semantic, DiagnosticKind.Suggestion];
+class FileDiagnostics {
+    constructor(file, language) {
+        this.file = file;
+        this.language = language;
+        this._diagnostics = new Map();
+    }
+    updateDiagnostics(language, kind, diagnostics) {
+        if (language !== this.language) {
+            this._diagnostics.clear();
+            this.language = language;
+        }
+        if (diagnostics.length === 0) {
+            const existing = this._diagnostics.get(kind);
+            if (!existing || existing && existing.length === 0) {
+                // No need to update
+                return false;
+            }
+        }
+        this._diagnostics.set(kind, diagnostics);
+        return true;
+    }
+    getDiagnostics(settings) {
+        if (!settings.getValidate(this.language)) {
+            return [];
+        }
+        return [
+            ...this.get(DiagnosticKind.Syntax),
+            ...this.get(DiagnosticKind.Semantic),
+            ...this.getSuggestionDiagnostics(settings),
+        ];
+    }
+    getSuggestionDiagnostics(settings) {
+        const enableSuggestions = settings.getEnableSuggestions(this.language);
+        return this.get(DiagnosticKind.Suggestion).filter(x => {
+            if (!enableSuggestions) {
+                // Still show unused
+                return x.tags && x.tags.indexOf(vscode.DiagnosticTag.Unnecessary) !== -1;
+            }
+            return true;
+        });
+    }
+    get(kind) {
+        return this._diagnostics.get(kind) || [];
+    }
+}
+class DiagnosticSettings {
+    constructor() {
+        this._languageSettings = new Map();
+        for (const language of languageDescription_1.allDiagnosticLangauges) {
+            this._languageSettings.set(language, DiagnosticSettings.defaultSettings);
+        }
+    }
+    getValidate(language) {
+        return this.get(language).validate;
+    }
+    setValidate(language, value) {
+        return this.update(language, settings => ({
+            validate: value,
+            enableSuggestions: settings.enableSuggestions
+        }));
+    }
+    getEnableSuggestions(language) {
+        return this.get(language).enableSuggestions;
+    }
+    setEnableSuggestions(language, value) {
+        return this.update(language, settings => ({
+            validate: settings.validate,
+            enableSuggestions: value
+        }));
+    }
+    get(language) {
+        return this._languageSettings.get(language) || DiagnosticSettings.defaultSettings;
+    }
+    update(language, f) {
+        const currentSettings = this.get(language);
+        const newSettings = f(currentSettings);
+        this._languageSettings.set(language, newSettings);
+        return currentSettings.validate === newSettings.validate
+            && currentSettings.enableSuggestions && currentSettings.enableSuggestions;
+    }
+}
+DiagnosticSettings.defaultSettings = {
+    validate: true,
+    enableSuggestions: true
+};
 class DiagnosticsManager {
     constructor(owner) {
-        this._diagnostics = new Map();
+        this._diagnostics = new resourceMap_1.ResourceMap();
+        this._settings = new DiagnosticSettings();
         this._pendingUpdates = new resourceMap_1.ResourceMap();
-        this._validate = true;
-        this._enableSuggestions = true;
-        this.updateDelay = 50;
-        for (const kind of allDiagnosticKinds) {
-            this._diagnostics.set(kind, new DiagnosticSet());
-        }
+        this._updateDelay = 50;
         this._currentDiagnostics = vscode.languages.createDiagnosticCollection(owner);
     }
     dispose() {
@@ -49,55 +115,49 @@ class DiagnosticsManager {
     }
     reInitialize() {
         this._currentDiagnostics.clear();
-        for (const diagnosticSet of this._diagnostics.values()) {
-            diagnosticSet.clear();
+        this._diagnostics.clear();
+    }
+    setValidate(language, value) {
+        const didUpdate = this._settings.setValidate(language, value);
+        if (didUpdate) {
+            this.rebuild();
         }
     }
-    set validate(value) {
-        if (this._validate === value) {
-            return;
-        }
-        this._validate = value;
-        if (!value) {
-            this._currentDiagnostics.clear();
+    setEnableSuggestions(language, value) {
+        const didUpdate = this._settings.setEnableSuggestions(language, value);
+        if (didUpdate) {
+            this.rebuild();
         }
     }
-    set enableSuggestions(value) {
-        if (this._enableSuggestions === value) {
-            return;
+    updateDiagnostics(file, language, kind, diagnostics) {
+        let didUpdate = false;
+        const entry = this._diagnostics.get(file);
+        if (entry) {
+            didUpdate = entry.updateDiagnostics(language, kind, diagnostics);
         }
-        this._enableSuggestions = value;
-        if (!value) {
-            this._currentDiagnostics.clear();
+        else if (diagnostics.length) {
+            const fileDiagnostics = new FileDiagnostics(file, language);
+            fileDiagnostics.updateDiagnostics(language, kind, diagnostics);
+            this._diagnostics.set(file, fileDiagnostics);
+            didUpdate = true;
         }
-    }
-    diagnosticsReceived(kind, file, diagnostics) {
-        const collection = this._diagnostics.get(kind);
-        if (!collection) {
-            return;
+        if (didUpdate) {
+            this.scheduleDiagnosticsUpdate(file);
         }
-        if (diagnostics.length === 0) {
-            const existing = collection.get(file);
-            if (existing.length === 0) {
-                // No need to update
-                return;
-            }
-        }
-        collection.set(file, diagnostics);
-        this.scheduleDiagnosticsUpdate(file);
     }
     configFileDiagnosticsReceived(file, diagnostics) {
         this._currentDiagnostics.set(file, diagnostics);
     }
     delete(resource) {
         this._currentDiagnostics.delete(resource);
+        this._diagnostics.delete(resource);
     }
     getDiagnostics(file) {
         return this._currentDiagnostics.get(file) || [];
     }
     scheduleDiagnosticsUpdate(file) {
         if (!this._pendingUpdates.has(file)) {
-            this._pendingUpdates.set(file, setTimeout(() => this.updateCurrentDiagnostics(file), this.updateDelay));
+            this._pendingUpdates.set(file, setTimeout(() => this.updateCurrentDiagnostics(file), this._updateDelay));
         }
     }
     updateCurrentDiagnostics(file) {
@@ -105,25 +165,15 @@ class DiagnosticsManager {
             clearTimeout(this._pendingUpdates.get(file));
             this._pendingUpdates.delete(file);
         }
-        if (!this._validate) {
-            return;
-        }
-        const allDiagnostics = [
-            ...this._diagnostics.get(DiagnosticKind.Syntax).get(file),
-            ...this._diagnostics.get(DiagnosticKind.Semantic).get(file),
-            ...this.getSuggestionDiagnostics(file),
-        ];
-        this._currentDiagnostics.set(file, allDiagnostics);
+        const fileDiagnostics = this._diagnostics.get(file);
+        this._currentDiagnostics.set(file, fileDiagnostics ? fileDiagnostics.getDiagnostics(this._settings) : []);
     }
-    getSuggestionDiagnostics(file) {
-        return this._diagnostics.get(DiagnosticKind.Suggestion).get(file).filter(x => {
-            if (!this._enableSuggestions) {
-                // Still show unused
-                return x.tags && x.tags.indexOf(vscode.DiagnosticTag.Unnecessary) !== -1;
-            }
-            return true;
-        });
+    rebuild() {
+        this._currentDiagnostics.clear();
+        for (const fileDiagnostic of Array.from(this._diagnostics.values)) {
+            this._currentDiagnostics.set(fileDiagnostic.file, fileDiagnostic.getDiagnostics(this._settings));
+        }
     }
 }
 exports.DiagnosticsManager = DiagnosticsManager;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/1dfc5e557209371715f655691b1235b6b26a06be/extensions\typescript-language-features\out/features\diagnostics.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/4e9361845dc28659923a300945f84731393e210d/extensions\typescript-language-features\out/features\diagnostics.js.map

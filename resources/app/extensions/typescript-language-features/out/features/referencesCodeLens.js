@@ -17,7 +17,7 @@ class TypeScriptReferencesCodeLensProvider extends baseCodeLensProvider_1.TypeSc
         const codeLens = inputCodeLens;
         const args = typeConverters.Position.toFileLocationRequestArgs(codeLens.file, codeLens.range.start);
         return this.client.execute('references', args, token).then(response => {
-            if (!response || !response.body) {
+            if (!response.body) {
                 throw codeLens;
             }
             const locations = response.body.refs
@@ -80,4 +80,4 @@ function register(selector, modeId, client, cachedResponse) {
     }));
 }
 exports.register = register;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/1dfc5e557209371715f655691b1235b6b26a06be/extensions\typescript-language-features\out/features\referencesCodeLens.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/4e9361845dc28659923a300945f84731393e210d/extensions\typescript-language-features\out/features\referencesCodeLens.js.map

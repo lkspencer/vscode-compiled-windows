@@ -31,11 +31,12 @@ class ConditionalRegistration {
         }
     }
 }
-class VersionDependentRegistration {
+exports.ConditionalRegistration = ConditionalRegistration;
+class VersionDependentRegistration extends dispose_1.Disposable {
     constructor(client, minVersion, register) {
+        super();
         this.client = client;
         this.minVersion = minVersion;
-        this._disposables = [];
         this._registration = new ConditionalRegistration(register);
         this.update(client.apiVersion);
         this.client.onTsServerStarted(() => {
@@ -43,7 +44,7 @@ class VersionDependentRegistration {
         }, null, this._disposables);
     }
     dispose() {
-        dispose_1.disposeAll(this._disposables);
+        super.dispose();
         this._registration.dispose();
     }
     update(api) {
@@ -51,19 +52,17 @@ class VersionDependentRegistration {
     }
 }
 exports.VersionDependentRegistration = VersionDependentRegistration;
-class ConfigurationDependentRegistration {
+class ConfigurationDependentRegistration extends dispose_1.Disposable {
     constructor(language, configValue, register) {
+        super();
         this.language = language;
         this.configValue = configValue;
-        this._disposables = [];
         this._registration = new ConditionalRegistration(register);
         this.update();
-        vscode.workspace.onDidChangeConfiguration(() => {
-            this.update();
-        }, null, this._disposables);
+        vscode.workspace.onDidChangeConfiguration(this.update, this, this._disposables);
     }
     dispose() {
-        dispose_1.disposeAll(this._disposables);
+        super.dispose();
         this._registration.dispose();
     }
     update() {
@@ -72,4 +71,4 @@ class ConfigurationDependentRegistration {
     }
 }
 exports.ConfigurationDependentRegistration = ConfigurationDependentRegistration;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/1dfc5e557209371715f655691b1235b6b26a06be/extensions\typescript-language-features\out/utils\dependentRegistration.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/4e9361845dc28659923a300945f84731393e210d/extensions\typescript-language-features\out/utils\dependentRegistration.js.map

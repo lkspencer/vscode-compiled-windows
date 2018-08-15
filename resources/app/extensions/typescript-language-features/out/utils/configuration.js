@@ -4,7 +4,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-const vscode_1 = require("vscode");
+const vscode = require("vscode");
 const arrays = require("./arrays");
 var TsServerLogLevel;
 (function (TsServerLogLevel) {
@@ -46,7 +46,7 @@ var TsServerLogLevel;
 class TypeScriptServiceConfiguration {
     constructor() {
         this.tsServerLogLevel = TsServerLogLevel.Off;
-        const configuration = vscode_1.workspace.getConfiguration();
+        const configuration = vscode.workspace.getConfiguration();
         this.locale = TypeScriptServiceConfiguration.extractLocale(configuration);
         this.globalTsdk = TypeScriptServiceConfiguration.extractGlobalTsdk(configuration);
         this.localTsdk = TypeScriptServiceConfiguration.extractLocalTsdk(configuration);
@@ -109,4 +109,4 @@ class TypeScriptServiceConfiguration {
     }
 }
 exports.TypeScriptServiceConfiguration = TypeScriptServiceConfiguration;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/1dfc5e557209371715f655691b1235b6b26a06be/extensions\typescript-language-features\out/utils\configuration.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/4e9361845dc28659923a300945f84731393e210d/extensions\typescript-language-features\out/utils\configuration.js.map

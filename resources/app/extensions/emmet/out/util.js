@@ -266,7 +266,7 @@ function findClosingCommentAfterPosition(document, position) {
 /**
  * Returns node corresponding to given position in the given root node
  */
-function getNode(root, position, includeNodeBoundary = false) {
+function getNode(root, position, includeNodeBoundary) {
     if (!root) {
         return null;
     }
@@ -288,7 +288,7 @@ function getNode(root, position, includeNodeBoundary = false) {
     return foundNode;
 }
 exports.getNode = getNode;
-function getHtmlNode(document, root, position, includeNodeBoundary = false) {
+function getHtmlNode(document, root, position, includeNodeBoundary) {
     let currentNode = getNode(root, position, includeNodeBoundary);
     if (!currentNode) {
         return;
@@ -490,7 +490,7 @@ exports.getCssPropertyFromRule = getCssPropertyFromRule;
  */
 function getCssPropertyFromDocument(editor, position) {
     const rootNode = parseDocument(editor.document);
-    const node = getNode(rootNode, position);
+    const node = getNode(rootNode, position, true);
     if (isStyleSheet(editor.document.languageId)) {
         return node && node.type === 'property' ? node : null;
     }
@@ -501,7 +501,7 @@ function getCssPropertyFromDocument(editor, position) {
         && htmlNode.close.start.isAfter(position)) {
         let buffer = new bufferStream_1.DocumentStreamReader(editor.document, htmlNode.start, new vscode.Range(htmlNode.start, htmlNode.end));
         let rootNode = css_parser_1.default(buffer);
-        const node = getNode(rootNode, position);
+        const node = getNode(rootNode, position, true);
         return (node && node.type === 'property') ? node : null;
     }
 }
@@ -544,4 +544,4 @@ function isTemplateScript(currentNode) {
                 && allowedMimeTypesInScriptTag.indexOf(x.value.toString()) > -1));
 }
 exports.isTemplateScript = isTemplateScript;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/1dfc5e557209371715f655691b1235b6b26a06be/extensions\emmet\out/util.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/4e9361845dc28659923a300945f84731393e210d/extensions\emmet\out/util.js.map

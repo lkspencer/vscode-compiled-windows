@@ -4,18 +4,29 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 Object.defineProperty(exports, "__esModule", { value: true });
-const temp_1 = require("./temp");
+const temp = require("./temp");
 const path = require("path");
-const os = require("os");
+const fs = require("fs");
 const net = require("net");
 const cp = require("child_process");
-function getTempSock(prefix) {
-    const fullName = `vscode-${prefix}-${temp_1.makeRandomHexString(20)}`;
-    return temp_1.getTempFile(fullName + '.sock');
+const getRootTempDir = (() => {
+    let dir;
+    return () => {
+        if (!dir) {
+            dir = temp.getTempFile(`vscode-typescript`);
+            if (!fs.existsSync(dir)) {
+                fs.mkdirSync(dir);
+            }
+        }
+        return dir;
+    };
+})();
+function getTempFile(prefix) {
+    return path.join(getRootTempDir(), `${prefix}-${temp.makeRandomHexString(20)}.tmp`);
 }
-exports.getTempSock = getTempSock;
+exports.getTempFile = getTempFile;
 function generatePipeName() {
-    return getPipeName(temp_1.makeRandomHexString(40));
+    return getPipeName(temp.makeRandomHexString(40));
 }
 function getPipeName(name) {
     const fullName = 'vscode-' + name;
@@ -23,7 +34,7 @@ function getPipeName(name) {
         return '\\\\.\\pipe\\' + fullName + '-sock';
     }
     // Mac/Unix: use socket file
-    return path.join(os.tmpdir(), fullName + '.sock');
+    return path.join(getRootTempDir(), fullName + '.sock');
 }
 function generatePatchedEnv(env, stdInPipeName, stdOutPipeName, stdErrPipeName) {
     const newEnv = Object.assign({}, env);
@@ -105,4 +116,4 @@ function fork(modulePath, args, options, logger, callback) {
     });
 }
 exports.fork = fork;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/1dfc5e557209371715f655691b1235b6b26a06be/extensions\typescript-language-features\out/utils\electron.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/4e9361845dc28659923a300945f84731393e210d/extensions\typescript-language-features\out/utils\electron.js.map

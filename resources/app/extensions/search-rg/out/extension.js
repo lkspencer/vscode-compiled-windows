@@ -5,28 +5,48 @@
  *--------------------------------------------------------------------------------------------*/
 Object.defineProperty(exports, "__esModule", { value: true });
 var vscode = require("vscode");
-var ripgrepTextSearch_1 = require("./ripgrepTextSearch");
 var ripgrepFileSearch_1 = require("./ripgrepFileSearch");
+var ripgrepTextSearch_1 = require("./ripgrepTextSearch");
+var utils_1 = require("./utils");
 function activate() {
     if (vscode.workspace.getConfiguration('searchRipgrep').get('enable')) {
         var outputChannel = vscode.window.createOutputChannel('search-rg');
         var provider = new RipgrepSearchProvider(outputChannel);
-        vscode.workspace.registerSearchProvider('file', provider);
+        vscode.workspace.registerFileIndexProvider('file', provider);
+        vscode.workspace.registerTextSearchProvider('file', provider);
     }
 }
 exports.activate = activate;
 var RipgrepSearchProvider = /** @class */ (function () {
     function RipgrepSearchProvider(outputChannel) {
+        var _this = this;
         this.outputChannel = outputChannel;
+        this.inProgress = new Set();
+        process.once('exit', function () { return _this.dispose(); });
     }
     RipgrepSearchProvider.prototype.provideTextSearchResults = function (query, options, progress, token) {
         var engine = new ripgrepTextSearch_1.RipgrepTextSearchEngine(this.outputChannel);
-        return engine.provideTextSearchResults(query, options, progress, token);
+        return this.withEngine(engine, function () { return engine.provideTextSearchResults(query, options, progress, token); });
     };
-    RipgrepSearchProvider.prototype.provideFileSearchResults = function (options, progress, token) {
+    RipgrepSearchProvider.prototype.provideFileIndex = function (options, token) {
         var engine = new ripgrepFileSearch_1.RipgrepFileSearchEngine(this.outputChannel);
-        return engine.provideFileSearchResults(options, progress, token);
+        var results = [];
+        var onResult = function (relativePathMatch) {
+            results.push(utils_1.joinPath(options.folder, relativePathMatch));
+        };
+        return this.withEngine(engine, function () { return engine.provideFileSearchResults(options, { report: onResult }, token); })
+            .then(function () { return results; });
+    };
+    RipgrepSearchProvider.prototype.withEngine = function (engine, fn) {
+        var _this = this;
+        this.inProgress.add(engine);
+        return fn().then(function () {
+            _this.inProgress.delete(engine);
+        });
+    };
+    RipgrepSearchProvider.prototype.dispose = function () {
+        this.inProgress.forEach(function (engine) { return engine.cancel(); });
     };
     return RipgrepSearchProvider;
 }());
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/1dfc5e557209371715f655691b1235b6b26a06be/extensions\search-rg\out/extension.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/4e9361845dc28659923a300945f84731393e210d/extensions\search-rg\out/extension.js.map

@@ -4,13 +4,13 @@ Object.defineProperty(exports, "__esModule", { value: true });
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-const nls = require("vscode-nls");
-const localize = nls.loadMessageBundle(__filename);
-const path = require("path");
 const fs = require("fs");
-const vscode_1 = require("vscode");
-const relativePathResolver_1 = require("./relativePathResolver");
+const path = require("path");
+const vscode = require("vscode");
+const nls = require("vscode-nls");
 const api_1 = require("./api");
+const relativePathResolver_1 = require("./relativePathResolver");
+const localize = nls.loadMessageBundle(__filename);
 class TypeScriptVersion {
     constructor(path, _pathLabel) {
         this.path = path;
@@ -31,7 +31,7 @@ class TypeScriptVersion {
             return version;
         }
         // Allow TS developers to provide custom version
-        const tsdkVersion = vscode_1.workspace.getConfiguration().get('typescript.tsdk_version', undefined);
+        const tsdkVersion = vscode.workspace.getConfiguration().get('typescript.tsdk_version', undefined);
         if (tsdkVersion) {
             return api_1.default.fromVersionString(tsdkVersion);
         }
@@ -128,7 +128,7 @@ class TypeScriptVersionProvider {
         catch (e) {
             // noop
         }
-        vscode_1.window.showErrorMessage(localize(1, null));
+        vscode.window.showErrorMessage(localize(1, null));
         throw new Error('Could not find bundled tsserver.js');
     }
     get localTsdkVersions() {
@@ -150,13 +150,13 @@ class TypeScriptVersionProvider {
             .filter(x => x.isValid);
     }
     loadTypeScriptVersionsFromPath(relativePath) {
-        if (!vscode_1.workspace.workspaceFolders) {
+        if (!vscode.workspace.workspaceFolders) {
             return [];
         }
         const versions = [];
-        for (const root of vscode_1.workspace.workspaceFolders) {
+        for (const root of vscode.workspace.workspaceFolders) {
             let label = relativePath;
-            if (vscode_1.workspace.workspaceFolders && vscode_1.workspace.workspaceFolders.length > 1) {
+            if (vscode.workspace.workspaceFolders && vscode.workspace.workspaceFolders.length > 1) {
                 label = path.join(root.name, relativePath);
             }
             versions.push(new TypeScriptVersion(path.join(root.uri.fsPath, relativePath), label));
@@ -165,4 +165,4 @@ class TypeScriptVersionProvider {
     }
 }
 exports.TypeScriptVersionProvider = TypeScriptVersionProvider;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/1dfc5e557209371715f655691b1235b6b26a06be/extensions\typescript-language-features\out/utils\versionProvider.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/4e9361845dc28659923a300945f84731393e210d/extensions\typescript-language-features\out/utils\versionProvider.js.map

@@ -18,10 +18,11 @@ class CheckoutStatusBar {
     }
     get onDidChange() { return this._onDidChange.event; }
     get command() {
-        const title = `$(git-branch) ${this.repository.headLabel}`;
+        const rebasing = !!this.repository.rebaseCommit;
+        const title = `$(git-branch) ${this.repository.headLabel}${rebasing ? ` (${localize(0, null)})` : ''}`;
         return {
             command: 'git.checkout',
-            tooltip: localize(0, null),
+            tooltip: localize(1, null),
             title,
             arguments: [this.repository.sourceControl]
         };
@@ -70,12 +71,12 @@ class SyncStatusBar {
                     text += this.repository.syncLabel;
                 }
                 command = 'git.sync';
-                tooltip = localize(1, null);
+                tooltip = localize(2, null);
             }
             else {
                 icon = '$(cloud-upload)';
                 command = 'git.publish';
-                tooltip = localize(2, null);
+                tooltip = localize(3, null);
             }
         }
         else {
@@ -85,7 +86,7 @@ class SyncStatusBar {
         if (this.state.isSyncRunning) {
             icon = '$(sync~spin)';
             command = '';
-            tooltip = localize(3, null);
+            tooltip = localize(4, null);
         }
         return {
             command,
@@ -131,4 +132,4 @@ class StatusBarCommands {
     }
 }
 exports.StatusBarCommands = StatusBarCommands;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/1dfc5e557209371715f655691b1235b6b26a06be/extensions\git\out/statusbar.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/4e9361845dc28659923a300945f84731393e210d/extensions\git\out/statusbar.js.map

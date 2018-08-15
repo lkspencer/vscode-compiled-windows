@@ -18,8 +18,8 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     function step(op) {
         if (f) throw new TypeError("Generator is already executing.");
         while (_) try {
-            if (f = 1, y && (t = y[op[0] & 2 ? "return" : op[0] ? "throw" : "next"]) && !(t = t.call(y, op[1])).done) return t;
-            if (y = 0, t) op = [0, t.value];
+            if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
+            if (y = 0, t) op = [op[0] & 2, t.value];
             switch (op[0]) {
                 case 0: case 1: t = op; break;
                 case 4: _.label++; return { value: op[1], done: false };
@@ -49,7 +49,6 @@ var strings_1 = require("./utils/strings");
 var runner_1 = require("./utils/runner");
 var vscode_json_languageservice_1 = require("vscode-json-languageservice");
 var languageModelCache_1 = require("./languageModelCache");
-var vscode_languageserver_protocol_foldingprovider_1 = require("vscode-languageserver-protocol-foldingprovider");
 var SchemaAssociationNotification;
 (function (SchemaAssociationNotification) {
     SchemaAssociationNotification.type = new vscode_languageserver_1.NotificationType('json/schemaAssociations');
@@ -362,7 +361,7 @@ connection.onColorPresentation(function (params, token) {
         return [];
     }, [], "Error while computing color presentations for " + params.textDocument.uri, token);
 });
-connection.onRequest(vscode_languageserver_protocol_foldingprovider_1.FoldingRangeRequest.type, function (params, token) {
+connection.onFoldingRanges(function (params, token) {
     return runner_1.runSafe(function () {
         var document = documents.get(params.textDocument.uri);
         if (document) {
@@ -373,4 +372,4 @@ connection.onRequest(vscode_languageserver_protocol_foldingprovider_1.FoldingRan
 });
 // Listen on the connection
 connection.listen();
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/1dfc5e557209371715f655691b1235b6b26a06be/extensions\json-language-features\server\out/jsonServerMain.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/4e9361845dc28659923a300945f84731393e210d/extensions\json-language-features\server\out/jsonServerMain.js.map

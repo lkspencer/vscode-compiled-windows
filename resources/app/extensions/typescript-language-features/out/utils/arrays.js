@@ -15,5 +15,9 @@ function equals(one, other, itemEquals = (a, b) => a === b) {
     }
     return true;
 }
-exports.equals = equals;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/1dfc5e557209371715f655691b1235b6b26a06be/extensions\typescript-language-features\out/utils\arrays.js.map
+exports.equals = equals;
+function flatten(arr) {
+    return [].concat.apply([], arr);
+}
+exports.flatten = flatten;
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/4e9361845dc28659923a300945f84731393e210d/extensions\typescript-language-features\out/utils\arrays.js.map

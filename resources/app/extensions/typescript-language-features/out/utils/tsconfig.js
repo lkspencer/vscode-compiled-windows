@@ -4,8 +4,8 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 Object.defineProperty(exports, "__esModule", { value: true });
-const vscode = require("vscode");
 const path = require("path");
+const vscode = require("vscode");
 function isImplicitProjectConfigFile(configFileName) {
     return configFileName.indexOf('/dev/null/') === 0;
 }
@@ -55,4 +55,4 @@ async function openOrCreateConfigFile(isTypeScriptProject, rootPath, config) {
     }
 }
 exports.openOrCreateConfigFile = openOrCreateConfigFile;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/1dfc5e557209371715f655691b1235b6b26a06be/extensions\typescript-language-features\out/utils\tsconfig.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/4e9361845dc28659923a300945f84731393e210d/extensions\typescript-language-features\out/utils\tsconfig.js.map

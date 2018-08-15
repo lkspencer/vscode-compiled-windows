@@ -74,6 +74,24 @@ class SourceMaps {
             });
         });
     }
+    CannotMapLine(pathToGenerated, content, line, column) {
+        return this._preLoad.then(() => {
+            return this._findGeneratedToSourceMapping(pathToGenerated, content).then(map => {
+                if (map) {
+                    line += 1; // source map impl is 1 based
+                    let mr = map.originalPositionFor(line, column, Bias.GREATEST_LOWER_BOUND);
+                    if (!mr) {
+                        mr = map.originalPositionFor(line, column, Bias.LEAST_UPPER_BOUND);
+                    }
+                    if (mr && mr.source && mr.line !== null && mr.column !== null) {
+                        return false; // we have a corresponding source and could map line to it -> stop
+                    }
+                    return true; // we have a corresponding source but could not map line to it -> skip
+                }
+                return false; // no corresponding source -> stop
+            });
+        });
+    }
     MapToSource(pathToGenerated, content, line, column) {
         return this._preLoad.then(() => {
             return this._findGeneratedToSourceMapping(pathToGenerated, content).then(map => {
@@ -91,7 +109,9 @@ class SourceMaps {
                             column: mr.column
                         };
                     }
+                    return null; // we have a corresponding source but could not map line to it.
                 }
+                // no corresponding source.
                 return null;
             });
         });

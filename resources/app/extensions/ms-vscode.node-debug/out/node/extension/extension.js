@@ -8,9 +8,6 @@ const configurationProvider_1 = require("./configurationProvider");
 const loadedScripts_1 = require("./loadedScripts");
 const processPicker_1 = require("./processPicker");
 const cluster_1 = require("./cluster");
-const autoAttach_1 = require("./autoAttach");
-const nls = require("vscode-nls");
-const localize = nls.loadMessageBundle(__filename);
 function activate(context) {
     // register a configuration provider
     context.subscriptions.push(vscode.debug.registerDebugConfigurationProvider('node', new configurationProvider_1.NodeConfigurationProvider(context)));
@@ -27,28 +24,6 @@ function activate(context) {
     // cluster
     context.subscriptions.push(vscode.debug.onDidStartDebugSession(session => cluster_1.Cluster.startSession(session)));
     context.subscriptions.push(vscode.debug.onDidTerminateDebugSession(session => cluster_1.Cluster.stopSession(session)));
-    // auto attach in terminal
-    const onText = localize(0, null);
-    const offText = localize(1, null);
-    const statusItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left);
-    statusItem.command = 'extension.node-debug.toggleAutoAttach';
-    statusItem.text = offText;
-    statusItem.tooltip = localize(2, null);
-    statusItem.show();
-    context.subscriptions.push(statusItem);
-    const rootPid = parseInt(process.env['VSCODE_PID']);
-    let autoAttacher;
-    context.subscriptions.push(vscode.commands.registerCommand('extension.node-debug.toggleAutoAttach', _ => {
-        if (autoAttacher) {
-            statusItem.text = offText;
-            autoAttacher.dispose();
-            autoAttacher = undefined;
-        }
-        else {
-            statusItem.text = onText;
-            autoAttacher = autoAttach_1.startAutoAttach(rootPid);
-        }
-    }));
 }
 exports.activate = activate;
 function deactivate() {

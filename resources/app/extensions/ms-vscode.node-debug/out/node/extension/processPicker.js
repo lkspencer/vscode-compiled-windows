@@ -17,6 +17,7 @@ const path_1 = require("path");
 const processTree_1 = require("./processTree");
 const child_process_1 = require("child_process");
 const protocolDetection_1 = require("./protocolDetection");
+const protocolDetection_2 = require("./protocolDetection");
 const localize = nls.loadMessageBundle(__filename);
 /**
  * end user action for picking a process and attaching debugger to it
@@ -118,8 +119,6 @@ exports.pickProcess = pickProcess;
 //---- private
 function listProcesses(ports) {
     const items = [];
-    const DEBUG_FLAGS_PATTERN = /--(inspect|debug)(-brk)?(=(\d+))?[^-]/;
-    const DEBUG_PORT_PATTERN = /--(inspect|debug)-port=(\d+)/;
     const NODE = new RegExp('^(?:node|iojs)$', 'i');
     let seq = 0; // default sort key
     return processTree_1.getProcesses((pid, ppid, command, args, date) => {
@@ -130,52 +129,36 @@ function listProcesses(ports) {
         const executable_name = path_1.basename(command, '.exe');
         let port = -1;
         let protocol = '';
-        let usePid = true;
+        let usePort = true;
         if (ports) {
-            // match --debug, --debug=1234, --debug-brk, debug-brk=1234, --inspect, --inspect=1234, --inspect-brk, --inspect-brk=1234
-            let matches = DEBUG_FLAGS_PATTERN.exec(args);
-            if (matches && matches.length >= 2) {
-                // attach via port
-                if (matches.length === 5 && matches[4]) {
-                    port = parseInt(matches[4]);
-                }
-                protocol = matches[1] === 'debug' ? 'legacy' : 'inspector';
-                usePid = false;
-            }
-            // a debug-port=1234 or --inspect-port=1234 overrides the port
-            matches = DEBUG_PORT_PATTERN.exec(args);
-            if (matches && matches.length === 3) {
-                // override port
-                port = parseInt(matches[2]);
-                protocol = matches[1] === 'debug' ? 'legacy' : 'inspector';
-            }
+            const x = protocolDetection_2.analyseArguments(args);
+            usePort = x.usePort;
+            protocol = x.protocol;
+            port = x.port;
         }
         let description = '';
         let pidOrPort = '';
-        if (usePid) {
+        if (usePort) {
+            if (protocol === 'inspector') {
+                description = localize(4, null, pid, port);
+            }
+            else {
+                description = localize(5, null, pid, port);
+            }
+            pidOrPort = `${protocol}${port}`;
+        }
+        else {
             if (protocol && port > 0) {
-                description = localize(4, null, pid, port, 'SIGUSR1');
+                description = localize(6, null, pid, port, 'SIGUSR1');
                 pidOrPort = `${pid}${protocol}${port}`;
             }
             else {
                 // no port given
                 if (NODE.test(executable_name)) {
-                    description = localize(5, null, pid, 'SIGUSR1');
+                    description = localize(7, null, pid, 'SIGUSR1');
                     pidOrPort = pid.toString();
                 }
             }
-        }
-        else {
-            if (port < 0) {
-                port = protocol === 'inspector' ? protocolDetection_1.INSPECTOR_PORT_DEFAULT : protocolDetection_1.LEGACY_PORT_DEFAULT;
-            }
-            if (protocol === 'inspector') {
-                description = localize(6, null, pid, port);
-            }
-            else {
-                description = localize(7, null, pid, port);
-            }
-            pidOrPort = `${protocol}${port}`;
         }
         if (description && pidOrPort) {
             items.push({

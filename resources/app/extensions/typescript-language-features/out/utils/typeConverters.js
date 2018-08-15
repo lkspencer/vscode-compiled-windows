@@ -18,6 +18,13 @@ var Range;
         endLine: range.end.line + 1,
         endOffset: range.end.character + 1
     });
+    Range.toFormattingRequestArgs = (file, range) => ({
+        file,
+        line: range.start.line + 1,
+        offset: range.start.character + 1,
+        endLine: range.end.line + 1,
+        endOffset: range.end.character + 1
+    });
 })(Range = exports.Range || (exports.Range = {}));
 var Position;
 (function (Position) {
@@ -52,4 +59,4 @@ var WorkspaceEdit;
     }
     WorkspaceEdit.withFileCodeEdits = withFileCodeEdits;
 })(WorkspaceEdit = exports.WorkspaceEdit || (exports.WorkspaceEdit = {}));
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/1dfc5e557209371715f655691b1235b6b26a06be/extensions\typescript-language-features\out/utils\typeConverters.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/4e9361845dc28659923a300945f84731393e210d/extensions\typescript-language-features\out/utils\typeConverters.js.map

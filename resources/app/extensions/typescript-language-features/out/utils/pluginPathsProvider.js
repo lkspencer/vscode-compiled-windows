@@ -5,7 +5,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 const path = require("path");
-const vscode_1 = require("vscode");
+const vscode = require("vscode");
 const relativePathResolver_1 = require("./relativePathResolver");
 class TypeScriptPluginPathsProvider {
     constructor(configuration) {
@@ -30,9 +30,9 @@ class TypeScriptPluginPathsProvider {
         if (workspacePath !== undefined) {
             return [workspacePath];
         }
-        return (vscode_1.workspace.workspaceFolders || [])
+        return (vscode.workspace.workspaceFolders || [])
             .map(workspaceFolder => path.join(workspaceFolder.uri.fsPath, pluginPath));
     }
 }
 exports.TypeScriptPluginPathsProvider = TypeScriptPluginPathsProvider;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/1dfc5e557209371715f655691b1235b6b26a06be/extensions\typescript-language-features\out/utils\pluginPathsProvider.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/4e9361845dc28659923a300945f84731393e210d/extensions\typescript-language-features\out/utils\pluginPathsProvider.js.map

@@ -9,10 +9,12 @@ const path = require("path");
 const vscode = require("vscode");
 const nls = require("vscode-nls");
 const api_1 = require("../utils/api");
-const languageIds = require("../utils/languageModeIds");
-const typeConverters = require("../utils/typeConverters");
 const fileSchemes = require("../utils/fileSchemes");
+const languageModeIds_1 = require("../utils/languageModeIds");
 const regexp_1 = require("../utils/regexp");
+const typeConverters = require("../utils/typeConverters");
+const dependentRegistration_1 = require("../utils/dependentRegistration");
+const cancellation_1 = require("../utils/cancellation");
 const localize = nls.loadMessageBundle(__filename);
 const updateImportsOnFileMoveName = 'updateImportsOnFileMove.enabled';
 var UpdateImportsOnFileMoveSetting;
@@ -34,9 +36,6 @@ class UpdateImportsOnFileRenameHandler {
         this._onDidRenameSub.dispose();
     }
     async doRename(oldResource, newResource) {
-        if (!this.client.apiVersion.gte(api_1.default.v290)) {
-            return;
-        }
         const targetResource = await this.getTargetResource(newResource);
         if (!targetResource) {
             return;
@@ -62,14 +61,21 @@ class UpdateImportsOnFileRenameHandler {
         // Make sure TS knows about file
         this.client.bufferSyncSupport.closeResource(targetResource);
         this.client.bufferSyncSupport.openTextDocument(document);
-        // Workaround for https://github.com/Microsoft/vscode/issues/52967
-        // Never attempt to update import paths if the file does not contain something the looks like an export
-        const tree = await this.client.execute('navtree', { file: newFile });
-        const hasExport = (node) => {
-            return !!node.kindModifiers.match(/\bexport\b/g) || !!(node.childItems && node.childItems.some(hasExport));
-        };
-        if (!tree.body || !tree.body || !hasExport(tree.body)) {
-            return;
+        if (!this.client.apiVersion.gte(api_1.default.v300) && !fs.lstatSync(newResource.fsPath).isDirectory()) {
+            // Workaround for https://github.com/Microsoft/vscode/issues/52967
+            // Never attempt to update import paths if the file does not contain something the looks like an export
+            try {
+                const { body } = await this.client.execute('navtree', { file: newFile }, cancellation_1.nulToken);
+                const hasExport = (node) => {
+                    return !!node.kindModifiers.match(/\bexports?\b/g) || !!(node.childItems && node.childItems.some(hasExport));
+                };
+                if (!body || !hasExport(body)) {
+                    return;
+                }
+            }
+            catch (_a) {
+                // noop
+            }
         }
         const edits = await this.getEditsForFileRename(targetFile, document, oldFile, newFile);
         if (!edits || !edits.size) {
@@ -93,7 +99,7 @@ class UpdateImportsOnFileRenameHandler {
         }
     }
     getConfiguration(newDocument) {
-        return vscode.workspace.getConfiguration(isTypeScriptDocument(newDocument) ? 'typescript' : 'javascript', newDocument.uri);
+        return vscode.workspace.getConfiguration(languageModeIds_1.isTypeScriptDocument(newDocument) ? 'typescript' : 'javascript', newDocument.uri);
     }
     async promptUser(newResource, newDocument) {
         let Choice;
@@ -151,7 +157,11 @@ class UpdateImportsOnFileRenameHandler {
         if (resource.scheme !== fileSchemes.file) {
             return undefined;
         }
-        if (this.client.apiVersion.gte(api_1.default.v292) && fs.lstatSync(resource.fsPath).isDirectory()) {
+        const isDirectory = fs.lstatSync(resource.fsPath).isDirectory();
+        if (isDirectory && this.client.apiVersion.gte(api_1.default.v300)) {
+            return resource;
+        }
+        if (isDirectory && this.client.apiVersion.gte(api_1.default.v292)) {
             const files = await vscode.workspace.findFiles({
                 base: resource.fsPath,
                 pattern: '**/*.{ts,tsx,js,jsx}',
@@ -162,13 +172,13 @@ class UpdateImportsOnFileRenameHandler {
     }
     async getEditsForFileRename(targetResource, document, oldFile, newFile) {
         const isDirectoryRename = fs.lstatSync(newFile).isDirectory();
-        await this.fileConfigurationManager.ensureConfigurationForDocument(document, undefined);
+        await this.fileConfigurationManager.setGlobalConfigurationFromDocument(document, cancellation_1.nulToken);
         const args = {
             file: targetResource,
             oldFilePath: oldFile,
             newFilePath: newFile,
         };
-        const response = await this.client.execute('getEditsForFileRename', args);
+        const response = await this.client.execute('getEditsForFileRename', args, cancellation_1.nulToken);
         if (!response || !response.body) {
             return;
         }
@@ -219,8 +229,8 @@ class UpdateImportsOnFileRenameHandler {
         };
     }
 }
-exports.UpdateImportsOnFileRenameHandler = UpdateImportsOnFileRenameHandler;
-function isTypeScriptDocument(document) {
-    return document.languageId === languageIds.typescript || document.languageId === languageIds.typescriptreact;
-}
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/1dfc5e557209371715f655691b1235b6b26a06be/extensions\typescript-language-features\out/features\updatePathsOnRename.js.map
+function register(client, fileConfigurationManager, handles) {
+    return new dependentRegistration_1.VersionDependentRegistration(client, api_1.default.v290, () => new UpdateImportsOnFileRenameHandler(client, fileConfigurationManager, handles));
+}
+exports.register = register;
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/4e9361845dc28659923a300945f84731393e210d/extensions\typescript-language-features\out/features\updatePathsOnRename.js.map

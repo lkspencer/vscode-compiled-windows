@@ -231,7 +231,8 @@ exports.GitErrorCodes = {
     NoStashFound: 'NoStashFound',
     LocalChangesOverwritten: 'LocalChangesOverwritten',
     NoUpstreamBranch: 'NoUpstreamBranch',
-    IsInSubmodule: 'IsInSubmodule'
+    IsInSubmodule: 'IsInSubmodule',
+    WrongCase: 'WrongCase',
 };
 function getGitErrorCode(stderr) {
     if (/Another git process seems to be running in this repository|If no other git process is currently running/.test(stderr)) {
@@ -240,7 +241,7 @@ function getGitErrorCode(stderr) {
     else if (/Authentication failed/.test(stderr)) {
         return exports.GitErrorCodes.AuthenticationFailed;
     }
-    else if (/Not a git repository/.test(stderr)) {
+    else if (/Not a git repository/i.test(stderr)) {
         return exports.GitErrorCodes.NotAGitRepository;
     }
     else if (/bad config file/.test(stderr)) {
@@ -477,6 +478,31 @@ function parseGitmodules(raw) {
     return result;
 }
 exports.parseGitmodules = parseGitmodules;
+function parseGitCommit(raw) {
+    const match = /^([0-9a-f]{40})\n(.*)\n([^]*)$/m.exec(raw.trim());
+    if (!match) {
+        return null;
+    }
+    const parents = match[2] ? match[2].split(' ') : [];
+    return { hash: match[1], message: match[3], parents };
+}
+exports.parseGitCommit = parseGitCommit;
+function parseLsTree(raw) {
+    return raw.split('\n')
+        .filter(l => !!l)
+        .map(line => /^(\S+)\s+(\S+)\s+(\S+)\s+(\S+)\s+(.*)$/.exec(line))
+        .filter(m => !!m)
+        .map(([, mode, type, object, size, file]) => ({ mode, type, object, size, file }));
+}
+exports.parseLsTree = parseLsTree;
+function parseLsFiles(raw) {
+    return raw.split('\n')
+        .filter(l => !!l)
+        .map(line => /^(\S+)\s+(\S+)\s+(\S+)\s+(.*)$/.exec(line))
+        .filter(m => !!m)
+        .map(([, mode, object, stage, file]) => ({ mode, object, stage, file }));
+}
+exports.parseLsFiles = parseLsFiles;
 class Repository {
     constructor(_git, repositoryRoot) {
         this._git = _git;
@@ -530,36 +556,62 @@ class Repository {
             if (!child.stdout) {
                 return Promise.reject('Can\'t open file from git');
             }
-            const { exitCode, stdout } = yield exec(child);
+            const { exitCode, stdout, stderr } = yield exec(child);
             if (exitCode) {
-                return Promise.reject(new GitError({
+                const err = new GitError({
                     message: 'Could not show object.',
                     exitCode
-                }));
+                });
+                if (/exists on disk, but not in/.test(stderr)) {
+                    err.gitErrorCode = exports.GitErrorCodes.WrongCase;
+                }
+                return Promise.reject(err);
             }
             return stdout;
         });
     }
-    lstree(treeish, path) {
+    getObjectDetails(treeish, path) {
         return __awaiter(this, void 0, void 0, function* () {
             if (!treeish) { // index
-                const { stdout } = yield this.run(['ls-files', '--stage', '--', path]);
-                const match = /^(\d+)\s+([0-9a-f]{40})\s+(\d+)/.exec(stdout);
-                if (!match) {
+                const elements = yield this.lsfiles(path);
+                if (elements.length === 0) {
                     throw new GitError({ message: 'Error running ls-files' });
                 }
-                const [, mode, object] = match;
+                const { mode, object } = elements[0];
                 const catFile = yield this.run(['cat-file', '-s', object]);
                 const size = parseInt(catFile.stdout);
                 return { mode, object, size };
             }
-            const { stdout } = yield this.run(['ls-tree', '-l', treeish, '--', path]);
-            const match = /^(\d+)\s+(\w+)\s+([0-9a-f]{40})\s+(\d+)/.exec(stdout);
-            if (!match) {
-                throw new GitError({ message: 'Error running ls-tree' });
+            const elements = yield this.lstree(treeish, path);
+            if (elements.length === 0) {
+                throw new GitError({ message: 'Error running ls-files' });
             }
-            const [, mode, , object, size] = match;
+            const { mode, object, size } = elements[0];
             return { mode, object, size: parseInt(size) };
+        });
+    }
+    lstree(treeish, path) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const { stdout } = yield this.run(['ls-tree', '-l', treeish, '--', path]);
+            return parseLsTree(stdout);
+        });
+    }
+    lsfiles(path) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const { stdout } = yield this.run(['ls-files', '--stage', '--', path]);
+            return parseLsFiles(stdout);
+        });
+    }
+    getGitRelativePath(ref, relativePath) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const relativePathLowercase = relativePath.toLowerCase();
+            const dirname = path.posix.dirname(relativePath) + '/';
+            const elements = ref ? yield this.lstree(ref, dirname) : yield this.lsfiles(dirname);
+            const element = elements.filter(file => file.file.toLowerCase() === relativePathLowercase)[0];
+            if (!element) {
+                throw new GitError({ message: 'Git relative path not found.' });
+            }
+            return element.file;
         });
     }
     detectObjectType(object) {
@@ -637,7 +689,7 @@ class Repository {
             }
             let mode;
             try {
-                const details = yield this.lstree('HEAD', path);
+                const details = yield this.getObjectDetails('HEAD', path);
                 mode = details.mode;
             }
             catch (err) {
@@ -686,26 +738,42 @@ class Repository {
                 yield this.run(args, { input: message || '' });
             }
             catch (commitErr) {
-                if (/not possible because you have unmerged files/.test(commitErr.stderr || '')) {
-                    commitErr.gitErrorCode = exports.GitErrorCodes.UnmergedChanges;
-                    throw commitErr;
-                }
-                try {
-                    yield this.run(['config', '--get-all', 'user.name']);
-                }
-                catch (err) {
-                    err.gitErrorCode = exports.GitErrorCodes.NoUserNameConfigured;
-                    throw err;
-                }
-                try {
-                    yield this.run(['config', '--get-all', 'user.email']);
-                }
-                catch (err) {
-                    err.gitErrorCode = exports.GitErrorCodes.NoUserEmailConfigured;
-                    throw err;
-                }
+                yield this.handleCommitError(commitErr);
+            }
+        });
+    }
+    rebaseContinue() {
+        return __awaiter(this, void 0, void 0, function* () {
+            const args = ['rebase', '--continue'];
+            try {
+                yield this.run(args);
+            }
+            catch (commitErr) {
+                yield this.handleCommitError(commitErr);
+            }
+        });
+    }
+    handleCommitError(commitErr) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (/not possible because you have unmerged files/.test(commitErr.stderr || '')) {
+                commitErr.gitErrorCode = exports.GitErrorCodes.UnmergedChanges;
                 throw commitErr;
             }
+            try {
+                yield this.run(['config', '--get-all', 'user.name']);
+            }
+            catch (err) {
+                err.gitErrorCode = exports.GitErrorCodes.NoUserNameConfigured;
+                throw err;
+            }
+            try {
+                yield this.run(['config', '--get-all', 'user.email']);
+            }
+            catch (err) {
+                err.gitErrorCode = exports.GitErrorCodes.NoUserEmailConfigured;
+                throw err;
+            }
+            throw commitErr;
         });
     }
     branch(name, checkout) {
@@ -723,6 +791,12 @@ class Repository {
     renameBranch(name) {
         return __awaiter(this, void 0, void 0, function* () {
             const args = ['branch', '-m', name];
+            yield this.run(args);
+        });
+    }
+    deleteRef(ref) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const args = ['update-ref', '-d', ref];
             yield this.run(args);
         });
     }
@@ -1118,12 +1192,8 @@ class Repository {
     }
     getCommit(ref) {
         return __awaiter(this, void 0, void 0, function* () {
-            const result = yield this.run(['show', '-s', '--format=%H\n%B', ref]);
-            const match = /^([0-9a-f]{40})\n([^]*)$/m.exec(result.stdout.trim());
-            if (!match) {
-                return Promise.reject('bad commit format');
-            }
-            return { hash: match[1], message: match[2] };
+            const result = yield this.run(['show', '-s', '--format=%H\n%P\n%B', ref]);
+            return parseGitCommit(result.stdout) || Promise.reject('bad commit format');
         });
     }
     updateSubmodules(paths) {
@@ -1149,4 +1219,4 @@ class Repository {
     }
 }
 exports.Repository = Repository;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/1dfc5e557209371715f655691b1235b6b26a06be/extensions\git\out/git.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/4e9361845dc28659923a300945f84731393e210d/extensions\git\out/git.js.map

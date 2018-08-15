@@ -4,7 +4,7 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 Object.defineProperty(exports, "__esModule", { value: true });
-const vscode_1 = require("vscode");
+const vscode = require("vscode");
 var Trace;
 (function (Trace) {
     Trace[Trace["Off"] = 0] = "Off";
@@ -36,7 +36,7 @@ class Tracer {
         this.trace = Tracer.readTrace();
     }
     static readTrace() {
-        let result = Trace.fromString(vscode_1.workspace.getConfiguration().get('typescript.tsserver.trace', 'off'));
+        let result = Trace.fromString(vscode.workspace.getConfiguration().get('typescript.tsserver.trace', 'off'));
         if (result === Trace.Off && !!process.env.TSS_TRACE) {
             result = Trace.Messages;
         }
@@ -85,4 +85,4 @@ class Tracer {
     }
 }
 exports.default = Tracer;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/1dfc5e557209371715f655691b1235b6b26a06be/extensions\typescript-language-features\out/utils\tracer.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/4e9361845dc28659923a300945f84731393e210d/extensions\typescript-language-features\out/utils\tracer.js.map

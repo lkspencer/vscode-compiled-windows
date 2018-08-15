@@ -6,16 +6,26 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const vscode = require("vscode");
 const nls = require("vscode-nls");
-const typeconverts = require("../utils/typeConverters");
-const dependentRegistration_1 = require("../utils/dependentRegistration");
 const api_1 = require("../utils/api");
+const dependentRegistration_1 = require("../utils/dependentRegistration");
+const typeconverts = require("../utils/typeConverters");
+const cancellation_1 = require("../utils/cancellation");
 const localize = nls.loadMessageBundle(__filename);
 class OrganizeImportsCommand {
-    constructor(client) {
+    constructor(client, telemetryReporter) {
         this.client = client;
+        this.telemetryReporter = telemetryReporter;
         this.id = OrganizeImportsCommand.Id;
     }
     async execute(file) {
+        /* __GDPR__
+            "organizeImports.execute" : {
+                "${include}": [
+                    "${TypeScriptCommonProperties}"
+                ]
+            }
+        */
+        this.telemetryReporter.logTelemetry('organizeImports.execute', {});
         const args = {
             scope: {
                 type: 'file',
@@ -24,27 +34,27 @@ class OrganizeImportsCommand {
                 }
             }
         };
-        const response = await this.client.execute('organizeImports', args);
-        if (!response || !response.success) {
-            return false;
-        }
-        const edits = typeconverts.WorkspaceEdit.fromFileCodeEdits(this.client, response.body);
-        return await vscode.workspace.applyEdit(edits);
+        const { body } = await this.client.execute('organizeImports', args, cancellation_1.nulToken);
+        const edits = typeconverts.WorkspaceEdit.fromFileCodeEdits(this.client, body);
+        return vscode.workspace.applyEdit(edits);
     }
 }
 OrganizeImportsCommand.Id = '_typescript.organizeImports';
 class OrganizeImportsCodeActionProvider {
-    constructor(client, commandManager, fileConfigManager) {
+    constructor(client, commandManager, fileConfigManager, telemetryReporter) {
         this.client = client;
         this.fileConfigManager = fileConfigManager;
         this.metadata = {
             providedCodeActionKinds: [vscode.CodeActionKind.SourceOrganizeImports]
         };
-        commandManager.register(new OrganizeImportsCommand(client));
+        commandManager.register(new OrganizeImportsCommand(client, telemetryReporter));
     }
-    provideCodeActions(document, _range, _context, token) {
+    provideCodeActions(document, _range, context, token) {
         const file = this.client.toPath(document.uri);
         if (!file) {
+            return [];
+        }
+        if (!context.only || !context.only.contains(vscode.CodeActionKind.SourceOrganizeImports)) {
             return [];
         }
         this.fileConfigManager.ensureConfigurationForDocument(document, token);
@@ -54,11 +64,11 @@ class OrganizeImportsCodeActionProvider {
     }
 }
 exports.OrganizeImportsCodeActionProvider = OrganizeImportsCodeActionProvider;
-function register(selector, client, commandManager, fileConfigurationManager) {
+function register(selector, client, commandManager, fileConfigurationManager, telemetryReporter) {
     return new dependentRegistration_1.VersionDependentRegistration(client, api_1.default.v280, () => {
-        const organizeImportsProvider = new OrganizeImportsCodeActionProvider(client, commandManager, fileConfigurationManager);
+        const organizeImportsProvider = new OrganizeImportsCodeActionProvider(client, commandManager, fileConfigurationManager, telemetryReporter);
         return vscode.languages.registerCodeActionsProvider(selector, organizeImportsProvider, organizeImportsProvider.metadata);
     });
 }
 exports.register = register;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/1dfc5e557209371715f655691b1235b6b26a06be/extensions\typescript-language-features\out/features\organizeImports.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/4e9361845dc28659923a300945f84731393e210d/extensions\typescript-language-features\out/features\organizeImports.js.map

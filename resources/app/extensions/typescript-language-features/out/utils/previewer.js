@@ -4,7 +4,7 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 Object.defineProperty(exports, "__esModule", { value: true });
-const vscode_1 = require("vscode");
+const vscode = require("vscode");
 function getTagBodyText(tag) {
     if (!tag.text) {
         return undefined;
@@ -23,7 +23,7 @@ function getTagBodyText(tag) {
 function getTagDocumentation(tag) {
     switch (tag.name) {
         case 'param':
-            const body = (tag.text || '').split(/^([\w\.]+)\s*/);
+            const body = (tag.text || '').split(/^([\w\.]+)\s*-?\s*/);
             if (body && body.length === 3) {
                 const param = body[1];
                 const doc = body[2];
@@ -56,18 +56,22 @@ function tagsMarkdownPreview(tags) {
 }
 exports.tagsMarkdownPreview = tagsMarkdownPreview;
 function markdownDocumentation(documentation, tags) {
-    const out = new vscode_1.MarkdownString();
+    const out = new vscode.MarkdownString();
     addMarkdownDocumentation(out, documentation, tags);
     return out;
 }
 exports.markdownDocumentation = markdownDocumentation;
 function addMarkdownDocumentation(out, documentation, tags) {
-    out.appendMarkdown(plain(documentation));
-    const tagsPreview = tagsMarkdownPreview(tags);
-    if (tagsPreview) {
-        out.appendMarkdown('\n\n' + tagsPreview);
+    if (documentation) {
+        out.appendMarkdown(plain(documentation));
+    }
+    if (tags) {
+        const tagsPreview = tagsMarkdownPreview(tags);
+        if (tagsPreview) {
+            out.appendMarkdown('\n\n' + tagsPreview);
+        }
     }
     return out;
 }
 exports.addMarkdownDocumentation = addMarkdownDocumentation;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/1dfc5e557209371715f655691b1235b6b26a06be/extensions\typescript-language-features\out/utils\previewer.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/4e9361845dc28659923a300945f84731393e210d/extensions\typescript-language-features\out/utils\previewer.js.map

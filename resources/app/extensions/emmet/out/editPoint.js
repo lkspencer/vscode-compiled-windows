@@ -63,4 +63,4 @@ function findEditPoint(lineNum, editor, position, direction) {
         return new vscode.Selection(lineNum, winner + 1, lineNum, winner + 1);
     }
 }
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/1dfc5e557209371715f655691b1235b6b26a06be/extensions\emmet\out/editPoint.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/4e9361845dc28659923a300945f84731393e210d/extensions\emmet\out/editPoint.js.map

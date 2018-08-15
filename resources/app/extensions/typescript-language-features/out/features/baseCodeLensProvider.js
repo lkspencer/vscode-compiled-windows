@@ -4,10 +4,10 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 Object.defineProperty(exports, "__esModule", { value: true });
-const vscode_1 = require("vscode");
-const typeConverters = require("../utils/typeConverters");
+const vscode = require("vscode");
 const regexp_1 = require("../utils/regexp");
-class ReferencesCodeLens extends vscode_1.CodeLens {
+const typeConverters = require("../utils/typeConverters");
+class ReferencesCodeLens extends vscode.CodeLens {
     constructor(document, file, range) {
         super(range);
         this.document = document;
@@ -41,7 +41,7 @@ class TypeScriptBaseCodeLensProvider {
     constructor(client, cachedResponse) {
         this.client = client;
         this.cachedResponse = cachedResponse;
-        this.onDidChangeCodeLensesEmitter = new vscode_1.EventEmitter();
+        this.onDidChangeCodeLensesEmitter = new vscode.EventEmitter();
     }
     get onDidChangeCodeLenses() {
         return this.onDidChangeCodeLensesEmitter.event;
@@ -95,9 +95,9 @@ class TypeScriptBaseCodeLensProvider {
         const identifierMatch = new RegExp(`^(.*?(\\b|\\W))${regexp_1.escapeRegExp(item.text || '')}(\\b|\\W)`, 'gm');
         const match = identifierMatch.exec(text);
         const prefixLength = match ? match.index + match[1].length : 0;
-        const startOffset = document.offsetAt(new vscode_1.Position(range.start.line, range.start.character)) + prefixLength;
-        return new vscode_1.Range(document.positionAt(startOffset), document.positionAt(startOffset + item.text.length));
+        const startOffset = document.offsetAt(new vscode.Position(range.start.line, range.start.character)) + prefixLength;
+        return new vscode.Range(document.positionAt(startOffset), document.positionAt(startOffset + item.text.length));
     }
 }
 exports.TypeScriptBaseCodeLensProvider = TypeScriptBaseCodeLensProvider;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/1dfc5e557209371715f655691b1235b6b26a06be/extensions\typescript-language-features\out/features\baseCodeLensProvider.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/4e9361845dc28659923a300945f84731393e210d/extensions\typescript-language-features\out/features\baseCodeLensProvider.js.map
