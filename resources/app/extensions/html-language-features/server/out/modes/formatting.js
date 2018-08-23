@@ -82,4 +82,4 @@ function format(languageModes, document, formatRange, formattingOptions, setting
     }
 }
 exports.format = format;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/4e9361845dc28659923a300945f84731393e210d/extensions\html-language-features\server\out/modes\formatting.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/493869ee8e8a846b0855873886fc79d480d342de/extensions\html-language-features\server\out/modes\formatting.js.map

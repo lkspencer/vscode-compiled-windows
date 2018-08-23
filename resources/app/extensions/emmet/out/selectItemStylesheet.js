@@ -112,4 +112,4 @@ function getSelectionFromProperty(node, document, selectionStart, selectionEnd, 
     const newSelectionEnd = propertyNode.valueToken.start.translate(0, newSelectionEndOffset);
     return new vscode.Selection(newSelectionStart, newSelectionEnd);
 }
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/4e9361845dc28659923a300945f84731393e210d/extensions\emmet\out/selectItemStylesheet.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/493869ee8e8a846b0855873886fc79d480d342de/extensions\emmet\out/selectItemStylesheet.js.map

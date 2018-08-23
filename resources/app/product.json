@@ -22,13 +22,13 @@
 		"ms-vscode.node-debug",
 		"ms-vscode.node-debug2"
 	],
-	"commit": "4e9361845dc28659923a300945f84731393e210d",
-	"date": "2018-08-15T20:05:41.652Z",
+	"commit": "493869ee8e8a846b0855873886fc79d480d342de",
+	"date": "2018-08-23T13:54:44.075Z",
 	"checksums": {
-		"vs/workbench/workbench.main.js": "FO4OdkUwIIDXkEZ6cYl8Kw",
+		"vs/workbench/workbench.main.js": "otFBDWiKUx4cAzuY6lyevg",
 		"vs/workbench/workbench.main.css": "TqG0MXWj4XjxKiedkAcAPA",
 		"vs/workbench/electron-browser/bootstrap/index.html": "/Tgz9oebstmTGvDlTpbgpg",
-		"vs/workbench/electron-browser/bootstrap/index.js": "g9GlO5KG4KjfCXgrDHpm4Q",
-		"vs/workbench/electron-browser/bootstrap/preload.js": "jfzdyZZa0YJUI813pczwUQ"
+		"vs/workbench/electron-browser/bootstrap/index.js": "XlqTur+hOJNi1xkQhiBJSQ",
+		"vs/workbench/electron-browser/bootstrap/preload.js": "AGnpbYR58idjWdpbFaNStQ"
 	}
 }

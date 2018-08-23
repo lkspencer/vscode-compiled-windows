@@ -125,4 +125,4 @@ function register(selector, modeId, client) {
     return new dependentRegistration_1.VersionDependentRegistration(client, api_1.default.v300, () => new dependentRegistration_1.ConfigurationDependentRegistration(modeId, 'autoClosingTags', () => new ActiveDocumentDependentRegistration(selector, () => new TagClosing(client))));
 }
 exports.register = register;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/4e9361845dc28659923a300945f84731393e210d/extensions\typescript-language-features\out/features\tagClosing.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/493869ee8e8a846b0855873886fc79d480d342de/extensions\typescript-language-features\out/features\tagClosing.js.map

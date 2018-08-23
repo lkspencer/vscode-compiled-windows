@@ -94,4 +94,4 @@ class NpmScriptHoverProvider {
     }
 }
 exports.NpmScriptHoverProvider = NpmScriptHoverProvider;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/4e9361845dc28659923a300945f84731393e210d/extensions\npm\out/scriptHover.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/493869ee8e8a846b0855873886fc79d480d342de/extensions\npm\out/scriptHover.js.map

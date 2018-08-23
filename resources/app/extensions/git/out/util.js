@@ -296,4 +296,4 @@ function pathEquals(a, b) {
     return a === b;
 }
 exports.pathEquals = pathEquals;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/4e9361845dc28659923a300945f84731393e210d/extensions\git\out/util.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/493869ee8e8a846b0855873886fc79d480d342de/extensions\git\out/util.js.map
