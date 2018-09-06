@@ -288,7 +288,7 @@ class NodeDebugSession extends vscode_debugadapter_1.LoggingDebugSession {
         if (Array.isArray(breakpoints) && breakpoints.length > 0) {
             this._disableSkipFiles = this._skip(eventBody);
             const id = breakpoints[0];
-            if (!this._gotEntryEvent && id === 1) {
+            if (!this._gotEntryEvent && id === 1) { // 'stop on entry point' is implemented as a breakpoint with ID 1
                 this.log('la', '_handleNodeBreakEvent: suppressed stop-on-entry event');
                 // do not send event now
                 this._rememberEntryLocation(eventBody.script.name, eventBody.sourceLine, eventBody.sourceColumn);
@@ -673,7 +673,7 @@ class NodeDebugSession extends vscode_debugadapter_1.LoggingDebugSession {
                     return;
                 }
                 this._sourceMaps.MapPathFromSource(programPath).then(generatedPath => {
-                    if (!generatedPath) {
+                    if (!generatedPath) { // cannot find generated file
                         if (args.outFiles || args.outDir) {
                             this.sendErrorResponse(response, 2009, localize(20, null, '{path}'), { path: programPath });
                         }
@@ -709,7 +709,7 @@ class NodeDebugSession extends vscode_debugadapter_1.LoggingDebugSession {
                     program = Path.relative(workingDirectory, programPath);
                 }
             }
-            else if (programPath) {
+            else if (programPath) { // should not happen
                 // if no working dir given, we use the direct folder of the executable
                 workingDirectory = Path.dirname(programPath);
                 program = Path.basename(programPath);
@@ -718,14 +718,14 @@ class NodeDebugSession extends vscode_debugadapter_1.LoggingDebugSession {
             let port = args.port;
             let launchArgs = [runtimeExecutable].concat(runtimeArgs);
             if (!this._noDebug) {
-                if (args.port) {
+                if (args.port) { // a port was specified in launch config
                     // only if the default runtime 'node' is used without arguments
                     if (!args.runtimeExecutable && !args.runtimeArgs) {
                         // use the specfied port
                         launchArgs.push(`--debug-brk=${port}`);
                     }
                 }
-                else {
+                else { // no port is specified
                     // use a random port
                     port = yield findport();
                     launchArgs.push(`--debug-brk=${port}`);
@@ -747,7 +747,7 @@ class NodeDebugSession extends vscode_debugadapter_1.LoggingDebugSession {
                         const r = line.match(/^\s*([\w\.\-]+)\s*=\s*(.*)?\s*$/);
                         if (r !== null) {
                             const key = r[1];
-                            if (!process.env[key]) {
+                            if (!process.env[key]) { // .env variables never overwrite existing variables (see #21169)
                                 let value = r[2] || '';
                                 if (value.length > 0 && value.charAt(0) === '"' && value.charAt(value.length - 1) === '"') {
                                     value = value.replace(/\\n/gm, '\n');
@@ -960,13 +960,17 @@ class NodeDebugSession extends vscode_debugadapter_1.LoggingDebugSession {
     /*
      * shared 'attach' code used in launchRequest and attachRequest.
      */
-    _attach(response, args, port, address, timeout) {
+    _attach(response, args, port, adr, timeout) {
         if (!port) {
             port = 5858;
         }
         this._port = port;
-        if (!address || address === 'localhost') {
+        let address;
+        if (!adr || adr === 'localhost') {
             address = '127.0.0.1';
+        }
+        else {
+            address = adr;
         }
         if (!timeout) {
             timeout = NodeDebugSession.ATTACH_TIMEOUT;
@@ -1377,7 +1381,7 @@ class NodeDebugSession extends vscode_debugadapter_1.LoggingDebugSession {
             }
             return generated;
         }).then(generated => {
-            if (generated !== null && PathUtils.pathCompare(generated, path)) {
+            if (generated !== null && PathUtils.pathCompare(generated, path)) { // if generated and source are the same we don't need a sourcemap
                 this.log('bp', `_mapSourceAndUpdateBreakpoints: source and generated are same -> ignore sourcemap`);
                 generated = '';
             }
@@ -1547,7 +1551,7 @@ class NodeDebugSession extends vscode_debugadapter_1.LoggingDebugSession {
             // stop in the entry point line if the user has an explicit breakpoint there (or if there is a 'debugger' statement).
             // For this we check here whether a breakpoint is at the same location as the 'break-on-entry' location.
             // If yes, then we plan for hitting the breakpoint instead of 'continue' over it!
-            if (path && PathUtils.pathCompare(this._entryPath, path) && this._entryLine === actualLine && this._entryColumn === actualColumn) {
+            if (path && PathUtils.pathCompare(this._entryPath, path) && this._entryLine === actualLine && this._entryColumn === actualColumn) { // only relevant if the breakpoints matches entrypoint
                 let conditionMet = true; // for regular breakpoints condition is always true
                 if (ibp.condition) {
                     // if conditional breakpoint we have to evaluate the condition because node didn't do it (because it stopped on entry).
@@ -1686,17 +1690,17 @@ class NodeDebugSession extends vscode_debugadapter_1.LoggingDebugSession {
     configurationDoneRequest(response, args) {
         // all breakpoints are configured now -> start debugging
         let info = 'nothing to do';
-        if (this._needContinue) {
+        if (this._needContinue) { // we do not break on entry
             this._needContinue = false;
             info = 'do a \'Continue\'';
             this._node.command('continue');
         }
-        if (this._needBreakpointEvent) {
+        if (this._needBreakpointEvent) { // we have to break on entry
             this._needBreakpointEvent = false;
             info = 'fire breakpoint event';
             this._sendBreakpointStoppedEvent(1); // we know the ID of the entry point breakpoint
         }
-        if (this._needDebuggerEvent) {
+        if (this._needDebuggerEvent) { // we have to break on entry
             this._needDebuggerEvent = false;
             info = 'fire debugger statement event';
             this._sendStoppedEvent('debugger_statement');
@@ -1719,7 +1723,7 @@ class NodeDebugSession extends vscode_debugadapter_1.LoggingDebugSession {
                     }
                 }
             }
-            if (threads.length === 0) {
+            if (threads.length === 0) { // always return at least one thread
                 let name = NodeDebugSession.DUMMY_THREAD_NAME;
                 if (this._nodeProcessId > 0 && this._node.hostVersion) {
                     name = `${name} (${this._nodeProcessId}, ${this._node.hostVersion})`;
@@ -2147,7 +2151,7 @@ class NodeDebugSession extends vscode_debugadapter_1.LoggingDebugSession {
         if (obj.properties) {
             count = count || obj.properties.length;
             for (let property of obj.properties) {
-                if ('name' in property) {
+                if ('name' in property) { // bug #19654: only extract properties with a name
                     const name = property.name;
                     if (name === NodeDebugSession.PROTO) {
                         found_proto = true;
@@ -2176,7 +2180,7 @@ class NodeDebugSession extends vscode_debugadapter_1.LoggingDebugSession {
         // do we have to add the protoObject to the list of properties?
         if (!found_proto && (mode === 'all' || mode === 'named')) {
             const h = obj.handle;
-            if (h > 0) {
+            if (h > 0) { // only add if not an internal debugger object
                 obj.protoObject.name = NodeDebugSession.PROTO;
                 selectedProperties.push(obj.protoObject);
             }
@@ -2297,7 +2301,7 @@ class NodeDebugSession extends vscode_debugadapter_1.LoggingDebugSession {
                                 }
                             }
                             if (val.type === 'promise' || val.type === 'generator') {
-                                if (object.status) {
+                                if (object.status) { // promises and generators have a status attribute
                                     value += ` { ${object.status} }`;
                                 }
                             }
@@ -2811,7 +2815,7 @@ class NodeDebugSession extends vscode_debugadapter_1.LoggingDebugSession {
         // try to use 'sourceReference'
         const srcSource = this._sourceHandles.get(sourceReference);
         if (srcSource) {
-            if (srcSource.source) {
+            if (srcSource.source) { // script content already cached
                 response.body = {
                     content: srcSource.source,
                     mimeType: 'text/javascript'
@@ -2819,7 +2823,7 @@ class NodeDebugSession extends vscode_debugadapter_1.LoggingDebugSession {
                 this.sendResponse(response);
                 return;
             }
-            if (srcSource.scriptId) {
+            if (srcSource.scriptId) { // load script content
                 this._loadScript(srcSource.scriptId).then(script => {
                     srcSource.source = script.contents; // store in cache
                     response.body = {
@@ -2865,7 +2869,7 @@ class NodeDebugSession extends vscode_debugadapter_1.LoggingDebugSession {
             };
             return this._node.scripts(args).then(nodeResponse => {
                 for (let result of nodeResponse.body) {
-                    if (result.name === scriptIdOrPath) {
+                    if (result.name === scriptIdOrPath) { // return the first exact match
                         return new Script(result);
                     }
                 }
@@ -2882,7 +2886,7 @@ class NodeDebugSession extends vscode_debugadapter_1.LoggingDebugSession {
         let dot = prefix.lastIndexOf('.');
         if (dot >= 0) {
             const rest = prefix.substr(dot + 1); // everything between the '.' and the cursor
-            if (rest.length === 0 || NodeDebugSession.PROPERTY_NAME_MATCHER.test(rest)) {
+            if (rest.length === 0 || NodeDebugSession.PROPERTY_NAME_MATCHER.test(rest)) { // empty or proper attribute name
                 expression = prefix.substr(0, dot);
             }
         }
@@ -3130,7 +3134,7 @@ class NodeDebugSession extends vscode_debugadapter_1.LoggingDebugSession {
         if (this._remoteRoot && this._localRoot) {
             let relPath = PathUtils.makeRelative2(this._localRoot, localPath);
             let remotePath = PathUtils.join(this._remoteRoot, relPath);
-            if (/^[a-zA-Z]:[\/\\]/.test(this._remoteRoot)) {
+            if (/^[a-zA-Z]:[\/\\]/.test(this._remoteRoot)) { // Windows
                 remotePath = PathUtils.toWindows(remotePath);
             }
             this.log('bp', `_localToRemote: ${localPath} -> ${remotePath}`);
@@ -3148,7 +3152,7 @@ class NodeDebugSession extends vscode_debugadapter_1.LoggingDebugSession {
         if (this._remoteRoot && this._localRoot) {
             let relPath = PathUtils.makeRelative2(this._remoteRoot, remotePath);
             let localPath = PathUtils.join(this._localRoot, relPath);
-            if (process.platform === 'win32') {
+            if (process.platform === 'win32') { // local is Windows
                 localPath = PathUtils.toWindows(localPath);
             }
             this.log('bp', `_remoteToLocal: ${remotePath} -> ${localPath}`);
@@ -3295,7 +3299,7 @@ class NodeDebugSession extends vscode_debugadapter_1.LoggingDebugSession {
         };
         return this._node.scripts(args).then(resp => {
             for (let result of resp.body) {
-                if (result.name === scriptIdOrPath) {
+                if (result.name === scriptIdOrPath) { // return the first exact match
                     return result.id;
                 }
             }
@@ -3360,7 +3364,7 @@ class NodeDebugSession extends vscode_debugadapter_1.LoggingDebugSession {
     }
     static killTree(processId) {
         if (process.platform === 'win32') {
-            const TASK_KILL = Path.join(process.env['SystemRoot'], 'System32', 'taskkill.exe');
+            const TASK_KILL = Path.join(process.env['SystemRoot'] || 'C:\\WINDOWS', 'System32', 'taskkill.exe');
             // when killing a process in Windows its child processes are *not* killed but become root processes.
             // Therefore we use TASKKILL.EXE
             try {

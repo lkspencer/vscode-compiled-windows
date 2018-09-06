@@ -17,9 +17,28 @@ function anchorGlob(glob) {
     return glob.startsWith('**') || glob.startsWith('/') ? glob : "/" + glob;
 }
 exports.anchorGlob = anchorGlob;
-function joinPath(resource, pathFragment) {
-    var joinedPath = path.join(resource.fsPath || '/', pathFragment);
-    return vscode.Uri.file(joinedPath);
+function createTextSearchResult(uri, fullText, range, previewOptions) {
+    var preview;
+    if (previewOptions) {
+        var previewStart = Math.max(range.start.character - previewOptions.leadingChars, 0);
+        var previewEnd = previewOptions.totalChars + previewStart;
+        var endOfMatchRangeInPreview = Math.min(previewEnd, range.end.character - previewStart);
+        preview = {
+            text: fullText.substring(previewStart, previewEnd),
+            match: new vscode.Range(0, range.start.character - previewStart, 0, endOfMatchRangeInPreview)
+        };
+    }
+    else {
+        preview = {
+            text: fullText,
+            match: new vscode.Range(0, range.start.character, 0, range.end.character)
+        };
+    }
+    return {
+        uri: uri,
+        range: range,
+        preview: preview
+    };
 }
-exports.joinPath = joinPath;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/493869ee8e8a846b0855873886fc79d480d342de/extensions\search-rg\out/utils.js.map
+exports.createTextSearchResult = createTextSearchResult;
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/5944e81f3c46a3938a82c701f96d7a59b074cfdc/extensions\search-rg\out/utils.js.map

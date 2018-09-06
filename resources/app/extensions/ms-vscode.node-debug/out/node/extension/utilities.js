@@ -5,6 +5,13 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const vscode = require("vscode");
 const FS = require("fs");
+class Logger {
+    debug(message) {
+        // TODO: enable based on log level
+        // vscode.debug.activeDebugConsole.appendLine(message);
+    }
+}
+exports.Logger = Logger;
 /**
  * Send to debug console.
  */

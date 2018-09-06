@@ -67,7 +67,7 @@ var RipgrepTextSearchEngine = /** @class */ (function () {
                 reject(e);
             });
             var gotResult = false;
-            _this.ripgrepParser = new RipgrepParser(MAX_TEXT_RESULTS, cwd);
+            _this.ripgrepParser = new RipgrepParser(MAX_TEXT_RESULTS, cwd, options.previewOptions);
             _this.ripgrepParser.on('result', function (match) {
                 gotResult = true;
                 progress.report(match);
@@ -139,10 +139,11 @@ function rgErrorMsgForDisplay(msg) {
 exports.rgErrorMsgForDisplay = rgErrorMsgForDisplay;
 var RipgrepParser = /** @class */ (function (_super) {
     __extends(RipgrepParser, _super);
-    function RipgrepParser(maxResults, rootFolder) {
+    function RipgrepParser(maxResults, rootFolder, previewOptions) {
         var _this = _super.call(this) || this;
         _this.maxResults = maxResults;
         _this.rootFolder = rootFolder;
+        _this.previewOptions = previewOptions;
         _this.numResults = 0;
         _this.stringDecoder = new string_decoder_1.StringDecoder();
         return _this;
@@ -256,18 +257,10 @@ var RipgrepParser = /** @class */ (function (_super) {
         var chunk = lineText.slice(lastMatchEndPos);
         realTextParts.push(chunk);
         // Get full real text line without color codes
-        var preview = realTextParts.join('');
+        var previewText = realTextParts.join('');
+        var uri = vscode.Uri.file(path.join(this.rootFolder, this.currentFile));
         lineMatches
-            .map(function (range) {
-            return {
-                uri: vscode.Uri.file(path.join(_this.rootFolder, _this.currentFile)),
-                range: range,
-                preview: {
-                    text: preview,
-                    match: new vscode.Range(0, range.start.character, 0, range.end.character)
-                }
-            };
-        })
+            .map(function (range) { return utils_1.createTextSearchResult(uri, previewText, range, _this.previewOptions); })
             .forEach(function (match) { return _this.onResult(match); });
         if (hitLimit) {
             this.cancel();
@@ -331,6 +324,7 @@ function getRgArgs(query, options) {
         args.push('--fixed-strings');
     }
     args.push('--no-config');
+    args.push('--no-ignore-global');
     // Folder to search
     args.push('--');
     if (searchPatternAfterDoubleDashes) {
@@ -390,4 +384,4 @@ function fixRegexEndingPattern(pattern) {
         pattern.replace(/\$$/, '\\r?$') :
         pattern;
 }
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/493869ee8e8a846b0855873886fc79d480d342de/extensions\search-rg\out/ripgrepTextSearch.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/5944e81f3c46a3938a82c701f96d7a59b074cfdc/extensions\search-rg\out/ripgrepTextSearch.js.map

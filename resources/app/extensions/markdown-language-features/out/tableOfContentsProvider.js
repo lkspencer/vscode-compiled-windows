@@ -41,7 +41,18 @@ class TableOfContentsProvider {
                 location: new vscode.Location(document.uri, line.range)
             });
         }
-        return toc;
+        // Get full range of section
+        return toc.map((entry, startIndex) => {
+            let end = undefined;
+            for (let i = startIndex + 1; i < toc.length; ++i) {
+                if (toc[i].level <= entry.level) {
+                    end = toc[i].line - 1;
+                    break;
+                }
+            }
+            const endLine = typeof end === 'number' ? end : document.lineCount - 1;
+            return Object.assign({}, entry, { location: new vscode.Location(document.uri, new vscode.Range(entry.location.range.start, new vscode.Position(endLine, document.lineAt(endLine).range.end.character))) });
+        });
     }
     static getHeaderLevel(markup) {
         if (markup === '=') {
@@ -59,4 +70,4 @@ class TableOfContentsProvider {
     }
 }
 exports.TableOfContentsProvider = TableOfContentsProvider;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/493869ee8e8a846b0855873886fc79d480d342de/extensions\markdown-language-features\out/tableOfContentsProvider.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/5944e81f3c46a3938a82c701f96d7a59b074cfdc/extensions\markdown-language-features\out/tableOfContentsProvider.js.map

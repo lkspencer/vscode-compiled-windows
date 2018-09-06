@@ -5,7 +5,6 @@
 'use strict';
 Object.defineProperty(exports, "__esModule", { value: true });
 const vscode_1 = require("vscode");
-const jsonContributions_1 = require("./jsonContributions");
 const markedTextUtil_1 = require("./markedTextUtil");
 const nls = require("vscode-nls");
 const localize = nls.loadMessageBundle(__filename);
@@ -13,7 +12,7 @@ const LIMIT = 40;
 const SCOPED_LIMIT = 250;
 const USER_AGENT = 'Visual Studio Code';
 class PackageJSONContribution {
-    constructor(httprequestxhr) {
+    constructor(xhr) {
         this.mostDependedOn = ['lodash', 'async', 'underscore', 'request', 'commander', 'express', 'debug', 'chalk', 'colors', 'q', 'coffee-script',
             'mkdirp', 'optimist', 'through2', 'yeoman-generator', 'moment', 'bluebird', 'glob', 'gulp-util', 'minimist', 'cheerio', 'pug', 'redis', 'node-uuid',
             'socket', 'io', 'uglify-js', 'winston', 'through', 'fs-extra', 'handlebars', 'body-parser', 'rimraf', 'mime', 'semver', 'mongodb', 'jquery',
@@ -21,15 +20,7 @@ class PackageJSONContribution {
             'shelljs', 'gulp', 'yargs', 'browserify', 'minimatch', 'react', 'less', 'prompt', 'inquirer', 'ws', 'event-stream', 'inherits', 'mysql', 'esprima',
             'jsdom', 'stylus', 'when', 'readable-stream', 'aws-sdk', 'concat-stream', 'chai', 'Thenable', 'wrench'];
         this.knownScopes = ['@types', '@angular'];
-        const getxhr = () => {
-            return vscode_1.workspace.getConfiguration('npm').get('fetchOnlinePackageInfo') === false ? jsonContributions_1.xhrDisabled : httprequestxhr;
-        };
-        this.xhr = getxhr();
-        vscode_1.workspace.onDidChangeConfiguration((e) => {
-            if (e.affectsConfiguration('npm.fetchOnlinePackageInfo')) {
-                this.xhr = getxhr();
-            }
-        });
+        this.xhr = xhr;
     }
     getDocumentSelector() {
         return [{ language: 'json', scheme: '*', pattern: '**/package.json' }];
@@ -49,7 +40,13 @@ class PackageJSONContribution {
         result.add(proposal);
         return Promise.resolve(null);
     }
+    onlineEnabled() {
+        return !!vscode_1.workspace.getConfiguration('npm').get('fetchOnlinePackageInfo');
+    }
     collectPropertySuggestions(_resource, location, currentWord, addValue, isLast, collector) {
+        if (!this.onlineEnabled()) {
+            return null;
+        }
         if ((location.matches(['dependencies']) || location.matches(['devDependencies']) || location.matches(['optionalDependencies']) || location.matches(['peerDependencies']))) {
             let queryUrl;
             if (currentWord.length > 0) {
@@ -198,6 +195,9 @@ class PackageJSONContribution {
         return Promise.resolve(null);
     }
     collectValueSuggestions(_fileName, location, result) {
+        if (!this.onlineEnabled()) {
+            return null;
+        }
         if ((location.matches(['dependencies', '*']) || location.matches(['devDependencies', '*']) || location.matches(['optionalDependencies', '*']) || location.matches(['peerDependencies', '*']))) {
             const currentKey = location.path[location.path.length - 1];
             if (typeof currentKey === 'string') {
@@ -303,4 +303,4 @@ class PackageJSONContribution {
     }
 }
 exports.PackageJSONContribution = PackageJSONContribution;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/493869ee8e8a846b0855873886fc79d480d342de/extensions\npm\out/features\packageJSONContribution.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/5944e81f3c46a3938a82c701f96d7a59b074cfdc/extensions\npm\out/features\packageJSONContribution.js.map

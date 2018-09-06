@@ -80,7 +80,7 @@ exports.pathCompare = pathCompare;
  */
 function realPath(path) {
     let dir = Path.dirname(path);
-    if (path === dir) {
+    if (path === dir) { // end recursion
         // is this an upper case drive letter?
         if (/^[A-Z]\:\\$/.test(path)) {
             path = path.toLowerCase();
@@ -101,7 +101,7 @@ function realPath(path) {
         else if (found.length > 1) {
             // must be a case sensitive $filesystem
             const ix = found.indexOf(name);
-            if (ix >= 0) {
+            if (ix >= 0) { // case sensitive
                 let prefix = realPath(dir); // recurse
                 if (prefix) {
                     return Path.join(prefix, found[ix]);

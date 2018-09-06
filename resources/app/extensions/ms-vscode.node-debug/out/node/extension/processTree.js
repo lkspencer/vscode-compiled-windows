@@ -107,7 +107,7 @@ function getProcesses(one) {
                 }
             }));
         }
-        else if (process.platform === 'darwin') {
+        else if (process.platform === 'darwin') { // OS X
             proc = child_process_1.spawn('/bin/ps', ['-x', '-o', `pid,ppid,comm=${'a'.repeat(256)},command`]);
             proc.stdout.setEncoding('utf8');
             proc.stdout.on('data', lines(line => {
@@ -120,7 +120,7 @@ function getProcesses(one) {
                 }
             }));
         }
-        else {
+        else { // linux
             proc = child_process_1.spawn('/bin/ps', ['-ax', '-o', 'pid,ppid,comm:20,command']);
             proc.stdout.setEncoding('utf8');
             proc.stdout.on('data', lines(line => {

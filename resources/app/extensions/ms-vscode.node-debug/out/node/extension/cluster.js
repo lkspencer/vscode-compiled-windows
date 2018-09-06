@@ -4,13 +4,19 @@
  *--------------------------------------------------------------------------------------------*/
 'use strict';
 Object.defineProperty(exports, "__esModule", { value: true });
+const vscode = require("vscode");
 const nls = require("vscode-nls");
-const nodeProcessTree_1 = require("./nodeProcessTree");
+const autoAttach_1 = require("./autoAttach");
+const processTree_1 = require("./processTree");
+const protocolDetection_1 = require("./protocolDetection");
 const localize = nls.loadMessageBundle(__filename);
+const POLL_INTERVAL = 1000;
 class Cluster {
     constructor(_folder, _config) {
         this._folder = _folder;
         this._config = _config;
+        this._subProcesses = new Set();
+        this._childCounter = 1;
     }
     static prepareAutoAttachChildProcesses(folder, config) {
         this.clusters.set(config.name, new Cluster(folder, config));
@@ -29,33 +35,64 @@ class Cluster {
         }
     }
     startWatching(session) {
-        setTimeout(_ => {
-            // get the process ID from the debuggee
-            if (session) {
-                session.customRequest('evaluate', { expression: 'process.pid' }).then(reply => {
-                    const rootPid = parseInt(reply.result);
-                    this.attachChildProcesses(rootPid);
-                }, e => {
-                    // 'evaluate' error -> use the fall back strategy
-                    this.attachChildProcesses(NaN);
-                });
-            }
-        }, session.type === 'node2' ? 500 : 100);
+        // get the process ID from the leader debuggee
+        autoAttach_1.getPidFromSession(session).then(leaderPid => {
+            // start polling for child processes under the leader
+            this._poller = pollProcesses(leaderPid, false, (pid, cmd, args) => {
+                // only attach to new child processes
+                if (!this._subProcesses.has(pid)) {
+                    this._subProcesses.add(pid);
+                    const name = localize(0, null, this._config.name, this._childCounter++);
+                    autoAttach_1.attachToProcess(this._folder, name, pid, args, this._config);
+                }
+            });
+        });
     }
     stopWatching() {
-        if (this.poller) {
-            this.poller.dispose();
-            this.poller = undefined;
+        if (this._poller) {
+            this._poller.dispose();
+            this._poller = undefined;
         }
-    }
-    attachChildProcesses(rootPid) {
-        this.poller = nodeProcessTree_1.pollProcesses(rootPid, false, (pid, cmd, args) => {
-            const name = localize(0, null, pid);
-            nodeProcessTree_1.attachToProcess(this._folder, name, pid, args, this._config);
-        });
     }
 }
 Cluster.clusters = new Map();
 exports.Cluster = Cluster;
+/**
+ * Poll for all subprocesses of given root process.
+ */
+function pollProcesses(rootPid, inTerminal, cb) {
+    let stopped = false;
+    function poll() {
+        //const start = Date.now();
+        findChildProcesses(rootPid, cb).then(_ => {
+            //console.log(`duration: ${Date.now() - start}`);
+            setTimeout(_ => {
+                if (!stopped) {
+                    poll();
+                }
+            }, POLL_INTERVAL);
+        });
+    }
+    poll();
+    return new vscode.Disposable(() => stopped = true);
+}
+function findChildProcesses(rootPid, cb) {
+    function walker(node) {
+        if (node.pid !== rootPid) {
+            let { protocol } = protocolDetection_1.analyseArguments(node.args);
+            if (protocol) {
+                cb(node.pid, node.command, node.args);
+            }
+        }
+        for (const child of node.children || []) {
+            walker(child);
+        }
+    }
+    return processTree_1.getProcessTree(rootPid).then(tree => {
+        if (tree) {
+            walker(tree);
+        }
+    });
+}
 
 //# sourceMappingURL=../../../out/node/extension/cluster.js.map

@@ -24,6 +24,7 @@ const localize = nls.loadMessageBundle(__filename);
 class NodeConfigurationProvider {
     constructor(_extensionContext) {
         this._extensionContext = _extensionContext;
+        this._logger = new utilities_1.Logger();
     }
     /**
      * Returns an initial debug configuration based on contextual information, e.g. package.json or folder.
@@ -76,7 +77,7 @@ class NodeConfigurationProvider {
             }
             // remove 'useWSL' on all platforms but Windows
             if (process.platform !== 'win32' && config.useWSL) {
-                this._extensionContext.logger.debug('useWSL attribute ignored on non-Windows OS.');
+                this._logger.debug('useWSL attribute ignored on non-Windows OS.');
                 delete config.useWSL;
             }
             // when using "integratedTerminal" ensure that debug console doesn't get activated; see #43164
@@ -99,21 +100,21 @@ class NodeConfigurationProvider {
                 }
             }
             // finally determine which protocol to use
-            const debugType = yield determineDebugType(config, this._extensionContext.logger);
+            const debugType = yield determineDebugType(config, this._logger);
             if (debugType) {
                 config.type = debugType;
             }
             // fixup log parameters
             if (config.trace && !config.logFilePath) {
                 const fileName = config.type === 'node' ? 'debugadapter-legacy.txt' : 'debugadapter.txt';
-                if (this._extensionContext.logDirectory) {
+                if (this._extensionContext.logPath) {
                     try {
-                        yield utilities_1.mkdirP(this._extensionContext.logDirectory);
+                        yield utilities_1.mkdirP(this._extensionContext.logPath);
                     }
                     catch (e) {
                         // Already exists
                     }
-                    config.logFilePath = path_1.join(this._extensionContext.logDirectory, fileName);
+                    config.logFilePath = path_1.join(this._extensionContext.logPath, fileName);
                 }
             }
             // everything ok: let VS Code start the debug session
@@ -132,7 +133,7 @@ class NodeConfigurationProvider {
             let nvsHome = process.env['NVS_HOME'];
             if (!nvsHome) {
                 // NVS_HOME is not always set. Probe for 'nvs' directory instead
-                const nvsDir = process.platform === 'win32' ? path_1.join(process.env['LOCALAPPDATA'], 'nvs') : path_1.join(process.env['HOME'], '.nvs');
+                const nvsDir = process.platform === 'win32' ? path_1.join(process.env['LOCALAPPDATA'] || '', 'nvs') : path_1.join(process.env['HOME'] || '', '.nvs');
                 if (fs.existsSync(nvsDir)) {
                     nvsHome = nvsDir;
                 }
@@ -160,11 +161,11 @@ class NodeConfigurationProvider {
                     bin = path_1.join(nvmHome, `v${config.runtimeVersion}`);
                     versionManagerName = 'nvm-windows';
                 }
-                else {
+                else { // macOS and linux
                     let nvmHome = process.env['NVM_DIR'];
                     if (!nvmHome) {
                         // if NVM_DIR is not set. Probe for '.nvm' directory instead
-                        const nvmDir = path_1.join(process.env['HOME'], '.nvm');
+                        const nvmDir = path_1.join(process.env['HOME'] || '', '.nvm');
                         if (fs.existsSync(nvmDir)) {
                             nvmHome = nvmDir;
                         }

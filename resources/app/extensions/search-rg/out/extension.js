@@ -7,7 +7,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var vscode = require("vscode");
 var ripgrepFileSearch_1 = require("./ripgrepFileSearch");
 var ripgrepTextSearch_1 = require("./ripgrepTextSearch");
-var utils_1 = require("./utils");
 function activate() {
     if (vscode.workspace.getConfiguration('searchRipgrep').get('enable')) {
         var outputChannel = vscode.window.createOutputChannel('search-rg');
@@ -32,7 +31,7 @@ var RipgrepSearchProvider = /** @class */ (function () {
         var engine = new ripgrepFileSearch_1.RipgrepFileSearchEngine(this.outputChannel);
         var results = [];
         var onResult = function (relativePathMatch) {
-            results.push(utils_1.joinPath(options.folder, relativePathMatch));
+            results.push(vscode.Uri.file(options.folder.fsPath + '/' + relativePathMatch));
         };
         return this.withEngine(engine, function () { return engine.provideFileSearchResults(options, { report: onResult }, token); })
             .then(function () { return results; });
@@ -49,4 +48,4 @@ var RipgrepSearchProvider = /** @class */ (function () {
     };
     return RipgrepSearchProvider;
 }());
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/493869ee8e8a846b0855873886fc79d480d342de/extensions\search-rg\out/extension.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/5944e81f3c46a3938a82c701f96d7a59b074cfdc/extensions\search-rg\out/extension.js.map

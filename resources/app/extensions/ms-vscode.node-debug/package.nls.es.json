@@ -4,7 +4,6 @@
 	"open.loaded.script": "Abrir script cargado",
 	"attach.node.process": "Conectarse con el proceso de Node",
 	"toggle.skipping.this.file": "Alternando omitir este archivo ",
-	"loaded.scripts.view.name": "Scripts Cargados",
 	"smartStep.description": "Explore automáticamente el código generado que no se puede volver a asignar al código fuente original.",
 	"skipFiles.description": "Una matriz de patrones globales para los archivos que se deben omitir en la depuración.",
 	"outFiles.description": "Si los mapas de origen están habilitados, estos patrones globales especifican los archivos JavaScript generados. Si un patrón comienza con '!' los archivos se excluyen. Si no se especifica, el código generado se espera en el mismo directorio que su origen.",

@@ -21,9 +21,10 @@ async function showPreview(webviewManager, telemetryReporter, uri, previewSettin
         // nothing found that could be shown or toggled
         return;
     }
+    const resourceColumn = (vscode.window.activeTextEditor && vscode.window.activeTextEditor.viewColumn) || vscode.ViewColumn.One;
     webviewManager.preview(resource, {
-        resourceColumn: (vscode.window.activeTextEditor && vscode.window.activeTextEditor.viewColumn) || vscode.ViewColumn.One,
-        previewColumn: previewSettings.sideBySide ? vscode.ViewColumn.Beside : vscode.ViewColumn.Active,
+        resourceColumn: resourceColumn,
+        previewColumn: previewSettings.sideBySide ? resourceColumn + 1 : resourceColumn,
         locked: !!previewSettings.locked
     });
     telemetryReporter.sendTelemetryEvent('openPreview', {
@@ -75,4 +76,4 @@ class ShowLockedPreviewToSideCommand {
     }
 }
 exports.ShowLockedPreviewToSideCommand = ShowLockedPreviewToSideCommand;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/493869ee8e8a846b0855873886fc79d480d342de/extensions\markdown-language-features\out/commands\showPreview.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/5944e81f3c46a3938a82c701f96d7a59b074cfdc/extensions\markdown-language-features\out/commands\showPreview.js.map

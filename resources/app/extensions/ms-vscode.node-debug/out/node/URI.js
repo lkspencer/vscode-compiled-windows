@@ -44,7 +44,7 @@ class URI {
                 throw new Error('base path missing');
             }
         }
-        if (isWindows(path)) {
+        if (isWindows(path)) { // is windows
             path = path.replace(/\\/g, '/');
         }
         // simplify '/./' -> '/'

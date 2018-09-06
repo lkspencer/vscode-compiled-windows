@@ -11,28 +11,45 @@ class MarkdownFoldingProvider {
     constructor(engine) {
         this.engine = engine;
     }
-    async provideFoldingRanges(document, _, _token) {
-        const tocProvider = new tableOfContentsProvider_1.TableOfContentsProvider(this.engine, document);
-        let toc = await tocProvider.getToc();
-        if (toc.length > rangeLimit) {
-            toc = toc.slice(0, rangeLimit);
-        }
-        const foldingRanges = toc.map((entry, startIndex) => {
-            const start = entry.line;
-            let end = undefined;
-            for (let i = startIndex + 1; i < toc.length; ++i) {
-                if (toc[i].level <= entry.level) {
-                    end = toc[i].line - 1;
-                    if (document.lineAt(end).isEmptyOrWhitespace && end >= start + 1) {
-                        end = end - 1;
-                    }
-                    break;
-                }
+    async getRegions(document) {
+        const isStartRegion = (t) => /^\s*<!--\s*#?region\b.*-->/.test(t);
+        const isEndRegion = (t) => /^\s*<!--\s*#?endregion\b.*-->/.test(t);
+        const isRegionMarker = (token) => token.type === 'html_block' &&
+            (isStartRegion(token.content) || isEndRegion(token.content));
+        const tokens = await this.engine.parse(document.uri, document.getText());
+        const regionMarkers = tokens.filter(isRegionMarker)
+            .map(token => ({ line: token.map[0], isStart: isStartRegion(token.content) }));
+        const nestingStack = [];
+        return regionMarkers
+            .map(marker => {
+            if (marker.isStart) {
+                nestingStack.push(marker);
             }
-            return new vscode.FoldingRange(start, typeof end === 'number' ? end : document.lineCount - 1);
+            else if (nestingStack.length && nestingStack[nestingStack.length - 1].isStart) {
+                return new vscode.FoldingRange(nestingStack.pop().line, marker.line, vscode.FoldingRangeKind.Region);
+            }
+            else {
+                // noop: invalid nesting (i.e. [end, start] or [start, end, end])
+            }
+            return null;
+        })
+            .filter((region) => !!region);
+    }
+    async provideFoldingRanges(document, _, _token) {
+        const [regions, sections] = await Promise.all([this.getRegions(document), this.getHeaderFoldingRanges(document)]);
+        return [...regions, ...sections].slice(0, rangeLimit);
+    }
+    async getHeaderFoldingRanges(document) {
+        const tocProvider = new tableOfContentsProvider_1.TableOfContentsProvider(this.engine, document);
+        const toc = await tocProvider.getToc();
+        return toc.map(entry => {
+            let endLine = entry.location.range.end.line;
+            if (document.lineAt(endLine).isEmptyOrWhitespace && endLine >= entry.line + 1) {
+                endLine = endLine - 1;
+            }
+            return new vscode.FoldingRange(entry.line, endLine);
         });
-        return foldingRanges;
     }
 }
 exports.default = MarkdownFoldingProvider;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/493869ee8e8a846b0855873886fc79d480d342de/extensions\markdown-language-features\out/features\foldingProvider.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/5944e81f3c46a3938a82c701f96d7a59b074cfdc/extensions\markdown-language-features\out/features\foldingProvider.js.map

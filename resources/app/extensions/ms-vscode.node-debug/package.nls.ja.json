@@ -4,7 +4,6 @@
 	"open.loaded.script": "読み込み済みのスクリプトを開く",
 	"attach.node.process": "Node のプロセスにアタッチ",
 	"toggle.skipping.this.file": "このファイルをスキップする",
-	"loaded.scripts.view.name": "読み込み済みのスクリプト",
 	"smartStep.description": "元のソースにマップし直すことができない、生成されたコードを自動的にステップ スルーします。",
 	"skipFiles.description": "デバッグ時にスキップするファイルの glob パターンの配列。",
 	"outFiles.description": "ソース マップを有効にすると、これらの glob パターンは生成した JavaScript ファイルを指定します。パターンが '!' で始まる場合は、ファイルは除外されます。指定しない場合は、生成されたコードはそのソースと同じディレクトリ内にあると想定されます。",

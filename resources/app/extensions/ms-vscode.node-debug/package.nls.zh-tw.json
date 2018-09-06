@@ -4,7 +4,6 @@
 	"open.loaded.script": "開啟已載入的指令碼",
 	"attach.node.process": "連結到節點處理序",
 	"toggle.skipping.this.file": "略過此檔案",
-	"loaded.scripts.view.name": "已載入的指令碼",
 	"smartStep.description": "自動逐步所執行產生無法對應回原始碼的程式碼。",
 	"skipFiles.description": "偵錯時要跳過的檔案 Glob 模式陣列。",
 	"outFiles.description": "如果已啟用來源對應，這些 Glob 模式會指定產生的 JavaScript 檔案。如果模式開頭為 '!'，檔案即遭排除。如果未指定，產生的程式碼就會位於其來源的相同目錄。",

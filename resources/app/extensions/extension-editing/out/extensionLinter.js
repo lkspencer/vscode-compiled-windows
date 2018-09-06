@@ -311,9 +311,10 @@ var ExtensionLinter = /** @class */ (function () {
     ExtensionLinter.prototype.readPackageJsonInfo = function (folder, tree) {
         var engine = tree && jsonc_parser_1.findNodeAtLocation(tree, ['engines', 'vscode']);
         var repo = tree && jsonc_parser_1.findNodeAtLocation(tree, ['repository', 'url']);
+        var uri = repo && parseUri(repo.value);
         var info = {
             isExtension: !!(engine && engine.type === 'string'),
-            hasHttpsRepository: !!(repo && repo.type === 'string' && repo.value && parseUri(repo.value).scheme.toLowerCase() === 'https')
+            hasHttpsRepository: !!(repo && repo.type === 'string' && repo.value && uri && uri.scheme.toLowerCase() === 'https')
         };
         var str = folder.toString();
         var oldInfo = this.folderToPackageJsonInfo[str];
@@ -360,6 +361,9 @@ var ExtensionLinter = /** @class */ (function () {
     };
     ExtensionLinter.prototype.addDiagnostics = function (diagnostics, document, begin, end, src, context, info) {
         var uri = parseUri(src);
+        if (!uri) {
+            return;
+        }
         var scheme = uri.scheme.toLowerCase();
         if (scheme && scheme !== 'https' && scheme !== 'data') {
             var range = new vscode_1.Range(document.positionAt(begin), document.positionAt(end));
@@ -417,8 +421,8 @@ function parseUri(src) {
             return vscode_1.Uri.parse(encodeURI(src));
         }
         catch (err) {
-            return vscode_1.Uri.parse('');
+            return null;
         }
     }
 }
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/493869ee8e8a846b0855873886fc79d480d342de/extensions\extension-editing\out/extensionLinter.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/5944e81f3c46a3938a82c701f96d7a59b074cfdc/extensions\extension-editing\out/extensionLinter.js.map

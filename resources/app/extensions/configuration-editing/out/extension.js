@@ -10,8 +10,8 @@ var vscode = require("vscode");
 var jsonc_parser_1 = require("jsonc-parser");
 var path = require("path");
 var settingsDocumentHelper_1 = require("./settingsDocumentHelper");
-var decoration = vscode.window.createTextEditorDecorationType({
-    color: '#9e9e9e'
+var fadedDecoration = vscode.window.createTextEditorDecorationType({
+    color: '#777'
 });
 var pendingLaunchJsonDecoration;
 function activate(context) {
@@ -206,7 +206,7 @@ function updateLaunchJsonDecorations(editor) {
             depthInArray--;
         }
     });
-    editor.setDecorations(decoration, ranges);
+    editor.setDecorations(fadedDecoration, ranges);
 }
 vscode.languages.registerDocumentSymbolProvider({ pattern: '**/launch.json', language: 'jsonc' }, {
     provideDocumentSymbols: function (document, token) {
@@ -240,4 +240,4 @@ vscode.languages.registerDocumentSymbolProvider({ pattern: '**/launch.json', lan
         return result;
     }
 });
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/493869ee8e8a846b0855873886fc79d480d342de/extensions\configuration-editing\out/extension.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/5944e81f3c46a3938a82c701f96d7a59b074cfdc/extensions\configuration-editing\out/extension.js.map

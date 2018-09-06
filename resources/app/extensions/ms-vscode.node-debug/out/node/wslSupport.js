@@ -13,8 +13,9 @@ function subsystemLinuxPresent() {
     if (!isWindows) {
         return false;
     }
-    const bashPath32bitApp = path.join(process.env['SystemRoot'], 'Sysnative', 'bash.exe');
-    const bashPath64bitApp = path.join(process.env['SystemRoot'], 'System32', 'bash.exe');
+    const sysRoot = process.env['SystemRoot'] || 'C:\\WINDOWS';
+    const bashPath32bitApp = path.join(sysRoot, 'Sysnative', 'bash.exe');
+    const bashPath64bitApp = path.join(sysRoot, 'System32', 'bash.exe');
     const bashPathHost = is64bit ? bashPath64bitApp : bashPath32bitApp;
     return fs.existsSync(bashPathHost);
 }
@@ -30,12 +31,13 @@ function windowsPathToWSLPath(windowsPath) {
 }
 function createLaunchArg(useSubsytemLinux, useExternalConsole, cwd, executable, args, program) {
     if (useSubsytemLinux && subsystemLinuxPresent()) {
-        const bashPath32bitApp = path.join(process.env['SystemRoot'], 'Sysnative', 'bash.exe');
-        const bashPath64bitApp = path.join(process.env['SystemRoot'], 'System32', 'bash.exe');
+        const sysRoot = process.env['SystemRoot'] || 'C:\\WINDOWS';
+        const bashPath32bitApp = path.join(sysRoot, 'Sysnative', 'bash.exe');
+        const bashPath64bitApp = path.join(sysRoot, 'System32', 'bash.exe');
         const bashPathHost = is64bit ? bashPath64bitApp : bashPath32bitApp;
         const subsystemLinuxPath = useExternalConsole ? bashPath64bitApp : bashPathHost;
         let bashCommand = [executable].concat(args || []).map(element => {
-            if (element === program) {
+            if (element === program) { // workaround for issue #35249
                 element = element.replace(/\\/g, '/');
             }
             return element.indexOf(' ') > 0 ? `'${element}'` : element;

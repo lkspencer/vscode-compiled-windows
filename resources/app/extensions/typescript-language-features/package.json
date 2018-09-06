@@ -17,13 +17,13 @@
   ],
   "dependencies": {
     "jsonc-parser": "^2.0.1",
-    "semver": "4.3.6",
+    "semver": "5.5.1",
     "vscode-extension-telemetry": "0.0.18",
     "vscode-nls": "^3.2.4"
   },
   "devDependencies": {
     "@types/node": "8.0.33",
-    "@types/semver": "5.4.0",
+    "@types/semver": "^5.5.0",
     "vscode": "^1.1.10"
   },
   "scripts": {
@@ -44,14 +44,12 @@
     "onCommand:workbench.action.tasks.runTask",
     "onLanguage:jsonc"
   ],
-  "main": "./out/extension",
+  "main": "./dist/extension",
   "contributes": {
-    "jsonValidation": [
-      {
-        "fileMatch": "package.json",
-        "url": "./schemas/package.schema.json"
-      }
-    ],
+    "jsonValidation": [{
+      "fileMatch": "package.json",
+      "url": "./schemas/package.schema.json"
+    }],
     "configuration": {
       "type": "object",
       "title": "%configuration.typescript%",
@@ -71,7 +69,9 @@
           "default": false,
           "description": "%typescript.disableAutomaticTypeAcquisition%",
           "scope": "window",
-          "tags": ["usesOnlineServices"]
+          "tags": [
+            "usesOnlineServices"
+          ]
         },
         "typescript.npm": {
           "type": [
@@ -364,7 +364,7 @@
         "javascript.implicitProjectConfig.experimentalDecorators": {
           "type": "boolean",
           "default": false,
-          "description": "%javascript.implicitProjectConfig.experimentalDecorators%",
+          "markdownDescription": "%javascript.implicitProjectConfig.experimentalDecorators%",
           "scope": "window"
         },
         "javascript.nameSuggestions": {
@@ -422,7 +422,7 @@
             null
           ],
           "default": null,
-          "description": "%typescript.locale%",
+          "markdownDescription": "%typescript.locale%",
           "scope": "window"
         },
         "javascript.suggestionActions.enabled": {
@@ -445,7 +445,7 @@
             "double"
           ],
           "default": "auto",
-          "description": "%typescript.preferences.quoteStyle%",
+          "markdownDescription": "%typescript.preferences.quoteStyle%",
           "scope": "resource"
         },
         "typescript.preferences.quoteStyle": {
@@ -456,7 +456,7 @@
             "double"
           ],
           "default": "auto",
-          "description": "%typescript.preferences.quoteStyle%",
+          "markdownDescription": "%typescript.preferences.quoteStyle%",
           "scope": "resource"
         },
         "javascript.preferences.importModuleSpecifier": {
@@ -466,7 +466,7 @@
             "relative",
             "non-relative"
           ],
-          "enumDescriptions": [
+          "markdownEnumDescriptions": [
             "%typescript.preferences.importModuleSpecifier.auto%",
             "%typescript.preferences.importModuleSpecifier.relative%",
             "%typescript.preferences.importModuleSpecifier.nonRelative%"
@@ -530,162 +530,132 @@
         }
       }
     },
-    "commands": [
-      {
-        "command": "typescript.reloadProjects",
-        "title": "%reloadProjects.title%",
-        "category": "TypeScript"
-      },
-      {
-        "command": "javascript.reloadProjects",
-        "title": "%reloadProjects.title%",
-        "category": "JavaScript"
-      },
-      {
-        "command": "typescript.selectTypeScriptVersion",
-        "title": "%typescript.selectTypeScriptVersion.title%",
-        "category": "TypeScript"
-      },
-      {
-        "command": "typescript.goToProjectConfig",
-        "title": "%goToProjectConfig.title%",
-        "category": "TypeScript"
-      },
-      {
-        "command": "javascript.goToProjectConfig",
-        "title": "%goToProjectConfig.title%",
-        "category": "JavaScript"
-      },
-      {
-        "command": "typescript.openTsServerLog",
-        "title": "%typescript.openTsServerLog.title%",
-        "category": "TypeScript"
-      },
-      {
-        "command": "typescript.restartTsServer",
-        "title": "%typescript.restartTsServer%",
-        "category": "TypeScript"
-      }
-    ],
+    "commands": [{
+      "command": "typescript.reloadProjects",
+      "title": "%reloadProjects.title%",
+      "category": "TypeScript"
+    }, {
+      "command": "javascript.reloadProjects",
+      "title": "%reloadProjects.title%",
+      "category": "JavaScript"
+    }, {
+      "command": "typescript.selectTypeScriptVersion",
+      "title": "%typescript.selectTypeScriptVersion.title%",
+      "category": "TypeScript"
+    }, {
+      "command": "typescript.goToProjectConfig",
+      "title": "%goToProjectConfig.title%",
+      "category": "TypeScript"
+    }, {
+      "command": "javascript.goToProjectConfig",
+      "title": "%goToProjectConfig.title%",
+      "category": "JavaScript"
+    }, {
+      "command": "typescript.openTsServerLog",
+      "title": "%typescript.openTsServerLog.title%",
+      "category": "TypeScript"
+    }, {
+      "command": "typescript.restartTsServer",
+      "title": "%typescript.restartTsServer%",
+      "category": "TypeScript"
+    }],
     "menus": {
-      "commandPalette": [
-        {
-          "command": "typescript.reloadProjects",
-          "when": "editorLangId == typescript && typescript.isManagedFile"
-        },
-        {
-          "command": "typescript.reloadProjects",
-          "when": "editorLangId == typescriptreact && typescript.isManagedFile"
-        },
-        {
-          "command": "javascript.reloadProjects",
-          "when": "editorLangId == javascript && typescript.isManagedFile"
-        },
-        {
-          "command": "javascript.reloadProjects",
-          "when": "editorLangId == javascriptreact && typescript.isManagedFile"
-        },
-        {
-          "command": "typescript.goToProjectConfig",
-          "when": "editorLangId == typescript && typescript.isManagedFile"
-        },
-        {
-          "command": "typescript.goToProjectConfig",
-          "when": "editorLangId == typescriptreact"
-        },
-        {
-          "command": "javascript.goToProjectConfig",
-          "when": "editorLangId == javascript && typescript.isManagedFile"
-        },
-        {
-          "command": "javascript.goToProjectConfig",
-          "when": "editorLangId == javascriptreact && typescript.isManagedFile"
-        },
-        {
-          "command": "typescript.selectTypeScriptVersion",
-          "when": "typescript.isManagedFile"
-        },
-        {
-          "command": "typescript.openTsServerLog",
-          "when": "typescript.isManagedFile"
-        },
-        {
-          "command": "typescript.restartTsServer",
-          "when": "typescript.isManagedFile"
-        }
-      ]
+      "commandPalette": [{
+        "command": "typescript.reloadProjects",
+        "when": "editorLangId == typescript && typescript.isManagedFile"
+      }, {
+        "command": "typescript.reloadProjects",
+        "when": "editorLangId == typescriptreact && typescript.isManagedFile"
+      }, {
+        "command": "javascript.reloadProjects",
+        "when": "editorLangId == javascript && typescript.isManagedFile"
+      }, {
+        "command": "javascript.reloadProjects",
+        "when": "editorLangId == javascriptreact && typescript.isManagedFile"
+      }, {
+        "command": "typescript.goToProjectConfig",
+        "when": "editorLangId == typescript && typescript.isManagedFile"
+      }, {
+        "command": "typescript.goToProjectConfig",
+        "when": "editorLangId == typescriptreact"
+      }, {
+        "command": "javascript.goToProjectConfig",
+        "when": "editorLangId == javascript && typescript.isManagedFile"
+      }, {
+        "command": "javascript.goToProjectConfig",
+        "when": "editorLangId == javascriptreact && typescript.isManagedFile"
+      }, {
+        "command": "typescript.selectTypeScriptVersion",
+        "when": "typescript.isManagedFile"
+      }, {
+        "command": "typescript.openTsServerLog",
+        "when": "typescript.isManagedFile"
+      }, {
+        "command": "typescript.restartTsServer",
+        "when": "typescript.isManagedFile"
+      }]
     },
-    "breakpoints": [
-      {
-        "language": "typescript"
-      },
-      {
-        "language": "typescriptreact"
-      }
-    ],
-    "taskDefinitions": [
-      {
-        "type": "typescript",
-        "required": [
-          "tsconfig"
-        ],
-        "properties": {
-          "tsconfig": {
-            "type": "string",
-            "description": "%taskDefinition.tsconfig.description%"
-          },
-          "option": {
-            "type": "string"
-          }
+    "breakpoints": [{
+      "language": "typescript"
+    }, {
+      "language": "typescriptreact"
+    }],
+    "taskDefinitions": [{
+      "type": "typescript",
+      "required": [
+        "tsconfig"
+      ],
+      "properties": {
+        "tsconfig": {
+          "type": "string",
+          "description": "%taskDefinition.tsconfig.description%"
+        },
+        "option": {
+          "type": "string"
         }
       }
-    ],
-    "problemPatterns": [
-      {
-        "name": "tsc",
-        "regexp": "^([^\\s].*)[\\(:](\\d+)[,:](\\d+)(?:\\):\\s+|\\s+-\\s+)(error|warning|info)\\s+(TS\\d+)\\s*:\\s*(.*)$",
-        "file": 1,
-        "line": 2,
-        "column": 3,
-        "severity": 4,
-        "code": 5,
-        "message": 6
-      }
-    ],
-    "problemMatchers": [
-      {
-        "name": "tsc",
-        "label": "%typescript.problemMatchers.tsc.label%",
-        "owner": "typescript",
-        "source": "ts",
-        "applyTo": "closedDocuments",
-        "fileLocation": [
-          "relative",
-          "${cwd}"
-        ],
-        "pattern": "$tsc"
-      },
-      {
-        "name": "tsc-watch",
-        "label": "%typescript.problemMatchers.tscWatch.label%",
-        "owner": "typescript",
-        "source": "ts",
-        "applyTo": "closedDocuments",
-        "fileLocation": [
-          "relative",
-          "${cwd}"
-        ],
-        "pattern": "$tsc",
-        "background": {
-          "activeOnStart": true,
-          "beginsPattern": {
-            "regexp": "^\\s*(?:message TS6032:|\\[?\\d{1,2}:\\d{1,2}:\\d{1,2}(?: AM| PM| a\\.m\\.| p\\.m\\.)?(?:\\]| -)) File change detected\\. Starting incremental compilation\\.\\.\\."
-          },
-          "endsPattern": {
-            "regexp": "^\\s*(?:message TS6042:|\\[?\\d{1,2}:\\d{1,2}:\\d{1,2}(?: AM| PM| a\\.m\\.| p\\.m\\.)?(?:\\]| -)) (?:Compilation complete\\.|Found \\d+ errors?\\.) Watching for file changes\\."
-          }
+    }],
+    "problemPatterns": [{
+      "name": "tsc",
+      "regexp": "^([^\\s].*)[\\(:](\\d+)[,:](\\d+)(?:\\):\\s+|\\s+-\\s+)(error|warning|info)\\s+(TS\\d+)\\s*:\\s*(.*)$",
+      "file": 1,
+      "line": 2,
+      "column": 3,
+      "severity": 4,
+      "code": 5,
+      "message": 6
+    }],
+    "problemMatchers": [{
+      "name": "tsc",
+      "label": "%typescript.problemMatchers.tsc.label%",
+      "owner": "typescript",
+      "source": "ts",
+      "applyTo": "closedDocuments",
+      "fileLocation": [
+        "relative",
+        "${cwd}"
+      ],
+      "pattern": "$tsc"
+    }, {
+      "name": "tsc-watch",
+      "label": "%typescript.problemMatchers.tscWatch.label%",
+      "owner": "typescript",
+      "source": "ts",
+      "applyTo": "closedDocuments",
+      "fileLocation": [
+        "relative",
+        "${cwd}"
+      ],
+      "pattern": "$tsc",
+      "background": {
+        "activeOnStart": true,
+        "beginsPattern": {
+          "regexp": "^\\s*(?:message TS6032:|\\[?\\d{1,2}:\\d{1,2}:\\d{1,2}(?: AM| PM| a\\.m\\.| p\\.m\\.)?(?:\\]| -)) File change detected\\. Starting incremental compilation\\.\\.\\."
+        },
+        "endsPattern": {
+          "regexp": "^\\s*(?:message TS6042:|\\[?\\d{1,2}:\\d{1,2}:\\d{1,2}(?: AM| PM| a\\.m\\.| p\\.m\\.)?(?:\\]| -)) (?:Compilation complete\\.|Found \\d+ errors?\\.) Watching for file changes\\."
         }
       }
-    ]
+    }]
   }
 }

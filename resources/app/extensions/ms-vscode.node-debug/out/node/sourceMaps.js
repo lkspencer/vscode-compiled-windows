@@ -217,7 +217,7 @@ class SourceMaps {
      */
     _findSourceMapUrl(contents, pathToGenerated) {
         const lines = contents.split('\n');
-        for (let l = lines.length - 1; l >= Math.max(lines.length - 10, 0); l--) {
+        for (let l = lines.length - 1; l >= Math.max(lines.length - 10, 0); l--) { // only search for url in the last 10 lines
             const line = lines[l].trim();
             const matches = SourceMaps.SOURCE_MAPPING_MATCHER.exec(line);
             if (matches && matches.length === 2) {

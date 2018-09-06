@@ -6,72 +6,77 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 var vscode = require("vscode");
 var nls = require("vscode-nls");
-var path_1 = require("path");
-var nodeProcessTree_1 = require("./nodeProcessTree");
 var localize = nls.loadMessageBundle(__filename);
 var ON_TEXT = localize(0, null);
 var OFF_TEXT = localize(1, null);
 var TOGGLE_COMMAND = 'extension.node-debug.toggleAutoAttach';
-var currentState;
-var autoAttacher;
-var statusItem = undefined;
+var DEBUG_SETTINGS = 'debug.node';
+var AUTO_ATTACH_SETTING = 'autoAttach';
+var currentState = 'disabled'; // on activation this feature is always disabled and
+var statusItem; // there is no status bar item
+var autoAttachStarted = false;
 function activate(context) {
-    context.subscriptions.push(vscode.commands.registerCommand(TOGGLE_COMMAND, toggleAutoAttach));
+    context.subscriptions.push(vscode.commands.registerCommand(TOGGLE_COMMAND, toggleAutoAttachSetting));
     context.subscriptions.push(vscode.workspace.onDidChangeConfiguration(function (e) {
-        if (e.affectsConfiguration('debug.node.autoAttach')) {
-            updateAutoAttachInStatus(context);
+        if (e.affectsConfiguration(DEBUG_SETTINGS + '.' + AUTO_ATTACH_SETTING)) {
+            updateAutoAttach(context);
         }
     }));
-    updateAutoAttachInStatus(context);
+    updateAutoAttach(context);
 }
 exports.activate = activate;
 function deactivate() {
 }
 exports.deactivate = deactivate;
-function toggleAutoAttach(context) {
-    var conf = vscode.workspace.getConfiguration('debug.node');
-    var value = conf.get('autoAttach');
-    if (value === 'on') {
-        value = 'off';
-    }
-    else {
-        value = 'on';
-    }
-    var info = conf.inspect('autoAttach');
-    var target = vscode.ConfigurationTarget.Global;
-    if (info) {
-        if (info.workspaceFolderValue) {
-            target = vscode.ConfigurationTarget.WorkspaceFolder;
+function toggleAutoAttachSetting(context) {
+    var conf = vscode.workspace.getConfiguration(DEBUG_SETTINGS);
+    if (conf) {
+        var value = conf.get(AUTO_ATTACH_SETTING);
+        if (value === 'on') {
+            value = 'off';
         }
-        else if (info.workspaceValue) {
-            target = vscode.ConfigurationTarget.Workspace;
+        else {
+            value = 'on';
         }
-        else if (info.globalValue) {
-            target = vscode.ConfigurationTarget.Global;
-        }
-        else if (info.defaultValue) {
-            // setting not yet used: store setting in workspace
-            if (vscode.workspace.workspaceFolders) {
+        var info = conf.inspect(AUTO_ATTACH_SETTING);
+        var target = vscode.ConfigurationTarget.Global;
+        if (info) {
+            if (info.workspaceFolderValue) {
+                target = vscode.ConfigurationTarget.WorkspaceFolder;
+            }
+            else if (info.workspaceValue) {
                 target = vscode.ConfigurationTarget.Workspace;
             }
+            else if (info.globalValue) {
+                target = vscode.ConfigurationTarget.Global;
+            }
+            else if (info.defaultValue) {
+                // setting not yet used: store setting in workspace
+                if (vscode.workspace.workspaceFolders) {
+                    target = vscode.ConfigurationTarget.Workspace;
+                }
+            }
         }
+        conf.update(AUTO_ATTACH_SETTING, value, target);
     }
-    conf.update('autoAttach', value, target);
-    updateAutoAttachInStatus(context);
 }
-function updateAutoAttachInStatus(context) {
-    var newState = vscode.workspace.getConfiguration('debug.node').get('autoAttach');
+/**
+ * Updates the auto attach feature based on the user or workspace setting
+ */
+function updateAutoAttach(context) {
+    var newState = vscode.workspace.getConfiguration(DEBUG_SETTINGS).get(AUTO_ATTACH_SETTING);
     if (newState !== currentState) {
-        currentState = newState;
         if (newState === 'disabled') {
             // turn everything off
             if (statusItem) {
                 statusItem.hide();
                 statusItem.text = OFF_TEXT;
             }
-            if (autoAttacher) {
-                autoAttacher.dispose();
-                autoAttacher = undefined;
+            if (autoAttachStarted) {
+                vscode.commands.executeCommand('extension.node-debug.stopAutoAttach').then(function (_) {
+                    currentState = newState;
+                    autoAttachStarted = false;
+                });
             }
         }
         else { // 'on' or 'off'
@@ -79,7 +84,6 @@ function updateAutoAttachInStatus(context) {
             if (!statusItem) {
                 statusItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left);
                 statusItem.command = TOGGLE_COMMAND;
-                statusItem.text = OFF_TEXT;
                 statusItem.tooltip = localize(2, null);
                 statusItem.show();
                 context.subscriptions.push(statusItem);
@@ -88,28 +92,28 @@ function updateAutoAttachInStatus(context) {
                 statusItem.show();
             }
             if (newState === 'off') {
-                statusItem.text = OFF_TEXT;
-                if (autoAttacher) {
-                    autoAttacher.dispose();
-                    autoAttacher = undefined;
+                if (autoAttachStarted) {
+                    vscode.commands.executeCommand('extension.node-debug.stopAutoAttach').then(function (_) {
+                        currentState = newState;
+                        if (statusItem) {
+                            statusItem.text = OFF_TEXT;
+                        }
+                        autoAttachStarted = false;
+                    });
                 }
             }
             else if (newState === 'on') {
-                statusItem.text = ON_TEXT;
                 var vscode_pid = process.env['VSCODE_PID'];
                 var rootPid = vscode_pid ? parseInt(vscode_pid) : 0;
-                autoAttacher = startAutoAttach(rootPid);
+                vscode.commands.executeCommand('extension.node-debug.startAutoAttach', rootPid).then(function (_) {
+                    if (statusItem) {
+                        statusItem.text = ON_TEXT;
+                    }
+                    currentState = newState;
+                    autoAttachStarted = true;
+                });
             }
         }
     }
-}
-function startAutoAttach(rootPid) {
-    return nodeProcessTree_1.pollProcesses(rootPid, true, function (pid, cmdPath, args) {
-        var cmdName = path_1.basename(cmdPath, '.exe');
-        if (cmdName === 'node') {
-            var name = localize(3, null, pid);
-            nodeProcessTree_1.attachToProcess(undefined, name, pid, args);
-        }
-    });
 }
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/493869ee8e8a846b0855873886fc79d480d342de/extensions\debug-auto-launch\out/extension.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/5944e81f3c46a3938a82c701f96d7a59b074cfdc/extensions\debug-auto-launch\out/extension.js.map

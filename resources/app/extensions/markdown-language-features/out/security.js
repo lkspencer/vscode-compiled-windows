@@ -120,4 +120,4 @@ class PreviewSecuritySelector {
     }
 }
 exports.PreviewSecuritySelector = PreviewSecuritySelector;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/493869ee8e8a846b0855873886fc79d480d342de/extensions\markdown-language-features\out/security.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/5944e81f3c46a3938a82c701f96d7a59b074cfdc/extensions\markdown-language-features\out/security.js.map

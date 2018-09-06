@@ -46,6 +46,9 @@ class NodeDebugAdapter extends vscode_chrome_debug_core_1.ChromeDebugAdapter {
     get normalAttachMode() {
         return this._attachMode && !this.isExtensionHost();
     }
+    get supportsTerminateRequest() {
+        return process.platform !== 'win32' && !this.isExtensionHost();
+    }
     initialize(args) {
         this._adapterID = args.adapterID;
         this._promiseRejectExceptionFilterEnabled = this.isExtensionHost();
@@ -55,7 +58,7 @@ class NodeDebugAdapter extends vscode_chrome_debug_core_1.ChromeDebugAdapter {
         }
         const capabilities = super.initialize(args);
         capabilities.supportsLogPoints = true;
-        capabilities.supportsTerminateRequest = process.platform !== 'win32' && !this.isExtensionHost();
+        capabilities.supportsTerminateRequest = this.supportsTerminateRequest;
         return capabilities;
     }
     launch(args) {
@@ -304,6 +307,7 @@ class NodeDebugAdapter extends vscode_chrome_debug_core_1.ChromeDebugAdapter {
             }
         }
         this.logLaunchCommand(runtimeExecutable, launchArgs);
+        spawnOpts.detached = this.supportsTerminateRequest; // https://github.com/Microsoft/vscode/issues/57018
         const nodeProcess = cp.spawn(runtimeExecutable, launchArgs, spawnOpts);
         return new Promise((resolve, reject) => {
             this._nodeProcessId = nodeProcess.pid;
@@ -456,7 +460,10 @@ class NodeDebugAdapter extends vscode_chrome_debug_core_1.ChromeDebugAdapter {
     terminate(args) {
         return __awaiter(this, void 0, void 0, function* () {
             if (!this._attachMode && !this._launchAttachArgs.useWSL && this._nodeProcessId > 0) {
-                process.kill(this._nodeProcessId, 'SIGINT');
+                // -pid to kill the process group
+                // https://github.com/Microsoft/vscode/issues/57018
+                const groupPID = -this._nodeProcessId;
+                process.kill(groupPID, 'SIGINT');
             }
         });
     }

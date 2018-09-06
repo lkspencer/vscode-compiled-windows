@@ -5,13 +5,12 @@
 'use strict';
 Object.defineProperty(exports, "__esModule", { value: true });
 const vscode_1 = require("vscode");
-const jsonContributions_1 = require("./jsonContributions");
 const markedTextUtil_1 = require("./markedTextUtil");
 const nls = require("vscode-nls");
 const localize = nls.loadMessageBundle(__filename);
 const USER_AGENT = 'Visual Studio Code';
 class BowerJSONContribution {
-    constructor(httprequestxhr) {
+    constructor(xhr) {
         this.topRanked = ['twitter', 'bootstrap', 'angular-1.1.6', 'angular-latest', 'angulerjs', 'd3', 'myjquery', 'jq', 'abcdef1234567890', 'jQuery', 'jquery-1.11.1', 'jquery',
             'sushi-vanilla-x-data', 'font-awsome', 'Font-Awesome', 'font-awesome', 'fontawesome', 'html5-boilerplate', 'impress.js', 'homebrew',
             'backbone', 'moment1', 'momentjs', 'moment', 'linux', 'animate.css', 'animate-css', 'reveal.js', 'jquery-file-upload', 'blueimp-file-upload', 'threejs', 'express', 'chosen',
@@ -19,18 +18,13 @@ class BowerJSONContribution {
             'material-design-icons', 'ionic', 'chartjs', 'Chart.js', 'nnnick-chartjs', 'select2-ng', 'select2-dist', 'phantom', 'skrollr', 'scrollr', 'less.js', 'leancss', 'parser-lib',
             'hui', 'bootstrap-languages', 'async', 'gulp', 'jquery-pjax', 'coffeescript', 'hammer.js', 'ace', 'leaflet', 'jquery-mobile', 'sweetalert', 'typeahead.js', 'soup', 'typehead.js',
             'sails', 'codeigniter2'];
-        const getxhr = () => {
-            return vscode_1.workspace.getConfiguration('npm').get('fetchOnlinePackageInfo') === false ? jsonContributions_1.xhrDisabled : httprequestxhr;
-        };
-        this.xhr = getxhr();
-        vscode_1.workspace.onDidChangeConfiguration((e) => {
-            if (e.affectsConfiguration('npm.fetchOnlinePackageInfo')) {
-                this.xhr = getxhr();
-            }
-        });
+        this.xhr = xhr;
     }
     getDocumentSelector() {
         return [{ language: 'json', scheme: '*', pattern: '**/bower.json' }, { language: 'json', scheme: '*', pattern: '**/.bower.json' }];
+    }
+    onlineEnabled() {
+        return !!vscode_1.workspace.getConfiguration('npm').get('fetchOnlinePackageInfo');
     }
     collectDefaultSuggestions(_resource, collector) {
         const defaultValue = {
@@ -49,7 +43,7 @@ class BowerJSONContribution {
     }
     collectPropertySuggestions(_resource, location, currentWord, addValue, isLast, collector) {
         if ((location.matches(['dependencies']) || location.matches(['devDependencies']))) {
-            if (currentWord.length > 0) {
+            if (currentWord.length > 0 && this.onlineEnabled()) {
                 const queryUrl = 'https://registry.bower.io/packages/search/' + encodeURIComponent(currentWord);
                 return this.xhr({
                     url: queryUrl,
@@ -141,6 +135,9 @@ class BowerJSONContribution {
         return null;
     }
     getInfo(pack) {
+        if (!this.onlineEnabled()) {
+            return Promise.resolve(undefined);
+        }
         const queryUrl = 'https://registry.bower.io/packages/' + encodeURIComponent(pack);
         return this.xhr({
             url: queryUrl,
@@ -183,4 +180,4 @@ class BowerJSONContribution {
     }
 }
 exports.BowerJSONContribution = BowerJSONContribution;
-//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/493869ee8e8a846b0855873886fc79d480d342de/extensions\npm\out/features\bowerJSONContribution.js.map
+//# sourceMappingURL=https://ticino.blob.core.windows.net/sourcemaps/5944e81f3c46a3938a82c701f96d7a59b074cfdc/extensions\npm\out/features\bowerJSONContribution.js.map
