@@ -64,6 +64,9 @@ class NodeDebugAdapter extends vscode_chrome_debug_core_1.ChromeDebugAdapter {
     launch(args) {
         const _super = name => super[name];
         return __awaiter(this, void 0, void 0, function* () {
+            if (typeof args.enableSourceMapCaching !== 'boolean') {
+                args.enableSourceMapCaching = this.isExtensionHost();
+            }
             if (args.console && args.console !== 'internalConsole' && typeof args._suppressConsoleOutput === 'undefined') {
                 args._suppressConsoleOutput = true;
             }
@@ -124,7 +127,7 @@ class NodeDebugAdapter extends vscode_chrome_debug_core_1.ChromeDebugAdapter {
                     }
                 }
                 programPath = path.normalize(programPath);
-                if (pathUtils.normalizeDriveLetter(programPath) !== pathUtils.realPath(programPath)) {
+                if (pathUtils.normalizeDriveLetter(programPath) !== pathUtils.realCasePath(programPath)) {
                     vscode_chrome_debug_core_1.logger.warn(localize(1, null));
                 }
             }
@@ -141,13 +144,17 @@ class NodeDebugAdapter extends vscode_chrome_debug_core_1.ChromeDebugAdapter {
                 }
                 // if working dir is given and if the executable is within that folder, we make the executable path relative to the working dir
                 if (resolvedProgramPath) {
-                    program = path.relative(cwd, resolvedProgramPath);
+                    program = (yield pathUtils.isSymlinkedPath(cwd)) ?
+                        resolvedProgramPath :
+                        path.relative(cwd, resolvedProgramPath);
                 }
             }
             else if (resolvedProgramPath) {
                 // if no working dir given, we use the direct folder of the executable
                 cwd = path.dirname(resolvedProgramPath);
-                program = path.basename(resolvedProgramPath);
+                program = (yield pathUtils.isSymlinkedPath(cwd)) ?
+                    resolvedProgramPath :
+                    path.basename(resolvedProgramPath);
             }
             const runtimeArgs = args.runtimeArgs || [];
             const programArgs = args.args || [];
@@ -227,6 +234,9 @@ class NodeDebugAdapter extends vscode_chrome_debug_core_1.ChromeDebugAdapter {
         const _super = name => super[name];
         return __awaiter(this, void 0, void 0, function* () {
             try {
+                if (typeof args.enableSourceMapCaching !== 'boolean') {
+                    args.enableSourceMapCaching = true;
+                }
                 return _super("attach").call(this, args);
             }
             catch (err) {
@@ -463,7 +473,16 @@ class NodeDebugAdapter extends vscode_chrome_debug_core_1.ChromeDebugAdapter {
                 // -pid to kill the process group
                 // https://github.com/Microsoft/vscode/issues/57018
                 const groupPID = -this._nodeProcessId;
-                process.kill(groupPID, 'SIGINT');
+                try {
+                    vscode_chrome_debug_core_1.logger.log(`Sending SIGINT to ${groupPID}`);
+                    process.kill(groupPID, 'SIGINT');
+                }
+                catch (e) {
+                    if (e.message === 'kill ESRCH') {
+                        vscode_chrome_debug_core_1.logger.log(`Got 'kill ESRCH'. Sending SIGINT to ${this._nodeProcessId}`);
+                        process.kill(this._nodeProcessId, 'SIGINT');
+                    }
+                }
             }
         });
     }

@@ -16,12 +16,12 @@
     "watch": "gulp watch-extension:jake"
   },
   "dependencies": {
-    "vscode-nls": "^3.2.4"
+    "vscode-nls": "^4.0.0"
   },
   "devDependencies": {
     "@types/node": "^8.10.25"
   },
-  "main": "./out/main",
+  "main": "./dist/main",
   "activationEvents": [
     "onCommand:workbench.action.tasks.runTask"
   ],
@@ -43,23 +43,21 @@
         }
       }
     },
-    "taskDefinitions": [
-      {
-        "type": "jake",
-        "required": [
-          "task"
-        ],
-        "properties": {
-          "task": {
-            "type": "string",
-            "description": "%jake.taskDefinition.type.description%"
-          },
-          "file": {
-            "type": "string",
-            "description": "%jake.taskDefinition.file.description%"
-          }
+    "taskDefinitions": [{
+      "type": "jake",
+      "required": [
+        "task"
+      ],
+      "properties": {
+        "task": {
+          "type": "string",
+          "description": "%jake.taskDefinition.type.description%"
+        },
+        "file": {
+          "type": "string",
+          "description": "%jake.taskDefinition.file.description%"
         }
       }
-    ]
+    }]
   }
 }

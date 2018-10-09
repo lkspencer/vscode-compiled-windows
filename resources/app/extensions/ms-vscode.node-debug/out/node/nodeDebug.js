@@ -3310,10 +3310,18 @@ class NodeDebugSession extends vscode_debugadapter_1.LoggingDebugSession {
     }
     //---- private static ---------------------------------------------------------------
     static isJavaScript(path) {
-        const name = Path.extname(path).toLowerCase();
-        if (NodeDebugSession.JS_EXTENSIONS.indexOf(name) >= 0) {
-            return true;
+        const ext = Path.extname(path).toLowerCase();
+        if (ext) {
+            if (NodeDebugSession.JS_EXTENSIONS.indexOf(ext) >= 0) {
+                return true;
+            }
         }
+        else {
+            if (Path.basename(path).toLowerCase() === 'www') {
+                return true;
+            }
+        }
+        // look inside file
         try {
             const buffer = new Buffer(30);
             const fd = FS.openSync(path, 'r');

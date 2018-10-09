@@ -10,7 +10,7 @@
 	"engines": {
 		"vscode": "^1.20.0"
 	},
-	"main": "./out/extension",
+	"main": "./dist/extension",
 	"categories": [
 		"Programming Languages"
 	],
@@ -26,151 +26,122 @@
 		"onWebviewPanel:markdown.preview"
 	],
 	"contributes": {
-		"commands": [
-			{
-				"command": "markdown.showPreview",
-				"title": "%markdown.preview.title%",
-				"category": "Markdown",
-				"icon": {
-					"light": "./media/Preview.svg",
-					"dark": "./media/Preview_inverse.svg"
-				}
-			},
-			{
-				"command": "markdown.showPreviewToSide",
-				"title": "%markdown.previewSide.title%",
-				"category": "Markdown",
-				"icon": {
-					"light": "./media/PreviewOnRightPane_16x.svg",
-					"dark": "./media/PreviewOnRightPane_16x_dark.svg"
-				}
-			},
-			{
-				"command": "markdown.showLockedPreviewToSide",
-				"title": "%markdown.showLockedPreviewToSide.title%",
-				"category": "Markdown",
-				"icon": {
-					"light": "./media/PreviewOnRightPane_16x.svg",
-					"dark": "./media/PreviewOnRightPane_16x_dark.svg"
-				}
-			},
-			{
-				"command": "markdown.showSource",
-				"title": "%markdown.showSource.title%",
-				"category": "Markdown",
-				"icon": {
-					"light": "./media/ViewSource.svg",
-					"dark": "./media/ViewSource_inverse.svg"
-				}
-			},
-			{
-				"command": "markdown.showPreviewSecuritySelector",
-				"title": "%markdown.showPreviewSecuritySelector.title%",
-				"category": "Markdown"
-			},
-			{
-				"command": "markdown.preview.refresh",
-				"title": "%markdown.preview.refresh.title%",
-				"category": "Markdown"
-			},
-			{
-				"command": "markdown.preview.toggleLock",
-				"title": "%markdown.preview.toggleLock.title%",
-				"category": "Markdown"
+		"commands": [{
+			"command": "markdown.showPreview",
+			"title": "%markdown.preview.title%",
+			"category": "Markdown",
+			"icon": {
+				"light": "./media/Preview.svg",
+				"dark": "./media/Preview_inverse.svg"
 			}
-		],
+		}, {
+			"command": "markdown.showPreviewToSide",
+			"title": "%markdown.previewSide.title%",
+			"category": "Markdown",
+			"icon": {
+				"light": "./media/PreviewOnRightPane_16x.svg",
+				"dark": "./media/PreviewOnRightPane_16x_dark.svg"
+			}
+		}, {
+			"command": "markdown.showLockedPreviewToSide",
+			"title": "%markdown.showLockedPreviewToSide.title%",
+			"category": "Markdown",
+			"icon": {
+				"light": "./media/PreviewOnRightPane_16x.svg",
+				"dark": "./media/PreviewOnRightPane_16x_dark.svg"
+			}
+		}, {
+			"command": "markdown.showSource",
+			"title": "%markdown.showSource.title%",
+			"category": "Markdown",
+			"icon": {
+				"light": "./media/ViewSource.svg",
+				"dark": "./media/ViewSource_inverse.svg"
+			}
+		}, {
+			"command": "markdown.showPreviewSecuritySelector",
+			"title": "%markdown.showPreviewSecuritySelector.title%",
+			"category": "Markdown"
+		}, {
+			"command": "markdown.preview.refresh",
+			"title": "%markdown.preview.refresh.title%",
+			"category": "Markdown"
+		}, {
+			"command": "markdown.preview.toggleLock",
+			"title": "%markdown.preview.toggleLock.title%",
+			"category": "Markdown"
+		}],
 		"menus": {
-			"editor/title": [
-				{
-					"command": "markdown.showPreviewToSide",
-					"when": "editorLangId == markdown",
-					"alt": "markdown.showPreview",
-					"group": "navigation"
-				},
-				{
-					"command": "markdown.showSource",
-					"when": "markdownPreviewFocus",
-					"group": "navigation"
-				},
-				{
-					"command": "markdown.preview.refresh",
-					"when": "markdownPreviewFocus",
-					"group": "1_markdown"
-				},
-				{
-					"command": "markdown.preview.toggleLock",
-					"when": "markdownPreviewFocus",
-					"group": "1_markdown"
-				},
-				{
-					"command": "markdown.showPreviewSecuritySelector",
-					"when": "markdownPreviewFocus",
-					"group": "1_markdown"
-				}
-			],
-			"explorer/context": [
-				{
-					"command": "markdown.showPreview",
-					"when": "resourceLangId == markdown",
-					"group": "navigation"
-				}
-			],
-			"editor/title/context": [
-				{
-					"command": "markdown.showPreview",
-					"when": "resourceLangId == markdown",
-					"group": "navigation"
-				}
-			],
-			"commandPalette": [
-				{
-					"command": "markdown.showPreview",
-					"when": "editorLangId == markdown",
-					"group": "navigation"
-				},
-				{
-					"command": "markdown.showPreviewToSide",
-					"when": "editorLangId == markdown",
-					"group": "navigation"
-				},
-				{
-					"command": "markdown.showLockedPreviewToSide",
-					"when": "editorLangId == markdown",
-					"group": "navigation"
-				},
-				{
-					"command": "markdown.showSource",
-					"when": "markdownPreviewFocus",
-					"group": "navigation"
-				},
-				{
-					"command": "markdown.showPreviewSecuritySelector",
-					"when": "editorLangId == markdown"
-				},
-				{
-					"command": "markdown.showPreviewSecuritySelector",
-					"when": "markdownPreviewFocus"
-				},
-				{
-					"command": "markdown.preview.toggleLock",
-					"when": "markdownPreviewFocus"
-				}
-			]
-		},
-		"keybindings": [
-			{
-				"command": "markdown.showPreview",
-				"key": "shift+ctrl+v",
-				"mac": "shift+cmd+v",
-				"when": "editorLangId == markdown"
-			},
-			{
+			"editor/title": [{
 				"command": "markdown.showPreviewToSide",
-				"key": "ctrl+k v",
-				"mac": "cmd+k v",
+				"when": "editorLangId == markdown",
+				"alt": "markdown.showPreview",
+				"group": "navigation"
+			}, {
+				"command": "markdown.showSource",
+				"when": "markdownPreviewFocus",
+				"group": "navigation"
+			}, {
+				"command": "markdown.preview.refresh",
+				"when": "markdownPreviewFocus",
+				"group": "1_markdown"
+			}, {
+				"command": "markdown.preview.toggleLock",
+				"when": "markdownPreviewFocus",
+				"group": "1_markdown"
+			}, {
+				"command": "markdown.showPreviewSecuritySelector",
+				"when": "markdownPreviewFocus",
+				"group": "1_markdown"
+			}],
+			"explorer/context": [{
+				"command": "markdown.showPreview",
+				"when": "resourceLangId == markdown",
+				"group": "navigation"
+			}],
+			"editor/title/context": [{
+				"command": "markdown.showPreview",
+				"when": "resourceLangId == markdown",
+				"group": "navigation"
+			}],
+			"commandPalette": [{
+				"command": "markdown.showPreview",
+				"when": "editorLangId == markdown",
+				"group": "navigation"
+			}, {
+				"command": "markdown.showPreviewToSide",
+				"when": "editorLangId == markdown",
+				"group": "navigation"
+			}, {
+				"command": "markdown.showLockedPreviewToSide",
+				"when": "editorLangId == markdown",
+				"group": "navigation"
+			}, {
+				"command": "markdown.showSource",
+				"when": "markdownPreviewFocus",
+				"group": "navigation"
+			}, {
+				"command": "markdown.showPreviewSecuritySelector",
 				"when": "editorLangId == markdown"
-			}
-		],
+			}, {
+				"command": "markdown.showPreviewSecuritySelector",
+				"when": "markdownPreviewFocus"
+			}, {
+				"command": "markdown.preview.toggleLock",
+				"when": "markdownPreviewFocus"
+			}]
+		},
+		"keybindings": [{
+			"command": "markdown.showPreview",
+			"key": "shift+ctrl+v",
+			"mac": "shift+cmd+v",
+			"when": "editorLangId == markdown"
+		}, {
+			"command": "markdown.showPreviewToSide",
+			"key": "ctrl+k v",
+			"mac": "cmd+k v",
+			"when": "editorLangId == markdown"
+		}],
 		"configuration": {
 			"type": "object",
 			"title": "Markdown",
@@ -252,6 +223,20 @@
 					"description": "%markdown.preview.doubleClickToSwitchToEditor.desc%",
 					"scope": "resource"
 				},
+				"markdown.preview.openMarkdownLinks": {
+					"type": "string",
+					"default": "inPreview",
+					"description": "%configuration.markdown.preview.openMarkdownLinks.description%",
+					"scope": "resource",
+					"enum": [
+						"inPreview",
+						"inEditor"
+					],
+					"enumDescriptions": [
+						"%configuration.markdown.preview.openMarkdownLinks.inPreview%",
+						"%configuration.markdown.preview.openMarkdownLinks.inEditor%"
+					]
+				},
 				"markdown.trace": {
 					"type": "string",
 					"enum": [
@@ -270,12 +255,10 @@
 				"editor.quickSuggestions": false
 			}
 		},
-		"jsonValidation": [
-			{
-				"fileMatch": "package.json",
-				"url": "./schemas/package.schema.json"
-			}
-		],
+		"jsonValidation": [{
+			"fileMatch": "package.json",
+			"url": "./schemas/package.schema.json"
+		}],
 		"markdown.previewStyles": [
 			"./media/markdown.css",
 			"./media/highlight.css"
@@ -295,8 +278,8 @@
 		"highlight.js": "9.12.0",
 		"markdown-it": "^8.4.1",
 		"markdown-it-named-headers": "0.0.4",
-		"vscode-extension-telemetry": "0.0.18",
-		"vscode-nls": "^3.2.4"
+		"vscode-extension-telemetry": "0.0.22",
+		"vscode-nls": "^4.0.0"
 	},
 	"devDependencies": {
 		"@types/highlight.js": "9.1.10",

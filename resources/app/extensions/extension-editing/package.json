@@ -12,36 +12,31 @@
 		"onLanguage:markdown",
 		"onLanguage:typescript"
 	],
-	"main": "./out/extension",
+	"main": "./dist/extension",
 	"scripts": {
 		"compile": "gulp compile-extension:extension-editing",
 		"watch": "gulp watch-extension:extension-editing"
 	},
 	"dependencies": {
-		"jsonc-parser": "^1.0.0",
+		"jsonc-parser": "^2.0.2",
 		"markdown-it": "^8.3.1",
 		"parse5": "^3.0.2",
-		"vscode-nls": "^3.2.4"
+		"vscode-nls": "^4.0.0"
 	},
 	"contributes": {
-		"jsonValidation": [
-			{
-				"fileMatch": "package.json",
-				"url": "vscode://schemas/vscode-extensions"
-			},
-			{
-				"fileMatch": "*language-configuration.json",
-				"url": "vscode://schemas/language-configuration"
-			},
-			{
-				"fileMatch": "*icon-theme.json",
-				"url": "vscode://schemas/icon-theme"
-			},
-			{
-				"fileMatch": "*color-theme.json",
-				"url": "vscode://schemas/color-theme"
-			}
-		]
+		"jsonValidation": [{
+			"fileMatch": "package.json",
+			"url": "vscode://schemas/vscode-extensions"
+		}, {
+			"fileMatch": "*language-configuration.json",
+			"url": "vscode://schemas/language-configuration"
+		}, {
+			"fileMatch": "*icon-theme.json",
+			"url": "vscode://schemas/icon-theme"
+		}, {
+			"fileMatch": "*color-theme.json",
+			"url": "vscode://schemas/color-theme"
+		}]
 	},
 	"devDependencies": {
 		"@types/markdown-it": "0.0.2",
