@@ -469,6 +469,7 @@ class NodeDebugAdapter extends vscode_chrome_debug_core_1.ChromeDebugAdapter {
     }
     terminate(args) {
         return __awaiter(this, void 0, void 0, function* () {
+            this._clientRequestedSessionEnd = true;
             if (!this._attachMode && !this._launchAttachArgs.useWSL && this._nodeProcessId > 0) {
                 // -pid to kill the process group
                 // https://github.com/Microsoft/vscode/issues/57018
@@ -497,7 +498,7 @@ class NodeDebugAdapter extends vscode_chrome_debug_core_1.ChromeDebugAdapter {
                 this._nodeProcessId = 0;
             }
             this.killNodeProcess();
-            const restartArgs = this._restartMode && !this._inShutdown ? { port: this._port } : undefined;
+            const restartArgs = this._restartMode && !this._clientRequestedSessionEnd ? { port: this._port } : undefined;
             return _super("terminateSession").call(this, reason, undefined, restartArgs);
         });
     }
@@ -827,7 +828,7 @@ const internalsRegex = new RegExp(`^${NodeDebugAdapter.NODE_INTERNALS}/(.*)`);
 function fixNodeInternalsSkipFilePattern(pattern) {
     const internalsMatch = pattern.match(internalsRegex);
     if (internalsMatch) {
-        return `^(?!\/)(?![a-zA-Z]:)${vscode_chrome_debug_core_1.utils.pathGlobToBlackboxedRegex(internalsMatch[1])}`;
+        return `^(?!\/)(?![a-zA-Z]:)(?!file:///)${vscode_chrome_debug_core_1.utils.pathGlobToBlackboxedRegex(internalsMatch[1])}`;
     }
     else {
         return null;
