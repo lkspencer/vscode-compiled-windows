@@ -21,12 +21,12 @@
 	"extensionAllowedProposedApi": [
 		"ms-vscode.references-view"
 	],
-	"commit": "5f24c93878bd4bc645a4a17c620e2487b11005f9",
-	"date": "2018-11-13T14:02:50.785Z",
+	"commit": "c6e592b2b5770e40a98cb9c2715a8ef89aec3d74",
+	"date": "2018-12-13T17:39:09.617Z",
 	"checksums": {
-		"vs/workbench/workbench.main.js": "MBMZBdMaJKcdqgJa3SyHvw",
-		"vs/workbench/workbench.main.css": "+4s7KBaHz19gqipXNlNMww",
-		"vs/code/electron-browser/workbench/workbench.html": "FuRXizZd7UNmpEo4wwCrmw",
-		"vs/code/electron-browser/workbench/workbench.js": "funZ1BNUGkEgK7iDzIiq2Q"
+		"vs/workbench/workbench.main.js": "vwerxredX5kdaO1VFLU4ug",
+		"vs/workbench/workbench.main.css": "wPbJLzwJBgXHpKP7vWPKqQ",
+		"vs/code/electron-browser/workbench/workbench.html": "iznN19bQTBE3Dpb9bzDnDA",
+		"vs/code/electron-browser/workbench/workbench.js": "g16ia25lw/FihgZdWpkVTg"
 	}
 }

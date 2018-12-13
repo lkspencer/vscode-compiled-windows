@@ -251,7 +251,7 @@ class NodeDebugAdapter extends vscode_chrome_debug_core_1.ChromeDebugAdapter {
     commonArgs(args) {
         args.sourceMapPathOverrides = getSourceMapPathOverrides(args.cwd, args.sourceMapPathOverrides);
         fixNodeInternalsSkipFiles(args);
-        args.showAsyncStacks = typeof args.showAsyncStacks === 'undefined' || args.showAsyncStacks;
+        args.smartStep = typeof args.smartStep === 'undefined' ? !this._isVSClient : args.smartStep;
         this._restartMode = args.restart;
         super.commonArgs(args);
     }
@@ -642,7 +642,7 @@ class NodeDebugAdapter extends vscode_chrome_debug_core_1.ChromeDebugAdapter {
     }
     validateBreakpointsPath(args) {
         return super.validateBreakpointsPath(args).catch(e => {
-            if (args.source.path && utils.isJavaScript(args.source.path)) {
+            if (!this._launchAttachArgs.disableOptimisticBPs && args.source.path && utils.isJavaScript(args.source.path)) {
                 return undefined;
             }
             else {

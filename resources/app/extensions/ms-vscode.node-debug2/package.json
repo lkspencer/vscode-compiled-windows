@@ -1,7 +1,7 @@
 {
   "name": "node-debug2",
   "displayName": "Node Debug",
-  "version": "1.29.5",
+  "version": "1.30.3",
   "publisher": "ms-vscode",
   "description": "%extension.description%",
   "icon": "images/node-debug-icon.png",
@@ -14,7 +14,7 @@
   "license": "MIT",
   "private": true,
   "dependencies": {
-    "vscode-chrome-debug-core": "^6.7.31",
+    "vscode-chrome-debug-core": "^6.7.37",
     "vscode-debugadapter": "^1.33.0-pre.2",
     "vscode-nls": "^3.2.5"
   },
@@ -359,6 +359,11 @@
               "type": "boolean",
               "description": "%node.enableSourceMapCaching.description%",
               "default": true
+            },
+            "disableOptimisticBPs": {
+              "type": "boolean",
+              "description": "%node.disableOptimisticBPs.description%",
+              "default": true
             }
           }
         },
@@ -473,6 +478,11 @@
             "enableSourceMapCaching": {
               "type": "boolean",
               "description": "%node.enableSourceMapCaching.description%",
+              "default": true
+            },
+            "disableOptimisticBPs": {
+              "type": "boolean",
+              "description": "%node.disableOptimisticBPs.description%",
               "default": true
             }
           }

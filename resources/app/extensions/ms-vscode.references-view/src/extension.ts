@@ -1,337 +1,159 @@
-'use strict';
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
 
 import * as vscode from 'vscode';
-
-class FileItem {
-    constructor(
-        readonly uri: vscode.Uri,
-        readonly results: Array<ReferenceItem>
-    ) { }
-}
-
-class ReferenceItem {
-    constructor(
-        readonly location: vscode.Location,
-        readonly parent: FileItem,
-    ) { }
-}
-
-type TreeObject = FileItem | ReferenceItem;
-
-class ReferenceSearchModel {
-
-    private _resolve: Promise<this> | undefined;
-
-    constructor(
-        readonly uri: vscode.Uri,
-        readonly position: vscode.Position,
-        readonly items = new Array<FileItem>()
-    ) {
-        //
-    }
-
-    get resolve(): Promise<this> {
-        if (!this._resolve) {
-            this._resolve = this._doResolve();
-        }
-        return this._resolve;
-    }
-
-    reset() {
-        this._resolve = undefined;
-    }
-
-    private async _doResolve(): Promise<this> {
-        this.items.length = 0
-        const locations = await vscode.commands.executeCommand<vscode.Location[]>(
-            'vscode.executeReferenceProvider',
-            this.uri,
-            this.position
-        );
-        if (locations) {
-            let last: FileItem | undefined;
-            locations.sort(ReferenceSearchModel._compareLocations);
-            for (const loc of locations) {
-                if (!last || last.uri.toString() !== loc.uri.toString()) {
-                    last = new FileItem(loc.uri, []);
-                    this.items.push(last);
-                }
-                last.results.push(new ReferenceItem(loc, last));
-            }
-        }
-        return this;
-    }
-
-    get(uri: vscode.Uri): FileItem | undefined {
-        for (const item of this.items) {
-            if (item.uri.toString() === uri.toString()) {
-                return item;
-            }
-        }
-        return undefined;
-    }
-
-    first(): ReferenceItem | undefined {
-        for (const item of this.items) {
-            if (item.uri.toString() === this.uri.toString()) {
-                for (const ref of item.results) {
-                    if (ref.location.range.contains(this.position)) {
-                        return ref;
-                    }
-                }
-                return undefined;
-            }
-        }
-        return undefined;
-    }
-
-    remove(item: FileItem | ReferenceItem): FileItem | undefined {
-        if (item instanceof FileItem) {
-            ReferenceSearchModel._del(this.items, item);
-            return undefined;
-
-        } else if (item instanceof ReferenceItem) {
-            ReferenceSearchModel._del(item.parent.results, item);
-            if (item.parent.results.length === 0) {
-                ReferenceSearchModel._del(this.items, item.parent);
-                return undefined;
-            } else {
-                return item.parent;
-            }
-        }
-    }
-
-    move(item: FileItem | ReferenceItem, fwd: boolean): ReferenceItem | undefined {
-
-        const delta = fwd ? +1 : -1;
-
-        const _move = (item: FileItem): FileItem => {
-            const idx = (this.items.indexOf(item) + delta + this.items.length) % this.items.length;
-            return this.items[idx];
-        }
-
-        if (item instanceof FileItem) {
-            if (fwd) {
-                return item.results[0];
-            } else {
-                return ReferenceSearchModel._tail(_move(item).results);
-            }
-        }
-
-        if (item instanceof ReferenceItem) {
-            const idx = item.parent.results.indexOf(item) + delta;
-            if (idx < 0) {
-                return ReferenceSearchModel._tail(_move(item.parent).results);
-            } else if (idx >= item.parent.results.length) {
-                return _move(item.parent).results[0];
-            } else {
-                return item.parent.results[idx];
-            }
-        }
-    }
-
-    private static _compareLocations(a: vscode.Location, b: vscode.Location): number {
-        if (a.uri.toString() < b.uri.toString()) {
-            return -1;
-        } else if (a.uri.toString() > b.uri.toString()) {
-            return 1;
-        } else if (a.range.start.isBefore(b.range.start)) {
-            return -1;
-        } else if (a.range.start.isAfter(b.range.start)) {
-            return 1;
-        } else {
-            return 0;
-        }
-    }
-
-    private static _del<T>(array: T[], e: T): void {
-        const idx = array.indexOf(e);
-        if (idx >= 0) {
-            array.splice(idx, 1);
-        }
-    }
-
-    private static _tail<T>(array: T[]): T | undefined {
-        return array[array.length - 1];
-    }
-}
-
-class DataProvider implements vscode.TreeDataProvider<TreeObject> {
-
-    readonly _onDidChangeTreeData = new vscode.EventEmitter<TreeObject>();
-    readonly onDidChangeTreeData = this._onDidChangeTreeData.event;
-
-    private _model?: ReferenceSearchModel;
-
-    setModel(model?: ReferenceSearchModel) {
-        this._model = model;
-        this._onDidChangeTreeData.fire();
-        vscode.commands.executeCommand('setContext', 'reference-list.hasResult', Boolean(this._model))
-    }
-
-    getModel(): ReferenceSearchModel | undefined {
-        return this._model;
-    }
-
-    async getTreeItem(element: TreeObject): Promise<vscode.TreeItem> {
-
-        if (element instanceof FileItem) {
-            // files
-            const result = new vscode.TreeItem(element.uri);
-            result.contextValue = 'reference-item'
-            result.iconPath = vscode.ThemeIcon.File;
-            result.collapsibleState = vscode.TreeItemCollapsibleState.Collapsed;
-            return result;
-        }
-
-        if (element instanceof ReferenceItem) {
-            // references
-            const { range } = element.location;
-            const doc = await vscode.workspace.openTextDocument(element.location.uri);
-
-            const previewStart = range.start.with({ character: Math.max(0, range.start.character - 8) });
-            const wordRange = doc.getWordRangeAtPosition(previewStart);
-            const before = doc.getText(new vscode.Range(wordRange ? wordRange.start : previewStart, range.start)).replace(/^\s*/g, '');
-            const inside = doc.getText(range);
-            const previewEnd = range.end.translate(0, 31);
-            const after = doc.getText(new vscode.Range(range.end, previewEnd)).replace(/\s*$/g, '')
-
-            const label: vscode.TreeItemLabel = {
-                label: before + inside + after,
-                highlights: [[before.length, before.length + inside.length]]
-            };
-
-            const result = new vscode.TreeItem2(label);
-            result.collapsibleState = vscode.TreeItemCollapsibleState.None;
-            result.contextValue = 'reference-item'
-            result.command = {
-                title: 'Open Reference',
-                command: 'references-view.show',
-                arguments: [element]
-            }
-            return result;
-        }
-
-        throw new Error();
-    }
-
-    async getChildren(element?: TreeObject | undefined): Promise<TreeObject[]> {
-        if (element instanceof FileItem) {
-            return element.results;
-        } else if (this._model) {
-            return (await this._model.resolve).items;
-        } else {
-            return [];
-        }
-    }
-
-    getParent(element: TreeObject): TreeObject | undefined {
-        return element instanceof ReferenceItem
-            ? element.parent
-            : undefined;
-    }
-}
+import { History } from './history';
+import { Model, ReferenceItem, FileItem } from './model';
+import { DataProvider, getPreviewChunks } from './provider';
+import { EditorHighlights } from './editorHighlights';
 
 export function activate(context: vscode.ExtensionContext) {
 
     const viewId = 'references-view.tree';
-    const treeDataProvider = new DataProvider();
+    const history = new History();
+    const provider = new DataProvider();
+
     const view = vscode.window.createTreeView(viewId, {
-        treeDataProvider,
+        treeDataProvider: provider,
         showCollapseAll: true
     });
 
-    const editorHighlights = new class {
+    // editor highlights
+    const editorHighlights = new EditorHighlights();
+    vscode.window.onDidChangeActiveTextEditor(() => view.visible && editorHighlights.show(), context.subscriptions);
+    view.onDidChangeVisibility(e => e.visible ? editorHighlights.show() : editorHighlights.hide(), context.subscriptions);
 
-        private _decorationType = vscode.window.createTextEditorDecorationType({
-            backgroundColor: new vscode.ThemeColor('editor.findMatchHighlightBackground')
-        });
+    // current active model
+    let model: Model | undefined;
 
-        private _editorListener = vscode.window.onDidChangeActiveTextEditor(this.highlight, this);
+    const showNoResult = () => {
+        let message: vscode.MarkdownString;
+        if (history.isEmpty) {
+            message = new vscode.MarkdownString('No results found.');
+        } else {
+            message = new vscode.MarkdownString();
+            message.value = `No results found, run a previous search again:\n${history.summary}`;
+            message.isTrusted = true;
+        }
+        view.message = message;
+    };
 
-        dispose() {
-            this.clear();
-            this._editorListener.dispose();
+    const findCommand = async (uri?: vscode.Uri, position?: vscode.Position) => {
+        // upon first interaction set the reference list as active and reveal it
+        await vscode.commands.executeCommand('setContext', 'reference-list.isActive', true)
+        vscode.commands.executeCommand(`${viewId}.focus`);
+
+        // remove existing highlights
+        editorHighlights.setModel(undefined);
+        view.message = undefined;
+
+        let modelCreation: Promise<Model | undefined> | undefined;
+        if (uri instanceof vscode.Uri && position instanceof vscode.Position) {
+            // trust args if correct'ish
+            modelCreation = Model.create(uri, position);
+
+        } else if (vscode.window.activeTextEditor) {
+            let editor = vscode.window.activeTextEditor;
+            if (editor.document.getWordRangeAtPosition(editor.selection.active)) {
+                modelCreation = Model.create(editor.document.uri, editor.selection.active);
+            }
         }
 
-        highlight() {
-            const { activeTextEditor: editor } = vscode.window;
-            const model = treeDataProvider.getModel();
-            if (!editor || !model) {
-                return;
-            }
-            const item = model.get(editor.document.uri);
-            if (item) {
-                editor.setDecorations(this._decorationType, item.results.map(ref => ref.location.range));
-            }
+        // the model creation promise is passed to the provider so that the 
+        // tree view can indicate loading, for everthing else we need to wait
+        // for the model to be resolved
+        provider.setModelCreation(modelCreation);
+
+        if (!modelCreation) {
+            return showNoResult();
         }
 
-        clear() {
-            const { activeTextEditor: editor } = vscode.window;
-            if (editor) {
-                editor.setDecorations(this._decorationType, []);
-            }
+        // wait for model, update context and UI
+        model = await modelCreation;
+        vscode.commands.executeCommand('setContext', 'reference-list.hasResult', Boolean(model));
+
+        if (!model || model.items.length === 0) {
+            return showNoResult();
         }
-    }
 
-    const findCommand = async (editor: vscode.TextEditor) => {
-        editorHighlights.clear();
-        if (editor.document.getWordRangeAtPosition(editor.selection.active)) {
-            const model = new ReferenceSearchModel(editor.document.uri, editor.selection.active);
+        // update history
+        history.add(model);
 
-            treeDataProvider.setModel(model);
+        // update editor
+        editorHighlights.setModel(model);
 
-            await Promise.all([
-                vscode.commands.executeCommand(`${viewId}.focus`),
-                model.resolve
-            ]);
+        // udate tree
+        const selection = model.first();
+        if (selection) {
+            view.reveal(selection, { select: true, focus: true });
+        }
 
-            editorHighlights.highlight();
-            const selection = model.first();
-            if (selection) {
-                view.reveal(selection, { select: true, focus: true });
-            }
+        // update message
+        if (model.total === 1 && model.items.length === 1) {
+            view.message = new vscode.MarkdownString(`${model.total} result in ${model.items.length} file`);
+        } else if (model.total === 1) {
+            view.message = new vscode.MarkdownString(`${model.total} result in ${model.items.length} files`);
+        } else if (model.items.length === 1) {
+            view.message = new vscode.MarkdownString(`${model.total} results in ${model.items.length} file`);
+        } else {
+            view.message = new vscode.MarkdownString(`${model.total} results in ${model.items.length} files`);
         }
     };
 
-    const refreshCommand = () => {
-        const model = treeDataProvider.getModel();
-        if (model) {
-            model.reset();
-            treeDataProvider._onDidChangeTreeData.fire();
-            view.reveal(view.selection[0]);
+    const refindCommand = (id: string) => {
+        if (typeof id !== 'string') {
+            return;
+        }
+        let item = history.get(id);
+        if (item) {
+            return findCommand(item.uri, item.position);
         }
     }
 
-    const clearCommand = () => {
-        editorHighlights.clear();
-        treeDataProvider.setModel(undefined);
+    const refreshCommand = async () => {
+        if (model) {
+            return findCommand(model.uri, model.position);
+        }
     }
 
-    const showRefCommand = (arg?: ReferenceItem | any) => {
+    const clearCommand = async () => {
+        vscode.commands.executeCommand('setContext', 'reference-list.hasResult', false);
+        editorHighlights.setModel(undefined);
+        provider.setModelCreation(undefined);
+
+        let lis = provider.onDidReturnEmpty(() => {
+            lis.dispose();
+            let message = new vscode.MarkdownString();
+            message.value = `To populate this view, open an editor and run the 'Find All References'-command or run a previous search again:\n${history.summary}`;
+            message.isTrusted = true;
+            view.message = message;
+        });
+    }
+
+    const showRefCommand = (arg?: ReferenceItem | any, focusEditor?: boolean) => {
         if (arg instanceof ReferenceItem) {
             const { location } = arg;
             vscode.window.showTextDocument(location.uri, {
                 selection: location.range.with({ end: location.range.start }),
-                preserveFocus: true
+                preserveFocus: !focusEditor
             });
         }
     };
 
     const removeRefCommand = (arg?: ReferenceItem | any) => {
-        const model = treeDataProvider.getModel();
         if (model) {
             const next = model.move(arg, true);
-            const parent = model.remove(arg);
-            treeDataProvider._onDidChangeTreeData.fire(parent);
+            model.remove(arg);
+            editorHighlights.refresh();
             if (next) {
                 view.reveal(next, { select: true });
             }
         }
     };
 
-    const moveCommand = (fwd: boolean) => {
-        const model = treeDataProvider.getModel();
+    const focusRefCommand = (fwd: boolean) => {
         if (!model) {
             return;
         }
@@ -339,19 +161,55 @@ export function activate(context: vscode.ExtensionContext) {
         const next = model.move(selection, fwd);
         if (next) {
             view.reveal(next, { select: true });
-            showRefCommand(next);
+            showRefCommand(next, true);
+        }
+    };
+
+    const copyCommand = async (arg?: ReferenceItem | FileItem | Model | any | undefined) => {
+        let val = '';
+        let stack = [arg];
+        while (stack.length > 0) {
+            let item = stack.pop();
+            if (item instanceof Model) {
+                stack.push(...item.items.slice(0, 99));
+
+            } else if (item instanceof ReferenceItem) {
+                let doc = await item.parent.getDocument()
+                let chunks = getPreviewChunks(doc, item.location.range, 21, false);
+                val += `  ${item.location.range.start.line + 1},${item.location.range.start.character + 1}:${chunks.before + chunks.inside + chunks.after}\n`;
+
+            } else if (item instanceof FileItem) {
+                val += `${vscode.workspace.asRelativePath(item.uri)}\n`;
+                stack.push(...item.results);
+            }
+        }
+        if (val) {
+            await vscode.env.clipboard.writeText(val);
+        }
+    };
+
+    const copyPathCommand = (arg?: FileItem) => {
+        if (arg instanceof FileItem) {
+            if (arg.uri.scheme === 'file') {
+                vscode.env.clipboard.writeText(arg.uri.fsPath);
+            } else {
+                vscode.env.clipboard.writeText(arg.uri.toString(true));
+            }
         }
     }
 
     context.subscriptions.push(
         view,
-        editorHighlights,
-        vscode.commands.registerTextEditorCommand('references-view.find', findCommand),
-        vscode.commands.registerTextEditorCommand('references-view.refresh', refreshCommand),
-        vscode.commands.registerTextEditorCommand('references-view.clear', clearCommand),
+        vscode.commands.registerCommand('references-view.find', findCommand),
+        vscode.commands.registerCommand('references-view.refind', refindCommand),
+        vscode.commands.registerCommand('references-view.refresh', refreshCommand),
+        vscode.commands.registerCommand('references-view.clear', clearCommand),
         vscode.commands.registerCommand('references-view.show', showRefCommand),
         vscode.commands.registerCommand('references-view.remove', removeRefCommand),
-        vscode.commands.registerCommand('references-view.showNextReference', () => moveCommand(true)),
-        vscode.commands.registerCommand('references-view.showPrevReference', () => moveCommand(false)),
+        vscode.commands.registerCommand('references-view.next', () => focusRefCommand(true)),
+        vscode.commands.registerCommand('references-view.prev', () => focusRefCommand(false)),
+        vscode.commands.registerCommand('references-view.copy', copyCommand),
+        vscode.commands.registerCommand('references-view.copyAll', () => copyCommand(model)),
+        vscode.commands.registerCommand('references-view.copyPath', copyPathCommand),
     );
 }
